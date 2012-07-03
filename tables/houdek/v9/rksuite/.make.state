@@ -1,0 +1,85 @@
+.MAKE_VERSION:	VERSION-1.0
+.BUILT_LAST_MAKE_RUN:
+stiffd.o:
+	f77 -O2  -c  stiffd.f
+.BUILT_LAST_MAKE_RUN:
+stiffc.o:
+	f77 -O2  -c  stiffc.f
+.BUILT_LAST_MAKE_RUN:
+stiffb.o:
+	f77 -O2  -c  stiffb.f
+.BUILT_LAST_MAKE_RUN:
+stiffa.o:
+	f77 -O2  -c  stiffa.f
+.BUILT_LAST_MAKE_RUN:
+stepb.o:
+	f77 -O2  -c  stepb.f
+.BUILT_LAST_MAKE_RUN:
+stiff.o:
+	f77 -O2  -c  stiff.f
+.BUILT_LAST_MAKE_RUN:
+librksuite.a:
+	( \
+	         ar ruv librksuite.a chkfl.o glberr.o softfl.o stiffb.o const.o intrp.o stat.o stiffc.o ct.o mconst.o step.o stiffd.o dotprd.o reset.o stepa.o truerr.o envirn.o rkmsg.o stepb.o ut.o evali.o rksit.o stiff.o formi.o setup.o stiffa.o ;\
+	         echo librksuite.a ;\
+	)
+.BUILT_LAST_MAKE_RUN:
+stepa.o:
+	f77 -O2  -c  stepa.f
+.BUILT_LAST_MAKE_RUN:
+glberr.o:
+	f77 -O2  -c  glberr.f
+.BUILT_LAST_MAKE_RUN:
+rksit.o:
+	f77 -O2  -c  rksit.f
+.BUILT_LAST_MAKE_RUN:
+softfl.o:
+	f77 -O2  -c  softfl.f
+.BUILT_LAST_MAKE_RUN:
+setup.o:
+	f77 -O2  -c  setup.f
+.BUILT_LAST_MAKE_RUN:
+rkmsg.o:
+	f77 -O2  -c  rkmsg.f
+.BUILT_LAST_MAKE_RUN:
+ut.o:
+	f77 -O2  -c  ut.f
+.BUILT_LAST_MAKE_RUN:
+reset.o:
+	f77 -O2  -c  reset.f
+.BUILT_LAST_MAKE_RUN:
+ct.o:
+	f77 -O2  -c  ct.f
+.BUILT_LAST_MAKE_RUN:
+intrp.o:
+	f77 -O2  -c  intrp.f
+.BUILT_LAST_MAKE_RUN:
+formi.o:
+	f77 -O2  -c  formi.f
+.BUILT_LAST_MAKE_RUN:
+evali.o:
+	f77 -O2  -c  evali.f
+.BUILT_LAST_MAKE_RUN:
+const.o:
+	f77 -O2  -c  const.f
+.BUILT_LAST_MAKE_RUN:
+step.o:
+	f77 -O2  -c  step.f
+.BUILT_LAST_MAKE_RUN:
+stat.o:
+	f77 -O2  -c  stat.f
+.BUILT_LAST_MAKE_RUN:
+mconst.o:
+	f77 -O2  -c  mconst.f
+.BUILT_LAST_MAKE_RUN:
+chkfl.o:
+	f77 -O2  -c  chkfl.f
+.BUILT_LAST_MAKE_RUN:
+truerr.o:
+	f77 -O2  -c  truerr.f
+.BUILT_LAST_MAKE_RUN:
+envirn.o:
+	f77 -O2  -c  envirn.f
+.BUILT_LAST_MAKE_RUN:
+dotprd.o:
+	f77 -O2  -c  dotprd.f

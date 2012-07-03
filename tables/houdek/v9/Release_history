@@ -1,0 +1,25 @@
+Version    Comments
+-------    ----------
+v6a        use linear interpolation for partial derivatives.
+
+v6b        use analytical formular for partial derivatives.
+           Known bugs: eps to small -> can lead to 'division by zero'
+
+v7         birational splines option, selectable with new argument
+           variable imode > 0 .
+           use analytical formular for y-partial derivatives (T).
+           drelpr -> 10.d0*eps to prevent bug 'division by zero' as in v6b.
+
+v8         inclusion of OPAL95
+           use analytical formular for part.derivatives
+
+v8z        25/05/97: a) interpolate logarithmical in Z
+                     b) use min(|Z_tab-Z_val|) for table selection
+                         &  min(|X_tab-X_val|)
+
+v9         20/08/97: - use Akima's scheme for OPAL95 table extrapolation
+                       (before Shepard's method was used)
+                     - inclusion of Itoh's electron conduction (ApJ 273,774)
+                     - added low-T tables of Alexander & Ferguson (1995)
+                     - rearrangement of dir-structure (only one library 
+                       necessary yet for the link process)

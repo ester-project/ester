@@ -1,0 +1,460 @@
+\chapter{Basic usage}
+
+There are three executables provided with the library:
+\begin{itemize}
+\item {\tt star1d} For calculating the structure of a 1D non-rotating star
+\item {\tt star2d} For calculating the structure of a 2D rotating star
+\item {\tt gen\_output} For generating a custom output file
+\end{itemize}
+
+\section{Configuration files}
+
+The main configuration file for {\tt star1d} and {\tt star2d} is {\tt ester/config/star.cfg}.
+This file contains the main options for the program, which are
+\begin{itemize}
+\item {\tt maxit} (default 200).
+Maximum number of iterations. After {\tt maxit} iterations, the program
+exists normally and the output file is saved, even if it has not completely converged.
+\item {\tt minit} (default 1).
+Minimum number of iterations. It may occur that the value of the error
+for the first iteration is not representative. With this parameter we force the solver to
+do at least {\tt minit} iterations. This parameter is superseded by {\tt maxit}, for example
+if {\tt maxit=5} and {\tt minit=10}, the solver will do only 5 iterations.
+\item {\tt tol} (default 1e-8). 
+The relative tolerance for checking the convergence of the model.
+\item {\tt newton\_dmax} (default 0.5).
+After one step of the Newton's method, the maximum relative change
+allowed for a variable is given by {\tt newton\_dmax}. If necessary the iteration is relaxed
+by a parameter $h$
+$$\vec x^{N+1}=\vec x^N+h \delta\vec x^N$$
+according to this value.
+This parameter can be used to stabilize the convergence when the initial estimation is far
+from the solution.
+\item {\tt output\_file} (default {\tt star.out}). Name of the output file.
+\item {\tt output\_mode} (default {\tt b}). Type of the output file {\tt b} for binary
+and {\tt t} for text output.
+\item {\tt verbose} (default 1). Level of verbosity, from 0 (quiet) to 4.
+\item {\tt plot\_device} (default {\tt /NULL}. Plotting device for PGPLOT, 
+see the documentation of PGPLOT for details. For output in a X window use {\tt /XSERVE}.
+To disable the graphic output use {\tt /NULL}.
+\item {\tt plot\_interval} (default 10). Minimum time in seconds to update the graphic output.
+\end{itemize}
+All this options can be specified in the file {\tt ester/config/star.cfg} in the form
+{\tt option\_name=option\_value} (one per line) and in the command line as 
+{\tt -option\_name option\_value}. The options specified in the command line have precedence
+over those specified in the configuration file. 
+
+There are some additional options that can be included in the command line:
+\begin{itemize}
+\item[] {\tt -input\_file} {\it infile}. Use the file {\it infile} as the starting point
+for the iteration.
+\item[] {\tt -i} {\it infile}. Same as {\tt -input\_file} {\it infile}.
+\item[] {\tt -o} {\it outfile}. Same as {\tt -output\_file} {\it outfile}.
+\item[] {\tt -param\_file} {\it file}. Where {\it file} contains the parameters of the 
+stellar model to be calculated (see below).
+\item[] {\tt -p} {\it file}. Same as {\tt -param\_file} {\it file}.
+\item[] {\tt -ascii}. Same as {\tt -output\_mode t}.
+\item[] {\tt -binary}. Same as {\tt -output\_mode b}.
+\item[] {\tt -noplot}. Same as {\tt -plot\_device /NULL}.
+\item[] {\tt -v}{\it n}. Same as {\tt -verbose} {\it n}.
+\end{itemize}
+
+
+\section{{\tt star1d} input parameters}
+The input parameters for {\tt star1d} can be passed in the command line or in a text file
+specified with the option {\tt -param\_file} {\it file} (or just {\tt -p} {\it file}). It
+can also be used simultaneously, in this case the parameters given in the command line take
+precedence over those specified in the file. In the text file they are written in the 
+form {\tt param\_name}={\it param\_value} and in the command line as 
+{\tt -param\_name} {\it param\_value}.
+Here is the list of valid parameters 
+\begin{itemize}
+\item {\tt ndomains}. The number of subdomains to use.
+\item {\tt npts}. Number of points in each subdomain. It is specified as a 
+comma-separated list. 
+If only one value is specified, it will be used for all the subdomains, for example:
+\begin{verbatim}
+star1d -ndomains 4 -npts 20,20,20,20
+\end{verbatim}
+is equivalent to
+\begin{verbatim}
+star1d -ndomains 4 -npts 20
+\end{verbatim}
+\item {\tt xif}. The position of each subdomain as a comma-separated list. The list
+should contain the first and the last points of the entire domain (that should be 0 and 1),
+having a total of {\tt ndomains}+1 values. If only one value is specified ($\gamma$),
+ the positions are calculated using the formula
+$$\mathtt{xif(i)}=1-\left(1-\frac{i}{\mathtt{ndomains}}\right)^\gamma \quad \gamma>0$$
+where $\gamma=1$ corresponds to equally-spaced subdomains, for $\gamma>1$ they are more
+concentrated near the surface, and the opposite for $\gamma<1$. 
+\item {\tt M}. The mass in units of solar mass.
+\item {\tt X}. Mass fraction of hydrogen.
+\item {\tt Z}. Mass fraction of metals.
+\item {\tt Xc}. Fraction of the hydrogen abundance present in the convective core. The profile
+of hydrogen abundance will be in the form
+$$X(\vec r)=\left\{
+\begin{array}{ll}
+\mathtt{X}\times \mathtt{Xc}&\mbox{if $\vec r$ is in the convective core}\\
+\mathtt{X}&\mbox{otherwise}
+\end{array}\right.$$
+If there is no convective core, this parameter is ignored.
+\item {\tt conv}. The number of subdomains within the convective core. If {\tt conv=0} the
+model will be completely radiative.
+\item {\tt surff}. This parameter is used for truncating the stellar model at some point 
+below the surface. The surface pressure will be {\tt surff} times the "real´´ value and
+the boundary conditions will be adjusted in consequence. This parameter is provided only for
+testing purposes as it does not produce an accurate representation of the internal layers
+of the star. For regular calculations it should be {\tt surff=1}.
+\item {\tt Tc}. Initial estimation of the central temperature. To be updated during the
+calculation.
+\item {\tt pc}. Initial estimation of the central pressure. To be updated during the
+calculation.
+\item {\tt opa}. Type of opacity law. Possible values are:
+\begin{itemize}
+\item {\tt opal}. OPAL opacities.
+\item {\tt houdek}. Houdek's interpolation of OPAL opacities (smoother).
+\item {\tt kramer}. Kramer's opacity.
+\end{itemize}
+\item {\tt eos}. Type of equation of state. Possible values are:
+\begin{itemize}
+\item {\tt opal}. OPAL equation of state.
+\item {\tt ideal}. Ideal gas.
+\item {\tt ideal+rad}. Ideal gas with radiation.
+\end{itemize}
+\item {\tt nuc}. Type of nuclear reactions. At the moment, only {\tt simple} is implemented.
+\item {\tt atm}. Type of atmosphere. At the moment, only {\tt simple} is implemented.
+\end{itemize}
+If some parameters are omitted, the program will take the value from the input file (set with
+{\tt -input\_file} or {\tt -i}) or from the default parameters file in 
+{\tt ester/config/1d\_default.par} when no input file is specified.
+
+At the moment, the code does not permit to change the number of domains and/or their position
+when using an input file.
+
+\section{{\tt star2d} input parameters}
+
+The program {\tt star2d} admits the same parameters than {\tt star1d} plus some extra
+specific options:
+\begin{itemize}
+\item {\tt nth}. The number of grid points in the latitude.
+\item {\tt nex}. Nuber of radial points in the external domain.
+\item {\tt Omega\_bk}. Angular velocity at the equator in units of the critical velocity
+$\Omega_c=\sqrt{\frac{GM}{R_e^3}}$.
+\item {\tt Ekman}. Ekman number.
+\end{itemize}
+
+The default values are written in the file {\tt ester/config/2d\_default.par}.
+Note that the input of {\tt star2d} can be a non-rotating 1D model calculated 
+with {\tt star1d}.
+\subsection{Some recipes}
+The typical workflow to calculate a model starts with the calculation of the corresponding
+1D model and using it as an input for {\tt star2d}. For example, to calculate 
+the structure of a 5$M_\odot$ star with OPAL opacity rotating at with $\Omega=0.7\Omega_c$
+we can do:
+\begin{verbatim}
+$ star1d -M 5 -opa opal -o model1d
+$ star2d -i model1d -nth 24 -Omega_bk 0.7 -o model2d
+\end{verbatim}
+
+As the code uses the Newton's method, sometimes it is not possible to converge to a solution
+if the initial estimation is too far from it. In this case we can use some intermediate steps.
+For example, if we want to calculate the structure of a 2.5$M_\odot$ star rotating with 
+$\Omega=0.9\Omega_c$, we should probably do
+
+\medskip
+\noindent\begin{tabular}{lp{4.5cm}}
+\verb|$ star1d -M 2.5 -o model1d -conv 0 | 
+&(Deactivate core convection to improve convergence)\\
+\verb|$ star1d -i model1d -o model1d -conv 1| &
+(Re-activate core convection)\\
+\verb|$ star2d -i model1d -nth 24 -Omega_bk 0.7 -o model2d| &
+(Using an intermediate value for rotation) \\
+\verb|$ star2d -i model2d -nth 32 -Omega_bk 0.9 -o model2d| &
+(Calculating the final model) 
+\end{tabular}
+\medskip
+
+Executing {\tt star2d} with {\tt maxit=0} can be used to interpolate a model without
+recalculating it.
+
+\medskip
+\noindent
+\verb|$ star2d -i model -npts |{\it npts\_new}\verb| -nth |{\it nth\_new}\verb| -o model_interp -maxit 0|
+
+\medskip
+Pressing Ctrl-C at any time during the execution of {\tt star2d} will terminate
+the program, giving the possibility of finish the current iteration and write the result in the
+output file.
+
+
+
+
+\section{Generating custom output files}
+
+The output files generated by {\tt star1d} and {\tt star2d} contain just the minimal 
+information necessary to reconstruct the code. However, sometimes a more detailed output 
+is required.
+This can be done using the program {\tt gen\_output} included in the distribution. This
+program reads a template from the standard input and write the result in the standard output.
+A typical call would be
+
+\medskip
+\noindent
+\verb|$ gen_output |{\it model\_file}\verb| < |{\it template\_file}\verb| > |{\it output\_file}
+
+\medskip
+
+The template file is a regular text file with the following rules:
+\begin{itemize}
+\item Plain text are copied from the template to the output file. It cannot contain 
+the reserved characters {\tt \$} and {\tt \textbackslash}.
+\item Line breaks are ignored. To insert a line break in the output file we have to insert
+a blank line in the template.
+\item Variables from the model are written in the form 
+\mbox{{\tt \$\{}{\it var}{\tt ,}{\it fmt}{\tt \}}}, where {\it var} is the code for the
+variable (see table below) and {\it fmt} is a valid format for the C function {\it printf} 
+(e.g. {\tt \%d} for an integer, {\tt \%f} for float, {\tt \%e} for exponential notation).
+If {\tt fmt} is omitted {\tt\$\{}{\it var}{\tt \}} the variable is written in binary format.
+\end{itemize}
+\begin{longtable}{|l|p{8cm}|c|c|}
+\caption{Non-exhaustive list of codes for the model variables in the template file}\\
+\hline
+\bf Code&\bf Description&\bf star1d&\bf star2d\\
+\hline\hline
+nr&\# of radial points&*&*\\
+\hline
+nth&\# of points in latitude&&*\\
+\hline
+ndomains&\# of domains&*&*\\
+\hline
+npts&\# of radial points in each domain&*&*\\
+\hline
+xif&Position of each domain&*&*\\
+\hline
+nex&\# of radial points in the external domain&&*\\
+\hline
+surff&Parameter surff (see above)&*&*\\
+\hline
+conv&\# of convective domains&*&*\\
+\hline
+Omega&Angular velocity at the equator&&*\\
+\hline
+Omega\_bk&Angular velocity at the equator in units of the critical velocity&&*\\
+\hline
+Omegac&Critical velocity $\Omega_c=\sqrt{\frac{GM}{R_e^3}}$&&*\\
+\hline
+X&Hydrogen abundance&*&*\\
+\hline
+Z&Metal abundance&*&*\\
+\hline
+Xc&Fraction of X at the convective core&*&*\\
+\hline
+rhoc&Central density&*&*\\
+\hline
+Tc&Central temperature&*&*\\
+\hline
+pc&Central pressure&*&*\\
+\hline
+M&Mass&*&*\\
+\hline
+Rp&Polar radius&*&*\\
+\hline
+Re&Equatorial radius&*&*\\
+\hline
+L&Luminosity&*&*\\
+\hline
+M/M\_SUN&Mass in solar units&*&*\\
+\hline
+Rp/R\_SUN&Polar radius in solar units&*&*\\
+\hline
+Re/R\_SUN&Polar radius in solar units&*&*\\
+\hline
+L/L\_SUN&Luminosity in solar units&*&*\\
+\hline
+r&Radius&*&*\\
+\hline
+th&Colatitude&&*\\
+\hline
+rex&External radius&&*\\
+\hline
+phi&Gravitational potential&*&*\\
+\hline
+phiex&Gravitational potential of the external domain&&*\\
+\hline
+rho&Density&*&*\\
+\hline
+p&Pressure&*&*\\
+\hline
+T&Temperature&*&*\\
+\hline
+w&Angular velocity&&*\\
+\hline
+G&Stream function for the meridional circulation&&*\\
+\hline
+Xr&Hydrogen abundance $X(r,\theta)$&*&*\\
+\hline
+N2&Squared Brunt-V\"ais\"al\"a frequency (in rd$^2$/s$^2$)&*&*\\
+\hline
+opa&Type of opacity&*&*\\
+\hline
+opa.k&Rosseland mean opacity&*&*\\
+\hline
+opa.xi&Thermal diffusivity ($\chi$)&*&*\\
+\hline
+opa.dlnxi\_lnT&$\left(\frac{\partial\log\chi}{\partial\log T}\right)_{\rho,\mu}$&*&*\\
+\hline
+opa.dlnxi\_lnrho&$\left(\frac{\partial\log\chi}{\partial\log\rho}\right)_{T,\mu}$&*&*\\
+\hline
+eos&Type of equation of state&*&*\\
+\hline
+eos.G1&$\Gamma_1$&*&*\\
+\hline
+eos.cp&$c_p$&*&*\\
+\hline
+eos.del\_ad&$\nabla_{ad}$&*&*\\
+\hline
+eos.G3\_1&$\Gamma_3-1$&*&*\\
+\hline
+eos.cv&$c_v$&*&*\\
+\hline
+eos.prad&Radiation pressure&*&*\\
+\hline
+eos.chi\_T&$\chi_T=\left(\frac{\partial\log p}{\partial\log T}\right)_{\rho,\mu}$&*&*\\
+\hline
+eos.chi\_rho&$\chi_\rho=\left(\frac{\partial\log p}{\partial\log\rho}\right)_{T,\mu}$&*&*\\
+\hline
+eos.d&$d=\frac{\chi_T}{\chi_\rho}=-\left(\frac{\partial\log\rho}{\partial\log T}\right)_{p,\mu}$&*&*\\
+\hline
+nuc.eps&Energy generation rate per unit mass&*&*\\
+\hline
+nuc.pp&Energy generation rate per unit mass (pp-chain)&*&*\\
+\hline
+nuc.cno&Energy generation rate per unit mass (CNO cycle)&*&*\\
+\hline
+Teff&Effective temperature at the surface $T_\mathrm{eff}(\theta)$&*&*\\
+\hline
+gsup&Effective gravity at the surface $g_\mathrm{eff}(\theta)$&*&*\\
+\hline
+D&Radial differentiation matrix $\frac{\partial}{\partial\zeta}$ for 2D models,
+$\frac{\mathrm{d}}{\mathrm{d}r}$ for 1D models&*&*\\
+\hline
+I&Radial integration matrix&*&*\\
+\hline
+Dex&Radial differentiation matrix for the external domain&&*\\
+\hline
+Dt&Angular differentiation matrix $\frac{\partial}{\partial\theta}$ for symmetric variables&&*\\
+\hline
+Dtodd&Angular differentiation matrix for antisymmetric variables&&*\\
+\hline
+Dt2&Second order angular differentiation matrix for symmetric variables&&*\\
+\hline
+It&Angular integration matrix&&*\\
+\hline
+\end{longtable}
+For 2D variables, their values at the collocation points are written in the output file
+in matrix form. Each line corresponds to a different value of the colatitude $\theta$
+(i.e. a different column), starting at the equator.
+$$\begin{array}{cccc}
+p(\zeta_0,\theta_0)&p(\zeta_1,\theta_0)&p(\zeta_2,\theta_0)&\cdots\\
+p(\zeta_0,\theta_1)&p(\zeta_1,\theta_1)&p(\zeta_2,\theta_1)&\cdots\\
+p(\zeta_0,\theta_2)&p(\zeta_1,\theta_2)&p(\zeta_2,\theta_2)&\cdots\\
+\vdots&\vdots&\vdots&
+\end{array}$$
+Being $\zeta$ the radial spheroidal coordinate.
+Similarly, 1D variables can be seen as a column vector and are written in one line in the
+output file, terminated by a new line character.
+This behavior can be inverted by writing this line in the template file
+\begin{verbatim}
+\conf{transpose=1}
+\end{verbatim}
+After this command, the variables will be written row wise, i.e. one line for each value of
+the radial coordinate. Note that it does not affect variables written in binary format,
+which are always column wise. To recover the original behavior we use
+\begin{verbatim}
+\conf{transpose=0}
+\end{verbatim}
+
+The original grid  does not contain points in the equator and the pole. If we want the values
+at this points we should write
+\begin{verbatim}
+\conf{equator=1}
+\conf{pole=1}
+\end{verbatim}
+
+By default, the output uses cgs units. If we want the normalized values used internally by
+the code, we simply put
+\begin{verbatim}
+\conf{dim=0}
+\end{verbatim}
+
+These control commands can be written anywhere in the template file, in separated lines, 
+affecting only the code that appears below them.
+
+Let's see an example.
+
+Template file:
+\begin{minted}[frame=single]{text}
+Model of ${M/M_SUN,%.2f} solar masses and R=${R,%e} cm
+
+rotating with Omega=${Omega_bk,%f} Omegac
+
+${nr,%d} radial points and 
+${nth,%d} latitudinal points
+
+\conf{pole=1}
+\conf{equator=1}
+r:
+
+${r,%e}
+Pressure:
+
+${p,%.14e}
+
+\end{minted} 
+%$
+
+Output file:
+\begin{minted}[frame=single]{text}
+Model of 2.50 solar masses and R=1.219822e+11 cm
+rotating with Omega=0.900000 Omegac
+240 radial points and 32 latitudinal points
+r:
+0.000000e+00 4.944313e+07 1.971944e+08 4.415355e+08 7.796539e+08 ...
+0.000000e+00 4.944313e+07 1.971944e+08 4.415355e+08 7.796539e+08 ...
+0.000000e+00 4.944313e+07 1.971944e+08 4.415354e+08 7.796533e+08 ...
+0.000000e+00 4.944313e+07 1.971944e+08 4.415352e+08 7.796523e+08 ...
+[...]
+Pressure:
+1.61049808835808e+17 1.61048890365891e+17 1.61035199104197e+17 ...
+1.61049808835808e+17 1.61048890354742e+17 1.61035198927083e+17 ...
+1.61049808835808e+17 1.61048890265707e+17 1.61035197512689e+17 ...
+1.61049808835808e+17 1.61048890088480e+17 1.61035194697311e+17 ...
+[...]
+\end{minted} 
+%$
+
+\section{Python module}
+
+A basic python module for reading the models is included in the distribution. It is located
+in {\tt ester/python/star.py}. At the moment it only works for models calculated using
+{\tt star2d}. The variables in the models are defined as \emph{numpy}
+arrays. Here is a little example:
+
+\begin{minted}{python}
+import sys
+sys.path.append('path_to/ester/python') # include the full path to the module
+
+from star import * # Loads the module
+
+A=star2d('model_file')  # Loads a model 
+
+print A.p[0,0] # Prints the central pressure
+
+A.draw(A.w) # Makes a plot of the differential rotation
+show() # Needed in non-interactive mode of matplotlib
+\end{minted}
+
+
+
+
+

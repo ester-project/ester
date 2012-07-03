@@ -1,0 +1,174 @@
+.MAKE_VERSION:	VERSION-1.0
+.BUILT_LAST_MAKE_RUN:
+dpdste.o:
+	f77 -fast  -c  dpdste.f
+.BUILT_LAST_MAKE_RUN:
+dextrp.o:
+	f77 -fast  -c  dextrp.f
+.BUILT_LAST_MAKE_RUN:
+dintrpi.o:
+	f77 -fast  -c  dintrpi.f
+.BUILT_LAST_MAKE_RUN:
+trdisb.o:
+	f77 -fast  -c  trdisb.f
+.BUILT_LAST_MAKE_RUN:
+trdisa.o:
+	f77 -fast  -c  trdisa.f
+.BUILT_LAST_MAKE_RUN:
+dintrp.o:
+	f77 -fast  -c  dintrp.f
+.BUILT_LAST_MAKE_RUN:
+dpdmin.o:
+	f77 -fast  -c  dpdmin.f
+.BUILT_LAST_MAKE_RUN:
+dmaxmn.o:
+	f77 -fast  -c  dmaxmn.f
+.BUILT_LAST_MAKE_RUN:
+dreadk.o:
+	f77 -fast  -c  dreadk.f
+.BUILT_LAST_MAKE_RUN:
+dreadi.o:
+	f77 -fast  -c  dreadi.f
+.BUILT_LAST_MAKE_RUN:
+dpderiy.o:
+	f77 -fast  -c  dpderiy.f
+.BUILT_LAST_MAKE_RUN:
+dpderix.o:
+	f77 -fast  -c  dpderix.f
+.BUILT_LAST_MAKE_RUN:
+dreade.o:
+	f77 -fast  -c  dreade.f
+.BUILT_LAST_MAKE_RUN:
+dreadkx.o:
+	f77 -fast  -c  dreadkx.f
+.BUILT_LAST_MAKE_RUN:
+dmasub.o:
+	f77 -fast  -c  dmasub.f
+.BUILT_LAST_MAKE_RUN:
+itoh_ec_cf.o:
+	f77 -fast  -c  itoh_ec_cf.f
+.BUILT_LAST_MAKE_RUN:
+itoh_ec_ad.o:
+	f77 -fast  -c  itoh_ec_ad.f
+.BUILT_LAST_MAKE_RUN:
+dmasubi.o:
+	f77 -fast  -c  dmasubi.f
+.BUILT_LAST_MAKE_RUN:
+dmasube.o:
+	f77 -fast  -c  dmasube.f
+.BUILT_LAST_MAKE_RUN:
+gi.o:
+	f77 -fast  -c  gi.f
+.BUILT_LAST_MAKE_RUN:
+itoh_coeff_cf.o:
+	f77 -fast  -c  itoh_coeff_cf.f
+.BUILT_LAST_MAKE_RUN:
+dctang.o:
+	f77 -fast  -c  dctang.f
+.BUILT_LAST_MAKE_RUN:
+duvip3p.o:
+	f77 -fast  -c  duvip3p.f
+.BUILT_LAST_MAKE_RUN:
+ratmat.o:
+	f77 -fast  -c  ratmat.f
+libd677.a:
+	( \
+	         ar ruv libd677.a dadjac.o dakima.o dctang.o dextrp.o dhunt.o dintrp.o dintrpi.o readal.o dmaceps.o dmasub.o dmasube.o dmasubi.o dmaxmn.o dopinit.o dreadk.o dreadkx.o dordgr.o dordgri.o dpdmin.o dcspline.o dpdste.o dreade.o dreadi.o rdi95.o rde95.o dakimd.o dopintd.o dshep.o dpderix.o dpderiy.o duvip3p.o dopintf.o dopintc.o dopints.o duvip3d.o ;\
+	         echo libd677.a ;\
+	)
+.BUILT_LAST_MAKE_RUN:
+gid.o:
+	f77 -fast  -c  gid.f
+.BUILT_LAST_MAKE_RUN:
+duvip3d.o:
+	f77 -fast  -c  duvip3d.f
+.BUILT_LAST_MAKE_RUN:
+inttwo.o:
+	f77 -fast  -c  inttwo.f
+dakimd.o:
+	f77 -fast  -c  dakimd.f
+dakima.o:
+	f77 -fast  -c  dakima.f
+.BUILT_LAST_MAKE_RUN:
+rbivpd.o:
+	f77 -fast  -c  rbivpd.f
+.BUILT_LAST_MAKE_RUN:
+rat2d.o:
+	f77 -fast  -c  rat2d.f
+.BUILT_LAST_MAKE_RUN:
+sbilin.o:
+	f77 -fast  -c  sbilin.f
+.BUILT_LAST_MAKE_RUN:
+dshep.o:
+	f77 -fast  -c  dshep.f
+.BUILT_LAST_MAKE_RUN:
+dmaceps.o:
+	f77 -fast  -c  dmaceps.f
+.BUILT_LAST_MAKE_RUN:
+rbival.o:
+	f77 -fast  -c  rbival.f
+.BUILT_LAST_MAKE_RUN:
+dhunt.o:
+	f77 -fast  -c  dhunt.f
+.BUILT_LAST_MAKE_RUN:
+rdi95.o:
+	f77 -fast  -c  rdi95.f
+.BUILT_LAST_MAKE_RUN:
+dadjac.o:
+	f77 -fast  -c  dadjac.f
+.BUILT_LAST_MAKE_RUN:
+rde95.o:
+	f77 -fast  -c  rde95.f
+.BUILT_LAST_MAKE_RUN:
+sfa_cf.o:
+	f77 -fast  -c  sfa_cf.f
+.BUILT_LAST_MAKE_RUN:
+sfa_ad.o:
+	f77 -fast  -c  sfa_ad.f
+.BUILT_LAST_MAKE_RUN:
+dcspline.o:
+	f77 -fast  -c  dcspline.f
+.BUILT_LAST_MAKE_RUN:
+itoh_init_cf.o:
+	f77 -fast  -c  itoh_init_cf.f
+.BUILT_LAST_MAKE_RUN:
+readal.o:
+	f77 -fast  -c  readal.f
+.BUILT_LAST_MAKE_RUN:
+itoh_init_ad.o:
+	f77 -fast  -c  itoh_init_ad.f
+.BUILT_LAST_MAKE_RUN:
+dopints.o:
+	f77 -fast  -c  dopints.f
+.BUILT_LAST_MAKE_RUN:
+condux_cf.o:
+	f77 -fast  -c  condux_cf.f
+.BUILT_LAST_MAKE_RUN:
+condux_ad.o:
+	f77 -fast  -c  condux_ad.f
+.BUILT_LAST_MAKE_RUN:
+dopintf.o:
+	f77 -fast  -c  dopintf.f
+dopintd.o:
+	f77 -fast  -c  dopintd.f
+.BUILT_LAST_MAKE_RUN:
+dopintc.o:
+	f77 -fast  -c  dopintc.f
+.BUILT_LAST_MAKE_RUN:
+dopinit.o:
+	f77 -fast  -c  dopinit.f
+.BUILT_LAST_MAKE_RUN:
+dordgri.o:
+	f77 -fast  -c  dordgri.f
+.BUILT_LAST_MAKE_RUN:
+rtperm.o:
+	f77 -fast  -c  rtperm.f
+.BUILT_LAST_MAKE_RUN:
+libopint.a:
+	( \
+	         ar ruv libopint.a condux_ad.o dopinit.o dreadkx.o ratmat.o condux_cf.o dopintc.o dshep.o rbival.o dadjac.o dopintf.o duvip3d.o rbivpd.o dctang.o dopints.o duvip3p.o rde95.o dextrp.o dordgr.o gi.o rdi95.o dhunt.o dordgri.o gid.o readal.o dintrp.o dpderix.o inttwo.o rtperm.o dintrpi.o dpderiy.o itoh_coeff_cf.o sbilin.o dmaceps.o dpdmin.o itoh_ec_ad.o sfa_ad.o dmasub.o dpdste.o itoh_ec_cf.o sfa_cf.o dmasube.o dreade.o itoh_init_ad.o trdisa.o dmasubi.o dreadi.o itoh_init_cf.o trdisb.o dmaxmn.o dreadk.o rat2d.o dcspline.o ;\
+	         echo libopint.a ;\
+	)
+.BUILT_LAST_MAKE_RUN:
+dordgr.o:
+	f77 -fast  -c  dordgr.f

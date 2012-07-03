@@ -1,0 +1,29 @@
+\documentclass{book}
+
+\usepackage[a4paper]{geometry}
+\usepackage{minted}
+\usepackage[dvipdfm,bookmarks=true,colorlinks=true,linkcolor=blue]{hyperref}
+\usepackage{longtable}
+
+\include{definitions}
+  \begin{document}
+
+  \title{ESTER Users manual}
+
+
+  \frontmatter
+  \maketitle
+  \tableofcontents
+  
+  \mainmatter
+  \include{installation}
+  \include{program}
+ 
+  \backmatter
+
+  \addtocontents{toc}{\vspace{\baselineskip}}
+  \cleardoublepage
+
+
+\end{document}
+

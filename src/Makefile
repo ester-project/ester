@@ -1,0 +1,97 @@
+
+include make_icc.inc
+
+LDFLAGS:=$(LDFLAGS) -L $(ESTER_ROOT)/tables/houdek/v9/lib
+LIBS:=$(LIBS) -lopint
+
+VARS=-DCBLAS=\<$(BLAS_H)\> -DLAPACK=\<$(LAPACK_H)\> -DESTER_ROOT=\"$(ESTER_ROOT)\"
+ifeq ($(USE_PGPLOT),1) 
+	VARS:=$(VARS) -DUSE_PGPLOT=1
+endif
+CCFLAGS:=$(CCFLAGS) -I $(ESTER_ROOT)/include 
+LDFLAGS:=$(LDFLAGS) -L $(ESTER_ROOT)/lib -Wl,-R,$(ESTER_ROOT)/lib
+
+export
+
+DIRS = global matrix numdiff graphics mapping parser solver symbolic physics star
+LIB=$(ESTER_ROOT)/lib/libester.so
+ALL_LIBS = $(foreach dir,$(DIRS),$(dir)/lib$(dir).a)
+MAIN_CPP = $(wildcard main/*.cpp)
+MAIN_EXES = $(addprefix $(ESTER_ROOT)/bin/,$(notdir $(MAIN_CPP:.cpp=)))
+
+
+CLEANDIRS = $(DIRS:%=clean-%)
+DISTCLEANDIRS = $(DIRS:%=distclean-%)
+
+.PHONY: all dirs $(DIRS) clean $(CLEANDIRS) distclean $(DISTCLEANDIRS) 
+
+all: $(MAIN_EXES) $(LIB) $(ESTER_ROOT)/utils/ester_build
+
+tables: 
+	make -C ../tables	
+
+clean: $(CLEANDIRS)
+	rm -f main/*.o
+
+distclean: clean $(DISTCLEANDIRS)
+	rm -f $(ESTER_ROOT)/bin/*
+	rm -f $(LIB)
+	make -C ../tables clean
+
+
+$(ESTER_ROOT)/bin/% : main/%.o
+	$(LD) -o $@ $< $(LDFLAGS) -lester $(LIBS)
+	
+main/%.o : main/%.cpp $(LIB)
+	$(CC) -c -o $@ $< $(CCFLAGS) $(VARS)
+
+$(LIB): $(ALL_LIBS)
+	$(LD) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(ALL_LIBS) \
+		-Wl,--no-whole-archive
+
+$(ALL_LIBS): $(DIRS)
+
+$(DIRS):
+	$(MAKE) -C $@ DIR=$@
+	
+$(CLEANDIRS):
+	$(MAKE) -C $(@:clean-%=%) clean DIR=$(@:clean-%=%)
+
+$(DISTCLEANDIRS):
+	$(MAKE) -C $(@:distclean-%=%) distclean DIR=$(@:distclean-%=%)
+
+
+.PHONY: ester_build
+
+$(ESTER_ROOT)/utils/ester_build: $(LIB)
+		echo '#!/bin/bash'> $@
+		echo "file=\$$1" >> $@
+		echo "shift" >> $@
+		echo "$(CC) \$$file $(CCFLAGS) $(LDFLAGS) -lester $(LIBS)" \$$@>> $@
+		chmod u+x $@
+
+
+global:
+matrix: 
+numdiff: global matrix
+graphics: matrix
+mapping: global matrix numdiff graphics
+parser: 
+solver: matrix
+symbolic: matrix
+physics: global matrix numdiff
+star: global matrix numdiff mapping parser physics solver graphics
+
+dist: 
+	tar -C $(ESTER_ROOT)/.. -cf ester.tar ester/src --exclude *.o --exclude *.a --exclude ester.tar.gz
+	tar -C $(ESTER_ROOT)/.. -rf ester.tar ester/bin --exclude ester/bin/*
+	tar -C $(ESTER_ROOT)/.. -rf ester.tar ester/config 
+	tar -C $(ESTER_ROOT)/.. -rf ester.tar ester/include  --exclude ester/include/*
+	tar -C $(ESTER_ROOT)/.. -rf ester.tar ester/lib --exclude ester/lib/*
+	tar -C $(ESTER_ROOT)/.. -rf ester.tar ester/python
+	tar -C $(ESTER_ROOT)/.. -rf ester.tar ester/tables
+	tar -C $(ESTER_ROOT)/.. -rf ester.tar ester/utils
+	gzip ester.tar
+	
+
+

@@ -1,0 +1,7 @@
+This is version v9. (20/08/97)
+
+Documentation can be found in the doc subdir:
+ 
+       ./doc/notes.ps    ...... Postscript file
+       ./doc/notes.dvi   ...... dvi file (device independent)
+

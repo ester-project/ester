@@ -1,0 +1,29 @@
+
+ndomains=${ndomains,%d} 
+
+npts=${npts,%d} 
+
+nth=${nth,%d} 
+nex=${nex,%d}
+
+xif=${xif,%4.4f}
+
+
+M=${M/M_SUN,%4.4f} Msun  R=${R/R_SUN,%4.4f} Rsun  L=${L/L_SUN,%4.4e} Lsun
+
+Omega=${Omega,%e} (${Omega_bk,%2.2f})  eps=${eps,%4.4f}  eps_c=${eps_c,%4.4f}
+
+rhoc=${rhoc,%4.4e}  Tc=${Tc,%4.4e}  pc=${pc,%4.4e}
+
+Teff(eq)=${Teff_eq,%4.4e}  Teff(pol)=${Teff_pol,%4.4e}
+
+gsup(eq)=${gsup_eq,%4.4e}  gsup(pol)=${gsup_pol,%4.4e}
+
+
+X=${X,%4.4f}  Z=${Z,%4.4f}
+
+conv=${conv,%d}  Xc=${Xc,%4.4f} (${Xh,%4.4e})  surff=${surff,%4.4e}
+
+opa=${opa,%s}  eos=${eos,%s}
+
+

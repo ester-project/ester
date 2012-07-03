@@ -1,0 +1,117 @@
+.MAKE_VERSION:	VERSION-1.0
+dopdof.o:
+	f77 -fast  -c  dopdof.f
+rksuite/librksuite.a:
+	(cd rksuite; make FC="f77" LIB="librksuite.a" LIB_OBJ="chkfl.o         glberr.o        softfl.o        stiffb.o const.o         intrp.o         stat.o          stiffc.o ct.o            mconst.o        step.o          stiffd.o dotprd.o        reset.o         stepa.o         truerr.o envirn.o        rkmsg.o         stepb.o         ut.o     evali.o         rksit.o         stiff.o                  formi.o         setup.o         stiffa.o" \
+	                             FFLAGS="-O2" RANLIB="echo" \
+	                             F77FLAGS="-O2" \
+	        )
+rksuite/lib/librksuite.a:
+	(cd rksuite/lib; make FC="f77" LIB="librksuite.a" LIB_OBJ="chkfl.o         glberr.o        softfl.o        stiffb.o const.o         intrp.o         stat.o          stiffc.o ct.o            mconst.o        step.o          stiffd.o dotprd.o        reset.o         stepa.o         truerr.o envirn.o        rkmsg.o         stepb.o         ut.o     evali.o         rksit.o         stiff.o                  formi.o         setup.o         stiffa.o" \
+	                             FFLAGS="-fast" RANLIB="echo" \
+	                             F77FLAGS="-fast" \
+	        )
+dopxext_s.o:
+	f77 -O3 -cg92  -c  dopxext_s.f
+alex95bext:	/usr/lib/libdl.so.1 /usr/lib/libc.so /opt/SUNWspro/SC4.2/lib/libcx.a /opt/SUNWspro/lib/libm.so /opt/SUNWspro/lib/libsunmath.so /opt/SUNWspro/lib/libF77.so 
+	f77 -native -O3 -o alex95bext alex95bext.o -Llib -lopint
+alex94bext:	/usr/lib/libdl.so.1 /usr/lib/libc.so /opt/SUNWspro/SC4.2/lib/v8/libcopt.a /opt/SUNWspro/SC4.2/lib/libcx.a /opt/SUNWspro/lib/libm.so /opt/SUNWspro/lib/libsunmath.so /opt/SUNWspro/SC4.2/lib/v8/libmopt.a /opt/SUNWspro/lib/libF77.so 
+	f77 -fast -o alex94bext alex94bext.o -Llib -lopint
+dopxext_s_95:	/usr/lib/libdl.so.1 /usr/lib/libc.so /opt/SUNWspro/SC4.2/lib/v8/libcopt.a /opt/SUNWspro/SC4.2/lib/libcx.a /opt/SUNWspro/lib/libm.so /opt/SUNWspro/lib/libsunmath.so /opt/SUNWspro/SC4.2/lib/v8/libmopt.a /opt/SUNWspro/lib/libF77.so 
+	f77 -fast -o dopxext_s_95 dopxext_s_95.o -Lrksuite -Llib -lrksuite -lopint
+kur2l2g_95:	/usr/lib/libdl.so.1 /usr/lib/libc.so /opt/SUNWspro/SC4.2/lib/v8/libcopt.a /opt/SUNWspro/SC4.2/lib/libcx.a /opt/SUNWspro/lib/libm.so /opt/SUNWspro/lib/libsunmath.so /opt/SUNWspro/SC4.2/lib/v8/libmopt.a /opt/SUNWspro/lib/libF77.so 
+	f77 -fast -o kur2l2g_95 kur2l2g_95.o kurset.o -Llib -lopint
+da2b.o:
+	f77 -O3 -cg92  -c  da2b.f
+kurset.o:
+	f77 -fast  -c  kurset.f
+exakop95.o:
+	f77 -fast  -c  exakop95.f
+da2b:
+	f77 -O3 -cg92 -o da2b da2b.o
+dexak2.o:
+	f77 -O3 -cg92  -c  dexak2.f
+libspa/libspath.a:
+	(cd libspa; make FC="f77" LIB="libspath.a" LIB_OBJ="gi.o      inttwo.o  rat2d.o   ratmat.o  rbival.o  rtperm.o  sbilin.o  trdisa.o  trdisb.o  gid.o     rbivpd.o" \
+	                             FFLAGS="-fast" RANLIB="echo" \
+	                             F77FLAGS="-fast" \
+	        )
+alex95bext.o:
+	f77 -native -O3  -c  alex95bext.f
+kur2l2g:
+	f77 -O3 -cg92 -o kur2l2g kur2l2g.o kurset.o -Llib -ld677
+tab95:
+	(cd opal95; ../a2b95; ../exakop95)
+	(cd kuru91; ../kur2l2g_95; ../dopxext_s_95)
+tab92:
+	(cd opal92; ../da2b; ../dexak2)
+	(cd kuru91; ../kur2l2g)
+	./dopxext_s
+alex94bext.o:
+	f77 -fast  -c  alex94bext.f
+doptesf:	/usr/lib/libdl.so.1 /usr/lib/libc.so /opt/SUNWspro/SC4.2/lib/v8/libcopt.a /opt/SUNWspro/SC4.2/lib/libcx.a /opt/SUNWspro/lib/libm.so /opt/SUNWspro/lib/libsunmath.so /opt/SUNWspro/SC4.2/lib/v8/libmopt.a /opt/SUNWspro/lib/libF77.so 
+	f77 -fast -o doptesf doptesf.o -Llib -lopint
+.BUILT_LAST_MAKE_RUN:
+clean:
+	touch dummy.trace
+	touch lib/dummy.o
+	touch rksuite/dummy.o
+	touch opal92/dummy.o
+	touch kuru91/dummy.o
+	rm -f  dopdof dopdos dopxext_s dopxext_s_95 dopdalex94 \
+	               doptesf da2b dexak2 kur2l2g kur2l2g_95 exakop95 \
+	               a2b95 exop95 alex94bext                         \
+	               *.o fort.* core p*.dat *.trace *.ps *.er *.lst *.fln
+	rm -f lib/*.o lib/*.a
+	rm -f rksuite/*.o rksuite/*.a
+	rm -f opal92/*.o opal92/fort.* opal92/core
+	rm -f kuru91/*.o kuru91/fort.* kuru91/core
+lib/libopint.a:
+	(cd lib; make FC="f77" LIB="libopint.a" LIB_OBJ="condux_ad.o     dopinit.o       dreadkx.o       ratmat.o condux_cf.o     dopintc.o       dshep.o         rbival.o dadjac.o        dopintf.o       duvip3d.o       rbivpd.o dctang.o        dopints.o       duvip3p.o       rde95.o  dextrp.o        dordgr.o        gi.o            rdi95.o  dhunt.o         dordgri.o       gid.o           readal.o dintrp.o        dpderix.o       inttwo.o        rtperm.o dintrpi.o       dpderiy.o       itoh_coeff_cf.o sbilin.o dmaceps.o       dpdmin.o        itoh_ec_ad.o    sfa_ad.o dmasub.o        dpdste.o        itoh_ec_cf.o    sfa_cf.o dmasube.o       dreade.o        itoh_init_ad.o  trdisa.o dmasubi.o       dreadi.o        itoh_init_cf.o  trdisb.o dmaxmn.o        dreadk.o        rat2d.o         dcspline.o" \
+	                             FFLAGS="-fast" RANLIB="echo" \
+	                             F77FLAGS="-fast" \
+	        )
+dopxext_s:
+	f77 -O3 -cg92 -o dopxext_s dopxext_s.o -Lrksuite/lib -Llib -lrksuite -ld677
+dopxext_s_95.o:
+	f77 -fast  -c  dopxext_s_95.f
+dopdalex95.o:
+	f77 -native -O3  -c  dopdalex95.f
+dopdalex94.o:
+	f77 -fast  -c  dopdalex94.f
+kur2l2g.o:
+	f77 -O3 -cg92  -c  kur2l2g.f
+kur2l2g_95.o:
+	f77 -fast  -c  kur2l2g_95.f
+doptesf.o:
+	f77 -fast  -c  doptesf.f
+lib/libd677.a:
+	(cd lib; make FC="f77" LIB="libd677.a" LIB_OBJ="dadjac.o  dakima.o dctang.o  dextrp.o dhunt.o  dintrp.o  dintrpi.o readal.o dmaceps.o dmasub.o dmasube.o dmasubi.o dmaxmn.o  dopinit.o dreadk.o dreadkx.o dordgr.o dordgri.o dpdmin.o dcspline.o dpdste.o  dreade.o  dreadi.o rdi95.o rde95.o dakimd.o dopintd.o dshep.o dpderix.o dpderiy.o duvip3p.o dopintf.o dopintc.o dopints.o duvip3d.o" \
+	                             FFLAGS="-fast" RANLIB="echo" \
+	                             F77FLAGS="-fast" \
+	        )
+exop95:	/usr/lib/libdl.so.1 /usr/lib/libc.so /opt/SUNWspro/SC4.0/lib/libcx.a /opt/SUNWspro/SC4.0/lib/libm.a /opt/SUNWspro/SC4.0/lib/libsunmath.a /opt/SUNWspro/SC4.0/lib/libF77.a 
+	f77 -native -O3 -o exop95 exop95.o -Llib -ld677
+dopdos:	/usr/lib/libdl.so.1 /usr/lib/libc.so /opt/SUNWspro/SC4.2/lib/v8/libcopt.a /opt/SUNWspro/SC4.2/lib/libcx.a /opt/SUNWspro/lib/libm.so /opt/SUNWspro/lib/libsunmath.so /opt/SUNWspro/SC4.2/lib/v8/libmopt.a /opt/SUNWspro/lib/libF77.so 
+	f77 -fast -o dopdos dopdos.o -Llib -lopint
+a2b95:	/usr/lib/libdl.so.1 /usr/lib/libc.so /opt/SUNWspro/SC4.2/lib/v8/libcopt.a /opt/SUNWspro/SC4.2/lib/libcx.a /opt/SUNWspro/lib/libm.so /opt/SUNWspro/lib/libsunmath.so /opt/SUNWspro/SC4.2/lib/v8/libmopt.a /opt/SUNWspro/lib/libF77.so 
+	f77 -fast -o a2b95 a2b95.o
+dopdof:	/usr/lib/libdl.so.1 /usr/lib/libc.so /opt/SUNWspro/SC4.2/lib/v8/libcopt.a /opt/SUNWspro/SC4.2/lib/libcx.a /opt/SUNWspro/lib/libm.so /opt/SUNWspro/lib/libsunmath.so /opt/SUNWspro/SC4.2/lib/v8/libmopt.a /opt/SUNWspro/lib/libF77.so 
+	f77 -fast -o dopdof dopdof.o -Llib -lopint
+tab95a:
+	(cd alex94; ../alex94bext)
+	(./dopdalex94)
+exakop95:	/usr/lib/libdl.so.1 /usr/lib/libc.so /opt/SUNWspro/SC4.2/lib/v8/libcopt.a /opt/SUNWspro/SC4.2/lib/libcx.a /opt/SUNWspro/lib/libm.so /opt/SUNWspro/lib/libsunmath.so /opt/SUNWspro/SC4.2/lib/v8/libmopt.a /opt/SUNWspro/lib/libF77.so 
+	f77 -fast -o exakop95 exakop95.o -Llib -lopint
+dexak2:
+	f77 -O3 -cg92 -o dexak2 dexak2.o -Llib -ld677
+exop95.o:
+	f77 -native -O3  -c  exop95.f
+dopdalex95:	/usr/lib/libdl.so.1 /usr/lib/libc.so /opt/SUNWspro/SC4.2/lib/libcx.a /opt/SUNWspro/lib/libm.so /opt/SUNWspro/lib/libsunmath.so /opt/SUNWspro/lib/libF77.so 
+	f77 -native -O3 -o dopdalex95 dopdalex95.o -Llib -lopint
+dopdalex94:	/usr/lib/libdl.so.1 /usr/lib/libc.so /opt/SUNWspro/SC4.2/lib/v8/libcopt.a /opt/SUNWspro/SC4.2/lib/libcx.a /opt/SUNWspro/lib/libm.so /opt/SUNWspro/lib/libsunmath.so /opt/SUNWspro/SC4.2/lib/v8/libmopt.a /opt/SUNWspro/lib/libF77.so 
+	f77 -fast -o dopdalex94 dopdalex94.o -Llib -lopint
+dopdos.o:
+	f77 -fast  -c  dopdos.f
+a2b95.o:
+	f77 -fast  -c  a2b95.f

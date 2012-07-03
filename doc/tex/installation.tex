@@ -1,0 +1,83 @@
+\chapter{Getting started}
+\section{Prerequisites}
+
+The ESTER library depends on some external libraries that should be installed in the system, namely:
+\begin{itemize}
+\item BLAS and LAPACK, for matrix algebra
+\item PGPLOT (CPGPLOT) for graphics output
+\end{itemize}
+The library PGPLOT is optative and can be deactivated in the {\tt Makefile} setting the variable {\tt USE\_PGPLOT=0}.
+
+\section{Installation}
+
+Unpack the file of the distribution (normally {\tt ester.tar.gz}) in the desired directory
+\begin{verbatim}
+root$ tar zxvf ester.tar.gz
+\end{verbatim} 
+Go to the directory {\tt ester/src}
+\begin{verbatim}
+root$ cd ester/src
+\end{verbatim} 
+To clean out any previous installation we can do
+\begin{verbatim}
+root/ester/src$ make distclean
+\end{verbatim} 
+First we have to compile the third-party libraries included in the distribution. This only have to be done the first time (or after
+a {\tt distclean}). 
+At the moment there is only one library that needs to be build, the package for interpolating opacity tables created by G\"unter Houdek.
+After checking the {\tt Makefile} located at {\tt ester/tables/houdek/v9} we do
+\begin{verbatim}
+root/ester/src$ make tables
+\end{verbatim} 
+Now, we are prepared to compile the main library. The main variables for the compilation are defined in a file named {\verb1 make_%.inc 1}.
+The right version should be indicated in the first line of the main makefile {\tt ester/src/Makefile}, for example
+\begin{verbatim}
+include make_icc.inc
+\end{verbatim}
+At the moment there are to versions included, {\tt make\_icc.inc} and {\tt make\_gcc.inc},
+ for the Intel compiler and the GNU compiler respectively.
+After setting the proper values for the compilation we execute {\tt make all} or just
+\begin{verbatim}
+root/ester/src$ make
+\end{verbatim} 
+To remove intermediate files we can also do
+\begin{verbatim}
+root/ester/src$ make clean
+\end{verbatim} 
+The main library is created in {\tt ester/lib/libester.so}, the include files are in {\tt ester/include} and the executables
+in {\tt ester/bin}. We can add the latter directory to the system path, for the \emph{bash} shell
+\begin{verbatim}
+$ export PATH="your_root_directory/ester/bin:$PATH"
+\end{verbatim} 
+or include this line in your {\tt .bashrc} file.
+
+
+\section{Checking the installation}
+
+To check the functionality of the program we are going to calculate the structure of a star using the default values for the parameters.
+First we calculate the structure of the corresponding 1D non-rotating star. Change to your working directory and execute
+\begin{verbatim}
+$ star1d
+\end{verbatim} 
+Then we use the output file (by default {\tt star.out}) as the starting point for the 2D calculation
+\begin{verbatim}
+$ star2d -i star.out -Omega_bk 0.7
+\end{verbatim} 
+This calculates the structure of a star rotating at 70$\%$ of the break-up velocity $\Omega_k=\sqrt{\frac{GM}{R_e^3}}$.
+
+\section{Using the library}
+
+To use the ESTER library in a C program you should write at the beginning of your source file
+\begin{verbatim}
+#include "ester.h"
+\end{verbatim}
+To facilitate the process of compiling and linking against the library and all its dependencies, we provide an automatically generated
+script {\tt ester/utils/ester\_build} so, all you have to do is
+\begin{verbatim}
+$ ester_build your_cpp_program.cpp -o your_executable
+\end{verbatim} 
+
+
+
+
+
