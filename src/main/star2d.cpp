@@ -70,7 +70,7 @@ int main(int argc,char *argv[]) {
 		if(killed) last_it=1;
 		if(config.verbose) {
 			printf("it=%d err=%e\n",nit,err);
-			printf("\tOmega=%e (%2.2f%%) eps=%2.2f M=%f\n",A.Omega,A.Omega/A.Omegac*100,A.map.eps(A.map.gl.ndomains()-1),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
+			printf("\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,A.map.eps(A.map.gl.ndomains()-1),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
 			t_output=tt(nit-1);
 
 			if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
