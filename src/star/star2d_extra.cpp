@@ -104,6 +104,80 @@ double star2d::energy_test() const {
 
 }
 
+double star2d::apparent_luminosity(double i) const {
+
+	/*	Apparent luminosity= 4*PI*d^2*FT
+			d: distance
+			FT: Flux measured on Earth
+		FT=Integral_over_visible_disk( I*dW )
+			dW=(i·n)*dS/d^2 differential solid angle
+			I=(F·n)/PI specific intensity
+	 
+		Apparent luminosity = 4*Integral_over_visible_disk( (F·n)(i·n)dS )
+		
+		(F·n)=SIG_SB*Teff^4
+		(i·n)= [ r*( cos(i)*cos(th)+sin(i)*sin(th)*cos(phi) )
+				+rt*( cos(i)*sin(th)-sin(i)*cos(th)*cos(phi) ) ]
+				/sqrt(r^2+rt^2)
+		dS=sqrt(r^2+rt^2)*r*sin(th)*dth*dphi
+		
+		(i·n) is neither symmetric nor antisymmentric respect to the pole
+		or the equator, and has no axial symmetry,
+		so we have to use a 2D Gauss-Lobatto grid for the integral.
+		Also, as we will set (i·n)=0 over the non-visible part,
+		we will use a finer grid to reduce the impact of the discontinuity
+		(in the first derivative) on the accuracy of the quadrature formula. */
+
+
+	// theta grid
+	diff_gl gl_th(1);
+	gl_th.set_npts(500);
+	gl_th.set_xif(0.,PI);
+	gl_th.init();
+	
+	matrix th_f,Ith_f;
+	th_f=gl_th.x.transpose();
+	Ith_f=gl_th.I.transpose();
+	
+	// phi grid
+	diff_gl gl_phi(1);
+	gl_phi.set_npts(500);
+	gl_phi.set_xif(0.,2*PI);
+	gl_phi.init();
+	
+	matrix phi_f,Iphi_f;
+	phi_f=gl_phi.x;
+	Iphi_f=gl_phi.I;
+	
+	
+	// Symmetric part of the integrand
+	
+	matrix int_s;
+	
+	int_s=SIG_SB*pow(Teff(),4);
+	
+	matrix r_f,rt_f;
+	
+	// Interpolating in the new grid
+	
+	int_s=map.leg.eval_00(int_s,th_f);
+	r_f=map.leg.eval_00(r.row(nr()-1),th_f);
+	rt_f=map.leg.eval_11(map.rt.row(nr()-1),th_f);
+	
+	// Non symmetric part of the integrand
+	matrix int_ns;
+	
+	int_ns=r_f*( cos(i)*cos(th_f)+sin(i)*sin(th_f)*cos(phi_f) )
+				+rt_f*( cos(i)*sin(th_f)-sin(i)*cos(th_f)*cos(phi_f) );
+	int_ns*=(int_ns>0);
+	
+	// Integral
+	double L_ap=4*(Iphi_f,int_s*int_ns*r_f*sin(th_f),Ith_f)(0);
+	L_ap*=units.r*units.r;
+	
+	return L_ap;
+	
+}
 
 matrix star2d::stream() const {
 
