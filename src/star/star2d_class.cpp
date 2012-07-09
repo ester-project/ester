@@ -338,11 +338,18 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 	}
 
 	cmd.open(argc,argv);
-	while(cmd.get(arg,val)) {
-		if(check_arg(arg,val,&change_grid)==2) {
-			printf("Error: Argument to '%s' missing\n",arg);
+	while(int err_code=cmd.get(arg,val)) {
+		if(err_code==-1) exit(1);
+		err_code=check_arg(arg,val,&change_grid);
+		if(err_code==2) {
+			fprintf(stderr,"Error: Argument to '%s' missing\n",arg);
 			return 0;
 		}
+		if(err_code==1) {
+			fprintf(stderr,"Unknown parameter '%s'\n",arg);
+			return 0;
+		}
+		cmd.ack(arg,val);
 	}
 	cmd.close();
 	

@@ -11,21 +11,33 @@ void cmdline_parser::open(int argc_in,char *argv_in[]) {
 
 int cmdline_parser::get(char *&arg,char *&val) {
 
-	int i_arg;
-
 	if(i>=argc) return 0;
-	while(argv[i][0]!='-'&&i<argc) printf("Invalid argument %s\n",argv[i++]);
+	while(argv[i][0]=='\0') {
+		i++;
+		if(i==argc) break;
+	}
 	if(i==argc) return 0;
-	i_arg=i;
-	arg=argv[i];
-	arg++;
-	if(arg[0]=='-') arg++;
+	if(argv[i][0]!='-') {
+		printf("Invalid argument %s\n",argv[i]);
+		arg=argv[i]+1;
+		val=NULL;
+		i++;
+		return -1;
+	}
+	arg=argv[i]+1;
 	val=NULL;
 	i++;
 	if(i<argc)
-		if(argv[i][0]!='-')
+		if(argv[i][0]!='-'&&argv[i][0]!='\0')
 			val=argv[i++];
 	return 1;
+
+}
+
+void cmdline_parser::ack(char *arg,char *val) {
+
+	*(arg-1)='\0';
+	if(val!=NULL) *val='\0';
 
 }
 

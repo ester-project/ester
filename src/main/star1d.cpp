@@ -131,8 +131,12 @@ configuration::configuration(int argc,char *argv[]) {
 	}
 	
 	cmd.open(argc,argv);
-	while(cmd.get(arg,val))
-		if(check_arg(arg,val)==2) missing_argument(arg);
+	while(int err_code=cmd.get(arg,val)) {
+		if(err_code==-1) exit(1);
+		err_code=check_arg(arg,val);
+		if(err_code==2) missing_argument(arg);
+		if(err_code==0) cmd.ack(arg,val);
+	}
 	cmd.close();
 
 }
@@ -212,7 +216,7 @@ int configuration::check_arg(const char *arg,const char *val) {
 
 void configuration::missing_argument(const char *arg) {
 	
-	printf("Error: Argument to '%s' missing\n",arg);
+	fprintf(stderr,"Error: Argument to '%s' missing\n",arg);
 	exit(1);
 }
 

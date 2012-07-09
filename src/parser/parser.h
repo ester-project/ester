@@ -9,6 +9,7 @@ class cmdline_parser {
 public:
 	void open(int argc_in,char *argv_in[]);
 	int get(char *&arg,char *&val);
+	void ack(char *arg,char *val);
 	void close();
 };
 
