@@ -77,8 +77,10 @@ void star2d::calc_veloc() {
 
 	vr=(G,map.leg.D_11)/r+(map.rt/r+cos(th)/sin(th))/r*G;
 	vr.setrow(0,zeros(1,nth()));
+	vr/=rho;
 	vt=-(D,G)/map.rz-1./r*G;
 	vt.setrow(0,zeros(1,nth()));
+	vt/=rho;
 }
 
 solver *star2d::init_solver() {
@@ -587,18 +589,18 @@ void star2d::solve_dyn(solver *op) {
 	op->add_r("G","w",1./r/r,Dt2);
 	q=4./r/map.rz-map.rtt/r/r/map.rz
 		+map.gzz*(-map.rzz/map.rz)
-		+map.gzt*(3.*cos(th)/sin(th)-2.*map.rzt/map.rz)-vr/map.rz;
+		+map.gzt*(3.*cos(th)/sin(th)-2.*map.rzt/map.rz)-rho*vr/map.rz;
 	op->add_l("G","w",q,D);
 	q=1./r/r*(3.*cos(th)/sin(th))
-		-vt/r;
+		-rho*vt/r;
 	op->add_r("G","w",q,Dt);
 	
-	q=-2.*map.rz/r*vr/map.rz-2.*(map.rt/r+cos(th)/sin(th))*vt/r;
+	q=-2.*map.rz/r*rho*vr/map.rz-2.*(map.rt/r+cos(th)/sin(th))*rho*vt/r;
 	op->add_d("G","w",q);
 	
 	matrix qv;
 
-	// vr
+	// rho*vr
 	qv=-(D,w)/map.rz-2./r*w;
 	op->add_r("G","G",qv/r,map.leg.D_11);
 	q=(map.rt/r+cos(th)/sin(th))/r;
@@ -609,7 +611,7 @@ void star2d::solve_dyn(solver *op) {
 	add_drt(op,"G",q*qv);
 	
 	
-	//vt
+	// rho*vt
 	qv=-(w,Dt)/r-2./r*(map.rt/r+cos(th)/sin(th))*w;
 	op->add_l("G","G",-qv/map.rz,D);
 	q=-1./r;
@@ -625,21 +627,20 @@ void star2d::solve_dyn(solver *op) {
 			+2.*r*map.gzt*map.gzt*(-map.rzz/map.rz)
 			+2.*map.gzt/r*(3.*cos(th)/sin(th)-2.*map.rzt/map.rz)
 			)*(D,w)
-		-rho*(2./r/r/r*(3.*cos(th)/sin(th)+(rho,Dt)/rho)+2.*map.gzt/r*(D,rho)/rho
-			-vt/r/r/rho)*(w,Dt)
-		+2./r/r*(vr+(2*map.rt/r+cos(th)/sin(th))*vt)*w;
+		-(2./r/r/r*3.*cos(th)/sin(th)-rho*vt/r/r)*(w,Dt)
+		+2./r/r*(rho*vr+(2*map.rt/r+cos(th)/sin(th))*rho*vt)*w;
 	add_dr(op,"G",q);
 	q=-2.*map.gzz/map.rz*(D,D,w)-2.*map.gzt/map.rz*(D,w,Dt)
 		-(4./r/map.rz/map.rz-map.rtt/r/r/map.rz/map.rz
 			+2.*map.gzz/map.rz*(-1.5*map.rzz/map.rz)
 			+map.gzt/map.rz*(3.*cos(th)/sin(th)-4.*map.rzt/map.rz)
-			-vr/map.rz/map.rz)*(D,w);
+			-rho*vr/map.rz/map.rz)*(D,w);
 	add_drz(op,"G",q);
 	q=-2.*map.gzt/map.rz*(D,D,w)-2./r/r/map.rz*(D,w,Dt)
 		-(2.*map.gzt/map.rz*(-map.rzz/map.rz)
 			+1./r/r/map.rz*(+3.*cos(th)/sin(th)-2.*map.rzt/map.rz)
 			)*(D,w)
-		-2./r/r*vt*w;
+		-2./r/r*rho*vt*w;
 	add_drt(op,"G",q);
 	q=-map.gzz/map.rz*(D,w);
 	add_drzz(op,"G",q);
@@ -652,10 +653,10 @@ void star2d::solve_dyn(solver *op) {
 		-(4./r/map.rz-map.rtt/r/r/map.rz
 			+map.gzz*(-map.rzz/map.rz)
 			+map.gzt*(3.*cos(th)/sin(th)-2.*map.rzt/map.rz)
-			-vr/map.rz)*(D,w)
+			-rho*vr/map.rz)*(D,w)
 		-(1./r/r*(3.*cos(th)/sin(th))
-			-vt/r)*(w,Dt)
-		+2*w*(1./r*vr+(map.rt/r+cos(th)/sin(th))/r*vt);	
+			-rho*vt/r)*(w,Dt)
+		+2*w*(1./r*rho*vr+(map.rt/r+cos(th)/sin(th))/r*rho*vt);	
 	
 	
 	j0=0;

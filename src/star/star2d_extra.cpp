@@ -184,8 +184,7 @@ matrix star2d::stream() const {
 	matrix vr_,GG;
 	
 	vr_=rho*vr/map.rz;
-	vr_=r*r*sin(th)*sin(th)*map.gzz*(D,w)+(G*r-map.rt)/map.rz*sin(th)*sin(th)*(w,Dt)+
-		2*w*sin(th)/map.rz*(r*cos(th)+map.rt*sin(th))*G;
+	
 	
 	vr_=r*r*map.rz/z/z*vr_;
 	vr_.setrow(0,zeros(1,nth()));
@@ -198,64 +197,5 @@ matrix star2d::stream() const {
 	GG.setrow(0,zeros(1,nth()));
 		
 	return GG;
-}
-
-void star2d::boundary_layer() const {
-
-	static figure fig("/XSERVE");
-	matrix beta0,B4,V0,U1,U0;
-	
-	beta0=(map.gzz*(D,w*w)+map.gzt*(w*w,Dt))/sqrt(map.gzz);
-	beta0=beta0.row(nr()-1);
-	B4=(cos(th)+map.rt/r*sin(th))/(1.+map.rt*map.rt/r/r)/4./r/r/r/r/sin(th)/sin(th)/sin(th)*
-		(r*r*r*r*sin(th)*sin(th)*sin(th)*sin(th)*w*w,Dt);
-	B4=B4.row(nr()-1);
-	V0=-r*sin(th)*(cos(th)+map.rt/r*sin(th))/sqrt(1.+map.rt*map.rt/r/r)*beta0/4./pow(B4,3./4.);
-	V0=V0.row(nr()-1);
-	U1=-V0/4./B4/sqrt(r*r+map.rt*map.rt)*(B4,Dt);
-	U1=U1.row(nr()-1);
-	U0=(rho*r*sin(th)*V0/pow(B4,0.25),map.leg.D_01)/sqrt(r*r+map.rt*map.rt)/rho/r/sin(th);
-	//U0=((rho*r*sin(th),map.leg.D_10)*V0/pow(B4,0.25)/rho/r/sin(th)
-	//	+(V0,map.leg.D_11)/pow(B4,0.25)
-	//	-V0/4./pow(B4,5./4.)*(B4,Dt))/sqrt(r*r+map.rt*map.rt);
-	U0=U0.row(nr()-1);
-	
-	fig.subplot(2,4);
-	fig.plot(th,beta0);
-	fig.label("th","beta0","");
-	fig.plot(th,V0);
-	fig.label("th","V0","");
-	fig.plot(th,U0);
-	fig.label("th","U0","");
-	fig.plot(th,U1);
-	fig.label("th","U1","");
-	fig.plot(th,B4);
-	fig.label("th","B4","");
-	fig.plot(th,pow(B4,0.25));
-	fig.label("th","B","");
-	fig.plot(th,w.row(nr()-1));
-	fig.label("th","Omega","");
-	fig.plot(th,V0/pow(B4,0.25));
-	fig.label("th","S","");
-
-	matrix q1,q2;
-	fig.subplot(1,2);
-	q1=4./r*w*w*vr+4*(map.rt/r+cos(th)/sin(th))/r*w*w*vt+vr/map.rz*(D,w*w)+vt/r*(w*w,Dt);
-	q1.setrow(0,zeros(1,nth()));
-	q2=map.gzz*(D,D,w*w)+2*map.gzt*(D,w*w,Dt)+(w*w,Dt2)/r/r
-	+(4./r/map.rz-map.rtt/r/r/map.rz
-		+map.gzz*(-(D,w*w)/2./w/w+(D,rho)/rho-map.rzz/map.rz)
-		+map.gzt*(-(w*w,Dt)/w/w+(rho,Dt)/rho+3*cos(th)/sin(th)-2.*map.rzt/map.rz)
-		)*(D,w*w)
-	+(3*cos(th)/sin(th)/r/r-(w*w,Dt)/2./w/w/r/r+(rho,Dt)/rho/r/r
-		+map.gzt*(D,rho)/rho)*(w*w,Dt);
-	q2.setrow(0,zeros(1,nth()));
-	fig.colorbar();
-	draw(&fig,q2);
-	fig.caxis(min(q2),max(q2));
-	fig.colorbar();
-	draw(&fig,q1);
-
-
 }
 

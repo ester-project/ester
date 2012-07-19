@@ -178,7 +178,6 @@ class star2d {
 	double virial() const;
 	double energy_test() const;
 	matrix stream() const;
-	void boundary_layer() const;
 	double apparent_luminosity(double i) const;
 	
 	void fill();
