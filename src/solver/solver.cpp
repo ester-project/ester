@@ -68,12 +68,21 @@ void solver_block::reset(int ieq) {
 	nth[ieq]=0;
 }
 	 
-void solver_block::add_d(int ieq,int ivar,const matrix &d) {
+
+void solver_block::add(int ieq,int ivar,char type,const matrix *d,const matrix *l,const matrix *r,const matrix *i) {
 
 	solver_elem *p,*pnew;
+	int error=0;
 	
-	nr[ieq]=d.nrows();
-	nth[ieq]=d.ncols();
+	if(nr[ieq]||nth[ieq]) {
+		if(nr[ieq]!=d->nrows()||nth[ieq]!=d->ncols()) {
+			printf("Error (solver_block): Size of D does not match that of the precedent term\n");
+			error=1;
+		}	
+	} else {
+		nr[ieq]=d->nrows();
+		nth[ieq]=d->ncols();
+	}
 	pnew=new solver_elem;
 	if(eq[ieq][ivar]==NULL) {
 		eq[ieq][ivar]=pnew;
@@ -84,167 +93,86 @@ void solver_block::add_d(int ieq,int ivar,const matrix &d) {
 		p->next=pnew;
 		p=pnew;
 	}
-	p->type='d';
-	p->D=d;
+	p->type=type;
+	p->D=*d;
+	if(type=='l'||type=='m'||type=='f'||type=='g') {
+		p->L=*l;
+		if(l->nrows()!=d->nrows()) {
+			printf("Error (solver_block): Number of rows of L does not match that of D\n");
+			error=1;
+		}
+	}
+	if(type=='r'||type=='s'||type=='f'||type=='g') {
+		p->R=*r;
+		if(r->ncols()!=d->ncols()) {
+			printf("Error (solver_block): Number of columns of R does not match that of D\n");
+			error=1;
+		}
+	}
+	if(type=='m'||type=='s'||type=='g') {
+		p->I=*i;
+		if(type=='m'||type=='g') {
+			if(l->ncols()!=i->nrows()) {
+				printf("Error (solver_block): Number of columns of L does not match the number of rows of I\n");
+				error=1;
+			}
+		}
+		if(type=='s'||type=='g') {
+			if(r->nrows()!=i->ncols()) {
+				printf("Error (solver_block): Number of rows of R does not match the number of columns of I\n");
+				error=1;
+			}
+		}
+		}
 	p->next=NULL;
 
 	eq_set(ieq)=1;
+	
+	if(error) {
+		printf("\t ieq=%d ivar=%d type=%c\n",ieq,ivar,type);
+		exit(1);
+	}
+
+}
+
+void solver_block::add_d(int ieq,int ivar,const matrix &d) {
+
+	add(ieq,ivar,'d',&d,NULL,NULL,NULL);
 
 }
 
 void solver_block::add_l(int ieq,int ivar,const matrix &d,const matrix &l) {
 
-	solver_elem *p,*pnew;
-	
-	nr[ieq]=d.nrows();
-	nth[ieq]=d.ncols();
-	pnew=new solver_elem;
-	if(eq[ieq][ivar]==NULL) {
-		eq[ieq][ivar]=pnew;
-		p=pnew;
-	} else {
-		p=eq[ieq][ivar];
-		while(p->next!=NULL) p=p->next;
-		p->next=pnew;
-		p=pnew;
-	}
-	p->type='l';
-	p->D=d;
-	p->L=l;
-	p->next=NULL;
-
-	eq_set(ieq)=1;
+	add(ieq,ivar,'l',&d,&l,NULL,NULL);
 
 }
 
 void solver_block::add_r(int ieq,int ivar,const matrix &d,const matrix &r) {
-
-	solver_elem *p,*pnew;
 	
-	nr[ieq]=d.nrows();
-	nth[ieq]=d.ncols();
-	pnew=new solver_elem;
-	if(eq[ieq][ivar]==NULL) {
-		eq[ieq][ivar]=pnew;
-		p=pnew;
-	} else {
-		p=eq[ieq][ivar];
-		while(p->next!=NULL) p=p->next;
-		p->next=pnew;
-		p=pnew;
-	}
-	p->type='r';
-	p->D=d;
-	p->R=r;
-	p->next=NULL;
-
-	eq_set(ieq)=1;
+	add(ieq,ivar,'r',&d,NULL,&r,NULL);
 
 }
 
 void solver_block::add_lr(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r) {
 
-	solver_elem *p,*pnew;
-	
-	nr[ieq]=d.nrows();
-	nth[ieq]=d.ncols();
-	pnew=new solver_elem;
-	if(eq[ieq][ivar]==NULL) {
-		eq[ieq][ivar]=pnew;
-		p=pnew;
-	} else {
-		p=eq[ieq][ivar];
-		while(p->next!=NULL) p=p->next;
-		p->next=pnew;
-		p=pnew;
-	}
-	p->type='f';
-	p->D=d;
-	p->L=l;
-	p->R=r;
-	p->next=NULL;
-
-	eq_set(ieq)=1;
+	add(ieq,ivar,'f',&d,&l,&r,NULL);
 
 }
 
 void solver_block::add_li(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &i) {
-
-	solver_elem *p,*pnew;
 	
-	nr[ieq]=d.nrows();
-	nth[ieq]=d.ncols();
-	pnew=new solver_elem;
-	if(eq[ieq][ivar]==NULL) {
-		eq[ieq][ivar]=pnew;
-		p=pnew;
-	} else {
-		p=eq[ieq][ivar];
-		while(p->next!=NULL) p=p->next;
-		p->next=pnew;
-		p=pnew;
-	}
-	p->type='m';
-	p->D=d;
-	p->L=l;
-	p->I=i;
-	p->next=NULL;
-
-	eq_set(ieq)=1;
+	add(ieq,ivar,'m',&d,&l,NULL,&i);
 
 }
 
 void solver_block::add_ri(int ieq,int ivar,const matrix &d,const matrix &r,const matrix &i) {
 
-	solver_elem *p,*pnew;
-	
-	nr[ieq]=d.nrows();
-	nth[ieq]=d.ncols();
-	pnew=new solver_elem;
-	if(eq[ieq][ivar]==NULL) {
-		eq[ieq][ivar]=pnew;
-		p=pnew;
-	} else {
-		p=eq[ieq][ivar];
-		while(p->next!=NULL) p=p->next;
-		p->next=pnew;
-		p=pnew;
-	}
-	p->type='s';
-	p->D=d;
-	p->R=r;
-	p->I=i;
-	p->next=NULL;
-
-	eq_set(ieq)=1;
-
+	add(ieq,ivar,'s',&d,NULL,&r,&i);
 }
 
 void solver_block::add_lri(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r,const matrix &i) {
 
-	solver_elem *p,*pnew;
-	
-	nr[ieq]=d.nrows();
-	nth[ieq]=d.ncols();
-	pnew=new solver_elem;
-	if(eq[ieq][ivar]==NULL) {
-		eq[ieq][ivar]=pnew;
-		p=pnew;
-	} else {
-		p=eq[ieq][ivar];
-		while(p->next!=NULL) p=p->next;
-		p->next=pnew;
-		p=pnew;
-	}
-	p->type='g';
-	p->D=d;
-	p->L=l;
-	p->R=r;
-	p->I=i;
-	p->next=NULL;
-
-	eq_set(ieq)=1;
-
+	add(ieq,ivar,'g',&d,&l,&r,&i);
 }
 
 solver::solver() {

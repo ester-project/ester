@@ -57,6 +57,20 @@ public:
 	matrix solve(const matrix &a) {return 0*a;};
 };
 
+/* 	A solver_elem object stores one term of a equation in the form D*(L,I*x,R).
+	The type indicate which of the matrices D,L,I,R are different from unity:
+	
+		'd': D
+		'l': D,L
+		'r': D,R
+		'f': D,L,R
+		'm': D,L,I
+		's': D,R,I
+		'g': D,L,R,I
+	
+   	The set of terms in one given eq. referred to one given variable is represented
+   	as a linked list of solver_elem objects. */
+
 class solver_elem {
 	char type;
 	matrix D,L,R,I;
@@ -64,6 +78,29 @@ class solver_elem {
 	friend class solver;
 	friend class solver_block;
 };
+
+/*	A solver_block objects contains all the equations for a given block. A block
+	refers to one domain or to one set of boundary conditions.
+	
+	The equations are represented as an array of linked lists of solver_elem objects
+	such that eq[i][j] is a pointer to the first solver_elem object of the list
+	representing the terms in the i-th equation associated with the j-th variable.
+	
+	nv is the number of variables (equations) of the problem.
+	eq_set(i) (i<nv) is 1 if the i-th equation is defined in ths block.
+	nr[i],nth[i] is the size of the i-th equation (It is automatically taken from
+					the size of D).	
+	
+	Methods:
+		
+		init(nvar) is called first to initialize the object for nvar variables
+		destroy() should be called when the object is no longer needed. After calling
+					destroy(), the object can be re-initialized with a different number
+					of variables
+		reset() to clean out all the equations
+		reset(i) to clean out only the i-th equation
+		add_*(...) to add a term in the equation
+*/
 
 class solver_block {
 	int nv,*nr,*nth;
@@ -84,6 +121,7 @@ public:
 	void add_li(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &i);
 	void add_ri(int ieq,int ivar,const matrix &d,const matrix &r,const matrix &i);
 	void add_lri(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r,const matrix &i);
+	void add(int ieq,int ivar,char type, const matrix *d, const matrix *l, const matrix *r, const matrix *i);
 };
 
 class solver {
