@@ -1,5 +1,5 @@
 
-include make_icc.inc
+include make.inc
 
 LDFLAGS:=$(LDFLAGS) -L $(ESTER_ROOT)/tables/houdek/v9/lib
 LIBS:=$(LIBS) -lopint
