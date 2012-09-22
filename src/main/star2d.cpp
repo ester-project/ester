@@ -69,7 +69,7 @@ int main(int argc,char *argv[]) {
 		last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit;
 		if(killed) last_it=1;
 		if(config.verbose) {
-			printf("it=%d err=%e\n",nit,err);
+			printf("it=%d err=%e (%2.2fs)\n",nit,err,t.value());
 			printf("\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,A.map.eps(A.map.gl.ndomains()-1),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
 			t_output=tt(nit-1);
 

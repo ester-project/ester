@@ -1,6 +1,7 @@
 #include"solver.h"
 #include<string.h>
 #include<stdlib.h>
+#include<math.h>
 extern "C" {
 #include CBLAS
 }
@@ -381,7 +382,7 @@ int solver::get_id(const char *varn) {
 
 }
 
-void solver::check() {
+void solver::fill_void_blocks() {
 
 	int i,j,n,nt;
 	
@@ -445,7 +446,7 @@ void solver::solve(int *info) {
 	ttot.start();
 #endif
 	if(info!=NULL) for(i=0;i<5;i++) info[i]=0;
-	if(!sync) check();
+	if(!sync) fill_void_blocks();
 	calc_struct();
 	wrap(x,&y);
 	wrap(rhs,&rhsw);
@@ -1013,6 +1014,7 @@ void solver::create_full() {
 		}
 		}
 		op->set_block(n,opi);
+		//check_full(n,opi,0);
 		
 		if(n>0) {
 			nn=0;
@@ -1075,7 +1077,7 @@ void solver::create_full() {
 			}
 			}
 			if(set) op->set_blockinf(n-1,opi);
-
+			//if(set) check_full(n,opi,-1);
 		}
 		if(n<nb-1) {
 			nn=0;
@@ -1138,11 +1140,52 @@ void solver::create_full() {
 			}
 			}
 			if(set) op->set_blocksup(n,opi);
-
+			//if(set) check_full(n,opi,1);
 		}
 		
 	}
 
+}
+
+void solver::check_full(int n, const matrix &opi, int pos) {
+
+	
+	int ivar,iblock,j0=0,nj=0,i,j,i0,ni=0;
+	matrix x,y[nv];
+
+	for(iblock=0;iblock<n+pos;iblock++) 
+		for(ivar=0;ivar<nv;ivar++) j0+=var_nr[iblock][ivar]*var_nth[iblock][ivar];
+	for(ivar=0;ivar<nv;ivar++) nj+=var_nr[n+pos][ivar]*var_nth[n+pos][ivar];
+	if(!pos) {
+		ni=nj;
+		i0=j0;
+	} else if(pos==-1) { 
+		for(ivar=0;ivar<nv;ivar++) ni+=var_nbot[n][ivar]*var_nth[n][ivar];
+		i0=j0+nj;
+	} else if(pos==1) { 
+		for(ivar=0;ivar<nv;ivar++) ni+=var_ntop[n][ivar]*var_nth[n][ivar];
+		i0=j0-ni;
+	}
+	for(j=0;j<nj;j++) {
+		x=zeros(solver_N,1);
+		x(j0+j)=1;
+		unwrap(y,&x);
+		mult_op(y);
+		wrap(y,&x);
+		for(i=0;i<ni;i++) {
+			if(fabs((x(i+i0)-opi(i,j))/opi(i,j))>1e-8)
+				if(fabs(x(i+i0)-opi(i,j))>1e-12) {
+					printf("Error in operator");
+					if(pos==-1) printf(" (inf) ");
+					if(pos==-1) printf(" (sup) ");
+					printf(":\n\tblock=%d,row=%d,col=%d (%e,%e)\n",
+						n,i,j,opi(i,j),x(i+i0));
+					exit(1);
+				}
+		}
+	}
+
+	
 }
 
 void solver::wrap(const matrix *y,matrix *x) {

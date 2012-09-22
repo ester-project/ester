@@ -79,7 +79,7 @@ class solver_elem {
 	friend class solver_block;
 };
 
-/*	A solver_block objects contains all the equations for a given block. A block
+/*	A solver_block object contains all the equations for a given block. A block
 	refers to one domain or to one set of boundary conditions.
 	
 	The equations are represented as an array of linked lists of solver_elem objects
@@ -173,11 +173,9 @@ public:
 	void create_full();
 	void wrap(const matrix *,matrix *);
 	void unwrap(matrix *,const matrix *);
-	void check();
+	void fill_void_blocks();
 	void calc_struct();
-	void check_block(int iblock,matrix &m);
-	void check_block_sup(int iblock,matrix &m);
-	void check_block_inf(int iblock,matrix &m);
+	void check_full(int n, const matrix &opi,int pos);
 	
 	void add_d(const char *eqn, const char *varn,const matrix &d);
 	void add_l(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l);
