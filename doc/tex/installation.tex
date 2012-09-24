@@ -6,7 +6,7 @@ The ESTER library depends on some external libraries that should be installed in
 \item BLAS and LAPACK, for matrix algebra
 \item PGPLOT (CPGPLOT) for graphics output
 \end{itemize}
-The library PGPLOT is optative and can be deactivated in the {\tt Makefile} setting the variable {\tt USE\_PGPLOT=0}.
+The library PGPLOT is optative and can be deactivated in the {\tt Makefile} ({\tt make.inc}) setting the variable {\tt USE\_PGPLOT=0}.
 
 \section{Installation}
 
@@ -29,13 +29,10 @@ After checking the {\tt Makefile} located at {\tt ester/tables/houdek/v9} we do
 \begin{verbatim}
 root/ester/src$ make tables
 \end{verbatim} 
-Now, we are prepared to compile the main library. The main variables for the compilation are defined in a file named {\verb1 make_%.inc 1}.
-The right version should be indicated in the first line of the main makefile {\tt ester/src/Makefile}, for example
-\begin{verbatim}
-include make_icc.inc
-\end{verbatim}
-At the moment there are to versions included, {\tt make\_icc.inc} and {\tt make\_gcc.inc},
- for the Intel compiler and the GNU compiler respectively.
+Now, we are prepared to compile the main library.
+The main variables for the compilation should be defined in a file named {\verb1 make.inc 1}.
+Two examples are included, {\tt make.inc.icc} and {\tt make.inc.gcc},
+ for the Intel compiler and the GNU compiler respectively (tested under Ubuntu 12.04).
 After setting the proper values for the compilation we execute {\tt make all} or just
 \begin{verbatim}
 root/ester/src$ make
