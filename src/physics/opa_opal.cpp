@@ -14,60 +14,11 @@ extern"C" {
 double opa_opal_i(double X,double Z,double T,double rho,double *dlogkt,double *dlogkr) {
     
     double t6,r;
-    int mzin,izi,iz1e4;
-    
-    iz1e4=round(Z*1e4);
-    switch(iz1e4) {
-    	case 0:
-    		mzin=0;
-    		break;
-    	case 1:
-    		mzin=2;
-    		break;
-    	case 3:
-    		mzin=3;
-    		break;
-    	case 10:
-    		mzin=4;
-    		break;
-    	case 20:
-    		mzin=5;
-    		break;
-    	case 40:
-    		mzin=6;
-    		break;
-    	case 100:
-    		mzin=7;
-    		break;
-    	case 200:
-    		mzin=8;
-    		break;
-    	case 300:
-    		mzin=9;
-    		break;
-    	case 400:
-    		mzin=10;
-    		break;
-    	case 600:
-    		mzin=11;
-    		break;
-    	case 800:
-    		mzin=12;
-    		break;
-    	case 1000:
-    		mzin=13;
-    		break;
-    	default:
-    		mzin=0;
-    }
-
-    izi=0;
     
     t6=T*1e-6;
     r=rho/t6/t6/t6;
-    if(mzin) opac_(&izi,&mzin,&X,&t6,&r);
-    	else opacgn93_(&Z,&X,&t6,&r);
     
+    opacgn93_(&Z,&X,&t6,&r);
     *dlogkt=e_.dopact;
     *dlogkr=e_.dopacr;
     

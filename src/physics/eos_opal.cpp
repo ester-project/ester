@@ -9,6 +9,9 @@ extern"C" {
 	extern struct{
 		double esact,eos[10];
 	} eeos_;
+	extern struct{
+		int itime;
+	} lreadco_;
 }
 
 int eos_opal_init(double Z) {
@@ -26,6 +29,7 @@ int eos_opal_init(double Z) {
     if(Z_table==Z) return 0;
     zfs_interp_eos5_(&Z);
     Z_table=Z;
+    lreadco_.itime=0;
     
     return 0;
 }
