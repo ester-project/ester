@@ -1,6 +1,7 @@
 tables: opal houdek
 
 opal:
+	tar zxf opal/eos_tables.tar.gz --directory opal
 
 houdek:
 	make -C houdek/v9
@@ -12,7 +13,7 @@ houdek:
 clean: opal_clean houdek_clean
 
 opal_clean:
-	rm -f opal/eos_tables/EOS5_data
+	rm -f -r opal/eos_tables
 	
 houdek_clean:
 	make -C houdek/v9 clean

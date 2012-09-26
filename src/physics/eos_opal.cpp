@@ -1,8 +1,6 @@
 #include"physics.h"
 #include"constants.h"
 
-static double Z_table=-99;
-
 extern"C" {
 	void zfs_interp_eos5_(double *z);
 	void eos5_xtrin_(double *x,double *ztab,double *t6,double *p,double *r);
@@ -14,36 +12,22 @@ extern"C" {
 	} lreadco_;
 }
 
-int eos_opal_init(double Z) {
-    
-    double X;
-    FILE *fp;
-    char filename[512];
-    
-    //fprintf(stderr,"Initializing OPAL EOS table Z=%f\n",Z);
-    sprintf(filename,"%s/tables/opal/eos_tables/EOS5_data",ESTER_ROOT);
-    if(fp=fopen(filename,"rt")) {
-    	fscanf(fp," X=%lf Z= %lf",&X,&Z_table);
-    	fclose(fp);
-    }
-    if(Z_table==Z) return 0;
-    zfs_interp_eos5_(&Z);
-    Z_table=Z;
-    lreadco_.itime=0;
-    
-    return 0;
-}
-
 int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos) {
     
     matrix t6,p_mb;
     int i,N,error=0;
     
+    static double Z_table=-99;
+    
     t6=T*1e-6;
     p_mb=p*1e-12;
     
-    if(Z!=Z_table) error=eos_opal_init(Z);
+    if(Z!=Z_table) {
+    	lreadco_.itime=0;
+    	zfs_interp_eos5_(&Z);
+	    Z_table=Z;
+    }
     
     if(error) {
     	printf("Can't initialize OPAL EOS table\n");

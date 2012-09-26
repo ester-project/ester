@@ -497,25 +497,24 @@ c..... read  tables
 	  endif
       tabfilez= 
      + 	rootdir(1:lenrootdir)//'/tables/opal/eos_tables/EOS5_data'
-       open(2, FILE=tabfilez)
- 
+c       open(15, FILE=tabfilez)
  
       do 3 m=1,mx
-      read (2,'(3x,f6.4,3x,f12.9,11x,f10.7,17x,f10.7)')
+      read (15,'(3x,f6.4,3x,f12.9,11x,f10.7,17x,f10.7)')
      x  xin(m),zz(m),moles(m),tmass(m)
-      read (2,'(21x,e14.7,4x,e14.7,3x,e11.4,3x,e11.4,3x,e11.4,
+      read (15,'(21x,e14.7,4x,e14.7,3x,e11.4,3x,e11.4,3x,e11.4,
      x 4x,e11.4)') (frac(m,i),i=1,6)
-      read (2,'(a)') blank
+      read (15,'(a)') blank
       do 2 jcs=1,nr
-      read (2,'(2i5,2f12.7,17x,e15.7)') numtot,icycuse(m,jcs)
+      read (15,'(2i5,2f12.7,17x,e15.7)') numtot,icycuse(m,jcs)
      x  ,dum,dum,rhogr(m,jcs)
       if(numtot .ne. jcs) then
          write (*,'(" Data file incorrect: numtot,jcs= ",2i5)')
      x     numtot,jcs
          stop
       endif
-      read(2,'(a)') blank
-      read(2,'(a)') blank
+      read(15,'(a)') blank
+      read(15,'(a)') blank
       if (icycuse(m,jcs) .lt. nta(jcs)) then
          write (*,'("problem with data files: X=",f6.4," density=",
      x      e14.4)') xin(m), rhogr(m,jcs)
@@ -523,19 +522,19 @@ c..... read  tables
       endif
       do  i=1,icycuse(m,jcs)
       if (i .gt. nta(jcs)) then
-         read (2,'(a)') blank
+         read (15,'(a)') blank
          go to 4
       endif
-      read (2,'(f11.6,1x,f6.4,e11.4,2e13.6,2e11.3,5f10.6)') 
+      read (15,'(f11.6,1x,f6.4,e11.4,2e13.6,2e11.3,5f10.6)') 
      x t6list(jcs,i),amu_M(jcs,i),alogNe(jcs,j),
      x (xz(m,index(iv),i,jcs),iv=1,9)
     4 continue
       enddo
-      read(2,'(a)') blank
-      read(2,'(a)') blank
-      read(2,'(a)') blank
+      read(15,'(a)') blank
+      read(15,'(a)') blank
+      read(15,'(a)') blank
     2 continue
-      read(2,'(a)') blank
+      read(15,'(a)') blank
     3 continue
  
       do i=1,nt
@@ -555,7 +554,7 @@ c..... read  tables
       do i=2,mx
       dfsx(i)=1./(xx(i)-xx(i-1))
       enddo
-		close(2)
+c		close(15)
       return
       end
 c

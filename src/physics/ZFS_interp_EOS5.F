@@ -48,16 +48,16 @@ c    is needed everytime Z is changed.
       front3='/tables/opal/eos_tables/EOS5_04z'
       tabfilez=
      +	rootdir(1:lenrootdir)//'/tables/opal/eos_tables/EOS5_data'
-      open (15,file=tabfilez ,status='replace')
+      open (15,status='scratch')
       do kk=1,5
       tabfile=rootdir(1:lenrootdir)//front1//eend(kk)
       tabfilem=rootdir(1:lenrootdir)//front2//eend(kk)
       tabfileu=rootdir(1:lenrootdir)//front3//eend(kk)
       j=0
-      call system ('gunzip '//tabfile)
-      call system ('gunzip '//tabfilem)
-      call system ('gunzip '//tabfileu)
-      open (8,file=tabfile ,status='old')
+c      call system ('gunzip '//tabfile)
+c      call system ('gunzip '//tabfilem)
+c      call system ('gunzip '//tabfileu)
+      open (8,file=tabfile,status='old')
       numprev=0   ! table op
 		
       read (8,'(3x,f6.4,3x,f6.4,11x,f10.7,17x,f10.7)')
@@ -237,13 +237,16 @@ c     read(9,'(1h0)')
       izero=0
       write (15,'(2i5)') izero,izero
       
-      call system ('gzip '//tabfile)
-      call system ('gzip '//tabfilem)
-      call system ('gzip '//tabfileu)
+c      call system ('gzip '//tabfile)
+c      call system ('gzip '//tabfilem)
+c      call system ('gzip '//tabfileu)
       
       enddo
-
+      rewind(15)
+c  Call EOS5_xtrin to load tables in memory
+	  call EOS5_xtrin(0.7,zz,2.75e1,8e4,r)
       close (15)
+
 
 c	  stop
 c  380 write (*,'("File missing is ",a)') tabfile
