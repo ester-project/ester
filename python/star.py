@@ -7,7 +7,7 @@ rcParams['patch.antialiased']=False
 
 class star2d:
 	def __init__(self,file):
-		names=['R/R_SUN','M/M_SUN','L/L_SUN','M','L','Xr','r','z','th','opa.k','w','p','rho','eos.G1','eos.del_ad','T','D','opa.xi','Teff','gsup','rex','map.R','R','nuc.eps','N2','eos.del_ad','Omega','phi','phiex','Dex','Dt','Dtodd','Dt2','Omega_bk','eos.cp','eos.G3_1','eos.cv','eos.d','eos.chi_T','eos.chi_rho','opa.dlnxi_lnrho','opa.dlnxi_lnT','nuc.pp','nuc.cno','vr','vt','stream','G','psi','virial','energy_test']		
+		names=['R/R_SUN','M/M_SUN','L/L_SUN','M','L','Xr','r','z','th','opa.k','w','p','rho','eos.G1','eos.del_ad','T','D','opa.xi','Teff','gsup','rex','map.R','R','nuc.eps','N2','eos.del_ad','Omega','phi','phiex','Dex','Dt','Dtodd','Dt2','Omega_bk','eos.cp','eos.G3_1','eos.cv','eos.d','eos.chi_T','eos.chi_rho','opa.dlnxi_lnrho','opa.dlnxi_lnT','nuc.pp','nuc.cno','vr','vt','G','psi','virial','energy_test']		
 		fp=open('/tmp/python_star_template','w')
 		fp.write('\\conf{equator=1}\n\\conf{pole=1}\n\\conf{dim=1}\n')
 		fp.write('${nr}${nth}${nex}${ndomains}${npts}${conv}')

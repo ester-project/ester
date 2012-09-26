@@ -449,18 +449,8 @@ void write(const star2d &A,char *var,char *fmt) {
 		}
 	} else if(!strcmp(var,"ps")) {
 		m=A.ps;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"m")) {
 		if(fmt) fprintf(stdout,fmt,A.m);
 		else {
@@ -608,52 +598,25 @@ void write(const star2d &A,char *var,char *fmt) {
 	} else if(!strcmp(var,"rex")) {
 		if(dim) m=A.map.ex.r*A.units.r;
 		else m=A.map.ex.r;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"phiex")) {
 		if(dim) m=A.phiex*A.units.r;
 		else m=A.phiex;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"Dex")) {
 		if(dim) m=A.map.ex.D/A.units.r;
 		else m=A.map.ex.D;
 		if(fmt) matrix_fmt(fmt,m);
 		else m.write(stdout,'b');
 	} else if(!strcmp(var,"th")) {
-		m=A.th;
-		if(equator) {
-			m2=PI/2*ones(1,1);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		m=zeros(1,A.nth()+pole+equator);
+		m.setblock(0,0,equator,A.nth()-1+pole,A.th);
+		m(0)=PI/2;
+		m(m.ncols()-1)=0;
 		if(fmt) matrix_fmt(fmt,m);
 		else m.write(stdout,'b');
-		if(pole) {
-			m2=zeros(1,1);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
 	} else if(!strcmp(var,"Dt")) {
 		m2=(A.Dt,T_odd);
 		m=zeros(A.nth()+pole+equator,A.nth()+pole+equator);
@@ -679,434 +642,130 @@ void write(const star2d &A,char *var,char *fmt) {
 		else m.write(stdout,'b');
 	} else if(!strcmp(var,"Ts")) {
 		m=A.Ts;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"map.R")) {
 		if(dim) m=A.map.R*A.units.r;
 		else m=A.map.R;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"rho")) {
 		if(dim) m=A.rho*A.units.rho;
 		else m=A.rho;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"phi")) {
 		if(dim) m=A.phi*A.units.phi;
 		else m=A.phi;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"p")) {
 		if(dim) m=A.p*A.units.p;
 		else m=A.p;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"w")) {
 		if(dim) m=A.w*A.units.Omega;
 		else m=A.w;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"T")) {
 		if(dim) m=A.T*A.units.T;
 		else m=A.T;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"vr")) {
 		if(dim) m=A.vr*A.units.v;
 		else m=A.vr;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"vt")) {
 		if(dim) m=A.vt*A.units.v;
 		else m=A.vt;
-		if(equator) {
-			m2=A.map.leg.eval_11(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_11(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T_odd));
+		else (m,T_odd).write(stdout,'b');
 	} else if(!strcmp(var,"G")) {
 		if(dim) m=A.G*A.units.v*A.units.r*A.units.rho;
 		else m=A.G;
-		if(equator) {
-			m2=A.map.leg.eval_11(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_11(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T_odd));
+		else (m,T_odd).write(stdout,'b');
 	} else if(!strcmp(var,"psi")) {
 		if(dim) m=A.psi*A.units.v*A.units.r;
 		else m=A.psi;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-	} else if(!strcmp(var,"stream")) {
-		m=A.stream();
-		if(equator) {
-			m2=A.map.leg.eval_11(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_11(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"Xr")) {
 		m=A.Xr;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.Xr);
-		else A.Xr.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"N2")) {
 		m=A.N2();
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.N2());
-		else A.N2().write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"opa.k")) {
 		m=A.opa.k;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.opa.k);
-		else A.opa.k.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"opa.xi")) {
 		m=A.opa.xi;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.opa.xi);
-		else A.opa.xi.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"opa.dlnxi_lnT")) {
 		m=A.opa.dlnxi_lnT;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.opa.dlnxi_lnT);
-		else A.opa.dlnxi_lnT.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"opa.dlnxi_lnrho")) {
 		m=A.opa.dlnxi_lnrho;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.opa.dlnxi_lnrho);
-		else A.opa.dlnxi_lnrho.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"nuc.eps")) {
 		m=A.nuc.eps;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.nuc.eps);
-		else A.nuc.eps.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"nuc.pp")) {
 		m=A.nuc.pp;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.nuc.pp);
-		else A.nuc.pp.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"nuc.cno")) {
 		m=A.nuc.cno;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.nuc.cno);
-		else A.nuc.cno.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"eos.G1")) {
 		m=A.eos.G1;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.eos.G1);
-		else A.eos.G1.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"eos.cp")) {
 		m=A.eos.cp;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.eos.cp);
-		else A.eos.cp.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"eos.del_ad")) {
 		m=A.eos.del_ad;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.eos.del_ad);
-		else A.eos.del_ad.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"eos.G3_1")) {
 		m=A.eos.G3_1;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.eos.G3_1);
-		else A.eos.G3_1.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"eos.cv")) {
 		m=A.eos.cv;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.eos.cv);
-		else A.eos.cv.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"eos.d")) {
 		m=A.eos.d;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.eos.d);
-		else A.eos.d.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"eos.prad")) {
 		m=A.eos.prad;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.eos.prad);
-		else A.eos.prad.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"eos.chi_T")) {
 		m=A.eos.chi_T;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.eos.chi_T);
-		else A.eos.chi_T.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"eos.chi_rho")) {
 		m=A.eos.chi_rho;
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,A.eos.chi_rho);
-		else A.eos.chi_rho.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"L")) {
 		d=A.luminosity();
 		if(fmt) fprintf(stdout,fmt,d);
@@ -1121,18 +780,8 @@ void write(const star2d &A,char *var,char *fmt) {
 		}
 	} else if(!strcmp(var,"Teff")) {
 		m=A.Teff();
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"Teff_eq")) {
 		m=A.Teff();
 		d=A.map.leg.eval_00(m,PI/2)(0);
@@ -1149,18 +798,8 @@ void write(const star2d &A,char *var,char *fmt) {
 		}
 	} else if(!strcmp(var,"gsup")) {
 		m=A.gsup();
-		if(equator) {
-			m2=A.map.leg.eval_00(m,PI/2);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
-		if(fmt) matrix_fmt(fmt,m);
-		else m.write(stdout,'b');
-		if(pole) {
-			m2=A.map.leg.eval_00(m,0);
-			if(fmt) matrix_fmt(fmt,m2);
-			else m2.write(stdout,'b');
-		}
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"gsup_eq")) {
 		m=A.gsup();
 		d=A.map.leg.eval_00(m,PI/2)(0);
