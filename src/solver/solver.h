@@ -114,14 +114,30 @@ public:
 	void destroy();
 	void reset();
 	void reset(int ieq);
-	void add_d(int ieq,int ivar,const matrix &d);
-	void add_l(int ieq,int ivar,const matrix &d,const matrix &l);
-	void add_r(int ieq,int ivar,const matrix &d,const matrix &r);
-	void add_lr(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r);
-	void add_li(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &i);
-	void add_ri(int ieq,int ivar,const matrix &d,const matrix &r,const matrix &i);
-	void add_lri(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r,const matrix &i);
 	void add(int ieq,int ivar,char type, const matrix *d, const matrix *l, const matrix *r, const matrix *i);
+	
+	inline void add_d(int ieq,int ivar,const matrix &d) {
+		add(ieq,ivar,'d',&d,NULL,NULL,NULL);
+	}
+	inline void add_l(int ieq,int ivar,const matrix &d,const matrix &l) {
+		add(ieq,ivar,'l',&d,&l,NULL,NULL);
+	}
+	inline void add_r(int ieq,int ivar,const matrix &d,const matrix &r) {
+		add(ieq,ivar,'r',&d,NULL,&r,NULL);
+	}
+	inline void add_lr(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r) {
+		add(ieq,ivar,'f',&d,&l,&r,NULL);
+	}
+	inline void add_li(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &i) {
+		add(ieq,ivar,'m',&d,&l,NULL,&i);
+	}
+	inline void add_ri(int ieq,int ivar,const matrix &d,const matrix &r,const matrix &i) {
+		add(ieq,ivar,'s',&d,NULL,&r,&i);
+	}
+	inline void add_lri(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r,const matrix &i) {
+		add(ieq,ivar,'g',&d,&l,&r,&i);
+	}
+
 };
 
 class solver {
@@ -140,6 +156,7 @@ class solver {
 	matrix *rhs,*x;
 public:
 	int use_cgs,maxit_ref,maxit_cgs,verbose;
+	int debug;
 	double rel_tol,abs_tol;
 	void (*mult_fcn)(matrix *,void *context);
 	void *mult_context;
@@ -174,79 +191,235 @@ public:
 	void wrap(const matrix *,matrix *);
 	void unwrap(matrix *,const matrix *);
 	void fill_void_blocks();
-	void calc_struct();
+	int check_struct();
+	void check_struct_error(const char *err_msg,int n,int i,int j,solver_elem *p);
+	int check_struct_block(int n,int i,int j);
+	int check_struct_bc_th(int n,int i,int j,const char *bctype);
+	int check_struct_bc(int n,int i,int j,const char *bctype);
 	void check_full(int n, const matrix &opi,int pos);
 	
-	void add_d(const char *eqn, const char *varn,const matrix &d);
-	void add_l(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l);
-	void add_r(const char *eqn, const char *varn,const matrix &d,const matrix &r);
-	void add_lr(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &r);
-	void add_li(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &i);
-	void add_ri(const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i);
-	void add_lri(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &r,const matrix &i);
-	void add_d(int iblock,const char *eqn, const char *varn,const matrix &d);
-	void add_l(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l);
-	void add_r(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r);
-	void add_lr(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r);
-	void add_li(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &i);
-	void add_ri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i);
-	void add_lri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r,const matrix &i);
-	void bc_pol_add_d(const char *eqn, const char *varn,const matrix &d);
-	void bc_pol_add_l(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l);
-	void bc_pol_add_r(const char *eqn, const char *varn,const matrix &d,const matrix &r);
-	void bc_pol_add_lr(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &r);
-	void bc_pol_add_li(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &i);
-	void bc_pol_add_ri(const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i);
-	void bc_pol_add_lri(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &r,const matrix &i);
-	void bc_pol_add_d(int iblock,const char *eqn, const char *varn,const matrix &d);
-	void bc_pol_add_l(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l);
-	void bc_pol_add_r(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r);
-	void bc_pol_add_lr(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r);
-	void bc_pol_add_li(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &i);
-	void bc_pol_add_ri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i);
-	void bc_pol_add_lri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r,const matrix &i);
-	void bc_eq_add_d(const char *eqn, const char *varn,const matrix &d);
-	void bc_eq_add_l(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l);
-	void bc_eq_add_r(const char *eqn, const char *varn,const matrix &d,const matrix &r);
-	void bc_eq_add_lr(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &r);
-	void bc_eq_add_li(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &i);
-	void bc_eq_add_ri(const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i);
-	void bc_eq_add_lri(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &r,const matrix &i);
-	void bc_eq_add_d(int iblock,const char *eqn, const char *varn,const matrix &d);
-	void bc_eq_add_l(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l);
-	void bc_eq_add_r(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r);
-	void bc_eq_add_lr(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r);
-	void bc_eq_add_li(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &i);
-	void bc_eq_add_ri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i);
-	void bc_eq_add_lri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r,const matrix &i);
-	void bc_bot1_add_d(int iblock,const char *eqn, const char *varn,const matrix &d);
-	void bc_bot1_add_l(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l);
-	void bc_bot1_add_r(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r);
-	void bc_bot1_add_lr(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r);
-	void bc_bot1_add_li(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &i);
-	void bc_bot1_add_ri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i);
-	void bc_bot1_add_lri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r,const matrix &i);
-	void bc_bot2_add_d(int iblock,const char *eqn, const char *varn,const matrix &d);
-	void bc_bot2_add_l(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l);
-	void bc_bot2_add_r(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r);
-	void bc_bot2_add_lr(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r);
-	void bc_bot2_add_li(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &i);
-	void bc_bot2_add_ri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i);
-	void bc_bot2_add_lri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r,const matrix &i);
-	void bc_top1_add_d(int iblock,const char *eqn, const char *varn,const matrix &d);
-	void bc_top1_add_l(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l);
-	void bc_top1_add_r(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r);
-	void bc_top1_add_lr(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r);
-	void bc_top1_add_li(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &i);
-	void bc_top1_add_ri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i);
-	void bc_top1_add_lri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r,const matrix &i);
-	void bc_top2_add_d(int iblock,const char *eqn, const char *varn,const matrix &d);
-	void bc_top2_add_l(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l);
-	void bc_top2_add_r(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r);
-	void bc_top2_add_lr(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r);
-	void bc_top2_add_li(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &i);
-	void bc_top2_add_ri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i);
-	void bc_top2_add_lri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r,const matrix &i);
+	void add(int iblock,const char *eqn, const char *varn,const char *block_type,char type,const matrix *d,const matrix *l,const matrix *r,const matrix *i);
+	void add(const char *eqn, const char *varn,const char *block_type,char type,const matrix *d,const matrix_block_diag *l,const matrix *r,const matrix *i);
+	
+	inline void add_d(const char *eqn, const char *varn,const matrix &d) {
+		add(eqn,varn,"block",'d',&d,NULL,NULL,NULL);
+	}
+	inline void add_l(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l) {
+		add(eqn,varn,"block",'l',&d,&l,NULL,NULL);
+	}
+	inline void add_r(const char *eqn, const char *varn,const matrix &d,const matrix &r) {
+		add(eqn,varn,"block",'r',&d,NULL,&r,NULL);
+	}
+	inline void add_lr(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &r) {
+		add(eqn,varn,"block",'f',&d,&l,&r,NULL);
+	}
+	inline void add_li(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &i) {
+		add(eqn,varn,"block",'m',&d,&l,NULL,&i);
+	}
+	inline void add_ri(const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i) {
+		add(eqn,varn,"block",'s',&d,NULL,&r,&i);
+	}
+	inline void add_lri(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &r,const matrix &i) {
+		add(eqn,varn,"block",'g',&d,&l,&r,&i);
+	}
+	
+	inline void bc_pol_add_d(const char *eqn, const char *varn,const matrix &d) {
+		add(eqn,varn,"bc_pol",'d',&d,NULL,NULL,NULL);
+	}
+	inline void bc_pol_add_l(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l) {
+		add(eqn,varn,"bc_pol",'l',&d,&l,NULL,NULL);
+	}
+	inline void bc_pol_add_r(const char *eqn, const char *varn,const matrix &d,const matrix &r) {
+		add(eqn,varn,"bc_pol",'r',&d,NULL,&r,NULL);
+	}
+	inline void bc_pol_add_lr(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &r) {
+		add(eqn,varn,"bc_pol",'f',&d,&l,&r,NULL);
+	}
+	inline void bc_pol_add_li(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &i) {
+		add(eqn,varn,"bc_pol",'m',&d,&l,NULL,&i);
+	}
+	inline void bc_pol_add_ri(const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i) {
+		add(eqn,varn,"bc_pol",'s',&d,NULL,&r,&i);
+	}
+	inline void bc_pol_add_lri(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &r,const matrix &i) {
+		add(eqn,varn,"bc_pol",'g',&d,&l,&r,&i);
+	}
+	
+	inline void bc_eq_add_d(const char *eqn, const char *varn,const matrix &d) {
+		add(eqn,varn,"bc_eq",'d',&d,NULL,NULL,NULL);
+	}
+	inline void bc_eq_add_l(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l) {
+		add(eqn,varn,"bc_eq",'l',&d,&l,NULL,NULL);
+	}
+	inline void bc_eq_add_r(const char *eqn, const char *varn,const matrix &d,const matrix &r) {
+		add(eqn,varn,"bc_eq",'r',&d,NULL,&r,NULL);
+	}
+	inline void bc_eq_add_lr(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &r) {
+		add(eqn,varn,"bc_eq",'f',&d,&l,&r,NULL);
+	}
+	inline void bc_eq_add_li(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &i) {
+		add(eqn,varn,"bc_eq",'m',&d,&l,NULL,&i);
+	}
+	inline void bc_eq_add_ri(const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i) {
+		add(eqn,varn,"bc_eq",'s',&d,NULL,&r,&i);
+	}
+	inline void bc_eq_add_lri(const char *eqn, const char *varn,const matrix &d,const matrix_block_diag &l,const matrix &r,const matrix &i) {
+		add(eqn,varn,"bc_eq",'g',&d,&l,&r,&i);
+	}
+	
+	inline void add_d(int iblock,const char *eqn, const char *varn,const matrix &d) {
+		add(iblock,eqn,varn,"block",'d',&d,NULL,NULL,NULL);
+	}
+	inline void add_l(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l) {
+		add(iblock,eqn,varn,"block",'l',&d,&l,NULL,NULL);
+	}
+	inline void add_r(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r) {
+		add(iblock,eqn,varn,"block",'r',&d,NULL,&r,NULL);
+	}
+	inline void add_lr(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r) {
+		add(iblock,eqn,varn,"block",'f',&d,&l,&r,NULL);
+	}
+	inline void add_li(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &i) {
+		add(iblock,eqn,varn,"block",'m',&d,&l,NULL,&i);
+	}
+	inline void add_ri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i) {
+		add(iblock,eqn,varn,"block",'s',&d,NULL,&r,&i);
+	}
+	inline void add_lri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r,const matrix &i) {
+		add(iblock,eqn,varn,"block",'g',&d,&l,&r,&i);
+	}
+	
+	inline void bc_pol_add_d(int iblock,const char *eqn, const char *varn,const matrix &d) {
+		add(iblock,eqn,varn,"bc_pol",'d',&d,NULL,NULL,NULL);
+	}
+	inline void bc_pol_add_l(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l) {
+		add(iblock,eqn,varn,"bc_pol",'l',&d,&l,NULL,NULL);
+	}
+	inline void bc_pol_add_r(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r) {
+		add(iblock,eqn,varn,"bc_pol",'r',&d,NULL,&r,NULL);
+	}
+	inline void bc_pol_add_lr(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r) {
+		add(iblock,eqn,varn,"bc_pol",'f',&d,&l,&r,NULL);
+	}
+	inline void bc_pol_add_li(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &i) {
+		add(iblock,eqn,varn,"bc_pol",'m',&d,&l,NULL,&i);
+	}
+	inline void bc_pol_add_ri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i) {
+		add(iblock,eqn,varn,"bc_pol",'s',&d,NULL,&r,&i);
+	}
+	inline void bc_pol_add_lri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r,const matrix &i) {
+		add(iblock,eqn,varn,"bc_pol",'g',&d,&l,&r,&i);
+	}
+	
+	inline void bc_eq_add_d(int iblock,const char *eqn, const char *varn,const matrix &d) {
+		add(iblock,eqn,varn,"bc_eq",'d',&d,NULL,NULL,NULL);
+	}
+	inline void bc_eq_add_l(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l) {
+		add(iblock,eqn,varn,"bc_eq",'l',&d,&l,NULL,NULL);
+	}
+	inline void bc_eq_add_r(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r) {
+		add(iblock,eqn,varn,"bc_eq",'r',&d,NULL,&r,NULL);
+	}
+	inline void bc_eq_add_lr(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r) {
+		add(iblock,eqn,varn,"bc_eq",'f',&d,&l,&r,NULL);
+	}
+	inline void bc_eq_add_li(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &i) {
+		add(iblock,eqn,varn,"bc_eq",'m',&d,&l,NULL,&i);
+	}
+	inline void bc_eq_add_ri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i) {
+		add(iblock,eqn,varn,"bc_eq",'s',&d,NULL,&r,&i);
+	}
+	inline void bc_eq_add_lri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r,const matrix &i) {
+		add(iblock,eqn,varn,"bc_eq",'g',&d,&l,&r,&i);
+	}
+	
+	inline void bc_bot1_add_d(int iblock,const char *eqn, const char *varn,const matrix &d) {
+		add(iblock,eqn,varn,"bc_bot1",'d',&d,NULL,NULL,NULL);
+	}
+	inline void bc_bot1_add_l(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l) {
+		add(iblock,eqn,varn,"bc_bot1",'l',&d,&l,NULL,NULL);
+	}
+	inline void bc_bot1_add_r(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r) {
+		add(iblock,eqn,varn,"bc_bot1",'r',&d,NULL,&r,NULL);
+	}
+	inline void bc_bot1_add_lr(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r) {
+		add(iblock,eqn,varn,"bc_bot1",'f',&d,&l,&r,NULL);
+	}
+	inline void bc_bot1_add_li(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &i) {
+		add(iblock,eqn,varn,"bc_bot1",'m',&d,&l,NULL,&i);
+	}
+	inline void bc_bot1_add_ri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i) {
+		add(iblock,eqn,varn,"bc_bot1",'s',&d,NULL,&r,&i);
+	}
+	inline void bc_bot1_add_lri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r,const matrix &i) {
+		add(iblock,eqn,varn,"bc_bot1",'g',&d,&l,&r,&i);
+	}
+	
+	inline void bc_bot2_add_d(int iblock,const char *eqn, const char *varn,const matrix &d) {
+		add(iblock,eqn,varn,"bc_bot2",'d',&d,NULL,NULL,NULL);
+	}
+	inline void bc_bot2_add_l(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l) {
+		add(iblock,eqn,varn,"bc_bot2",'l',&d,&l,NULL,NULL);
+	}
+	inline void bc_bot2_add_r(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r) {
+		add(iblock,eqn,varn,"bc_bot2",'r',&d,NULL,&r,NULL);
+	}
+	inline void bc_bot2_add_lr(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r) {
+		add(iblock,eqn,varn,"bc_bot2",'f',&d,&l,&r,NULL);
+	}
+	inline void bc_bot2_add_li(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &i) {
+		add(iblock,eqn,varn,"bc_bot2",'m',&d,&l,NULL,&i);
+	}
+	inline void bc_bot2_add_ri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i) {
+		add(iblock,eqn,varn,"bc_bot2",'s',&d,NULL,&r,&i);
+	}
+	inline void bc_bot2_add_lri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r,const matrix &i) {
+		add(iblock,eqn,varn,"bc_bot2",'g',&d,&l,&r,&i);
+	}
+	
+	inline void bc_top1_add_d(int iblock,const char *eqn, const char *varn,const matrix &d) {
+		add(iblock,eqn,varn,"bc_top1",'d',&d,NULL,NULL,NULL);
+	}
+	inline void bc_top1_add_l(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l) {
+		add(iblock,eqn,varn,"bc_top1",'l',&d,&l,NULL,NULL);
+	}
+	inline void bc_top1_add_r(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r) {
+		add(iblock,eqn,varn,"bc_top1",'r',&d,NULL,&r,NULL);
+	}
+	inline void bc_top1_add_lr(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r) {
+		add(iblock,eqn,varn,"bc_top1",'f',&d,&l,&r,NULL);
+	}
+	inline void bc_top1_add_li(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &i) {
+		add(iblock,eqn,varn,"bc_top1",'m',&d,&l,NULL,&i);
+	}
+	inline void bc_top1_add_ri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i) {
+		add(iblock,eqn,varn,"bc_top1",'s',&d,NULL,&r,&i);
+	}
+	inline void bc_top1_add_lri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r,const matrix &i) {
+		add(iblock,eqn,varn,"bc_top1",'g',&d,&l,&r,&i);
+	}
+	
+	inline void bc_top2_add_d(int iblock,const char *eqn, const char *varn,const matrix &d) {
+		add(iblock,eqn,varn,"bc_top2",'d',&d,NULL,NULL,NULL);
+	}
+	inline void bc_top2_add_l(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l) {
+		add(iblock,eqn,varn,"bc_top2",'l',&d,&l,NULL,NULL);
+	}
+	inline void bc_top2_add_r(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r) {
+		add(iblock,eqn,varn,"bc_top2",'r',&d,NULL,&r,NULL);
+	}
+	inline void bc_top2_add_lr(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r) {
+		add(iblock,eqn,varn,"bc_top2",'f',&d,&l,&r,NULL);
+	}
+	inline void bc_top2_add_li(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &i) {
+		add(iblock,eqn,varn,"bc_top2",'m',&d,&l,NULL,&i);
+	}
+	inline void bc_top2_add_ri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &r,const matrix &i) {
+		add(iblock,eqn,varn,"bc_top2",'s',&d,NULL,&r,&i);
+	}
+	inline void bc_top2_add_lri(int iblock,const char *eqn, const char *varn,const matrix &d,const matrix &l,const matrix &r,const matrix &i) {
+		add(iblock,eqn,varn,"bc_top2",'g',&d,&l,&r,&i);
+	}
 	
 };
 

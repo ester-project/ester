@@ -6,6 +6,8 @@ extern "C" {
 #include CBLAS
 }
 
+//#define PERF_LOG
+
 void solver_block::init(int nvar) {
 	
 	int i,j;
@@ -73,14 +75,8 @@ void solver_block::reset(int ieq) {
 void solver_block::add(int ieq,int ivar,char type,const matrix *d,const matrix *l,const matrix *r,const matrix *i) {
 
 	solver_elem *p,*pnew;
-	int error=0;
 	
-	if(nr[ieq]||nth[ieq]) {
-		if(nr[ieq]!=d->nrows()||nth[ieq]!=d->ncols()) {
-			printf("Error (solver_block): Size of D does not match that of the precedent term\n");
-			error=1;
-		}	
-	} else {
+	if(!nr[ieq]&&!nth[ieq]) {
 		nr[ieq]=d->nrows();
 		nth[ieq]=d->ncols();
 	}
@@ -96,84 +92,14 @@ void solver_block::add(int ieq,int ivar,char type,const matrix *d,const matrix *
 	}
 	p->type=type;
 	p->D=*d;
-	if(type=='l'||type=='m'||type=='f'||type=='g') {
-		p->L=*l;
-		if(l->nrows()!=d->nrows()) {
-			printf("Error (solver_block): Number of rows of L does not match that of D\n");
-			error=1;
-		}
-	}
-	if(type=='r'||type=='s'||type=='f'||type=='g') {
-		p->R=*r;
-		if(r->ncols()!=d->ncols()) {
-			printf("Error (solver_block): Number of columns of R does not match that of D\n");
-			error=1;
-		}
-	}
-	if(type=='m'||type=='s'||type=='g') {
-		p->I=*i;
-		if(type=='m'||type=='g') {
-			if(l->ncols()!=i->nrows()) {
-				printf("Error (solver_block): Number of columns of L does not match the number of rows of I\n");
-				error=1;
-			}
-		}
-		if(type=='s'||type=='g') {
-			if(r->nrows()!=i->ncols()) {
-				printf("Error (solver_block): Number of rows of R does not match the number of columns of I\n");
-				error=1;
-			}
-		}
-		}
+	if(type=='l'||type=='m'||type=='f'||type=='g') p->L=*l;
+	if(type=='r'||type=='s'||type=='f'||type=='g') p->R=*r;
+	if(type=='m'||type=='s'||type=='g') p->I=*i;
+
 	p->next=NULL;
 
 	eq_set(ieq)=1;
 	
-	if(error) {
-		printf("\t ieq=%d ivar=%d type=%c\n",ieq,ivar,type);
-		exit(1);
-	}
-
-}
-
-void solver_block::add_d(int ieq,int ivar,const matrix &d) {
-
-	add(ieq,ivar,'d',&d,NULL,NULL,NULL);
-
-}
-
-void solver_block::add_l(int ieq,int ivar,const matrix &d,const matrix &l) {
-
-	add(ieq,ivar,'l',&d,&l,NULL,NULL);
-
-}
-
-void solver_block::add_r(int ieq,int ivar,const matrix &d,const matrix &r) {
-	
-	add(ieq,ivar,'r',&d,NULL,&r,NULL);
-
-}
-
-void solver_block::add_lr(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r) {
-
-	add(ieq,ivar,'f',&d,&l,&r,NULL);
-
-}
-
-void solver_block::add_li(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &i) {
-	
-	add(ieq,ivar,'m',&d,&l,NULL,&i);
-
-}
-
-void solver_block::add_ri(int ieq,int ivar,const matrix &d,const matrix &r,const matrix &i) {
-
-	add(ieq,ivar,'s',&d,NULL,&r,&i);
-}
-
-void solver_block::add_lri(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r,const matrix &i) {
-
-	add(ieq,ivar,'g',&d,&l,&r,&i);
 }
 
 solver::solver() {
@@ -187,6 +113,7 @@ solver::solver() {
 	def_nr=NULL;
 	mult_fcn=NULL;
 	mult_context=NULL;
+	debug=0;
 };
 
 void solver::init(int nblock,int nvar,const char *solver_type) {
@@ -431,13 +358,11 @@ matrix solver::get_var(int ivar) {
 	return x[ivar];
 }
 
-//#define PERF_LOG
-
 void solver::solve(int *info) {
 
 	matrix y;
 	matrix rhsw;
-	int err;
+	int err,struct_changed=0;
 	int i;
 	
 #ifdef PERF_LOG
@@ -447,10 +372,16 @@ void solver::solve(int *info) {
 #endif
 	if(info!=NULL) for(i=0;i<5;i++) info[i]=0;
 	if(!sync) fill_void_blocks();
-	calc_struct();
+	if(verbose)
+		printf("Checking structure...\n");
+	err=check_struct();
+	if(err&2) exit(1);
+	if(err) struct_changed=1;
 	wrap(x,&y);
 	wrap(rhs,&rhsw);
-	if(op!=NULL&&sync==0&&use_cgs) {
+	if(op!=NULL&&sync==0&&use_cgs&&struct_changed&&verbose) 
+		printf("WARNING: Operator structure has changed, skipping CGS iteration\n");
+	if(op!=NULL&&sync==0&&use_cgs&&!struct_changed) {
 		if(verbose)
 			printf("CGS iteration:\n");
 #ifdef PERF_LOG
@@ -475,8 +406,9 @@ void solver::solve(int *info) {
 			printf("Not converged after %d iterations\n",maxit_cgs);
 	}
 	if(!sync) {
-		if(verbose)
+		if(verbose) 
 			printf("Creating matrix...\n");
+		if(debug) printf("SOLVER: Debug mode is ON\n");
 #ifdef PERF_LOG
 		tcreate.start();
 #endif
@@ -487,16 +419,24 @@ void solver::solve(int *info) {
 #endif
 		if(info!=NULL) info[0]=1;
 	}
+	if(!sync) {
+		if(verbose)
+			printf("LU Fatorization...\n");
 #ifdef PERF_LOG
-	tlu.start();
+		tlu.start();
 #endif
-	if(verbose)
-		printf("LU factorization:\n");
+	} else {
+		if(verbose)
+			printf("Solving...\n");
+	}
 	y=op->solve(rhsw);
 #ifdef PERF_LOG
-	tlu.stop();
-	nlu++;
+	if(!sync) {
+		tlu.stop();
+		nlu++;
+	}
 #endif
+	sync=1;
 	if(maxit_ref) {
 #ifdef PERF_LOG
 		tref.start();
@@ -846,7 +786,6 @@ int solver::cgs(const matrix &rhs,matrix &x,int maxit) {
 
 void solver::create() {
 
-	sync=1;
 	if(!strcmp(type,"full")) {
 		if(op==NULL) op=new solver_full(nb);
 		create_full();
@@ -871,6 +810,7 @@ void solver::create_full() {
 	int **nr=var_nr,**nbot=var_nbot,**ntop=var_ntop,**nth=var_nth;
 	int i,j,k,l,ivar,ieq,n,nn,i0,j0,set,nn2,kk,kk0,kk1,jj;
 	
+	if(verbose) printf("\t");
 	for(n=0;n<nb;n++) {
 		nn=0;
 		for(ivar=0;ivar<nv;ivar++) nn+=nr[n][ivar]*nth[n][ivar];
@@ -907,12 +847,20 @@ void solver::create_full() {
 										opi(i0,j0)+=p->D(i,j)*p->L(i,k)*p->R(l,j);
 										break;
 									case 'm':
-										if(j==l||nth[n][ivar]==1)
-											opi(i0,j0)+=p->D(i,j)*p->L(i,k)*p->I(k,l);
+										if(j==l||nth[n][ivar]==1) {
+											int lI;
+											if(p->I.ncols()==1) lI=0;
+											else lI=j;
+											opi(i0,j0)+=p->D(i,j)*p->L(i,k)*p->I(k,lI);
+										}
 										break;
 									case 's':
-										if(k==0)
-											opi(i0,j0)+=p->D(i,j)*p->R(l,j)*p->I(0,l);
+										if(k==0) {
+											int kI;
+											if(p->I.nrows()==1) kI=0;
+											else kI=i;
+											opi(i0,j0)+=p->D(i,j)*p->R(l,j)*p->I(kI,l);
+										}
 										break;
 									case 'g':
 										opi(i0,j0)+=p->D(i,j)*p->L(i,k)*p->R(l,j)*p->I(k,l);
@@ -926,24 +874,28 @@ void solver::create_full() {
 					for(ieq=0;ieq<nv;ieq++) {
 						for(i=nbot[n][ieq];i<nr[n][ieq]-ntop[n][ieq];i++) {
 							for(j=0;j<nth[n][ieq];j++) {
+								int j_check;
 								if(j==0&&bc_eq[n].eq_set(ieq)) {
 									p=bc_eq[n].eq[ieq][ivar];
 									jj=0;
+									j_check=0;
 								} else if(j==nth[n][ieq]-1&&bc_pol[n].eq_set(ieq)) {
 									p=bc_pol[n].eq[ieq][ivar];
 									jj=0;
+									j_check=nth[n][ivar]-1;
 								} else {
 									p=block[n].eq[ieq][ivar];
 									jj=j;
+									j_check=j;
 								}
 								while(p!=NULL) {
 									switch(p->type) {
 									case 'd':
-										if((i==k||nr[n][ivar]==1)&&(j==l||nth[n][ivar]==1))
+										if((i==k||nr[n][ivar]==1)&&(j_check==l||nth[n][ivar]==1))
 											opi(i0,j0)+=p->D(i,jj);
 										break;
 									case 'l':
-										if((j==l)||(nth[n][ivar]==1))
+										if((j_check==l)||(nth[n][ivar]==1))
 											opi(i0,j0)+=p->D(i,jj)*p->L(i,k);
 										break;
 									case 'r':
@@ -954,12 +906,20 @@ void solver::create_full() {
 										opi(i0,j0)+=p->D(i,jj)*p->L(i,k)*p->R(l,jj);
 										break;
 									case 'm':
-										if((j==l)||(nth[n][ivar]==1))
-											opi(i0,j0)+=p->D(i,jj)*p->L(i,k)*p->I(k,jj);
+										if((j_check==l)||(nth[n][ivar]==1)) {
+											int lI;
+											if(p->I.ncols()==1) lI=0;
+											else lI=jj;
+											opi(i0,j0)+=p->D(i,jj)*p->L(i,k)*p->I(k,lI);
+										}
 										break;
 									case 's':
-										if((i==k)||(nr[n][ivar]==1))
-											opi(i0,j0)+=p->D(i,jj)*p->R(l,jj)*p->I(k,l);
+										if((i==k)||(nr[n][ivar]==1)) {
+											int kI;
+											if(p->I.nrows()==1) kI=0;
+											else kI=i;
+											opi(i0,j0)+=p->D(i,jj)*p->R(l,jj)*p->I(kI,l);
+										}
 										break;
 									case 'g':
 										opi(i0,j0)+=p->D(i,jj)*p->L(i,k)*p->R(l,jj)*p->I(k,l);
@@ -992,12 +952,20 @@ void solver::create_full() {
 										opi(i0,j0)+=p->D(i,j)*p->L(i,k)*p->R(l,j);
 										break;
 									case 'm':
-										if(j==l||nth[n][ivar]==1)
-											opi(i0,j0)+=p->D(i,j)*p->L(i,k)*p->I(k,l);
+										if(j==l||nth[n][ivar]==1) {
+											int lI;
+											if(p->I.ncols()==1) lI=0;
+											else lI=j;
+											opi(i0,j0)+=p->D(i,j)*p->L(i,k)*p->I(k,lI);
+										}
 										break;
 									case 's':
-										if(k==(nr[n][ivar]-1))
-											opi(i0,j0)+=p->D(i,j)*p->R(l,j)*p->I(0,l);
+										if(k==(nr[n][ivar]-1)) {
+											int kI;
+											if(p->I.nrows()==1) kI=0;
+											else kI=i;
+											opi(i0,j0)+=p->D(i,j)*p->R(l,j)*p->I(kI,l);
+										}
 										break;
 									case 'g':
 										opi(i0,j0)+=p->D(i,j)*p->L(i,k)*p->R(l,j)*p->I(k,l);
@@ -1014,7 +982,7 @@ void solver::create_full() {
 		}
 		}
 		op->set_block(n,opi);
-		//check_full(n,opi,0);
+		if (debug) check_full(n,opi,0);
 		
 		if(n>0) {
 			nn=0;
@@ -1045,7 +1013,7 @@ void solver::create_full() {
 											break;
 										case 'l':
 											if(j==l||nth[n-1][ivar]==1)
-												opi(i0,j0)+=p->D(i,l)*p->L(i,k);
+												opi(i0,j0)+=p->D(i,j)*p->L(i,k);
 											break;
 										case 'r':
 											if(k==(nr[n-1][ivar]-1))
@@ -1055,12 +1023,20 @@ void solver::create_full() {
 											opi(i0,j0)+=p->D(i,j)*p->L(i,k)*p->R(l,j);
 											break;
 										case 'm':
-											if(j==l||nth[n-1][ivar]==1)
-												opi(i0,j0)+=p->D(i,l)*p->L(i,k)*p->I(k,l);
+											if(j==l||nth[n-1][ivar]==1) {
+												int lI;
+												if(p->I.ncols()==1) lI=0;
+												else lI=j;
+												opi(i0,j0)+=p->D(i,j)*p->L(i,k)*p->I(k,lI);
+											}
 											break;
 										case 's':
-											if(k==(nr[n-1][ivar]-1))
-												opi(i0,j0)+=p->D(i,j)*p->R(l,j)*p->I(0,l);
+											if(k==(nr[n-1][ivar]-1)) {
+												int kI;
+												if(p->I.nrows()==1) kI=0;
+												else kI=i;
+												opi(i0,j0)+=p->D(i,j)*p->R(l,j)*p->I(kI,l);
+											}
 											break;
 										case 'g':
 											opi(i0,j0)+=p->D(i,j)*p->L(i,k)*p->R(l,j)*p->I(k,l);
@@ -1077,7 +1053,8 @@ void solver::create_full() {
 			}
 			}
 			if(set) op->set_blockinf(n-1,opi);
-			//if(set) check_full(n,opi,-1);
+			if (debug&set) check_full(n,opi,-1);
+			
 		}
 		if(n<nb-1) {
 			nn=0;
@@ -1108,7 +1085,7 @@ void solver::create_full() {
 											break;
 										case 'l':
 											if(j==l||nth[n+1][ivar]==1)
-												opi(i0,j0)+=p->D(i,l)*p->L(i,k);
+												opi(i0,j0)+=p->D(i,j)*p->L(i,k);
 											break;
 										case 'r':
 											if(k==0)
@@ -1118,12 +1095,20 @@ void solver::create_full() {
 											opi(i0,j0)+=p->D(i,j)*p->L(i,k)*p->R(l,j);
 											break;
 										case 'm':
-											if(j==l||nth[n+1][ivar]==1)
-												opi(i0,j0)+=p->D(i,l)*p->L(i,k)*p->I(k,l);
+											if(j==l||nth[n+1][ivar]==1) {
+												int lI;
+												if(p->I.ncols()==1) lI=0;
+												else lI=j;
+												opi(i0,j0)+=p->D(i,j)*p->L(i,k)*p->I(k,lI);
+											}
 											break;
 										case 's':
-											if(k==0)
-												opi(i0,j0)+=p->D(i,j)*p->R(l,j)*p->I(0,l);
+											if(k==0) {
+												int kI;
+												if(p->I.nrows()==1) kI=0;
+												else kI=i;
+												opi(i0,j0)+=p->D(i,j)*p->R(l,j)*p->I(kI,l);
+											}
 											break;
 										case 'g':
 											opi(i0,j0)+=p->D(i,j)*p->L(i,k)*p->R(l,j)*p->I(k,l);
@@ -1140,10 +1125,11 @@ void solver::create_full() {
 			}
 			}
 			if(set) op->set_blocksup(n,opi);
-			//if(set) check_full(n,opi,1);
+			if(debug&set) check_full(n,opi,1);
 		}
-		
+		if(verbose) {printf("#");fflush(stdout);}
 	}
+	if(verbose) printf("\n");
 
 }
 
@@ -1175,9 +1161,9 @@ void solver::check_full(int n, const matrix &opi, int pos) {
 		for(i=0;i<ni;i++) {
 			if(fabs((x(i+i0)-opi(i,j))/opi(i,j))>1e-8)
 				if(fabs(x(i+i0)-opi(i,j))>1e-12) {
-					printf("Error in operator");
+					printf("\nError in operator");
 					if(pos==-1) printf(" (inf) ");
-					if(pos==-1) printf(" (sup) ");
+					if(pos==1) printf(" (sup) ");
 					printf(":\n\tblock=%d,row=%d,col=%d (%e,%e)\n",
 						n,i,j,opi(i,j),x(i+i0));
 					exit(1);
@@ -1281,35 +1267,513 @@ void solver::unwrap(matrix *y,const matrix *x) {
 }
 
 
-void solver::calc_struct() {
+
+void solver::add(const char *eqn, const char *varn,const char *block_type,char type,const matrix *d,const matrix_block_diag *l,const matrix *r,const matrix *i) {
+	
+	int ieq,ivar;
+	int k,j0,j1;
+	matrix *dd,*ll,*ii;
+	solver_block *bb;
+	char err_msg[256];
+	int error=0;
+	
+	ieq=get_id(eqn);
+	ivar=get_id(varn);
+	sync=0;
+	dd=new matrix;
+	ll=NULL;
+	if(type=='m'||type=='s'||type=='g') ii=new matrix;
+	else ii=NULL;
+	j0=0;
+	if(!strcmp(block_type,"block"))
+		bb=block;
+	else if(!strcmp(block_type,"bc_eq")) 
+		bb=bc_eq;
+	else if(!strcmp(block_type,"bc_pol")) 
+		bb=bc_pol;
+	else {
+		printf("solver::add : Invalid block_type %s\n",block_type);
+		exit(1);
+	}
+	
+	for(k=0;k<nb;k++) {
+		j1=j0+def_nr[k]-1;
+		if(j1>=d->nrows()) {
+			sprintf(err_msg,"Matrix D has incorrect size");
+			error=1;
+			break;
+		}
+		*dd=d->block(j0,j1,0,d->ncols()-1);
+		if(type=='l'||type=='m'||type=='f'||type=='g') {
+			if(k>=l->nblocks()) {
+				sprintf(err_msg,"Matrix L has incorrect number of blocks");
+				error=1;
+				break;
+			}
+			ll=&(l->block(k));
+		}
+		if(type=='m'||type=='s'||type=='g') {
+			if(j1>=i->nrows()) {
+				sprintf(err_msg,"Matrix I has incorrect size");
+				error=1;
+				break;
+			}
+			*ii=i->block(j0,j1,0,i->ncols()-1);
+		} else ii=NULL;
+		bb[k].add(ieq,ivar,type,dd,ll,r,ii);
+		j0=j1+1;
+		if(j0==d->nrows()) {
+			if(type=='l'||type=='m'||type=='f'||type=='g') {
+				if(l->nblocks()>k+1) {
+					sprintf(err_msg,"Matrix L has incorrect number of blocks");
+					error=1;
+					break;
+				}
+			}
+			if(type=='m'||type=='s'||type=='g') {
+				if(i->nrows()>j0) {
+					sprintf(err_msg,"Matrix I has incorrect size");
+					error=1;
+					break;
+				}
+			}
+			break;
+		} else if(k==nb-1) {
+			sprintf(err_msg,"Matrix D has incorrect size");
+			error=1;
+		}
+	}
+	
+	if(error) {
+		printf("ERROR (solver):\n\t%s\n\tin eq \"%s\", var \"%s\"",err_msg,eqn,varn);
+		switch(type) {
+			case 'd': 
+				printf(" (type: d)\n");
+				break;
+			case 'l': 
+				printf(" (type: l)\n");
+				break;
+			case 'r': 
+				printf(" (type: r)\n");
+				break;
+			case 'f': 
+				printf(" (type: lr)\n");
+				break;
+			case 'm': 
+				printf(" (type: li)\n");
+				break;
+			case 's': 
+				printf(" (type: ri)\n");
+				break;
+			case 'g': 
+				printf(" (type: lri)\n");
+		}
+		exit(1);
+	}	
+	delete dd;
+	if(type=='m'||type=='s'||type=='g') delete ii;
+	
+}
+
+void solver::add(int iblock,const char *eqn, const char *varn,const char *block_type,char type,const matrix *d,const matrix *l,const matrix *r,const matrix *i) {
+
+	solver_block *bb;
+
+	int ieq,ivar;
+	ieq=get_id(eqn);
+	ivar=get_id(varn);
+	sync=0;
+	if(!strcmp(block_type,"block"))
+		bb=block;
+	else if(!strcmp(block_type,"bc_eq")) 
+		bb=bc_eq;
+	else if(!strcmp(block_type,"bc_pol")) 
+		bb=bc_pol;
+	else if(!strcmp(block_type,"bc_bot1"))
+		bb=bc_bot1;
+	else if(!strcmp(block_type,"bc_bot2"))
+		bb=bc_bot2;
+	else if(!strcmp(block_type,"bc_top1"))
+		bb=bc_top1;
+	else if(!strcmp(block_type,"bc_top2"))
+		bb=bc_top2;
+	else {
+		printf("solver::add : Unknown block_type %s\n",block_type);
+		exit(1);
+	}
+	
+	bb[iblock].add(ieq,ivar,type,d,l,r,i);	
+
+}
+
+
+int solver::check_struct() {
 
 	int &N=solver_N,i,j,**nr=var_nr,**nbot=var_nbot,**ntop=var_ntop,**nth=var_nth;
+	int changed=0;
 
 	N=0;
 	for(i=0;i<nb;i++) {
 		for(j=0;j<nv;j++) {
 			if(block[i].eq_set(j)) {
+				if(nr[i][j]!=block[i].nr[j]) changed=1;
 				nr[i][j]=block[i].nr[j];
+				if(nth[i][j]!=block[i].nth[j]) changed=1;
 				nth[i][j]=block[i].nth[j];
 				N+=nr[i][j]*nth[i][j];
 			} else {
+				if(nr[i][j]||nth[i][j]||nbot[i][j]||ntop[i][j]) changed=1;
 				nr[i][j]=0;
 				nth[i][j]=0;
 				nbot[i][j]=0;
 				ntop[i][j]=0;
 				continue;
 			}
-			if(bc_bot2[i].eq_set(j)) nbot[i][j]=bc_bot2[i].nr[j];
-			else nbot[i][j]=0;
-			if(bc_top1[i].eq_set(j)) ntop[i][j]=bc_top1[i].nr[j];
-			else ntop[i][j]=0;
+			if(bc_bot2[i].eq_set(j)) {
+				if(nbot[i][j]!=bc_bot2[i].nr[j]) changed=1;
+				nbot[i][j]=bc_bot2[i].nr[j];
+			} else {
+				if(nbot[i][j]!=0) changed=1;
+				nbot[i][j]=0;
+			}
+			if(bc_top1[i].eq_set(j)) {
+				if(ntop[i][j]!=bc_top1[i].nr[j]) changed=1;
+				ntop[i][j]=bc_top1[i].nr[j];
+			} else {
+				if(ntop[i][j]!=0) changed=1;
+				ntop[i][j]=0;
+			}
 		}
 	}
-	/*for(j=0;j<nv;j++) {
-		printf("%d %s:\n",j,var[j]);
-		for(i=0;i<nb;i++) {
-			printf("\t%d: %dx%d (nbot=%d,ntop=%d)\n",i,nr[i][j],nth[i][j],nbot[i][j],ntop[i][j]);
+	
+	if(debug) {
+		for(j=0;j<nv;j++) {
+			printf("%d %s:\n",j,var[j]);
+			for(i=0;i<nb;i++) {
+				printf("\t%d: %dx%d (nbot=%d,ntop=%d)\n",i,nr[i][j],nth[i][j],nbot[i][j],ntop[i][j]);
+			}
 		}
-	}*/
+	}
+
+	solver_elem *p;
+	int error=0;
+	
+	for(int n=0;n<nb;n++) {
+		for(int i=0;i<nv;i++) {
+			if(block[n].eq_set(i)) 
+				for(int j=0;j<nv;j++) 
+					error=error||check_struct_block(n,i,j);
+			if(bc_pol[n].eq_set(i)) 
+				for(int j=0;j<nv;j++) 
+					error=error||check_struct_bc_th(n,i,j,"pol");
+			if(bc_eq[n].eq_set(i)) 
+				for(int j=0;j<nv;j++) 
+					error=error||check_struct_bc_th(n,i,j,"eq");
+			if(n) 
+				if(bc_bot1[n].eq_set(i)) 
+					for(int j=0;j<nv;j++) 
+						error=error||check_struct_bc(n,i,j,"bot1");
+			if(bc_bot2[n].eq_set(i)) 
+				for(int j=0;j<nv;j++) 
+					error=error||check_struct_bc(n,i,j,"bot2");
+			if(bc_top1[n].eq_set(i)) 
+				for(int j=0;j<nv;j++) 
+					error=error||check_struct_bc(n,i,j,"top1");
+			if(n<nb-1) 
+				if(bc_top2[n].eq_set(i)) 
+					for(int j=0;j<nv;j++) 
+						error=error||check_struct_bc(n,i,j,"top2");
+		}
+	}
+	
+	int Nr,Nt;
+	for(int i=0;i<nv;i++) {
+		if(strlen(var[i])) {
+			Nr=0;Nt=0;
+			for(int n=0;n<nb;n++) {
+				Nr+=nr[n][i];
+				Nt=nth[n][i]>Nt?nth[n][i]:Nt;
+			}
+			if(rhs[i].nrows()!=Nr||rhs[i].ncols()!=Nt) {
+				printf("ERROR (solver):\n\tRHS for var \"%s\" has not the correct size\n",var[i]);
+				printf("\tIt is (%d,%d) and should be (%d,%d)\n",rhs[i].nrows(),rhs[i].ncols(),Nr,Nt);
+				error=1;
+			}
+		}
+	}
+	
+	return changed+2*error;
+	
 }
+
+int solver::check_struct_block(int n,int i,int j) {
+
+	int error=0,n1,m1,n2,m2;
+	char err_msg[256];
+	solver_elem *p;
+
+	p=block[n].eq[i][j];
+	n1=var_nr[n][i];m1=var_nth[n][i];
+	n2=var_nr[n][j];m2=var_nth[n][j];
+	
+	
+	while(p!=NULL) {
+						
+		if(!n2||!m2) {
+			sprintf(err_msg,"Variable does not exist in this block");
+			check_struct_error(err_msg,n,i,j,p);
+			error=1;
+		}
+		
+		if(p->D.nrows()!=n1||p->D.ncols()!=m1) {
+			sprintf(err_msg,"Matrix D has incorrect size");
+			check_struct_error(err_msg,n,i,j,p);
+			error=1;
+		}
+		
+		if(p->type=='l'||p->type=='f'||p->type=='m'||p->type=='g') {	
+			if(p->L.nrows()!=n1||p->L.ncols()!=n2) {
+				sprintf(err_msg,"Matrix L has incorrect size");
+				check_struct_error(err_msg,n,i,j,p);
+				error=1;
+			}
+		}
+		
+		if(p->type=='r'||p->type=='f'||p->type=='s'||p->type=='g') {	
+			if(p->R.ncols()!=m1||p->R.nrows()!=m2) {
+				sprintf(err_msg,"Matrix R has incorrect size");
+				check_struct_error(err_msg,n,i,j,p);
+				error=1;
+			}
+		}
+		
+		if(p->type=='m'||p->type=='s'||p->type=='g') {
+			bool cond;
+			if(p->type=='g') cond=p->I.nrows()==n2&&p->I.ncols()==m2;
+			if(p->type=='m') cond=p->I.nrows()==n2&&(p->I.ncols()==m1||p->I.ncols()==m2);
+			if(p->type=='s') cond=(p->I.nrows()==n1||p->I.nrows()==n2)&&p->I.ncols()==m2;
+			if(!cond) {
+				sprintf(err_msg,"Matrix I has incorrect size");
+				check_struct_error(err_msg,n,i,j,p);
+				error=1;
+			}
+		}
+		
+		if(p->type=='d') {
+			bool cond;
+			cond= (n2==n1)||(n2==1);
+			cond= cond&&(m2==m1)||(m2==1);
+			if(!cond) {
+				sprintf(err_msg,"Term incompatible with size of variables");
+				check_struct_error(err_msg,n,i,j,p);
+				error=1;
+			}
+		}
+		if(p->type=='l'||p->type=='m') {
+			bool cond;
+			cond= (m2==m1)||(m2==1);
+			if(!cond) {
+				sprintf(err_msg,"Term incompatible with size of variables");
+				check_struct_error(err_msg,n,i,j,p);
+				error=1;
+			}
+		}
+		if(p->type=='r'||p->type=='s') {
+			bool cond;
+			cond= (n2==n1)||(n2==1);
+			if(!cond) {
+				sprintf(err_msg,"Term incompatible with size of variables");
+				check_struct_error(err_msg,n,i,j,p);
+				error=1;
+			}
+		}	
+		p=p->next;
+	}
+	return error;
+
+}
+
+int solver::check_struct_bc_th(int n,int i,int j,const char *bctype) {
+
+	int error=0,n1,n2,m1,m2;
+	char err_msg[256];
+	solver_elem *p;
+
+	if(!strcmp(bctype,"pol")) p=bc_pol[n].eq[i][j];
+	else if(!strcmp(bctype,"eq")) p=bc_eq[n].eq[i][j];
+	else return 1;
+
+	n1=var_nr[n][i];m1=var_nth[n][i];
+	n2=var_nr[n][j];m2=var_nth[n][j];
+
+	while(p!=NULL) {
+						
+		if(!n2||!m2) {
+			sprintf(err_msg,"Variable does not exist in this block (bc_%s)",bctype);
+			check_struct_error(err_msg,n,i,j,p);
+			error=1;
+		}
+		
+		if(p->D.nrows()!=n1||p->D.ncols()!=1) {
+			sprintf(err_msg,"Matrix D has incorrect size (bc_%s)",bctype);
+			check_struct_error(err_msg,n,i,j,p);
+			error=1;
+		}
+		
+		if(p->type=='l'||p->type=='f'||p->type=='m'||p->type=='g') {	
+			if(p->L.nrows()!=n1||p->L.ncols()!=n2) {
+				sprintf(err_msg,"Matrix L has incorrect size (bc_%s)",bctype);
+				check_struct_error(err_msg,n,i,j,p);
+				error=1;
+			}
+		}
+		
+		if(p->type=='r'||p->type=='f'||p->type=='s'||p->type=='g') {	
+			if(p->R.ncols()!=1||p->R.nrows()!=m2) {
+				sprintf(err_msg,"Matrix R has incorrect size (bc_%s)",bctype);
+				check_struct_error(err_msg,n,i,j,p);
+				error=1;
+			}
+		}
+		
+		if(p->type=='m'||p->type=='s'||p->type=='g') {
+			bool cond;
+			if(p->type=='g') cond=p->I.nrows()==n2&&p->I.ncols()==m2;
+			if(p->type=='m') cond=p->I.nrows()==n2&&p->I.ncols()==1;
+			if(p->type=='s') cond=(p->I.nrows()==n1||p->I.nrows()==n2)&&p->I.ncols()==m2;
+			if(!cond) {
+				sprintf(err_msg,"Matrix I has incorrect size (bc_%s)",bctype);
+				check_struct_error(err_msg,n,i,j,p);
+				error=1;
+			}
+		}
+		
+		if(p->type=='d'||p->type=='r'||p->type=='s') {
+			bool cond;
+			cond= (n2==n1)||(n2==1);
+			if(!cond) {
+				sprintf(err_msg,"Term incompatible with size of variables (bc_%s)",bctype);
+				check_struct_error(err_msg,n,i,j,p);
+				error=1;
+			}
+		}
+	
+		p=p->next;
+	}
+	return error;
+
+}
+
+
+int solver::check_struct_bc(int n,int i,int j,const char *bctype) {
+
+	int error=0,nc,m1,n2,m2;
+	char err_msg[256];
+	solver_elem *p;
+
+	if(!strcmp(bctype,"bot1")) {
+		p=bc_bot1[n].eq[i][j];
+		nc=var_nbot[n][i];m1=var_nth[n][i];
+		n2=var_nr[n-1][j];m2=var_nth[n-1][j];
+	} else if(!strcmp(bctype,"bot2")) {
+		p=bc_bot2[n].eq[i][j];
+		nc=var_nbot[n][i];m1=var_nth[n][i];
+		n2=var_nr[n][j];m2=var_nth[n][j];
+	} else if(!strcmp(bctype,"top1")) {
+		p=bc_top1[n].eq[i][j];
+		nc=var_ntop[n][i];m1=var_nth[n][i];
+		n2=var_nr[n][j];m2=var_nth[n][j];
+	} else if(!strcmp(bctype,"top2")) {
+		p=bc_top2[n].eq[i][j];
+		nc=var_ntop[n][i];m1=var_nth[n][i];
+		n2=var_nr[n+1][j];m2=var_nth[n+1][j];
+	} else return 1;
+	
+	while(p!=NULL) {
+						
+		if(!n2||!m2) {
+			sprintf(err_msg,"Variable does not exist in this block (bc_%s)",bctype);
+			check_struct_error(err_msg,n,i,j,p);
+			error=1;
+		}
+		
+		if(p->D.nrows()!=nc||p->D.ncols()!=m1) {
+			sprintf(err_msg,"Matrix D has incorrect size (bc_%s)",bctype);
+			check_struct_error(err_msg,n,i,j,p);
+			error=1;
+		}
+		
+		if(p->type=='l'||p->type=='f'||p->type=='m'||p->type=='g') {	
+			if(p->L.nrows()!=nc||p->L.ncols()!=n2) {
+				sprintf(err_msg,"Matrix L has incorrect size (bc_%s)",bctype);
+				check_struct_error(err_msg,n,i,j,p);
+				error=1;
+			}
+		}
+		
+		if(p->type=='r'||p->type=='f'||p->type=='s'||p->type=='g') {	
+			if(p->R.ncols()!=m1||p->R.nrows()!=m2) {
+				sprintf(err_msg,"Matrix R has incorrect size (bc_%s)",bctype);
+				check_struct_error(err_msg,n,i,j,p);
+				error=1;
+			}
+		}
+		
+		if(p->type=='m'||p->type=='s'||p->type=='g') {
+			bool cond;
+			if(p->type=='g') cond=p->I.nrows()==n2&&p->I.ncols()==m2;
+			if(p->type=='m') cond=p->I.nrows()==n2&&(p->I.ncols()==m1||p->I.ncols()==m2);
+			if(p->type=='s') cond=(p->I.nrows()==nc||p->I.nrows()==1)&&p->I.ncols()==m2;
+			if(!cond) {
+				sprintf(err_msg,"Matrix I has incorrect size (bc_%s)",bctype);
+				check_struct_error(err_msg,n,i,j,p);
+				error=1;
+			}
+		}
+		
+		if(p->type=='d'||p->type=='l'||p->type=='m') {
+			bool cond;
+			cond= (m2==m1)||(m2==1);
+			if(!cond) {
+				sprintf(err_msg,"Term incompatible with size of variables (bc_%s)",bctype);
+				check_struct_error(err_msg,n,i,j,p);
+				error=1;
+			}
+		}
+		
+		p=p->next;
+	}
+	return error;
+
+}
+
+
+void solver::check_struct_error(const char *err_msg,int n,int i,int j,solver_elem *p) {
+
+	printf("ERROR (solver):\n\t%s\n\tin block %d, eq \"%s\", var \"%s\"",err_msg,n,var[i],var[j]);
+	switch(p->type) {
+		case 'd': 
+			printf(" (type: d)\n");
+			break;
+		case 'l': 
+			printf(" (type: l)\n");
+			break;
+		case 'r': 
+			printf(" (type: r)\n");
+			break;
+		case 'f': 
+			printf(" (type: lr)\n");
+			break;
+		case 'm': 
+			printf(" (type: li)\n");
+			break;
+		case 's': 
+			printf(" (type: ri)\n");
+			break;
+		case 'g': 
+			printf(" (type: lri)\n");
+	}
+
+}
+
 
