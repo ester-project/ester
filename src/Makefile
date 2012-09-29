@@ -2,7 +2,7 @@
 include make.inc
 
 LDFLAGS:=$(LDFLAGS) -L $(ESTER_ROOT)/tables/houdek/v9/lib
-LIBS:=$(LIBS) -lopint
+LIBS:=-lopint $(LIBS) 
 
 VARS=-DCBLAS=\<$(BLAS_H)\> -DLAPACK=\<$(LAPACK_H)\> -DESTER_ROOT=\"$(ESTER_ROOT)\"
 ifeq ($(USE_PGPLOT),1) 
