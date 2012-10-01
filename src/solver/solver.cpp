@@ -42,11 +42,10 @@ void solver_block::reset() {
 
 	int i;
 	
-	for(i=0;i<nv;i++) {
+	for(i=0;i<nv;i++) 
 		reset(i);
-	}
 }
-	
+
 void solver_block::reset(int ieq) {
 
 	solver_elem *p;
@@ -54,23 +53,18 @@ void solver_block::reset(int ieq) {
 	int j;
 	
 	for(j=0;j<nv;j++) {
-		while(eq[ieq][j]!=NULL) {
-			p=eq[ieq][j];
-			if(p->next==NULL) {
-				delete p;
-				eq[ieq][j]=NULL;
-			} else {
-				while(p->next!=NULL) {p0=p;p=p->next;}
-				delete p;
-				p0->next=NULL;
-			}
+		p=eq[ieq][j];
+		while(p!=NULL) {
+			p0=p;
+			p=p0->next;
+			delete p0;
 		}
+		eq[ieq][j]=NULL;
 	}
 	eq_set(ieq)=0;
 	nr[ieq]=0;
 	nth[ieq]=0;
 }
-	 
 
 void solver_block::add(int ieq,int ivar,char type,const matrix *d,const matrix *l,const matrix *r,const matrix *i) {
 
@@ -83,13 +77,12 @@ void solver_block::add(int ieq,int ivar,char type,const matrix *d,const matrix *
 	pnew=new solver_elem;
 	if(eq[ieq][ivar]==NULL) {
 		eq[ieq][ivar]=pnew;
-		p=pnew;
 	} else {
 		p=eq[ieq][ivar];
 		while(p->next!=NULL) p=p->next;
 		p->next=pnew;
-		p=pnew;
 	}
+	p=pnew;
 	p->type=type;
 	p->D=*d;
 	if(type=='l'||type=='m'||type=='f'||type=='g') p->L=*l;
@@ -157,13 +150,22 @@ void solver::init(int nblock,int nvar,const char *solver_type) {
 		var_nbot[i]=new int[nv];
 		var_ntop[i]=new int[nv];
 		var_nth[i]=new int[nv];
+		for(int j=0;j<nv;j++) {
+			var_nr[i][j]=0;
+			var_nbot[i][j]=0;
+			var_ntop[i][j]=0;
+			var_nth[i][j]=0;
+		}
 	}
 	var=new char*[nv];
 	for(i=0;i<nv;i++) {
 		var[i]=new char[32];var[i][0]='\0';
 	}
 	
-	x=new matrix[nv];
+	reg=zeros(1,nv);
+	dep=zeros(1,nv);
+	
+	sol=new matrix[nv];
 	rhs=new matrix[nv];
 
 }
@@ -209,7 +211,7 @@ void solver::destroy() {
 		delete [] var[i];
 	}
 	delete [] var;
-	delete [] x;
+	delete [] sol;
 	delete [] rhs;
 	
 }
@@ -219,15 +221,8 @@ void solver::reset() {
 	int i;
 
 	sync=0;
-	for(i=0;i<nb;i++) {
-		block[i].reset();
-		bc_eq[i].reset();
-		bc_pol[i].reset();
-		if(i) bc_bot1[i].reset();
-		bc_bot2[i].reset();
-		bc_top1[i].reset();
-		if(i<nb-1) bc_top2[i].reset();
-	}
+	for(i=0;i<nb;i++) 
+		reset(i);
 	
 }
 
@@ -265,7 +260,7 @@ void solver::set_nr(int *nr) {
 	}
 }
 
-void solver::regvar(const char *var_name) {
+void solver::regvar(const char *var_name,int dependent) {
 
 	int i,j;
 	j=0;
@@ -278,6 +273,8 @@ void solver::regvar(const char *var_name) {
 	}	
 
 	strncpy(var[j],var_name,31);	
+	dep(j)=dependent;
+	reg(j)=1;
 	
 }
 
@@ -298,7 +295,7 @@ int solver::get_id(const char *varn) {
 
 	int i=0;
 
-	while(strcmp(varn,var[i])) {
+	while(strcmp(varn,var[i])||!reg(i)) {
 		i++;
 		if(i==nv) {
 			printf("Unknown variable %s\n",varn);
@@ -315,6 +312,7 @@ void solver::fill_void_blocks() {
 	
 	for(i=0;i<nb;i++) {
 		for(j=0;j<nv;j++) {
+			if(!reg(j)) continue;
 			if(!block[i].eq_set(j)) {
 				n=0;
 				nt=0;
@@ -331,6 +329,11 @@ void solver::set_rhs(const char *eqn,const matrix &b) {
 
 	int ieq;
 	ieq=get_id(eqn);
+	if(dep(ieq)) {
+		printf("ERROR (solver):\n\t");
+		printf("RHS not used in the definition of dependent variable \"%s\"\n",eqn);
+		exit(1);
+	}
 	rhs[ieq]=b;
 }
 
@@ -345,7 +348,7 @@ matrix solver::get_var(const char *varn) {
 	
 	int ivar;
 	ivar=get_id(varn);
-	return x[ivar];
+	return sol[ivar];
 }
 
 matrix solver::get_rhs(int ieq) {
@@ -355,7 +358,7 @@ matrix solver::get_rhs(int ieq) {
 
 matrix solver::get_var(int ivar) {
 	
-	return x[ivar];
+	return sol[ivar];
 }
 
 void solver::solve(int *info) {
@@ -377,7 +380,10 @@ void solver::solve(int *info) {
 	err=check_struct();
 	if(err&2) exit(1);
 	if(err) struct_changed=1;
-	wrap(x,&y);
+	if(verbose)
+		printf("Subtitution of dependent variables...\n");
+	subst_dep();
+	wrap(sol,&y);
 	wrap(rhs,&rhsw);
 	if(op!=NULL&&sync==0&&use_cgs&&struct_changed&&verbose) 
 		printf("WARNING: Operator structure has changed, skipping CGS iteration\n");
@@ -395,7 +401,7 @@ void solver::solve(int *info) {
 #endif
 		if(info!=NULL) {info[2]=1;info[4]=err;}
 		if(err>=0) {
-			unwrap(x,&y);
+			unwrap(sol,&y);
 #ifdef PERF_LOG
 			ttot.stop();
 			printf("Total: %2.3fs \nLU(%d): %2.3fs (%2.3fs) cgs(%d): %2.3fs (%2.3fs)  ref(%d): %2.3fs (%2.3fs)  create(%d): %2.3fs (%2.3fs)\n",ttot.value(),nlu,tlu.value(),tlu.value()/nlu,ncgs,tcgs.value(),tcgs.value()/ncgs,nref,tref.value(),tref.value()/nref,ncreate,tcreate.value(),tcreate.value()/ncreate);
@@ -453,7 +459,10 @@ void solver::solve(int *info) {
 			if(err<0)
 				printf("CGS refinement not converged after %d iterations. Singular matrix?\n",maxit_ref);
 	}
-	unwrap(x,&y);
+	unwrap(sol,&y);
+	if(verbose)
+		printf("Solving dependent variables...\n");
+	solve_dep();
 #ifdef PERF_LOG
 	ttot.stop();
 	printf("Total: %2.3fs \nLU(%d): %2.3fs (%2.3fs) cgs(%d): %2.3fs (%2.3fs)  ref(%d): %2.3fs (%2.3fs)  create(%d): %2.3fs (%2.3fs)\n",ttot.value(),nlu,tlu.value(),tlu.value()/nlu,ncgs,tcgs.value(),tcgs.value()/ncgs,nref,tref.value(),tref.value()/nref,ncreate,tcreate.value(),tcreate.value()/ncreate);
@@ -474,14 +483,16 @@ void solver::mult_op(matrix *y) {
 	matrix z[nv],yy,zz,zz0;
 	int i,j,n,j0[nv];
 	solver_elem *p;
-	int **nr=var_nr,**nbot=var_nbot,**ntop=var_ntop,**nth=var_nth,&N=solver_N;
+	int **nr=var_nr,**nbot=var_nbot,**ntop=var_ntop,**nth=var_nth;
 	
 	for(i=0;i<nv;i++) {
+		if(!reg(i)) continue;
 		z[i]=zeros(y[i].nrows(),y[i].ncols());
 		for(j=0;j<nv;j++) j0[j]=0;
 		for(n=0;n<nb;n++) {
 			zz=zeros(nr[n][i],nth[n][i]);
 			for(j=0;j<nv;j++) {
+				if(!reg(j)) continue;
 				yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
 				p=block[n].eq[i][j];
 				while(p!=NULL) {
@@ -513,6 +524,7 @@ void solver::mult_op(matrix *y) {
 			if(bc_pol[n].eq_set(i)) {
 				zz0=zeros(nr[n][i],1);
 				for(j=0;j<nv;j++) {
+					if(!reg(j)) continue;
 					yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
 					p=bc_pol[n].eq[i][j];
 					while(p!=NULL) {
@@ -546,6 +558,7 @@ void solver::mult_op(matrix *y) {
 			if(bc_eq[n].eq_set(i)) {
 				zz0=zeros(nr[n][i],1);
 				for(j=0;j<nv;j++) {
+					if(!reg(j)) continue;
 					yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
 					p=bc_eq[n].eq[i][j];
 					while(p!=NULL) {
@@ -579,6 +592,7 @@ void solver::mult_op(matrix *y) {
 			if(bc_bot2[n].eq_set(i)) {
 				zz0=zeros(nbot[n][i],nth[n][i]);
 				for(j=0;j<nv;j++) {
+					if(!reg(j)) continue;
 					yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
 					p=bc_bot2[n].eq[i][j];
 					while(p!=NULL) {
@@ -612,6 +626,7 @@ void solver::mult_op(matrix *y) {
 			if(n) if(bc_bot1[n].eq_set(i)) {
 				zz0=zeros(nbot[n][i],nth[n][i]);
 				for(j=0;j<nv;j++) {
+					if(!reg(j)) continue;
 					yy=y[j].block(j0[j]-nr[n-1][j],j0[j]-1,0,nth[n-1][j]-1);
 					p=bc_bot1[n].eq[i][j];
 					while(p!=NULL) {
@@ -646,6 +661,7 @@ void solver::mult_op(matrix *y) {
 			if(bc_top1[n].eq_set(i)) {
 				zz0=zeros(ntop[n][i],nth[n][i]);
 				for(j=0;j<nv;j++) {
+					if(!reg(j)) continue;
 					yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
 					p=bc_top1[n].eq[i][j];
 					while(p!=NULL) {
@@ -679,6 +695,7 @@ void solver::mult_op(matrix *y) {
 			if(n<nb-1) if(bc_top2[n].eq_set(i)) {
 				zz0=zeros(ntop[n][i],nth[n][i]);
 				for(j=0;j<nv;j++) {
+					if(!reg(j)) continue;
 					yy=y[j].block(j0[j]+nr[n][j],j0[j]+nr[n][j]+nr[n+1][j]-1,0,nth[n+1][j]-1);
 					p=bc_top2[n].eq[i][j];
 					while(p!=NULL) {
@@ -813,12 +830,13 @@ void solver::create_full() {
 	if(verbose) printf("\t");
 	for(n=0;n<nb;n++) {
 		nn=0;
-		for(ivar=0;ivar<nv;ivar++) nn+=nr[n][ivar]*nth[n][ivar];
+		for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) nn+=nr[n][ivar]*nth[n][ivar];
 		opi=zeros(nn,nn);
 		j0=0;
 		
 		for(kk=0;kk<3;kk++) {
 		for(ivar=0;ivar<nv;ivar++) {
+			if(!reg(ivar)||dep(ivar)) continue;
 			if(kk==0) {kk0=0;kk1=nbot[n][ivar];}
 			if(kk==1) {kk0=nbot[n][ivar];kk1=nr[n][ivar]-ntop[n][ivar];}
 			if(kk==2) {kk0=nr[n][ivar]-ntop[n][ivar];kk1=nr[n][ivar];}
@@ -826,6 +844,7 @@ void solver::create_full() {
 				for(l=0;l<nth[n][ivar];l++) {
 					i0=0;
 					for(ieq=0;ieq<nv;ieq++) {
+						if(!reg(ieq)||dep(ieq)) continue;
 						for(i=0;i<nbot[n][ieq];i++) {
 							for(j=0;j<nth[n][ieq];j++) {
 								p=bc_bot2[n].eq[ieq][ivar];
@@ -872,6 +891,7 @@ void solver::create_full() {
 						}
 					}
 					for(ieq=0;ieq<nv;ieq++) {
+						if(!reg(ieq)||dep(ieq)) continue;
 						for(i=nbot[n][ieq];i<nr[n][ieq]-ntop[n][ieq];i++) {
 							for(j=0;j<nth[n][ieq];j++) {
 								int j_check;
@@ -931,6 +951,7 @@ void solver::create_full() {
 						}
 					}
 					for(ieq=0;ieq<nv;ieq++) {
+						if(!reg(ieq)||dep(ieq)) continue;
 						for(i=0;i<ntop[n][ieq];i++) {
 							for(j=0;j<nth[n][ieq];j++) {
 								p=bc_top1[n].eq[ieq][ivar];
@@ -986,14 +1007,15 @@ void solver::create_full() {
 		
 		if(n>0) {
 			nn=0;
-			for(ivar=0;ivar<nv;ivar++) nn+=nbot[n][ivar]*nth[n][ivar];
+			for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) nn+=nbot[n][ivar]*nth[n][ivar];
 			nn2=0;
-			for(ivar=0;ivar<nv;ivar++) nn2+=nr[n-1][ivar]*nth[n-1][ivar];
+			for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) nn2+=nr[n-1][ivar]*nth[n-1][ivar];
 			opi=zeros(nn,nn2);
 			j0=0;
 			set=0;
 			for(kk=0;kk<3;kk++) {
 			for(ivar=0;ivar<nv;ivar++) {
+				if(!reg(ivar)||dep(ivar)) continue;
 				if(kk==0) {kk0=0;kk1=nbot[n-1][ivar];}
 				if(kk==1) {kk0=nbot[n-1][ivar];kk1=nr[n-1][ivar]-ntop[n-1][ivar];}
 				if(kk==2) {kk0=nr[n-1][ivar]-ntop[n-1][ivar];kk1=nr[n-1][ivar];}
@@ -1001,6 +1023,7 @@ void solver::create_full() {
 					for(l=0;l<nth[n-1][ivar];l++) {
 						i0=0;
 						for(ieq=0;ieq<nv;ieq++) {
+							if(!reg(ieq)||dep(ieq)) continue;
 							for(i=0;i<nbot[n][ieq];i++) {
 								for(j=0;j<nth[n][ieq];j++) {
 									p=bc_bot1[n].eq[ieq][ivar];
@@ -1058,14 +1081,15 @@ void solver::create_full() {
 		}
 		if(n<nb-1) {
 			nn=0;
-			for(ivar=0;ivar<nv;ivar++) nn+=ntop[n][ivar]*nth[n][ivar];
+			for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) nn+=ntop[n][ivar]*nth[n][ivar];
 			nn2=0;
-			for(ivar=0;ivar<nv;ivar++) nn2+=nr[n+1][ivar]*nth[n+1][ivar];
+			for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) nn2+=nr[n+1][ivar]*nth[n+1][ivar];
 			opi=zeros(nn,nn2);
 			j0=0;
 			set=0;
 			for(kk=0;kk<3;kk++) {
 			for(ivar=0;ivar<nv;ivar++) {
+				if(!reg(ivar)||dep(ivar)) continue;
 				if(kk==0) {kk0=0;kk1=nbot[n+1][ivar];}
 				if(kk==1) {kk0=nbot[n+1][ivar];kk1=nr[n+1][ivar]-ntop[n+1][ivar];}
 				if(kk==2) {kk0=nr[n+1][ivar]-ntop[n+1][ivar];kk1=nr[n+1][ivar];}
@@ -1073,6 +1097,7 @@ void solver::create_full() {
 					for(l=0;l<nth[n+1][ivar];l++) {
 						i0=0;
 						for(ieq=0;ieq<nv;ieq++) {
+							if(!reg(ieq)||dep(ieq)) continue;
 							for(i=0;i<ntop[n][ieq];i++) {
 								for(j=0;j<nth[n][ieq];j++) {
 									p=bc_top2[n].eq[ieq][ivar];
@@ -1140,16 +1165,16 @@ void solver::check_full(int n, const matrix &opi, int pos) {
 	matrix x,y[nv];
 
 	for(iblock=0;iblock<n+pos;iblock++) 
-		for(ivar=0;ivar<nv;ivar++) j0+=var_nr[iblock][ivar]*var_nth[iblock][ivar];
-	for(ivar=0;ivar<nv;ivar++) nj+=var_nr[n+pos][ivar]*var_nth[n+pos][ivar];
+		for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) j0+=var_nr[iblock][ivar]*var_nth[iblock][ivar];
+	for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) nj+=var_nr[n+pos][ivar]*var_nth[n+pos][ivar];
 	if(!pos) {
 		ni=nj;
 		i0=j0;
 	} else if(pos==-1) { 
-		for(ivar=0;ivar<nv;ivar++) ni+=var_nbot[n][ivar]*var_nth[n][ivar];
+		for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) ni+=var_nbot[n][ivar]*var_nth[n][ivar];
 		i0=j0+nj;
 	} else if(pos==1) { 
-		for(ivar=0;ivar<nv;ivar++) ni+=var_ntop[n][ivar]*var_nth[n][ivar];
+		for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) ni+=var_ntop[n][ivar]*var_nth[n][ivar];
 		i0=j0-ni;
 	}
 	for(j=0;j<nj;j++) {
@@ -1180,6 +1205,7 @@ void solver::wrap(const matrix *y,matrix *x) {
 	matrix z,q;
 
 	for(j=0;j<nv;j++) {
+		if(!reg(j)||dep(j)) continue;
 		nn=0;
 		nnt=0;
 		for(i=0;i<nb;i++) {nn+=n[i][j];nnt=(nnt>nth[i][j])?nnt:nth[i][j];}
@@ -1190,6 +1216,7 @@ void solver::wrap(const matrix *y,matrix *x) {
 	for(j=0;j<nv;j++) j0[j]=0;
 	for(i=0;i<nb;i++) {
 		for(j=0;j<nv;j++) {
+			if(!reg(j)||dep(j)) continue;
 			if(nbot[i][j]) {
 				q=y[j].block(j0[j],j0[j]+nbot[i][j]-1,0,nth[i][j]-1).transpose();
 				q.redim(nbot[i][j]*nth[i][j],1);
@@ -1198,6 +1225,7 @@ void solver::wrap(const matrix *y,matrix *x) {
 			}
 		}
 		for(j=0;j<nv;j++) {
+			if(!reg(j)||dep(j)) continue;
 			nn=n[i][j]-nbot[i][j]-ntop[i][j];
 			if(nn) {
 				q=y[j].block(j0[j]+nbot[i][j],j0[j]+nbot[i][j]+nn-1,0,nth[i][j]-1).transpose();
@@ -1207,6 +1235,7 @@ void solver::wrap(const matrix *y,matrix *x) {
 			}
 		}
 		for(j=0;j<nv;j++) {
+			if(!reg(j)||dep(j)) continue;
 			if(ntop[i][j]) {
 				q=y[j].block(j0[j]+n[i][j]-ntop[i][j],j0[j]+n[i][j]-1,0,nth[i][j]-1).transpose();
 				q.redim(ntop[i][j]*nth[i][j],1);
@@ -1228,6 +1257,7 @@ void solver::unwrap(matrix *y,const matrix *x) {
 	matrix q;
 
 	for(j=0;j<nv;j++) {
+		if(!reg(j)) continue;
 		nn=0;
 		nnt=0;
 		for(i=0;i<nb;i++) {nn+=n[i][j];nnt=(nnt>nth[i][j])?nnt:nth[i][j];}
@@ -1237,6 +1267,7 @@ void solver::unwrap(matrix *y,const matrix *x) {
 	for(j=0;j<nv;j++) j0[j]=0;
 	for(i=0;i<nb;i++) {
 		for(j=0;j<nv;j++) {
+			if(!reg(j)||dep(j)) continue;
 			if(nbot[i][j]) {
 				q=x->block(i0,i0+nbot[i][j]*nth[i][j]-1,0,0);
 				i0+=q.nrows();
@@ -1245,6 +1276,7 @@ void solver::unwrap(matrix *y,const matrix *x) {
 			}
 		}
 		for(j=0;j<nv;j++) {
+			if(!reg(j)||dep(j)) continue;
 			nn=n[i][j]-nbot[i][j]-ntop[i][j];
 			if(nn) {
 				q=x->block(i0,i0+nn*nth[i][j]-1,0,0);
@@ -1254,6 +1286,7 @@ void solver::unwrap(matrix *y,const matrix *x) {
 			}
 		}
 		for(j=0;j<nv;j++) {
+			if(!reg(j)||dep(j)) continue;
 			if(ntop[i][j]) {
 				q=x->block(i0,i0+ntop[i][j]*nth[i][j]-1,0,0);
 				i0+=q.nrows();
@@ -1270,28 +1303,18 @@ void solver::unwrap(matrix *y,const matrix *x) {
 
 void solver::add(const char *eqn, const char *varn,const char *block_type,char type,const matrix *d,const matrix_block_diag *l,const matrix *r,const matrix *i) {
 	
-	int ieq,ivar;
 	int k,j0,j1;
 	matrix *dd,*ll,*ii;
-	solver_block *bb;
 	char err_msg[256];
 	int error=0;
 	
-	ieq=get_id(eqn);
-	ivar=get_id(varn);
 	sync=0;
 	dd=new matrix;
 	ll=NULL;
 	if(type=='m'||type=='s'||type=='g') ii=new matrix;
 	else ii=NULL;
 	j0=0;
-	if(!strcmp(block_type,"block"))
-		bb=block;
-	else if(!strcmp(block_type,"bc_eq")) 
-		bb=bc_eq;
-	else if(!strcmp(block_type,"bc_pol")) 
-		bb=bc_pol;
-	else {
+	if(strcmp(block_type,"block")&&strcmp(block_type,"bc_eq")&&strcmp(block_type,"bc_pol")) {
 		printf("solver::add : Invalid block_type %s\n",block_type);
 		exit(1);
 	}
@@ -1320,7 +1343,7 @@ void solver::add(const char *eqn, const char *varn,const char *block_type,char t
 			}
 			*ii=i->block(j0,j1,0,i->ncols()-1);
 		} else ii=NULL;
-		bb[k].add(ieq,ivar,type,dd,ll,r,ii);
+		add(k,eqn,varn,block_type,type,dd,ll,r,ii);
 		j0=j1+1;
 		if(j0==d->nrows()) {
 			if(type=='l'||type=='m'||type=='f'||type=='g') {
@@ -1382,6 +1405,32 @@ void solver::add(int iblock,const char *eqn, const char *varn,const char *block_
 	int ieq,ivar;
 	ieq=get_id(eqn);
 	ivar=get_id(varn);
+	
+	if(dep(ieq)&&type!='d') {
+		printf("ERROR (solver):\n\t");
+		printf("Only type D terms are allowed in the definition of dependent variables\n");
+		printf("\tin block %d, eq \"%s\", var \"%s\"",iblock,eqn,varn);
+		exit(1);
+	}
+	if(dep(ieq)&&strcmp(block_type,"block")) {
+		printf("ERROR (solver):\n\t");
+		printf("No boundary conditions are allowed in the definition of dependent variables\n");
+		printf("\tin block %d, eq \"%s\", var \"%s\"",iblock,eqn,varn);
+		exit(1);
+	}
+	if(iblock==0&&!strcmp(block_type,"bc_bot1")) {
+		printf("ERROR (solver):\n\t");
+		printf("\"bc_bot1\" terms are not allowed in first domain\n");
+		printf("\tin block %d, eq \"%s\", var \"%s\"",iblock,eqn,varn);
+		exit(1);
+	}
+	if(iblock==nb-1&&!strcmp(block_type,"bc_top2")) {
+		printf("ERROR (solver):\n\t");
+		printf("\"bc_top2\" terms are not allowed in last domain\n");
+		printf("\tin block %d, eq \"%s\", var \"%s\"",iblock,eqn,varn);
+		exit(1);
+	}
+	
 	sync=0;
 	if(!strcmp(block_type,"block"))
 		bb=block;
@@ -1420,7 +1469,7 @@ int solver::check_struct() {
 				nr[i][j]=block[i].nr[j];
 				if(nth[i][j]!=block[i].nth[j]) changed=1;
 				nth[i][j]=block[i].nth[j];
-				N+=nr[i][j]*nth[i][j];
+				if(!dep(j)) N+=nr[i][j]*nth[i][j];
 			} else {
 				if(nr[i][j]||nth[i][j]||nbot[i][j]||ntop[i][j]) changed=1;
 				nr[i][j]=0;
@@ -1448,6 +1497,7 @@ int solver::check_struct() {
 	
 	if(debug) {
 		for(j=0;j<nv;j++) {
+			if(!reg(j)) continue;
 			printf("%d %s:\n",j,var[j]);
 			for(i=0;i<nb;i++) {
 				printf("\t%d: %dx%d (nbot=%d,ntop=%d)\n",i,nr[i][j],nth[i][j],nbot[i][j],ntop[i][j]);
@@ -1460,6 +1510,7 @@ int solver::check_struct() {
 	
 	for(int n=0;n<nb;n++) {
 		for(int i=0;i<nv;i++) {
+			if(!reg(j)) continue;
 			if(block[n].eq_set(i)) 
 				for(int j=0;j<nv;j++) 
 					error=error||check_struct_block(n,i,j);
@@ -1488,6 +1539,7 @@ int solver::check_struct() {
 	
 	int Nr,Nt;
 	for(int i=0;i<nv;i++) {
+		if (dep(i)||!reg(i)) continue;
 		if(strlen(var[i])) {
 			Nr=0;Nt=0;
 			for(int n=0;n<nb;n++) {
@@ -1775,5 +1827,223 @@ void solver::check_struct_error(const char *err_msg,int n,int i,int j,solver_ele
 	}
 
 }
+
+void solver::subst_dep() {
+
+	solver_elem *p;
+
+	for(int n=0;n<nb;n++) {
+		int substd=1;
+		while(substd==1) {
+			substd=0;
+			for(int i=0;i<nv;i++) {
+				if(dep(i)&&block[n].eq[i][i]!=NULL) {
+					printf("ERROR (solver):\n\tFound loop in definition of dependent variable \"%s\"\n",var[i]);
+					exit(1);
+				}
+			}
+			for(int i=0;i<nv;i++) {
+				if(block[n].eq_set(i)&&dep(i)) {
+					for(int j=0;j<nv;j++) {
+						p=block[n].eq[i][j];	
+						if(dep(j)&&p!=NULL) {
+							substd=1;
+							subst_dep_eq("block",block,n,i,j);
+						}	
+					}
+				}
+			}
+		}
+	}
+
+	solver_block *bb;
+	char block_type[8];
+	
+	for(int k=0;k<7;k++) {
+		switch(k) {
+			case 0:
+				bb=block;strcpy(block_type,"block");break;
+			case 1:
+				bb=bc_eq;strcpy(block_type,"bc_eq");break;
+			case 2:
+				bb=bc_pol;strcpy(block_type,"bc_pol");break;
+			case 3:
+				bb=bc_bot1;strcpy(block_type,"bc_bot1");break;
+			case 4:
+				bb=bc_bot2;strcpy(block_type,"bc_bot2");break;
+			case 5:
+				bb=bc_top1;strcpy(block_type,"bc_top1");break;
+			case 6:
+				bb=bc_top2;strcpy(block_type,"bc_top2");
+		}
+		for(int n=0;n<nb;n++) {
+			if(n==0&&!strcmp(block_type,"bc_bot1")) continue;
+			if(n==nb-1&&!strcmp(block_type,"bc_top2")) continue;
+			for(int i=0;i<nv;i++) {
+				if(dep(i)) continue;
+				if(bb[n].eq_set(i)) {
+					for(int j=0;j<nv;j++) {
+						p=bb[n].eq[i][j];
+						if(dep(j)&&p!=NULL) 
+							subst_dep_eq(block_type,bb,n,i,j);
+					}
+				}		
+			}					
+		}
+	}
+}
+
+void solver::subst_dep_eq(const char *block_type,solver_block *bb,int n,int i,int j) {
+
+	solver_elem *p,*pdep,*p0;
+	matrix d;
+	int n2,m2,ndep;
+//printf("%s n=%d i=%d j=%d\n",block_type,n,i,j);
+	p=bb[n].eq[i][j];
+	ndep=n;
+	if(!strcmp(block_type,"bc_bot1")) ndep--;
+	if(!strcmp(block_type,"bc_top2")) ndep++;
+	
+	while(p!=NULL) {
+		for(int k=0;k<nv;k++) {
+			pdep=block[ndep].eq[j][k];
+			while(pdep!=NULL) {
+				n2=var_nr[ndep][k];m2=var_nth[ndep][k];
+				d=pdep->D;
+				if(!strcmp(block_type,"bc_eq"))
+					if(p->type=='d'||p->type=='l'||p->type=='m') {
+						m2=1;
+						d=d.col(0);
+					}
+				if(!strcmp(block_type,"bc_pol"))
+					if(p->type=='d'||p->type=='l'||p->type=='m') {
+						m2=1;
+						d=d.col(d.ncols()-1);
+					}
+				if(!strcmp(block_type,"bc_bot2")||!strcmp(block_type,"bc_top2"))
+					if(p->type=='d'||p->type=='r'||p->type=='s') {
+						n2=1;
+						d=d.row(0);
+					}		
+				if(!strcmp(block_type,"bc_top1")||!strcmp(block_type,"bc_bot1"))
+					if(p->type=='d'||p->type=='r'||p->type=='s') {
+						n2=1;
+						d=d.row(d.nrows()-1);
+					}		
+				subst_dep_elem(i,k,&bb[n],p,d,n2,m2);
+				pdep=pdep->next;
+			}
+		}
+		p0=p;
+		p=p->next;
+		delete p0;	
+	}
+	
+	bb[n].eq[i][j]=NULL;
+
+}
+
+void solver::subst_dep_elem(int i,int k,solver_block *bb,solver_elem *p,const matrix &d,int n2,int m2) {
+
+	int n1,m1;
+	matrix D,L,R,I;
+	char type_new;
+//printf("\t i=%d k=%d n2=%d m2=%d type=%c\n",i,k,n2,m2,p->type);
+	n1=d.nrows();
+	m1=d.ncols();
+	
+	D=p->D;L=p->L;R=p->R;I=p->I;
+	
+	switch(p->type) {
+		
+		case 'd':
+			type_new='d';
+			D=D*d;
+			break;
+		case 'l':
+			if(n1==n2) {
+				type_new='m';
+				I=d;
+			} else {
+				type_new='d';
+				D=D*(L,d);
+			}
+			break;
+		case 'r':
+			if(m1==m2) {
+				type_new='s';
+				I=d;
+			} else {
+				type_new='d';
+				D=D*(d,R);
+			}
+			break;
+		case 'f':
+			if(n1==n2&&m1==m2) {
+				type_new='g';
+				I=d;
+			} else if(n1==n2) {
+				type_new='l';
+				D=D*(d,R);
+			} else if(m1==m2) {
+				type_new='r';
+				D=D*(L,d);
+			} else {
+				type_new='d';
+				D=D*(L,d,R);
+			}
+			break;
+		case 'm':
+			if(n1==n2) {
+				type_new='m';
+				I=I*d;
+			} else {
+				type_new='d';
+				D=D*(L,I*d);
+			}
+			break;
+		case 's':
+			if(m1==m2) {
+				type_new='s';
+				I=I*d;
+			} else {
+				type_new='d';
+				D=D*(I*d,R);
+			}
+			break;
+		case 'g':
+			if(n1==n2&&m1==m2) {
+				type_new='g';
+				I=I*d;
+			} else if(n1==n2) {
+				type_new='l';
+				D=D*(I*d,R);
+			} else if(m1==m2) {
+				type_new='r';
+				D=D*(L,I*d);
+			} else {
+				type_new='d';
+				D=D*(L,I*d,R);
+			}	
+	}
+	
+	bb->add(i,k,type_new,&D,&L,&R,&I);
+
+}
+
+void solver::solve_dep() {
+	
+	matrix x[nv];
+	
+	for(int i=0;i<nv;i++) {
+		x[i]=sol[i];
+	}
+	mult(x);
+	for(int i=0;i<nv;i++) {
+		if(dep(i))
+			sol[i]=x[i];
+	}
+}
+
 
 

@@ -181,7 +181,7 @@ void solver_full::lu_block(int i) {
 
 void solver_full::solve_block(int i,char trans,matrix &x) {
 
-	int n,nrhs,info,cgs_error=1;
+	int n,nrhs,info=0;
 	
 	
 	if(trans=='T') x=x*c[i];

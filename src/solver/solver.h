@@ -145,6 +145,7 @@ class solver {
 	int **var_nr,**var_ntop,**var_nbot,**var_nth,solver_N,*def_nr;
 	char type[21],**var;
 	int initd,sync;
+	matrix dep,reg;
 	solver_operator *op;
 	solver_block *block;
 	solver_block *bc_bot1;
@@ -153,7 +154,7 @@ class solver {
 	solver_block *bc_top2;
 	solver_block *bc_pol;
 	solver_block *bc_eq;
-	matrix *rhs,*x;
+	matrix *rhs,*sol;
 public:
 	int use_cgs,maxit_ref,maxit_cgs,verbose;
 	int debug;
@@ -168,7 +169,8 @@ public:
 	void reset();
 	void reset(int iblock);
 	void reset(int iblock,int ieq);
-	void regvar(const char *var_name);
+	void regvar(const char *var_name,int dependent=0);
+	inline void regvar_dep(const char *var_name) {regvar(var_name,1);}
 	int get_nvar();
 	int get_nblocks();
 	int get_id(const char *varn);
@@ -197,6 +199,10 @@ public:
 	int check_struct_bc_th(int n,int i,int j,const char *bctype);
 	int check_struct_bc(int n,int i,int j,const char *bctype);
 	void check_full(int n, const matrix &opi,int pos);
+	void subst_dep();
+	void subst_dep_eq(const char *block_type,solver_block *,int n,int i,int j);
+	void subst_dep_elem(int i,int k,solver_block *bb,solver_elem *p,const matrix &d,int n2,int m2);
+	void solve_dep();
 	
 	void add(int iblock,const char *eqn, const char *varn,const char *block_type,char type,const matrix *d,const matrix *l,const matrix *r,const matrix *i);
 	void add(const char *eqn, const char *varn,const char *block_type,char type,const matrix *d,const matrix_block_diag *l,const matrix *r,const matrix *i);
