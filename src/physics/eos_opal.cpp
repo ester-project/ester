@@ -35,6 +35,7 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     }
     
     rho.dim(T.nrows(),T.ncols());
+    eos.s.dim(T.nrows(),T.ncols());
     eos.G1.dim(T.nrows(),T.ncols());
     eos.del_ad.dim(T.nrows(),T.ncols());
     eos.G3_1.dim(T.nrows(),T.ncols());
@@ -53,6 +54,7 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	if(rho(i)==-9e99) {
    			printf("Values outside OPAL eos table\n");
     	}
+    	eos.s(i)=1e6*(*(eeos_.eos+2));
 		eos.G1(i)=*(eeos_.eos+7);
 		eos.del_ad(i)=1/(*(eeos_.eos+8));
     	eos.G3_1(i)=*(eeos_.eos+7)/(*(eeos_.eos+8));

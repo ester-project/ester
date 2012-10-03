@@ -68,7 +68,7 @@ solver *star1d::init_solver() {
 	int nvar;
 	solver *op;
 	
-	nvar=16;
+	nvar=17;
 	
 	op=new solver();
 	op->init(ndomains(),nvar,"full");
@@ -95,7 +95,7 @@ void star1d::register_variables(solver *op) {
 	op->regvar("Lambda");
 	op->regvar("Ri");
 	op->regvar("dx");
-	op->regvar("rhoc");
+	op->regvar_dep("rhoc");
 	op->regvar("pc");
 	op->regvar("Tc");
 	op->regvar("R");
@@ -104,6 +104,7 @@ void star1d::register_variables(solver *op) {
 	op->regvar("Ts");
 	op->regvar("lum");
 	op->regvar("Frad");
+	op->regvar_dep("rho");
 
 }
 
@@ -114,6 +115,7 @@ double star1d::solve(solver *op) {
 	double err,err2;
 	
 	op->reset();
+	solve_definitions(op);
 	solve_poisson(op);
 	solve_pressure(op);
 	solve_temp(op);
@@ -186,6 +188,16 @@ double star1d::solve(solver *op) {
 
 }
 
+void star1d::solve_definitions(solver *op) {
+
+	op->add_d("rho","p",rho/eos.chi_rho);
+	op->add_d("rho","T",-rho*eos.d);
+	op->add_d("rho","pc",rho/eos.chi_rho);
+	op->add_d("rho","Tc",-rho*eos.d);
+	op->add_d("rho","rhoc",-rho);
+	
+}
+
 void star1d::solve_poisson(solver *op) {
 
 	int n,j0;
@@ -193,11 +205,7 @@ void star1d::solve_poisson(solver *op) {
 
 	op->add_l("phi","phi",ones(nr(),1),(D,D));	
 	op->add_l("phi","phi",2./r,D);
-	op->add_d("phi","p",-rho*pi_c/eos.chi_rho);
-	op->add_d("phi","T",rho*pi_c*eos.d);
-	op->add_d("phi","pc",-rho*pi_c/eos.chi_rho);
-	op->add_d("phi","Tc",rho*pi_c*eos.d);
-	op->add_d("phi","rhoc",rho*pi_c);
+	op->add_d("phi","rho",-pi_c*ones(nr(),1));
 	op->add_d("phi","pi_c",-rho*pi_c);
 	
 	rhs=-(D,D,phi)-2/r*(D,phi)+rho*pi_c;
@@ -247,11 +255,7 @@ void star1d::solve_pressure(solver *op) {
 	matrix a_map,rhs_p,rhs_pi_c;
 	
 	op->add_li("p","p",ones(nr(),1),D,p);	
-	op->add_d("p","p",(D,phi)*rho/eos.chi_rho);
-	op->add_d("p","pc",(D,phi)*rho/eos.chi_rho);
-	op->add_d("p","T",-(D,phi)*rho*eos.d);
-	op->add_d("p","Tc",-(D,phi)*rho*eos.d);
-	op->add_d("p","rhoc",-(D,phi)*rho);
+	op->add_d("p","rho",(D,phi));
 	op->add_l("p","phi",rho,D);
 	
 	rhs_p=-(D,p)-rho*(D,phi);
@@ -485,14 +489,7 @@ void star1d::solve_dim(solver *op) {
 	j0=0;
 	for(n=0;n<ndomains();n++) {
 		op->bc_bot2_add_d(n,"m","m",ones(1,1));
-		op->bc_bot2_add_li(n,"m","p",-4*PI*ones(1,1),gl.I.block(0,0,j0,j0+gl.npts[n]-1),(r*r*rho/eos.chi_rho).block(j0,j0+gl.npts[n]-1,0,0));
-		op->bc_bot2_add_li(n,"m","T",-4*PI*ones(1,1),gl.I.block(0,0,j0,j0+gl.npts[n]-1),(-r*r*rho*eos.d).block(j0,j0+gl.npts[n]-1,0,0));
-		q=-4*PI*(gl.I.block(0,0,j0,j0+gl.npts[n]-1),(r*r*rho/eos.chi_rho).block(j0,j0+gl.npts[n]-1,0,0));
-		op->bc_bot2_add_d(n,"m","pc",q);
-		q=-4*PI*(gl.I.block(0,0,j0,j0+gl.npts[n]-1),(-r*r*rho*eos.d).block(j0,j0+gl.npts[n]-1,0,0));
-		op->bc_bot2_add_d(n,"m","Tc",q);
-		q=-4*PI*(gl.I.block(0,0,j0,j0+gl.npts[n]-1),(-r*r*rho).block(j0,j0+gl.npts[n]-1,0,0));
-		op->bc_bot2_add_d(n,"m","rhoc",q);
+		op->bc_bot2_add_li(n,"m","rho",-4*PI*ones(1,1),gl.I.block(0,0,j0,j0+gl.npts[n]-1),(r*r).block(j0,j0+gl.npts[n]-1,0,0));
 		op->bc_bot2_add_d(n,"m","dx",-4*PI*(gl.I.block(0,0,j0,j0+gl.npts[n]-1), (rho*r*(3*r-2*gl.xif[n])).block(j0,j0+gl.npts[n]-1,0,0))/(gl.xif[n+1]-gl.xif[n]));
 		op->bc_bot2_add_d(n,"m","Ri",-4*PI*(gl.I.block(0,0,j0,j0+gl.npts[n]-1), (2*rho*r).block(j0,j0+gl.npts[n]-1,0,0)));
 		if(n) op->bc_bot1_add_d(n,"m","m",-ones(1,1));
@@ -500,18 +497,10 @@ void star1d::solve_dim(solver *op) {
 	}
 	op->set_rhs("m",rhs);
 	
-	rhs=zeros(ndomains(),1);
 	for(n=0;n<ndomains();n++) {
-		if(n==ndomains()-1) {
-			op->add_d(n,"rhoc","rhoc",ones(1,1));
-			op->add_d(n,"rhoc","pc",-1./eos.chi_rho(0)*ones(1,1));
-			op->add_d(n,"rhoc","Tc",eos.d(0)*ones(1,1));
-		} else {
-			op->bc_top1_add_d(n,"rhoc","rhoc",ones(1,1));
-			op->bc_top2_add_d(n,"rhoc","rhoc",-ones(1,1));
-		}
+		op->add_d(n,"rhoc","pc",1./eos.chi_rho(0)*ones(1,1));
+		op->add_d(n,"rhoc","Tc",-eos.d(0)*ones(1,1));
 	}
-	op->set_rhs("rhoc",rhs);
 	
 	rhs=zeros(ndomains(),1);
 	for(n=0;n<ndomains();n++) {

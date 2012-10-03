@@ -766,6 +766,10 @@ void write(const star2d &A,char *var,char *fmt) {
 		m=A.eos.chi_rho;
 		if(fmt) matrix_fmt(fmt,(m,T));
 		else (m,T).write(stdout,'b');
+	} else if(!strcmp(var,"eos.s")) {
+		m=A.eos.s;
+		if(fmt) matrix_fmt(fmt,(m,T));
+		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"L")) {
 		d=A.luminosity();
 		if(fmt) fprintf(stdout,fmt,d);

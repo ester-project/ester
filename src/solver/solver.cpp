@@ -267,7 +267,7 @@ void solver::regvar(const char *var_name,int dependent) {
 	while (strlen(var[j])) {
 		j++;
 		if(j==nv) {
-			printf("Can't register variable (increase nvar)\n");
+			fprintf(stderr,"ERROR: Can't register variable (increase nvar)\n");
 			exit(1);
 		}
 	}	
@@ -298,7 +298,7 @@ int solver::get_id(const char *varn) {
 	while(strcmp(varn,var[i])||!reg(i)) {
 		i++;
 		if(i==nv) {
-			printf("Unknown variable %s\n",varn);
+			fprintf(stderr,"ERROR: Unknown variable %s\n",varn);
 			exit(1);
 		}
 	}
@@ -330,8 +330,8 @@ void solver::set_rhs(const char *eqn,const matrix &b) {
 	int ieq;
 	ieq=get_id(eqn);
 	if(dep(ieq)) {
-		printf("ERROR (solver):\n\t");
-		printf("RHS not used in the definition of dependent variable \"%s\"\n",eqn);
+		fprintf(stderr,"ERROR (solver):\n\t");
+		fprintf(stderr,"RHS not used in the definition of dependent variable \"%s\"\n",eqn);
 		exit(1);
 	}
 	rhs[ieq]=b;
@@ -381,7 +381,7 @@ void solver::solve(int *info) {
 	if(err&2) exit(1);
 	if(err) struct_changed=1;
 	if(verbose)
-		printf("Subtitution of dependent variables...\n");
+		printf("Substitution of dependent variables...\n");
 	subst_dep();
 	wrap(sol,&y);
 	wrap(rhs,&rhsw);
@@ -406,6 +406,9 @@ void solver::solve(int *info) {
 			ttot.stop();
 			printf("Total: %2.3fs \nLU(%d): %2.3fs (%2.3fs) cgs(%d): %2.3fs (%2.3fs)  ref(%d): %2.3fs (%2.3fs)  create(%d): %2.3fs (%2.3fs)\n",ttot.value(),nlu,tlu.value(),tlu.value()/nlu,ncgs,tcgs.value(),tcgs.value()/ncgs,nref,tref.value(),tref.value()/nref,ncreate,tcreate.value(),tcreate.value()/ncreate);
 #endif
+			if(verbose)
+				printf("Solving dependent variables...\n");
+			solve_dep();
 			return;
 		}
 		if(verbose)
@@ -490,244 +493,246 @@ void solver::mult_op(matrix *y) {
 		z[i]=zeros(y[i].nrows(),y[i].ncols());
 		for(j=0;j<nv;j++) j0[j]=0;
 		for(n=0;n<nb;n++) {
-			zz=zeros(nr[n][i],nth[n][i]);
-			for(j=0;j<nv;j++) {
-				if(!reg(j)) continue;
-				yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
-				p=block[n].eq[i][j];
-				while(p!=NULL) {
-					switch(p->type) {
-						case 'd':
-							zz+=p->D*yy;
-							break;
-						case 'l':
-							zz+=p->D*(p->L,yy);
-							break;
-						case 'r':
-							zz+=p->D*(yy,p->R);
-							break;
-						case 'f':
-							zz+=p->D*(p->L,yy,p->R);
-							break;
-						case 'm':
-							zz+=p->D*(p->L,(p->I*yy));
-							break;
-						case 's':
-							zz+=p->D*((p->I*yy),p->R);
-							break;
-						case 'g':
-							zz+=p->D*(p->L,(p->I*yy),p->R);
-					}
-					p=p->next;
-				}
-			}
-			if(bc_pol[n].eq_set(i)) {
-				zz0=zeros(nr[n][i],1);
+			if(block[n].eq_set(i)) {
+				zz=zeros(nr[n][i],nth[n][i]);
 				for(j=0;j<nv;j++) {
 					if(!reg(j)) continue;
-					yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
-					p=bc_pol[n].eq[i][j];
+					if((p=block[n].eq[i][j])!=NULL)
+						yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
 					while(p!=NULL) {
 						switch(p->type) {
 							case 'd':
-								zz0+=p->D*yy.col(nth[n][j]-1);
+								zz+=p->D*yy;
 								break;
 							case 'l':
-								zz0+=p->D*(p->L,yy.col(nth[n][j]-1));
+								zz+=p->D*(p->L,yy);
 								break;
 							case 'r':
-								zz0+=p->D*(yy,p->R);
+								zz+=p->D*(yy,p->R);
 								break;
 							case 'f':
-								zz0+=p->D*(p->L,yy,p->R);
+								zz+=p->D*(p->L,yy,p->R);
 								break;
 							case 'm':
-								zz0+=p->D*(p->L,(p->I*yy.col(nth[n][j]-1)));
+								zz+=p->D*(p->L,(p->I*yy));
 								break;
 							case 's':
-								zz0+=p->D*((p->I*yy),p->R);
+								zz+=p->D*((p->I*yy),p->R);
 								break;
 							case 'g':
-								zz0+=p->D*(p->L,(p->I*yy),p->R);
+								zz+=p->D*(p->L,(p->I*yy),p->R);
 						}
 						p=p->next;
 					}
 				}
-				zz.setblock(0,zz0.nrows()-1,zz.ncols()-1,zz.ncols()-1,zz0);
-			}
-			if(bc_eq[n].eq_set(i)) {
-				zz0=zeros(nr[n][i],1);
-				for(j=0;j<nv;j++) {
-					if(!reg(j)) continue;
-					yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
-					p=bc_eq[n].eq[i][j];
-					while(p!=NULL) {
-						switch(p->type) {
-							case 'd':
-								zz0+=p->D*yy.col(0);
-								break;
-							case 'l':
-								zz0+=p->D*(p->L,yy.col(0));
-								break;
-							case 'r':
-								zz0+=p->D*(yy,p->R);
-								break;
-							case 'f':
-								zz0+=p->D*(p->L,yy,p->R);
-								break;
-							case 'm':
-								zz0+=p->D*(p->L,(p->I*yy.col(0)));
-								break;
-							case 's':
-								zz0+=p->D*((p->I*yy),p->R);
-								break;
-							case 'g':
-								zz0+=p->D*(p->L,(p->I*yy),p->R);
+				if(bc_pol[n].eq_set(i)) {
+					zz0=zeros(nr[n][i],1);
+					for(j=0;j<nv;j++) {
+						if(!reg(j)) continue;
+						if((p=bc_pol[n].eq[i][j])!=NULL)
+							yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
+						while(p!=NULL) {
+							switch(p->type) {
+								case 'd':
+									zz0+=p->D*yy.col(nth[n][j]-1);
+									break;
+								case 'l':
+									zz0+=p->D*(p->L,yy.col(nth[n][j]-1));
+									break;
+								case 'r':
+									zz0+=p->D*(yy,p->R);
+									break;
+								case 'f':
+									zz0+=p->D*(p->L,yy,p->R);
+									break;
+								case 'm':
+									zz0+=p->D*(p->L,(p->I*yy.col(nth[n][j]-1)));
+									break;
+								case 's':
+									zz0+=p->D*((p->I*yy),p->R);
+									break;
+								case 'g':
+									zz0+=p->D*(p->L,(p->I*yy),p->R);
+							}
+							p=p->next;
 						}
-						p=p->next;
 					}
+					zz.setblock(0,zz0.nrows()-1,zz.ncols()-1,zz.ncols()-1,zz0);
 				}
-				zz.setblock(0,zz0.nrows()-1,0,0,zz0);
-			}
-			if(bc_bot2[n].eq_set(i)) {
-				zz0=zeros(nbot[n][i],nth[n][i]);
-				for(j=0;j<nv;j++) {
-					if(!reg(j)) continue;
-					yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
-					p=bc_bot2[n].eq[i][j];
-					while(p!=NULL) {
-						switch(p->type) {
-							case 'd':
-								zz0+=p->D*yy.row(0);
-								break;
-							case 'l':
-								zz0+=p->D*(p->L,yy);
-								break;
-							case 'r':
-								zz0+=p->D*(yy.row(0),p->R);
-								break;
-							case 'f':
-								zz0+=p->D*(p->L,yy,p->R);
-								break;
-							case 'm':
-								zz0+=p->D*(p->L,(p->I*yy));
-								break;
-							case 's':
-								zz0+=p->D*((p->I*yy.row(0)),p->R);
-								break;
-							case 'g':
-								zz0+=p->D*(p->L,(p->I*yy),p->R);
+				if(bc_eq[n].eq_set(i)) {
+					zz0=zeros(nr[n][i],1);
+					for(j=0;j<nv;j++) {
+						if(!reg(j)) continue;
+						if((p=bc_eq[n].eq[i][j])!=NULL)
+							yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
+						while(p!=NULL) {
+							switch(p->type) {
+								case 'd':
+									zz0+=p->D*yy.col(0);
+									break;
+								case 'l':
+									zz0+=p->D*(p->L,yy.col(0));
+									break;
+								case 'r':
+									zz0+=p->D*(yy,p->R);
+									break;
+								case 'f':
+									zz0+=p->D*(p->L,yy,p->R);
+									break;
+								case 'm':
+									zz0+=p->D*(p->L,(p->I*yy.col(0)));
+									break;
+								case 's':
+									zz0+=p->D*((p->I*yy),p->R);
+									break;
+								case 'g':
+									zz0+=p->D*(p->L,(p->I*yy),p->R);
+							}
+							p=p->next;
 						}
-						p=p->next;
 					}
+					zz.setblock(0,zz0.nrows()-1,0,0,zz0);
 				}
-				zz.setblock(0,zz0.nrows()-1,0,zz0.ncols()-1,zz0);
-			}
-			if(n) if(bc_bot1[n].eq_set(i)) {
-				zz0=zeros(nbot[n][i],nth[n][i]);
-				for(j=0;j<nv;j++) {
-					if(!reg(j)) continue;
-					yy=y[j].block(j0[j]-nr[n-1][j],j0[j]-1,0,nth[n-1][j]-1);
-					p=bc_bot1[n].eq[i][j];
-					while(p!=NULL) {
-						switch(p->type) {
-							case 'd':
-								zz0+=p->D*yy.row(yy.nrows()-1);
-								break;
-							case 'l':
-								zz0+=p->D*(p->L,yy);
-								break;
-							case 'r':
-								zz0+=p->D*(yy.row(yy.nrows()-1),p->R);
-								break;
-							case 'f':
-								zz0+=p->D*(p->L,yy,p->R);
-								break;
-							case 'm':
-								zz0+=p->D*(p->L,(p->I*yy));
-								break;
-							case 's':
-								zz0+=p->D*((p->I*yy.row(yy.nrows()-1)),p->R);
-								break;
-							case 'g':
-								zz0+=p->D*(p->L,(p->I*yy),p->R);
+				if(bc_bot2[n].eq_set(i)) {
+					zz0=zeros(nbot[n][i],nth[n][i]);
+					for(j=0;j<nv;j++) {
+						if(!reg(j)) continue;
+						if((p=bc_bot2[n].eq[i][j])!=NULL)
+							yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
+						while(p!=NULL) {
+							switch(p->type) {
+								case 'd':
+									zz0+=p->D*yy.row(0);
+									break;
+								case 'l':
+									zz0+=p->D*(p->L,yy);
+									break;
+								case 'r':
+									zz0+=p->D*(yy.row(0),p->R);
+									break;
+								case 'f':
+									zz0+=p->D*(p->L,yy,p->R);
+									break;
+								case 'm':
+									zz0+=p->D*(p->L,(p->I*yy));
+									break;
+								case 's':
+									zz0+=p->D*((p->I*yy.row(0)),p->R);
+									break;
+								case 'g':
+									zz0+=p->D*(p->L,(p->I*yy),p->R);
+							}
+							p=p->next;
 						}
-						p=p->next;
 					}
+					zz.setblock(0,zz0.nrows()-1,0,zz0.ncols()-1,zz0);
 				}
-				zz.setblock(0,zz0.nrows()-1,0,zz0.ncols()-1,
-					zz.block(0,zz0.nrows()-1,0,zz0.ncols()-1)+zz0);
-			}
-			if(bc_top1[n].eq_set(i)) {
-				zz0=zeros(ntop[n][i],nth[n][i]);
-				for(j=0;j<nv;j++) {
-					if(!reg(j)) continue;
-					yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
-					p=bc_top1[n].eq[i][j];
-					while(p!=NULL) {
-						switch(p->type) {
-							case 'd':
-								zz0+=p->D*yy.row(yy.nrows()-1);
-								break;
-							case 'l':
-								zz0+=p->D*(p->L,yy);
-								break;
-							case 'r':
-								zz0+=p->D*(yy.row(yy.nrows()-1),p->R);
-								break;
-							case 'f':
-								zz0+=p->D*(p->L,yy,p->R);
-								break;
-							case 'm':
-								zz0+=p->D*(p->L,(p->I*yy));
-								break;
-							case 's':
-								zz0+=p->D*((p->I*yy.row(yy.nrows()-1)),p->R);
-								break;
-							case 'g':
-								zz0+=p->D*(p->L,(p->I*yy),p->R);
+				if(n) if(bc_bot1[n].eq_set(i)) {
+					zz0=zeros(nbot[n][i],nth[n][i]);
+					for(j=0;j<nv;j++) {
+						if(!reg(j)) continue;
+						if((p=bc_bot1[n].eq[i][j])!=NULL)
+							yy=y[j].block(j0[j]-nr[n-1][j],j0[j]-1,0,nth[n-1][j]-1);
+						while(p!=NULL) {
+							switch(p->type) {
+								case 'd':
+									zz0+=p->D*yy.row(yy.nrows()-1);
+									break;
+								case 'l':
+									zz0+=p->D*(p->L,yy);
+									break;
+								case 'r':
+									zz0+=p->D*(yy.row(yy.nrows()-1),p->R);
+									break;
+								case 'f':
+									zz0+=p->D*(p->L,yy,p->R);
+									break;
+								case 'm':
+									zz0+=p->D*(p->L,(p->I*yy));
+									break;
+								case 's':
+									zz0+=p->D*((p->I*yy.row(yy.nrows()-1)),p->R);
+									break;
+								case 'g':
+									zz0+=p->D*(p->L,(p->I*yy),p->R);
+							}
+							p=p->next;
 						}
-						p=p->next;
 					}
+					zz.setblock(0,zz0.nrows()-1,0,zz0.ncols()-1,
+						zz.block(0,zz0.nrows()-1,0,zz0.ncols()-1)+zz0);
 				}
-				zz.setblock(zz.nrows()-zz0.nrows(),zz.nrows()-1,0,zz0.ncols()-1,zz0);
-			}
-			if(n<nb-1) if(bc_top2[n].eq_set(i)) {
-				zz0=zeros(ntop[n][i],nth[n][i]);
-				for(j=0;j<nv;j++) {
-					if(!reg(j)) continue;
-					yy=y[j].block(j0[j]+nr[n][j],j0[j]+nr[n][j]+nr[n+1][j]-1,0,nth[n+1][j]-1);
-					p=bc_top2[n].eq[i][j];
-					while(p!=NULL) {
-						switch(p->type) {
-							case 'd':
-								zz0+=p->D*yy.row(0);
-								break;
-							case 'l':
-								zz0+=p->D*(p->L,yy);
-								break;
-							case 'r':
-								zz0+=p->D*(yy.row(0),p->R);
-								break;
-							case 'f':
-								zz0+=p->D*(p->L,yy,p->R);
-								break;
-							case 'm':
-								zz0+=p->D*(p->L,(p->I*yy));
-								break;
-							case 's':
-								zz0+=p->D*((p->I*yy.row(0)),p->R);
-								break;
-							case 'g':
-								zz0+=p->D*(p->L,(p->I*yy),p->R);
+				if(bc_top1[n].eq_set(i)) {
+					zz0=zeros(ntop[n][i],nth[n][i]);
+					for(j=0;j<nv;j++) {
+						if(!reg(j)) continue;
+						if((p=bc_top1[n].eq[i][j])!=NULL)
+							yy=y[j].block(j0[j],j0[j]+nr[n][j]-1,0,nth[n][j]-1);
+						while(p!=NULL) {
+							switch(p->type) {
+								case 'd':
+									zz0+=p->D*yy.row(yy.nrows()-1);
+									break;
+								case 'l':
+									zz0+=p->D*(p->L,yy);
+									break;
+								case 'r':
+									zz0+=p->D*(yy.row(yy.nrows()-1),p->R);
+									break;
+								case 'f':
+									zz0+=p->D*(p->L,yy,p->R);
+									break;
+								case 'm':
+									zz0+=p->D*(p->L,(p->I*yy));
+									break;
+								case 's':
+									zz0+=p->D*((p->I*yy.row(yy.nrows()-1)),p->R);
+									break;
+								case 'g':
+									zz0+=p->D*(p->L,(p->I*yy),p->R);
+							}
+							p=p->next;
 						}
-						p=p->next;
 					}
+					zz.setblock(zz.nrows()-zz0.nrows(),zz.nrows()-1,0,zz0.ncols()-1,zz0);
 				}
-				zz.setblock(zz.nrows()-zz0.nrows(),zz.nrows()-1,0,zz0.ncols()-1,
-					zz.block(zz.nrows()-zz0.nrows(),zz.nrows()-1,0,zz0.ncols()-1)+zz0);
+				if(n<nb-1) if(bc_top2[n].eq_set(i)) {
+					zz0=zeros(ntop[n][i],nth[n][i]);
+					for(j=0;j<nv;j++) {
+						if(!reg(j)) continue;
+						if((p=bc_top2[n].eq[i][j])!=NULL)
+							yy=y[j].block(j0[j]+nr[n][j],j0[j]+nr[n][j]+nr[n+1][j]-1,0,nth[n+1][j]-1);
+						while(p!=NULL) {
+							switch(p->type) {
+								case 'd':
+									zz0+=p->D*yy.row(0);
+									break;
+								case 'l':
+									zz0+=p->D*(p->L,yy);
+									break;
+								case 'r':
+									zz0+=p->D*(yy.row(0),p->R);
+									break;
+								case 'f':
+									zz0+=p->D*(p->L,yy,p->R);
+									break;
+								case 'm':
+									zz0+=p->D*(p->L,(p->I*yy));
+									break;
+								case 's':
+									zz0+=p->D*((p->I*yy.row(0)),p->R);
+									break;
+								case 'g':
+									zz0+=p->D*(p->L,(p->I*yy),p->R);
+							}
+							p=p->next;
+						}
+					}
+					zz.setblock(zz.nrows()-zz0.nrows(),zz.nrows()-1,0,zz0.ncols()-1,
+						zz.block(zz.nrows()-zz0.nrows(),zz.nrows()-1,0,zz0.ncols()-1)+zz0);
+				}
+				z[i].setblock(j0[i],j0[i]+nr[n][i]-1,0,nth[n][i]-1,zz);
 			}
-			z[i].setblock(j0[i],j0[i]+nr[n][i]-1,0,nth[n][i]-1,zz);
 			for(j=0;j<nv;j++) j0[j]+=nr[n][j];
 		}
 	}
@@ -1315,7 +1320,7 @@ void solver::add(const char *eqn, const char *varn,const char *block_type,char t
 	else ii=NULL;
 	j0=0;
 	if(strcmp(block_type,"block")&&strcmp(block_type,"bc_eq")&&strcmp(block_type,"bc_pol")) {
-		printf("solver::add : Invalid block_type %s\n",block_type);
+		fprintf(stderr,"ERROR (solver::add) : Invalid block_type %s\n",block_type);
 		exit(1);
 	}
 	
@@ -1368,28 +1373,28 @@ void solver::add(const char *eqn, const char *varn,const char *block_type,char t
 	}
 	
 	if(error) {
-		printf("ERROR (solver):\n\t%s\n\tin eq \"%s\", var \"%s\"",err_msg,eqn,varn);
+		fprintf(stderr,"ERROR (solver):\n\t%s\n\tin eq \"%s\", var \"%s\"",err_msg,eqn,varn);
 		switch(type) {
 			case 'd': 
-				printf(" (type: d)\n");
+				fprintf(stderr," (type: d)\n");
 				break;
 			case 'l': 
-				printf(" (type: l)\n");
+				fprintf(stderr," (type: l)\n");
 				break;
 			case 'r': 
-				printf(" (type: r)\n");
+				fprintf(stderr," (type: r)\n");
 				break;
 			case 'f': 
-				printf(" (type: lr)\n");
+				fprintf(stderr," (type: lr)\n");
 				break;
 			case 'm': 
-				printf(" (type: li)\n");
+				fprintf(stderr," (type: li)\n");
 				break;
 			case 's': 
-				printf(" (type: ri)\n");
+				fprintf(stderr," (type: ri)\n");
 				break;
 			case 'g': 
-				printf(" (type: lri)\n");
+				fprintf(stderr," (type: lri)\n");
 		}
 		exit(1);
 	}	
@@ -1407,27 +1412,27 @@ void solver::add(int iblock,const char *eqn, const char *varn,const char *block_
 	ivar=get_id(varn);
 	
 	if(dep(ieq)&&type!='d') {
-		printf("ERROR (solver):\n\t");
-		printf("Only type D terms are allowed in the definition of dependent variables\n");
-		printf("\tin block %d, eq \"%s\", var \"%s\"",iblock,eqn,varn);
+		fprintf(stderr,"ERROR (solver):\n\t");
+		fprintf(stderr,"Only type D terms are allowed in the definition of dependent variables\n");
+		fprintf(stderr,"\tin block %d, eq \"%s\", var \"%s\"\n",iblock,eqn,varn);
 		exit(1);
 	}
 	if(dep(ieq)&&strcmp(block_type,"block")) {
-		printf("ERROR (solver):\n\t");
-		printf("No boundary conditions are allowed in the definition of dependent variables\n");
-		printf("\tin block %d, eq \"%s\", var \"%s\"",iblock,eqn,varn);
+		fprintf(stderr,"ERROR (solver):\n\t");
+		fprintf(stderr,"No boundary conditions are allowed in the definition of dependent variables\n");
+		fprintf(stderr,"\tin block %d, eq \"%s\", var \"%s\"\n",iblock,eqn,varn);
 		exit(1);
 	}
 	if(iblock==0&&!strcmp(block_type,"bc_bot1")) {
-		printf("ERROR (solver):\n\t");
-		printf("\"bc_bot1\" terms are not allowed in first domain\n");
-		printf("\tin block %d, eq \"%s\", var \"%s\"",iblock,eqn,varn);
+		fprintf(stderr,"ERROR (solver):\n\t");
+		fprintf(stderr,"\"bc_bot1\" terms are not allowed in first domain\n");
+		fprintf(stderr,"\tin block %d, eq \"%s\", var \"%s\"\n",iblock,eqn,varn);
 		exit(1);
 	}
 	if(iblock==nb-1&&!strcmp(block_type,"bc_top2")) {
-		printf("ERROR (solver):\n\t");
-		printf("\"bc_top2\" terms are not allowed in last domain\n");
-		printf("\tin block %d, eq \"%s\", var \"%s\"",iblock,eqn,varn);
+		fprintf(stderr,"ERROR (solver):\n\t");
+		fprintf(stderr,"\"bc_top2\" terms are not allowed in last domain\n");
+		fprintf(stderr,"\tin block %d, eq \"%s\", var \"%s\"\n",iblock,eqn,varn);
 		exit(1);
 	}
 	
@@ -1447,7 +1452,7 @@ void solver::add(int iblock,const char *eqn, const char *varn,const char *block_
 	else if(!strcmp(block_type,"bc_top2"))
 		bb=bc_top2;
 	else {
-		printf("solver::add : Unknown block_type %s\n",block_type);
+		fprintf(stderr,"ERROR (solver::add) : Unknown block_type %s\n",block_type);
 		exit(1);
 	}
 	
@@ -1510,7 +1515,7 @@ int solver::check_struct() {
 	
 	for(int n=0;n<nb;n++) {
 		for(int i=0;i<nv;i++) {
-			if(!reg(j)) continue;
+			if(!reg(i)) continue;
 			if(block[n].eq_set(i)) 
 				for(int j=0;j<nv;j++) 
 					error=error||check_struct_block(n,i,j);
@@ -1547,8 +1552,8 @@ int solver::check_struct() {
 				Nt=nth[n][i]>Nt?nth[n][i]:Nt;
 			}
 			if(rhs[i].nrows()!=Nr||rhs[i].ncols()!=Nt) {
-				printf("ERROR (solver):\n\tRHS for var \"%s\" has not the correct size\n",var[i]);
-				printf("\tIt is (%d,%d) and should be (%d,%d)\n",rhs[i].nrows(),rhs[i].ncols(),Nr,Nt);
+				fprintf(stderr,"ERROR (solver):\n\tRHS for var \"%s\" has not the correct size\n",var[i]);
+				fprintf(stderr,"\tIt is (%d,%d) and should be (%d,%d)\n",rhs[i].nrows(),rhs[i].ncols(),Nr,Nt);
 				error=1;
 			}
 		}
@@ -1802,28 +1807,28 @@ int solver::check_struct_bc(int n,int i,int j,const char *bctype) {
 
 void solver::check_struct_error(const char *err_msg,int n,int i,int j,solver_elem *p) {
 
-	printf("ERROR (solver):\n\t%s\n\tin block %d, eq \"%s\", var \"%s\"",err_msg,n,var[i],var[j]);
+	fprintf(stderr,"ERROR (solver):\n\t%s\n\tin block %d, eq \"%s\", var \"%s\"",err_msg,n,var[i],var[j]);
 	switch(p->type) {
 		case 'd': 
-			printf(" (type: d)\n");
+			fprintf(stderr," (type: d)\n");
 			break;
 		case 'l': 
-			printf(" (type: l)\n");
+			fprintf(stderr," (type: l)\n");
 			break;
 		case 'r': 
-			printf(" (type: r)\n");
+			fprintf(stderr," (type: r)\n");
 			break;
 		case 'f': 
-			printf(" (type: lr)\n");
+			fprintf(stderr," (type: lr)\n");
 			break;
 		case 'm': 
-			printf(" (type: li)\n");
+			fprintf(stderr," (type: li)\n");
 			break;
 		case 's': 
-			printf(" (type: ri)\n");
+			fprintf(stderr," (type: ri)\n");
 			break;
 		case 'g': 
-			printf(" (type: lri)\n");
+			fprintf(stderr," (type: lri)\n");
 	}
 
 }
@@ -1838,7 +1843,7 @@ void solver::subst_dep() {
 			substd=0;
 			for(int i=0;i<nv;i++) {
 				if(dep(i)&&block[n].eq[i][i]!=NULL) {
-					printf("ERROR (solver):\n\tFound loop in definition of dependent variable \"%s\"\n",var[i]);
+					fprintf(stderr,"ERROR (solver):\n\tFound loop in definition of dependent variable \"%s\"\n",var[i]);
 					exit(1);
 				}
 			}
@@ -1898,7 +1903,7 @@ void solver::subst_dep_eq(const char *block_type,solver_block *bb,int n,int i,in
 	solver_elem *p,*pdep,*p0;
 	matrix d;
 	int n2,m2,ndep;
-//printf("%s n=%d i=%d j=%d\n",block_type,n,i,j);
+
 	p=bb[n].eq[i][j];
 	ndep=n;
 	if(!strcmp(block_type,"bc_bot1")) ndep--;
@@ -1948,7 +1953,7 @@ void solver::subst_dep_elem(int i,int k,solver_block *bb,solver_elem *p,const ma
 	int n1,m1;
 	matrix D,L,R,I;
 	char type_new;
-//printf("\t i=%d k=%d n2=%d m2=%d type=%c\n",i,k,n2,m2,p->type);
+
 	n1=d.nrows();
 	m1=d.ncols();
 	

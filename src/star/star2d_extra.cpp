@@ -199,3 +199,8 @@ matrix star2d::stream() const {
 	return GG;
 }
 
+
+
+
+
+

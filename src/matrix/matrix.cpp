@@ -8,6 +8,10 @@ matrix::matrix(int nfil,int ncol) {
 	
 	unsigned tam;
 
+    if(nfil<0||ncol<0) {
+		fprintf(stderr,"ERROR: Can't create matrix with negative size\n");
+		exit(1);
+	}
 	nf=nfil;
     nc=ncol;
     tam=unsigned(nf)*unsigned(nc);
@@ -51,6 +55,11 @@ matrix &matrix::dim(int nfil,int ncol) {
     
     unsigned tam;
     
+    if(nfil<0||ncol<0) {
+		fprintf(stderr,"ERROR: Can't create matrix with negative size\n");
+		exit(1);
+	}
+    
     if(nfil*ncol!=nf*nc) {
     	delete [] p;
     	nf=nfil;
@@ -69,8 +78,15 @@ matrix &matrix::redim(int nfil,int ncol) {
     
     int tam;
     
+    
+    if(nfil<0||ncol<0) {
+		fprintf(stderr,"ERROR: Can't create matrix with negative size\n");
+		exit(1);
+	}
+    
     if(nfil*ncol!=nf*nc) {
-    	printf("matrix.redim: Number of elements doesn't match\n");
+    	fprintf(stderr,"ERROR: matrix.redim: Number of elements doesn't match\n");
+    	exit(1);
     }    
     nf=nfil;nc=ncol;
     
@@ -89,7 +105,24 @@ matrix &matrix::operator=(const matrix &a) {
 
 double &matrix::operator()(int ifil,int icol) const {
 
+	if(ifil<0) ifil+=nf;
+	if(icol<0) icol+=nc;
+	if(ifil>=nf||ifil<0||icol>=nc||icol<0) {
+		fprintf(stderr,"ERROR: Index exceed matrix dimensions\n");
+		exit(1);
+	}
 	return *(p+icol*nf+ifil);
+	
+}
+
+double &matrix::operator()(int ielem) const {
+	
+	if(ielem<0) ielem+=nf*nc;
+	if(ielem>=nf*nc||ielem<0) {
+		fprintf(stderr,"ERROR: Index exceed matrix dimensions\n");
+		exit(1);
+	}
+	return *(p+ielem);
 	
 }
 
@@ -978,6 +1011,12 @@ matrix matrix::row(int ifil) const {
 	double *pi,*pres;
 	int i;
 	
+	if(ifil<0) ifil+=nf;
+	if(ifil<0||ifil>=nf) {
+		fprintf(stderr,"ERROR: (matrix.row) Index exceed matrix dimensions\n");
+		exit(1);
+	}
+			
 	pi=p+ifil;pres=res.p;
 	for(i=0;i<nc;i++)
 		*(pres+i)=*(pi+i*nf);
@@ -989,6 +1028,16 @@ matrix &matrix::setrow(int ifil,const matrix &a) {
 
 	double *pi,*pa;
 	int i;
+	
+	if(ifil<0) ifil+=nf;
+	if(ifil<0||ifil>=nf) {
+		fprintf(stderr,"ERROR: (matrix.setrow) Index exceed matrix dimensions\n");
+		exit(1);
+	}
+	if(a.nf>1||a.nc!=nc) {
+		fprintf(stderr,"ERROR: (matrix.setrow) Dimensions must agree\n");
+		exit(1);
+	}	
 	
 	pi=p+ifil;pa=a.p;
 	for(i=0;i<nc;i++)
@@ -1005,6 +1054,12 @@ matrix matrix::col(int icol) const {
 	double *pi,*pres;
 	int i,N;
 	
+	if(icol<0) icol+=nc;
+	if(icol<0||icol>=nc) {
+		fprintf(stderr,"ERROR: (matrix.col) Index exceed matrix dimensions\n");
+		exit(1);
+	}
+	
 	pi=p+icol*nf;pres=res.p;
 	N=nf;
 	for(i=0;i<N;i++)
@@ -1018,6 +1073,16 @@ matrix &matrix::setcol(int icol,const matrix &a) {
 	double *pi,*pa;
 	int i,N;
 	
+	if(icol<0) icol+=nc;
+	if(icol<0||icol>=nc) {
+		fprintf(stderr,"ERROR: (matrix.setcol) Index exceed matrix dimensions\n");
+		exit(1);
+	}
+	if(a.nc>1||a.nf!=nf) {
+		fprintf(stderr,"ERROR: (matrix.setcol) Dimensions must agree\n");
+		exit(1);
+	}	
+	
 	pi=p+icol*nf;pa=a.p;
 	N=nf;
 	for(i=0;i<N;i++)
@@ -1028,6 +1093,16 @@ matrix &matrix::setcol(int icol,const matrix &a) {
 }
 
 matrix matrix::block(int ifil1,int ifil2,int icol1,int icol2) const {
+
+	if(ifil1<0) ifil1+=nf;
+	if(ifil2<0) ifil2+=nf;
+	if(icol1<0) icol1+=nc;
+	if(icol2<0) icol2+=nc;
+	
+	if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
+		fprintf(stderr,"ERROR: (matrix.block) Index exceed matrix dimensions\n");
+		exit(1);
+	}	
 
 	matrix res(ifil2-ifil1+1,icol2-icol1+1);
 	double *pi,*pres;
@@ -1046,7 +1121,17 @@ matrix matrix::block(int ifil1,int ifil2,int icol1,int icol2) const {
 
 matrix matrix::block_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,int dcol) const {
 
-	matrix res(floor((ifil2-ifil1)/dfil)+1,round((icol2-icol1)/dcol)+1);
+	if(ifil1<0) ifil1+=nf;
+	if(ifil2<0) ifil2+=nf;
+	if(icol1<0) icol1+=nc;
+	if(icol2<0) icol2+=nc;
+	
+	if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
+		fprintf(stderr,"ERROR: (matrix.block_step) Index exceed matrix dimensions\n");
+		exit(1);
+	}	
+
+	matrix res(floor((ifil2-ifil1)/dfil)+1,floor((icol2-icol1)/dcol)+1);
 	double *pi,*pres;
 	int i,j,N1,N2;
 	
@@ -1062,6 +1147,20 @@ matrix matrix::block_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,int d
 }
 
 matrix &matrix::setblock(int ifil1,int ifil2,int icol1,int icol2,const matrix &a) {
+
+	if(ifil1<0) ifil1+=nf;
+	if(ifil2<0) ifil2+=nf;
+	if(icol1<0) icol1+=nc;
+	if(icol2<0) icol2+=nc;
+	
+	if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
+		fprintf(stderr,"ERROR: (matrix.setblock) Index exceed matrix dimensions\n");
+		exit(1);
+	}	
+	if(a.nf!=ifil2-ifil1+1||a.nc!=icol2-icol1+1) {
+		fprintf(stderr,"ERROR: (matrix.setblock) Dimensions must agree\n");
+		exit(1);
+	}
 
 	double *pi,*pa;
 	int i,j,N1,N2;
@@ -1079,6 +1178,20 @@ matrix &matrix::setblock(int ifil1,int ifil2,int icol1,int icol2,const matrix &a
 }
 
 matrix &matrix::setblock_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,int dcol,const matrix &a) {
+
+	if(ifil1<0) ifil1+=nf;
+	if(ifil2<0) ifil2+=nf;
+	if(icol1<0) icol1+=nc;
+	if(icol2<0) icol2+=nc;
+	
+	if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
+		fprintf(stderr,"ERROR: (matrix.setblock_step) Index exceed matrix dimensions\n");
+		exit(1);
+	}
+	if(a.nf!=floor((ifil2-ifil1)/dfil)+1||a.nc!=floor((icol2-icol1)/dcol)+1) {
+		fprintf(stderr,"ERROR: (matrix.setblock_step) Dimensions must agree\n");
+		exit(1);
+	}
 
 	double *pi,*pa;
 	int i,j,N1,N2;

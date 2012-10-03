@@ -8,7 +8,7 @@ struct nuc_struct {
 	char name[16];
 };
 struct eos_struct {
-	matrix G1,cp,del_ad,G3_1,cv,d,prad,chi_rho,chi_T;
+	matrix G1,cp,del_ad,G3_1,cv,d,prad,chi_rho,chi_T,s;
 	char name[16];
 };
 struct opa_struct {

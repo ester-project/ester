@@ -58,6 +58,7 @@ class star1d {
 	void solve_temp(solver *);
 	void solve_dim(solver *);
 	void solve_map(solver *);
+	void solve_definitions(solver *);
 	
 	void atmosphere();
 	void solve_atm(solver *);
@@ -91,7 +92,7 @@ class star2d {
 	mapping map;
 	matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
 	matrix_block_diag &D;
-	matrix rho,phi,p,T,Xr,phiex,Frad;
+	matrix rho,phi,p,T,Xr,phiex;
 	matrix vr,vt,G,w,psi;
 	opa_struct opa;
 	nuc_struct nuc;
@@ -113,9 +114,6 @@ class star2d {
 	struct config_struct {
 		double newton_dmax,verbose;
 	} config;
-	
-	
-	matrix gsup_;
 	
 	star2d();
 	~star2d();
@@ -147,8 +145,9 @@ class star2d {
 	void solve_rot(solver *);
 	void solve_dyn(solver *);
 	void solve_gsup(solver *);
+	void solve_Teff(solver *);
 	void solve_vbl(solver *,const char *eqn,matrix &rhs);
-	void solve_cont(solver *);
+	void solve_definitions(solver *);
 	
 	void atmosphere();
 	void solve_atm(solver *);
@@ -162,8 +161,6 @@ class star2d {
 	int eq_state();
 	
 	void upd_Xr();
-	void calc_W2();
-	void calc_Frad();
 	void calc_units();
 	void calc_veloc();
 	
@@ -181,52 +178,6 @@ class star2d {
 	double apparent_luminosity(double i) const;
 	
 	void fill();
-	
-	
-	void add_dr(solver *,const char *eqn,const matrix &);
-	void add_drz(solver *,const char *eqn,const matrix &);
-	void add_drt(solver *,const char *eqn,const matrix &);
-	void add_drzz(solver *,const char *eqn,const matrix &);
-	void add_drzt(solver *,const char *eqn,const matrix &);
-	void add_drtt(solver *,const char *eqn,const matrix &);
-	void add_drex(solver *,const char *eqn,const matrix &);
-	void add_drzex(solver *,const char *eqn,const matrix &);
-	void add_drtex(solver *,const char *eqn,const matrix &);
-	void add_drzzex(solver *,const char *eqn,const matrix &);
-	void add_drztex(solver *,const char *eqn,const matrix &);
-	void add_drttex(solver *,const char *eqn,const matrix &);
-	
-	void add_dr(solver *,int iblock,const char *eqn,const matrix &);
-	void add_drz(solver *,int iblock,const char *eqn,const matrix &);
-	void add_drt(solver *,int iblock,const char *eqn,const matrix &);
-	void add_drzz(solver *,int iblock,const char *eqn,const matrix &);
-	void add_drzt(solver *,int iblock,const char *eqn,const matrix &);
-	void add_drtt(solver *,int iblock,const char *eqn,const matrix &);
-	
-	void add_bc_bot1_dr(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_bot2_dr(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_top1_dr(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_top2_dr(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_bot1_drz(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_bot2_drz(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_top1_drz(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_top2_drz(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_bot1_drt(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_bot2_drt(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_top1_drt(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_top2_drt(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_bot1_drzz(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_bot2_drzz(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_top1_drzz(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_top2_drzz(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_bot1_drzt(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_bot2_drzt(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_top1_drzt(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_top2_drzt(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_bot1_drtt(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_bot2_drtt(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_top1_drtt(solver *,int iblock,const char *eqn,const matrix &);
-	void add_bc_top2_drtt(solver *,int iblock,const char *eqn,const matrix &);
 	
 	void draw(figure *,const matrix &,int parity=0) const;
 	void drawi(figure *,const matrix &,int sr,int st,int parity=0) const;

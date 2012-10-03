@@ -115,7 +115,7 @@ void diff_gl::init() {
 	I=zeros(1,Ntot);
 	j1=0;
 	for(i=0;i<ndom;i++) {
-		j2=*(npts+i)-1;
+		j2=j1+*(npts+i)-1;
 		*(gl1.npts)=*(npts+i);
 		gl1.init_1();
 		x1=xif[i];

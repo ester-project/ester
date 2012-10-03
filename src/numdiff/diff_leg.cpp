@@ -60,14 +60,13 @@ diff_leg &diff_leg::operator=(const diff_leg &leg) {
 	return *this;
 }
 
-
 matrix diff_leg::Pn(int n,matrix x) {
 
 	matrix p;
 	int j;
 	
 	p=zeros(n+1,x.ncols());
-	p.setrow(0,ones(x.ncols(),1));
+	p.setrow(0,ones(1,x.ncols()));
 	if(n) p.setrow(1,x);
 	if(n>1) {
 		for(j=1;j<n;j++) {
@@ -123,10 +122,8 @@ matrix diff_leg::nodes(int n,matrix &w) {
 		x0=x;
 		p=Pn(n,x);
 		// Normalizacion
-		{int j;
-		for(j=1;j<=n;j++) 
+		for(int j=1;j<=n;j++) 
 			p.setrow(j,p.row(j)/sqrt(2*j+1));
-		}
 		x+=p.row(n)*(1-x*x)/n/(x*p.row(n)-p.row(n-1));
 		if(max(abs(x-x0))<1e-13) fin--;
 	}

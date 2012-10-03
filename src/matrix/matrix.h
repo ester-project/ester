@@ -16,7 +16,8 @@ class matrix {
     matrix &dim(int nfil,int ncol);
     matrix &redim(int nfil,int ncol);
     matrix &operator=(const matrix &);
-    double &operator()(int ifil,int icol=0) const; 
+    double &operator()(int ifil,int icol) const; 
+    double &operator()(int ielem) const;
     int read(int nfil,int ncol,FILE *fp,char mode='t');
     int write(FILE *fp=stdout,char mode='t') const;
     
