@@ -1,10 +1,19 @@
 #include"matrix.h"
+#include<stdlib.h>
 extern "C" {
 #include CBLAS
 }
 
 matrix_block_diag::matrix_block_diag(int nblocks) {
 
+	if(nblocks<0) {
+		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks can't be negative\n");
+		exit(1);
+	}
+	if(nblocks==0) {
+		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks can't be zero\n");
+		exit(1);
+	}
 	nb=nblocks;
 	m=new matrix[nb];
 	
@@ -38,6 +47,15 @@ matrix_block_diag &matrix_block_diag::operator=(const matrix_block_diag &a) {
 
 matrix_block_diag & matrix_block_diag::set_nblocks(int nblocks) {
 
+	if(nblocks<0) {
+		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks can't be negative\n");
+		exit(1);
+	}
+	if(nblocks==0) {
+		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks can't be zero\n");
+		exit(1);
+	}
+
 	if(nblocks!=nb) {
 		nb=nblocks;
 		delete [] m;
@@ -66,6 +84,11 @@ matrix_block_diag::operator matrix() const{
 	
 matrix &matrix_block_diag::block(int i) const {
 
+	if(i<0) i+=nb;
+	if(i<0||i>=nb) {
+		fprintf(stderr,"ERROR: (matrix_block_diag) Index exceed number of blocks\n");
+		exit(1);
+	}
 	return m[i];
 	
 }
@@ -95,6 +118,10 @@ matrix matrix_block_diag::operator,(const matrix &a) const {
 	
 	int i,n=0;
 
+	if(ncols()!=a.nf) {
+		fprintf(stderr,"ERROR: (matrix_block_diag) Dimensions must agree\n");
+		exit(1);
+	}
 	matrix res(nrows(),a.nc);
 
 	for(i=0;i<nb;i++) {
@@ -110,6 +137,11 @@ matrix_block_diag matrix_block_diag::operator,(const matrix_block_diag &a) const
 	int i;
 	matrix_block_diag res(nb);
 
+	if(nb!=a.nb) {
+		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks must agree\n");
+		exit(1);
+	}
+
 	for(i=0;i<nb;i++) res.m[i]=(m[i],a.m[i]);
 
 	return res;
@@ -121,6 +153,10 @@ matrix operator,(const matrix &a,const matrix_block_diag &b) {
 	int i;
 	unsigned n=0;
 
+	if(a.ncols()!=b.nrows()) {
+		fprintf(stderr,"ERROR: (matrix_block_diag) Dimensions must agree\n");
+		exit(1);
+	}
 	matrix res(a.nrows(),b.nrows());
 
 	for(i=0;i<b.nb;i++) {
@@ -137,7 +173,12 @@ matrix_block_diag matrix_block_diag::operator*(const matrix &z) const {
 	double *pz=z.p,*pp,*pres;
 	int i,j,k;
 	matrix_block_diag res(nb);
-	
+
+	if(z.nc!=1||z.nf!=nrows()) {
+		fprintf(stderr,"ERROR: (matrix_block_diag) Dimensions must agree\n");
+		exit(1);
+	}
+
 	for(i=0;i<nb;i++) {
 		pp=m[i].p;
 		res.m[i].dim(m[i].nf,m[i].nc);
@@ -156,6 +197,11 @@ matrix_block_diag matrix_block_diag::operator/(const matrix &z) const {
 	double *pz=z.p,*pp,*pres;
 	int i,j,k;
 	matrix_block_diag res(nb);
+	
+	if(z.nc!=1||z.nf!=nrows()) {
+		fprintf(stderr,"ERROR: (matrix_block_diag) Dimensions must agree\n");
+		exit(1);
+	}
 	
 	for(i=0;i<nb;i++) {
 		pp=m[i].p;
@@ -208,6 +254,11 @@ matrix_block_diag matrix_block_diag::operator+(const matrix_block_diag &a) const
 	matrix_block_diag res(nb);
 	int i;
 
+	if(nb!=a.nb) {
+		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks must agree\n");
+		exit(1);
+	}
+
 	for(i=0;i<nb;i++) 
 		res.m[i]=m[i]+a.m[i];
 		
@@ -219,6 +270,11 @@ matrix_block_diag matrix_block_diag::operator-(const matrix_block_diag &a) const
 
 	matrix_block_diag res(nb);
 	int i;
+
+	if(nb!=a.nb) {
+		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks must agree\n");
+		exit(1);
+	}
 
 	for(i=0;i<nb;i++) 
 		res.m[i]=m[i]-a.m[i];
@@ -257,11 +313,17 @@ matrix matrix_block_diag::operator-(const matrix &a) const {
 
 matrix matrix_block_diag::row(int n) const {
 
-	int i=0,j;
+	int i=0,j,nf;
 	matrix res;
 	double *pres,*pp;
 	
-	res=zeros(1,nrows());
+	nf=nrows();
+	if(n<0) n+=nf;
+	if(n<0||n>=nf) {
+		fprintf(stderr,"ERROR: (matrix_block_diag.row) Index exceed matrix dimensions\n");
+		exit(1);
+	}
+	res=zeros(1,nf);
 	pres=res.p;
 	while(n>=m[i].nf) {
 		pres+=m[i].nf;
@@ -279,7 +341,15 @@ matrix matrix_block_diag::row(int n) const {
 
 double matrix_block_diag::operator()(int nfil,int ncol) const {
 
-	int i=0;
+	int i=0,n;
+	
+	n=nrows();
+	if(nfil<0) nfil+=n;
+	if(ncol<0) ncol+=n;
+	if(nfil<0||nfil>=n||ncol<0||ncol>=n) {
+		fprintf(stderr,"ERROR: (matrix_block_diag) Index exceed matrix dimensions\n");
+		exit(1);
+	}
 	
 	while(nfil>=m[i].nf) {
 		nfil-=m[i].nf;

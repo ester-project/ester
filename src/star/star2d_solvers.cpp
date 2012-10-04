@@ -907,16 +907,14 @@ void star2d::solve_temp(solver *op) {
 		}
 		if(n>=conv) {
 			if(n<ndomains()-1) {
-			
-				op->bc_top1_add_l(n,eqn,"T",1/rz.row(j0+map.gl.npts[n]-1),D.block(n).row(-1));
-				op->bc_top2_add_l(n,eqn,"T",-1/rz.row(j0+map.gl.npts[n]),D.block(n+1).row(0));
-				
-				op->bc_top1_add_d(n,eqn,"rz",-1/rz.row(j0+map.gl.npts[n]-1)/rz.row(j0+map.gl.npts[n]-1)*(D,T).row(j0+map.gl.npts[n]-1));
-				op->bc_top2_add_d(n,eqn,"rz",1/rz.row(j0+map.gl.npts[n])/rz.row(j0+map.gl.npts[n])*(D,T).row(j0+map.gl.npts[n]));
+				op->bc_top1_add_d(n,eqn,"Frad",rz.row(j0+map.gl.npts[n]-1));
+				op->bc_top2_add_d(n,eqn,"Frad",-rz.row(j0+map.gl.npts[n]-1));
+				op->bc_top1_add_d(n,eqn,"rz",Frad.row(j0+map.gl.npts[n]-1));
+				op->bc_top2_add_d(n,eqn,"rz",-Frad.row(j0+map.gl.npts[n]-1));
 				
 				rhs_T.setrow(j0+map.gl.npts[n]-1,
-					-(D,T).row(j0+map.gl.npts[n]-1)/rz.row(j0+map.gl.npts[n]-1)
-					+(D,T).row(j0+map.gl.npts[n])/rz.row(j0+map.gl.npts[n]));
+					-Frad.row(j0+map.gl.npts[n]-1)*rz.row(j0+map.gl.npts[n]-1)
+					+Frad.row(j0+map.gl.npts[n])*rz.row(j0+map.gl.npts[n]));
 			} else {
 				op->bc_top1_add_d(n,eqn,"T",ones(1,nth()));
 				op->bc_top1_add_d(n,eqn,"Ts",-ones(1,nth()));

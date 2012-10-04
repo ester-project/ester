@@ -2021,15 +2021,15 @@ void solver::subst_dep_elem(int i,int k,solver_block *bb,solver_elem *p,const ma
 				type_new='g';
 				I=I*d;
 			} else if(n1==n2) {
-				type_new='l';
-				D=D*(I*d,R);
+				type_new='m';
+				I=(I*d,R);
 			} else if(m1==m2) {
-				type_new='r';
-				D=D*(L,I*d);
+				type_new='s';
+				I=(L,I*d);
 			} else {
 				type_new='d';
 				D=D*(L,I*d,R);
-			}	
+			}		
 	}
 	
 	bb->add(i,k,type_new,&D,&L,&R,&I);

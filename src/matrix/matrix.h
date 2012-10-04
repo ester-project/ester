@@ -123,9 +123,6 @@ class matrix {
 	friend matrix pow(double,const matrix &);
 	friend matrix pow(const matrix &,double);
 	
-	matrix lu(int *&ipiv) const;
-	void lu2(int *&ipiv);
-	matrix lusolve(matrix b,int *ipiv) const;
 	matrix solve(matrix) const;
 	matrix inv() const;
 	

@@ -12,6 +12,14 @@ matrix::matrix(int nfil,int ncol) {
 		fprintf(stderr,"ERROR: Can't create matrix with negative size\n");
 		exit(1);
 	}
+	if(nfil==0) {
+		fprintf(stderr,"ERROR: Number of rows can't be zero\n");
+		exit(1);
+	}
+	if(ncol==0) {
+		fprintf(stderr,"ERROR: Number of columns can't be zero\n");
+		exit(1);
+	}
 	nf=nfil;
     nc=ncol;
     tam=unsigned(nf)*unsigned(nc);
@@ -59,6 +67,14 @@ matrix &matrix::dim(int nfil,int ncol) {
 		fprintf(stderr,"ERROR: Can't create matrix with negative size\n");
 		exit(1);
 	}
+	if(nfil==0) {
+		fprintf(stderr,"ERROR: Number of rows can't be zero\n");
+		exit(1);
+	}
+	if(ncol==0) {
+		fprintf(stderr,"ERROR: Number of columns can't be zero\n");
+		exit(1);
+	}
     
     if(nfil*ncol!=nf*nc) {
     	delete [] p;
@@ -81,6 +97,14 @@ matrix &matrix::redim(int nfil,int ncol) {
     
     if(nfil<0||ncol<0) {
 		fprintf(stderr,"ERROR: Can't create matrix with negative size\n");
+		exit(1);
+	}
+	if(nfil==0) {
+		fprintf(stderr,"ERROR: Number of rows can't be zero\n");
+		exit(1);
+	}
+	if(ncol==0) {
+		fprintf(stderr,"ERROR: Number of columns can't be zero\n");
 		exit(1);
 	}
     
@@ -173,6 +197,11 @@ matrix matrix::operator+(const matrix &a) const {
     double *pi,*pa,*pres;
 	int i,j,resnf,resnc,N;
 	
+	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.+) Dimensions must agree\n");
+		exit(1);
+	}
+	
 	if(nf>a.nf) resnf=nf;
 		else resnf=a.nf;
 	if(nc>a.nc) resnc=nc;
@@ -242,6 +271,11 @@ matrix matrix::operator-(const matrix &a) const {
     matrix res;
     double *pi,*pa,*pres;
 	int i,j,resnf,resnc,N;
+	
+	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.-) Dimensions must agree\n");
+		exit(1);
+	}
 	
 	if(nf>a.nf) resnf=nf;
 		else resnf=a.nf;
@@ -321,6 +355,11 @@ matrix matrix::operator*(const matrix &a) const {
     double *pi,*pa,*pres;
 	int i,j,resnf,resnc,N;
 	
+	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.*) Dimensions must agree\n");
+		exit(1);
+	}
+	
 	if(nf>a.nf) resnf=nf;
 		else resnf=a.nf;
 	if(nc>a.nc) resnc=nc;
@@ -384,6 +423,11 @@ matrix matrix::operator/(const matrix &a) const {
     double *pi,*pa,*pres;
 	int i,j,resnf,resnc,N;
 	
+	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix./) Dimensions must agree\n");
+		exit(1);
+	}
+	
 	if(nf>a.nf) resnf=nf;
 		else resnf=a.nf;
 	if(nc>a.nc) resnc=nc;
@@ -441,6 +485,11 @@ matrix matrix::operator==(const matrix &a) const {
     matrix res;
     double *pi,*pa,*pres;
 	int i,j,resnf,resnc,N;
+	
+	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.==) Dimensions must agree\n");
+		exit(1);
+	}
 	
 	if(nf>a.nf) resnf=nf;
 		else resnf=a.nf;
@@ -501,6 +550,11 @@ matrix matrix::operator!=(const matrix &a) const {
     double *pi,*pa,*pres;
 	int i,j,resnf,resnc,N;
 	
+	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.!=) Dimensions must agree\n");
+		exit(1);
+	}
+	
 	if(nf>a.nf) resnf=nf;
 		else resnf=a.nf;
 	if(nc>a.nc) resnc=nc;
@@ -559,6 +613,11 @@ matrix matrix::operator>(const matrix &a) const{
     matrix res;
     double *pi,*pa,*pres;
 	int i,j,resnf,resnc,N;
+	
+	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.>) Dimensions must agree\n");
+		exit(1);
+	}
 	
 	if(nf>a.nf) resnf=nf;
 		else resnf=a.nf;
@@ -619,6 +678,11 @@ matrix matrix::operator<(const matrix &a) const {
     double *pi,*pa,*pres;
 	int i,j,resnf,resnc,N;
 	
+	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.<) Dimensions must agree\n");
+		exit(1);
+	}
+	
 	if(nf>a.nf) resnf=nf;
 		else resnf=a.nf;
 	if(nc>a.nc) resnc=nc;
@@ -677,6 +741,11 @@ matrix matrix::operator>=(const matrix &a) const {
     matrix res;
     double *pi,*pa,*pres;
 	int i,j,resnf,resnc,N;
+	
+	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.>=) Dimensions must agree\n");
+		exit(1);
+	}
 	
 	if(nf>a.nf) resnf=nf;
 		else resnf=a.nf;
@@ -737,6 +806,11 @@ matrix matrix::operator<=(const matrix &a) const {
     double *pi,*pa,*pres;
 	int i,j,resnf,resnc,N;
 	
+	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.<=) Dimensions must agree\n");
+		exit(1);
+	}
+	
 	if(nf>a.nf) resnf=nf;
 		else resnf=a.nf;
 	if(nc>a.nc) resnc=nc;
@@ -795,6 +869,11 @@ matrix matrix::operator||(const matrix &a) const {
     matrix res;
     double *pi,*pa,*pres;
 	int i,j,resnf,resnc,N;
+	
+	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.||) Dimensions must agree\n");
+		exit(1);
+	}
 	
 	if(nf>a.nf) resnf=nf;
 		else resnf=a.nf;
@@ -855,6 +934,11 @@ matrix matrix::operator&&(const matrix &a) const {
     double *pi,*pa,*pres;
 	int i,j,resnf,resnc,N;
 	
+	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.&&) Dimensions must agree\n");
+		exit(1);
+	}
+	
 	if(nf>a.nf) resnf=nf;
 		else resnf=a.nf;
 	if(nc>a.nc) resnc=nc;
@@ -914,6 +998,11 @@ matrix &matrix::operator+=(const matrix &a) {
     int i,N;
     double *pa,*pi;
 
+	if( (nf!=a.nf) || (nc!=a.nc) ) {
+		*this=(*this)+a;
+		return *this;
+	}
+
     pa=a.p;pi=p;
     N=nc*nf;
     for(i=0;i<N;i++) 
@@ -925,6 +1014,11 @@ matrix &matrix::operator-=(const matrix &a) {
     
     int i,N;
     double *pa,*pi;
+
+	if( (nf!=a.nf) || (nc!=a.nc) ) {
+		*this=(*this)-a;
+		return *this;
+	}
 
     pa=a.p;pi=p;
     N=nc*nf;
@@ -938,6 +1032,11 @@ matrix &matrix::operator*=(const matrix &a) {
     int i,N;
     double *pa,*pi;
 
+	if( (nf!=a.nf) || (nc!=a.nc) ) {
+		*this=(*this)*a;
+		return *this;
+	}
+
     pa=a.p;pi=p;
     N=nc*nf;
     for(i=0;i<N;i++) 
@@ -949,6 +1048,11 @@ matrix &matrix::operator/=(const matrix &a) {
     
     int i,N;
     double *pa,*pi;
+
+	if( (nf!=a.nf) || (nc!=a.nc) ) {
+		*this=(*this)/a;
+		return *this;
+	}
 
     pa=a.p;pi=p;
     N=nc*nf;
@@ -1427,6 +1531,11 @@ int isequal(const matrix &a,const matrix &b) {
 
 matrix max(const matrix &a,const matrix &b) {
 
+	if( (b.nf!=a.nf) || (b.nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.max) Dimensions must agree\n");
+		exit(1);
+	}
+
     matrix res(a.nf,a.nc);
     double *pa,*pres,*pb;
     int i,N;
@@ -1457,6 +1566,11 @@ matrix max(double n,const matrix &a) {
 }
 
 matrix min(const matrix &a,const matrix &b) {
+
+	if( (b.nf!=a.nf) || (b.nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.min) Dimensions must agree\n");
+		exit(1);
+	}
 
     matrix res(a.nf,a.nc);
     double *pa,*pres,*pb;

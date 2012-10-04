@@ -1,5 +1,6 @@
 #include<math.h>
 #include<stdio.h>
+#include<stdlib.h>
 #include"matrix.h"
 
 matrix cos(const matrix &a) {
@@ -228,6 +229,11 @@ matrix atan2(const matrix &a,const matrix &b) {
 	matrix res(a.nf,a.nc);
     int i,N;
     
+    if( (b.nf!=a.nf) || (b.nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.atan2) Dimensions must agree\n");
+		exit(1);
+	}
+    
     N=a.nc*a.nf;
     //#pragma omp parallel for
     for(i=0;i<N;i++)
@@ -268,6 +274,11 @@ matrix pow(const matrix &a,const matrix &b) {
 
 	matrix res(a.nf,a.nc);
     int i,N;
+    
+    if( (b.nf!=a.nf) || (b.nc!=a.nc) ) {
+		fprintf(stderr,"ERROR: (matrix.pow) Dimensions must agree\n");
+		exit(1);
+	}
     
     N=a.nc*a.nf;
     //#pragma omp parallel for
