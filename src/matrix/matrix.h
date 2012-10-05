@@ -20,6 +20,7 @@ class matrix {
     double &operator()(int ielem) const;
     int read(int nfil,int ncol,FILE *fp,char mode='t');
     int write(FILE *fp=stdout,char mode='t') const;
+    void write_fmt(const char *fmt,FILE *fp=stdout) const;
     
     matrix operator+(const matrix &) const;
     friend matrix operator+(double,const matrix &);
@@ -212,10 +213,9 @@ public:
 	matrix_block_diag operator/(double) const;
 	matrix_block_diag operator+(const matrix_block_diag&) const;
 	matrix_block_diag operator-(const matrix_block_diag&) const;
+	matrix_block_diag operator*(const matrix_block_diag&) const;
 	friend matrix_block_diag operator+(const matrix_block_diag&);
 	friend matrix_block_diag operator-(const matrix_block_diag&);
-	matrix operator+(const matrix &) const;
-	matrix operator-(const matrix &) const;
 	matrix row(int n) const;
 	double operator()(int nfil,int ncol) const;
 	friend matrix_block_diag eye(const matrix_block_diag &);

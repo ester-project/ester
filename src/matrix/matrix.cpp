@@ -132,7 +132,7 @@ double &matrix::operator()(int ifil,int icol) const {
 	if(ifil<0) ifil+=nf;
 	if(icol<0) icol+=nc;
 	if(ifil>=nf||ifil<0||icol>=nc||icol<0) {
-		fprintf(stderr,"ERROR: Index exceed matrix dimensions\n");
+		fprintf(stderr,"ERROR: Index exceeds matrix dimensions\n");
 		exit(1);
 	}
 	return *(p+icol*nf+ifil);
@@ -143,7 +143,7 @@ double &matrix::operator()(int ielem) const {
 	
 	if(ielem<0) ielem+=nf*nc;
 	if(ielem>=nf*nc||ielem<0) {
-		fprintf(stderr,"ERROR: Index exceed matrix dimensions\n");
+		fprintf(stderr,"ERROR: Index exceeds matrix dimensions\n");
 		exit(1);
 	}
 	return *(p+ielem);
@@ -189,6 +189,19 @@ int matrix::write(FILE *fp,char mode) const {
         }
     }
     return 0;
+}
+
+void matrix::write_fmt(const char *fmt,FILE *fp) const {
+
+	int i,j;
+	
+	for(i=0;i<nf;i++) {
+		for(j=0;j<nc;j++) {
+			fprintf(fp,fmt,(*this)(i,j));
+			if(j<nc-1) fprintf(fp," ");
+		}
+		fprintf(fp,"\n");
+	}
 }
 
 matrix matrix::operator+(const matrix &a) const {
@@ -1117,7 +1130,7 @@ matrix matrix::row(int ifil) const {
 	
 	if(ifil<0) ifil+=nf;
 	if(ifil<0||ifil>=nf) {
-		fprintf(stderr,"ERROR: (matrix.row) Index exceed matrix dimensions\n");
+		fprintf(stderr,"ERROR: (matrix.row) Index exceeds matrix dimensions\n");
 		exit(1);
 	}
 			
@@ -1135,7 +1148,7 @@ matrix &matrix::setrow(int ifil,const matrix &a) {
 	
 	if(ifil<0) ifil+=nf;
 	if(ifil<0||ifil>=nf) {
-		fprintf(stderr,"ERROR: (matrix.setrow) Index exceed matrix dimensions\n");
+		fprintf(stderr,"ERROR: (matrix.setrow) Index exceeds matrix dimensions\n");
 		exit(1);
 	}
 	if(a.nf>1||a.nc!=nc) {
@@ -1160,7 +1173,7 @@ matrix matrix::col(int icol) const {
 	
 	if(icol<0) icol+=nc;
 	if(icol<0||icol>=nc) {
-		fprintf(stderr,"ERROR: (matrix.col) Index exceed matrix dimensions\n");
+		fprintf(stderr,"ERROR: (matrix.col) Index exceeds matrix dimensions\n");
 		exit(1);
 	}
 	
@@ -1179,7 +1192,7 @@ matrix &matrix::setcol(int icol,const matrix &a) {
 	
 	if(icol<0) icol+=nc;
 	if(icol<0||icol>=nc) {
-		fprintf(stderr,"ERROR: (matrix.setcol) Index exceed matrix dimensions\n");
+		fprintf(stderr,"ERROR: (matrix.setcol) Index exceeds matrix dimensions\n");
 		exit(1);
 	}
 	if(a.nc>1||a.nf!=nf) {
@@ -1204,7 +1217,7 @@ matrix matrix::block(int ifil1,int ifil2,int icol1,int icol2) const {
 	if(icol2<0) icol2+=nc;
 	
 	if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
-		fprintf(stderr,"ERROR: (matrix.block) Index exceed matrix dimensions\n");
+		fprintf(stderr,"ERROR: (matrix.block) Index exceeds matrix dimensions\n");
 		exit(1);
 	}	
 
@@ -1231,7 +1244,7 @@ matrix matrix::block_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,int d
 	if(icol2<0) icol2+=nc;
 	
 	if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
-		fprintf(stderr,"ERROR: (matrix.block_step) Index exceed matrix dimensions\n");
+		fprintf(stderr,"ERROR: (matrix.block_step) Index exceeds matrix dimensions\n");
 		exit(1);
 	}	
 
@@ -1258,7 +1271,7 @@ matrix &matrix::setblock(int ifil1,int ifil2,int icol1,int icol2,const matrix &a
 	if(icol2<0) icol2+=nc;
 	
 	if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
-		fprintf(stderr,"ERROR: (matrix.setblock) Index exceed matrix dimensions\n");
+		fprintf(stderr,"ERROR: (matrix.setblock) Index exceeds matrix dimensions\n");
 		exit(1);
 	}	
 	if(a.nf!=ifil2-ifil1+1||a.nc!=icol2-icol1+1) {
@@ -1289,7 +1302,7 @@ matrix &matrix::setblock_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,i
 	if(icol2<0) icol2+=nc;
 	
 	if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
-		fprintf(stderr,"ERROR: (matrix.setblock_step) Index exceed matrix dimensions\n");
+		fprintf(stderr,"ERROR: (matrix.setblock_step) Index exceeds matrix dimensions\n");
 		exit(1);
 	}
 	if(a.nf!=floor((ifil2-ifil1)/dfil)+1||a.nc!=floor((icol2-icol1)/dcol)+1) {
