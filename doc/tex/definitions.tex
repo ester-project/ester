@@ -1,0 +1,64 @@
+
+\newcounter{funcref}
+\newcounter{funccounter}
+\newcounter{funcseccounter}
+
+\newcommand{\funclistcolumns}{2}
+
+\newwrite\funcfile
+\newcommand{\funcrefbegin}[1]%
+{\immediate\openout\funcfile=\jobname_#1.fcn
+\setcounter{funcref}{0}
+}
+
+\newcommand{\funcrefend}%
+{
+\if\thefuncref0
+\else
+	\immediate\write\funcfile{\unexpanded{\end{multicols}}}
+\fi
+\immediate\closeout\funcfile
+}
+
+\newcommand{\funcsec}[1]%
+{
+\if\thefuncref0
+\else
+	\immediate\write\funcfile{\unexpanded{\end{multicols}}}
+	\setcounter{funcref}{0}
+\fi
+\immediate\write\funcfile{\unexpanded{\medskip}}
+\immediate\write\funcfile{\unexpanded{\noindent\hyperlink}{funcsec\thefuncseccounter}\unexpanded{{\textbf{#1}}}}
+\hypertarget{funcsec\thefuncseccounter}{}
+\stepcounter{funcseccounter}
+}
+
+
+\newcommand{\funcrefpagebreak}%
+{
+\immediate\write\funcfile{\unexpanded{\pagebreak}}
+}
+
+\newcommand{\funclist}[1]{\InputIfFileExists{\jobname_#1.fcn}{}{}}
+
+\newcommand{\function}[5]{%
+\if\thefuncref0
+	\immediate\write\funcfile{\unexpanded{\begin{multicols}{\funclistcolumns}}}
+	\stepcounter{funcref}
+\fi
+\stepcounter{funccounter}
+\immediate\write\funcfile{\unexpanded{\noindent\hyperlink}{funcref\thefunccounter}\unexpanded{{#1}\newline}}
+\par
+\hypertarget{funcref\thefunccounter}{}
+\noindent\begin{minipage}{\textwidth}
+\noindent\textbf{#1}\newline
+
+\hspace{1cm}\begin{tabular}{lp{0.8\textwidth}}
+\textit{Type}: &#2\\[1mm]
+\textit{Inputs}: &#3\\[1mm]
+\textit{Output}: &#4\\[1mm]
+\textit{Description}: &#5\\[1mm]
+\end{tabular}
+\end{minipage}
+
+\medskip}

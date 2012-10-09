@@ -13,12 +13,12 @@ class matrix {
     int nrows() const;
     int ncols() const;
     double *data() const;
-    matrix &dim(int nfil,int ncol);
-    matrix &redim(int nfil,int ncol);
+    matrix &dim(int nrow,int ncol);
+    matrix &redim(int nrow,int ncol);
     matrix &operator=(const matrix &);
-    double &operator()(int ifil,int icol) const; 
+    double &operator()(int irow,int icol) const; 
     double &operator()(int ielem) const;
-    int read(int nfil,int ncol,FILE *fp,char mode='t');
+    int read(int nrow,int ncol,FILE *fp,char mode='t');
     int write(FILE *fp=stdout,char mode='t') const;
     void write_fmt(const char *fmt,FILE *fp=stdout) const;
     
@@ -91,14 +91,14 @@ class matrix {
     friend int exist(const matrix &);
     friend int isequal(const matrix &,const matrix &);
     
-    matrix row(int ifil) const;
+    matrix row(int irow) const;
     matrix col(int icol) const;
-    matrix block(int ifil1,int ifil2,int icol1,int icol2) const;
-    matrix block_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,int dcol) const;
-    matrix &setrow(int ifil,const matrix &);
+    matrix block(int irow1,int irow2,int icol1,int icol2) const;
+    matrix block_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol) const;
+    matrix &setrow(int irow,const matrix &);
     matrix &setcol(int icol,const matrix &);
-    matrix &setblock(int ifil1,int ifil2,int icol1,int icol2,const matrix &);
-    matrix &setblock_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,int dcol,const matrix &);
+    matrix &setblock(int irow1,int irow2,int icol1,int icol2,const matrix &);
+    matrix &setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,const matrix &);
       
     friend matrix cos(const matrix &);
     friend matrix sin(const matrix &);

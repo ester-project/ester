@@ -347,7 +347,7 @@ matrix matrix_block_diag::row(int n) const {
 
 double matrix_block_diag::operator()(int nfil,int ncol) const {
 
-	int i=0,n;
+	int n;
 	
 	n=nrows();
 	if(nfil<0) nfil+=n;
@@ -357,12 +357,11 @@ double matrix_block_diag::operator()(int nfil,int ncol) const {
 		exit(1);
 	}
 	
-	while(nfil>=m[i].nf) {
-		nfil-=m[i].nf;
-		ncol-=m[i++].nc;
-	}
+	int i=0,j=0;
+	while(nfil>=m[i].nf) nfil-=m[i++].nf;
+	while(ncol>=m[j].nc) ncol-=m[j++].nc;
 	
-	if(ncol<0||ncol>=m[i].nc) return 0;
+	if(i!=j) return 0;
 	
 	return m[i](nfil,ncol);
 

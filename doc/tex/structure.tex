@@ -1,0 +1,19 @@
+\chapter{General structure of the code}
+
+The code is divided in several libraries. Each library implements one ore more classes designed to
+handle one particular aspect of the calculation. 
+
+\begin{itemize}
+\item {\bf matrix}. Matrix algebra.
+\item {\bf numdiff}. Implements Gauss-Legendre and multi-domain Gauss-Lobatto
+numerical differentiation.
+\item {\bf mapping}. Defines the mapping in spheroidal coordinates $r(\zeta,\theta)$. 
+\item {\bf solver}. Resolution of systems of linear differential equations in 2D.
+\item {\bf physics}. Calculation of physical quantities (opacity, equation of state, nuclear reaction rates).
+\item {\bf star}. Provides objects and functions to calculate the structure of a star in 1D and 2D.
+\item {\bf global}. Definition of global variables, e.g. physical and mathematical constants.
+\item {\bf graphics}. Provides graphical output through {\tt pgplot}.
+\item {\bf parser}. Parsing of configuration files and command-line arguments.
+\end{itemize} 
+
+

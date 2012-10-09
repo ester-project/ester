@@ -1,29 +1,36 @@
-\documentclass{book}
+\documentclass{report}
 
 \usepackage[a4paper]{geometry}
 \usepackage{minted}
 \usepackage[dvipdfm,bookmarks=true,colorlinks=true,linkcolor=blue]{hyperref}
 \usepackage{longtable}
+\usepackage[Bjornstrup]{fncychap}
+\usepackage{titlesec}
+\usepackage{multirow}
+\usepackage{multicol}
+
+\titleformat{\section}
+{\vspace{.8ex}%
+\Large\scshape}
+{\thesection.}{.5em}{}
+
+\titleformat{\subsection}
+{\vspace{.8ex}%
+\large\scshape}
+{\thesection.}{.5em}{}
 
 \include{definitions}
-  \begin{document}
+\begin{document}
 
-  \title{ESTER Users manual}
+	\title{ESTER User guide}
 
+	\maketitle
+	\tableofcontents
 
-  \frontmatter
-  \maketitle
-  \tableofcontents
-  
-  \mainmatter
-  \include{installation}
-  \include{program}
- % \include{structure}
-  
-  \backmatter
-
-  \addtocontents{toc}{\vspace{\baselineskip}}
-  \cleardoublepage
+	\include{installation}
+	\include{program}
+	\include{structure}
+	\include{matrix}
 
 
 \end{document}

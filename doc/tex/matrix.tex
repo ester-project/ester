@@ -1,0 +1,657 @@
+\chapter{Matrix Algebra. The {\tt matrix} library.}
+
+To facilitate the work with matrices in C++, the {\tt matrix} library provides two classes:
+\begin{itemize}
+\item \verb1matrix1 for regular matrices
+\item \verb1matrix_block_diag1 for block diagonal matrices
+\end{itemize}
+The function prototypes are defined in the header file {\tt matrix.h}.
+
+\section{Matrix creation and manipulation}
+
+Regular matrices are defined as objects of the \verb1matrix1 class. For example, the sentence:
+\mint{cpp}|matrix a(3,4);|
+creates a matrix {\tt a} with 3 rows and 4 columns. If the size is not specified,
+\mint{cpp}|matrix a;|
+a 1x1 matrix is created. The size of the matrix can be modified using the method {\tt dim}
+\mint{cpp}|a.dim(3,4);|
+or, if the total number of elements does not change, using {\tt redim}
+\mint{cpp}|a.redim(1,12);|
+With {\tt redim} the element values are also preserved. The number of rows and columns of a matrix object
+can be retrieved using the methods {\tt nrows()} and {\tt ncols()}. For example
+\begin{minted}[frame=single]{cpp}
+int n,m;
+matrix a(3,4);
+
+n=a.nrows();
+m=a.ncols();
+\end{minted}
+in this example $n=3$ and $m=4$. 
+
+The elements of the matrix can be indexed using parenthesis. Note that, as regular C arrays, the index
+of the first element is 0. There are also methods for extracting parts of the matrix. Let's see an example
+\begin{minted}[frame=single]{cpp}
+matrix a(3,3),row,col,block;
+double elem;
+
+a(0,0)=1;a(0,1)=2;a(0,2)=3;
+a(1,0)=4;a(1,1)=5;a(1,2)=6;
+a(2,0)=7;a(2,1)=8;a(2,2)=9;
+
+elem=a(1,2); // elem=6
+row=a.row(1); // Extracts the second row
+col=a.col(0); // Extracts the first column
+block=a.block(0,1,1,2); // Extracts the block (0-1,1-2)
+
+\end{minted} 
+After running the example, the contents of the different matrices will be
+$$
+\mathtt{a}=\left(
+\begin{array}{ccc}
+1&2&3\\4&5&6\\7&8&9
+\end{array}
+\right)
+$$
+$$
+\mathtt{row}=\left(
+\begin{array}{ccc}
+4&5&6
+\end{array}
+\right)
+\qquad
+\mathtt{col}=\left(
+\begin{array}{c}
+1\\4\\7
+\end{array}
+\right)
+\qquad
+\mathtt{block}=\left(
+\begin{array}{cc}
+2&3\\5&6
+\end{array}
+\right)
+$$
+
+We can also insert parts of the matrix using the methods {\tt setrow}, {\tt setcol} and {\tt setblock}.
+\begin{minted}[frame=single]{cpp}
+matrix a(3,3),b;
+
+b=ones(1,3); // Creates a 1x3 array of all ones
+a.setrow(0,b);
+
+b=ones(3,1);
+a.setcol(2,b);
+
+b=ones(2,3);
+a.setblock(1,2,0,2,b);
+
+\end{minted} 
+
+Negative indices are interpreted starting from the end of the matrix. For example {\tt a.row(-1)} returns
+the last row of the matrix {\tt a}.  
+
+Indexing with only one parameter is also possible, being \verb|a(i,j)| equivalent to 
+\verb|a(j*a.nrows()+i)|. This makes sense when working with row or column vectors, if we define
+\mint{cpp}|matrix row(1,5),col(5,1);|
+then \verb|row(i)| is equivalent to \verb|row(1,i)| and \verb|col(i)| is equivalent to \verb|col(i,1)|.
+
+\pagebreak
+
+\section{File input/output}
+
+The method {\tt write} writes a matrix in a file, the syntax is
+\mint{cpp}|write(FILE *fp, char mode)|
+Here, {\tt mode} can be \verb|'t'| for text output or \verb|'b'| for binary output. Default is \verb|'t'|.
+The matrix is written in column-wise order, i.e. each line represents a column of the matrix.
+When called without arguments \verb|write()|, it writes the matrix in the standard output.
+
+To read a matrix from a file we use the method \verb|read|.
+\mint{cpp}|read(int nrow, int ncol, FILE *fp, char mode)|
+Where we must specify the size of the matrix.
+
+In the following example, we will write a matrix to a file and read it again.
+\begin{minted}[frame=single]{cpp}
+#include<stdio.h>
+#include"matrix.h"
+int main() {
+	FILE *fp;
+	matrix a(2,3);
+	
+	a(0,0)=1;a(0,1)=2;a(0,2)=3;
+	a(1,0)=4;a(1,1)=5;a(1,2)=6;
+	
+	// Write the matrix to a file in binary mode
+	fp=fopen("matrix.dat","wb");
+	a.write(fp,'b');
+	fclose(fp);
+	
+	// Read the matrix from file
+	fp=fopen("matrix.dat","rb");
+	a.read(2,3,fp,'b');
+	fclose(fp);
+		
+	return 0;
+}
+
+\end{minted}
+
+We can write a matrix on the screen in a more convenient format using \verb|write_fmt|. For the
+previous example the sentence
+\mint{cpp}|a.write_fmt("%.2f");|
+will produce the following output
+\begin{verbatim}
+1.00 2.00 3.00
+4.00 5.00 6.00
+\end{verbatim}
+
+\pagebreak
+
+\section{Operators}
+
+Element-wise operators for the matrix class:
+
+\medskip
+
+\begin{tabular}{|c|l|}
+\hline
+\verb|a=b| & Assignment \\
+\hline
+\verb|a+b| & Addition \\
+\hline
+\verb|a-b| & Subtraction \\
+\hline
+\verb|a*b| & Element-wise multiplication \\
+\hline
+\verb|a/b| & Element-wise division \\
+\hline
+\verb|a+=b| & Equivalent to \verb|a=a+b| \\
+\hline
+\verb|a-=b| & Equivalent to \verb|a=a-b| \\
+\hline
+\verb|a*=b| & Equivalent to \verb|a=a*b| \\
+\hline
+\verb|a/=b| & Equivalent to \verb|a=a/b| \\
+\hline
+\verb|+a| & Unary plus \\
+\hline
+\verb|-a| & Unary minus \\
+\hline
+\verb|a==b| & Comparison: Equal to\\
+\hline
+\verb|a!=b| & Comparison: Not equal to\\
+\hline
+\verb|a>b| & Comparison: Greater than\\
+\hline
+\verb|a<b| & Comparison: Less than\\
+\hline
+\verb|a>=b| & Comparison: Greater than or equal to\\
+\hline
+\verb|a<=b| & Comparison: Less than or equal to\\
+\hline
+\verb|a&&b| & Logical AND\\
+\hline
+\verb%a||b% & Logical OR\\
+\hline
+\end{tabular}
+
+\medskip
+
+The operands {\tt a} and {\tt b} can be either matrices or scalars. Element-wise operators are 
+performed element by element. For example if we define
+\mint{cpp}|c=a*b;|
+the elements of the new matrix {\tt c} will be
+\mint{cpp}|c(i,j)=a(i,j)*b(i,j)|
+obviously, the two matrices must have the same size. There is one exception, when one or both of the 
+dimensions are one, for example if {\tt a} is (n,m) and {\tt b} is (1,m) the matrix {\tt c} will be
+(n,m) with elements
+\mint{cpp}|c(i,j)=a(i,j)*b(j)|
+also if {\tt a} is (n,1) and {\tt b} is (1,m), {\tt c} will be
+(n,m) with 
+\mint{cpp}|c(i,j)=a(i)*b(j)|
+
+The comparison operator {\tt ==} compares two matrices element by element, so the result is a new matrix
+whose elements are 1 if the corresponding elements of {\tt a} and {\tt b} are equal or 0 if they 
+are different. If we want to know if two matrices are completely equal, we can use the function
+\verb|isequal(a,b)| that returns 1 if {\tt a} and {\tt b} are the same and 0 otherwise.
+
+\pagebreak
+
+Matrix product are indicated with a comma ``\,,\,". The product of matrices {\tt a} and {\tt b} 
+are expressed as:
+\mint{cpp}|c=(a,b);|
+The operation should be put in parentheses when necessary to avoid ambiguity. Note that the operator
+``\,,\," in C has the lowest precedence, for example 
+\mint{cpp}|(2*a,b+c,d)|
+is equivalent to
+\mint{cpp}|( (2*a) , ( (b+c) ,d ) )|
+
+\section{Block diagonal matrices}
+
+Another type of object included in the library are the block diagonal matrices. An object of this class
+has the following structure
+$$M=\left(
+\begin{array}{cccc}
+M_0&0&\cdots&0\\
+0&M_1&\cdots&0\\
+\vdots&\vdots&\ddots&\vdots\\
+0&0&\cdots&M_{n-1}
+\end{array}
+\right)$$
+where the $M_i$ are also matrices. Although the definition of a block diagonal matrix requires the blocks
+$M_i$ to be square, in the current implementation they are allowed to have any size.
+
+A block diagonal matrix is defined using the sentence
+\mint{cpp}|matrix_block_diag D;|
+An optional argument can be included to specify the number of blocks in the matrix (default is 1)
+\mint{cpp}|matrix_block_diag D(4);|
+Alternatively, the number of blocks can be changed using the sentence
+\mint{cpp}|D.set_nblocks(4);|
+In order to access the different blocks, we use the method \verb|block(int i)|, for exmaple
+\begin{minted}{cpp}
+matrix_block_diag D(3);
+matrix a,b;
+
+a=ones(2,2);
+D.block(0)=a;
+b=D.block(0);
+\end{minted}
+
+Individual elements can also be indexed using parentheses \verb|D(i,j)|, as with regular matrices.
+
+A number of operators are defined in the \verb|matrix_block_diag| class:
+
+\medskip
+
+\begin{tabular}{|c|c|c|l|}
+\hline
+Operator&Operands type&Return type&\multicolumn{1}{|c|}{Description}\\
+\hline
+a=b&\verb|matrix_block_diag|&\verb|matrix_block_diag|&Assignment\\
+\hline
+a+b&\verb|matrix_block_diag|&\verb|matrix_block_diag|&Addition\\
+\hline
+a-b&\verb|matrix_block_diag|&\verb|matrix_block_diag|&Subtraction\\
+\hline
++a&\verb|matrix_block_diag|&\verb|matrix_block_diag|&Unary plus\\
+\hline
+-a&\verb|matrix_block_diag|&\verb|matrix_block_diag|&Unary minus\\
+\hline
+\multirow{5}{*}{a*b}&\verb|matrix_block_diag|&\verb|matrix_block_diag|
+&\multirow{5}{*}{Element-wise multiplication}\\
+\cline{2-3}
+&\verb|matrix_block_diag| \& \verb|matrix|&\verb|matrix_block_diag|&\\
+\cline{2-3}
+&\verb|matrix| \&  \verb|matrix_block_diag|&\verb|matrix_block_diag|&\\
+\cline{2-3}
+&\verb|matrix_block_diag| \& \verb|double|&\verb|matrix_block_diag|&\\
+\cline{2-3}
+&\verb|double| \& \verb|matrix_block_diag|&\verb|matrix_block_diag|&\\
+\hline
+\multirow{2}{*}{a/b}&\verb|matrix_block_diag| \& \verb|matrix|&\verb|matrix_block_diag|
+&\multirow{2}{*}{Element-wise division}\\
+\cline{2-3}
+&\verb|matrix_block_diag| \& \verb|double|&\verb|matrix_block_diag|&\\
+\hline
+\multirow{3}{*}{(a,b)}&\verb|matrix_block_diag|&\verb|matrix_block_diag|
+&\multirow{3}{*}{Matrix product}\\
+\cline{2-3}
+&\verb|matrix_block_diag| \& \verb|matrix|&\verb|matrix_block_diag|&\\
+\cline{2-3}
+&\verb|matrix| \&  \verb|matrix_block_diag|&\verb|matrix_block_diag|&\\
+\hline
+\end{tabular}
+
+\medskip
+
+For element-wise operators between \verb|matrix_block_diag| objects, both objects must have
+exactly the same structure. Matrix product is also performed block by block, so the structure 
+of the operands must be compatible.
+
+A \verb|matrix_block_diag| object can be converted in a \verb|matrix| object using type casting.
+\begin{minted}{cpp}
+matrix a;
+matrix_block_diag D;
+
+a=(matrix) D;
+\end{minted}
+
+
+\section{Function reference}
+
+\funclist{matrix}
+
+\subsection{A note about methods and functions}
+
+The subroutines are divided in two types: functions and methods. Contrary to functions, methods belong
+to the object and they are called using a different syntax. For example if {\tt met} is a method
+of the object {\tt a} that takes one argument {\tt b} and returns a value {\tt c}, we use the sentence
+\mint{cpp}|c=a.met(b)|
+The same subroutine implemented as a function will be
+\mint{cpp}|c=met(a,b)|
+When using pointers, the dot is replaced by \verb|->|, then if \verb|p=&a| the sentence above
+is equivalent to
+\mint{cpp}|c=p->met(b)|
+The parenthesis are needed even if the method takes no arguments, i.e. 
+\verb|a.method_without_args()|.
+
+
+\funcrefbegin{matrix}
+
+\funcsec{Matrix manipulation}
+\subsection{Matrix manipulation}
+
+\function{dim(n,m)}{Method}
+{n (int): Number of rows\newline
+m (int): Number of columns}
+{Reference to current object}
+{Changes the dimensions of the matrix object.}
+
+\function{redim(n,m)}{Method}
+{n (int): Number of rows\newline
+m (int): Number of columns}
+{Reference to current object}
+{Changes the dimensions of the matrix object. The total number elements must not change. Element
+values are preserved.}
+
+\function{nrows()}{Method}{None}{int}{Returns the number of rows of the matrix.}
+
+\function{ncols()}{Method}{None}{int}{Returns the number of columns of the matrix.}
+
+\function{row(n)}{Method}
+{n (int): Row index}
+{matrix}
+{Extracts row n from matrix.}
+
+\function{col(n)}{Method}
+{n (int): Column index}
+{matrix}
+{Extracts column n from matrix.}
+
+\function{block(n1,n2,m1,m2)}{Method}
+{n1 (int): First row index\newline
+n2 (int): Last row index\newline
+m1 (int): First column index\newline
+m2 (int): Last column index}
+{matrix}
+{Extracts the block contained between the rows n1 and n2 and the columns m1 and m2.}
+
+\function{block\_step(n1,n2,nstep,m1,m2,mstep)}{Method}
+{n1 (int): First row index\newline
+n2 (int): Last row index\newline
+nstep (int): Row increment\newline
+m1 (int): First column index\newline
+m2 (int): Last column index\newline
+mstep (int): Column increment}
+{matrix}
+{Extracts the block contained between the rows n1 and n2 and the columns m1 and m2 using increments nstep and mstep.}
+
+\function{setrow(n,A)}{Method}
+{n (int): Row index\newline
+A (matrix)}
+{Reference to current object}
+{Inserts matrix A at row n.}
+
+\function{setcol(n,A)}{Method}
+{n (int): Column index\newline
+A (matrix)}
+{Reference to current object}
+{Inserts matrix A at column n.}
+
+\function{setblock(n1,n2,m1,m2,A)}{Method}
+{n1 (int): First row index\newline
+n2 (int): Last row index\newline
+m1 (int): First column index\newline
+m2 (int): Last column index\newline
+A (matrix)}
+{Reference to current object}
+{Inserts matrix A between the rows n1 and n2 and the columns m1 and m2.}
+
+\function{setblock\_step(n1,n2,nstep,m1,m2,mstep,A)}{Method}
+{n1 (int): First row index\newline
+n2 (int): Last row index\newline
+nstep (int): Row increment\newline
+m1 (int): First column index\newline
+m2 (int): Last column index\newline
+mstep (int): Column increment\newline
+A (matrix)}
+{Reference to current object}
+{Inserts matrix A between between the rows n1 and n2 and the columns m1 and m2 
+using increments nstep and mstep.}
+
+\function{transpose()}{Method}{None}{matrix}
+{Returns the tranpose of the object. Does not modify the original matrix.}
+
+\function{fliplr()}{Method}{None}{matrix}
+{Flip columns in the left-right direction. Does not modify the original matrix.}
+
+\function{flipud()}{Method}{None}{matrix}
+{Flip rows in the up-down direction. Does not modify the original matrix.}
+
+\function{data()}{Method}{None}{Pointer to double}
+{Returns a pointer to the first element in the matrix. The elements are stored consecutively in column order.}
+
+\funcsec{File input/output}
+\subsection{File input/output}
+
+\function{write(fp,mode)}{Method}
+{fp (FILE *): File pointer (optional, default=stdout)\newline
+mode (char): Write mode (optional, default='t')}
+{int}
+{Writes a matrix in the file pointed by fp in text mode (mode='t') or binary mode (mode='b').
+The matrix is written in column order. Returns 0 on success, 1 otherwise.}
+
+\function{read(n,m,fp,mode)}{Method}
+{n (int): Number of rows\newline
+m (int): Number of columns\newline
+fp (FILE *): File pointer\newline
+mode (char): Write mode (optional, default='t')}
+{int}
+{Reads a nxm matrix from the file pointed by fp in text mode (mode='t') or binary mode (mode='b').
+The matrix is read in column order. Returns 0 on success, 1 otherwise.}
+
+\function{write\_fmt(format,fp)}{Method}
+{format (char *): Format string
+fp (FILE *): File pointer (optional, default=stdout)}
+{None}
+{Writes a matrix in the file pointed by fp using given format. The matrix is ordered such that
+each line represents a row.}
+
+\funcrefpagebreak
+\funcsec{Special matrices}
+\subsection{Special matrices}
+
+\function{eye(n)}{Function}
+{n (int): Number of rows}
+{matrix}
+{Returns the nxn identity matrix.}
+
+\function{zeros(n,m)}{Function}
+{n (int): Number of rows\newline
+m (int): Number of columns}
+{matrix}
+{Returns a nxm matrix of all zeros.}
+
+\function{ones(n,m)}{Function}
+{n (int): Number of rows\newline
+m (int): Number of columns}
+{matrix}
+{Returns a nxm matrix of all ones.}
+
+\function{random\_matrix(n,m)}{Function}
+{n (int): Number of rows\newline
+m (int): Number of columns}
+{matrix}
+{Returns a nxm matrix with random values between 0 and 1.}
+
+\function{vector(x0,x1,n)}{Function}
+{x0 (double): Minimum value\newline
+x1 (double): Maximum value\newline
+n (int): Number of elements}
+{matrix}
+{Returns a row vector with n equally spaced elements between x0 and x1.}
+
+\function{vector\_t(x0,x1,n)}{Function}
+{x0 (double): Minimum value\newline
+x1 (double): Maximum value\newline
+n (int): Number of elements}
+{matrix}
+{Returns a column vector with n equally spaced elements between x0 and x1.}
+
+\funcsec{Matrix functions}
+\subsection{Matrix functions}
+
+\function{max(A)}{Function}
+{A (matrix)}{double}
+{Returns the maximum value.}
+
+\function{min(A)}{Function}
+{A (matrix)}{double}
+{Returns the minimum value.}
+
+\function{sum(A)}{Function}
+{A (matrix)}{double}
+{Returns the sum of the matrix elements.}
+
+\function{mean(A)}{Function}
+{A (matrix)}{double}
+{Returns the mean value of the matrix elements.}
+
+\function{max(A,B)}{Function}
+{B (matrix)\newline B (matrix)}
+{matrix}
+{Compares the matrices a and b and returns a new matrix C containing the larger values of each pair of 
+elements C(i,j)=max(A(i,j),B(i,j)). }
+
+\function{min(A,B)}{Function}
+{A (matrix)\newline B (matrix)}
+{matrix}
+{Compares the matrices A and B and returns a new matrix C containing the smaller values of each pair of 
+elements C(i,j)=min(A(i,j),B(i,j)). }
+
+\function{exist(A)}{Function}
+{A (matrix)}{int}
+{Returns 1 if any of the elements of A is not zero, 0 otherwise. It is often used in constructions
+of type \texttt{if (exist(condition))...}, where \texttt{condition} is a valid comparison. For example
+\texttt{if (exist(A<0))...}.}
+
+\function{isequal(A,B)}{Function}
+{A (matrix)\newline B(matrix)}{int}
+{Returns 1 if matrices A and B contain exactly the same values, 0 otherwise.}
+
+\function{solve(b)}{Method}
+{b (matrix)}{matrix}
+{\texttt{x=A.solve(b)} solves the linear system $Ax=b$ and returns matrix $x$.}
+
+\function{inv()}{Method}{None}{matrix}
+{Returns the inverse of the current matrix object. The original matrix is not modified.}
+
+\funcsec{Mathematical functions}
+\subsection{Mathematical functions}
+
+\function{cos(x)}{Function}{x (matrix)}{matrix}
+{Returns the cosine of x. x must be expressed in radians.}
+
+\function{sin(x)}{Function}{x (matrix)}{matrix}
+{Returns the sine of x. x must be expressed in radians.}
+
+\function{tan(x)}{Function}{x (matrix)}{matrix}
+{Returns the tangent of x. x must be expressed in radians.}
+
+\function{acos(x)}{Function}{x (matrix)}{matrix}
+{Returns the arc cosine of x in radians.}
+
+\function{asin(x)}{Function}{x (matrix)}{matrix}
+{Returns the arc sine of x in radians.}
+
+\function{atan(x)}{Function}{x (matrix)}{matrix}
+{Returns the arc tangent of x in radians.}
+
+\function{atan2(y,x)}{Function}
+{y (matrix or double)\newline
+x (matrix or double)}{matrix}
+{Returns the arc tangent of y/x in radians. Uses the sign of y and x to determine the quadrant.}
+
+\function{cosh(x)}{Function}{x (matrix)}{matrix}
+{Returns the hyperbolic cosine of x. x must be expressed in radians.}
+
+\function{sinh(x)}{Function}{x (matrix)}{matrix}
+{Returns the hyperbolic sine of x. x must be expressed in radians.}
+
+\function{tanh(x)}{Function}{x (matrix)}{matrix}
+{Returns the hyperbolic tangent of x. x must be expressed in radians.}
+
+\function{exp(x)}{Function}{x (matrix)}{matrix}
+{Returns $\mathrm{e}^x$.}
+
+\function{log(x)}{Function}{x (matrix)}{matrix}
+{Returns $\log(x)$.}
+
+\function{log10(x)}{Function}{x (matrix)}{matrix}
+{Returns $\log_{10}(x)$.}
+
+\function{sqrt(x)}{Function}{x (matrix)}{matrix}
+{Returns $\sqrt{x}$.}
+
+\function{abs(x)}{Function}{x (matrix)}{matrix}
+{Returns the absolute value of x.}
+
+\function{pow(x,y)}{Function}
+{x (matrix or double)\newline
+y (matrix or double)}{matrix}
+{Returns $x^y$.}
+
+\function{round(x)}{Function}{x (matrix)}{matrix}
+{Rounds the elements of x to the nearest integer.}
+
+\function{floor(x)}{Function}{x (matrix)}{matrix}
+{Rounds the elements of x to the nearest integer below the current value.}
+
+\function{ceil(x)}{Function}{x (matrix)}{matrix}
+{Rounds the elements of x to the nearest integer above the current value.}
+
+\funcsec{Block diagonal matrices}
+\subsection{Block diagonal matrices}
+
+\function{set\_nblocks(n)}{Method}
+{n (int): Number of blocks}
+{Reference to current object}
+{Changes the number of blocks of the matrix\_block\_diag object.}
+
+\function{block(n)}{Method}
+{n (int): Block number}
+{Reference to matrix}
+{Returns a reference to the matrix in the block number n.}
+
+\function{nblocks()}{Method}
+{None}
+{int}
+{Returns the number of blocks.}
+
+\function{nrows()}{Method}
+{None}
+{int}
+{Returns the total number of rows.}
+
+\function{ncols()}{Method}
+{None}
+{int}
+{Returns the total number of columns.}
+
+\function{row(n)}{Method}
+{n (int): Row number}
+{int}
+{Extracts the row n.}
+
+\function{transpose()}{Method}
+{None}
+{matrix\_block\_diag}
+{Calculates the transpose.}
+
+\function{eye(D)}{Function}
+{D (matrix\_block\_diag)}
+{matrix\_block\_diag}
+{Returns the identity block matrix with the same structure as D.}
+
+
+\funcrefend
+
