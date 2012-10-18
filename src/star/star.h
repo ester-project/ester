@@ -181,6 +181,8 @@ class star2d {
 	
 	void draw(figure *,const matrix &,int parity=0) const;
 	void drawi(figure *,const matrix &,int sr,int st,int parity=0) const;
+	void drawc(figure *,const matrix &,int ncontours,int parity=0) const;
+	void drawci(figure *,const matrix &,int sr,int st,int ncontours,int parity=0) const;
 	void spectrum(figure *,const matrix &,int parity=0) const;
 
 	void check_jacobian(solver *op,const char *eqn);

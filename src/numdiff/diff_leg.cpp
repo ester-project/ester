@@ -16,7 +16,7 @@ diff_leg::diff_leg(const diff_leg &leg) :
 		dP1_00(leg.dP1_00),dP1_01(leg.dP1_01),dP1_10(leg.dP1_10),dP1_11(leg.dP1_11),
 		D_00(leg.D_00),D_01(leg.D_01),D_10(leg.D_10),D_11(leg.D_11),
 		D2_00(leg.D2_00),D2_01(leg.D2_01),D2_10(leg.D2_10),D2_11(leg.D2_11),
-		I_00(leg.I_00),I_01(leg.I_01),I_10(leg.I_10),I_11(leg.I_11),
+		I_00(leg.I_00),
 		lap_00(leg.lap_00),lap_01(leg.lap_01),lap_10(leg.lap_10),lap_11(leg.lap_11) {
 
 	npts=leg.npts;
@@ -49,9 +49,6 @@ diff_leg &diff_leg::operator=(const diff_leg &leg) {
   	D2_10=leg.D2_10;
   	D2_11=leg.D2_11;
   	I_00=leg.I_00;
-  	I_01=leg.I_01;
-  	I_10=leg.I_10;
-  	I_11=leg.I_11;
   	lap_00=leg.lap_00;
   	lap_01=leg.lap_01;
   	lap_10=leg.lap_10;
@@ -216,9 +213,6 @@ void diff_leg::init() {
 	for(i=0;i<npts;i++)
 		I_00(i)=2/sum(P1_00.col(i)*P1_00.col(i));
 	
-	I_01=zeros(npts,1);
-	I_10=zeros(npts,1);
-	I_11=zeros(npts,1);
 	
 	P_00=P1_00.inv();
 	P_01=P1_01.inv();

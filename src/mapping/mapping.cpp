@@ -549,6 +549,71 @@ void mapping::drawi(figure *pfig,const matrix &A,int sr,int st,int parity) const
 	
 }
 
+void mapping::drawc(figure *pfig,const matrix &A,int ncontours,int parity) const {
+	
+	matrix x,y,zz;
+	
+	pfig->axis(-1/(1-eps(gl.ndomains()-1)),1/(1-eps(gl.ndomains()-1)),-1/(1-eps(gl.ndomains()-1)),1/(1-eps(gl.ndomains()-1)),1);
+	zz=draw0(A,parity,x,y);
+	
+	pfig->plot(x.row(-1),y.row(-1));
+	pfig->hold(1);
+	
+	matrix cc;
+	double zmin,zmax;
+	double cmin,cmax;
+	zmin=min(zz);zmax=max(zz);
+	cmin=0;
+	if(zmin>0) cmin=zmin;
+	else if(zmax<0) cmin=-zmax;
+	cmax=zmax>-zmin?zmax:-zmin;
+	pfig->caxis(cmin,cmax);
+	
+	if(min(zz)<0) {
+		cc=vector(zmin,zmax>0?0:zmax,ncontours);
+		pfig->contour(x,y,-zz,-cc,"k=");
+	}
+	if(max(zz)>0) {
+		cc=vector(zmin<0?0:zmin,zmax,ncontours);
+		pfig->contour(x,y,zz,cc,"k-");
+	}
+	pfig->hold(0);
+	
+}
+
+void mapping::drawci(figure *pfig,const matrix &A,int sr,int st,int ncontours,int parity) const {
+	
+	matrix x,y,zz;
+	
+	pfig->axis(-1/(1-eps(gl.ndomains()-1)),1/(1-eps(gl.ndomains()-1)),-1/(1-eps(gl.ndomains()-1)),1/(1-eps(gl.ndomains()-1)),1);
+	zz=drawi0(A,sr,st,parity,x,y);	
+	
+	pfig->plot(x.row(-1),y.row(-1));
+	pfig->hold(1);
+	
+	matrix cc;
+	double zmin,zmax;
+	double cmin,cmax;
+	zmin=min(zz);zmax=max(zz);
+	cmin=0;
+	if(zmin>0) cmin=zmin;
+	else if(zmax<0) cmin=-zmax;
+	cmax=zmax>-zmin?zmax:-zmin;
+	pfig->caxis(cmin,cmax);
+	
+	if(min(zz)<0) {
+		cc=vector(zmin,zmax>0?0:zmax,ncontours);
+		pfig->contour(x,y,-zz,-cc,"k=");
+	}
+	if(max(zz)>0) {
+		cc=vector(zmin<0?0:zmin,zmax,ncontours);
+		pfig->contour(x,y,zz,cc,"k-");
+	}
+	pfig->hold(0);
+
+	
+}
+
 void mapping::spectrum(figure *pfig,const matrix &y,int parity) const {
 
 	matrix ys(y.nrows(),y.ncols()),xv,Pleg,l;

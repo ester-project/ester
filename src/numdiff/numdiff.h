@@ -40,7 +40,7 @@ class diff_leg {
   	matrix dP1_00,dP1_01,dP1_10,dP1_11;
   	matrix D_00,D_01,D_10,D_11;
   	matrix D2_00,D2_01,D2_10,D2_11;
-  	matrix I_00,I_01,I_10,I_11;
+  	matrix I_00;
   	matrix lap_00,lap_01,lap_10,lap_11;
   	
   	diff_leg();

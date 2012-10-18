@@ -35,6 +35,12 @@ public:
 	void pcolor(const matrix &z);
 	void pcolor(const matrix &x,const matrix &y,const matrix &z);
 	void colorbar(int set=1);
+	void contour(const matrix &x,const matrix &y,const matrix &z,int ncontours,const char *line="");
+	void contour(const matrix &z,int ncontours,const char *line="");
+	void contour(const matrix &x,const matrix &y,const matrix &z,const matrix &contours,const char *line="");
+	void contour(const matrix &z,const matrix &contours,const char *line="");
+	void contour(const matrix &x,const matrix &y,const matrix &z,const char *line="");
+	void contour(const matrix &z,const char *line="");
 };
 
 #endif

@@ -12,6 +12,19 @@ void star2d::drawi(figure *pfig,const matrix &A,int sr,int st,int parity) const 
 	
 }
 
+void star2d::drawc(figure *pfig,const matrix &A,int ncontours,int parity) const {
+	
+	map.drawc(pfig,A,ncontours,parity);
+	
+}
+
+void star2d::drawci(figure *pfig,const matrix &A,int sr,int st,int ncontours,int parity) const {
+	
+	map.drawci(pfig,A,sr,st,ncontours,parity);
+	
+}
+
+
 void star2d::spectrum(figure *pfig,const matrix &y,int parity) const {
 
 	map.spectrum(pfig,y,parity);

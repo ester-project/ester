@@ -76,12 +76,14 @@ int main(int argc,char *argv[]) {
 			if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
 				fig->semilogy(error.block(0,nit-1,0,0));
 				fig->label("Iteration number","Relative error","");
+				fig->colorbar();
 				A.spectrum(fig,A.rho);
-				fig->colorbar();
-				A.drawi(fig,A.w,100,32);
-				fig->colorbar();
-				A.spectrum(fig,A.w,00);
 				fig->label("Density (normalized spectrum)","","");
+				fig->colorbar();
+				A.drawi(fig,A.w,100,64);
+				fig->label("Differential rotation","","");
+				A.drawci(fig,A.G,100,64,15,11);
+				fig->label("Meridional circulation","","");
 				t_plot=tt(nit-1);
 				
 /*

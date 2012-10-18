@@ -356,6 +356,128 @@ void figure::colorbar(int set) {
 	draw_colorbar=set;
 }
 
+void figure::contour(const matrix &x,const matrix &y,const matrix &z,const matrix &cc,const char *line) {
+
+	double xf[4],yf[4];
+	int ii[4],jj[4];
+	
+	int ncontours=cc.nrows()*cc.ncols();
+	if(!hold_state) {
+		if(!axis_set) {
+			x0=min(x);x1=max(x);y0=min(y);y1=max(y);just=0;
+			if(x0==x1) {x0=x0-1;x1=x1+1;}
+			if(y0==y1) {y0=y0-1;y1=y1+1;}
+		}
+		if(!caxis_set) {
+			z0=min(z);z1=max(z);
+			if(z0==z1) {z0=z0-1;z1=z1+1;}
+		}
+	}
+	axis_set=0;
+	caxis_set=0;
+	cpgslct(id);
+	cpgsch(1);
+	if(draw_state) cpgbbuf();
+	if(!hold_state) 
+		cpgenv(x0,x1,y0,y1,just,10*xlog+20*ylog);
+		
+	int line_style=1,color=-1;
+	for(int i=0;i<strlen(line);i++) {
+		switch(line[i]) {
+			case '-': line_style=1;break;
+			case '=': line_style=2;break;
+			case ';': line_style=3;break;
+			case ':': line_style=4;
+		}
+	}
+	for(int i=0;i<strlen(line);i++) {
+		switch(line[i]) {
+			case 'w': color=0;break;
+			case 'k': color=1;break;
+			case 'r': color=2;break;
+			case 'g': color=3;break;
+			case 'b': color=4;break;
+			case 'c': color=5;break;
+			case 'm': color=6;break;
+			case 'y': color=7;
+		}
+	}
+	cpgsls(line_style);
+	int cmax;
+	{int i;cpgqcol(&i,&cmax);}
+	int c;
+	for(int n=0;n<ncontours;n++) {
+		if(color==-1) {
+			double zz;
+			zz=(cc(n)-z0)/(z1-z0);
+			zz=zz>1?1:zz;
+			zz=zz<0?0:zz;
+			c=round(zz*(cmax-16)+16);
+			cpgsci(c);
+		} else cpgsci(color);
+		for(int j=0;j<z.ncols()-1;j++) {
+			for(int i=0;i<z.nrows()-1;i++) {
+				if(x.nrows()==1) {
+					xf[0]=x(j);xf[1]=x(j+1);xf[2]=x(j+1);xf[3]=x(j);
+				} else {
+					xf[0]=x(i,j);xf[1]=x(i,j+1);xf[2]=x(i+1,j+1);xf[3]=x(i+1,j);
+				}
+				if(y.ncols()==1) {
+					yf[0]=y(i);yf[1]=y(i);yf[2]=y(i+1);yf[3]=y(i+1);
+				} else {
+					yf[0]=y(i,j);yf[1]=y(i,j+1);yf[2]=y(i+1,j+1);yf[3]=y(i+1,j);
+				}
+				ii[0]=i;ii[1]=i;ii[2]=i+1;ii[3]=i+1;
+				jj[0]=j;jj[1]=j+1;jj[2]=j+1;jj[3]=j;
+				int ncruces=0;
+				for(int k=0;k<4;k++) {
+					double za,zb;
+					za=z(ii[k],jj[k])-cc(n);
+					zb=z(ii[(k+1)%4],jj[(k+1)%4])-cc(n);
+					if((za<=0&&zb>0)||(za>=0&&zb<0)) {
+						ncruces++;
+						if(ncruces<=2) {
+							float xx,yy;
+							xx=xf[k]-(xf[(k+1)%4]-xf[k])*za/(zb-za);
+							yy=yf[k]-(yf[(k+1)%4]-yf[k])*za/(zb-za);
+							if(ncruces==1) 
+								cpgmove(xx,yy);
+							else
+								cpgdraw(xx,yy);
+						}
+					}
+				}
+			}
+		}
+	}
+	if(draw_state) cpgebuf();
+	xlog=0;ylog=0;
+	cpgsls(1);
+	cpgsci(1);
+}
+
+void figure::contour(const matrix &x,const matrix &y,const matrix &z,int ncontours,const char *line) {
+
+	matrix cc(ncontours);
+	
+	cc=vector(min(z),max(z),ncontours);
+	contour(x,y,z,cc,line);
+}
+
+void figure::contour(const matrix &z,int ncontours,const char *line) {
+	matrix x,y;
+	
+	x=vector(1,z.ncols(),z.ncols());
+	y=vector_t(1,z.nrows(),z.nrows());
+	contour(x,y,z,ncontours,line);
+}
+void figure::contour(const matrix &x,const matrix &y,const matrix &z,const char *line) {
+	contour(x,y,z,10,line);
+}
+void figure::contour(const matrix &z,const char *line) {
+	contour(z,10,line);
+}
+
 #else
 
 static int msg=0;
@@ -386,6 +508,10 @@ void figure::label(const char *xlabel,const char *ylabel,const char *title) {}
 void figure::pcolor(const matrix &z) {}
 void figure::pcolor(const matrix &x,const matrix &y,const matrix &z) {}
 void figure::colorbar(int set) {}
+void figure::contour(const matrix &x,const matrix &y,const matrix &z,int ncontours,const char *line) {}
+void figure::contour(const matrix &z,int ncontours,const char *line) {}
+void figure::contour(const matrix &x,const matrix &y,const matrix &z,const char *line) {}
+void figure::contour(const matrix &z,const char *line) {}
 
 #endif
 
