@@ -510,6 +510,8 @@ void figure::pcolor(const matrix &x,const matrix &y,const matrix &z) {}
 void figure::colorbar(int set) {}
 void figure::contour(const matrix &x,const matrix &y,const matrix &z,int ncontours,const char *line) {}
 void figure::contour(const matrix &z,int ncontours,const char *line) {}
+void figure::contour(const matrix &x,const matrix &y,const matrix &z,const matrix &contours,const char *line) {}
+void figure::contour(const matrix &z,const matrix &contours,const char *line) {}
 void figure::contour(const matrix &x,const matrix &y,const matrix &z,const char *line) {}
 void figure::contour(const matrix &z,const char *line) {}
 
