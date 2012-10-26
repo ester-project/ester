@@ -64,7 +64,7 @@ void star2d::upd_Xr() {
 }
 
 void star2d::calc_veloc() {
-
+// vr=rz*V^zeta vt=r*V^theta
 	vr=(G,map.leg.D_11)/r+(map.rt/r+cos(th)/sin(th))/r*G;
 	vr.setrow(0,zeros(1,nth()));
 	vr/=rho;
@@ -78,7 +78,7 @@ solver *star2d::init_solver() {
 	int nvar;
 	solver *op;
 	
-	nvar=32;
+	nvar=33;
 	op=new solver;
 	op->init(ndomains()+1,nvar,"full");
 	
@@ -130,6 +130,7 @@ void star2d::register_variables(solver *op) {
 	op->regvar_dep("opa.k");
 	op->regvar_dep("nuc.eps");
 	op->regvar_dep("s");
+	op->regvar_dep("lz");
 	
 
 }
@@ -218,7 +219,6 @@ double star2d::solve(solver *op) {
 
 
 
-	
 	phi+=h*dphi;
 	phiex+=h*dphiex;
 	p+=h*dp;
@@ -232,7 +232,7 @@ double star2d::solve(solver *op) {
 	rho0=rho;
 	
 	fill();
-
+	
 	err2=max(abs(rho-rho0));err=err2>err?err2:err;
 	
 	return err;
@@ -284,6 +284,9 @@ void star2d::solve_definitions(solver *op) {
 	op->add_d("s","p",-eos.cp*eos.del_ad/p);
 	op->add_d("s","log_pc",-eos.cp*eos.del_ad);
 	
+	op->add_d("lz","w",r*r*sin(th)*sin(th));
+	op->add_d("lz","r",w*2*r*sin(th)*sin(th));
+	
 }
 
 void star2d::solve_poisson(solver *op) {
@@ -294,16 +297,7 @@ void star2d::solve_poisson(solver *op) {
 		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
 
 	// phi
-	op->add_l("phi","phi",gzz,(D,D));
-	rhs1=gzz*(D,D,phi);
-	q=2*(1+rt*rzt/r/rz)/r/rz-gzz*rzz/rz-(rtt+rt*cos(th)/sin(th))/r/r/rz;
-	op->add_l("phi","phi",q,D);
-	rhs1+=q*(D,phi);
-	q=-2*rt/r/r/rz;
-	op->add_lr("phi","phi",q,D,Dt);
-	rhs1+=q*(D,phi,Dt);
-	op->add_r("phi","phi",1./r/r,map.leg.lap_00);
-	rhs1+=(phi,map.leg.lap_00)/r/r;
+	map.add_lap(op,"phi","phi",ones(nr(),nth()),phi);
 	
 	//rho
 	op->add_d("phi","rho",-pi_c*ones(nr(),nth()));
@@ -311,63 +305,11 @@ void star2d::solve_poisson(solver *op) {
 	//pi_c
 	op->add_d("phi","pi_c",-rho);
 
-	// r
-	q=-2*rt*rt/r/r/r/rz/rz*(D,D,phi)
-		+(-2/r/r/rz-4*rt*rzt/r/r/r/rz/rz+2*rzz*rt*rt/r/r/r/rz/rz/rz+2*rtt/r/r/r/rz+2*rt*cos(th)/r/r/r/rz/sin(th))*(D,phi)
-		+4*rt/r/r/r/rz*(D,phi,Dt)
-		-2/r/r/r*(phi,map.leg.lap_00);
-	op->add_d("phi","r",q);
-	q=(-2/rz/rz/rz-2*rt*rt/r/r/rz/rz/rz)*(D,D,phi)
-		+(-2/r/rz/rz-4*rt*rzt/r/r/rz/rz/rz+3*rzz/rz/rz/rz/rz+3*rzz*rt*rt/r/r/rz/rz/rz/rz+rtt/r/r/rz/rz+rt*cos(th)/r/r/rz/rz/sin(th))*(D,phi)
-		+2*rt/r/r/rz/rz*(D,phi,Dt);
-	op->add_l("phi","r",q,D);
-	q=2*rt/r/r/rz/rz*(D,D,phi)
-		+(2*rzt/r/r/rz/rz-2*rzz*rt/r/r/rz/rz/rz-cos(th)/r/r/rz/sin(th))*(D,phi)
-		-2/r/r/rz*(D,phi,Dt);
-	op->add_r("phi","r",q,Dt);
-	q=(-1/rz/rz/rz-rt*rt/r/r/rz/rz/rz)*(D,phi);
-	op->add_l("phi","r",q,(D,D));
-	q=2*rt/r/r/rz/rz*(D,phi);
-	op->add_lr("phi","r",q,D,Dt);
-	q=-1/r/r/rz*(D,phi);	
-	op->add_r("phi","r",q,Dt2);
-
 	// phiex
-	op->add_l(ndomains(),"phi","phi",map.ex.gzz,(Dex,Dex));
-	rhs2=map.ex.gzz*(Dex,Dex,phiex);
-	q=2*(1+map.ex.rt*map.ex.rzt/rex/map.ex.rz)/rex/map.ex.rz-map.ex.gzz*map.ex.rzz/map.ex.rz-(map.ex.rtt+map.ex.rt*cos(th)/sin(th))/rex/rex/map.ex.rz;
-	op->add_l(ndomains(),"phi","phi",q,Dex);
-	rhs2+=q*(Dex,phiex);
-	q=-2*map.ex.rt/rex/rex/map.ex.rz;
-	op->add_lr(ndomains(),"phi","phi",q,Dex,Dt);
-	rhs2+=q*(Dex,phiex,Dt);
-	op->add_r(ndomains(),"phi","phi",1./rex/rex,map.leg.lap_00);
-	rhs2+=(phiex,map.leg.lap_00)/rex/rex;
+	map.add_lap_ex(op,"phi","phi",ones(nex(),nth()),phiex);
 
-
-	// rex
-	q=-2*map.ex.rt*map.ex.rt/rex/rex/rex/map.ex.rz/map.ex.rz*(Dex,Dex,phiex)
-		+(-2/rex/rex/map.ex.rz-4*map.ex.rt*map.ex.rzt/rex/rex/rex/map.ex.rz/map.ex.rz+2*map.ex.rzz*map.ex.rt*map.ex.rt/rex/rex/rex/map.ex.rz/map.ex.rz/map.ex.rz+2*map.ex.rtt/rex/rex/rex/map.ex.rz+2*map.ex.rt*cos(th)/rex/rex/rex/map.ex.rz/sin(th))*(Dex,phiex)
-		+4*map.ex.rt/rex/rex/rex/map.ex.rz*(Dex,phiex,Dt)
-		-2/rex/rex/rex*(phiex,Dt2)
-		-2*cos(th)/rex/rex/rex/sin(th)*(phiex,Dt);
-	op->add_d(ndomains(),"phi","r",q);	
-	q=(-2/map.ex.rz/map.ex.rz/map.ex.rz-2*map.ex.rt*map.ex.rt/rex/rex/map.ex.rz/map.ex.rz/map.ex.rz)*(Dex,Dex,phiex)
-		+(-2/rex/map.ex.rz/map.ex.rz-4*map.ex.rt*map.ex.rzt/rex/rex/map.ex.rz/map.ex.rz/map.ex.rz+3*map.ex.rzz/map.ex.rz/map.ex.rz/map.ex.rz/map.ex.rz+3*map.ex.rzz*map.ex.rt*map.ex.rt/rex/rex/map.ex.rz/map.ex.rz/map.ex.rz/map.ex.rz+map.ex.rtt/rex/rex/map.ex.rz/map.ex.rz+map.ex.rt*cos(th)/rex/rex/map.ex.rz/map.ex.rz/sin(th))*(Dex,phiex)
-		+2*map.ex.rt/rex/rex/map.ex.rz/map.ex.rz*(Dex,phiex,Dt);
-	op->add_l(ndomains(),"phi","r",q,Dex);
-	q=2*map.ex.rt/rex/rex/map.ex.rz/map.ex.rz*(Dex,Dex,phiex)
-		+(2*map.ex.rzt/rex/rex/map.ex.rz/map.ex.rz-2*map.ex.rzz*map.ex.rt/rex/rex/map.ex.rz/map.ex.rz/map.ex.rz-cos(th)/rex/rex/map.ex.rz/sin(th))*(Dex,phiex)
-		-2/rex/rex/map.ex.rz*(Dex,phiex,Dt);
-	op->add_r(ndomains(),"phi","r",q,Dt);
-	q=(-1/map.ex.rz/map.ex.rz/map.ex.rz-map.ex.rt*map.ex.rt/rex/rex/map.ex.rz/map.ex.rz/map.ex.rz)*(Dex,phiex);
-	op->add_l(ndomains(),"phi","r",q,(Dex,Dex));
-	q=2*map.ex.rt/rex/rex/map.ex.rz/map.ex.rz*(Dex,phiex);
-	op->add_lr(ndomains(),"phi","r",q,Dex,Dt);
-	q=-1/rex/rex/map.ex.rz*(Dex,phiex);	
-	op->add_r(ndomains(),"phi","r",q,Dt2);
-
-	rhs1=rhs1-pi_c*rho;
+	rhs1=map.lap(phi)-pi_c*rho;
+	rhs2=map.lap_ex(phiex);
 	rhs=zeros(nr()+nex(),nth());
 	rhs.setblock(0,nr()-1,0,-1,-rhs1);
 	rhs.setblock(nr(),nr()+nex()-1,0,-1,-rhs2);
@@ -569,25 +511,33 @@ void star2d::solve_vbl(solver *op,const char *eqn,matrix &rhs) {
 	qeq(0)=1;
 	n=ndomains()-1;
 	
-	op->bc_top1_add_l(n,eqn,"w",(1-qeq)*gzz.row(-1),D.block(n).row(-1));
-	q=gzt+G/r/rz;
+	matrix s;
+	
+	s=r*sin(th);
+	
+	// w
+	
+	q=s*s*(r*r+rt*rt)/r/rz;
+	op->bc_top1_add_l(n,eqn,"w",(1-qeq)*q.row(-1),D.block(n).row(-1));
+	q=-s*s*rt/r;
 	op->bc_top1_add_r(n,eqn,"w",(1-qeq)*q.row(-1),Dt);
-	q=2*G/r/rz*(rt/r+cos(th)/sin(th));
-	op->bc_top1_add_d(n,eqn,"w",(1-qeq)*q.row(-1));
-	q=(w,Dt)/r/rz+2*(rt/r+cos(th)/sin(th))/r/rz*w;
+	op->bc_top1_add_r(n,eqn,"lz",(1-qeq)*G.row(-1),Dt);
+	
+	// G
+	
+	q=(s*s*w,Dt);
 	op->bc_top1_add_d(n,eqn,"G",(1-qeq)*q.row(-1));
-	q=-2.*r*gzt*gzt*(D,w)-(2.*gzt+G/r/rz)/r*(w,Dt)
-		-2*G/r/r/rz*(2*rt/r+cos(th)/sin(th))*w;
+	
+	// r
+	
+	q=(3*s*s+rt*rt*sin(th)*sin(th))/rz*(D,w)-rt*sin(th)*sin(th)*(w,Dt);
 	op->bc_top1_add_d(n,eqn,"r",(1-qeq)*q.row(-1));
-	q=-2./rz*gzz*(D,w)-(gzt+G/r/rz)/rz*(w,Dt)
-		-2*G/r/rz/rz*(rt/r+cos(th)/sin(th))*w;
+	q=-(r*s*s+r*rt*rt*sin(th)*sin(th))/rz/rz*(D,w);
 	op->bc_top1_add_d(n,eqn,"rz",(1-qeq)*q.row(-1));
-	q=-2./rz*gzt*(D,w)-1./r/r/rz*(w,Dt)
-		+2*G/r/r/rz*w;
+	q=2*r*rt*sin(th)*sin(th)/rz*(D,w)-r*sin(th)*sin(th)*(w,Dt);
 	op->bc_top1_add_r(n,eqn,"r",(1-qeq)*q.row(-1),Dt);
 	
-	q=gzz*(D,w)+(gzt+G/r/rz)*(w,Dt)
-		+2*G/r/rz*(rt/r+cos(th)/sin(th))*w;
+	q=s*s*((r*r+rt*rt)/r/rz*(D,w)-rt/r*(w,Dt))+G*(s*s*w,Dt);
 	rhs.setrow(-1,-(1-qeq)*q.row(-1));
 
 	if(!limit_layer) {
@@ -606,7 +556,7 @@ void star2d::solve_vbl(solver *op,const char *eqn,matrix &rhs) {
 void star2d::solve_dyn(solver *op) {
 
 	matrix rhs;
-	matrix q;
+	matrix q,s;
 	int n,j0;
 	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
 		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
@@ -617,80 +567,46 @@ void star2d::solve_dyn(solver *op) {
 		return;
 	}
 	
-	op->add_l("G","w",gzz,(D,D));
-	op->add_lr("G","w",2.*gzt,D,Dt);
-	op->add_r("G","w",1./r/r,Dt2);
-	q=4./r/rz-rtt/r/r/rz
-		+gzz*(-rzz/rz)
-		+gzt*(3.*cos(th)/sin(th)-2.*rzt/rz)-rho*vr/rz;
+	s=r*sin(th);
+	rhs=zeros(nr(),nth());
+	
+	
+	// w
+	
+	map.add_lap(op,"G","w",-s*s,w);
+	rhs-=-s*s*map.lap(w);
+	q=sin(th)/rz*(r*cos(th)+rt*sin(th))*G-2*sin(th)/rz*(r*sin(th)-rt*cos(th));
 	op->add_l("G","w",q,D);
-	q=1./r/r*(3.*cos(th)/sin(th))
-		-rho*vt/r;
+	rhs-=q*(D,w);
+	q=(-sin(th)*sin(th)*G-2*sin(th)*cos(th));
 	op->add_r("G","w",q,Dt);
+	rhs-=q*(w,Dt);
+	q=(G,map.leg.D_11)/r/rz;
+	op->add_l("G","lz",q,D);
+	rhs-=q*(D,s*s*w);
+	q=-(D,G)/r/rz;
+	op->add_r("G","lz",q,Dt);
+	rhs-=q*(s*s*w,Dt);
 	
-	q=-2.*rz/r*rho*vr/rz-2.*(rt/r+cos(th)/sin(th))*rho*vt/r;
-	op->add_d("G","w",q);
+	// G
 	
-	matrix qv;
-
-	// rho*vr
-	qv=-(D,w)/rz-2./r*w;
-	op->add_r("G","G",qv/r,map.leg.D_11);
-	q=(rt/r+cos(th)/sin(th))/r;
-	op->add_d("G","G",q*qv);
-	q=-((G,map.leg.D_11)+(2*rt/r+cos(th)/sin(th))*G)/r/r;
-	op->add_d("G","r",q*qv);
-	q=G/r/r;
-	op->add_r("G","r",q*qv,Dt);
+	q=sin(th)/rz*(r*cos(th)+rt*sin(th))*(D,w)-sin(th)*sin(th)*(w,Dt);
+	op->add_d("G","G",q);
+	q=-(s*s*w,Dt)/r/rz;
+	op->add_l("G","G",q,D);
+	q=(D,s*s*w)/r/rz;
+	op->add_r("G","G",q,map.leg.D_11);
 	
+	// r
 	
-	// rho*vt
-	qv=-(w,Dt)/r-2./r*(rt/r+cos(th)/sin(th))*w;
-	op->add_l("G","G",-qv/rz,D);
-	q=-1./r;
-	op->add_d("G","G",qv*q);
-	q=G/r/r;
-	op->add_d("G","r",q*qv);
-	q=(D,G)/rz/rz;
-	op->add_l("G","r",q*qv,D);
-	
-	//r
-	q=-2.*r*gzt*gzt*(D,D,w)-4.*gzt/r*(D,w,Dt)-2./r/r/r*(w,Dt2)
-		-(4./r/r/rz-2.*rtt/r/r/r/rz
-			+2.*r*gzt*gzt*(-rzz/rz)
-			+2.*gzt/r*(3.*cos(th)/sin(th)-2.*rzt/rz)
-			)*(D,w)
-		-(2./r/r/r*3.*cos(th)/sin(th)-rho*vt/r/r)*(w,Dt)
-		+2./r/r*(rho*vr+(2*rt/r+cos(th)/sin(th))*rho*vt)*w;
+	q=-((D,s*s*w)*(G,map.leg.D_11)-(s*s*w,Dt)*(D,G))/r/r/rz
+		+sin(th)*cos(th)/rz*(D,w)*G-2*r*sin(th)*sin(th)*map.lap(w)-2*sin(th)*sin(th)/rz*(D,w);
 	op->add_d("G","r",q);
-	q=-2.*gzz/rz*(D,D,w)-2.*gzt/rz*(D,w,Dt)
-		-(4./r/rz/rz-rtt/r/r/rz/rz
-			+2.*gzz/rz*(-1.5*rzz/rz)
-			+gzt/rz*(3.*cos(th)/sin(th)-4.*rzt/rz)
-			-rho*vr/rz/rz)*(D,w);
-	op->add_l("G","r",q,D);
-	q=-2.*gzt/rz*(D,D,w)-2./r/r/rz*(D,w,Dt)
-		-(2.*gzt/rz*(-rzz/rz)
-			+1./r/r/rz*(+3.*cos(th)/sin(th)-2.*rzt/rz)
-			)*(D,w)
-		-2./r/r*rho*vt*w;
+	q=-((D,s*s*w)*(G,map.leg.D_11)-(s*s*w,Dt)*(D,G))/r/rz/rz
+		-sin(th)/rz/rz*(r*cos(th)+rt*sin(th))*(D,w)*G+2*sin(th)/rz/rz*(r*sin(th)-rt*cos(th))*(D,w);
+	op->add_d("G","rz",q);
+	q=sin(th)*sin(th)/rz*(D,w)*G+2*sin(th)*cos(th)/rz*(D,w);
 	op->add_r("G","r",q,Dt);
-	q=-gzz/rz*(D,w);
-	op->add_l("G","r",q,(D,D));
-	q=-2.*gzt/rz*(D,w);
-	op->add_lr("G","r",q,D,Dt);
-	q=-1./r/r/rz*(D,w);
-	op->add_r("G","r",q,Dt2);
-	
-	rhs=-gzz*(D,D,w)-2.*gzt*(D,w,Dt)-1./r/r*(w,Dt2)
-		-(4./r/rz-rtt/r/r/rz
-			+gzz*(-rzz/rz)
-			+gzt*(3.*cos(th)/sin(th)-2.*rzt/rz)
-			-rho*vr/rz)*(D,w)
-		-(1./r/r*(3.*cos(th)/sin(th))
-			-rho*vt/r)*(w,Dt)
-		+2*w*(1./r*rho*vr+(rt/r+cos(th)/sin(th))/r*rho*vt);	
-	
 	
 	j0=0;
 	for(n=0;n<ndomains();n++) {
@@ -698,27 +614,9 @@ void star2d::solve_dyn(solver *op) {
 			op->bc_bot2_add_d(n,"G","G",ones(1,nth()));
 			rhs.setrow(0,-G.row(0));
 		} else {
-			q=(r*r+rt*rt)/rz;
-			op->bc_bot2_add_l(n,"G","w",q.row(j0),D.block(n).row(0));
-			op->bc_bot1_add_l(n,"G","w",-q.row(j0-1),D.block(n-1).row(-1));
-			q=G*r-rt;
-			op->bc_bot2_add_r(n,"G","w",q.row(j0),Dt);
-			op->bc_bot1_add_r(n,"G","w",-q.row(j0-1),Dt);
-			q=2*G*(r*cos(th)/sin(th)+rt);
-			q=r*(w,Dt)+2*w*(r*cos(th)/sin(th)+rt);
-			op->bc_bot2_add_d(n,"G","G",q.row(j0));
-			op->bc_bot1_add_d(n,"G","G",-q.row(j0-1));
-			q=2*r/rz*(D,w)+G*(w,Dt)+2*w*G*cos(th)/sin(th);
-			op->bc_bot2_add_d(n,"G","r",q.row(j0));
-			op->bc_bot1_add_d(n,"G","r",-q.row(j0-1));
-			q=-(r*r+rt*rt)/rz/rz*(D,w);
-			op->bc_bot2_add_d(n,"G","rz",q.row(j0));
-			op->bc_bot1_add_d(n,"G","rz",-q.row(j0-1));
-			q=2*rt/rz*(D,w)-(w,Dt)+2*w*G;
-			op->bc_bot2_add_r(n,"G","r",q.row(j0),Dt);
-			op->bc_bot1_add_r(n,"G","r",-q.row(j0-1),Dt);
-			q=(r*r+rt*rt)/rz*(D,w)+(G*r-rt)*(w,Dt)+2*w*G*(r*cos(th)/sin(th)+rt);
-			rhs.setrow(j0,-q.row(j0)+q.row(j0-1));
+			op->bc_bot2_add_d(n,"G","G",ones(1,nth()));
+			op->bc_bot1_add_d(n,"G","G",-ones(1,nth()));
+			rhs.setrow(j0,-G.row(j0)+G.row(j0-1));
 		}
 	
 		j0+=map.gl.npts[n];
@@ -741,7 +639,7 @@ void star2d::solve_temp(solver *op) {
 	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
 		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
 	
-	op->add_d("T","log_T",p);
+	op->add_d("T","log_T",T);
 	strcpy(eqn,"log_T");
 	
 	//Luminosity
@@ -822,48 +720,26 @@ void star2d::solve_temp(solver *op) {
 	rhs_T=zeros(nr(),nth());
 
 	// T
-	op->add_l(eqn,"T",qrad*gzz,(D,D));
-	rhs_T+=-qrad*gzz*(D,D,T);
-	q=2*(1+rt*rzt/r/rz)/r/rz-gzz*rzz/rz-(rtt+rt*cos(th)/sin(th))/r/r/rz
-		+gzz*(D,log(opa.xi))+gzt*(log(opa.xi),Dt);
+	map.add_lap(op,eqn,"T",qrad,T);
+	rhs_T+=-qrad*map.lap(T);
+	q=gzz*(D,log(opa.xi))+gzt*(log(opa.xi),Dt);
 	op->add_l(eqn,"T",qrad*q,D);
 	rhs_T+=-qrad*q*(D,T);
-	q=-2*rt/r/r/rz;
-	op->add_lr(eqn,"T",qrad*q,D,Dt);
-	rhs_T+=-qrad*q*(D,T,Dt);
-	op->add_r(eqn,"T",qrad*1./r/r,map.leg.lap_00);
-	rhs_T+=-qrad*(T,map.leg.lap_00)/r/r;
 	q=gzt*(D,log(opa.xi))+gtt*(log(opa.xi),Dt);
 	op->add_r(eqn,"T",qrad*q,Dt);
 	rhs_T+=-qrad*q*(T,Dt);
 	
 	// r
-	q=-2*rt*rt/r/r/r/rz/rz*(D,D,T)
-		+(-2/r/r/rz-4*rt*rzt/r/r/r/rz/rz+2*rzz*rt*rt/r/r/r/rz/rz/rz+2*rtt/r/r/r/rz+2*rt*cos(th)/r/r/r/rz/sin(th))*(D,T)
-		+4*rt/r/r/r/rz*(D,T,Dt)
-		-2/r/r/r*(T,map.leg.lap_00)
-		+(D,log(opa.xi))*(D,T)*2*rt/r/rz*gzt
+	q=(D,log(opa.xi))*(D,T)*2*rt/r/rz*gzt
 		-((D,log(opa.xi))*(T,Dt)+(log(opa.xi),Dt)*(D,T))*2*gzt/r
 		-(log(opa.xi),Dt)*(T,Dt)*2/r/r/r;
 	op->add_d(eqn,"r",qrad*q);
-	q=(-2/rz/rz/rz-2*rt*rt/r/r/rz/rz/rz)*(D,D,T)
-		+(-2/r/rz/rz-4*rt*rzt/r/r/rz/rz/rz+3*rzz/rz/rz/rz/rz+3*rzz*rt*rt/r/r/rz/rz/rz/rz+rtt/r/r/rz/rz+rt*cos(th)/r/r/rz/rz/sin(th))*(D,T)
-		+2*rt/r/r/rz/rz*(D,T,Dt)
-		-(D,log(opa.xi))*(D,T)*2/rz*gzz
+	q=-(D,log(opa.xi))*(D,T)*2/rz*gzz
 		-((D,log(opa.xi))*(T,Dt)+(log(opa.xi),Dt)*(D,T))*gzt/rz;
 	op->add_l(eqn,"r",qrad*q,D);
-	q=2*rt/r/r/rz/rz*(D,D,T)
-		+(2*rzt/r/r/rz/rz-2*rzz*rt/r/r/rz/rz/rz-cos(th)/r/r/rz/sin(th))*(D,T)
-		-2/r/r/rz*(D,T,Dt)
-		-(D,log(opa.xi))*(D,T)*2/rz*gzt
+	q=-(D,log(opa.xi))*(D,T)*2/rz*gzt
 		-((D,log(opa.xi))*(T,Dt)+(log(opa.xi),Dt)*(D,T))/r/r/rz;
 	op->add_r(eqn,"r",qrad*q,Dt);
-	q=(-1/rz/rz/rz-rt*rt/r/r/rz/rz/rz)*(D,T);
-	op->add_l(eqn,"r",qrad*q,(D,D));
-	q=2*rt/r/r/rz/rz*(D,T);
-	op->add_lr(eqn,"r",qrad*q,D,Dt);
-	q=-1/r/r/rz*(D,T);
-	op->add_r(eqn,"r",qrad*q,Dt2);
 	
 	//rho
 	q=Lambda*nuc.eps/opa.xi;
@@ -1316,6 +1192,8 @@ void star2d::check_jacobian(solver *op,const char *eqn) {
 	i=op->get_id("s");
 	y[i]=zeros(nr(),nth());
 	i=op->get_id("opa.k");
+	y[i]=zeros(nr(),nth());
+	i=op->get_id("lz");
 	y[i]=zeros(nr(),nth());
 	
 	

@@ -268,63 +268,130 @@ matrix mapping::dt2(const matrix &a) const {
 	return dt_odd(dt(a));	
 }
 
-matrix mapping::lap_s(const matrix &a) const {
+matrix mapping::lap(const matrix &phi) const {
 
-	matrix res(a.nrows(),a.ncols());
+	matrix lap_phi,q;
 	
-	res=(D,D,a)+2*(D,a)/z+(a,leg.lap_00)/z/z;
+	lap_phi=gzz*(D,D,phi);
+	q=2*(1+rt*rzt/r/rz)/r/rz-gzz*rzz/rz-(rtt+rt*cos(th)/sin(th))/r/r/rz;
+	lap_phi+=q*(D,phi);
+	q=-2*rt/r/r/rz;
+	lap_phi+=q*(D,phi,Dt);
+	lap_phi+=(phi,leg.lap_00)/r/r;
 	
-	// Central value with above expression is nan, should calculate it
-	
-	return res;
-	
-}
-
-matrix mapping::lap_ns(const matrix &a) const {
-
-	matrix res(a.nrows(),a.ncols());
-	
-	res=2*(1/r/rz-gzz/z)*(D,a)+(1/r/r-gzz/z/z)*(a,leg.lap_00)
-		+2*gzt*(D,a,Dt)-(gzz*rzz+2*gzt*rzt+gtt*(rtt+rt/tan(th)))/rz*(D,a);
-		
-	// Central value with above expression is nan, should calculate it
-		
-	return res;
+	return lap_phi;
 
 }
 
-matrix mapping::lap(const matrix &a) const {
+matrix mapping::lap_ex(const matrix &phi) const {
 
-	return gzz*lap_s(a)+lap_ns(a);
-}
-    
-
-matrix mapping::lap_ex_s(const matrix &a) const {
-
-	matrix res(a.nrows(),a.ncols());
+	matrix lap_phi,q;
 	
-	res=(ex.D,ex.D,a)+2*(ex.D,a)/ex.z+(a,leg.lap_00)/ex.z/ex.z;
+	lap_phi=ex.gzz*(ex.D,ex.D,phi);
+	q=2*(1+ex.rt*ex.rzt/ex.r/ex.rz)/ex.r/ex.rz-ex.gzz*ex.rzz/ex.rz-(ex.rtt+ex.rt*cos(th)/sin(th))/ex.r/ex.r/ex.rz;
+	lap_phi+=q*(ex.D,phi);
+	q=-2*ex.rt/ex.r/ex.r/ex.rz;
+	lap_phi+=q*(ex.D,phi,Dt);
+	lap_phi+=(phi,leg.lap_00)/ex.r/ex.r;
 	
-	return res;
-	
-}
-
-matrix mapping::lap_ex_ns(const matrix &a) const {
-
-	matrix res(a.nrows(),a.ncols());
-	
-	res=2*(1/ex.r/ex.rz-ex.gzz/ex.z)*(ex.D,a)
-		+(1/ex.r/ex.r-ex.gzz/ex.z/ex.z)*(a,leg.lap_00)
-		+2*ex.gzt*(ex.D,a,Dt)
-		-(ex.gzz*ex.rzz+2*ex.gzt*ex.rzt+ex.gtt*(ex.rtt+ex.rt/tan(leg.th)))/ex.rz*(ex.D,a);
-		
-	return res;
+	return lap_phi;
 
 }
 
-matrix mapping::lap_ex(const matrix &a) const {
+void mapping::add_lap(solver *op,const char* eqn,const char * varn,const matrix &d,const matrix &phi) const {
+	
+	matrix q;
+	
+	op->add_l(eqn,varn,d*gzz,(D,D));
+	q=2*(1+rt*rzt/r/rz)/r/rz-gzz*rzz/rz-(rtt+rt*cos(th)/sin(th))/r/r/rz;
+	op->add_l(eqn,varn,d*q,D);
+	q=-2*rt/r/r/rz;
+	op->add_lr(eqn,varn,d*q,D,Dt);
+	op->add_r(eqn,varn,d/r/r,leg.lap_00);
+	
+	q=-2*rt*rt/r/r/r/rz/rz*(D,D,phi)
+		+(-2/r/r/rz-4*rt*rzt/r/r/r/rz/rz+2*rzz*rt*rt/r/r/r/rz/rz/rz+2*rtt/r/r/r/rz+2*rt*cos(th)/r/r/r/rz/sin(th))*(D,phi)
+		+4*rt/r/r/r/rz*(D,phi,Dt)
+		-2/r/r/r*(phi,leg.lap_00);
+	op->add_d(eqn,"r",d*q);
+	q=(-2/rz/rz/rz-2*rt*rt/r/r/rz/rz/rz)*(D,D,phi)
+		+(-2/r/rz/rz-4*rt*rzt/r/r/rz/rz/rz+3*rzz/rz/rz/rz/rz+3*rzz*rt*rt/r/r/rz/rz/rz/rz+rtt/r/r/rz/rz+rt*cos(th)/r/r/rz/rz/sin(th))*(D,phi)
+		+2*rt/r/r/rz/rz*(D,phi,Dt);
+	op->add_l(eqn,"r",d*q,D);
+	q=2*rt/r/r/rz/rz*(D,D,phi)
+		+(2*rzt/r/r/rz/rz-2*rzz*rt/r/r/rz/rz/rz-cos(th)/r/r/rz/sin(th))*(D,phi)
+		-2/r/r/rz*(D,phi,Dt);
+	op->add_r(eqn,"r",d*q,Dt);
+	q=(-1/rz/rz/rz-rt*rt/r/r/rz/rz/rz)*(D,phi);
+	op->add_l(eqn,"r",d*q,(D,D));
+	q=2*rt/r/r/rz/rz*(D,phi);
+	op->add_lr(eqn,"r",d*q,D,Dt);
+	q=-1/r/r/rz*(D,phi);	
+	op->add_r(eqn,"r",d*q,Dt2);
+	
+}
+void mapping::add_lap_ex(solver *op,const char* eqn,const char * varn,const matrix &d,const matrix &phi) const {
+	
+	matrix q;
+	
+	op->add_l(gl.ndomains(),eqn,varn,d*ex.gzz,(ex.D,ex.D));
+	q=2*(1+ex.rt*ex.rzt/ex.r/ex.rz)/ex.r/ex.rz-ex.gzz*ex.rzz/ex.rz-(ex.rtt+ex.rt*cos(th)/sin(th))/ex.r/ex.r/ex.rz;
+	op->add_l(gl.ndomains(),eqn,varn,d*q,ex.D);
+	q=-2*ex.rt/ex.r/ex.r/ex.rz;
+	op->add_lr(gl.ndomains(),eqn,varn,d*q,ex.D,Dt);
+	op->add_r(gl.ndomains(),eqn,varn,d/ex.r/ex.r,leg.lap_00);
+	
+	q=-2*ex.rt*ex.rt/ex.r/ex.r/ex.r/ex.rz/ex.rz*(ex.D,ex.D,phi)
+		+(-2/ex.r/ex.r/ex.rz-4*ex.rt*ex.rzt/ex.r/ex.r/ex.r/ex.rz/ex.rz+2*ex.rzz*ex.rt*ex.rt/ex.r/ex.r/ex.r/ex.rz/ex.rz/ex.rz+2*ex.rtt/ex.r/ex.r/ex.r/ex.rz+2*ex.rt*cos(th)/ex.r/ex.r/ex.r/ex.rz/sin(th))*(ex.D,phi)
+		+4*ex.rt/ex.r/ex.r/ex.r/ex.rz*(ex.D,phi,Dt)
+		-2/ex.r/ex.r/ex.r*(phi,Dt2)
+		-2*cos(th)/ex.r/ex.r/ex.r/sin(th)*(phi,Dt);
+	op->add_d(gl.ndomains(),eqn,"r",d*q);	
+	q=(-2/ex.rz/ex.rz/ex.rz-2*ex.rt*ex.rt/ex.r/ex.r/ex.rz/ex.rz/ex.rz)*(ex.D,ex.D,phi)
+		+(-2/ex.r/ex.rz/ex.rz-4*ex.rt*ex.rzt/ex.r/ex.r/ex.rz/ex.rz/ex.rz+3*ex.rzz/ex.rz/ex.rz/ex.rz/ex.rz+3*ex.rzz*ex.rt*ex.rt/ex.r/ex.r/ex.rz/ex.rz/ex.rz/ex.rz+ex.rtt/ex.r/ex.r/ex.rz/ex.rz+ex.rt*cos(th)/ex.r/ex.r/ex.rz/ex.rz/sin(th))*(ex.D,phi)
+		+2*ex.rt/ex.r/ex.r/ex.rz/ex.rz*(ex.D,phi,Dt);
+	op->add_l(gl.ndomains(),eqn,"r",d*q,ex.D);
+	q=2*ex.rt/ex.r/ex.r/ex.rz/ex.rz*(ex.D,ex.D,phi)
+		+(2*ex.rzt/ex.r/ex.r/ex.rz/ex.rz-2*ex.rzz*ex.rt/ex.r/ex.r/ex.rz/ex.rz/ex.rz-cos(th)/ex.r/ex.r/ex.rz/sin(th))*(ex.D,phi)
+		-2/ex.r/ex.r/ex.rz*(ex.D,phi,Dt);
+	op->add_r(gl.ndomains(),eqn,"r",d*q,Dt);
+	q=(-1/ex.rz/ex.rz/ex.rz-ex.rt*ex.rt/ex.r/ex.r/ex.rz/ex.rz/ex.rz)*(ex.D,phi);
+	op->add_l(gl.ndomains(),eqn,"r",d*q,(ex.D,ex.D));
+	q=2*ex.rt/ex.r/ex.r/ex.rz/ex.rz*(ex.D,phi);
+	op->add_lr(gl.ndomains(),eqn,"r",d*q,ex.D,Dt);
+	q=-1/ex.r/ex.r/ex.rz*(ex.D,phi);	
+	op->add_r(gl.ndomains(),eqn,"r",d*q,Dt2);
 
-	return ex.gzz*lap_ex_s(a)+lap_ex_ns(a);
+}
+
+matrix mapping::stream(const matrix &Fz,matrix &Ft) const {
+
+	// Calculates the stream function of the divergenceless vector field whose
+	// zeta-contravariant coordinate is Fz (for Fz even at pole and equator).
+	// Returns also the theta-contravariant coordinate Ft
+	
+	matrix f;
+	
+	f=r*r*rz*Fz;
+	f=(f,leg.P_00);
+	f=-f/leg.l_00()/(leg.l_00()+1.);
+	f.setcol(0,zeros(gl.N(),1));
+	f=(f,leg.dP1_00);
+	f/=r;
+	f.setrow(0,zeros(1,leg.npts));
+	
+	Ft=-(D,f*r)/r/r/rz;
+	Ft.setrow(0,zeros(1,leg.npts));
+	
+	return f;
+	
+
+}
+
+matrix mapping::stream(const matrix &Fz) const {
+
+	matrix Ft;
+	return stream(Fz,Ft);
 }
     
 void mapping::interps(const mapping &map_old,matrix &Tr,matrix &Tex,

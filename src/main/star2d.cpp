@@ -61,7 +61,7 @@ int main(int argc,char *argv[]) {
 	while(!last_it) {
 		nit++;
 		
-		//A.check_jacobian(op,"gsup");exit(0);
+		//A.check_jacobian(op,"w");exit(0);
 		err=A.solve(op);
 
 		tt(nit-1)=t.value();

@@ -3,7 +3,7 @@ ESTER_ROOT=$(CURDIR)/..
 USE_PGPLOT=1
 
 CC=icpc
-CCFLAGS=-O2 -fp-model precise -ip -fPIC  -I/usr/include/x86_64-linux-gnu
+CCFLAGS=-O2 -fp-model precise -ip -fPIC  
 FC=ifort
 FCFLAGS=-O2 -r8 -nowarn -fp-model precise -fpp -fPIC
 LD=icpc

@@ -4,6 +4,7 @@
 #include"matrix.h"
 #include"numdiff.h"
 #include"graphics.h"
+#include"solver.h"
 
 class mapping {
 	matrix eps_,eta_;
@@ -39,11 +40,12 @@ class mapping {
     matrix dt_odd(const matrix &) const;
     matrix dt2(const matrix &) const;
     matrix lap(const matrix &) const;
-    matrix lap_s(const matrix &) const;
-    matrix lap_ns(const matrix &) const;
     matrix lap_ex(const matrix &) const;
-    matrix lap_ex_s(const matrix &) const;
-    matrix lap_ex_ns(const matrix &) const;
+    void add_lap(solver *op,const char* eqn,const char * varn,const matrix &d,const matrix &phi) const;
+    void add_lap_ex(solver *op,const char* eqn,const char * varn,const matrix &d,const matrix &phi) const;
+    matrix stream(const matrix &Fz,matrix &Ft) const;
+    matrix stream(const matrix &Fz) const;
+    
     
     void interps(const mapping &map_old,matrix &Tr,matrix &Tex,
     	matrix &Tt_00,matrix &Tt_01,matrix &Tt_10,matrix &Tt_11) const;

@@ -2,23 +2,26 @@ from numpy import *
 from matplotlib.pyplot import *
 import os
 import struct
+import tempfile
 
 rcParams['patch.antialiased']=False
 
 class star2d:
 	def __init__(self,file):
 		names=['R/R_SUN','M/M_SUN','L/L_SUN','M','L','Xr','r','z','th','opa.k','w','p','rho','eos.G1','eos.del_ad','T','D','opa.xi','Teff','gsup','rex','map.R','R','nuc.eps','N2','eos.del_ad','Omega','phi','phiex','Dex','Dt','Dtodd','Dt2','Omega_bk','eos.cp','eos.G3_1','eos.cv','eos.d','eos.chi_T','eos.chi_rho','opa.dlnxi_lnrho','opa.dlnxi_lnT','nuc.pp','nuc.cno','vr','vt','G','psi','virial','energy_test','eos.s']		
-		fp=open('/tmp/python_star_template','w')
+		fd,template_file=tempfile.mkstemp(prefix='star_template_',suffix='.tmp')
+		fp=os.fdopen(fd,'w')
 		fp.write('\\conf{equator=1}\n\\conf{pole=1}\n\\conf{dim=1}\n')
 		fp.write('${nr}${nth}${nex}${ndomains}${npts}${conv}')
 		for x in names:
 			fp.write('${'+x+'}')
 		fp.close()
-		status=os.system('gen_output '+file+' < /tmp/python_star_template > /tmp/python_star_out')
+		fd,out_file=tempfile.mkstemp(prefix='star_out_',suffix='.tmp')
+		status=os.system('gen_output '+file+' < '+template_file+' > '+out_file)
 		if status:
 			self.nr=0
 			return
-		fp=open('/tmp/python_star_out','rb')	
+		fp=os.fdopen(fd,'rb')
 		self.nr=struct.unpack('i',fp.read(4))[0]
 		self.nth=struct.unpack('i',fp.read(4))[0]+2
 		self.nex=struct.unpack('i',fp.read(4))[0]
@@ -50,8 +53,8 @@ class star2d:
 				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.nr*self.nth)+"),["+str(self.nr)+","+str(self.nth)+"],'F')"
 			exec(s)
 		fp.close()
-		os.system('rm /tmp/python_star_template')
-		os.system('rm /tmp/python_star_out')
+		os.system('rm '+template_file)
+		os.system('rm '+out_file)
 		self.th=dot(ones((self.nr,1)),self.th)
 		self.z=dot(self.z,ones((1,self.nth)))
 		self.rz=dot(self.D,self.r)
