@@ -50,7 +50,7 @@ void star1d::upd_Xr() {
 
 	int ic,n;
 	
-	Xr=X*ones(nr(),1);
+	Xr=X*ones(nr,1);
 	if(!conv) {
 		if(Xc!=1) printf("Warning: Non-homogeneus composition without core convection not implemented\n");
 		Xc=1;
@@ -59,7 +59,7 @@ void star1d::upd_Xr() {
 	ic=0;
 	for(n=0;n<conv;n++) ic+=gl.npts[n];
 	Xr.setblock(0,ic-1,0,0,Xc*X*ones(ic,1));
-	Xr.setblock(ic,nr()-1,0,0,X*ones(nr()-ic,1));
+	Xr.setblock(ic,nr-1,0,0,X*ones(nr-ic,1));
 }
 
 
@@ -71,7 +71,7 @@ solver *star1d::init_solver() {
 	nvar=17;
 	
 	op=new solver();
-	op->init(ndomains(),nvar,"full");
+	op->init(ndomains,nvar,"full");
 	
 	op->maxit_ref=10;op->use_cgs=0;op->maxit_cgs=20;
 	op->rel_tol=1e-12;op->abs_tol=1e-20;
@@ -82,9 +82,9 @@ solver *star1d::init_solver() {
 
 void star1d::register_variables(solver *op) {
 
-	int i,var_nr[ndomains()];
+	int i,var_nr[ndomains];
 	
-	for(i=0;i<ndomains();i++) 
+	for(i=0;i<ndomains;i++) 
 		var_nr[i]=gl.npts[i];
 	op->set_nr(var_nr);
 
@@ -203,9 +203,9 @@ void star1d::solve_poisson(solver *op) {
 	int n,j0;
 	matrix a_map,b_map,rhs;
 
-	op->add_l("phi","phi",ones(nr(),1),(D,D));	
+	op->add_l("phi","phi",ones(nr,1),(D,D));	
 	op->add_l("phi","phi",2./r,D);
-	op->add_d("phi","rho",-pi_c*ones(nr(),1));
+	op->add_d("phi","rho",-pi_c*ones(nr,1));
 	op->add_d("phi","pi_c",-rho*pi_c);
 	
 	rhs=-(D,D,phi)-2/r*(D,phi)+rho*pi_c;
@@ -216,7 +216,7 @@ void star1d::solve_poisson(solver *op) {
 	op->add_d("phi","Ri",b_map);
 
 	j0=0;
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 	
 		op->add_d(n,"phi","dx",( a_map.block(j0,j0+gl.npts[n]-1,0,0)
 			+b_map.block(j0,j0+gl.npts[n]-1,0,0)*(r.block(j0,j0+gl.npts[n]-1,0,0)-gl.xif[n]) )
@@ -231,7 +231,7 @@ void star1d::solve_poisson(solver *op) {
 		op->bc_bot2_add_d(n,"phi","dx",-(D,phi)(j0)/(gl.xif[n+1]-gl.xif[n])*ones(1,1));
 		if(n) op->bc_bot1_add_d(n,"phi","dx",(D,phi)(j0-1)/(gl.xif[n]-gl.xif[n-1])*ones(1,1));
 		
-		if(n==ndomains()-1) {
+		if(n==ndomains-1) {
 			op->bc_top1_add_l(n,"phi","phi",ones(1,1),D.block(n).row(gl.npts[n]-1));
 			op->bc_top1_add_d(n,"phi","phi",ones(1,1));
 		} else {
@@ -239,10 +239,10 @@ void star1d::solve_poisson(solver *op) {
 			op->bc_top2_add_d(n,"phi","phi",-ones(1,1));
 		}
 		
-		if(n==ndomains()-1) rhs(j0+gl.npts[n]-1)=-phi(j0+gl.npts[n]-1)-(D,phi)(j0+gl.npts[n]-1);
+		if(n==ndomains-1) rhs(j0+gl.npts[n]-1)=-phi(j0+gl.npts[n]-1)-(D,phi)(j0+gl.npts[n]-1);
 		else rhs(j0+gl.npts[n]-1)=-phi(j0+gl.npts[n]-1)+phi(j0+gl.npts[n]);
 		
-		if(n==ndomains()-1) op->bc_top1_add_d(n,"phi","dx",-(D,phi)(j0+gl.npts[n]-1)/(gl.xif[n+1]-gl.xif[n])*ones(1,1));
+		if(n==ndomains-1) op->bc_top1_add_d(n,"phi","dx",-(D,phi)(j0+gl.npts[n]-1)/(gl.xif[n+1]-gl.xif[n])*ones(1,1));
 		
 		j0+=gl.npts[n];
 	}
@@ -254,18 +254,18 @@ void star1d::solve_pressure(solver *op) {
 	int n,j0;
 	matrix a_map,rhs_p,rhs_pi_c;
 	
-	op->add_li("p","p",ones(nr(),1),D,p);	
+	op->add_li("p","p",ones(nr,1),D,p);	
 	op->add_d("p","rho",(D,phi));
 	op->add_l("p","phi",rho,D);
 	
 	rhs_p=-(D,p)-rho*(D,phi);
-	rhs_pi_c=zeros(ndomains(),1);
+	rhs_pi_c=zeros(ndomains,1);
 
 	a_map=-(D,p)-rho*(D,phi);
 
 	j0=0;
 
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 	
 		op->add_d(n,"p","dx",a_map.block(j0,j0+gl.npts[n]-1,0,0)/(gl.xif[n+1]-gl.xif[n]));
 
@@ -273,13 +273,13 @@ void star1d::solve_pressure(solver *op) {
 		if(n>0) op->bc_bot1_add_d(n,"p","p",-p(j0-1)*ones(1,1));
 		if(n==0) rhs_p(0)=1.-p(0);
 		else rhs_p(j0)=-p(j0)+p(j0-1);
-		if(n<ndomains()-1) {
+		if(n<ndomains-1) {
 			op->bc_top1_add_d(n,"pi_c","pi_c",ones(1,1));
 			op->bc_top2_add_d(n,"pi_c","pi_c",-ones(1,1));
 		} else {
-			op->bc_top1_add_d(n,"pi_c","p",p(nr()-1)*ones(1,1));
+			op->bc_top1_add_d(n,"pi_c","p",p(nr-1)*ones(1,1));
 			op->bc_top1_add_d(n,"pi_c","ps",-ps*ones(1,1));
-			rhs_pi_c(n)=-p(nr()-1)+ps;
+			rhs_pi_c(n)=-p(nr-1)+ps;
 		}
 		
 		j0+=gl.npts[n];
@@ -293,18 +293,18 @@ void star1d::solve_temp(solver *op) {
 	int n,j0,j1;
 	matrix q[10],a_map,b_map,lum,rhs_T,rhs_Lambda,rhs_lum,rhs_Frad;
 	
-	lum=zeros(ndomains(),1);
+	lum=zeros(ndomains,1);
 	j0=0;
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		if(n) lum(n)=lum(n-1);
 		lum(n)+=4*PI*(gl.I.block(0,0,j0,j0+gl.npts[n]-1),
 			(rho*nuc.eps*r*r).block(j0,j0+gl.npts[n]-1,0,0))(0);
 		j0+=gl.npts[n];
 	}
 
-	rhs_lum=zeros(ndomains(),1);
+	rhs_lum=zeros(ndomains,1);
 	j0=0;
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		op->bc_bot2_add_d(n,"lum","lum",ones(1,1));
 		op->bc_bot2_add_li(n,"lum","p",-4*PI*ones(1,1),gl.I.block(0,0,j0,j0+gl.npts[n]-1),(r*r*rho*nuc.eps/eos.chi_rho*(1.+nuc.dlneps_lnrho)).block(j0,j0+gl.npts[n]-1,0,0));
 		op->bc_bot2_add_li(n,"lum","T",-4*PI*ones(1,1),gl.I.block(0,0,j0,j0+gl.npts[n]-1),(r*r*rho*nuc.eps*(nuc.dlneps_lnT-eos.d*(1.+nuc.dlneps_lnrho))).block(j0,j0+gl.npts[n]-1,0,0));
@@ -318,11 +318,11 @@ void star1d::solve_temp(solver *op) {
 	}
 	op->set_rhs("lum",rhs_lum);
 
-	rhs_Frad=zeros(ndomains()*2,1);
+	rhs_Frad=zeros(ndomains*2,1);
 	q[1]=opa.dlnxi_lnrho/eos.chi_rho;
 	q[2]=(opa.dlnxi_lnT-eos.d*opa.dlnxi_lnrho);
 	j0=0;
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		j1=j0+gl.npts[n]-1;
 		
 		op->bc_bot2_add_d(n,"Frad","Frad",ones(1,1));
@@ -352,9 +352,9 @@ void star1d::solve_temp(solver *op) {
 	}
 	op->set_rhs("Frad",rhs_Frad);
 
-	rhs_T=zeros(nr(),1);
+	rhs_T=zeros(nr,1);
 
-	q[0]=ones(nr(),1);
+	q[0]=ones(nr,1);
 	q[2]=-eos.del_ad;
 	q[3]=-(D,eos.cp*eos.del_ad)/eos.cp;
 	q[1]=(D,eos.cp)/eos.cp;
@@ -393,7 +393,7 @@ void star1d::solve_temp(solver *op) {
 	a_map=-2*(D,D,T)-(2./r+2*(D,log(opa.xi)))*(D,T);
 	b_map=-2./r/r*(D,T);
 	
-	for(n=conv;n<ndomains();n++) {
+	for(n=conv;n<ndomains;n++) {
 		op->add_li(n,"T","T",ones(gl.npts[n],1),(D.block(n),D.block(n)),T.block(j0,j0+gl.npts[n]-1,0,0));
 		op->add_li(n,"T","T",q[0].block(j0,j0+gl.npts[n]-1,0,0),D.block(n),T.block(j0,j0+gl.npts[n]-1,0,0));
 		op->add_l(n,"T","T",q[9].block(j0,j0+gl.npts[n]-1,0,0),D.block(n));
@@ -412,10 +412,10 @@ void star1d::solve_temp(solver *op) {
 		j0+=gl.npts[n];
 	}
 	
-	rhs_Lambda=zeros(ndomains(),1);
+	rhs_Lambda=zeros(ndomains,1);
 
 	j0=0;
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		
 		if(!n) {
 			op->bc_bot2_add_d(n,"T","T",ones(1,1)*T(j0));
@@ -428,10 +428,10 @@ void star1d::solve_temp(solver *op) {
 		
 		
 		if(n>=conv) {
-			if(n==ndomains()-1) {
-				op->bc_top1_add_d(n,"T","T",ones(1,1)*T(nr()-1));
+			if(n==ndomains-1) {
+				op->bc_top1_add_d(n,"T","T",ones(1,1)*T(nr-1));
 				op->bc_top1_add_d(n,"T","Ts",-ones(1,1)*Ts);
-				rhs_T(j0+gl.npts[n]-1)=Ts-T(nr()-1);
+				rhs_T(j0+gl.npts[n]-1)=Ts-T(nr-1);
 			} else {
 				op->bc_top1_add_li(n,"T","T",ones(1,1),D.block(n).row(gl.npts[n]-1),T.block(j0,j0+gl.npts[n]-1,0,0));
 				op->bc_top2_add_li(n,"T","T",-ones(1,1),D.block(n+1).row(0),T.block(j0+gl.npts[n],j0+gl.npts[n]+gl.npts[n+1]-1,0,0));
@@ -485,9 +485,9 @@ void star1d::solve_dim(solver *op) {
 	int n,j0;
 	matrix q,rhs;
 	
-	rhs=zeros(ndomains(),1);
+	rhs=zeros(ndomains,1);
 	j0=0;
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		op->bc_bot2_add_d(n,"m","m",ones(1,1));
 		op->bc_bot2_add_li(n,"m","rho",-4*PI*ones(1,1),gl.I.block(0,0,j0,j0+gl.npts[n]-1),(r*r).block(j0,j0+gl.npts[n]-1,0,0));
 		op->bc_bot2_add_d(n,"m","dx",-4*PI*(gl.I.block(0,0,j0,j0+gl.npts[n]-1), (rho*r*(3*r-2*gl.xif[n])).block(j0,j0+gl.npts[n]-1,0,0))/(gl.xif[n+1]-gl.xif[n]));
@@ -497,14 +497,14 @@ void star1d::solve_dim(solver *op) {
 	}
 	op->set_rhs("m",rhs);
 	
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		op->add_d(n,"rhoc","pc",1./eos.chi_rho(0)*ones(1,1));
 		op->add_d(n,"rhoc","Tc",-eos.d(0)*ones(1,1));
 	}
 	
-	rhs=zeros(ndomains(),1);
-	for(n=0;n<ndomains();n++) {
-		if(n==ndomains()-1) {
+	rhs=zeros(ndomains,1);
+	for(n=0;n<ndomains;n++) {
+		if(n==ndomains-1) {
 			op->add_d(n,"pc","pc",ones(1,1));
 			op->add_d(n,"pc","pi_c",ones(1,1));
 			op->add_d(n,"pc","rhoc",-2*ones(1,1));
@@ -516,9 +516,9 @@ void star1d::solve_dim(solver *op) {
 	}
 	op->set_rhs("pc",rhs);
 	
-	rhs=zeros(ndomains(),1);
-	for(n=0;n<ndomains();n++) {
-		if(n==ndomains()-1) {
+	rhs=zeros(ndomains,1);
+	for(n=0;n<ndomains;n++) {
+		if(n==ndomains-1) {
 			op->add_d(n,"Tc","Tc",ones(1,1));
 			op->add_d(n,"Tc","rhoc",-ones(1,1));
 			op->add_d(n,"Tc","Lambda",ones(1,1));
@@ -530,9 +530,9 @@ void star1d::solve_dim(solver *op) {
 	}
 	op->set_rhs("Tc",rhs);
 	
-	rhs=zeros(ndomains(),1);
-	for(n=0;n<ndomains();n++) {
-		if(n==ndomains()-1) {
+	rhs=zeros(ndomains,1);
+	for(n=0;n<ndomains;n++) {
+		if(n==ndomains-1) {
 			op->add_d(n,"R","R",3*ones(1,1));
 			op->add_d(n,"R","m",1/m*ones(1,1));
 			op->add_d(n,"R","rhoc",ones(1,1));
@@ -554,18 +554,18 @@ void star1d::solve_map(solver *op) {
 	
 	Ri=gl.xif;
 	
-	rhs=zeros(ndomains(),1);
-	for(n=0;n<ndomains();n++) {
+	rhs=zeros(ndomains,1);
+	for(n=0;n<ndomains;n++) {
 		op->bc_top1_add_d(n,"dx","dx",ones(1,1));
 		op->bc_top1_add_d(n,"dx","Ri",ones(1,1));
-		if(n<ndomains()-1) op->bc_top2_add_d(n,"dx","Ri",-ones(1,1));
+		if(n<ndomains-1) op->bc_top2_add_d(n,"dx","Ri",-ones(1,1));
 	}	
 	op->set_rhs("dx",rhs);
 	
-	rhs=zeros(ndomains(),1);
+	rhs=zeros(ndomains,1);
 	j0=0;
 	for(n=0;n<conv;n++) {
-		if(!n || conv==ndomains()) op->bc_top1_add_d(n,"Ri","Ri",ones(1,1));
+		if(!n || conv==ndomains) op->bc_top1_add_d(n,"Ri","Ri",ones(1,1));
 		else {
 			op->bc_top1_add_d(n,"Ri","Ri",ones(1,1)/Ri[n]);
 			op->bc_top2_add_d(n,"Ri","Ri",-ones(1,1)/Ri[n+1]);
@@ -576,7 +576,7 @@ void star1d::solve_map(solver *op) {
 	n=conv;
 	if(!conv) {
 		op->bc_bot2_add_d(n,"Ri","Ri",ones(1,1));
-	} else if(conv<ndomains()) {	
+	} else if(conv<ndomains) {	
 		op->bc_bot2_add_l(n,"Ri","T",ones(1,1),D.block(n).row(0));
 		op->bc_bot2_add_d(n,"Ri","T",(D,eos.cp)(j0)/eos.cp(j0)*ones(1,1));
 		op->bc_bot2_add_d(n,"Ri","Tc",(D,eos.cp)(j0)/eos.cp(j0)*ones(1,1));
@@ -586,7 +586,7 @@ void star1d::solve_map(solver *op) {
 		rhs(n)=-(D,log(T))(j0)+eos.del_ad(j0)*(D,log(p))(j0);
 		op->bc_bot2_add_d(n,"Ri","dx",rhs(n)/(gl.xif[n+1]-gl.xif[n])*ones(1,1));
 	}
-	for(n=conv+1;n<ndomains();n++) {
+	for(n=conv+1;n<ndomains;n++) {
 		op->bc_bot2_add_d(n,"Ri","Ri",ones(1,1)/(1-Ri[n]));
 		op->bc_bot1_add_d(n,"Ri","Ri",-ones(1,1)/(1-Ri[n-1]));
 	}
@@ -609,8 +609,8 @@ void star1d::update_map(matrix dR) {
 	
 	gl.xif[conv]=Rc_new;
 	for(n=1;n<conv;n++) gl.xif[n]=gl.xif[n]*Rc_new/Rc;
-	for(n=conv+1;n<ndomains();n++) gl.xif[n]=1.-(1.-gl.xif[n])*(1.-Rc_new)/(1.-Rc);
-	gl.xif[ndomains()]=1;
+	for(n=conv+1;n<ndomains;n++) gl.xif[n]=1.-(1.-gl.xif[n])*(1.-Rc_new)/(1.-Rc);
+	gl.xif[ndomains]=1;
 	
 	gl.init();
 

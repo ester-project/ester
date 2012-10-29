@@ -15,8 +15,9 @@
 class star1d {
   public:
 	diff_gl gl;
-	matrix &r;
-	matrix_block_diag &D;
+	const int &nr,&ndomains;
+	const matrix &r;
+	const matrix_block_diag &D;
 	matrix rho,phi,p,T,Xr;
 	matrix Frad;
 	opa_struct opa;
@@ -46,9 +47,6 @@ class star1d {
 	int check_arg(char *arg,char *val,int *change_grid);
 	int read(const char *input_file);
 	void write(const char *output_file,char output_mode) const;
-	
-	int nr() const;
-	int ndomains() const;
 	
 	solver *init_solver();
 	void register_variables(solver *op);
@@ -90,8 +88,9 @@ class star1d {
 class star2d {
   public:
 	mapping map;
-	matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
-	matrix_block_diag &D;
+	const int &nr,&nth,&nex,&ndomains;
+	const matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
+	const matrix_block_diag &D;
 	matrix rho,phi,p,T,Xr,phiex;
 	matrix vr,vt,G,w,psi;
 	opa_struct opa;
@@ -125,11 +124,6 @@ class star2d {
 	int read(const char *input_file);
 	void write(const char *output_file,char output_mode) const;
 	void interp(mapping map_old);
-	
-	int nr() const;
-	int nth() const;
-	int nex() const;
-	int ndomains() const;
 	
 	
 	solver *init_solver();

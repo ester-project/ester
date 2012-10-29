@@ -12,8 +12,8 @@ class mapping {
   	int mode;   // mode=0 Bonazzola, mode=1 rzz=0 at the boundaries 
     diff_gl gl;
     diff_leg leg;
-    matrix_block_diag &D;
-    matrix &z,&Dt,&Dt2,&th,&Dt_odd;
+    const matrix_block_diag &D;
+    const matrix &z,&Dt,&Dt2,&th,&Dt_odd;
     matrix r,rz,rzz,rt,rtt,rzt,gzz,gzt,gtt;
     matrix R;
     matrix J[4];

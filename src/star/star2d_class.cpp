@@ -3,7 +3,9 @@
 #include<stdlib.h>
 
 
-star2d::star2d():r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2),zex(map.ex.z),Dex(map.ex.D),rex(map.ex.r) {
+star2d::star2d():r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2)
+		,zex(map.ex.z),Dex(map.ex.D),rex(map.ex.r),
+		nr(map.gl.N),nth(map.leg.npts),nex(map.ex.gl.N),ndomains(map.gl.ndomains) {
 
 	config.newton_dmax=0.5;
 	config.verbose=0;
@@ -14,7 +16,8 @@ star2d::~star2d() {
 
 star2d::star2d(const star2d &A):r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2),zex(map.ex.z),Dex(map.ex.D),rex(map.ex.r),
 	map(A.map),phi(A.phi),p(A.p),T(A.T),phiex(A.phiex),
-	vr(A.vr),vt(A.vt),G(A.G),w(A.w),psi(A.psi) {
+	vr(A.vr),vt(A.vt),G(A.G),w(A.w),psi(A.psi),
+	nr(map.gl.N),nth(map.leg.npts),nex(map.ex.gl.N),ndomains(map.gl.ndomains) {
 		
 	Omega=A.Omega;Omega_bk=A.Omega_bk;
 	surff=A.surff;
@@ -70,21 +73,7 @@ star2d &star2d::operator=(const star2d &A) {
 
 }
 
-int star2d::nr() const {
-	return map.gl.N();
-}
 
-int star2d::nth() const {
-	return map.leg.npts;
-}
-
-int star2d::nex() const {
-	return map.ex.gl.N();
-}
-
-int star2d::ndomains() const {
-	return map.gl.ndomains();
-}
 
 void star2d::write(const char *output_file,char mode) const{
 
@@ -100,7 +89,7 @@ void star2d::write(const char *output_file,char mode) const{
 	fwrite(tag,1,7,fp);
 	fwrite(&mode,1,1,fp);
 	
-	ndom=ndomains();
+	ndom=ndomains;
 	
 	if(mode=='b') {
 		fwrite(&ndom,sizeof(int),1,fp);
@@ -231,15 +220,15 @@ int star2d::read(const char *input_file){
 		fscanf(fp,"%s\n",nuc.name);
 		fscanf(fp,"%s\n",atm_name);
 	}
-	map.R.read(ndomains(),nth(),fp,mode);
+	map.R.read(ndomains,nth,fp,mode);
 	map.remap();
-	phi.read(nr(),nth(),fp,mode);
-	phiex.read(nex(),nth(),fp,mode);
-	p.read(nr(),nth(),fp,mode);
-	T.read(nr(),nth(),fp,mode);
-	w.read(nr(),nth(),fp,mode);
-	G.read(nr(),nth(),fp,mode);
-	psi.read(nr(),nth(),fp,mode);
+	phi.read(nr,nth,fp,mode);
+	phiex.read(nex,nth,fp,mode);
+	p.read(nr,nth,fp,mode);
+	T.read(nr,nth,fp,mode);
+	w.read(nr,nth,fp,mode);
+	G.read(nr,nth,fp,mode);
+	psi.read(nr,nth,fp,mode);
 	if(mode=='b') {
 		fread(&Ekman,sizeof(double),1,fp);
 	} else {
@@ -368,10 +357,10 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 		T=1-0.5*r*r;
 		p=T;
 		phi=-T;
-		phiex=zeros(nex(),nth());
-		w=zeros(nr(),nth());
-		G=zeros(nr(),nth());
-		psi=zeros(nr(),nth());
+		phiex=zeros(nex,nth);
+		w=zeros(nr,nth);
+		G=zeros(nr,nth);
+		psi=zeros(nr,nth);
 		Omega2=0;
 	}
 	fill();
@@ -429,7 +418,7 @@ void star2d::init(const star1d &A,int npts_th,int npts_ex) {
 	X=A.X;Z=A.Z;
 	Xc=A.Xc;
 	
-	phiex=A.phi(A.nr()-1)/map.ex.r;	
+	phiex=A.phi(A.nr-1)/map.ex.r;	
 
 	fill();
 
@@ -471,7 +460,7 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
 			i++;
 		}	
 		if(i==1) {
-			for(i=1;i<map.gl.ndomains();i++) {
+			for(i=1;i<map.gl.ndomains;i++) {
 				*(map.gl.npts+i)=*map.gl.npts;
 			}
 		}
@@ -489,9 +478,9 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
 		if(i==1) {
 			double gamma=*map.gl.xif;
 			*map.gl.xif=0;
-			for(i=1;i<map.gl.ndomains();i++) 
-				*(map.gl.xif+i)=1.-pow(1-(double) i/map.gl.ndomains(),gamma);
-			*(map.gl.xif+map.gl.ndomains())=1;
+			for(i=1;i<map.gl.ndomains;i++) 
+				*(map.gl.xif+i)=1.-pow(1-(double) i/map.gl.ndomains,gamma);
+			*(map.gl.xif+map.gl.ndomains)=1;
 		}		
 		*change_grid=*change_grid|1;
 	}

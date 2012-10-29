@@ -17,7 +17,7 @@ mapping::mapping(const mapping &map):
 		gl(map.gl),leg(map.leg),
 		r(map.r),rz(map.rz),rzz(map.rzz),rt(map.rt),rtt(map.rtt),rzt(map.rzt),
 		gzz(map.gzz),gzt(map.gzt),gtt(map.gtt),R(map.R),D(gl.D),Dt(leg.D_00),Dt2(leg.D2_00),Dt_odd(leg.D_11),z(gl.x),th(leg.th) {
-	z=map.z;th=map.th;ex.z=map.ex.z;ex.D=map.ex.D;
+	ex.z=map.ex.z;ex.D=map.ex.D;
 	ex.gl=map.ex.gl;
 	ex.r=map.ex.r;ex.rz=map.ex.rz;ex.rzz=map.ex.rzz;ex.rt=map.ex.rt;
 	ex.rtt=map.ex.rtt;ex.rzt=map.ex.rzt;
@@ -53,10 +53,10 @@ int mapping::init() {
 	matrix temp;
 	
 	gl.xif[0]=0;
-	gl.xif[gl.ndomains()]=1;
-	R.dim(gl.ndomains(),leg.npts);
+	gl.xif[gl.ndomains]=1;
+	R.dim(gl.ndomains,leg.npts);
 	temp=ones(1,leg.npts);
-	for(i=0;i<gl.ndomains();i++)
+	for(i=0;i<gl.ndomains;i++)
 		R.setrow(i,gl.xif[i+1]*temp);
 	leg.init();
 	ex.gl.init();
@@ -104,29 +104,29 @@ int mapping::remap() {
 	double a;
 	
 	eta_=leg.eval_00(R,0);
-	R.setrow(gl.ndomains()-1,R.row(gl.ndomains()-1)/eta_(gl.ndomains()-1));
-	eta_(gl.ndomains()-1)=1;
+	R.setrow(gl.ndomains-1,R.row(gl.ndomains-1)/eta_(gl.ndomains-1));
+	eta_(gl.ndomains-1)=1;
 	eps_=1-eta_/leg.eval_00(R,PI/2);
 	gl.xif[0]=0;
-	for(i=0;i<gl.ndomains();i++)
+	for(i=0;i<gl.ndomains;i++)
 		gl.xif[i+1]=eta_(i);
 	gl.init();
 
-	r.dim(gl.N(),leg.npts);
-	rz.dim(gl.N(),leg.npts);
-	rzz.dim(gl.N(),leg.npts);
-	rt.dim(gl.N(),leg.npts);
-	rtt.dim(gl.N(),leg.npts);
-	rzt.dim(gl.N(),leg.npts);
-	J[0].dim(gl.N(),leg.npts);
-	J[1].dim(gl.N(),leg.npts);
-	J[2].dim(gl.N(),leg.npts);
-	J[3].dim(gl.N(),leg.npts);
+	r.dim(gl.N,leg.npts);
+	rz.dim(gl.N,leg.npts);
+	rzz.dim(gl.N,leg.npts);
+	rt.dim(gl.N,leg.npts);
+	rtt.dim(gl.N,leg.npts);
+	rzt.dim(gl.N,leg.npts);
+	J[0].dim(gl.N,leg.npts);
+	J[1].dim(gl.N,leg.npts);
+	J[2].dim(gl.N,leg.npts);
+	J[3].dim(gl.N,leg.npts);
 	
 	jfirst=0; 
 	i=0;
 	iprev=0;
-	while (i<gl.ndomains()) {
+	while (i<gl.ndomains) {
 		dj=gl.npts[i];
 		zz=gl.x.block(jfirst,jfirst+dj-1,0,0);
 		if(!jfirst) {
@@ -206,7 +206,7 @@ int mapping::remap() {
 	}
 
 	jfirst=0;
-	for(i=0;i<gl.ndomains();i++) {
+	for(i=0;i<gl.ndomains;i++) {
 		R.setrow(i,r.row(jfirst+gl.npts[i]-1));
 		jfirst+=gl.npts[i];
 	}
@@ -219,19 +219,19 @@ int mapping::remap() {
 	gtt=1/r/r;
 
 	zz=1/(2-ex.gl.x);
-	i=gl.ndomains()-1;
+	i=gl.ndomains-1;
 	a=1;
 	ex.r=a*zz+R.row(i)-a;
-	ex.rz=a*ones(ex.gl.N(),leg.npts);
-	ex.rzz=zeros(ex.gl.N(),leg.npts);
-	ex.rt=ones(ex.gl.N(),leg.npts)*(R.row(i),Dt);
-	ex.rtt=ones(ex.gl.N(),leg.npts)*(R.row(i),Dt2);
-	ex.rzt=zeros(ex.gl.N(),leg.npts);
+	ex.rz=a*ones(ex.gl.N,leg.npts);
+	ex.rzz=zeros(ex.gl.N,leg.npts);
+	ex.rt=ones(ex.gl.N,leg.npts)*(R.row(i),Dt);
+	ex.rtt=ones(ex.gl.N,leg.npts)*(R.row(i),Dt2);
+	ex.rzt=zeros(ex.gl.N,leg.npts);
 	
-	ex.J[0]=zeros(ex.gl.N(),leg.npts);
-	ex.J[1]=zeros(ex.gl.N(),leg.npts);
-	ex.J[2]=ones(ex.gl.N(),leg.npts);
-	ex.J[3]=zeros(ex.gl.N(),leg.npts);
+	ex.J[0]=zeros(ex.gl.N,leg.npts);
+	ex.J[1]=zeros(ex.gl.N,leg.npts);
+	ex.J[2]=ones(ex.gl.N,leg.npts);
+	ex.J[3]=zeros(ex.gl.N,leg.npts);
 	
 	
 	ex.gzz=(1+ex.rt*ex.rt/ex.r/ex.r)/ex.rz/ex.rz;
@@ -334,33 +334,33 @@ void mapping::add_lap_ex(solver *op,const char* eqn,const char * varn,const matr
 	
 	matrix q;
 	
-	op->add_l(gl.ndomains(),eqn,varn,d*ex.gzz,(ex.D,ex.D));
+	op->add_l(gl.ndomains,eqn,varn,d*ex.gzz,(ex.D,ex.D));
 	q=2*(1+ex.rt*ex.rzt/ex.r/ex.rz)/ex.r/ex.rz-ex.gzz*ex.rzz/ex.rz-(ex.rtt+ex.rt*cos(th)/sin(th))/ex.r/ex.r/ex.rz;
-	op->add_l(gl.ndomains(),eqn,varn,d*q,ex.D);
+	op->add_l(gl.ndomains,eqn,varn,d*q,ex.D);
 	q=-2*ex.rt/ex.r/ex.r/ex.rz;
-	op->add_lr(gl.ndomains(),eqn,varn,d*q,ex.D,Dt);
-	op->add_r(gl.ndomains(),eqn,varn,d/ex.r/ex.r,leg.lap_00);
+	op->add_lr(gl.ndomains,eqn,varn,d*q,ex.D,Dt);
+	op->add_r(gl.ndomains,eqn,varn,d/ex.r/ex.r,leg.lap_00);
 	
 	q=-2*ex.rt*ex.rt/ex.r/ex.r/ex.r/ex.rz/ex.rz*(ex.D,ex.D,phi)
 		+(-2/ex.r/ex.r/ex.rz-4*ex.rt*ex.rzt/ex.r/ex.r/ex.r/ex.rz/ex.rz+2*ex.rzz*ex.rt*ex.rt/ex.r/ex.r/ex.r/ex.rz/ex.rz/ex.rz+2*ex.rtt/ex.r/ex.r/ex.r/ex.rz+2*ex.rt*cos(th)/ex.r/ex.r/ex.r/ex.rz/sin(th))*(ex.D,phi)
 		+4*ex.rt/ex.r/ex.r/ex.r/ex.rz*(ex.D,phi,Dt)
 		-2/ex.r/ex.r/ex.r*(phi,Dt2)
 		-2*cos(th)/ex.r/ex.r/ex.r/sin(th)*(phi,Dt);
-	op->add_d(gl.ndomains(),eqn,"r",d*q);	
+	op->add_d(gl.ndomains,eqn,"r",d*q);	
 	q=(-2/ex.rz/ex.rz/ex.rz-2*ex.rt*ex.rt/ex.r/ex.r/ex.rz/ex.rz/ex.rz)*(ex.D,ex.D,phi)
 		+(-2/ex.r/ex.rz/ex.rz-4*ex.rt*ex.rzt/ex.r/ex.r/ex.rz/ex.rz/ex.rz+3*ex.rzz/ex.rz/ex.rz/ex.rz/ex.rz+3*ex.rzz*ex.rt*ex.rt/ex.r/ex.r/ex.rz/ex.rz/ex.rz/ex.rz+ex.rtt/ex.r/ex.r/ex.rz/ex.rz+ex.rt*cos(th)/ex.r/ex.r/ex.rz/ex.rz/sin(th))*(ex.D,phi)
 		+2*ex.rt/ex.r/ex.r/ex.rz/ex.rz*(ex.D,phi,Dt);
-	op->add_l(gl.ndomains(),eqn,"r",d*q,ex.D);
+	op->add_l(gl.ndomains,eqn,"r",d*q,ex.D);
 	q=2*ex.rt/ex.r/ex.r/ex.rz/ex.rz*(ex.D,ex.D,phi)
 		+(2*ex.rzt/ex.r/ex.r/ex.rz/ex.rz-2*ex.rzz*ex.rt/ex.r/ex.r/ex.rz/ex.rz/ex.rz-cos(th)/ex.r/ex.r/ex.rz/sin(th))*(ex.D,phi)
 		-2/ex.r/ex.r/ex.rz*(ex.D,phi,Dt);
-	op->add_r(gl.ndomains(),eqn,"r",d*q,Dt);
+	op->add_r(gl.ndomains,eqn,"r",d*q,Dt);
 	q=(-1/ex.rz/ex.rz/ex.rz-ex.rt*ex.rt/ex.r/ex.r/ex.rz/ex.rz/ex.rz)*(ex.D,phi);
-	op->add_l(gl.ndomains(),eqn,"r",d*q,(ex.D,ex.D));
+	op->add_l(gl.ndomains,eqn,"r",d*q,(ex.D,ex.D));
 	q=2*ex.rt/ex.r/ex.r/ex.rz/ex.rz*(ex.D,phi);
-	op->add_lr(gl.ndomains(),eqn,"r",d*q,ex.D,Dt);
+	op->add_lr(gl.ndomains,eqn,"r",d*q,ex.D,Dt);
 	q=-1/ex.r/ex.r/ex.rz*(ex.D,phi);	
-	op->add_r(gl.ndomains(),eqn,"r",d*q,Dt2);
+	op->add_r(gl.ndomains,eqn,"r",d*q,Dt2);
 
 }
 
@@ -375,7 +375,7 @@ matrix mapping::stream(const matrix &Fz,matrix &Ft) const {
 	f=r*r*rz*Fz;
 	f=(f,leg.P_00);
 	f=-f/leg.l_00()/(leg.l_00()+1.);
-	f.setcol(0,zeros(gl.N(),1));
+	f.setcol(0,zeros(gl.N,1));
 	f=(f,leg.dP1_00);
 	f/=r;
 	f.setrow(0,zeros(1,leg.npts));
@@ -400,25 +400,25 @@ void mapping::interps(const mapping &map_old,matrix &Tr,matrix &Tex,
 	matrix m;
 	int i,j,k;
 	
-	if(gl.ndomains()!=map_old.gl.ndomains()) {
+	if(gl.ndomains!=map_old.gl.ndomains) {
 		printf("mapping::interps : Changing number of domains not yet implemented\n");
 		exit(1);
 	}
-	for(i=0;i<gl.ndomains();i++) {
+	for(i=0;i<gl.ndomains;i++) {
 		gl.xif[i+1]=map_old.gl.xif[i+1];
 	}
 	
-	m=zeros(map_old.gl.N(),1);
+	m=zeros(map_old.gl.N,1);
 	m=map_old.gl.eval(m,gl.x,Tr);
 	j=0;k=0;
-	for(i=0;i<gl.ndomains();i++) {
-		Tr.setrow(k,zeros(1,map_old.gl.N()));Tr(k,j)=1;
+	for(i=0;i<gl.ndomains;i++) {
+		Tr.setrow(k,zeros(1,map_old.gl.N));Tr(k,j)=1;
 		j+=map_old.gl.npts[i];
 		k+=gl.npts[i];
-		Tr.setrow(k-1,zeros(1,map_old.gl.N()));Tr(k-1,j-1)=1;
+		Tr.setrow(k-1,zeros(1,map_old.gl.N));Tr(k-1,j-1)=1;
 	}
 	
-	m=zeros(map_old.ex.gl.N(),1);
+	m=zeros(map_old.ex.gl.N,1);
 	m=map_old.ex.gl.eval(m,ex.gl.x,Tex);
 
 	m=zeros(1,map_old.leg.npts);
@@ -437,61 +437,61 @@ void mapping::interps(const mapping &map_old,matrix &Tr,matrix &Tex,
 
 matrix mapping::draw0(const matrix &A,int parity,matrix &x,matrix &y) const {
 	
-	matrix zz(gl.N(),4*leg.npts+1);
+	matrix zz(gl.N,4*leg.npts+1);
 	
-	x.dim(gl.N(),4*leg.npts+1);
-	y.dim(gl.N(),4*leg.npts+1);
+	x.dim(gl.N,4*leg.npts+1);
+	y.dim(gl.N,4*leg.npts+1);
 	
-	x.setblock(0,gl.N()-1,0,leg.npts-1,r*sin(th));
-	y.setblock(0,gl.N()-1,0,leg.npts-1,r*cos(th));
-	zz.setblock(0,gl.N()-1,0,leg.npts-1,A);
+	x.setblock(0,gl.N-1,0,leg.npts-1,r*sin(th));
+	y.setblock(0,gl.N-1,0,leg.npts-1,r*cos(th));
+	zz.setblock(0,gl.N-1,0,leg.npts-1,A);
 	
-	x.setblock(0,gl.N()-1,leg.npts,2*leg.npts-1,-x.block(0,gl.N()-1,0,leg.npts-1).fliplr());
-	y.setblock(0,gl.N()-1,leg.npts,2*leg.npts-1,y.block(0,gl.N()-1,0,leg.npts-1).fliplr());
+	x.setblock(0,gl.N-1,leg.npts,2*leg.npts-1,-x.block(0,gl.N-1,0,leg.npts-1).fliplr());
+	y.setblock(0,gl.N-1,leg.npts,2*leg.npts-1,y.block(0,gl.N-1,0,leg.npts-1).fliplr());
 	switch(parity) {
 		case 00:
-			zz.setblock(0,gl.N()-1,leg.npts,2*leg.npts-1,zz.block(0,gl.N()-1,0,leg.npts-1).fliplr());
+			zz.setblock(0,gl.N-1,leg.npts,2*leg.npts-1,zz.block(0,gl.N-1,0,leg.npts-1).fliplr());
 			break;
 		case 01:
-			zz.setblock(0,gl.N()-1,leg.npts,2*leg.npts-1,zz.block(0,gl.N()-1,0,leg.npts-1).fliplr());
+			zz.setblock(0,gl.N-1,leg.npts,2*leg.npts-1,zz.block(0,gl.N-1,0,leg.npts-1).fliplr());
 			break;
 		case 10:
-			zz.setblock(0,gl.N()-1,leg.npts,2*leg.npts-1,-zz.block(0,gl.N()-1,0,leg.npts-1).fliplr());
+			zz.setblock(0,gl.N-1,leg.npts,2*leg.npts-1,-zz.block(0,gl.N-1,0,leg.npts-1).fliplr());
 			break;
 		case 11:
-			zz.setblock(0,gl.N()-1,leg.npts,2*leg.npts-1,-zz.block(0,gl.N()-1,0,leg.npts-1).fliplr());
+			zz.setblock(0,gl.N-1,leg.npts,2*leg.npts-1,-zz.block(0,gl.N-1,0,leg.npts-1).fliplr());
 	}
 	
-	x.setblock(0,gl.N()-1,2*leg.npts,3*leg.npts-1,-x.block(0,gl.N()-1,0,leg.npts-1));
-	y.setblock(0,gl.N()-1,2*leg.npts,3*leg.npts-1,-y.block(0,gl.N()-1,0,leg.npts-1));
+	x.setblock(0,gl.N-1,2*leg.npts,3*leg.npts-1,-x.block(0,gl.N-1,0,leg.npts-1));
+	y.setblock(0,gl.N-1,2*leg.npts,3*leg.npts-1,-y.block(0,gl.N-1,0,leg.npts-1));
 	switch(parity) {
 		case 00:
-			zz.setblock(0,gl.N()-1,2*leg.npts,3*leg.npts-1,zz.block(0,gl.N()-1,0,leg.npts-1));
+			zz.setblock(0,gl.N-1,2*leg.npts,3*leg.npts-1,zz.block(0,gl.N-1,0,leg.npts-1));
 			break;
 		case 01:
-			zz.setblock(0,gl.N()-1,2*leg.npts,3*leg.npts-1,-zz.block(0,gl.N()-1,0,leg.npts-1));
+			zz.setblock(0,gl.N-1,2*leg.npts,3*leg.npts-1,-zz.block(0,gl.N-1,0,leg.npts-1));
 			break;
 		case 10:
-			zz.setblock(0,gl.N()-1,2*leg.npts,3*leg.npts-1,-zz.block(0,gl.N()-1,0,leg.npts-1));
+			zz.setblock(0,gl.N-1,2*leg.npts,3*leg.npts-1,-zz.block(0,gl.N-1,0,leg.npts-1));
 			break;
 		case 11:
-			zz.setblock(0,gl.N()-1,2*leg.npts,3*leg.npts-1,zz.block(0,gl.N()-1,0,leg.npts-1));
+			zz.setblock(0,gl.N-1,2*leg.npts,3*leg.npts-1,zz.block(0,gl.N-1,0,leg.npts-1));
 	}
 	
-	x.setblock(0,gl.N()-1,3*leg.npts,4*leg.npts-1,x.block(0,gl.N()-1,0,leg.npts-1).fliplr());
-	y.setblock(0,gl.N()-1,3*leg.npts,4*leg.npts-1,-y.block(0,gl.N()-1,0,leg.npts-1).fliplr());
+	x.setblock(0,gl.N-1,3*leg.npts,4*leg.npts-1,x.block(0,gl.N-1,0,leg.npts-1).fliplr());
+	y.setblock(0,gl.N-1,3*leg.npts,4*leg.npts-1,-y.block(0,gl.N-1,0,leg.npts-1).fliplr());
 	switch(parity) {
 		case 00:
-			zz.setblock(0,gl.N()-1,3*leg.npts,4*leg.npts-1,zz.block(0,gl.N()-1,0,leg.npts-1).fliplr());
+			zz.setblock(0,gl.N-1,3*leg.npts,4*leg.npts-1,zz.block(0,gl.N-1,0,leg.npts-1).fliplr());
 			break;
 		case 01:
-			zz.setblock(0,gl.N()-1,3*leg.npts,4*leg.npts-1,-zz.block(0,gl.N()-1,0,leg.npts-1).fliplr());
+			zz.setblock(0,gl.N-1,3*leg.npts,4*leg.npts-1,-zz.block(0,gl.N-1,0,leg.npts-1).fliplr());
 			break;
 		case 10:
-			zz.setblock(0,gl.N()-1,3*leg.npts,4*leg.npts-1,zz.block(0,gl.N()-1,0,leg.npts-1).fliplr());
+			zz.setblock(0,gl.N-1,3*leg.npts,4*leg.npts-1,zz.block(0,gl.N-1,0,leg.npts-1).fliplr());
 			break;
 		case 11:
-			zz.setblock(0,gl.N()-1,3*leg.npts,4*leg.npts-1,-zz.block(0,gl.N()-1,0,leg.npts-1).fliplr());
+			zz.setblock(0,gl.N-1,3*leg.npts,4*leg.npts-1,-zz.block(0,gl.N-1,0,leg.npts-1).fliplr());
 	}
 	x.setcol(4*leg.npts,x.col(0));
 	y.setcol(4*leg.npts,y.col(0));
@@ -598,7 +598,7 @@ void mapping::draw(figure *pfig,const matrix &A,int parity) const {
 	
 	matrix x,y,zz;
 	
-	pfig->axis(-1/(1-eps(gl.ndomains()-1)),1/(1-eps(gl.ndomains()-1)),-1/(1-eps(gl.ndomains()-1)),1/(1-eps(gl.ndomains()-1)),1);
+	pfig->axis(-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),1);
 	zz=draw0(A,parity,x,y);
 	
 	pfig->pcolor(x,y,zz);
@@ -609,7 +609,7 @@ void mapping::drawi(figure *pfig,const matrix &A,int sr,int st,int parity) const
 	
 	matrix x,y,zz;
 	
-	pfig->axis(-1/(1-eps(gl.ndomains()-1)),1/(1-eps(gl.ndomains()-1)),-1/(1-eps(gl.ndomains()-1)),1/(1-eps(gl.ndomains()-1)),1);
+	pfig->axis(-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),1);
 	zz=drawi0(A,sr,st,parity,x,y);
 	
 	pfig->pcolor(x,y,zz);
@@ -620,7 +620,7 @@ void mapping::drawc(figure *pfig,const matrix &A,int ncontours,int parity) const
 	
 	matrix x,y,zz;
 	
-	pfig->axis(-1/(1-eps(gl.ndomains()-1)),1/(1-eps(gl.ndomains()-1)),-1/(1-eps(gl.ndomains()-1)),1/(1-eps(gl.ndomains()-1)),1);
+	pfig->axis(-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),1);
 	zz=draw0(A,parity,x,y);
 	
 	pfig->plot(x.row(-1),y.row(-1));
@@ -652,7 +652,7 @@ void mapping::drawci(figure *pfig,const matrix &A,int sr,int st,int ncontours,in
 	
 	matrix x,y,zz;
 	
-	pfig->axis(-1/(1-eps(gl.ndomains()-1)),1/(1-eps(gl.ndomains()-1)),-1/(1-eps(gl.ndomains()-1)),1/(1-eps(gl.ndomains()-1)),1);
+	pfig->axis(-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),1);
 	zz=drawi0(A,sr,st,parity,x,y);	
 	
 	pfig->plot(x.row(-1),y.row(-1));
@@ -706,7 +706,7 @@ void mapping::spectrum(figure *pfig,const matrix &y,int parity) const {
 	
 	ys=abs((gl.P,y,Pleg));
 	j=0;
-	for(i=0;i<gl.ndomains();i++) {
+	for(i=0;i<gl.ndomains;i++) {
 		ys.setblock(j,j+gl.npts[i]-1,0,leg.npts-1,
 			ys.block(j,j+gl.npts[i]-1,0,leg.npts-1)/max(ys.block(j,j+gl.npts[i]-1,0,leg.npts-1)));
 		j+=gl.npts[i];
@@ -717,7 +717,7 @@ void mapping::spectrum(figure *pfig,const matrix &y,int parity) const {
 	
 	pfig->hold(1);
 	j=gl.npts[0];
-	for(i=1;i<gl.ndomains();i++) {
+	for(i=1;i<gl.ndomains;i++) {
 		pfig->plot(l,(j+1)*ones(1,leg.npts),":");
 		j+=gl.npts[i];
 	}

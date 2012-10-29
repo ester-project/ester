@@ -70,7 +70,7 @@ int main(int argc,char *argv[]) {
 		if(killed) last_it=1;
 		if(config.verbose) {
 			printf("it=%d err=%e (%2.2fs)\n",nit,err,t.value());
-			printf("\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,A.map.eps(A.map.gl.ndomains()-1),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
+			printf("\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,A.map.eps(A.ndomains-1),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
 			t_output=tt(nit-1);
 
 			if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
@@ -119,15 +119,15 @@ int main(int argc,char *argv[]) {
 	if(config.verbose) {
 		printf("\nMass=%.3f Msun  Luminosity=%.3f Lsun\n",
 				A.M/M_SUN,A.luminosity()/L_SUN);
-		double Re=A.units.r*A.map.leg.eval_00(A.r.row(A.nr()-1),PI/2)(0);
+		double Re=A.units.r*A.map.leg.eval_00(A.r.row(-1),PI/2)(0);
 		printf("Radius(p)=%.3f Rsun    Radius(e)=%.3f Rsun\n",
 			A.R/R_SUN,Re/R_SUN);
 		printf("Teff(p)=%.2f K      Teff(e)=%.2f K\n",
 			A.map.leg.eval_00(A.Teff(),0)(0),A.map.leg.eval_00(A.Teff(),PI/2)(0));
 		printf("log(geff)(p)=%.2f       log(geff)(e)=%.2f\n",
 			A.map.leg.eval_00(log10(A.gsup()),0)(0),A.map.leg.eval_00(log10(A.gsup()),PI/2)(0));
-		double wp=A.map.leg.eval_00(A.w.row(A.nr()-1),0)(0)*A.units.Omega;
-		double we=A.map.leg.eval_00(A.w.row(A.nr()-1),PI/2)(0)*A.units.Omega;
+		double wp=A.map.leg.eval_00(A.w.row(-1),0)(0)*A.units.Omega;
+		double we=A.map.leg.eval_00(A.w.row(-1),PI/2)(0)*A.units.Omega;
 		double Pp=2*PI/wp/3600./24.;
 		double Pe=2*PI/we/3600./24.;
 		printf("P_rot(p)=%.3f days     P_rot(e)=%.3f days      v_eq=%.2f km/s\n",

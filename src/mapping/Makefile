@@ -1,6 +1,6 @@
 SRC=mapping.cpp
 SRC_H=mapping.h
-DEPS=constants.h matrix.h numdiff.h graphics.h
+DEPS=constants.h matrix.h numdiff.h graphics.h solver.h
 
 LIB=lib$(DIR).a
 OBJS=$(SRC:.cpp=.o)

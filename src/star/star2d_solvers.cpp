@@ -5,11 +5,6 @@
 
 void star2d::fill() {
 	
-	static int initd=0,nth0=0;
-	static matrix dTn;
-	
-	if(nth()!=nth0) {initd=0;nth0=nth();}
-	
 	upd_Xr();
 
 	eq_state();
@@ -29,9 +24,8 @@ void star2d::fill() {
 	atmosphere();
 
 	//Omegac=sqrt(map.leg.eval_00(((Dex,phiex)/rex/map.ex.rz).row(0),PI/2)(0));
-	Omegac=sqrt(pi_c*m/4/PI*(1-map.eps(ndomains()-1))*(1-map.eps(ndomains()-1))*(1-map.eps(ndomains()-1)));
+	Omegac=sqrt(pi_c*m/4/PI*(1-map.eps(ndomains-1))*(1-map.eps(ndomains-1))*(1-map.eps(ndomains-1)));
 
-	initd=1;
 }
 
 void star2d::calc_units() {
@@ -50,7 +44,7 @@ void star2d::upd_Xr() {
 
 	int ic,n;
 	
-	Xr=X*ones(nr(),nth());
+	Xr=X*ones(nr,nth);
 	if(!conv) {
 		if(Xc!=1) printf("Warning: Non-homogeneus composition without core convection not implemented\n");
 		Xc=1;
@@ -58,18 +52,18 @@ void star2d::upd_Xr() {
 	}
 	ic=0;
 	for(n=0;n<conv;n++) ic+=map.gl.npts[n];
-	Xr.setblock(0,ic-1,0,-1,Xc*X*ones(ic,nth()));
-	Xr.setblock(ic,nr()-1,0,-1,X*ones(nr()-ic,nth()));
+	Xr.setblock(0,ic-1,0,-1,Xc*X*ones(ic,nth));
+	Xr.setblock(ic,nr-1,0,-1,X*ones(nr-ic,nth));
 	
 }
 
 void star2d::calc_veloc() {
 // vr=rz*V^zeta vt=r*V^theta
 	vr=(G,map.leg.D_11)/r+(map.rt/r+cos(th)/sin(th))/r*G;
-	vr.setrow(0,zeros(1,nth()));
+	vr.setrow(0,zeros(1,nth));
 	vr/=rho;
 	vt=-(D,G)/map.rz-1./r*G;
-	vt.setrow(0,zeros(1,nth()));
+	vt.setrow(0,zeros(1,nth));
 	vt/=rho;
 }
 
@@ -80,7 +74,7 @@ solver *star2d::init_solver() {
 	
 	nvar=33;
 	op=new solver;
-	op->init(ndomains()+1,nvar,"full");
+	op->init(ndomains+1,nvar,"full");
 	
 	op->maxit_ref=10;op->use_cgs=1;op->maxit_cgs=20;op->debug=0;
 	op->rel_tol=1e-12;op->abs_tol=1e-20;
@@ -91,11 +85,11 @@ solver *star2d::init_solver() {
 
 void star2d::register_variables(solver *op) {
 
-	int i,var_nr[ndomains()+1];
+	int i,var_nr[ndomains+1];
 	
-	for(i=0;i<ndomains();i++) 
+	for(i=0;i<ndomains;i++) 
 		var_nr[i]=map.gl.npts[i];
-	var_nr[ndomains()]=nex();
+	var_nr[ndomains]=nex;
 	op->set_nr(var_nr);
 
 	op->regvar("phi");
@@ -143,7 +137,7 @@ double star2d::solve(solver *op) {
 
 	if(Omega==0&Omega_bk!=0) {
 		Omega=Omega_bk*Omegac;
-		w=Omega*ones(nr(),nth());
+		w=Omega*ones(nr,nth);
 	}
 
 
@@ -187,8 +181,8 @@ double star2d::solve(solver *op) {
 	dmax=config.newton_dmax;
 	
 	matrix dphi,dphiex,dp,dT,dpc,dTc;
-	dphi=op->get_var("phi").block(0,nr()-1,0,-1);
-	dphiex=op->get_var("phi").block(nr(),nr()+nex()-1,0,-1);
+	dphi=op->get_var("phi").block(0,nr-1,0,-1);
+	dphiex=op->get_var("phi").block(nr,nr+nex-1,0,-1);
 	err=max(abs(dphi/phi));
 	//printf("err(phi)=%e\n",err);
 	dp=op->get_var("p");
@@ -209,7 +203,7 @@ double star2d::solve(solver *op) {
 	//printf("err(Tc)=%e\n",err2);
 	matrix R0,dR;
 	R0=map.R;
-	dR=op->get_var("Ri").block(1,ndomains(),0,-1);
+	dR=op->get_var("Ri").block(1,ndomains,0,-1);
 	while(exist(abs(h*dR)>dmax*R0)) h/=2;
 	map.R=R0+h*dR;
 	while(map.remap()) {
@@ -268,16 +262,16 @@ void star2d::solve_definitions(solver *op) {
 	op->add_d("r","Ri",map.J[2]);
 	op->add_d("r","dRi",map.J[3]);
 	
-	op->add_d(ndomains(),"r","eta",map.ex.J[0]);
-	op->add_d(ndomains(),"r","Ri",map.ex.J[2]);
+	op->add_d(ndomains,"r","eta",map.ex.J[0]);
+	op->add_d(ndomains,"r","Ri",map.ex.J[2]);
 	
 	op->add_d("rz","eta",(D,map.J[0]));
 	op->add_d("rz","deta",(D,map.J[1]));
 	op->add_d("rz","Ri",(D,map.J[2]));
 	op->add_d("rz","dRi",(D,map.J[3]));
 	
-	op->add_d(ndomains(),"rz","eta",(Dex,map.ex.J[0]));
-	op->add_d(ndomains(),"rz","Ri",(Dex,map.ex.J[2]));
+	op->add_d(ndomains,"rz","eta",(Dex,map.ex.J[0]));
+	op->add_d(ndomains,"rz","Ri",(Dex,map.ex.J[2]));
 	
 	op->add_d("s","T",eos.cp/T);
 	op->add_d("s","log_Tc",eos.cp);
@@ -297,53 +291,53 @@ void star2d::solve_poisson(solver *op) {
 		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
 
 	// phi
-	map.add_lap(op,"phi","phi",ones(nr(),nth()),phi);
+	map.add_lap(op,"phi","phi",ones(nr,nth),phi);
 	
 	//rho
-	op->add_d("phi","rho",-pi_c*ones(nr(),nth()));
+	op->add_d("phi","rho",-pi_c*ones(nr,nth));
 
 	//pi_c
 	op->add_d("phi","pi_c",-rho);
 
 	// phiex
-	map.add_lap_ex(op,"phi","phi",ones(nex(),nth()),phiex);
+	map.add_lap_ex(op,"phi","phi",ones(nex,nth),phiex);
 
 	rhs1=map.lap(phi)-pi_c*rho;
 	rhs2=map.lap_ex(phiex);
-	rhs=zeros(nr()+nex(),nth());
-	rhs.setblock(0,nr()-1,0,-1,-rhs1);
-	rhs.setblock(nr(),nr()+nex()-1,0,-1,-rhs2);
+	rhs=zeros(nr+nex,nth);
+	rhs.setblock(0,nr-1,0,-1,-rhs1);
+	rhs.setblock(nr,nr+nex-1,0,-1,-rhs2);
 	
 	j0=0;
-	for(n=0;n<ndomains()+1;n++) {
+	for(n=0;n<ndomains+1;n++) {
 		if(!n) {
-			op->bc_bot2_add_l(n,"phi","phi",ones(1,nth()),D.block(n).row(0));
+			op->bc_bot2_add_l(n,"phi","phi",ones(1,nth),D.block(n).row(0));
 			rhs.setrow(j0,-(D,phi).row(j0));
 		} else {
-			if(n<ndomains()) op->bc_bot2_add_l(n,"phi","phi",1/rz.row(j0),D.block(n).row(0));
+			if(n<ndomains) op->bc_bot2_add_l(n,"phi","phi",1/rz.row(j0),D.block(n).row(0));
 			else op->bc_bot2_add_l(n,"phi","phi",1/map.ex.rz.row(0),Dex.row(0));
 			op->bc_bot1_add_l(n,"phi","phi",-1/rz.row(j0-1),D.block(n-1).row(map.gl.npts[n-1]-1));
 			
-			if(n<ndomains()) 
+			if(n<ndomains) 
 				op->bc_bot2_add_d(n,"phi","rz",-1/rz.row(j0)/rz.row(j0)*(D,phi).row(j0));
 			else
 				op->bc_bot2_add_d(n,"phi","rz",-1/map.ex.rz.row(0)/map.ex.rz.row(0)*(Dex,phiex).row(0));
 			op->bc_bot1_add_d(n,"phi","rz",1/rz.row(j0-1)/rz.row(j0-1)*(D,phi).row(j0-1));
 			
-			if(n<ndomains()) rhs.setrow(j0,-(D,phi).row(j0)/rz.row(j0)+(D,phi).row(j0-1)/rz.row(j0-1));
+			if(n<ndomains) rhs.setrow(j0,-(D,phi).row(j0)/rz.row(j0)+(D,phi).row(j0-1)/rz.row(j0-1));
 			else rhs.setrow(j0,-(Dex,phiex).row(0)/map.ex.rz.row(0)+(D,phi).row(j0-1)/rz.row(j0-1));
 		}
 		
-		op->bc_top1_add_d(n,"phi","phi",ones(1,nth()));
-		if(n<ndomains()) op->bc_top2_add_d(n,"phi","phi",-ones(1,nth()));
-		if(n<ndomains()) rhs.setrow(j0+map.gl.npts[n]-1,-phi.row(j0+map.gl.npts[n]-1));
-		else rhs.setrow(nr()+nex()-1,-phiex.row(nex()-1));
-		if(n<ndomains()-1) rhs.setrow(j0+map.gl.npts[n]-1,rhs.row(j0+map.gl.npts[n]-1)
+		op->bc_top1_add_d(n,"phi","phi",ones(1,nth));
+		if(n<ndomains) op->bc_top2_add_d(n,"phi","phi",-ones(1,nth));
+		if(n<ndomains) rhs.setrow(j0+map.gl.npts[n]-1,-phi.row(j0+map.gl.npts[n]-1));
+		else rhs.setrow(nr+nex-1,-phiex.row(nex-1));
+		if(n<ndomains-1) rhs.setrow(j0+map.gl.npts[n]-1,rhs.row(j0+map.gl.npts[n]-1)
 								+phi.row(j0+map.gl.npts[n]));
-		else if(n==ndomains()-1) rhs.setrow(j0+map.gl.npts[n]-1,rhs.row(j0+map.gl.npts[n]-1)
+		else if(n==ndomains-1) rhs.setrow(j0+map.gl.npts[n]-1,rhs.row(j0+map.gl.npts[n]-1)
 								+phiex.row(0)); 
 		
-		if(n<ndomains()) j0+=map.gl.npts[n];
+		if(n<ndomains) j0+=map.gl.npts[n];
 	}
 	op->set_rhs("phi",rhs);
 }
@@ -360,7 +354,7 @@ void star2d::solve_pressure(solver *op) {
 	strcpy(eqn,"log_p");
 	
 	// p	
-	q=ones(nr(),nth());
+	q=ones(nr,nth);
 	op->add_l(eqn,"p",q,D);
 	
 	// phi
@@ -382,26 +376,26 @@ void star2d::solve_pressure(solver *op) {
 	op->add_l(eqn,"r",q,D);
 
 	rhs_p=-(D,p)-rho*(D,phi)+rho*w*w*r*rz*sin(th)*sin(th);
-	rhs_pi_c=zeros(ndomains(),1);
+	rhs_pi_c=zeros(ndomains,1);
 
 	j0=0;
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		if(!n) {
-			op->bc_bot2_add_d(n,eqn,"p",ones(1,nth()));
+			op->bc_bot2_add_d(n,eqn,"p",ones(1,nth));
 			rhs_p.setrow(0,1-p.row(0));	
 		} else {
-			op->bc_bot2_add_d(n,eqn,"p",ones(1,nth()));
-			op->bc_bot1_add_d(n,eqn,"p",-ones(1,nth()));
+			op->bc_bot2_add_d(n,eqn,"p",ones(1,nth));
+			op->bc_bot1_add_d(n,eqn,"p",-ones(1,nth));
 			rhs_p.setrow(j0,-p.row(j0)+p.row(j0-1));	
 		}
-		if(n<ndomains()-1) {
+		if(n<ndomains-1) {
 			op->bc_top1_add_d(n,"pi_c","pi_c",ones(1,1));
 			op->bc_top2_add_d(n,"pi_c","pi_c",-ones(1,1));
 		} else {
 			map.leg.eval_00(th,0,q);
 			op->bc_top1_add_r(n,"pi_c","ps",-ones(1,1),q);
 			op->bc_top1_add_r(n,"pi_c","p",ones(1,1),q);
-			rhs_pi_c(ndomains()-1)=(ps-p.row(-1),q)(0);
+			rhs_pi_c(ndomains-1)=(ps-p.row(-1),q)(0);
 		}
 		
 		j0+=map.gl.npts[n];
@@ -419,9 +413,9 @@ void star2d::solve_rot(solver *op) {
 		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
 	
 	if(Omega==0) {
-		op->add_d("w","w",ones(nr(),nth()));
-		op->add_d("w","Omega",-ones(nr(),nth()));
-		op->set_rhs("w",zeros(nr(),nth()));
+		op->add_d("w","w",ones(nr,nth));
+		op->add_d("w","Omega",-ones(nr,nth));
+		op->set_rhs("w",zeros(nr,nth));
 		return;
 	}
 	
@@ -429,7 +423,7 @@ void star2d::solve_rot(solver *op) {
 	
 	q=(r*cos(th)+rt*sin(th))/rz;
 	op->add_l("w","w",2*w*q,D);
-	q=-sin(th)*ones(nr(),nth());
+	q=-sin(th)*ones(nr,nth);
 	op->add_r("w","w",2*w*q,Dt);
 	q=(r*cos(th)+rt*sin(th))/rz*2*(D,w)-sin(th)*2*(w,Dt);
 	op->add_d("w","w",q);
@@ -461,12 +455,12 @@ void star2d::solve_rot(solver *op) {
 			sin(th)*2*w*(w,Dt)-1./rho/rho/r/rz/sin(th)*((p,Dt)*(D,rho)-(D,p)*(rho,Dt));
 	
 	j0=0;
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		if(!n) {
-			op->bc_bot2_add_l(n,"w","w",ones(1,nth()),D.block(n).row(0));
+			op->bc_bot2_add_l(n,"w","w",ones(1,nth),D.block(n).row(0));
 			rhs.setrow(0,-(D,w).row(0));
 		}
-		if(n<ndomains()-1) {
+		if(n<ndomains-1) {
 			q=-rho*r*sin(th)*(r*cos(th)+rt*sin(th));
 			op->bc_top1_add_d(n,"w","w",2.*(w*q).row(j0+map.gl.npts[n]-1));
 			op->bc_top2_add_d(n,"w","w",-2.*(w*q).row(j0+map.gl.npts[n]));
@@ -504,12 +498,12 @@ void star2d::solve_vbl(solver *op,const char *eqn,matrix &rhs) {
 	int limit_layer=1;
 	
 	if(!limit_layer) {
-		qeq=ones(1,nth()); // w constante
+		qeq=ones(1,nth); // w constante
 	} else {
-		qeq=zeros(1,nth()); //limit layer
+		qeq=zeros(1,nth); //limit layer
 	}
 	qeq(0)=1;
-	n=ndomains()-1;
+	n=ndomains-1;
 	
 	matrix s;
 	
@@ -545,7 +539,7 @@ void star2d::solve_vbl(solver *op,const char *eqn,matrix &rhs) {
 		op->bc_top1_add_d(n,eqn,"w",qeq);
 		op->bc_top1_add_d(n,eqn,"Omega",-qeq);
 	} else {
-		map.leg.eval_00(th,PI/2*ones(1,nth()),TT);
+		map.leg.eval_00(th,PI/2*ones(1,nth),TT);
 		rhs.setrow(-1,rhs.row(-1)+qeq*(-(w.row(-1),TT)(0)+Omega));
 		op->bc_top1_add_r(n,eqn,"w",qeq,TT);
 		op->bc_top1_add_d(n,eqn,"Omega",-qeq);
@@ -562,13 +556,13 @@ void star2d::solve_dyn(solver *op) {
 		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
 
 	if(Omega==0) {
-		op->add_d("G","G",ones(nr(),nth()));
-		op->set_rhs("G",zeros(nr(),nth()));
+		op->add_d("G","G",ones(nr,nth));
+		op->set_rhs("G",zeros(nr,nth));
 		return;
 	}
 	
 	s=r*sin(th);
-	rhs=zeros(nr(),nth());
+	rhs=zeros(nr,nth);
 	
 	
 	// w
@@ -609,13 +603,13 @@ void star2d::solve_dyn(solver *op) {
 	op->add_r("G","r",q,Dt);
 	
 	j0=0;
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		if(!n) {
-			op->bc_bot2_add_d(n,"G","G",ones(1,nth()));
+			op->bc_bot2_add_d(n,"G","G",ones(1,nth));
 			rhs.setrow(0,-G.row(0));
 		} else {
-			op->bc_bot2_add_d(n,"G","G",ones(1,nth()));
-			op->bc_bot1_add_d(n,"G","G",-ones(1,nth()));
+			op->bc_bot2_add_d(n,"G","G",ones(1,nth));
+			op->bc_bot1_add_d(n,"G","G",-ones(1,nth));
 			rhs.setrow(j0,-G.row(j0)+G.row(j0-1));
 		}
 	
@@ -644,18 +638,18 @@ void star2d::solve_temp(solver *op) {
 	
 	//Luminosity
 
-	lum=zeros(ndomains(),1);
+	lum=zeros(ndomains,1);
 	j0=0;
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		if(n) lum(n)=lum(n-1);
 		lum(n)+=2*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),
 			(rho*nuc.eps*r*r*rz).block(j0,j0+map.gl.npts[n]-1,0,-1),map.leg.I_00)(0);
 		j0+=map.gl.npts[n];
 	}
 
-	rhs_lum=zeros(ndomains(),1);
+	rhs_lum=zeros(ndomains,1);
 	j0=0;
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		op->bc_bot2_add_d(n,"lum","lum",ones(1,1));
 		op->bc_bot2_add_lri(n,"lum","rho",-2*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(r*r*rz*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,-1));
 		op->bc_bot2_add_lri(n,"lum","nuc.eps",-2*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(r*r*rz*rho).block(j0,j0+map.gl.npts[n]-1,0,-1));
@@ -672,13 +666,13 @@ void star2d::solve_temp(solver *op) {
 	//Frad
 	
 	Frad=-opa.xi*(gzz*(D,T)+gzt*(T,Dt));
-	rhs_Frad=zeros(ndomains()*2-1,nth());
+	rhs_Frad=zeros(ndomains*2-1,nth);
 	j0=0;
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		j1=j0+map.gl.npts[n]-1;
 		
-		if(n) op->bc_bot2_add_d(n,"Frad","Frad",ones(1,nth()));
-		op->bc_top1_add_d(n,"Frad","Frad",ones(1,nth()));
+		if(n) op->bc_bot2_add_d(n,"Frad","Frad",ones(1,nth));
+		op->bc_top1_add_d(n,"Frad","Frad",ones(1,nth));
 		
 		q=opa.xi*gzz;
 		if(n) op->bc_bot2_add_l(n,"Frad","T",q.row(j0),D.block(n).row(0));
@@ -707,17 +701,17 @@ void star2d::solve_temp(solver *op) {
 	
 	//Temperature
 	
-	qrad=zeros(nr(),nth());
+	qrad=zeros(nr,nth);
 	qconv=qrad;
 	j0=0;
-	for(n=0;n<ndomains();n++) {
-		if(n<conv) qconv.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth()));
-		else qrad.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth()));
+	for(n=0;n<ndomains;n++) {
+		if(n<conv) qconv.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth));
+		else qrad.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth));
 		j0+=map.gl.npts[n];
 	}
 	
 	
-	rhs_T=zeros(nr(),nth());
+	rhs_T=zeros(nr,nth);
 
 	// T
 	map.add_lap(op,eqn,"T",qrad,T);
@@ -767,22 +761,22 @@ void star2d::solve_temp(solver *op) {
 	//rhs_T+=-qconv*(D,eos.s);
 	rhs_T+=-qconv*eos.cp*((D,log(T))-eos.del_ad*(D,log(p)));
 	
-	rhs_Lambda=zeros(ndomains(),1);
+	rhs_Lambda=zeros(ndomains,1);
 	
 	map.leg.eval_00(th,0,TT);
 	
 	j0=0;
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		if(!n) {
-			op->bc_bot2_add_d(n,eqn,"T",ones(1,nth()));
+			op->bc_bot2_add_d(n,eqn,"T",ones(1,nth));
 			rhs_T.setrow(j0,1-T.row(j0));
 		} else {
-			op->bc_bot2_add_d(n,eqn,"T",ones(1,nth()));
-			op->bc_bot1_add_d(n,eqn,"T",-ones(1,nth()));
+			op->bc_bot2_add_d(n,eqn,"T",ones(1,nth));
+			op->bc_bot1_add_d(n,eqn,"T",-ones(1,nth));
 			rhs_T.setrow(j0,-T.row(j0)+T.row(j0-1));
 		}
 		if(n>=conv) {
-			if(n<ndomains()-1) {
+			if(n<ndomains-1) {
 				op->bc_top1_add_d(n,eqn,"Frad",rz.row(j0+map.gl.npts[n]-1));
 				op->bc_top2_add_d(n,eqn,"Frad",-rz.row(j0+map.gl.npts[n]-1));
 				op->bc_top1_add_d(n,eqn,"rz",Frad.row(j0+map.gl.npts[n]-1));
@@ -792,8 +786,8 @@ void star2d::solve_temp(solver *op) {
 					-Frad.row(j0+map.gl.npts[n]-1)*rz.row(j0+map.gl.npts[n]-1)
 					+Frad.row(j0+map.gl.npts[n])*rz.row(j0+map.gl.npts[n]));
 			} else {
-				op->bc_top1_add_d(n,eqn,"T",ones(1,nth()));
-				op->bc_top1_add_d(n,eqn,"Ts",-ones(1,nth()));
+				op->bc_top1_add_d(n,eqn,"T",ones(1,nth));
+				op->bc_top1_add_d(n,eqn,"Ts",-ones(1,nth));
 				rhs_T.setrow(-1,Ts-T.row(-1));
 			}
 		}
@@ -830,9 +824,9 @@ void star2d::solve_dim(solver *op) {
 	int n,j0;
 	matrix q,rhs;
 	
-	rhs=zeros(ndomains(),1);
+	rhs=zeros(ndomains,1);
 	j0=0;
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		op->bc_bot2_add_d(n,"m","m",ones(1,1));
 		//rho
 		op->bc_bot2_add_lri(n,"m","rho",-2*PI*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(r*r*map.rz).block(j0,j0+map.gl.npts[n]-1,0,-1));
@@ -845,15 +839,15 @@ void star2d::solve_dim(solver *op) {
 	}
 	op->set_rhs("m",rhs);
 	
-	for(n=0;n<ndomains();n++) {
+	for(n=0;n<ndomains;n++) {
 		op->add_d(n,"log_rhoc","log_pc",1./eos.chi_rho(0)*ones(1,1));
 		op->add_d(n,"log_rhoc","log_Tc",-eos.d(0)*ones(1,1));
 	}
 
 	
-	rhs=zeros(ndomains(),1);
-	for(n=0;n<ndomains();n++) {
-		if(n==ndomains()-1) {
+	rhs=zeros(ndomains,1);
+	for(n=0;n<ndomains;n++) {
+		if(n==ndomains-1) {
 			op->add_d(n,"log_pc","log_pc",ones(1,1));
 			op->add_d(n,"log_pc","pi_c",ones(1,1)/pi_c);
 			op->add_d(n,"log_pc","log_rhoc",-2*ones(1,1));
@@ -865,9 +859,9 @@ void star2d::solve_dim(solver *op) {
 	}
 	op->set_rhs("log_pc",rhs);
 	
-	rhs=zeros(ndomains(),1);
-	for(n=0;n<ndomains();n++) {
-		if(n==ndomains()-1) {
+	rhs=zeros(ndomains,1);
+	for(n=0;n<ndomains;n++) {
+		if(n==ndomains-1) {
 			op->add_d(n,"log_Tc","log_Tc",ones(1,1));
 			op->add_d(n,"log_Tc","log_rhoc",-ones(1,1));
 			op->add_d(n,"log_Tc","Lambda",ones(1,1)/Lambda);
@@ -879,9 +873,9 @@ void star2d::solve_dim(solver *op) {
 	}
 	op->set_rhs("log_Tc",rhs);
 	
-	rhs=zeros(ndomains(),1);
-	for(n=0;n<ndomains();n++) {
-		if(n==ndomains()-1) {
+	rhs=zeros(ndomains,1);
+	for(n=0;n<ndomains;n++) {
+		if(n==ndomains-1) {
 			op->add_d(n,"log_R","log_R",3*ones(1,1));
 			op->add_d(n,"log_R","m",1/m*ones(1,1));
 			op->add_d(n,"log_R","log_rhoc",ones(1,1));
@@ -898,11 +892,11 @@ void star2d::solve_map(solver *op) {
 	int n,j0;
 	matrix Ri,TT,q,rhs;
 
-	rhs=zeros(ndomains()+1,1);
+	rhs=zeros(ndomains+1,1);
 	
 	j0=0;
 	for(n=0;n<conv;n++) {
-		if(!n || conv==ndomains()) op->bc_top1_add_d(n,"eta","eta",ones(1,1));
+		if(!n || conv==ndomains) op->bc_top1_add_d(n,"eta","eta",ones(1,1));
 		else {
 			op->bc_top1_add_d(n,"eta","eta",ones(1,1)/map.gl.xif[n]);
 			op->bc_top2_add_d(n,"eta","eta",-ones(1,1)/map.gl.xif[n+1]);
@@ -913,53 +907,53 @@ void star2d::solve_map(solver *op) {
 	n=conv;
 	if(!conv) {
 		op->bc_bot2_add_d(n,"eta","eta",ones(1,1));
-	} else if(conv<ndomains()) {
+	} else if(conv<ndomains) {
 		op->bc_bot2_add_d(n,"eta","eta",ones(1,1));
 		op->bc_bot2_add_r(n,"eta","Ri",-ones(1,1),TT);
 	}
 	
-	for(n=conv+1;n<ndomains();n++) {
+	for(n=conv+1;n<ndomains;n++) {
 		op->bc_bot2_add_d(n,"eta","eta",ones(1,1)/(1-map.gl.xif[n]));
 		op->bc_bot1_add_d(n,"eta","eta",-ones(1,1)/(1-map.gl.xif[n-1]));
 	}
 	
-	op->add_d(ndomains(),"eta","eta",ones(1,1));
+	op->add_d(ndomains,"eta","eta",ones(1,1));
 	
 	op->set_rhs("eta",rhs);
 	
-	rhs=zeros(ndomains(),1);
-	for(n=0;n<ndomains();n++) {
+	rhs=zeros(ndomains,1);
+	for(n=0;n<ndomains;n++) {
 		op->bc_top1_add_d(n,"deta","deta",ones(1,1));
 		op->bc_top1_add_d(n,"deta","eta",ones(1,1));
 		op->bc_top2_add_d(n,"deta","eta",-ones(1,1));
 	}
 	op->set_rhs("deta",rhs);
 	
-	rhs=zeros(ndomains(),nth());
-	for(n=0;n<ndomains();n++) {
-		op->bc_top1_add_d(n,"dRi","dRi",ones(1,nth()));
-		op->bc_top1_add_d(n,"dRi","Ri",ones(1,nth()));
-		op->bc_top2_add_d(n,"dRi","Ri",-ones(1,nth()));
+	rhs=zeros(ndomains,nth);
+	for(n=0;n<ndomains;n++) {
+		op->bc_top1_add_d(n,"dRi","dRi",ones(1,nth));
+		op->bc_top1_add_d(n,"dRi","Ri",ones(1,nth));
+		op->bc_top2_add_d(n,"dRi","Ri",-ones(1,nth));
 	}
 	op->set_rhs("dRi",rhs);
 	
-	Ri=zeros(ndomains()+1,nth());
-	Ri.setblock(1,ndomains(),0,-1,map.R);
-	rhs=zeros(ndomains()+1,nth());
+	Ri=zeros(ndomains+1,nth);
+	Ri.setblock(1,ndomains,0,-1,map.R);
+	rhs=zeros(ndomains+1,nth);
 	
-	op->add_d(0,"Ri","Ri",ones(1,nth()));
-//for(n=1;n<=ndomains();n++) op->add_d(n,"Ri","Ri",ones(1,nth()));op->set_rhs("Ri",rhs);return;
-	map.leg.eval_00(map.leg.th,zeros(1,nth()),TT);
-	q=zeros(1,nth());
-	q(0,nth()-1)=1;
+	op->add_d(0,"Ri","Ri",ones(1,nth));
+//for(n=1;n<=ndomains;n++) op->add_d(n,"Ri","Ri",ones(1,nth));op->set_rhs("Ri",rhs);return;
+	map.leg.eval_00(map.leg.th,zeros(1,nth),TT);
+	q=zeros(1,nth);
+	q(0,nth-1)=1;
 	j0=map.gl.npts[0];
-	for(n=1;n<=ndomains();n++) {
+	for(n=1;n<=ndomains;n++) {
 		if(n!=conv) {
 			op->bc_bot2_add_r(n,"Ri","Ri",q,TT);
 			op->bc_bot2_add_d(n,"Ri","eta",-q);
 			rhs.setrow(n,q*(-(Ri.row(n),TT)+map.gl.xif[n]));
 		}
-		if(n<ndomains()) {
+		if(n<ndomains) {
 			if(n!=conv) {
 				op->bc_bot2_add_d(n,"Ri","p",(1-q));
 				op->bc_bot2_add_r(n,"Ri","p",q-1,TT);
@@ -995,19 +989,19 @@ void star2d::solve_map(solver *op) {
 				rhs.setrow(n,-qq.row(j0));
 			}			
 		}
-		if(n==ndomains()) {
+		if(n==ndomains) {
 			// Isobar
 			op->bc_bot1_add_d(n,"Ri","p",(1-q));
 			op->bc_bot1_add_r(n,"Ri","p",q-1,TT);
 			rhs.setrow(n,rhs.row(n)
 				+(1-q)*(-p.row(-1)+(p.row(-1),TT)));
 			// Photosphere
-			/*op->bc_bot1_add_d(n,"Ri","p",ones(1,nth()));
-			op->bc_bot1_add_d(n,"Ri","ps",-ones(1,nth()));
+			/*op->bc_bot1_add_d(n,"Ri","p",ones(1,nth));
+			op->bc_bot1_add_d(n,"Ri","ps",-ones(1,nth));
 			rhs.setrow(n,rhs.row(n)
 				+(-p.row(-1)+ps));*/
 		}
-		if(n<ndomains()) j0+=map.gl.npts[n];
+		if(n<ndomains) j0+=map.gl.npts[n];
 	}
 	op->set_rhs("Ri",rhs);
 }
@@ -1018,8 +1012,8 @@ void star2d::solve_Omega(solver *op) {
 	int n;
 	matrix rhs;
 
-	rhs=zeros(ndomains()+1,1);
-	for(n=0;n<ndomains();n++) {
+	rhs=zeros(ndomains+1,1);
+	for(n=0;n<ndomains;n++) {
 		op->bc_top1_add_d(n,"Omega2","Omega2",ones(1,1));
 		op->bc_top2_add_d(n,"Omega2","Omega2",-ones(1,1));
 	}
@@ -1028,7 +1022,7 @@ void star2d::solve_Omega(solver *op) {
 	r1=map.leg.eval_00(rex.row(0),PI/2,TT)(0);
 	rz1=(map.ex.rz.row(0),TT)(0);
 	dphi1=(Dex.row(0),phiex,TT)(0);
-	n=ndomains();
+	n=ndomains;
 	op->bc_bot2_add_d(n,"Omega2","Omega2",ones(1,1));
 	op->bc_bot2_add_lr(n,"Omega2","phi",-ones(1,1)*Omega_bk*Omega_bk/r1/rz1,Dex.row(0),TT);
 	op->bc_bot2_add_r(n,"Omega2","Ri",ones(1,1)*Omega_bk*Omega_bk/r1/r1/rz1*dphi1,TT);
@@ -1044,15 +1038,15 @@ void star2d::solve_Omega(solver *op) {
 	int n;
 	matrix rhs;
 
-	rhs=zeros(ndomains()+1,1);
-	for(n=0;n<ndomains();n++) {
+	rhs=zeros(ndomains+1,1);
+	for(n=0;n<ndomains;n++) {
 		op->bc_top1_add_d(n,"Omega","Omega",ones(1,1));
 		op->bc_top2_add_d(n,"Omega","Omega",-ones(1,1));
 	}
 	matrix TT;
 	double Req;
 	Req=map.leg.eval_00(rex.row(0),PI/2,TT)(0);
-	n=ndomains();
+	n=ndomains;
 	op->bc_bot1_add_d(n,"Omega","Omega",ones(1,1));
 	op->bc_bot1_add_d(n,"Omega","m",-ones(1,1)*Omega_bk*sqrt(pi_c/Req/Req/Req/4./PI)/sqrt(m)/2.);
 	op->bc_bot1_add_d(n,"Omega","pi_c",-ones(1,1)*Omega_bk*sqrt(m/pi_c/Req/Req/Req/4./PI)/2.);
@@ -1068,12 +1062,12 @@ void star2d::solve_Omega(solver *op) {
 	int n;
 	matrix rhs;
 
-	rhs=zeros(ndomains()+1,1);
-	for(n=0;n<ndomains();n++) {
+	rhs=zeros(ndomains+1,1);
+	for(n=0;n<ndomains;n++) {
 		op->bc_top1_add_d(n,"Omega2","Omega2",ones(1,1));
 		op->bc_top2_add_d(n,"Omega2","Omega2",-ones(1,1));
 	}
-	n=ndomains();
+	n=ndomains;
 	op->bc_bot2_add_d(n,"Omega2","Omega2",ones(1,1));
 	rhs(n)=-Omega2+Omega_bk*Omega_bk;
 	op->set_rhs("Omega2",rhs);
@@ -1086,12 +1080,12 @@ void star2d::solve_Omega(solver *op) {
 void star2d::solve_gsup(solver *op) {
 
 	matrix q,g;
-	int n=ndomains()-1;
+	int n=ndomains-1;
 	matrix &gzz=map.gzz,&gzt=map.gzt,&rz=map.rz;
 	
 	g=gsup();
 	
-	op->bc_top1_add_d(n,"gsup","gsup",ones(1,nth()));
+	op->bc_top1_add_d(n,"gsup","gsup",ones(1,nth));
 	op->bc_top1_add_d(n,"gsup","log_pc",-g);
 	op->bc_top1_add_d(n,"gsup","log_rhoc",g);
 	op->bc_top1_add_d(n,"gsup","log_R",g);
@@ -1109,7 +1103,7 @@ void star2d::solve_gsup(solver *op) {
 	q=(1/sqrt(gzz)*(-gzt/rz*(D,p)+(gzt*gzt/rz/gzz-1/r/r/rz)*(p,Dt)))/rho;
 	op->bc_top1_add_r(n,"gsup","r",pc/R/rhoc*q.row(-1),Dt);
 	
-	op->set_rhs("gsup",zeros(1,nth()));
+	op->set_rhs("gsup",zeros(1,nth));
 		
 		
 		
@@ -1118,7 +1112,7 @@ void star2d::solve_gsup(solver *op) {
 void star2d::solve_Teff(solver *op) {
 
 	matrix q,Te,F;
-	int n=ndomains()-1;
+	int n=ndomains-1;
 	matrix &gzz=map.gzz,&gzt=map.gzt,&rz=map.rz;
 	
 	Te=Teff();
@@ -1141,7 +1135,7 @@ void star2d::solve_Teff(solver *op) {
 	q=(1/sqrt(gzz)*(-gzt/rz*(D,T)+(gzt*gzt/rz/gzz-1/r/r/rz)*(T,Dt)))*opa.xi;
 	op->bc_top1_add_r(n,"Teff","r",1/R/Tc*q.row(-1),Dt);
 	
-	op->set_rhs("Teff",zeros(1,nth()));
+	op->set_rhs("Teff",zeros(1,nth));
 		
 		
 		
@@ -1164,82 +1158,82 @@ void star2d::check_jacobian(solver *op,const char *eqn) {
 		
 		a=1e-8;ar=1e-8;
 		asc=a>ar?a:ar;
-		B.phi=B.phi+a*B.phi+ar*B.phi*random_matrix(nr(),nth());
-		B.phiex=B.phiex+a*B.phiex+ar*B.phiex*random_matrix(nex(),nth());
-		B.p=B.p+a*B.p+ar*B.p*random_matrix(nr(),nth());
+		B.phi=B.phi+a*B.phi+ar*B.phi*random_matrix(nr,nth);
+		B.phiex=B.phiex+a*B.phiex+ar*B.phiex*random_matrix(nex,nth);
+		B.p=B.p+a*B.p+ar*B.p*random_matrix(nr,nth);
 		B.pc=B.pc+asc*B.pc;
-		B.T=B.T+a*B.T+ar*B.T*random_matrix(nr(),nth());
+		B.T=B.T+a*B.T+ar*B.T*random_matrix(nr,nth);
 		B.Tc=B.Tc+asc*B.Tc;
-		B.w=B.w+a*B.w+ar*B.w*random_matrix(nr(),nth());
+		B.w=B.w+a*B.w+ar*B.w*random_matrix(nr,nth);
 		B.Omega=B.Omega+asc*B.Omega;
-		B.G=B.G+a*B.G+ar*B.G*random_matrix(nr(),nth());
-		B.map.R=B.map.R+a*B.map.R*sin(th)*sin(th)+ar*B.map.R*random_matrix(ndomains(),nth());
+		B.G=B.G+a*B.G+ar*B.G*random_matrix(nr,nth);
+		B.map.R=B.map.R+a*B.map.R*sin(th)*sin(th)+ar*B.map.R*random_matrix(ndomains,nth);
 		B.map.remap();
 	}
 	
 	B.fill();
 	
 	i=op->get_id("rho");
-	y[i]=zeros(nr(),nth());
+	y[i]=zeros(nr,nth);
 	i=op->get_id("opa.xi");
-	y[i]=zeros(nr(),nth());
+	y[i]=zeros(nr,nth);
 	i=op->get_id("nuc.eps");
-	y[i]=zeros(nr(),nth());
+	y[i]=zeros(nr,nth);
 	i=op->get_id("r");
-	y[i]=zeros(nr()+nex(),nth());
+	y[i]=zeros(nr+nex,nth);
 	i=op->get_id("rz");
-	y[i]=zeros(nr()+nex(),nth());
+	y[i]=zeros(nr+nex,nth);
 	i=op->get_id("s");
-	y[i]=zeros(nr(),nth());
+	y[i]=zeros(nr,nth);
 	i=op->get_id("opa.k");
-	y[i]=zeros(nr(),nth());
+	y[i]=zeros(nr,nth);
 	i=op->get_id("lz");
-	y[i]=zeros(nr(),nth());
+	y[i]=zeros(nr,nth);
 	
 	
 	i=op->get_id("phi");
-	y[i]=zeros(nr()+nex(),nth());
-	y[i].setblock(0,nr()-1,0,-1,B.phi-phi);
-	y[i].setblock(nr(),nr()+nex()-1,0,-1,B.phiex-phiex);
+	y[i]=zeros(nr+nex,nth);
+	y[i].setblock(0,nr-1,0,-1,B.phi-phi);
+	y[i].setblock(nr,nr+nex-1,0,-1,B.phiex-phiex);
 	i=op->get_id("p");
 	y[i]=B.p-p;
 	i=op->get_id("log_p");
 	y[i]=log(B.p)-log(p);
 	i=op->get_id("pi_c");
-	y[i]=(B.pi_c-pi_c)*ones(ndomains(),1);
+	y[i]=(B.pi_c-pi_c)*ones(ndomains,1);
 	i=op->get_id("T");
 	y[i]=B.T-T;
 	i=op->get_id("log_T");
 	y[i]=log(B.T)-log(T);
 	i=op->get_id("Lambda");
-	y[i]=(B.Lambda-Lambda)*ones(ndomains(),1);
+	y[i]=(B.Lambda-Lambda)*ones(ndomains,1);
 	i=op->get_id("eta");
-	y[i]=zeros(ndomains()+1,1);
-	y[i].setblock(1,ndomains(),0,0,B.map.eta()-map.eta());
+	y[i]=zeros(ndomains+1,1);
+	y[i].setblock(1,ndomains,0,0,B.map.eta()-map.eta());
 	j=i;
 	i=op->get_id("deta");
-	y[i]=y[j].block(1,ndomains(),0,0)-y[j].block(0,ndomains()-1,0,0);
+	y[i]=y[j].block(1,ndomains,0,0)-y[j].block(0,ndomains-1,0,0);
 	i=op->get_id("Ri");
-	y[i]=zeros(ndomains()+1,nth());
-	y[i].setblock(1,ndomains(),0,-1,B.map.R-map.R);
+	y[i]=zeros(ndomains+1,nth);
+	y[i].setblock(1,ndomains,0,-1,B.map.R-map.R);
 	j=i;
 	i=op->get_id("dRi");
-	y[i]=y[j].block(1,ndomains(),0,-1)-y[j].block(0,ndomains()-1,0,-1);
+	y[i]=y[j].block(1,ndomains,0,-1)-y[j].block(0,ndomains-1,0,-1);
 	i=op->get_id("Omega");
-	y[i]=(B.Omega-Omega)*ones(ndomains()+1,1);
+	y[i]=(B.Omega-Omega)*ones(ndomains+1,1);
 	i=op->get_id("log_rhoc");
-	y[i]=(log(B.rhoc)-log(rhoc))*ones(ndomains(),1);
+	y[i]=(log(B.rhoc)-log(rhoc))*ones(ndomains,1);
 	i=op->get_id("log_pc");
-	y[i]=(log(B.pc)-log(pc))*ones(ndomains(),1);
+	y[i]=(log(B.pc)-log(pc))*ones(ndomains,1);
 	i=op->get_id("log_Tc");
-	y[i]=(log(B.Tc)-log(Tc))*ones(ndomains(),1);
+	y[i]=(log(B.Tc)-log(Tc))*ones(ndomains,1);
 	i=op->get_id("log_R");
-	y[i]=(log(B.R)-log(R))*ones(ndomains(),1);
+	y[i]=(log(B.R)-log(R))*ones(ndomains,1);
 	i=op->get_id("m");
 	q=0;
 	j0=0;
-	y[i]=zeros(ndomains(),1);
-	for(j=0;j<ndomains();j++) {
+	y[i]=zeros(ndomains,1);
+	for(j=0;j<ndomains;j++) {
 		q+=2*PI*(B.map.gl.I.block(0,0,j0,j0+map.gl.npts[j]-1),
 			(B.rho*B.r*B.r*B.map.rz).block(j0,j0+map.gl.npts[j]-1,0,-1),
 			B.map.leg.I_00)(0)-
@@ -1254,10 +1248,10 @@ void star2d::check_jacobian(solver *op,const char *eqn) {
 	i=op->get_id("Ts");
 	y[i]=B.Ts-Ts;
 	i=op->get_id("lum");
-	y[i]=zeros(ndomains(),1);
+	y[i]=zeros(ndomains,1);
 	j0=0;
 	q=0;
-	for(j=0;j<ndomains();j++) {
+	for(j=0;j<ndomains;j++) {
 		q+=2*PI*B.Lambda*(B.map.gl.I.block(0,0,j0,j0+map.gl.npts[j]-1),
 			(B.rho*B.nuc.eps*B.r*B.r*B.map.rz).block(j0,j0+map.gl.npts[j]-1,0,-1),B.map.leg.I_00)(0)-
 			2*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[j]-1),
@@ -1266,12 +1260,12 @@ void star2d::check_jacobian(solver *op,const char *eqn) {
 		j0+=map.gl.npts[j];
 	}
 	i=op->get_id("Frad");
-	y[i]=zeros(ndomains()*2-1,nth());
+	y[i]=zeros(ndomains*2-1,nth);
 	j0=0;
 	matrix Frad,BFrad;
 	Frad=-opa.xi*(map.gzz*(D,T)+map.gzt*(T,Dt));
 	BFrad=-B.opa.xi*(B.map.gzz*(B.D,B.T)+B.map.gzt*(B.T,B.Dt));
-	for(j=0;j<ndomains();j++) {	
+	for(j=0;j<ndomains;j++) {	
 		if(j) y[i].setrow(2*j-1,BFrad.row(j0)-Frad.row(j0));
 		y[i].setrow(2*j,BFrad.row(j0+map.gl.npts[j]-1)-Frad.row(j0+map.gl.npts[j]-1));
 		j0+=map.gl.npts[j];

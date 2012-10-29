@@ -11,13 +11,12 @@ class diff_gl {
   	matrix_block_diag P,P1,D;
   	int *npts;
   	double *xif;
+  	const int &ndomains,&N;
   	
   	diff_gl(int n=1);
   	~diff_gl();
   	diff_gl(const diff_gl &);
   	diff_gl &operator=(const diff_gl &);
-  	int ndomains() const;
-  	int N() const;
   	void set_ndomains(int n);
   	void set_xif(double,...);
   	void set_npts(int,...);

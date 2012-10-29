@@ -8,7 +8,7 @@ extern "C" {
 
 //#define PERF_LOG
 
-void solver_block::init(int nvar) {
+void solver::solver_block::init(int nvar) {
 	
 	int i,j;
 	
@@ -25,7 +25,7 @@ void solver_block::init(int nvar) {
 
 }
 
-void solver_block::destroy() {
+void solver::solver_block::destroy() {
 
 	int i;
 	
@@ -38,7 +38,7 @@ void solver_block::destroy() {
 	
 }
 
-void solver_block::reset() {
+void solver::solver_block::reset() {
 
 	int i;
 	
@@ -46,7 +46,7 @@ void solver_block::reset() {
 		reset(i);
 }
 
-void solver_block::reset(int ieq) {
+void solver::solver_block::reset(int ieq) {
 
 	solver_elem *p;
 	solver_elem *p0;
@@ -66,7 +66,7 @@ void solver_block::reset(int ieq) {
 	nth[ieq]=0;
 }
 
-void solver_block::add(int ieq,int ivar,char type,const matrix *d,const matrix *l,const matrix *r,const matrix *i) {
+void solver::solver_block::add(int ieq,int ivar,char type,const matrix *d,const matrix *l,const matrix *r,const matrix *i) {
 
 	solver_elem *p,*pnew;
 	

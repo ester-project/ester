@@ -2,7 +2,7 @@
 #include<string.h>
 #include<stdlib.h>
 
-star1d::star1d():r(gl.x),D(gl.D) {
+star1d::star1d():r(gl.x),D(gl.D),nr(gl.N),ndomains(gl.ndomains) {
 	config.newton_dmax=0.5;
 	config.verbose=0;
 }
@@ -11,7 +11,7 @@ star1d::~star1d() {
 }
 
 star1d::star1d(const star1d &A):r(gl.x),D(gl.D),gl(A.gl),phi(A.phi),
-		p(A.p),T(A.T) {
+		p(A.p),T(A.T),nr(gl.N),ndomains(gl.ndomains) {
 		
 	surff=A.surff;
 	conv=A.conv;
@@ -52,14 +52,6 @@ star1d &star1d::operator=(const star1d &A) {
 
 }
 
-int star1d::nr() const {
-	return gl.N();
-}
-
-int star1d::ndomains() const {
-	return gl.ndomains();
-}
-
 void star1d::write(const char *output_file,char mode) const{
 
 	FILE *fp;
@@ -74,7 +66,7 @@ void star1d::write(const char *output_file,char mode) const{
 	fwrite(tag,1,7,fp);
 	fwrite(&mode,1,1,fp);
 	
-	ndom=ndomains();
+	ndom=ndomains;
 	
 	if(mode=='b') {
 		fwrite(&ndom,sizeof(int),1,fp);
@@ -179,9 +171,9 @@ int star1d::read(const char *input_file){
 	}
 	gl.init();
 	
-	phi.read(nr(),1,fp,mode);
-	p.read(nr(),1,fp,mode);
-	T.read(nr(),1,fp,mode);
+	phi.read(nr,1,fp,mode);
+	p.read(nr,1,fp,mode);
+	T.read(nr,1,fp,mode);
 	
 	fclose(fp);
 	fill();
@@ -309,7 +301,7 @@ int star1d::check_arg(char *arg,char *val,int *change_grid) {
 			i++;
 		}
 		if(i==1) {
-			for(i=1;i<gl.ndomains();i++) {
+			for(i=1;i<gl.ndomains;i++) {
 				*(gl.npts+i)=*gl.npts;
 			}
 		}	
@@ -327,9 +319,9 @@ int star1d::check_arg(char *arg,char *val,int *change_grid) {
 		if(i==1) {
 			double gamma=*gl.xif;
 			*gl.xif=0;
-			for(i=1;i<gl.ndomains();i++) 
-				*(gl.xif+i)=1.-pow(1-(double) i/gl.ndomains(),gamma);
-			*(gl.xif+gl.ndomains())=1;
+			for(i=1;i<gl.ndomains;i++) 
+				*(gl.xif+i)=1.-pow(1-(double) i/gl.ndomains,gamma);
+			*(gl.xif+gl.ndomains)=1;
 		}		
 		*change_grid=1;
 	}

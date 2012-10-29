@@ -3,7 +3,7 @@
 #include"constants.h"
 #include<stdarg.h>
 
-diff_gl::diff_gl(int n) {
+diff_gl::diff_gl(int n):ndomains(ndom),N(Ntot) {
 
 	ndom=n;
 	npts=new int[ndom];
@@ -17,7 +17,7 @@ diff_gl::~diff_gl() {
 	delete [] xif;
 }
 
-diff_gl::diff_gl(const diff_gl &gl):
+diff_gl::diff_gl(const diff_gl &gl):ndomains(ndom),N(Ntot),
 	x(gl.x),P(gl.P),P1(gl.P1),D(gl.D),I(gl.I) {
 
 	int i;
@@ -50,16 +50,6 @@ diff_gl &diff_gl::operator=(const diff_gl &gl) {
 	x=gl.x;P=gl.P;P1=gl.P1;D=gl.D;I=gl.I;
 
 	return *this;
-}
-
-int diff_gl::ndomains() const {
-	
-	return ndom;
-}
-
-int diff_gl::N() const {
-
-	return Ntot;
 }
 
 void diff_gl::set_ndomains(int n) {
@@ -197,7 +187,7 @@ matrix diff_gl::eval(const matrix &y,const matrix &x,matrix &T) const {
 	T.dim(x.nrows(),y.nrows());
 
 	k=0;
-	for(i=0;i<ndomains();i++) {
+	for(i=0;i<ndom;i++) {
 		for(j=0;j<npts[i];j++) {
 			Ti=2*(x-xif[i])/(xif[i+1]-xif[i])-1;
 			if(i==0) Ti=Ti*(x>=xif[i]&&x<=xif[i+1]);

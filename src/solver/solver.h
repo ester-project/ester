@@ -56,8 +56,10 @@ public:
 	void back_subs(matrix &) {};
 	matrix solve(const matrix &a) {return 0*a;};
 };
+	
+class solver {
 
-/* 	A solver_elem object stores one term of a equation in the form D*(L,I*x,R).
+	/* 	A solver_elem object stores one term of a equation in the form D*(L,I*x,R).
 	The type indicate which of the matrices D,L,I,R are different from unity:
 	
 		'd': D
@@ -71,76 +73,76 @@ public:
    	The set of terms in one given eq. referred to one given variable is represented
    	as a linked list of solver_elem objects. */
 
-class solver_elem {
-	char type;
-	matrix D,L,R,I;
-	solver_elem *next;
-	friend class solver;
-	friend class solver_block;
-};
-
-/*	A solver_block object contains all the equations for a given block. A block
-	refers to one domain or to one set of boundary conditions.
 	
-	The equations are represented as an array of linked lists of solver_elem objects
-	such that eq[i][j] is a pointer to the first solver_elem object of the list
-	representing the terms in the i-th equation associated with the j-th variable.
+	class solver_elem {
+		char type;
+		matrix D,L,R,I;
+		solver_elem *next;
+		friend class solver_block;
+		friend class solver;
+	};
 	
-	nv is the number of variables (equations) of the problem.
-	eq_set(i) (i<nv) is 1 if the i-th equation is defined in ths block.
-	nr[i],nth[i] is the size of the i-th equation (It is automatically taken from
-					the size of D).	
-	
-	Methods:
+	/*	A solver_block object contains all the equations for a given block. A block
+		refers to one domain or to one set of boundary conditions.
 		
-		init(nvar) is called first to initialize the object for nvar variables
-		destroy() should be called when the object is no longer needed. After calling
-					destroy(), the object can be re-initialized with a different number
-					of variables
-		reset() to clean out all the equations
-		reset(i) to clean out only the i-th equation
-		add_*(...) to add a term in the equation
-*/
+		The equations are represented as an array of linked lists of solver_elem objects
+		such that eq[i][j] is a pointer to the first solver_elem object of the list
+		representing the terms in the i-th equation associated with the j-th variable.
+		
+		nv is the number of variables (equations) of the problem.
+		eq_set(i) (i<nv) is 1 if the i-th equation is defined in ths block.
+		nr[i],nth[i] is the size of the i-th equation (It is automatically taken from
+						the size of D).	
+		
+		Methods:
+			
+			init(nvar) is called first to initialize the object for nvar variables
+			destroy() should be called when the object is no longer needed. After calling
+						destroy(), the object can be re-initialized with a different number
+						of variables
+			reset() to clean out all the equations
+			reset(i) to clean out only the i-th equation
+			add_*(...) to add a term in the equation
+	*/
 
-class solver_block {
-	int nv,*nr,*nth;
-	solver_elem ***eq;
-	matrix eq_set;
-	friend class solver;
-public:
-	solver_block() {};
-	~solver_block() {};
-	void init(int nvar);
-	void destroy();
-	void reset();
-	void reset(int ieq);
-	void add(int ieq,int ivar,char type, const matrix *d, const matrix *l, const matrix *r, const matrix *i);
+	class solver_block {
+		int nv,*nr,*nth;
+		solver_elem ***eq;
+		matrix eq_set;
+		friend class solver;
+	public:
+		solver_block() {};
+		~solver_block() {};
+		void init(int nvar);
+		void destroy();
+		void reset();
+		void reset(int ieq);
+		void add(int ieq,int ivar,char type, const matrix *d, const matrix *l, const matrix *r, const matrix *i);
+		
+		inline void add_d(int ieq,int ivar,const matrix &d) {
+			add(ieq,ivar,'d',&d,NULL,NULL,NULL);
+		}
+		inline void add_l(int ieq,int ivar,const matrix &d,const matrix &l) {
+			add(ieq,ivar,'l',&d,&l,NULL,NULL);
+		}
+		inline void add_r(int ieq,int ivar,const matrix &d,const matrix &r) {
+			add(ieq,ivar,'r',&d,NULL,&r,NULL);
+		}
+		inline void add_lr(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r) {
+			add(ieq,ivar,'f',&d,&l,&r,NULL);
+		}
+		inline void add_li(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &i) {
+			add(ieq,ivar,'m',&d,&l,NULL,&i);
+		}
+		inline void add_ri(int ieq,int ivar,const matrix &d,const matrix &r,const matrix &i) {
+			add(ieq,ivar,'s',&d,NULL,&r,&i);
+		}
+		inline void add_lri(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r,const matrix &i) {
+			add(ieq,ivar,'g',&d,&l,&r,&i);
+		}
 	
-	inline void add_d(int ieq,int ivar,const matrix &d) {
-		add(ieq,ivar,'d',&d,NULL,NULL,NULL);
-	}
-	inline void add_l(int ieq,int ivar,const matrix &d,const matrix &l) {
-		add(ieq,ivar,'l',&d,&l,NULL,NULL);
-	}
-	inline void add_r(int ieq,int ivar,const matrix &d,const matrix &r) {
-		add(ieq,ivar,'r',&d,NULL,&r,NULL);
-	}
-	inline void add_lr(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r) {
-		add(ieq,ivar,'f',&d,&l,&r,NULL);
-	}
-	inline void add_li(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &i) {
-		add(ieq,ivar,'m',&d,&l,NULL,&i);
-	}
-	inline void add_ri(int ieq,int ivar,const matrix &d,const matrix &r,const matrix &i) {
-		add(ieq,ivar,'s',&d,NULL,&r,&i);
-	}
-	inline void add_lri(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r,const matrix &i) {
-		add(ieq,ivar,'g',&d,&l,&r,&i);
-	}
+	};
 
-};
-
-class solver {
 	int nb,nv;
 	int **var_nr,**var_ntop,**var_nbot,**var_nth,solver_N,*def_nr;
 	char type[21],**var;

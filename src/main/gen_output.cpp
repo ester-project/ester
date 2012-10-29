@@ -122,34 +122,34 @@ void write(const star1d &A,char *var,char *fmt) {
 	matrix m;
 
 	if(!strcmp(var,"nr")) {
-		if(fmt) fprintf(stdout,fmt,A.nr());
+		if(fmt) fprintf(stdout,fmt,A.nr);
 		else {
-			i=A.nr();
+			i=A.nr;
 			fwrite(&i,sizeof(int),1,stdout);
 		}
 	} else if(!strcmp(var,"ndomains")) {
-		if(fmt) fprintf(stdout,fmt,A.ndomains());
+		if(fmt) fprintf(stdout,fmt,A.ndomains);
 		else {
-			i=A.ndomains();
+			i=A.ndomains;
 			fwrite(&i,sizeof(int),1,stdout);
 		}
 	} else if(!strcmp(var,"npts")) {
 		if(fmt) {
-			for(i=0;i<A.ndomains();i++) {	
+			for(i=0;i<A.ndomains;i++) {	
 				fprintf(stdout,fmt,*(A.gl.npts+i));
-				if(i<A.ndomains()-1) fprintf(stdout,",");
+				if(i<A.ndomains-1) fprintf(stdout,",");
 			}
 		} else {
-			fwrite(A.gl.npts,sizeof(int),A.ndomains(),stdout);
+			fwrite(A.gl.npts,sizeof(int),A.ndomains,stdout);
 		}
 	} else if(!strcmp(var,"xif")) {
 		if(fmt) {
-			for(i=0;i<A.ndomains()+1;i++) {	
+			for(i=0;i<A.ndomains+1;i++) {	
 				fprintf(stdout,fmt,*(A.gl.xif+i));
-				if(i<A.ndomains()) fprintf(stdout,",");
+				if(i<A.ndomains) fprintf(stdout,",");
 			}
 		} else {
-			fwrite(A.gl.xif,sizeof(double),A.ndomains()+1,stdout);
+			fwrite(A.gl.xif,sizeof(double),A.ndomains+1,stdout);
 		}
 	} else if(!strcmp(var,"ps")) {
 		if(fmt) fprintf(stdout,fmt,A.ps);
@@ -395,56 +395,56 @@ void write(const star2d &A,char *var,char *fmt) {
 	matrix m,m2,T,T_odd;
 
 	if(pole||equator) {
-		m2=zeros(1,A.nth()+pole+equator);
-		m2.setblock(0,0,equator,A.nth()+equator-1,A.th);
+		m2=zeros(1,A.nth+pole+equator);
+		m2.setblock(0,0,equator,A.nth+equator-1,A.th);
 		if(equator) m2(0)=PI/2;
 		m=A.map.leg.eval_00(A.th,m2,T);
 		m=A.map.leg.eval_11(A.th,m2,T_odd);
 	} else {
-		T=eye(A.nth());
+		T=eye(A.nth);
 		T_odd=T;
 	}
 	
 	if(!strcmp(var,"nr")) {
-		if(fmt) fprintf(stdout,fmt,A.nr());
+		if(fmt) fprintf(stdout,fmt,A.nr);
 		else {
-			i=A.nr();
+			i=A.nr;
 			fwrite(&i,sizeof(int),1,stdout);
 		}
 	} else if(!strcmp(var,"ndomains")) {
-		if(fmt) fprintf(stdout,fmt,A.ndomains());
+		if(fmt) fprintf(stdout,fmt,A.ndomains);
 		else {
-			i=A.ndomains();
+			i=A.ndomains;
 			fwrite(&i,sizeof(int),1,stdout);
 		}
 	} else if(!strcmp(var,"npts")) {
 		if(fmt) {
-			for(i=0;i<A.ndomains();i++) {	
+			for(i=0;i<A.ndomains;i++) {	
 				fprintf(stdout,fmt,*(A.map.gl.npts+i));
-				if(i<A.ndomains()-1) fprintf(stdout,",");
+				if(i<A.ndomains-1) fprintf(stdout,",");
 			}
 		} else {
-			fwrite(A.map.gl.npts,sizeof(int),A.ndomains(),stdout);
+			fwrite(A.map.gl.npts,sizeof(int),A.ndomains,stdout);
 		}
 	} else if(!strcmp(var,"xif")) {
 		if(fmt) {
-			for(i=0;i<A.ndomains()+1;i++) {	
+			for(i=0;i<A.ndomains+1;i++) {	
 				fprintf(stdout,fmt,*(A.map.gl.xif+i));
-				if(i<A.ndomains()) fprintf(stdout,",");
+				if(i<A.ndomains) fprintf(stdout,",");
 			}
 		} else {
-			fwrite(A.map.gl.xif,sizeof(double),A.ndomains()+1,stdout);
+			fwrite(A.map.gl.xif,sizeof(double),A.ndomains+1,stdout);
 		}
 	} else if(!strcmp(var,"nth")) {
-		if(fmt) fprintf(stdout,fmt,A.nth());
+		if(fmt) fprintf(stdout,fmt,A.nth);
 		else {
-			i=A.nth();
+			i=A.nth;
 			fwrite(&i,sizeof(int),1,stdout);
 		}
 	} else if(!strcmp(var,"nex")) {
-		if(fmt) fprintf(stdout,fmt,A.nex());
+		if(fmt) fprintf(stdout,fmt,A.nex);
 		else {
-			i=A.nex();
+			i=A.nex;
 			fwrite(&i,sizeof(int),1,stdout);
 		}
 	} else if(!strcmp(var,"ps")) {
@@ -521,7 +521,7 @@ void write(const star2d &A,char *var,char *fmt) {
 			fwrite(&A.R,sizeof(double),1,stdout);
 		}
 	} else if(!strcmp(var,"Re")) {
-		d=A.map.leg.eval_00(A.r.row(A.nr()-1),PI/2)(0)*A.units.r;
+		d=A.map.leg.eval_00(A.r.row(A.nr-1),PI/2)(0)*A.units.r;
 		if(fmt) fprintf(stdout,fmt,d);
 		else {
 			fwrite(&d,sizeof(double),1,stdout);
@@ -554,7 +554,7 @@ void write(const star2d &A,char *var,char *fmt) {
 			fwrite(&d,sizeof(double),1,stdout);
 		}
 	} else if(!strcmp(var,"Re/R_SUN")) {
-		d=A.map.leg.eval_00(A.r.row(A.nr()-1),PI/2)(0)*A.units.r/R_SUN;
+		d=A.map.leg.eval_00(A.r.row(A.nr-1),PI/2)(0)*A.units.r/R_SUN;
 		if(fmt) fprintf(stdout,fmt,d);
 		else {
 			fwrite(&d,sizeof(double),1,stdout);
@@ -611,33 +611,33 @@ void write(const star2d &A,char *var,char *fmt) {
 		if(fmt) matrix_fmt(fmt,m);
 		else m.write(stdout,'b');
 	} else if(!strcmp(var,"th")) {
-		m=zeros(1,A.nth()+pole+equator);
-		m.setblock(0,0,equator,A.nth()-1+pole,A.th);
+		m=zeros(1,A.nth+pole+equator);
+		m.setblock(0,0,equator,A.nth-1+pole,A.th);
 		m(0)=PI/2;
 		m(m.ncols()-1)=0;
 		if(fmt) matrix_fmt(fmt,m);
 		else m.write(stdout,'b');
 	} else if(!strcmp(var,"Dt")) {
 		m2=(A.Dt,T_odd);
-		m=zeros(A.nth()+pole+equator,A.nth()+pole+equator);
-		m.setblock(equator,A.nth()+equator-1,0,A.nth()+pole+equator-1,m2);
+		m=zeros(A.nth+pole+equator,A.nth+pole+equator);
+		m.setblock(equator,A.nth+equator-1,0,A.nth+pole+equator-1,m2);
 		if(fmt) matrix_fmt(fmt,m);
 		else m.write(stdout,'b');
 	} else if(!strcmp(var,"Dtodd")) {
 		m2=(A.map.leg.D_11,T);
-		m=zeros(A.nth()+pole+equator,A.nth()+pole+equator);
-		m.setblock(equator,A.nth()+equator-1,0,A.nth()+pole+equator-1,m2);
+		m=zeros(A.nth+pole+equator,A.nth+pole+equator);
+		m.setblock(equator,A.nth+equator-1,0,A.nth+pole+equator-1,m2);
 		if(fmt) matrix_fmt(fmt,m);
 		else m.write(stdout,'b');
 	} else if(!strcmp(var,"Dt2")) {
 		m2=(A.Dt2,T);
-		m=zeros(A.nth()+pole+equator,A.nth()+pole+equator);
-		m.setblock(equator,A.nth()+equator-1,0,A.nth()+pole+equator-1,m2);
+		m=zeros(A.nth+pole+equator,A.nth+pole+equator);
+		m.setblock(equator,A.nth+equator-1,0,A.nth+pole+equator-1,m2);
 		if(fmt) matrix_fmt(fmt,m);
 		else m.write(stdout,'b');
 	} else if(!strcmp(var,"It")) {
-		m=zeros(A.nth()+pole+equator,1);
-		m.setblock(equator,A.nth()+equator-1,0,0,A.map.leg.I_00);
+		m=zeros(A.nth+pole+equator,1);
+		m.setblock(equator,A.nth+equator-1,0,0,A.map.leg.I_00);
 		if(fmt) matrix_fmt(fmt,m);
 		else m.write(stdout,'b');
 	} else if(!strcmp(var,"Ts")) {
@@ -819,7 +819,7 @@ void write(const star2d &A,char *var,char *fmt) {
 			fwrite(&d,sizeof(double),1,stdout);
 		}
 	} else if(!strcmp(var,"eps")) {
-		d=A.map.eps(A.ndomains()-1);
+		d=A.map.eps(A.ndomains-1);
 		if(fmt) fprintf(stdout,fmt,d);
 		else {
 			fwrite(&d,sizeof(double),1,stdout);

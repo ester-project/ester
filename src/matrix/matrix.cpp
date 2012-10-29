@@ -119,6 +119,7 @@ matrix &matrix::redim(int nfil,int ncol) {
 
 matrix &matrix::operator=(const matrix &a) {
         
+    if(&a==this) return *this;
 	if (nf!=a.nf||nc!=a.nc)
     	dim(a.nf,a.nc);
     

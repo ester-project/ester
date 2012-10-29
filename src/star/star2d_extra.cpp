@@ -43,7 +43,7 @@ matrix star2d::N2() const {
    	N2=-eos.d*(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-(D,log(p))*eos.del_ad)-
     	eos.d*(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-(log(p),Dt)*eos.del_ad);
     N2=N2/rho;
-    N2.setrow(0,zeros(1,nth()));
+    N2.setrow(0,zeros(1,nth));
 
     N2=N2*units.Omega*units.Omega;
     
@@ -56,7 +56,7 @@ matrix star2d::Teff() const {
 	matrix F;
 	
 	F=-opa.xi/sqrt(map.gzz)*(map.gzz*(D,T)+map.gzt*(T,Dt))/units.r*units.T;
-	F=F.row(nr()-1)/SIG_SB;
+	F=F.row(nr-1)/SIG_SB;
 	
 	return pow(F,0.25);
 
@@ -67,7 +67,7 @@ matrix star2d::gsup() const {
 	matrix g;
 	
 	g=-(map.gzz*(D,p)+map.gzt*(p,Dt))/sqrt(map.gzz)/rho;
-	g=g.row(nr()-1)/units.r*units.p/units.rho;
+	g=g.row(nr-1)/units.r*units.p/units.rho;
 	
 	return g;
 
@@ -94,7 +94,7 @@ double star2d::virial_L() const {
 
 double star2d::virial_ps() const {
 
-	return -2*PI*(r.row(nr()-1)*r.row(nr()-1)*r.row(nr()-1)*ps,map.leg.I_00)(0)*units.p*units.r*units.r*units.r;
+	return -2*PI*(r.row(nr-1)*r.row(nr-1)*r.row(nr-1)*ps,map.leg.I_00)(0)*units.p*units.r*units.r*units.r;
 	
 }
 
@@ -111,7 +111,7 @@ double star2d::energy_test() const {
 	
 	e1=luminosity();
 	Fz=-opa.xi*(map.gzz*(D,T)+map.gzt*(T,Dt));
-	e2=2*PI*((Fz*r*r*map.rz).row(nr()-1),map.leg.I_00)(0)*units.T*units.r;
+	e2=2*PI*((Fz*r*r*map.rz).row(nr-1),map.leg.I_00)(0)*units.T*units.r;
 	
 	return (e1-e2)/e1;
 
@@ -174,8 +174,8 @@ double star2d::apparent_luminosity(double i) const {
 	// Interpolating in the new grid
 	
 	int_s=map.leg.eval_00(int_s,th_f);
-	r_f=map.leg.eval_00(r.row(nr()-1),th_f);
-	rt_f=map.leg.eval_11(map.rt.row(nr()-1),th_f);
+	r_f=map.leg.eval_00(r.row(nr-1),th_f);
+	rt_f=map.leg.eval_11(map.rt.row(nr-1),th_f);
 	
 	// Non symmetric part of the integrand
 	matrix int_ns;
@@ -200,14 +200,14 @@ matrix star2d::stream() const {
 	
 	
 	vr_=r*r*map.rz/z/z*vr_;
-	vr_.setrow(0,zeros(1,nth()));
+	vr_.setrow(0,zeros(1,nth));
 	vr_=(vr_,map.leg.P_00);
 	
 	GG=-z*z*vr_/map.leg.l_00()/(map.leg.l_00()+1.);
-	GG.setcol(0,zeros(nr(),1));
+	GG.setcol(0,zeros(nr,1));
 	GG=(GG,map.leg.P1_00,Dt);
 	GG=GG/r;
-	GG.setrow(0,zeros(1,nth()));
+	GG.setrow(0,zeros(1,nth));
 		
 	return GG;
 }
