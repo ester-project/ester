@@ -24,21 +24,15 @@ int opa_houdek(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa);
 int opa_kramer(const matrix &T,const matrix &rho,
 		opa_struct &opa);
-int opa_test(const matrix &T,const matrix &rho,
-		opa_struct &opa);
 
 int nuc_simple(const matrix &X,double Z,const matrix &T,const matrix &rho,
-		nuc_struct &nuc);
-int nuc_test(const matrix &X,double Z,const matrix &T,const matrix &rho,
-		nuc_struct &nuc);		
+		nuc_struct &nuc);	
 
 int eos_ideal(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos);
 int eos_idealrad(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos);
 int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
-		matrix &rho,eos_struct &eos);
-int eos_test(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos);
 		
 #endif

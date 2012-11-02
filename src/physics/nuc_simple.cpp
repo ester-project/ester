@@ -1,4 +1,4 @@
-#include<math.h>
+#include<cmath>
 #include"physics.h"
 
 int nuc_simple(const matrix &X,double Z,const matrix &T,const matrix &rho,nuc_struct &nuc) {

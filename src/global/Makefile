@@ -13,7 +13,7 @@ $(LIB): $(HEADERS) $(OBJS)
 	ar rvu $(LIB) $(OBJS)
 	ranlib $(LIB)
 
-%.o: %.cpp $(DEPS)
+%.o: %.cpp $(HEADERS) $(DEPS)
 	$(CC) -c $< $(CCFLAGS) $(VARS)
 
 $(ESTER_ROOT)/include/%.h: %.h $(SRC_H) $(DEPS)

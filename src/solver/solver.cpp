@@ -1,7 +1,7 @@
 #include"solver.h"
 #include<string.h>
 #include<stdlib.h>
-#include<math.h>
+#include<cmath>
 extern "C" {
 #include CBLAS
 }
@@ -265,6 +265,10 @@ void solver::regvar(const char *var_name,int dependent) {
 	int i,j;
 	j=0;
 	while (strlen(var[j])) {
+		if(!strcmp(var[j],var_name)) {
+			fprintf(stderr,"ERROR: Can't register variable (already registered)\n");
+			exit(1);
+		}
 		j++;
 		if(j==nv) {
 			fprintf(stderr,"ERROR: Can't register variable (increase nvar)\n");

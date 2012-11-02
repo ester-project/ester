@@ -10,7 +10,7 @@
 #include"parser.h"
 #include"graphics.h"
 
-#include<math.h>
+#include<cmath>
 
 class star1d {
   public:

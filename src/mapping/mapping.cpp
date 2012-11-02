@@ -6,6 +6,7 @@ mapping::mapping(int ndom): gl(ndom),D(gl.D),Dt(leg.D_00),Dt2(leg.D2_00),Dt_odd(
 
 	ex.gl.set_ndomains(1);
 	ex.gl.set_xif(1.,2.);
+	ex.gl.set_npts(10);
 	mode=0;
 	
 }

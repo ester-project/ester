@@ -14,8 +14,6 @@ int star1d::opacity() {
     	error=opa_kramer(T*Tc,rho*rhoc,opa);
    	} else if(!strcmp(opa.name,"opals")) {
     	error=opa_opals(Xr,Z,T*Tc,rho*rhoc,opa);
-    } else if(!strcmp(opa.name,"test")) {
-    	error=opa_test(T*Tc,rho*rhoc,opa);
     } else {
     	printf("Unknown opacity method: %s\n",opa.name);
     	return 1;
@@ -30,8 +28,6 @@ int star1d::nuclear() {
 	
 	if(!strcmp(nuc.name,"simple")) {
 		error=nuc_simple(Xr,Z,T*Tc,rho*rhoc,nuc);
-	} else if(!strcmp(nuc.name,"test")) {
-    	error=nuc_test(Xr,Z,T*Tc,rho*rhoc,nuc);
     } else {
     	printf("Unknown nuc. reac. type: %s\n",nuc.name);
     	return 1;
@@ -51,8 +47,6 @@ int star1d::eq_state() {
 		error=eos_idealrad(Xr,Z,T*Tc,p*pc,rho,eos);
 	else if(!strcmp(eos.name,"opal")) 
 		error=eos_opal(Xr,Z,T*Tc,p*pc,rho,eos);
-	else if(!strcmp(eos.name,"test"))
-		error=eos_test(Xr,Z,T*Tc,p*pc,rho,eos);
 	else {
 		printf("Unknown equation of state: %s\n",eos.name);
     	return 1;

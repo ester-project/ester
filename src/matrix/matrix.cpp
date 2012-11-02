@@ -1,5 +1,5 @@
 #include<stdlib.h>
-#include<math.h>
+#include<cmath>
 #include<stdio.h>
 #include<string.h>
 #include"matrix.h"
@@ -128,7 +128,7 @@ matrix &matrix::operator=(const matrix &a) {
     return *this;
 }
 
-double &matrix::operator()(int ifil,int icol) const {
+double &matrix::operator()(int ifil,int icol) {
 
 	if(ifil<0) ifil+=nf;
 	if(icol<0) icol+=nc;
@@ -140,7 +140,30 @@ double &matrix::operator()(int ifil,int icol) const {
 	
 }
 
-double &matrix::operator()(int ielem) const {
+double &matrix::operator()(int ielem) {
+	
+	if(ielem<0) ielem+=nf*nc;
+	if(ielem>=nf*nc||ielem<0) {
+		fprintf(stderr,"ERROR: Index exceeds matrix dimensions\n");
+		exit(1);
+	}
+	return *(p+ielem);
+	
+}
+
+double matrix::operator()(int ifil,int icol) const {
+
+	if(ifil<0) ifil+=nf;
+	if(icol<0) icol+=nc;
+	if(ifil>=nf||ifil<0||icol>=nc||icol<0) {
+		fprintf(stderr,"ERROR: Index exceeds matrix dimensions\n");
+		exit(1);
+	}
+	return *(p+icol*nf+ifil);
+	
+}
+
+double matrix::operator()(int ielem) const {
 	
 	if(ielem<0) ielem+=nf*nc;
 	if(ielem>=nf*nc||ielem<0) {

@@ -78,7 +78,7 @@ graphics: matrix
 mapping: global matrix numdiff graphics solver
 parser: 
 solver: matrix
-symbolic: matrix
+symbolic: matrix mapping solver
 physics: global matrix numdiff
 star: global matrix numdiff mapping parser physics solver graphics
 

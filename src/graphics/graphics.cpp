@@ -3,7 +3,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<stdio.h>
-#include<math.h>
+#include<cmath>
 
 #if USE_PGPLOT==1
 #include<cpgplot.h>

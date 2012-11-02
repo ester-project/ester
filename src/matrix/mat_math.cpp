@@ -1,4 +1,4 @@
-#include<math.h>
+#include<cmath>
 #include<stdio.h>
 #include<stdlib.h>
 #include"matrix.h"
@@ -314,5 +314,22 @@ matrix pow(const matrix &a,double n) {
     	
     return res;
 }
+ 
+matrix pow(const matrix &a,int n) {
 
+	matrix res(a.nf,a.nc);
+    int i,N;
+    
+    N=a.nc*a.nf;
+    //#pragma omp parallel for
+    for(i=0;i<N;i++)
+    	// There is no pow(double,int) in the Intel compiler math library
+    	#ifdef __INTEL_COMPILER
+    	*(res.p+i)=pow(*(a.p+i),(double)n);
+    	#else
+    	*(res.p+i)=pow(*(a.p+i),n);
+    	#endif
+    	
+    return res;
+}
 

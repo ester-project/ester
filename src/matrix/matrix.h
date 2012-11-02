@@ -16,8 +16,10 @@ class matrix {
     matrix &dim(int nrow,int ncol);
     matrix &redim(int nrow,int ncol);
     matrix &operator=(const matrix &);
-    double &operator()(int irow,int icol) const; 
-    double &operator()(int ielem) const;
+    double &operator()(int irow,int icol); 
+    double &operator()(int ielem);
+    double operator()(int irow,int icol) const; 
+    double operator()(int ielem) const;
     int read(int nrow,int ncol,FILE *fp,char mode='t');
     int write(FILE *fp=stdout,char mode='t') const;
     void write_fmt(const char *fmt,FILE *fp=stdout) const;
@@ -123,6 +125,7 @@ class matrix {
 	friend matrix pow(const matrix &,const matrix &);
 	friend matrix pow(double,const matrix &);
 	friend matrix pow(const matrix &,double);
+	friend matrix pow(const matrix &,int);
 	
 	matrix solve(matrix) const;
 	matrix inv() const;
@@ -186,6 +189,7 @@ matrix atan2(const matrix &,double);
 matrix pow(const matrix &,const matrix &);
 matrix pow(double,const matrix &);
 matrix pow(const matrix &,double);
+matrix pow(const matrix &,int);
 
 
 class matrix_block_diag {

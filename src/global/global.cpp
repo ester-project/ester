@@ -1,4 +1,4 @@
-#include<math.h>
+#include<cmath>
 
 extern const double PI=acos(-1);
 extern const double SIG_SB=5.670400e-5;

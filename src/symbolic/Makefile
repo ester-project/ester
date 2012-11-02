@@ -1,6 +1,6 @@
-SRC=symbolic.cpp
+SRC=symbolic.cpp sym.cpp
 SRC_H=symbolic.h
-DEPS=matrix.h
+DEPS=matrix.h mapping.h solver.h
 
 LIB=lib$(DIR).a
 OBJS=$(SRC:.cpp=.o)

@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include"matrix.h"
-#include<math.h>
+#include<cmath>
 #include<stdlib.h>
 #include<sys/time.h>
 extern "C" {

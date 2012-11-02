@@ -1,4 +1,4 @@
-#include<math.h>
+#include<cmath>
 #include"numdiff.h"
 #include"constants.h"
 #include LAPACK

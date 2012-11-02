@@ -1,6 +1,6 @@
-SRC=eos_ideal.cpp eos_idealrad.cpp eos_opal.cpp eos_test.cpp \
-	nuc_simple.cpp nuc_test.cpp \
-	opa_houdek.cpp opa_kramer.cpp opa_opal.cpp opa_opals.cpp opa_test.cpp
+SRC=eos_ideal.cpp eos_idealrad.cpp eos_opal.cpp \
+	nuc_simple.cpp \
+	opa_houdek.cpp opa_kramer.cpp opa_opal.cpp opa_opals.cpp
 SRC_F=EOS5_xtrin.F xztrin21.F ZFS_interp_EOS5.F
 SRC_H=physics.h
 DEPS=constants.h matrix.h numdiff.h
