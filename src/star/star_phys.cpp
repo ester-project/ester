@@ -2,7 +2,7 @@
 #include<string.h>
 #include<stdio.h>
 
-int star1d::opacity() {
+int star::opacity() {
 
 	int error=0;
 
@@ -12,17 +12,17 @@ int star1d::opacity() {
     	error=opa_houdek(Xr,Z,T*Tc,rho*rhoc,opa);
 	} else if(!strcmp(opa.name,"kramer")) {
     	error=opa_kramer(T*Tc,rho*rhoc,opa);
-   	} else if(!strcmp(opa.name,"opals")) {
+    } else if(!strcmp(opa.name,"opals")) {
     	error=opa_opals(Xr,Z,T*Tc,rho*rhoc,opa);
     } else {
     	printf("Unknown opacity method: %s\n",opa.name);
     	return 1;
     }
-
+	
 	return error;
 }
 
-int star1d::nuclear() {
+int star::nuclear() {
 
 	int error=0;
 	
@@ -37,7 +37,7 @@ int star1d::nuclear() {
 
 }
 
-int star1d::eq_state() {
+int star::eq_state() {
 
 	int error;
 	
@@ -58,4 +58,5 @@ int star1d::eq_state() {
 	return error;
 
 }
+
 

@@ -12,32 +12,49 @@
 
 #include<cmath>
 
-class star1d {
+class star {
+	void copy(const star &);
+  public:
+    matrix rho,phi,p,T,Xr;
+    double X,Y,Z;
+    double R,M;
+    double rhoc,Tc,pc;
+  	opa_struct opa;
+	nuc_struct nuc;
+	eos_struct eos;
+	
+	star();
+	~star();
+	star(const star &);
+	star &operator=(const star &);
+	struct config_struct {
+		double newton_dmax,verbose;
+	} config;
+	
+	int opacity();
+	int nuclear();
+	int eq_state();
+
+};
+
+class star1d : public star {
+	void copy(const star1d &);
   public:
 	diff_gl gl;
 	const int &nr,&ndomains;
 	const matrix &r;
 	const matrix_block_diag &D;
-	matrix rho,phi,p,T,Xr;
 	matrix Frad;
-	opa_struct opa;
-	nuc_struct nuc;
-	eos_struct eos;
 	char atm_name[16];
 	
 	double ps,Ts,m,pi_c,Lambda;
 	double surff;
 	int conv;
 	double Xc;
-	double rhoc,Tc,pc;
-	double R,M;
-	double X,Z;
+	
 	struct units_struct {
 		double rho,p,phi,T,r,F;
 	} units;
-	struct config_struct {
-		double newton_dmax,verbose;
-	} config;
 	
 	star1d();
 	~star1d();
@@ -47,6 +64,7 @@ class star1d {
 	int check_arg(char *arg,char *val,int *change_grid);
 	int read(const char *input_file);
 	void write(const char *output_file,char output_mode) const;
+	int read_old(const char *input_file);
 	
 	solver *init_solver();
 	void register_variables(solver *op);
@@ -69,10 +87,6 @@ class star1d {
 	
 	void upd_Xr();
 	
-	int opacity();
-	int nuclear();
-	int eq_state();
-	
 	void calc_units();
 	void calc_Frad();
 	
@@ -85,17 +99,15 @@ class star1d {
 	void spectrum(figure *,const matrix &,const char *line="") const;
 };
 
-class star2d {
+class star2d : public star {
+	void copy(const star2d &);
   public:
 	mapping map;
 	const int &nr,&nth,&nex,&ndomains;
 	const matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
 	const matrix_block_diag &D;
-	matrix rho,phi,p,T,Xr,phiex;
-	matrix vr,vt,G,w,psi;
-	opa_struct opa;
-	nuc_struct nuc;
-	eos_struct eos;
+	matrix phiex;
+	matrix vr,vt,G,w;
 	char atm_name[16];
 	double m,pi_c,Lambda;
 	matrix ps,Ts;
@@ -103,16 +115,13 @@ class star2d {
 	int conv;
 	double Omega,Omega2,Omega_bk,Omegac;
 	double Xc;
-	double rhoc,Tc,pc;
-	double R,M;
-	double X,Z;
+	
+	
 	double Ekman;
 	struct units_struct {
 		double rho,p,phi,T,Omega,r,v,F;
 	} units;
-	struct config_struct {
-		double newton_dmax,verbose;
-	} config;
+	
 	
 	star2d();
 	~star2d();
@@ -122,6 +131,7 @@ class star2d {
 	int init(const char *input_file,const char *param_file,int argc,char *argv[]);
 	int check_arg(char *arg,char *val,int *change_grid);
 	int read(const char *input_file);
+	int read_old(const char *input_file);
 	void write(const char *output_file,char output_mode) const;
 	void interp(mapping map_old);
 	
@@ -149,10 +159,6 @@ class star2d {
 	void solve_atm_simple(solver *);
 	void atm_test();
 	void solve_atm_test(solver *);
-	
-	int opacity();
-	int nuclear();
-	int eq_state();
 	
 	void upd_Xr();
 	void calc_units();

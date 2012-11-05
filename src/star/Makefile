@@ -1,5 +1,5 @@
-SRC=star1d_class.cpp star1d_solvers.cpp star1d_atm.cpp star1d_phys.cpp star1d_extra.cpp \
-	star2d_class.cpp star2d_solvers.cpp star2d_atm.cpp star2d_phys.cpp star2d_extra.cpp 
+SRC=star1d_class.cpp star1d_solvers.cpp star1d_atm.cpp star_phys.cpp star1d_extra.cpp \
+	star2d_class.cpp star2d_solvers.cpp star2d_atm.cpp star2d_extra.cpp 
 SRC_H=star.h
 DEPS=constants.h matrix.h numdiff.h mapping.h parser.h physics.h solver.h graphics.h
 

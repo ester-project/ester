@@ -5,6 +5,7 @@
 
 void star2d::fill() {
 	
+	Y=1.-X-Z;
 	upd_Xr();
 
 	eq_state();

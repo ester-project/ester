@@ -3,8 +3,7 @@
 
 void star1d::fill() {
 
-	static int initd=0;
-
+	Y=1.-X-Z;
 	upd_Xr();
 
 	eq_state();
@@ -23,8 +22,6 @@ void star1d::fill() {
 	calc_Frad();
 	
 	atmosphere();
-
-	initd=1;
 
 }
 

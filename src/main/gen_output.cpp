@@ -211,6 +211,11 @@ void write(const star1d &A,char *var,char *fmt) {
 		else {
 			fwrite(&A.X,sizeof(double),1,stdout);
 		}
+	} else if(!strcmp(var,"Y")) {
+		if(fmt) fprintf(stdout,fmt,A.Y);
+		else {
+			fwrite(&A.Y,sizeof(double),1,stdout);
+		}
 	} else if(!strcmp(var,"Z")) {
 		if(fmt) fprintf(stdout,fmt,A.Z);
 		else {
@@ -535,6 +540,11 @@ void write(const star2d &A,char *var,char *fmt) {
 		if(fmt) fprintf(stdout,fmt,A.X);
 		else {
 			fwrite(&A.X,sizeof(double),1,stdout);
+		}
+	} else if(!strcmp(var,"Y")) {
+		if(fmt) fprintf(stdout,fmt,A.Y);
+		else {
+			fwrite(&A.Y,sizeof(double),1,stdout);
 		}
 	} else if(!strcmp(var,"Z")) {
 		if(fmt) fprintf(stdout,fmt,A.Z);

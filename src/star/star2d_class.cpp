@@ -2,149 +2,247 @@
 #include<string.h>
 #include<stdlib.h>
 
-
-star2d::star2d():r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2)
-		,zex(map.ex.z),Dex(map.ex.D),rex(map.ex.r),
-		nr(map.gl.N),nth(map.leg.npts),nex(map.ex.gl.N),ndomains(map.gl.ndomains) {
+star::star() {
 
 	config.newton_dmax=0.5;
 	config.verbose=0;
 }
 
-star2d::~star2d() {
+star::~star() {
 }
 
-star2d::star2d(const star2d &A):r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2),zex(map.ex.z),Dex(map.ex.D),rex(map.ex.r),
-	map(A.map),phi(A.phi),p(A.p),T(A.T),phiex(A.phiex),
-	vr(A.vr),vt(A.vt),G(A.G),w(A.w),psi(A.psi),
-	nr(map.gl.N),nth(map.leg.npts),nex(map.ex.gl.N),ndomains(map.gl.ndomains) {
-		
-	Omega=A.Omega;Omega_bk=A.Omega_bk;
-	surff=A.surff;
-	conv=A.conv;
-	
-	strcpy(opa.name,A.opa.name);
-	strcpy(eos.name,A.eos.name);
-	strcpy(nuc.name,A.nuc.name);
-	strcpy(atm_name,A.atm_name);
-	Tc=A.Tc;pc=A.pc;
-	R=A.R;M=A.M;
-	X=A.X;Z=A.Z;
-	Xc=A.Xc;
-	
-	Ekman=A.Ekman;
-	
-	config=A.config;
-	
-	fill();
-	
+star::star(const star &A) {
+
+	copy(A);
+
 }
 
-star2d &star2d::operator=(const star2d &A) {
+star &star::operator=(const star &A) {
 
-	map=A.map;
-	phi=A.phi;
-	p=A.p;
-	T=A.T;
-	phiex=A.phiex;
-	w=A.w;
-	
-	vr=A.vr;vt=A.vt;G=A.G;psi=A.psi;
-
-	Omega=A.Omega;Omega_bk=A.Omega_bk;
-	surff=A.surff;
-	conv=A.conv;
-	strcpy(opa.name,A.opa.name);
-	strcpy(eos.name,A.eos.name);
-	strcpy(nuc.name,A.nuc.name);
-	strcpy(atm_name,A.atm_name);
-	Tc=A.Tc;pc=A.pc;
-	R=A.R;M=A.M;
-	X=A.X;Z=A.Z;
-	Xc=A.Xc;
-	
-	Ekman=A.Ekman;
-	
-	config=A.config;
-	
-	fill();
+	copy(A);
 	
 	return *this;
 
 }
 
+void star::copy(const star &A) {
+
+	phi=A.phi;
+	p=A.p;
+	T=A.T;
+	
+	strcpy(opa.name,A.opa.name);
+	strcpy(eos.name,A.eos.name);
+	strcpy(nuc.name,A.nuc.name);
+	config=A.config;
+	
+	R=A.R;M=A.M;
+	Tc=A.Tc;pc=A.pc;
+	X=A.X;Z=A.Z;
+	
+}
 
 
-void star2d::write(const char *output_file,char mode) const{
+star2d::star2d():r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2)
+		,zex(map.ex.z),Dex(map.ex.D),rex(map.ex.r),
+		nr(map.gl.N),nth(map.leg.npts),nex(map.ex.gl.N),ndomains(map.gl.ndomains) {}
 
-	FILE *fp;
-	const char *tag="star2d/";
-	int ndom,i;
+star2d::~star2d() {}
+
+star2d::star2d(const star2d &A): star(A),
+	r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2),zex(map.ex.z),Dex(map.ex.D),rex(map.ex.r),
+	nr(map.gl.N),nth(map.leg.npts),nex(map.ex.gl.N),ndomains(map.gl.ndomains) {
 	
-	if(mode=='b')
-		fp=fopen(output_file,"wb");
-	else
-		fp=fopen(output_file,"wt");
+	copy(A);
 	
-	fwrite(tag,1,7,fp);
-	fwrite(&mode,1,1,fp);
+}
+
+star2d &star2d::operator=(const star2d &A) {
+
+	star::operator=(A);
+	copy(A);
 	
-	ndom=ndomains;
+	return *this;
+
+}
+
+void star2d::copy(const star2d &A) {
+
+	map=A.map;
 	
+	phiex=A.phiex;
+	w=A.w;
+	
+	vr=A.vr;vt=A.vt;G=A.G;
+
+	Omega=A.Omega;Omega_bk=A.Omega_bk;
+	surff=A.surff;
+	conv=A.conv;
+	
+	strcpy(atm_name,A.atm_name);
+	
+	Xc=A.Xc;
+	
+	Ekman=A.Ekman;
+
+	fill();
+
+}
+
+
+void star2d::write(const char *output_file,char mode) const {
+
+	OUTFILE fp;
+	char tag[7]="star2d";
+	
+	fp.open(output_file,mode);
 	if(mode=='b') {
-		fwrite(&ndom,sizeof(int),1,fp);
-		fwrite(map.gl.npts,sizeof(int),ndom,fp);
-		fwrite(map.gl.xif,sizeof(double),ndom+1,fp);
-		fwrite(map.ex.gl.npts,sizeof(int),1,fp);
-		fwrite(&map.leg.npts,sizeof(int),1,fp);
-		fwrite(&M,sizeof(double),1,fp);
-		fwrite(&R,sizeof(double),1,fp);
-		fwrite(&X,sizeof(double),1,fp);
-		fwrite(&Z,sizeof(double),1,fp);
-		fwrite(&Xc,sizeof(double),1,fp);
-		fwrite(&conv,sizeof(int),1,fp);
-		fwrite(&surff,sizeof(double),1,fp);
-		fwrite(&Omega,sizeof(double),1,fp);
-		fwrite(&Omega_bk,sizeof(double),1,fp);
-		fwrite(&Tc,sizeof(double),1,fp);
-		fwrite(&pc,sizeof(double),1,fp);
-		fwrite(opa.name,sizeof(char),strlen(opa.name)+1,fp);
-		fwrite(eos.name,sizeof(char),strlen(eos.name)+1,fp);
-		fwrite(nuc.name,sizeof(char),strlen(nuc.name)+1,fp);
-		fwrite(atm_name,sizeof(char),strlen(atm_name)+1,fp);
+		fp.write("tag",tag,7);
+		fp.write("ndomains",&ndomains);
+		fp.write("npts",map.gl.npts,ndomains);
+		fp.write("xif",map.gl.xif,ndomains+1);
+		fp.write("nth",&map.leg.npts,1);
+		fp.write("nex",map.ex.gl.npts,1);
+		fp.write("M",&M);
+		fp.write("R",&R);
+		fp.write("X",&X);
+		fp.write("Z",&Z);
+		fp.write("Xc",&Xc);
+		fp.write("conv",&conv);
+		fp.write("surff",&surff);
+		fp.write("Tc",&Tc);
+		fp.write("pc",&pc);
+		fp.write("opa.name",opa.name,strlen(opa.name)+1);
+		fp.write("eos.name",eos.name,strlen(eos.name)+1);
+		fp.write("nuc.name",nuc.name,strlen(nuc.name)+1);
+		fp.write("atm_name",atm_name,strlen(atm_name)+1);
+		fp.write("Omega",&Omega);
+		fp.write("Omega_bk",&Omega_bk);
+		fp.write("Ekman",&Ekman);
 	} else {
-		fprintf(fp,"\n%d ",ndom);
-		for(i=0;i<ndom;i++) fprintf(fp,"%d ",*(map.gl.npts+i));
-		for(i=0;i<ndom+1;i++) fprintf(fp,"%16.16e ",*(map.gl.xif+i));
-		fprintf(fp,"%d %d",*map.ex.gl.npts,map.leg.npts);
-		fprintf(fp,"\n%16.16e %16.16e %16.16e %16.16e\n",M,R,X,Z);
-		fprintf(fp,"%16.16e %d %16.16e\n",Xc,conv,surff);
-		fprintf(fp,"%16.16e %16.16e\n",Omega,Omega_bk);
-		fprintf(fp,"%16.16e %16.16e\n",Tc,pc);
-		fprintf(fp,"%s\n",opa.name);
-		fprintf(fp,"%s\n",eos.name);
-		fprintf(fp,"%s\n",nuc.name);
-		fprintf(fp,"%s\n",atm_name);	
+		fp.write_fmt("tag","%s",&tag);
+		fp.write_fmt("ndomains","%d",&ndomains);
+		fp.write_fmt("npts","%d",map.gl.npts,ndomains);
+		fp.write_fmt("xif","%.16e",map.gl.xif,ndomains+1);
+		fp.write_fmt("nth","%d",&map.leg.npts,1);
+		fp.write_fmt("nex","%d",map.ex.gl.npts,1);
+		fp.write_fmt("M","%.16e",&M);
+		fp.write_fmt("R","%.16e",&R);
+		fp.write_fmt("X","%.16e",&X);
+		fp.write_fmt("Z","%.16e",&Z);
+		fp.write_fmt("Xc","%.16e",&Xc);
+		fp.write_fmt("conv","%d",&conv);
+		fp.write_fmt("surff","%.16e",&surff);
+		fp.write_fmt("Tc","%.16e",&Tc);
+		fp.write_fmt("pc","%.16e",&pc);
+		fp.write_fmt("opa.name","%s",&opa.name);
+		fp.write_fmt("eos.name","%s",&eos.name);
+		fp.write_fmt("nuc.name","%s",&nuc.name);
+		fp.write_fmt("atm_name","%s",&atm_name);
+		fp.write_fmt("Omega","%.16e",&Omega);
+		fp.write_fmt("Omega_bk","%.16e",&Omega_bk);
+		fp.write_fmt("Ekman","%.16e",&Ekman);
 	}
 	
-	map.R.write(fp,mode);
-	phi.write(fp,mode);
-	phiex.write(fp,mode);
-	p.write(fp,mode);
-	T.write(fp,mode);
-	w.write(fp,mode);
-	G.write(fp,mode);
-	psi.write(fp,mode);
-	if(mode=='b') {
-		fwrite(&Ekman,sizeof(double),1,fp);
-	} else {
-		fprintf(fp,"\n%16.16e\n",Ekman);
-	}
-	fclose(fp);
-		
+	fp.write("phi",&phi);
+	fp.write("p",&p);
+	fp.write("T",&T);
+	fp.write("phiex",&phiex);
+	fp.write("map.R",&map.R);
+	fp.write("w",&w);
+	fp.write("G",&G);
+	
+	fp.close();
+
 }
 
 int star2d::read(const char *input_file){
+
+	char tag[1024],mode;
+	int ndom;
+	INFILE fp;
+	
+	if(fp.open(input_file,'b')) mode='b';
+	else if(fp.open(input_file,'t')) mode='t';
+	else return read_old(input_file);
+	
+	if(mode=='t') fp.read_fmt("tag","%s",tag);
+	else {
+		if(fp.len("tag")>16) tag[0]='\0';
+		else fp.read("tag",tag);
+	}
+	tag[16]='\0';
+	if(strcmp(tag,"star2d")) {
+		fp.close();
+		return 0;
+	}
+	
+	if(mode=='b') {
+		fp.read("ndomains",&ndom);
+		map.gl.set_ndomains(ndom);
+		fp.read("npts",map.gl.npts);
+		fp.read("xif",map.gl.xif);
+		fp.read("nth",&map.leg.npts);
+		fp.read("nex",map.ex.gl.npts);
+		fp.read("M",&M);
+		fp.read("R",&R);
+		fp.read("X",&X);
+		fp.read("Z",&Z);
+		fp.read("Xc",&Xc);
+		fp.read("conv",&conv);
+		fp.read("surff",&surff);
+		fp.read("Tc",&Tc);
+		fp.read("pc",&pc);
+		fp.read("opa.name",opa.name);
+		fp.read("eos.name",eos.name);
+		fp.read("nuc.name",nuc.name);
+		fp.read("atm_name",atm_name);
+		fp.read("Omega",&Omega);
+		fp.read("Omega_bk",&Omega_bk);
+		fp.read("Ekman",&Ekman);
+	} else {
+		fp.read_fmt("ndomains","%d",&ndom);
+		map.gl.set_ndomains(ndom);
+		fp.read_fmt("npts","%d",map.gl.npts);
+		fp.read_fmt("xif","%le",map.gl.xif);
+		fp.read_fmt("nth","%d",&map.leg.npts);
+		fp.read_fmt("nex","%d",map.ex.gl.npts);
+		fp.read_fmt("M","%le",&M);
+		fp.read_fmt("R","%le",&R);
+		fp.read_fmt("X","%le",&X);
+		fp.read_fmt("Z","%le",&Z);
+		fp.read_fmt("Xc","%le",&Xc);
+		fp.read_fmt("conv","%d",&conv);
+		fp.read_fmt("surff","%le",&surff);
+		fp.read_fmt("Tc","%le",&Tc);
+		fp.read_fmt("pc","%le",&pc);
+		fp.read_fmt("opa.name","%s",opa.name);
+		fp.read_fmt("eos.name","%s",eos.name);
+		fp.read_fmt("nuc.name","%s",nuc.name);
+		fp.read_fmt("atm_name","%s",atm_name);
+		fp.read_fmt("Omega","%le",&Omega);
+		fp.read_fmt("Omega_bk","%le",&Omega_bk);
+		fp.read_fmt("Ekman","%le",&Ekman);
+	}
+		
+	map.init();
+	
+	fp.read("phi",&phi);
+	fp.read("p",&p);
+	fp.read("T",&T);
+	fp.read("phiex",&phiex);
+	fp.read("map.R",&map.R);
+	fp.read("w",&w);
+	fp.read("G",&G);
+	
+	map.remap();
+	fp.close();
+	fill();
+	return 1;
+	
+}
+
+int star2d::read_old(const char *input_file){
 
 	FILE *fp,*fp2;
 	char tag[7],mode,*c;
@@ -228,6 +326,7 @@ int star2d::read(const char *input_file){
 	T.read(nr,nth,fp,mode);
 	w.read(nr,nth,fp,mode);
 	G.read(nr,nth,fp,mode);
+	matrix psi;
 	psi.read(nr,nth,fp,mode);
 	if(mode=='b') {
 		fread(&Ekman,sizeof(double),1,fp);
@@ -360,7 +459,6 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 		phiex=zeros(nex,nth);
 		w=zeros(nr,nth);
 		G=zeros(nr,nth);
-		psi=zeros(nr,nth);
 		Omega2=0;
 	}
 	fill();
@@ -405,7 +503,6 @@ void star2d::init(const star1d &A,int npts_th,int npts_ex) {
 	T=A.T*thd;
 	w=zeros(T.nrows(),T.ncols());
 	G=zeros(T.nrows(),T.ncols());
-	psi=zeros(T.nrows(),T.ncols());
 	
 	surff=A.surff;
 	conv=A.conv;
@@ -437,7 +534,6 @@ void star2d::interp(mapping map_old) {
 	phiex=(Tex,phiex,Tt_00);
 	w=(Tr,w,Tt_00);
 	G=(Tr,G,Tt_11);
-	psi=(Tr,psi,Tt_00);
 }
 
 int star2d::check_arg(char *arg,char *val,int *change_grid) {

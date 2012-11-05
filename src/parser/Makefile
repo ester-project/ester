@@ -1,6 +1,6 @@
-SRC=parser.cpp
+SRC=parser.cpp iofile.cpp
 SRC_H=parser.h
-DEPS=
+DEPS=matrix.h
 
 LIB=lib$(DIR).a
 OBJS=$(SRC:.cpp=.o)

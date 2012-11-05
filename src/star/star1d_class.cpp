@@ -2,112 +2,167 @@
 #include<string.h>
 #include<stdlib.h>
 
-star1d::star1d():r(gl.x),D(gl.D),nr(gl.N),ndomains(gl.ndomains) {
-	config.newton_dmax=0.5;
-	config.verbose=0;
-}
+star1d::star1d():r(gl.x),D(gl.D),nr(gl.N),ndomains(gl.ndomains) {}
 
 star1d::~star1d() {
 }
 
-star1d::star1d(const star1d &A):r(gl.x),D(gl.D),gl(A.gl),phi(A.phi),
-		p(A.p),T(A.T),nr(gl.N),ndomains(gl.ndomains) {
-		
-	surff=A.surff;
-	conv=A.conv;
-	strcpy(opa.name,A.opa.name);
-	strcpy(eos.name,A.eos.name);
-	strcpy(nuc.name,A.nuc.name);
-	strcpy(atm_name,A.atm_name);
-	Tc=A.Tc;pc=A.pc;
-	R=A.R;M=A.M;
-	X=A.X;Z=A.Z;
-	Xc=A.Xc;
-	config=A.config;
-	fill();
+star1d::star1d(const star1d &A) : star(A)
+	,r(gl.x),D(gl.D),nr(gl.N),ndomains(gl.ndomains) {
+
+	copy(A);
 	
 }
 
 star1d &star1d::operator=(const star1d &A) {
 
-	gl=A.gl;
-	phi=A.phi;
-	p=A.p;
-	T=A.T;
-
-	surff=A.surff;
-	conv=A.conv;
-	strcpy(opa.name,A.opa.name);
-	strcpy(eos.name,A.eos.name);
-	strcpy(nuc.name,A.nuc.name);
-	strcpy(atm_name,A.atm_name);
-	Tc=A.Tc;pc=A.pc;
-	R=A.R;M=A.M;
-	X=A.X;Z=A.Z;
-	Xc=A.Xc;
-	config=A.config;
-	fill();
+	star::operator=(A);
+	copy(A);
 	
 	return *this;
 
 }
 
-void star1d::write(const char *output_file,char mode) const{
+void star1d::copy(const star1d &A) {
 
-	FILE *fp;
-	const char *tag="star1d/";
-	int ndom,i;
+	gl=A.gl;
+
+	surff=A.surff;
+	conv=A.conv;
+
+	strcpy(atm_name,A.atm_name);
+	Xc=A.Xc;
+
+	fill();
+
+}
+
+void star1d::write(const char *output_file,char mode) const {
+
+	OUTFILE fp;
+	char tag[7]="star1d";
 	
-	if(mode=='b')
-		fp=fopen(output_file,"wb");
-	else
-		fp=fopen(output_file,"wt");
-	
-	fwrite(tag,1,7,fp);
-	fwrite(&mode,1,1,fp);
-	
-	ndom=ndomains;
-	
+	fp.open(output_file,mode);
 	if(mode=='b') {
-		fwrite(&ndom,sizeof(int),1,fp);
-		fwrite(gl.npts,sizeof(int),ndom,fp);
-		fwrite(gl.xif,sizeof(double),ndom+1,fp);
-		fwrite(&M,sizeof(double),1,fp);
-		fwrite(&R,sizeof(double),1,fp);
-		fwrite(&X,sizeof(double),1,fp);
-		fwrite(&Z,sizeof(double),1,fp);
-		fwrite(&Xc,sizeof(double),1,fp);
-		fwrite(&conv,sizeof(int),1,fp);
-		fwrite(&surff,sizeof(double),1,fp);
-		fwrite(&Tc,sizeof(double),1,fp);
-		fwrite(&pc,sizeof(double),1,fp);
-		fwrite(opa.name,sizeof(char),strlen(opa.name)+1,fp);
-		fwrite(eos.name,sizeof(char),strlen(eos.name)+1,fp);
-		fwrite(nuc.name,sizeof(char),strlen(nuc.name)+1,fp);
-		fwrite(atm_name,sizeof(char),strlen(atm_name)+1,fp);
+		fp.write("tag",tag,7);
+		fp.write("ndomains",&ndomains);
+		fp.write("npts",gl.npts,ndomains);
+		fp.write("xif",gl.xif,ndomains+1);
+		fp.write("M",&M);
+		fp.write("R",&R);
+		fp.write("X",&X);
+		fp.write("Z",&Z);
+		fp.write("Xc",&Xc);
+		fp.write("conv",&conv);
+		fp.write("surff",&surff);
+		fp.write("Tc",&Tc);
+		fp.write("pc",&pc);
+		fp.write("opa.name",opa.name,strlen(opa.name)+1);
+		fp.write("eos.name",eos.name,strlen(eos.name)+1);
+		fp.write("nuc.name",nuc.name,strlen(nuc.name)+1);
+		fp.write("atm_name",atm_name,strlen(atm_name)+1);
 	} else {
-		fprintf(fp,"\n%d ",ndom);
-		for(i=0;i<ndom;i++) fprintf(fp,"%d ",*(gl.npts+i));
-		for(i=0;i<ndom+1;i++) fprintf(fp,"%le ",*(gl.xif+i));
-		fprintf(fp,"\n%le %le %le %le\n",M,R,X,Z);
-		fprintf(fp,"%le %d %le\n",Xc,conv,surff);
-		fprintf(fp,"%le %le\n",Tc,pc);
-		fprintf(fp,"%s\n",opa.name);
-		fprintf(fp,"%s\n",eos.name);
-		fprintf(fp,"%s\n",nuc.name);
-		fprintf(fp,"%s\n",atm_name);
+		fp.write_fmt("tag","%s",&tag);
+		fp.write_fmt("ndomains","%d",&ndomains);
+		fp.write_fmt("npts","%d",gl.npts,ndomains);
+		fp.write_fmt("xif","%.16e",gl.xif,ndomains+1);
+		fp.write_fmt("M","%.16e",&M);
+		fp.write_fmt("R","%.16e",&R);
+		fp.write_fmt("X","%.16e",&X);
+		fp.write_fmt("Z","%.16e",&Z);
+		fp.write_fmt("Xc","%.16e",&Xc);
+		fp.write_fmt("conv","%d",&conv);
+		fp.write_fmt("surff","%.16e",&surff);
+		fp.write_fmt("Tc","%.16e",&Tc);
+		fp.write_fmt("pc","%.16e",&pc);
+		fp.write_fmt("opa.name","%s",&opa.name);
+		fp.write_fmt("eos.name","%s",&eos.name);
+		fp.write_fmt("nuc.name","%s",&nuc.name);
+		fp.write_fmt("atm_name","%s",&atm_name);
 	}
-	phi.write(fp,mode);
-	p.write(fp,mode);
-	T.write(fp,mode);
 	
-	fclose(fp);
-		
+	fp.write("phi",&phi);
+	fp.write("p",&p);
+	fp.write("T",&T);
+	
+	fp.close();
+
 }
 
 int star1d::read(const char *input_file){
 
-	FILE *fp,*fp2;
+	char tag[1024],mode;
+	int ndom;
+	INFILE fp;
+	
+	if(fp.open(input_file,'b')) mode='b';
+	else if(fp.open(input_file,'t')) mode='t';
+	else return read_old(input_file);
+	
+	if(mode=='t') fp.read_fmt("tag","%s",tag);
+	else {
+		if(fp.len("tag")>16) tag[0]='\0';
+		else fp.read("tag",tag);
+	}
+	tag[16]='\0';
+	if(strcmp(tag,"star1d")) {
+		fp.close();
+		return 0;
+	}
+	
+	if(mode=='b') {
+		fp.read("ndomains",&ndom);
+		gl.set_ndomains(ndom);
+		fp.read("npts",gl.npts);
+		fp.read("xif",gl.xif);
+		fp.read("M",&M);
+		fp.read("R",&R);
+		fp.read("X",&X);
+		fp.read("Z",&Z);
+		fp.read("Xc",&Xc);
+		fp.read("conv",&conv);
+		fp.read("surff",&surff);
+		fp.read("Tc",&Tc);
+		fp.read("pc",&pc);
+		fp.read("opa.name",opa.name);
+		fp.read("eos.name",eos.name);
+		fp.read("nuc.name",nuc.name);
+		fp.read("atm_name",atm_name);
+	} else {
+		fp.read_fmt("ndomains","%d",&ndom);
+		gl.set_ndomains(ndom);
+		fp.read_fmt("npts","%d",gl.npts);
+		fp.read_fmt("xif","%le",gl.xif);
+		fp.read_fmt("M","%le",&M);
+		fp.read_fmt("R","%le",&R);
+		fp.read_fmt("X","%le",&X);
+		fp.read_fmt("Z","%le",&Z);
+		fp.read_fmt("Xc","%le",&Xc);
+		fp.read_fmt("conv","%d",&conv);
+		fp.read_fmt("surff","%le",&surff);
+		fp.read_fmt("Tc","%le",&Tc);
+		fp.read_fmt("pc","%le",&pc);
+		fp.read_fmt("opa.name","%s",opa.name);
+		fp.read_fmt("eos.name","%s",eos.name);
+		fp.read_fmt("nuc.name","%s",nuc.name);
+		fp.read_fmt("atm_name","%s",atm_name);
+	}
+		
+	gl.init();
+	
+	fp.read("phi",&phi);
+	fp.read("p",&p);
+	fp.read("T",&T);
+	
+	fp.close();
+	fill();
+	return 1;
+	
+}
+
+int star1d::read_old(const char *input_file){
+
+	FILE *fp;
 	char tag[7],mode,*c;
 	int ndom,i;
 	
