@@ -14,6 +14,8 @@
 
 class star {
 	void copy(const star &);
+  protected:
+	star();
   public:
     matrix rho,phi,p,T,Xr;
     double X,Y,Z;
@@ -22,8 +24,7 @@ class star {
   	opa_struct opa;
 	nuc_struct nuc;
 	eos_struct eos;
-	
-	star();
+
 	~star();
 	star(const star &);
 	star &operator=(const star &);

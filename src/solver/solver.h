@@ -7,12 +7,12 @@ class solver_operator {
 public:
 	int verbose;
 	virtual ~solver_operator() {};
-	virtual void set_block(int iblock,const matrix &) {};
-	virtual void set_blocksup(int iblock,const matrix &) {};
-	virtual void set_blockinf(int iblock,const matrix &) {};
-	virtual void fwd_subs(matrix &) {};
-	virtual void back_subs(matrix &) {};
-	virtual matrix solve(const matrix &) {matrix a;return a;};
+	virtual void set_block(int iblock,const matrix &)=0;
+	virtual void set_blocksup(int iblock,const matrix &)=0;
+	virtual void set_blockinf(int iblock,const matrix &)=0;
+	virtual void fwd_subs(matrix &)=0;
+	virtual void back_subs(matrix &)=0;
+	virtual matrix solve(const matrix &)=0;
 };
 
 class solver_full: public solver_operator {

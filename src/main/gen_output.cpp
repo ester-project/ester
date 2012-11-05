@@ -3,8 +3,8 @@
 #include<stdlib.h>
 #include"star.h"
 
-void output1d(char *input_file);
-void output2d(char *input_file);
+void output1d(const star1d &);
+void output2d(const star2d &);
 void write(const star1d &A,char *var,char *fmt);
 void write(const star2d &A,char *var,char *fmt);
 void readconf(char *line);
@@ -14,26 +14,18 @@ int dim=1,pole=0,equator=0,transpose=0;
 
 int main(int argc,char *argv[]) {
 
-	FILE *fp;
-	char *input_file,tag[7];
+	char *input_file;
+	star1d m1d;
+	star2d m2d;
 
 	input_file=argv[1];
-	if(!(fp=fopen(input_file,"rb"))) {
+	if(m1d.read(input_file)) output1d(m1d);
+	else if (m2d.read(input_file)) output2d(m2d);
+	else {
 		fprintf(stderr,"Error reading input file: %s\n",input_file);
 		return 1;
 	}
-	fread(tag,1,7,fp);
-	fclose(fp);
-	tag[6]='\0';
-	if(!strcmp(tag,"star1d")) {
-		output1d(input_file);
-	} else if(!strcmp(tag,"star2d")) {
-		output2d(input_file);
-	} else {
-		fprintf(stderr,"Error reading input file: %s\n",input_file);
-		return 1;
-	}
-
+	
 	return 0;
 
 }
@@ -76,15 +68,12 @@ void matrix_fmt(char *fmt,matrix a) {
 	}
 }
 
-void output1d(char *input_file) {
+void output1d(const star1d &A) {
 
-	star1d A;
 	FILE *fp;
 	char line[1024],*p,*p2,*var,*fmt;
 	char *saveptr1,*saveptr2,*saveptr3;
 	matrix rho0;
-	
-	A.read(input_file);
 	
 	fp=stdin;
 	while(fgets(line,1024,fp)) {
@@ -354,15 +343,12 @@ void write(const star1d &A,char *var,char *fmt) {
 }
 
 
-void output2d(char *input_file) {
+void output2d(const star2d &A) {
 
-	star2d A;
 	FILE *fp;
 	char line[1024],*p,*p2,*var,*fmt;
 	char *saveptr1,*saveptr2,*saveptr3;
 	matrix rho0;
-	
-	A.read(input_file);
 	
 	fp=stdin;
 	while(fgets(line,1024,fp)) {
