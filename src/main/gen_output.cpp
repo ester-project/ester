@@ -699,11 +699,6 @@ void write(const star2d &A,char *var,char *fmt) {
 		else m=A.G;
 		if(fmt) matrix_fmt(fmt,(m,T_odd));
 		else (m,T_odd).write(stdout,'b');
-	} else if(!strcmp(var,"psi")) {
-		if(dim) m=A.psi*A.units.v*A.units.r;
-		else m=A.psi;
-		if(fmt) matrix_fmt(fmt,(m,T));
-		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"Xr")) {
 		m=A.Xr;
 		if(fmt) matrix_fmt(fmt,(m,T));
