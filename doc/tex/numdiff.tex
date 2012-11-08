@@ -247,6 +247,18 @@ dy0=(T,dy)(0); // We use the matrix T to calculate the value of dy in x=2.5
 
 \end{minted}
 
+A {\tt diff\_gl} object can be copied using the assignment operator. We can do
+\begin{minted}{cpp}
+diff_gl gl1,gl2;
+
+gl1.set_ndomains(2);
+gl1.set_npts(10,10);
+gl1.set_xif(0.,0.5,1.);
+gl2=gl1; 
+\end{minted}
+Now {\tt gl2} is an independent copy of {\tt gl1} and, as {\tt gl1} has already been initialized, this 
+is also the case of {\tt gl2}.
+
 \subsection{Example}
 
 Let's see a full featured example that uses the class \texttt{diff\_gl}.
@@ -458,6 +470,14 @@ We may also use a third argument
 where \texttt{T} can be used to interpolate additional functions at the same point(s) by doing
 \mint{cpp}|(y2,T)|
 
+A {\tt diff\_leg} object can be copied using the assignment operator. We can do
+\begin{minted}{cpp}
+diff_leg leg1,leg2;
+
+leg1.npts=20;leg1.init();
+leg2=leg1; 
+\end{minted}
+Now {\tt leg2} is an independent copy of {\tt leg1}.
 \subsection{Example}
 
 Let's see a more complete example. We will consider axisymmetric functions in spherical coordinates, 
