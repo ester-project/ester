@@ -25,7 +25,7 @@ class star {
 	nuc_struct nuc;
 	eos_struct eos;
 
-	~star();
+	virtual ~star();
 	star(const star &);
 	star &operator=(const star &);
 	struct config_struct {

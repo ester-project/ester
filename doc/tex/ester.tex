@@ -17,7 +17,16 @@
 \titleformat{\subsection}
 {\vspace{.8ex}%
 \large\scshape}
-{\thesection.}{.5em}{}
+{\thesubsection.}{.5em}{}
+
+\titleformat{\subsubsection}
+{\vspace{.8ex}%
+\large\scshape}
+{}{.5em}{}
+
+
+\usemintedstyle{colorful}
+\fvset{tabsize=4}
 
 \include{definitions}
 \begin{document}
@@ -31,6 +40,7 @@
 	\include{program}
 	\include{structure}
 	\include{matrix}
+	\include{numdiff}
 
 
 \end{document}

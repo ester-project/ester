@@ -73,13 +73,9 @@ Here is the list of valid parameters
 \item {\tt npts}. Number of points in each subdomain. It is specified as a 
 comma-separated list. 
 If only one value is specified, it will be used for all the subdomains, for example:
-\begin{verbatim}
-star1d -ndomains 4 -npts 20,20,20,20
-\end{verbatim}
+\mint{bash}|$ star1d -ndomains 4 -npts 20,20,20,20|  %$
 is equivalent to
-\begin{verbatim}
-star1d -ndomains 4 -npts 20
-\end{verbatim}
+\mint{bash}|$ star1d -ndomains 4 -npts 20|  %$
 \item {\tt xif}. The position of each subdomain as a comma-separated list. The list
 should contain the first and the last points of the entire domain (that should be 0 and 1),
 having a total of {\tt ndomains}+1 values. If only one value is specified ($\gamma$),
@@ -151,10 +147,10 @@ The typical workflow to calculate a model starts with the calculation of the cor
 1D model and using it as an input for {\tt star2d}. For example, to calculate 
 the structure of a 5$M_\odot$ star with OPAL opacity rotating at with $\Omega=0.7\Omega_c$
 we can do:
-\begin{verbatim}
+\begin{minted}{bash}
 $ star1d -M 5 -opa opal -o model1d
 $ star2d -i model1d -nth 24 -Omega_bk 0.7 -o model2d
-\end{verbatim}
+\end{minted}
 
 As the code uses the Newton's method, sometimes it is not possible to converge to a solution
 if the initial estimation is too far from it. In this case we can use some intermediate steps.
@@ -163,13 +159,13 @@ $\Omega=0.9\Omega_c$, we should probably do
 
 \medskip
 \noindent\begin{tabular}{lp{4.5cm}}
-\verb|$ star1d -M 2.5 -o model1d -conv 0 | 
+\verb|$ star1d -M 2.5 -o model1d -conv 0 |  
 &(Deactivate core convection to improve convergence)\\
-\verb|$ star1d -i model1d -o model1d -conv 1| &
+\verb|$ star1d -i model1d -o model1d -conv 1| &	
 (Re-activate core convection)\\
-\verb|$ star2d -i model1d -nth 24 -Omega_bk 0.7 -o model2d| &
+\verb|$ star2d -i model1d -nth 24 -Omega_bk 0.7 -o model2d| &	
 (Using an intermediate value for rotation) \\
-\verb|$ star2d -i model2d -nth 32 -Omega_bk 0.9 -o model2d| &
+\verb|$ star2d -i model2d -nth 32 -Omega_bk 0.9 -o model2d| &	
 (Calculating the final model) 
 \end{tabular}
 \medskip
@@ -183,7 +179,7 @@ recalculating it.
 
 \medskip
 Pressing Ctrl-C at any time during the execution of {\tt star2d} will terminate
-the program, giving the possibility of finish the current iteration and write the result in the
+the program, giving the possibility of finishing the current iteration and write the result in the
 output file.
 
 
@@ -431,7 +427,7 @@ Pressure:
 1.61049808835808e+17 1.61048890088480e+17 1.61035194697311e+17 ...
 [...]
 \end{minted} 
-%$
+
 
 \section{Python module}
 

@@ -316,8 +316,9 @@ a=(matrix) D;
 \end{minted}
 
 
-\section{Function reference}
+\section{Reference}
 
+\renewcommand{\funclistcolumns}{2}
 \funclist{matrix}
 
 \subsection{A note about methods and functions}
@@ -334,10 +335,9 @@ is equivalent to
 The parenthesis are needed even if the method takes no arguments, i.e. 
 \verb|a.method_without_args()|.
 
-
 \funcrefbegin{matrix}
 
-\funcsec{Matrix manipulation}
+\funcsec{\bf Matrix manipulation}
 \subsection{Matrix manipulation}
 
 \function{dim(n,m)}{Method}
@@ -430,7 +430,7 @@ using increments nstep and mstep.}
 \function{data()}{Method}{None}{Pointer to double}
 {Returns a pointer to the first element in the matrix. The elements are stored consecutively in column order.}
 
-\funcsec{File input/output}
+\funcsec{\bf File input/output}
 \subsection{File input/output}
 
 \function{write(fp,mode)}{Method}
@@ -450,14 +450,14 @@ mode (char): Write mode (optional, default='t')}
 The matrix is read in column order. Returns 0 on success, 1 otherwise.}
 
 \function{write\_fmt(format,fp)}{Method}
-{format (char *): Format string
+{format (char *): Format string\newline
 fp (FILE *): File pointer (optional, default=stdout)}
 {None}
 {Writes a matrix in the file pointed by fp using given format. The matrix is ordered such that
 each line represents a row.}
 
 \funcrefpagebreak
-\funcsec{Special matrices}
+\funcsec{\bf Special matrices}
 \subsection{Special matrices}
 
 \function{eye(n)}{Function}
@@ -497,7 +497,7 @@ n (int): Number of elements}
 {matrix}
 {Returns a column vector with n equally spaced elements between x0 and x1.}
 
-\funcsec{Matrix functions}
+\funcsec{\bf Matrix functions}
 \subsection{Matrix functions}
 
 \function{max(A)}{Function}
@@ -545,7 +545,7 @@ of type \texttt{if (exist(condition))...}, where \texttt{condition} is a valid c
 \function{inv()}{Method}{None}{matrix}
 {Returns the inverse of the current matrix object. The original matrix is not modified.}
 
-\funcsec{Mathematical functions}
+\funcsec{\bf Mathematical functions}
 \subsection{Mathematical functions}
 
 \function{cos(x)}{Function}{x (matrix)}{matrix}
@@ -609,7 +609,7 @@ y (matrix or double)}{matrix}
 \function{ceil(x)}{Function}{x (matrix)}{matrix}
 {Rounds the elements of x to the nearest integer above the current value.}
 
-\funcsec{Block diagonal matrices}
+\funcsec{\bf Block diagonal matrices}
 \subsection{Block diagonal matrices}
 
 \function{set\_nblocks(n)}{Method}

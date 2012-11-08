@@ -6,6 +6,7 @@ star::star() {
 
 	config.newton_dmax=0.5;
 	config.verbose=0;
+
 }
 
 star::~star() {
@@ -88,8 +89,76 @@ void star2d::copy(const star2d &A) {
 	fill();
 
 }
+/*
+void star2d::write(const char *output_file,char mode) const{
 
-
+	FILE *fp;
+	const char *tag="star2d/";
+	int ndom,i;
+	
+	if(mode=='b')
+		fp=fopen(output_file,"wb");
+	else
+		fp=fopen(output_file,"wt");
+	
+	fwrite(tag,1,7,fp);
+	fwrite(&mode,1,1,fp);
+	
+	ndom=ndomains;
+	
+	if(mode=='b') {
+		fwrite(&ndom,sizeof(int),1,fp);
+		fwrite(map.gl.npts,sizeof(int),ndom,fp);
+		fwrite(map.gl.xif,sizeof(double),ndom+1,fp);
+		fwrite(map.ex.gl.npts,sizeof(int),1,fp);
+		fwrite(&map.leg.npts,sizeof(int),1,fp);
+		fwrite(&M,sizeof(double),1,fp);
+		fwrite(&R,sizeof(double),1,fp);
+		fwrite(&X,sizeof(double),1,fp);
+		fwrite(&Z,sizeof(double),1,fp);
+		fwrite(&Xc,sizeof(double),1,fp);
+		fwrite(&conv,sizeof(int),1,fp);
+		fwrite(&surff,sizeof(double),1,fp);
+		fwrite(&Omega,sizeof(double),1,fp);
+		fwrite(&Omega_bk,sizeof(double),1,fp);
+		fwrite(&Tc,sizeof(double),1,fp);
+		fwrite(&pc,sizeof(double),1,fp);
+		fwrite(opa.name,sizeof(char),strlen(opa.name)+1,fp);
+		fwrite(eos.name,sizeof(char),strlen(eos.name)+1,fp);
+		fwrite(nuc.name,sizeof(char),strlen(nuc.name)+1,fp);
+		fwrite(atm_name,sizeof(char),strlen(atm_name)+1,fp);
+	} else {
+		fprintf(fp,"\n%d ",ndom);
+		for(i=0;i<ndom;i++) fprintf(fp,"%d ",*(map.gl.npts+i));
+		for(i=0;i<ndom+1;i++) fprintf(fp,"%16.16e ",*(map.gl.xif+i));
+		fprintf(fp,"%d %d",*map.ex.gl.npts,map.leg.npts);
+		fprintf(fp,"\n%16.16e %16.16e %16.16e %16.16e\n",M,R,X,Z);
+		fprintf(fp,"%16.16e %d %16.16e\n",Xc,conv,surff);
+		fprintf(fp,"%16.16e %16.16e\n",Omega,Omega_bk);
+		fprintf(fp,"%16.16e %16.16e\n",Tc,pc);
+		fprintf(fp,"%s\n",opa.name);
+		fprintf(fp,"%s\n",eos.name);
+		fprintf(fp,"%s\n",nuc.name);
+		fprintf(fp,"%s\n",atm_name);	
+	}
+	
+	map.R.write(fp,mode);
+	phi.write(fp,mode);
+	phiex.write(fp,mode);
+	p.write(fp,mode);
+	T.write(fp,mode);
+	w.write(fp,mode);
+	G.write(fp,mode);
+	zeros(nr,nth).write(fp,mode);
+	if(mode=='b') {
+		fwrite(&Ekman,sizeof(double),1,fp);
+	} else {
+		fprintf(fp,"\n%16.16e\n",Ekman);
+	}
+	fclose(fp);
+		
+}
+*/
 void star2d::write(const char *output_file,char mode) const {
 
 	OUTFILE fp;

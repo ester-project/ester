@@ -1,0 +1,663 @@
+\chapter{Numerical differentiation}
+
+\section{Introduction}
+
+Numerical differentiation refers to the algorithms for estimating the derivative of a function using only its 
+values at certain evaluation points.
+
+The simplest method for evaluating the derivative is the finite difference method. Given a function $f$
+sampled at points $x_i$ ($i=0,\ldots,n-1$), its derivative is estimated using the formula
+
+$$f'(x_i)=\frac{f(x_{i+1})-f(x_i)}{x_{i+1}-x_i}$$
+
+For equally spaced points $x_{i+1}-x_i=h$ and the formula becomes
+
+$$f'(x_i)=\frac{f(x_{i+1})-f(x_i)}{h}$$
+
+There are some variations of the finite difference formula, as for example the central difference
+
+$$f'(x_i)=\frac{f(x_{i+1})-f(x_{i-1})}{2h}$$
+
+When solving differential equations, it is a good idea to write this expression in matrix form:
+
+$$\left(\begin{array}{c}
+f'(x_0)\\f'(x_1)\\f'(x_2)\\f'(x_3)\\\vdots\\f'(x_{n-3})\\f'(x_{n-2})\\f'(x_{n-1})
+\end{array}
+\right)=
+\frac{1}{2h}\left(
+\begin{array}{cccccccc}
+-2& 2& 0& 0&\cdots&0&0&0\\
+-1& 0& 1& 0&\cdots&0&0&0\\
+ 0&-1& 0& 1&\cdots&0&0&0\\
+ 0& 0&-1& 0&\cdots&0&0&0\\ 
+\vdots&\vdots&\vdots&\vdots&\ddots&\vdots&\vdots&\vdots\\
+ 0& 0& 0& 0&\cdots&0&1&0\\ 
+ 0& 0& 0& 0&\cdots&-1&0&1\\
+ 0& 0& 0& 0&\cdots&0&-2&2
+\end{array}
+\right)
+\left(\begin{array}{c}
+f(x_0)\\f(x_1)\\f(x_2)\\f(x_3)\\\vdots\\f(x_{n-3})\\f(x_{n-2})\\f(x_{n-1})
+\end{array}
+\right)$$
+or, in more compact form
+$$f'(x_i)=\sum_{j=0}^{n-1} D_{ij} f(x_j)$$
+where $D_{ij}$ is the differentiation matrix.
+
+The finite difference method has order 2, which means that the error in the estimation of
+the derivative is proportional to $h^2$. In fact, it is possible to construct higher order methods
+using more points to estimate the derivative. As a rule of thumb, the order of the method
+is at least equal to the number of points used in the estimation of the derivative.
+
+Unfortunately, high order methods using equally spaced points are affected by the Runge's phenomenon. 
+Indeed, finite difference formulas of order $n$ are obtained by interpolating the function between 
+the points of interest using a polynomial of degree $n-1$. One of the main problems of polynomial
+interpolation using polynomials of high degree is the apparition of oscillations near the edges of the 
+interval between the interpolation points. The amplitude of the oscillations increase with the degree 
+of the polynomial and quickly degrades the derivative estimation for high order methods.
+ This effect is known as the Runge's phenomenon.
+
+Collocation or pseudospectral methods attempt to suppress the Runge's phenomenon by choosing a set of
+non-equally spaced points called collocation points. 
+
+\subsection{Collocation/Pseudospectral methods}
+
+Collocation methods are high order methods for estimating the derivative of a function knowing its 
+values at certain points called collocation points. The position of this points is different for each
+collocation method and is designed to suppress the Runge's phenomenon. A pseudospectral method
+with $n$ points has order $2n$.
+
+Each particular collocation method is associated with a family of orthogonal functions $P_l(x)$.
+This functions form a basis so, any arbitrary function $\phi(x)$ can be expressed as a linear
+combination of the basis functions
+$$\phi(x)=\sum_{l=0}^{\infty}a_lP_l(x)$$
+In practice, we will work with a finite discretization using $n$ points, so the expansion is truncated
+to use only $n$ basis functions, the fuction $\phi(x)$ is then approximated by
+$$\phi^{(n)}(x)=\sum_{l=0}^{n-1}\phi_lP_l(x)$$
+For regular functions and a well-adapted choice of the basis functions, collocation methods have
+exponential convergence, which means that the error in the approximation decreases exponentially
+with the the number of basis functions $n$.
+
+The functions $P_l(x)$ are orthogonal against some scalar product $\left<P_l,P_m\right>=\delta_{lm}$,
+then the coefficients on the expansion of $\phi(x)$ can be calculated as
+$$\phi_l=\left<\phi(x),P_l(x)\right>$$
+For each family of basis functions it exists a formula of gaussian quadrature for calculating this
+scalar product, then
+$$\phi_l=\sum_{j=0}^{n-1}w_jP_l(x_j)\phi(x_j)$$
+where $x_j$ and $w_j$ are the nodes and weights of the corresponding gaussian quadrature. Note
+that $x_j$ are the collocation points. The estimation of the first derivative at the collocation 
+points can be obtained as
+$$\begin{array}{rcl}
+\phi'(x_i)&=&\displaystyle\sum_{l=0}^{n-1}\phi_lP'_l(x_i)\\
+&=&\displaystyle\sum_{l=0}^{n-1}\left(\sum_{j=0}^{n-1}w_jP_l(x_j)\phi(x_j)\right)P'_l(x_i)\\
+&=&\displaystyle\sum_{j=0}^{n-1}\left(\sum_{l=0}^{n-1}w_jP_l(x_j)P'_l(x_i)\right)\phi(x_j)\\
+&=&\displaystyle\sum_{j=0}^{n-1}D_{ij}\phi(x_j)
+\end{array}$$
+where $D_{ij}=\displaystyle\sum_{l=0}^{n-1}w_jP_l(x_j)P'_l(x_i)$ is the differentiation matrix.
+We see that the derivative of a discretized function can be calculated
+by doing a matrix product.
+$$\Phi'=D\Phi$$
+Similarly, the second derivative will be 
+$$\Phi'=DD\Phi$$
+
+\subsection{Relation with spectral methods}
+
+Collocation methods are intimately related with spectral methods and share most of their properties.
+The main difference is that in spectral methods we work with the coefficients $\phi_l$ in 
+the expansion of the functions contrarily to collocation methods that deal directly with the values
+of the function at the collocation points. This has a clear advantage when solving differential
+equations with variable coefficients. For example, the equation
+$$\phi'(x)+a(x)\phi(x)=b(x)$$
+will be discretized using spectral methods as
+$$\sum_m\left<P_l,P'_m\right>\phi_m+\sum_{m,k}\left<P_l,P_mP_k\right>a_m\phi_k=b_l$$
+While the first product $\left<P_l,P'_m\right>$ use to be easy to calculate, this is not the case
+for the second one $\left<P_l,P_mP_k\right>$. By contrast, for collocation methods the discretization
+is just
+$$\sum_jD_{ij}\phi(x_j)+a(x_i)\phi(x_i)=b(x_i)$$
+
+It is possible to pass from one representation to the other using projection matrices. 
+To get the spectral coefficients of a function $\phi$, we multiply by the projection matrix $\mathcal{P}_{ij}$.
+$$\phi_l=\sum_{j=0}^{n-1}\mathcal{P}_{li}\phi(x_i)$$
+where $\mathcal{P}_{li}=w_iP_l(x_i)$. To recover the values at the collocation points we do
+$$\phi(x_i)=\sum_{l=0}^{n-1}\mathcal{P}^{-1}_{il}\phi_l$$
+where $\mathcal{P}^{-1}_{il}=P_l(x_i)$ is the matrix inverse of $\mathcal{P}_{li}$.
+
+\subsection{Multi-domain}
+
+One of the main drawbacks of pseudospectral collocation methods is that they does not deal correctly
+with non-regular functions. If the function that we want approximate has discontinuities, even in its
+first derivatives, the exponential convergence is lost and the approximated function shows oscillations
+around the discontinuity. This is known as the Gibbs phenomenon. 
+
+There are multiple ways to deal with this problem, one of them is to use a multi-domain approach. 
+It consists in dividing the integration domain in multiple subintervals. A division is placed at
+the points where there is a discontinuity in the function. So now the function is continuous
+in each subinterval and the pseudospectral approximation works properly.
+
+\section{Multi-domain Gauss-Lobatto numerical differentiation}
+
+In the Gauss-Lobatto (or more properly Gauss-Lobatto-Chebyshev) collocation method, the basis functions
+are Chebyshev polynomials of the first kind
+$$T_l(x)=\cos(l\arccos(x))$$
+defined in the interval $(-1,1)$. The collocation points are
+$$x_i=-\cos(\frac{i\pi}{n})$$
+The end points of the interval are also collocation points, which make this method
+well-suited for boundary value problems.
+
+In the ESTER library, multi-domain Gauss-Lobatto numerical differentiation is implemented in the
+\verb|diff_gl| class. To work with this class we should first create an object using
+\mint{cpp}|diff_gl gl(n);|
+The argument $n$ is optional (default 1) and indicates the number of domains. To change the number
+of domains we can do
+\mint{cpp}|gl.set_ndomains(n);|
+After setting the number of domains we must indicate the number of points per domain and the position
+of the domains. Let's see an example using three domains and the following set-up.
+\begin{itemize}
+\item First domain in the interval (0,5) with 30 points.
+\item Second domain in the interval (5,7.5) with 20 points.
+\item Third domain in the interval (7.5,10) with 20 points.
+\end{itemize}
+The \verb|diff_gl| object can be initialized using the code
+\begin{minted}[frame=single]{cpp}
+diff_gl gl;
+
+gl.set_ndomains(3); // Use 3 domains
+gl.set_xif(0.,5.,7.5,10.); // Set the limits between domains
+gl.set_npts(30,20,20); // Set the number of points in each domain
+
+gl.init(); // Initialize the object
+
+\end{minted}
+
+The limits between the subdomains and the number of points are stored in C arrays that are accessible 
+from outside the class, so the code above is equivalent to
+
+\begin{minted}[frame=single]{cpp}
+diff_gl gl;
+
+gl.set_ndomains(3);
+gl.xif[0]=0;gl.xif[1]=5;gl.xif[2]=7.5;gl.xif[3]=10;
+gl.npts[0]=30;gl.npts[1]=20;gl.npts[2]=20;
+
+gl.init(); 
+
+\end{minted}
+
+During the initialization, the following objects are created:
+
+\medskip
+\begin{tabular}{cccc}
+Name&Type&Size&Description\\
+\hline
+\texttt{ndomains}&\texttt{int}&&Number of domains\\
+\texttt{N}&\texttt{int}&&Total number of points\\
+\texttt{x}&\texttt{matrix}&(N,1)& Collocation points $x_i$\\
+\texttt{D}&\texttt{matrix\_block\_diag}&
+(N,N) in blocks of (npts[i],npts[i])&Differentiation matrix\\
+\texttt{I}&\texttt{matrix}&(1,N)&Integration matrix\\
+\texttt{P}&\texttt{matrix\_block\_diag}&
+(N,N) in blocks of (npts[i],npts[i])&Projection matrix $\mathcal{P}_{ij}$\\
+\texttt{P1}&\texttt{matrix\_block\_diag}&
+(N,N) in blocks of (npts[i],npts[i])&Inverse projection matrix $\mathcal{P}^{-1}_{ij}$\\
+\end{tabular}
+\medskip
+
+The following example illustrates the use of these objects:
+\begin{minted}[frame=single,mathescape]{cpp}
+[...] // Initialization (previous example)
+
+matrix y,dy,ddy;
+
+y=cos(gl.x); // Definition of function y
+dy=(gl.D,y); // First derivative 
+ddy=(gl.D,gl.D,y); // Second derivative 
+
+double integral;
+
+integral=(gl.I,y); // integral$=\int_{\mathtt{xif[0]=0}}^{\mathtt{xif[3]=10}}y(x)\mathrm{d}x$
+
+matrix yl;
+
+yl=(gl.P,y); // Spectral coefficients
+y=(gl.P1,yl); // Recover function values from spectral coefficients
+
+\end{minted}
+
+A function can also be interpolated at any point within the whole domain using the method
+\mint{cpp}|eval(y,x)|
+where \texttt{x} can be of type \texttt{double} or \texttt{matrix} and the return value will be 
+of always of type \texttt{matrix}. It returns the value of \texttt{y} at the point(s) \texttt{x}.
+We can use also a third argument of type \texttt{matrix}
+\mint{cpp}|eval(y,x,T)|
+where \texttt{T} is modified during the call and can be used to interpolate other functions. 
+For the previous example
+\begin{minted}[frame=single]{cpp}
+[...]
+
+double y0,dy0;
+matrix T;
+
+y0=gl.eval(y,2.5,T)(0); // Get the value of y in x=2.5. 
+						//The (0) at the end is needed because
+						// the result will be a matrix of size (1,1), 
+						//and we want the first (and only)
+						// value of this matrix
+								
+dy0=(T,dy)(0); // We use the matrix T to calculate the value of dy in x=2.5
+
+\end{minted}
+
+\subsection{Example}
+
+Let's see a full featured example that uses the class \texttt{diff\_gl}.
+We are going to solve the ordinary differential equation
+$$x^2\frac{\mathrm{d}^2y}{\mathrm{d}x^2}+x\frac{\mathrm{d}y}{\mathrm{d}x}-y=x^2$$
+within the interval $[0,1]$ with boundary conditions
+$$y(0)=0 \qquad y(1)=0$$
+whose exact solution is
+$$y=\frac{1}{3}x(x-1)$$
+To simplify the task, we will use only 1 domain. Later, we will see the class \texttt{solver} that
+allows to solve more complicated problems using several domains and several variables.
+
+The code is the following
+
+\begin{minted}[frame=single]{cpp}
+// The following example solves the differential equation
+//		x^2*y'' + x*y' - y = x^2
+// with boundary conditions y(0)=0 and y(1)=0
+// whose exact solution is
+//      y = x*(x-1)/3		
+
+#include<stdio.h>
+#include"numdiff.h"
+
+int main() {
+	
+	//Initialize a diff_gl object with 1 domain 
+
+	int n=20; // Number of points. 
+		//In fact, this example can be solved using only 3 points.
+	diff_gl gl(1);
+	
+	gl.set_npts(n);
+	gl.set_xif(0.,1.);
+	gl.init();
+	
+	// We will work with only 1 domain, so we create a reference to the 
+	// first (and only) block of gl.D
+	
+	matrix &D=gl.D.block(0);
+	matrix &x=gl.x;
+	
+	// Set up the operator matrix and the right hand side
+	
+	matrix op,rhs;
+	
+	op=x*x*(D,D)+x*D-eye(n);
+	rhs=x*x;
+	
+	// Introduce boundary conditions
+	
+	op.setrow(0,zeros(1,n));op(0,0)=1;
+	rhs(0)=0;
+	op.setrow(-1,zeros(1,n));op(-1,-1)=1;
+	rhs(-1)=0;
+	
+	// Solve the system
+	
+	matrix y;
+	
+	y=op.solve(rhs);
+	
+	// Interpolate the solution into a finer grid
+	
+	matrix x_fine,y_fine;
+	
+	x_fine=vector_t(0,1,100);
+	y_fine=gl.eval(y,x_fine);
+	
+	// Compare with the exact solution
+	
+	matrix y_exact;
+	
+	y_exact=x_fine*(x_fine-1)/3;
+	
+	printf("Solved using %d points\n",gl.N());
+	printf("Max. error=%e\n",max(abs(y_fine-y_exact)));
+	
+	return 0;	
+	
+}
+\end{minted}
+
+To run the example, just copy the code above to a file, and compile with \texttt{ester\_build}. 
+If the file is called \texttt{example.cpp} we will do
+\mint{bash}|$ ester_build example.cpp -o example|     %$
+and then execute using
+\mint{bash}|$ ./example|     %$
+The output will be something like
+\begin{verbatim}
+Solved using 20 points
+Max. error=5.329938e-16
+\end{verbatim}
+
+
+\section{Gauss-Legendre numerical differentiation}
+
+The Gauss-Legendre collocation method uses Legendre polynomials $P_l(x)$ as basis functions.
+For $n$ points, the collocation points are defined as the roots of $P_n(x)$.
+
+Legendre collocation is particularly adapted to deal with axisymmetric functions on the surface
+of a sphere, that depend only on the colatitude $\theta$, just by doing $x=\cos\theta$.
+
+The current implementation in ESTER considers only one domain, limited to one hemisphere $\theta\in[0,\pi/2]$.
+This is more efficient when dealing with functions that have a defined type of symmetry 
+with respect to the equator ($\theta=\pi/2$),
+ which is the case for all of the variables used in the ESTER code. 
+Legendre polynomials $P_l(\cos\theta)$ are symmetric with respect to $\theta=0$ (the pole). When
+dealing with antisymmetric functions with respect to the pole, the derivatives 
+$\frac{\mathrm{d}P_l}{\mathrm{d}\theta}$ are used as basis functions instead.
+
+The implementation considers four types of symmetry. Each type is indicated by its own suffix.
+
+\medskip
+
+\begin{tabular}{cccc}
+Suffix& Pole &Equator&Basis functions\\
+\hline
+00&Symmetric&Symmetric&$P_l(\cos\theta)$ with $l$ even \\
+01&Symmetric&Antisymmetric&$P_l(\cos\theta)$ with $l$ odd\\
+10&Antisymmetric&Symmetric&$\frac{\mathrm{d}P_l}{\mathrm{d}\theta}$ with $l$ odd\\
+11&Antisymmetric&Antisymmetric&$\frac{\mathrm{d}P_l}{\mathrm{d}\theta}$ with $l$ even\\
+\end{tabular}
+
+\medskip
+
+Legendre numerical differentiation is implemented in the class \texttt{diff\_leg}. In order to use
+it, we must start by creating an object
+\mint{cpp}|diff_leg leg;|
+Then we set the number of points by setting the variable \texttt{npts}, for example
+\mint{cpp}|leg.npts=20;|
+and initialize the object
+\mint{cpp}|leg.init();|
+The following objects are created:
+
+\medskip
+\begin{tabular}{cccc}
+Name&Type&Size&Description\\
+\hline
+\texttt{th}&\texttt{matrix}&(1,\texttt{npts})& Collocation points $x_i$\\
+\texttt{D\_00, D\_01, D\_10, D\_11}&\texttt{matrix}&
+(\texttt{npts},\texttt{npts})&Differentiation matrices\\
+\texttt{D2\_00, D2\_01, D2\_10, D2\_11}&\texttt{matrix}&
+(\texttt{npts},\texttt{npts})&Second differentiation matrices\\
+\texttt{lap\_00, lap\_01, lap\_10, lap\_11}&\texttt{matrix}&
+(\texttt{npts},\texttt{npts})&Laplacian operator
+$\frac{1}{\sin\theta}\frac{\mathrm{d}}{\mathrm{d}\theta}\left(\sin\theta\frac{\mathrm{d}}{\mathrm{d}\theta}\right)$\\
+\texttt{I\_00}&\texttt{matrix}&(\texttt{npts},1)&Integration matrix\\
+\texttt{P\_00, P\_01, P\_10, P\_11}&\texttt{matrix}&
+(\texttt{npts},\texttt{npts})&Projection matrices $\mathcal{P}_{ij}$\\
+\texttt{P1\_00, P1\_01, P1\_10, P1\_11}&\texttt{matrix}&
+(\texttt{npts},\texttt{npts})&Inverse projection matrices $\mathcal{P}^{-1}_{ij}$\\
+\end{tabular}
+\medskip
+
+Contrary to the \texttt{diff\_gl} class, in which the functions was supposed to be column vectors,
+the \texttt{diff\_leg} class expects functions to be defined as row vectors. This means that
+all the operators are applied using right multiplication. For example, the derivative will be
+\mint{cpp}|dy=(y,D_00);|
+The reason for that is more clear when working with 2D functions. Consider the code
+\begin{minted}[frame=single]{cpp}
+int nr=30;
+int nth=20;
+
+// Inititalize a diff_gl object with nr points
+diff_gl gl(1);
+gl.set_xif(0.,1.);gl.set_npts(nr);
+gl.init();
+
+// Initialize a diff_leg object with nth points
+diff_leg leg;
+leg.npts=nth;
+leg.init();
+
+// Define a 2D function 
+matrix y;
+y=gl.x*sin(leg.th)*sin(leg.th);
+	// gl.x is (nr,1) and leg.th is (1,nth), then y is (nr,nth)
+
+//Compute derivatives
+matrix dy_x,dy_th,dy_x_th;
+dy_x=(gl.D,y); // Derivative with respect to x
+dy_th=(y,leg.D_00); // Derivative with respect to th
+dy_x_th=(gl.D,y,leg.D_00); // Second derivative with respect to x and th
+
+\end{minted}
+
+Note that the derivative of a function will have a different type of symmetry. 
+For example, for a symmetric-symmetric 00 function, the first derivative is
+\mint{cpp}|dy=(y,leg.D_00)|
+which is of type 11. Then to calculate the second derivative we should do
+\mint{cpp}|ddy=(y,leg.D_00,leg.D_11)|
+or, using the second derivative matrix
+\mint{cpp}|ddy=(y,leg.D2_00)|
+where \texttt{ddy} has type 00.
+
+The integration matrix is defined only for type 00 functions and computes the integral between 0 and $\pi$
+with weight function $\sin\theta$
+
+\verb|(y,leg.I_00)|$\displaystyle=\int_0^{\pi}y\sin\theta\mathrm{d}\theta$
+
+We can interpolate functions at any point using \texttt{eval\_xx}, where \texttt{xx} is the type
+of symmetry, for example
+\mint{cpp}|eval_00(y,th)|
+gives the value of \texttt{y} at the point(s) \texttt{th}. Here, \texttt{th} can be either 
+\texttt{double} or \texttt{int} and the returned value is always of type \texttt{matrix}.
+We may also use a third argument
+\mint{cpp}|eval_00(y,th,T)|
+where \texttt{T} can be used to interpolate additional functions at the same point(s) by doing
+\mint{cpp}|(y2,T)|
+
+\subsection{Example}
+
+Let's see a more complete example. We will consider axisymmetric functions in spherical coordinates, 
+that is functions that depend only on $r$ and $\theta$. For the radial direction we use
+Gauss-Lobatto differentiation in the interval $(0,1)$, and Legendre differentiation for the
+latitudinal direction. We will write two functions, one for calculating the value of the laplacian
+at a certain point and another one to evaluate the volume integral within the whole sphere.
+For simplicity, we will consider only type 00 functions.
+
+The code is as follows
+
+\begin{minted}[frame=single]{cpp}
+#include<stdio.h>
+#include"numdiff.h"
+#include"constants.h" //For the defintion of PI
+
+//Function prototypes
+double laplacian(matrix y,double r0,double th0);
+double integral(matrix y);
+
+// Define diff_gl and diff_leg objects as global variables
+diff_gl gl; 
+diff_leg leg;
+// Create references for spherical coordinates
+matrix &r=gl.x,&th=leg.th;
+
+int main() {
+
+	//Initialize gl. In the example we will use 2 domains
+	gl.set_ndomains(2);
+	gl.set_xif(1e-12,0.2,1.); // Use 1e-12 as the interior limit (instead of 0)
+							  //to avoid the central singularity
+	gl.set_npts(100,100);
+	gl.init();
+	//Initialize leg
+	leg.npts=50;
+	leg.init();
+	
+	matrix y;
+	
+	//Define the function y
+	y=r*r*r*(1+sin(th)*sin(th));
+	
+	double lap_y,int_y;
+	double r0=0.3,th0=PI/3;
+	
+	lap_y=laplacian(y,r0,th0);
+	int_y=integral(y);
+	
+	printf("The value of the laplacian at (%f,%f) is %e\n",r0,th0,lap_y);
+	printf("The volume integral is %e\n",int_y);
+	
+	return 0;	
+	
+}
+
+// Function for calculating the laplacian of y at (r0,th0)
+double laplacian(matrix y,double r0,double th0) {
+
+	matrix lap_y;
+	
+	lap_y=(gl.D,r*r*gl.D,y)/r/r+(y,leg.lap_00)/r/r;
+	
+	//Interpolate in the direction of r
+	lap_y=gl.eval(lap_y,r0); // Now lap_y is (1,nth)
+	//Interpolate in the direction of theta
+	lap_y=leg.eval_00(lap_y,th0); // Now lap_y is (1,1)
+	
+	return lap_y(0);
+	// lap_y has only 1 element, but we must include (0) 
+	// at the end to return a double
+}
+// Function for calculating the volume integral of y
+double integral(matrix y) {
+
+	return 2*PI*(gl.I,r*r*y,leg.I_00)(0);
+
+}
+
+\end{minted}
+
+After running the code, the output should be
+
+\begin{verbatim}
+The value of the laplacian at (0.300000,1.047198) is 6.150000e+00
+The volume integral is 3.490659e+00
+\end{verbatim}
+
+\section{Reference}
+
+\renewcommand{\funclistcolumns}{3}
+\funclist{numdiff}
+
+\funcrefbegin{numdiff}
+\funcsec{\bf Gauss-Lobatto differentiation}
+\subsection{Gauss-Lobatto differentiation}
+\funcsec{\sc Data members}
+\subsubsection{Data members}
+
+\member{ndomains}{int}{Number of domains (read-only).}
+\member{N}{int}{Total number of points, including all the domains (read-only).}
+\member{x}{matrix}{Collocation points (N x 1).}
+\member{D}{matrix\_block\_diag}{Differentiation matrix.}
+\member{P}{matrix\_block\_diag}{Projection matrix.}
+\member{P1}{matrix\_block\_diag}{Inverse projection matrix.}
+\member{I}{matrix}{Integration matrix.}
+\member{npts}{int *}{Array of size ndomains() with the number of points in each domain.}
+\member{xif}{double *}{Array of size ndomains()+1 with the limits between domains.}
+
+\funcsec{\sc Functions}
+\subsubsection{Functions}
+
+\function{set\_ndomains(n)}{Method}
+{n (int): Number of domains}
+{None}
+{Change the number of domains.}
+
+\function{set\_npts(n0,n1,\ldots)}{Method}
+{n0,n1,\ldots (int): Number of points}
+{None}
+{Change the number of points in each domain.}
+
+\function{set\_xif(x0,x1,\ldots)}{Method}
+{n0,n1,\ldots (double): Number of points}
+{None}
+{Change the position of the limits between domains.}
+
+\function{init()}{Method}{None}{None}{Initializes the object.}
+
+\function{eval(y,x,T)}{Method}
+{y (matrix): Function to evaluate\newline
+x (matrix or double): Evaluation point(s)\newline
+T (matrix): Interpolating matrix (optional, output) \newline
+}{matrix}{Evaluate function y at point(s) x. If y is NxM and x is Kx1, the returned matrix is KxM.
+The optional matrix T can be used to interpolate additional functions by multiplying (T,y2).} 
+
+\funcsec{\bf Legendre differentiation}
+\subsection{Legendre differentiation}
+\funcsec{\sc Data members}
+\subsubsection{Data members}
+\member{npts}{int}{Number of points.}
+\member{th}{matrix}{$\theta$ values of the collocation points (1 x npts).}
+\member{P\_00,P\_01,P\_10,P\_11}{matrix}{Projection matrices for each type of symmetry.}
+\member{P1\_00,P1\_01,P1\_10,P1\_11}{matrix}{Inverse projection matrices for each type of symmetry.}
+\member{D\_00,D\_01,D\_10,D\_11}{matrix}{Differentiation matrices for each type of symmetry.}
+\member{D2\_00,D2\_01,D2\_10,D2\_11}{matrix}{Second differentiation matrices for each type of symmetry.}
+\member{lap\_00,lap\_01,lap\_10,lap\_11}{matrix}{
+Laplacian operator matrices for each type of symmetry.
+$$\mathtt{(lap\_xx,f)}\equiv
+\frac{1}{\sin\theta}\frac{\mathrm{d}}{\mathrm{d}\theta}
+\left(\sin\theta\frac{\mathrm{d}\mathtt{f}}{\mathrm{d}\theta}\right)$$
+}
+\member{I\_00}{matrix}{
+Integration matrix (npts x 1) for symmetric functions.
+$$\mathtt{(I\_00,f)}\equiv \int_0^\pi\mathtt{f}\sin(\theta)\mathrm{d}\theta$$
+}
+\funcsec{\sc Functions}
+\subsubsection{Functions}
+\function{init()}{Method}{None}{None}{Initializes the object.}
+\function{eval\_00(y,th,T)}{Method}
+{y (matrix): Function to evaluate\newline
+th (matrix or double): Evaluation point(s)\newline
+T (matrix): Interpolating matrix (optional, output) \newline
+}{matrix}{Evaluate function y($\theta$) at point(s) th. 
+The function y should be symmetric at the pole and the equator.
+If y is MxN and x is 1xK, the returned matrix is MxK.
+The optional matrix T can be used to interpolate additional functions by multiplying (T,y2).} 
+\function{eval\_01(y,th,T)}{Method}
+{y (matrix): Function to evaluate\newline
+th (matrix or double): Evaluation point(s)\newline
+T (matrix): Interpolating matrix (optional, output) \newline
+}{matrix}{Evaluate function y($\theta$) at point(s) th. 
+The function y should be symmetric at the pole and antisymmetric the equator.
+If y is MxN and x is 1xK, the returned matrix is MxK.
+The optional matrix T can be used to interpolate additional functions by multiplying (T,y2).} 
+\function{eval\_10(y,th,T)}{Method}
+{y (matrix): Function to evaluate\newline
+th (matrix or double): Evaluation point(s)\newline
+T (matrix): Interpolating matrix (optional, output) \newline
+}{matrix}{Evaluate function y($\theta$) at point(s) th. 
+The function y should be antisymmetric at the pole and symmetric at the equator.
+If y is MxN and x is 1xK, the returned matrix is MxK.
+The optional matrix T can be used to interpolate additional functions by multiplying (T,y2).} 
+\function{eval\_11(y,th,T)}{Method}
+{y (matrix): Function to evaluate\newline
+th (matrix or double): Evaluation point(s)\newline
+T (matrix): Interpolating matrix (optional, output) \newline
+}{matrix}{Evaluate function y($\theta$) at point(s) th. 
+The function y should be antisymmetric at the pole and the equator.
+If y is MxN and x is 1xK, the returned matrix is MxK.
+The optional matrix T can be used to interpolate additional functions by multiplying (T,y2).} 
+\function{eval(y,th,T,par\_pol,par\_eq)}{Method}
+{y (matrix): Function to evaluate\newline
+th (matrix or double): Evaluation point(s)\newline
+T (matrix): Interpolating matrix (output) \newline
+par\_pol (int): Type of symmetry at the pole \newline
+par\_eq (int): Type of symmetry at the equator
+}{matrix}{Evaluate function y($\theta$) at point(s) th. 
+par\_pol and par\_eq can be 0 (symmetric) or 1 (antisymmetric).
+If y is MxN and x is 1xK, the returned matrix is MxK.
+The matrix T can be used to interpolate additional functions by multiplying (T,y2).} 
+\funcrefend
+
