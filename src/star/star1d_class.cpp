@@ -2,13 +2,13 @@
 #include<string.h>
 #include<stdlib.h>
 
-star1d::star1d():r(gl.x),D(gl.D),nr(gl.N),ndomains(gl.ndomains) {}
+star1d::star1d():r(map.r),D(map.D),nr(map.gl.N),ndomains(map.gl.ndomains) {}
 
 star1d::~star1d() {
 }
 
 star1d::star1d(const star1d &A) : star(A)
-	,r(gl.x),D(gl.D),nr(gl.N),ndomains(gl.ndomains) {
+	,r(map.r),D(map.D),nr(map.gl.N),ndomains(map.gl.ndomains) {
 
 	copy(A);
 	
@@ -25,13 +25,10 @@ star1d &star1d::operator=(const star1d &A) {
 
 void star1d::copy(const star1d &A) {
 
-	gl=A.gl;
-
-	surff=A.surff;
-	conv=A.conv;
+	
 
 	strcpy(atm_name,A.atm_name);
-	Xc=A.Xc;
+	
 
 	fill();
 
@@ -46,8 +43,8 @@ void star1d::write(const char *output_file,char mode) const {
 	if(mode=='b') {
 		fp.write("tag",tag,7);
 		fp.write("ndomains",&ndomains);
-		fp.write("npts",gl.npts,ndomains);
-		fp.write("xif",gl.xif,ndomains+1);
+		fp.write("npts",map.gl.npts,ndomains);
+		fp.write("xif",map.gl.xif,ndomains+1);
 		fp.write("M",&M);
 		fp.write("R",&R);
 		fp.write("X",&X);
@@ -64,8 +61,8 @@ void star1d::write(const char *output_file,char mode) const {
 	} else {
 		fp.write_fmt("tag","%s",&tag);
 		fp.write_fmt("ndomains","%d",&ndomains);
-		fp.write_fmt("npts","%d",gl.npts,ndomains);
-		fp.write_fmt("xif","%.16e",gl.xif,ndomains+1);
+		fp.write_fmt("npts","%d",map.gl.npts,ndomains);
+		fp.write_fmt("xif","%.16e",map.gl.xif,ndomains+1);
 		fp.write_fmt("M","%.16e",&M);
 		fp.write_fmt("R","%.16e",&R);
 		fp.write_fmt("X","%.16e",&X);
@@ -112,9 +109,9 @@ int star1d::read(const char *input_file){
 	
 	if(mode=='b') {
 		fp.read("ndomains",&ndom);
-		gl.set_ndomains(ndom);
-		fp.read("npts",gl.npts);
-		fp.read("xif",gl.xif);
+		map.gl.set_ndomains(ndom);
+		fp.read("npts",map.gl.npts);
+		fp.read("xif",map.gl.xif);
 		fp.read("M",&M);
 		fp.read("R",&R);
 		fp.read("X",&X);
@@ -130,9 +127,9 @@ int star1d::read(const char *input_file){
 		fp.read("atm_name",atm_name);
 	} else {
 		fp.read_fmt("ndomains","%d",&ndom);
-		gl.set_ndomains(ndom);
-		fp.read_fmt("npts","%d",gl.npts);
-		fp.read_fmt("xif","%le",gl.xif);
+		map.gl.set_ndomains(ndom);
+		fp.read_fmt("npts","%d",map.gl.npts);
+		fp.read_fmt("xif","%le",map.gl.xif);
 		fp.read_fmt("M","%le",&M);
 		fp.read_fmt("R","%le",&R);
 		fp.read_fmt("X","%le",&X);
@@ -148,7 +145,8 @@ int star1d::read(const char *input_file){
 		fp.read_fmt("atm_name","%s",atm_name);
 	}
 		
-	gl.init();
+	map.leg.npts=1;
+	map.init();
 	
 	fp.read("phi",&phi);
 	fp.read("p",&p);
@@ -187,9 +185,9 @@ int star1d::read_old(const char *input_file){
 	
 	if(mode=='b') {
 		fread(&ndom,sizeof(int),1,fp);
-		gl.set_ndomains(ndom);
-		fread(gl.npts,sizeof(int),ndom,fp);
-		fread(gl.xif,sizeof(double),ndom+1,fp);
+		map.gl.set_ndomains(ndom);
+		fread(map.gl.npts,sizeof(int),ndom,fp);
+		fread(map.gl.xif,sizeof(double),ndom+1,fp);
 		fread(&M,sizeof(double),1,fp);
 		fread(&R,sizeof(double),1,fp);
 		fread(&X,sizeof(double),1,fp);
@@ -213,9 +211,9 @@ int star1d::read_old(const char *input_file){
 		while(*(c++)!='\0') *c=fgetc(fp);
 	} else {
 		fscanf(fp,"\n%d ",&ndom);
-		gl.set_ndomains(ndom);
-		for(i=0;i<ndom;i++) fscanf(fp,"%d ",(gl.npts+i));
-		for(i=0;i<ndom+1;i++) fscanf(fp,"%le ",(gl.xif+i));
+		map.gl.set_ndomains(ndom);
+		for(i=0;i<ndom;i++) fscanf(fp,"%d ",(map.gl.npts+i));
+		for(i=0;i<ndom+1;i++) fscanf(fp,"%le ",(map.gl.xif+i));
 		fscanf(fp,"\n%le %le %le %le\n",&M,&R,&X,&Z);
 		fscanf(fp,"%le %d %le\n",&Xc,&conv,&surff);		
 		fscanf(fp,"%le %le\n",&Tc,&pc);
@@ -224,7 +222,8 @@ int star1d::read_old(const char *input_file){
 		fscanf(fp,"%s\n",nuc.name);
 		fscanf(fp,"%s\n",atm_name);
 	}
-	gl.init();
+	map.leg.npts=1;
+	map.init();
 	
 	phi.read(nr,1,fp,mode);
 	p.read(nr,1,fp,mode);
@@ -252,7 +251,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 			printf("Error reading input file: %s\n",input_file);
 			return 0;
 		}
-		gl0=gl;
+		gl0=map.gl;
 	} else {
 		if(!fp.open(default_params)) { 
 			printf("Can't open default parameters file %s\n",default_params);
@@ -318,13 +317,14 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 	
 	if (*input_file) {
 		if(change_grid) {
-			gl.init();
-			T=gl0.eval(T,gl.x,Tr);
+			map.init();
+			T=gl0.eval(T,map.gl.x,Tr);
 			p=(Tr,p);
 			phi=(Tr,phi);
 		}
 	} else {
-		gl.init();
+		map.leg.npts=1;
+		map.init();
 		T=1-0.5*r*r;
 		p=T;
 		phi=-T;
@@ -343,7 +343,7 @@ int star1d::check_arg(char *arg,char *val,int *change_grid) {
 
 	if(!strcmp(arg,"ndomains")) {
 		if(val==NULL) return 2;
-		gl.set_ndomains(atoi(val));
+		map.gl.set_ndomains(atoi(val));
 		*change_grid=1;
 	}
 	else if(!strcmp(arg,"npts")) {
@@ -351,13 +351,13 @@ int star1d::check_arg(char *arg,char *val,int *change_grid) {
 		tok=strtok(val,",");
 		i=0;
 		while(tok!=NULL) {
-			*(gl.npts+i)=atoi(tok);
+			*(map.gl.npts+i)=atoi(tok);
 			tok=strtok(NULL,",");
 			i++;
 		}
 		if(i==1) {
-			for(i=1;i<gl.ndomains;i++) {
-				*(gl.npts+i)=*gl.npts;
+			for(i=1;i<map.gl.ndomains;i++) {
+				*(map.gl.npts+i)=*map.gl.npts;
 			}
 		}	
 		*change_grid=1;
@@ -367,16 +367,16 @@ int star1d::check_arg(char *arg,char *val,int *change_grid) {
 		tok=strtok(val,",");
 		i=0;
 		while(tok!=NULL) {
-			*(gl.xif+i)=atof(tok);
+			*(map.gl.xif+i)=atof(tok);
 			tok=strtok(NULL,",");
 			i++;
 		}
 		if(i==1) {
-			double gamma=*gl.xif;
-			*gl.xif=0;
-			for(i=1;i<gl.ndomains;i++) 
-				*(gl.xif+i)=1.-pow(1-(double) i/gl.ndomains,gamma);
-			*(gl.xif+gl.ndomains)=1;
+			double gamma=*map.gl.xif;
+			*map.gl.xif=0;
+			for(i=1;i<map.gl.ndomains;i++) 
+				*(map.gl.xif+i)=1.-pow(1-(double) i/map.gl.ndomains,gamma);
+			*(map.gl.xif+map.gl.ndomains)=1;
 		}		
 		*change_grid=1;
 	}

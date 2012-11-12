@@ -243,7 +243,10 @@ int mapping::remap() {
 	ex.D=ex.gl.D/ex.z/ex.z;
 	
 	
-	if(exist(rz<0)||exist(ex.rz<0)) return 1;
+	if(exist(rz<0)||exist(ex.rz<0)) {
+		fprintf(stderr,"WARNING: (mapping) Found rz<0\n");
+		return 1;
+	}
 	
 	return 0;
 	

@@ -125,30 +125,32 @@ void write(const star1d &A,char *var,char *fmt) {
 	} else if(!strcmp(var,"npts")) {
 		if(fmt) {
 			for(i=0;i<A.ndomains;i++) {	
-				fprintf(stdout,fmt,*(A.gl.npts+i));
+				fprintf(stdout,fmt,*(A.map.gl.npts+i));
 				if(i<A.ndomains-1) fprintf(stdout,",");
 			}
 		} else {
-			fwrite(A.gl.npts,sizeof(int),A.ndomains,stdout);
+			fwrite(A.map.gl.npts,sizeof(int),A.ndomains,stdout);
 		}
 	} else if(!strcmp(var,"xif")) {
 		if(fmt) {
 			for(i=0;i<A.ndomains+1;i++) {	
-				fprintf(stdout,fmt,*(A.gl.xif+i));
+				fprintf(stdout,fmt,*(A.map.gl.xif+i));
 				if(i<A.ndomains) fprintf(stdout,",");
 			}
 		} else {
-			fwrite(A.gl.xif,sizeof(double),A.ndomains+1,stdout);
+			fwrite(A.map.gl.xif,sizeof(double),A.ndomains+1,stdout);
 		}
 	} else if(!strcmp(var,"ps")) {
-		if(fmt) fprintf(stdout,fmt,A.ps);
+		double ps=A.ps(0);
+		if(fmt) fprintf(stdout,fmt,ps);
 		else {
-			fwrite(&A.ps,sizeof(double),1,stdout);
+			fwrite(&ps,sizeof(double),1,stdout);
 		}
 	} else if(!strcmp(var,"Ts")) {
-		if(fmt) fprintf(stdout,fmt,A.Ts);
+		double Ts=A.Ts(0);
+		if(fmt) fprintf(stdout,fmt,Ts);
 		else {
-			fwrite(&A.Ts,sizeof(double),1,stdout);
+			fwrite(&Ts,sizeof(double),1,stdout);
 		}
 	} else if(!strcmp(var,"m")) {
 		if(fmt) fprintf(stdout,fmt,A.m);
@@ -243,8 +245,8 @@ void write(const star1d &A,char *var,char *fmt) {
 		if(fmt) matrix_fmt(fmt,m);
 		else m.write(stdout,'b');
 	} else if(!strcmp(var,"I")) {
-		if(dim) m=A.gl.I*A.units.r;
-		else m=A.gl.I;
+		if(dim) m=A.map.gl.I*A.units.r;
+		else m=A.map.gl.I;
 		if(fmt) matrix_fmt(fmt,m);
 		else m.write(stdout,'b');
 	} else if(!strcmp(var,"rho")) {

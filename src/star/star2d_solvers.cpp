@@ -202,17 +202,6 @@ double star2d::solve(solver *op) {
 	err2=fabs(dTc(0));err=err2>err?err2:err;
 	while(fabs(h*dTc(0))>dmax) h/=2;
 	//printf("err(Tc)=%e\n",err2);
-	matrix R0,dR;
-	R0=map.R;
-	dR=op->get_var("Ri").block(1,ndomains,0,-1);
-	while(exist(abs(h*dR)>dmax*R0)) h/=2;
-	map.R=R0+h*dR;
-	while(map.remap()) {
-		h/=2;
-		map.R=R0+h*dR;
-	}
-
-
 
 	phi+=h*dphi;
 	phiex+=h*dphiex;
@@ -224,6 +213,11 @@ double star2d::solve(solver *op) {
 	w+=h*op->get_var("w");
 	G+=h*op->get_var("G");
 	
+	matrix dRi;
+	dRi=op->get_var("Ri");
+	update_map(h*dRi);
+	err2=max(abs(dRi));err=err2>err?err2:err;
+	
 	rho0=rho;
 	
 	fill();
@@ -232,6 +226,21 @@ double star2d::solve(solver *op) {
 	
 	return err;
 
+}
+
+void star2d::update_map(matrix dR) {
+
+	double h=1,dmax=config.newton_dmax;
+	
+	matrix R0;
+	R0=map.R;
+	dR=dR.block(1,ndomains,0,-1);
+	while(exist(abs(h*dR)>dmax*R0)) h/=2;
+	map.R+=h*dR;
+	while(map.remap()) {
+		h/=2;
+		map.R=R0+h*dR;
+	}
 }
 
 void star2d::solve_definitions(solver *op) {
@@ -312,12 +321,12 @@ void star2d::solve_poisson(solver *op) {
 	j0=0;
 	for(n=0;n<ndomains+1;n++) {
 		if(!n) {
-			op->bc_bot2_add_l(n,"phi","phi",ones(1,nth),D.block(n).row(0));
-			rhs.setrow(j0,-(D,phi).row(j0));
+			op->bc_bot2_add_l(n,"phi","phi",ones(1,nth),D.block(0).row(0));
+			rhs.setrow(0,-(D,phi).row(0));
 		} else {
 			if(n<ndomains) op->bc_bot2_add_l(n,"phi","phi",1/rz.row(j0),D.block(n).row(0));
 			else op->bc_bot2_add_l(n,"phi","phi",1/map.ex.rz.row(0),Dex.row(0));
-			op->bc_bot1_add_l(n,"phi","phi",-1/rz.row(j0-1),D.block(n-1).row(map.gl.npts[n-1]-1));
+			op->bc_bot1_add_l(n,"phi","phi",-1/rz.row(j0-1),D.block(n-1).row(-1));
 			
 			if(n<ndomains) 
 				op->bc_bot2_add_d(n,"phi","rz",-1/rz.row(j0)/rz.row(j0)*(D,phi).row(j0));
@@ -627,9 +636,8 @@ void star2d::solve_dyn(solver *op) {
 
 void star2d::solve_temp(solver *op) {
 
-	int n,j0,j1;
-	matrix q,TT,lum,Frad,qconv,qrad;
-	matrix rhs_T,rhs_Lambda,rhs_lum,rhs_Frad;
+	int n,j0;
+	matrix q;
 	char eqn[8];
 	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
 		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
@@ -639,6 +647,8 @@ void star2d::solve_temp(solver *op) {
 	
 	//Luminosity
 
+	matrix rhs_lum,lum;
+	
 	lum=zeros(ndomains,1);
 	j0=0;
 	for(n=0;n<ndomains;n++) {
@@ -665,6 +675,9 @@ void star2d::solve_temp(solver *op) {
 	op->set_rhs("lum",rhs_lum);
 	
 	//Frad
+	
+	matrix rhs_Frad,Frad;
+	int j1;
 	
 	Frad=-opa.xi*(gzz*(D,T)+gzt*(T,Dt));
 	rhs_Frad=zeros(ndomains*2-1,nth);
@@ -701,6 +714,9 @@ void star2d::solve_temp(solver *op) {
 		
 	
 	//Temperature
+	
+	matrix rhs_T,rhs_Lambda;
+	matrix TT,qconv,qrad;
 	
 	qrad=zeros(nr,nth);
 	qconv=qrad;
@@ -1142,7 +1158,6 @@ void star2d::solve_Teff(solver *op) {
 		
 }
 
-#include<string.h>
 void star2d::check_jacobian(solver *op,const char *eqn) {
 
 	star2d B;

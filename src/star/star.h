@@ -17,6 +17,7 @@ class star {
   protected:
 	star();
   public:
+  		mapping map;
     matrix rho,phi,p,T,Xr;
     double X,Y,Z;
     double R,M;
@@ -24,6 +25,11 @@ class star {
   	opa_struct opa;
 	nuc_struct nuc;
 	eos_struct eos;
+	matrix ps,Ts;
+	double m,pi_c,Lambda;
+	double surff;
+	int conv;
+	double Xc;
 
 	virtual ~star();
 	star(const star &);
@@ -41,17 +47,12 @@ class star {
 class star1d : public star {
 	void copy(const star1d &);
   public:
-	diff_gl gl;
 	const int &nr,&ndomains;
 	const matrix &r;
 	const matrix_block_diag &D;
-	matrix Frad;
 	char atm_name[16];
 	
-	double ps,Ts,m,pi_c,Lambda;
-	double surff;
-	int conv;
-	double Xc;
+	
 	
 	struct units_struct {
 		double rho,p,phi,T,r,F;
@@ -76,6 +77,8 @@ class star1d : public star {
 	void solve_dim(solver *);
 	void solve_map(solver *);
 	void solve_definitions(solver *);
+	void solve_Teff(solver *);
+	void solve_gsup(solver *);
 	
 	void atmosphere();
 	void solve_atm(solver *);
@@ -89,33 +92,32 @@ class star1d : public star {
 	void upd_Xr();
 	
 	void calc_units();
-	void calc_Frad();
 	
 	matrix N2() const;
 	double luminosity() const;
 	double Teff() const;
+	double gsup() const;
 	
 	void fill();
 	
 	void spectrum(figure *,const matrix &,const char *line="") const;
+	
+	void check_jacobian(solver *op,const char *eqn);
 };
 
 class star2d : public star {
 	void copy(const star2d &);
   public:
-	mapping map;
+	
 	const int &nr,&nth,&nex,&ndomains;
 	const matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
 	const matrix_block_diag &D;
 	matrix phiex;
 	matrix vr,vt,G,w;
 	char atm_name[16];
-	double m,pi_c,Lambda;
-	matrix ps,Ts;
-	double surff;
-	int conv;
+
 	double Omega,Omega2,Omega_bk,Omegac;
-	double Xc;
+
 	
 	
 	double Ekman;
@@ -153,6 +155,8 @@ class star2d : public star {
 	void solve_Teff(solver *);
 	void solve_vbl(solver *,const char *eqn,matrix &rhs);
 	void solve_definitions(solver *);
+	
+	void update_map(matrix dR);
 	
 	void atmosphere();
 	void solve_atm(solver *);

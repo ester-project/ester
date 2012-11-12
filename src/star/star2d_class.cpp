@@ -40,6 +40,11 @@ void star::copy(const star &A) {
 	R=A.R;M=A.M;
 	Tc=A.Tc;pc=A.pc;
 	X=A.X;Z=A.Z;
+	surff=A.surff;
+	conv=A.conv;
+	Xc=A.Xc;
+	
+	map=A.map;
 	
 }
 
@@ -68,8 +73,6 @@ star2d &star2d::operator=(const star2d &A) {
 }
 
 void star2d::copy(const star2d &A) {
-
-	map=A.map;
 	
 	phiex=A.phiex;
 	w=A.w;
@@ -77,12 +80,8 @@ void star2d::copy(const star2d &A) {
 	vr=A.vr;vt=A.vt;G=A.G;
 
 	Omega=A.Omega;Omega_bk=A.Omega_bk;
-	surff=A.surff;
-	conv=A.conv;
 	
 	strcpy(atm_name,A.atm_name);
-	
-	Xc=A.Xc;
 	
 	Ekman=A.Ekman;
 
@@ -560,7 +559,7 @@ void star2d::init(const star1d &A,int npts_th,int npts_ex) {
 	if(npts_th==-1) npts_th=8;
 	if(npts_ex==-1) npts_ex=8;
 
-	map.gl=A.gl;
+	map.gl=A.map.gl;
 	map.leg.npts=npts_th;
 	map.ex.gl.set_npts(npts_ex);
 	map.init();
