@@ -12,28 +12,42 @@
 
 #include<cmath>
 
-class star {
-	void copy(const star &);
-  protected:
-	star();
+class star1d;
+
+class star2d {
+	void copy(const star2d &);
   public:
-  		mapping map;
+  	star2d();
+  	mapping map;
+  	const int &nr,&nth,&nex,&ndomains;
+	const matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
+	const matrix_block_diag &D;
     matrix rho,phi,p,T,Xr;
+    matrix phiex;
+	matrix vr,vt,G,w;
     double X,Y,Z;
     double R,M;
     double rhoc,Tc,pc;
+    double Omega,Omega_bk,Omegac;
+   	double Ekman;
   	opa_struct opa;
 	nuc_struct nuc;
 	eos_struct eos;
+	char atm_name[16];
 	matrix ps,Ts;
 	double m,pi_c,Lambda;
 	double surff;
 	int conv;
 	double Xc;
 
-	virtual ~star();
-	star(const star &);
-	star &operator=(const star &);
+	struct units_struct {
+		double rho,p,phi,T,Omega,r,v,F;
+	} units;
+	void calc_units();
+
+	virtual ~star2d();
+	star2d(const star2d &);
+	star2d &operator=(const star2d &);
 	struct config_struct {
 		double newton_dmax,verbose;
 	} config;
@@ -42,94 +56,6 @@ class star {
 	int nuclear();
 	int eq_state();
 
-};
-
-class star1d : public star {
-	void copy(const star1d &);
-  public:
-	const int &nr,&ndomains;
-	const matrix &r;
-	const matrix_block_diag &D;
-	char atm_name[16];
-	
-	
-	
-	struct units_struct {
-		double rho,p,phi,T,r,F;
-	} units;
-	
-	star1d();
-	~star1d();
-	star1d(const star1d &);
-	star1d &operator=(const star1d &);
-	int init(const char *input_file,const char *param_file,int argc,char *argv[]);
-	int check_arg(char *arg,char *val,int *change_grid);
-	int read(const char *input_file);
-	void write(const char *output_file,char output_mode) const;
-	int read_old(const char *input_file);
-	
-	solver *init_solver();
-	void register_variables(solver *op);
-	double solve(solver *);
-	void solve_poisson(solver *);
-	void solve_pressure(solver *);
-	void solve_temp(solver *);
-	void solve_dim(solver *);
-	void solve_map(solver *);
-	void solve_definitions(solver *);
-	void solve_Teff(solver *);
-	void solve_gsup(solver *);
-	
-	void atmosphere();
-	void solve_atm(solver *);
-	void atm_simple();
-	void solve_atm_simple(solver *);
-	void atm_test();
-	void solve_atm_test(solver *);
-	
-	void update_map(matrix dR);
-	
-	void upd_Xr();
-	
-	void calc_units();
-	
-	matrix N2() const;
-	double luminosity() const;
-	double Teff() const;
-	double gsup() const;
-	
-	void fill();
-	
-	void spectrum(figure *,const matrix &,const char *line="") const;
-	
-	void check_jacobian(solver *op,const char *eqn);
-};
-
-class star2d : public star {
-	void copy(const star2d &);
-  public:
-	
-	const int &nr,&nth,&nex,&ndomains;
-	const matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
-	const matrix_block_diag &D;
-	matrix phiex;
-	matrix vr,vt,G,w;
-	char atm_name[16];
-
-	double Omega,Omega2,Omega_bk,Omegac;
-
-	
-	
-	double Ekman;
-	struct units_struct {
-		double rho,p,phi,T,Omega,r,v,F;
-	} units;
-	
-	
-	star2d();
-	~star2d();
-	star2d(const star2d &);
-	star2d &operator=(const star2d &);
 	void init(const star1d &A,int npts_th,int npts_ex);
 	int init(const char *input_file,const char *param_file,int argc,char *argv[]);
 	int check_arg(char *arg,char *val,int *change_grid);
@@ -162,11 +88,9 @@ class star2d : public star {
 	void solve_atm(solver *);
 	void atm_simple();
 	void solve_atm_simple(solver *);
-	void atm_test();
-	void solve_atm_test(solver *);
+
 	
 	void upd_Xr();
-	void calc_units();
 	void calc_veloc();
 	
 	double luminosity() const;
@@ -192,6 +116,54 @@ class star2d : public star {
 
 	void check_jacobian(solver *op,const char *eqn);
 
+};
+
+class star1d : public star2d {
+	void copy(const star1d &);
+  public:	
+	star1d();
+	~star1d();
+	star1d(const star1d &);
+	star1d &operator=(const star1d &);
+	int init(const char *input_file,const char *param_file,int argc,char *argv[]);
+	int check_arg(char *arg,char *val,int *change_grid);
+	int read(const char *input_file);
+	void write(const char *output_file,char output_mode) const;
+	int read_old(const char *input_file);
+	
+	solver *init_solver();
+	void register_variables(solver *op);
+	double solve(solver *);
+	void solve_poisson(solver *);
+	void solve_pressure(solver *);
+	void solve_temp(solver *);
+	void solve_dim(solver *);
+	void solve_map(solver *);
+	void solve_definitions(solver *);
+	void solve_Teff(solver *);
+	void solve_gsup(solver *);
+	
+	void atmosphere();
+	void solve_atm(solver *);
+	void atm_simple();
+	void solve_atm_simple(solver *);
+	
+	void update_map(matrix dR);
+	
+	void upd_Xr();
+	
+	
+	
+	matrix N2() const;
+	double luminosity() const;
+	double Teff() const;
+	double gsup() const;
+	
+	void fill();
+	
+	void spectrum(figure *,const matrix &,const char *line="") const;
+	
+	void check_jacobian(solver *op,const char *eqn);
 };
 
 #endif

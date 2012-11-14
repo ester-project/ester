@@ -2,70 +2,28 @@
 #include<string.h>
 #include<stdlib.h>
 
-star::star() {
+star2d::star2d() :r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2)
+		,zex(map.ex.z),Dex(map.ex.D),rex(map.ex.r),
+		nr(map.gl.N),nth(map.leg.npts),nex(map.ex.gl.N),ndomains(map.gl.ndomains) {
 
 	config.newton_dmax=0.5;
 	config.verbose=0;
 
 }
 
-star::~star() {
+star2d::~star2d() {
 }
 
-star::star(const star &A) {
+star2d::star2d(const star2d &A) :r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2)
+	,zex(map.ex.z),Dex(map.ex.D),rex(map.ex.r),
+	nr(map.gl.N),nth(map.leg.npts),nex(map.ex.gl.N),ndomains(map.gl.ndomains){
 
 	copy(A);
 
-}
-
-star &star::operator=(const star &A) {
-
-	copy(A);
-	
-	return *this;
-
-}
-
-void star::copy(const star &A) {
-
-	phi=A.phi;
-	p=A.p;
-	T=A.T;
-	
-	strcpy(opa.name,A.opa.name);
-	strcpy(eos.name,A.eos.name);
-	strcpy(nuc.name,A.nuc.name);
-	config=A.config;
-	
-	R=A.R;M=A.M;
-	Tc=A.Tc;pc=A.pc;
-	X=A.X;Z=A.Z;
-	surff=A.surff;
-	conv=A.conv;
-	Xc=A.Xc;
-	
-	map=A.map;
-	
-}
-
-
-star2d::star2d():r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2)
-		,zex(map.ex.z),Dex(map.ex.D),rex(map.ex.r),
-		nr(map.gl.N),nth(map.leg.npts),nex(map.ex.gl.N),ndomains(map.gl.ndomains) {}
-
-star2d::~star2d() {}
-
-star2d::star2d(const star2d &A): star(A),
-	r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2),zex(map.ex.z),Dex(map.ex.D),rex(map.ex.r),
-	nr(map.gl.N),nth(map.leg.npts),nex(map.ex.gl.N),ndomains(map.gl.ndomains) {
-	
-	copy(A);
-	
 }
 
 star2d &star2d::operator=(const star2d &A) {
 
-	star::operator=(A);
 	copy(A);
 	
 	return *this;
@@ -73,21 +31,53 @@ star2d &star2d::operator=(const star2d &A) {
 }
 
 void star2d::copy(const star2d &A) {
+
+	phi=A.phi;
+	p=A.p;
+	T=A.T;
+	rho=A.rho;
+	Xr=A.Xr;
+	
+	opa=A.opa;
+	eos=A.eos;
+	nuc=A.nuc;
+	strcpy(atm_name,A.atm_name);
+	config=A.config;
+	units=A.units;
+	
+	R=A.R;M=A.M;
+	Tc=A.Tc;pc=A.pc;rhoc=A.rhoc;
+	X=A.X;Y=A.Y;Z=A.Z;
+	surff=A.surff;
+	conv=A.conv;
+	Xc=A.Xc;
+	
+	map=A.map;
+	
+	ps=A.ps;Ts=A.Ts;
+	m=A.m;pi_c=A.pi_c;Lambda=A.Lambda;
 	
 	phiex=A.phiex;
 	w=A.w;
-	
 	vr=A.vr;vt=A.vt;G=A.G;
-
+	
 	Omega=A.Omega;Omega_bk=A.Omega_bk;
-	
-	strcpy(atm_name,A.atm_name);
-	
 	Ekman=A.Ekman;
-
-	fill();
-
+	
 }
+
+void star2d::calc_units() {
+
+	units.phi=pc/rhoc;
+	units.p=pc;
+	units.rho=rhoc;
+	units.T=Tc;
+	units.r=R;
+	units.Omega=sqrt(pc/rhoc)/R;
+	units.v=sqrt(pc/rhoc);
+	units.F=pc/R/rhoc;
+}
+
 /*
 void star2d::write(const char *output_file,char mode) const{
 
@@ -527,7 +517,6 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 		phiex=zeros(nex,nth);
 		w=zeros(nr,nth);
 		G=zeros(nr,nth);
-		Omega2=0;
 	}
 	fill();
 	return 1;

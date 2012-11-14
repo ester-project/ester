@@ -2,35 +2,18 @@
 #include<string.h>
 #include<stdlib.h>
 
-star1d::star1d():r(map.r),D(map.D),nr(map.gl.N),ndomains(map.gl.ndomains) {}
+star1d::star1d() {}
 
 star1d::~star1d() {
 }
 
-star1d::star1d(const star1d &A) : star(A)
-	,r(map.r),D(map.D),nr(map.gl.N),ndomains(map.gl.ndomains) {
-
-	copy(A);
-	
-}
+star1d::star1d(const star1d &A) : star2d(A) {}
 
 star1d &star1d::operator=(const star1d &A) {
 
-	star::operator=(A);
-	copy(A);
+	star2d::operator=(A);
 	
 	return *this;
-
-}
-
-void star1d::copy(const star1d &A) {
-
-	
-
-	strcpy(atm_name,A.atm_name);
-	
-
-	fill();
 
 }
 

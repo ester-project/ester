@@ -2,7 +2,7 @@
 #include<string.h>
 #include<stdio.h>
 
-int star::opacity() {
+int star2d::opacity() {
 
 	int error=0;
 
@@ -22,7 +22,7 @@ int star::opacity() {
 	return error;
 }
 
-int star::nuclear() {
+int star2d::nuclear() {
 
 	int error=0;
 	
@@ -37,7 +37,7 @@ int star::nuclear() {
 
 }
 
-int star::eq_state() {
+int star2d::eq_state() {
 
 	int error;
 	

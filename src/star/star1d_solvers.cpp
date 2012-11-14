@@ -21,18 +21,14 @@ void star1d::fill() {
 	calc_units();
 	
 	atmosphere();
+	
+	phiex=phi(-1)/rex;
+	w=zeros(nr,1);G=zeros(nr,1);vr=zeros(nr,1);vt=zeros(nr,1);
+	
+	Omega=0;Omega_bk=0;Ekman=0;Omegac=0;
 
 }
 
-void star1d::calc_units() {
-
-	units.phi=pc/rhoc;
-	units.p=pc;
-	units.rho=rhoc;
-	units.T=Tc;
-	units.r=R;
-	units.F=pc/R/rhoc;
-}
 
 void star1d::upd_Xr() {
 

@@ -29,17 +29,7 @@ void star2d::fill() {
 
 }
 
-void star2d::calc_units() {
 
-	units.phi=pc/rhoc;
-	units.p=pc;
-	units.rho=rhoc;
-	units.T=Tc;
-	units.r=R;
-	units.Omega=sqrt(pc/rhoc)/R;
-	units.v=sqrt(pc/rhoc);
-	units.F=pc/R/rhoc;
-}
 
 void star2d::upd_Xr() {
 
