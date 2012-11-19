@@ -24,7 +24,7 @@ class sym {
 	void simplify0();
 	bool trig_simplify();
 	void trig_simplify2();
-	void add_bc(solver *op,int n,const char *type,const char *eq_name,const char *var_name) const;
+	void add_bc(solver *op,int n,const char *type,const char *eq_name,const char *var_name,const matrix &d) const;
 public:
 	friend class symbolic;
 	friend class sym_vec;
@@ -54,10 +54,14 @@ public:
 	sym jacobian_r(int dz,int dt) const;
 	void add(solver *op,const char *eq_name,const char *var_name) const;
 	void add(solver *op,const char *eq_name,const char *var_name,const matrix &d) const;
-	inline void bc_top1_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"top1",eq_name,var_name);};
-	inline void bc_top2_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"top2",eq_name,var_name);};
-	inline void bc_bot1_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"bot1",eq_name,var_name);};
-	inline void bc_bot2_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"bot2",eq_name,var_name);};
+	inline void bc_top1_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"top1",eq_name,var_name,ones(1,1));};
+	inline void bc_top2_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"top2",eq_name,var_name,ones(1,1));};
+	inline void bc_bot1_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"bot1",eq_name,var_name,ones(1,1));};
+	inline void bc_bot2_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"bot2",eq_name,var_name,ones(1,1));};
+	inline void bc_top1_add(solver *op,int n,const char *eq_name,const char *var_name,const matrix &d) const {add_bc(op,n,"top1",eq_name,var_name,d);};
+	inline void bc_top2_add(solver *op,int n,const char *eq_name,const char *var_name,const matrix &d) const {add_bc(op,n,"top2",eq_name,var_name,d);};
+	inline void bc_bot1_add(solver *op,int n,const char *eq_name,const char *var_name,const matrix &d) const {add_bc(op,n,"bot1",eq_name,var_name,d);};
+	inline void bc_bot2_add(solver *op,int n,const char *eq_name,const char *var_name,const matrix &d) const {add_bc(op,n,"bot2",eq_name,var_name,d);};
 };
 
 sym operator+(const double,const sym &);

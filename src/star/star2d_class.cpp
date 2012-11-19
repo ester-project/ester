@@ -429,7 +429,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 					if(!strcmp(arg,"nex")&&val) next=atoi(val);
 				}
 				cmd.close();
-				init(in1d,nt,next);
+				init1d(in1d,nt,next);
 			} else {
 				printf("Error reading input file: %s\n",input_file);
 				return 0;
@@ -523,7 +523,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 	
 }
 
-void star2d::init(const star1d &A,int npts_th,int npts_ex) {
+void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 
 	matrix thd;
 	char *arg,*val,default_params[256];

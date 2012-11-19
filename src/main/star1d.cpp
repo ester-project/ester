@@ -54,11 +54,15 @@ int main(int argc,char *argv[]) {
 	if(config.verbose>1) A.config.verbose=1;
 	
 	int conv_set=A.conv;
+	double Xc_set=A.Xc;
 	// If no input file, ignore core convection until the model starts to converge
 	if(*config.input_file==0) A.conv=0;
 	err=1;
 	while(!last_it) {
-		if(err<0.1) A.conv=conv_set;
+		if(err<0.1) {
+			A.conv=conv_set;
+			A.Xc=Xc_set;
+		}
 		
 		nit++;
 		//A.check_jacobian(op,"log_T");exit(0);
@@ -83,7 +87,7 @@ int main(int argc,char *argv[]) {
 	}
 	if(config.verbose) {
 		printf("Mass=%3.3f Msun  Radius=%3.3f Rsun  Luminosity=%3.3f Lsun  Teff=%1.1f K\n",
-				A.M/M_SUN,A.R/R_SUN,A.luminosity()/L_SUN,A.Teff());
+				A.M/M_SUN,A.R/R_SUN,A.luminosity()/L_SUN,A.Teff()(0));
 		printf("X=%3.3f (Xc/X=%3.3f) Z=%3.3f\n",A.X,A.Xc,A.Z);
 		printf("rhoc=%e Tc=%e pc=%e\n",A.rhoc,A.Tc,A.pc);
 		if(A.conv) printf("r_cz=%3.3f Rsun\n",*(A.map.gl.xif+A.conv)*A.R/R_SUN);

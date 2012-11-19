@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<sys/time.h>
 #include<string.h>
+#include"symbolic.h"
 
 void star2d::fill() {
 	
@@ -115,7 +116,7 @@ void star2d::register_variables(solver *op) {
 	op->regvar_dep("opa.k");
 	op->regvar_dep("nuc.eps");
 	op->regvar_dep("s");
-	op->regvar_dep("lz");
+	op->regvar("gamma");
 	
 
 }
@@ -277,9 +278,6 @@ void star2d::solve_definitions(solver *op) {
 	op->add_d("s","log_Tc",eos.cp);
 	op->add_d("s","p",-eos.cp*eos.del_ad/p);
 	op->add_d("s","log_pc",-eos.cp*eos.del_ad);
-	
-	op->add_d("lz","w",r*r*sin(th)*sin(th));
-	op->add_d("lz","r",w*2*r*sin(th)*sin(th));
 	
 }
 
@@ -491,10 +489,8 @@ void star2d::solve_rot(solver *op) {
 
 void star2d::solve_vbl(solver *op,const char *eqn,matrix &rhs) {
 
-	matrix q,qeq,TT;
+	matrix qeq,TT;
 	int n;
-	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
-		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
 	int limit_layer=1;
 	
 	if(!limit_layer) {
@@ -505,34 +501,27 @@ void star2d::solve_vbl(solver *op,const char *eqn,matrix &rhs) {
 	qeq(0)=1;
 	n=ndomains-1;
 	
-	matrix s;
+	symbolic S(2,1);
+	sym G_,w_,s_;
+	sym_vec n_(COVARIANT),t_(CONTRAVARIANT);
 	
-	s=r*sin(th);
+	S.set_map(map);
+	G_=S.regvar("G");S.set_value("G",G,11);
+	w_=S.regvar("w");S.set_value("w",w);
 	
-	// w
+	n_(0)=Dz(S.r);n_(1)=0*S.one;n_(2)=0*S.one;
+	t_(0)=0*S.one;t_(1)=1/S.r;t_(2)=0*S.one;
+	s_=S.r*S.sint;
 	
-	q=s*s*(r*r+rt*rt)/r/rz;
-	op->bc_top1_add_l(n,eqn,"w",(1-qeq)*q.row(-1),D.block(n).row(-1));
-	q=-s*s*rt/r;
-	op->bc_top1_add_r(n,eqn,"w",(1-qeq)*q.row(-1),Dt);
-	op->bc_top1_add_r(n,eqn,"lz",(1-qeq)*G.row(-1),Dt);
+	sym eq;
 	
-	// G
+	eq=s_*s_*(n_,grad(w_))+G_*(t_,grad(s_*s_*w_));	
 	
-	q=(s*s*w,Dt);
-	op->bc_top1_add_d(n,eqn,"G",(1-qeq)*q.row(-1));
+	eq.bc_top1_add(op,n,eqn,"w",1-qeq);
+	eq.bc_top1_add(op,n,eqn,"G",1-qeq);
+	eq.bc_top1_add(op,n,eqn,"r",1-qeq);
 	
-	// r
-	
-	q=(3*s*s+rt*rt*sin(th)*sin(th))/rz*(D,w)-rt*sin(th)*sin(th)*(w,Dt);
-	op->bc_top1_add_d(n,eqn,"r",(1-qeq)*q.row(-1));
-	q=-(r*s*s+r*rt*rt*sin(th)*sin(th))/rz/rz*(D,w);
-	op->bc_top1_add_d(n,eqn,"rz",(1-qeq)*q.row(-1));
-	q=2*r*rt*sin(th)*sin(th)/rz*(D,w)-r*sin(th)*sin(th)*(w,Dt);
-	op->bc_top1_add_r(n,eqn,"r",(1-qeq)*q.row(-1),Dt);
-	
-	q=s*s*((r*r+rt*rt)/r/rz*(D,w)-rt/r*(w,Dt))+G*(s*s*w,Dt);
-	rhs.setrow(-1,-(1-qeq)*q.row(-1));
+	rhs.setrow(-1,-(1-qeq)*eq.eval().row(-1));
 
 	if(!limit_layer) {
 		rhs.setrow(-1,-w.row(-1)+Omega);
@@ -549,59 +538,39 @@ void star2d::solve_vbl(solver *op,const char *eqn,matrix &rhs) {
 
 void star2d::solve_dyn(solver *op) {
 
-	matrix rhs;
-	matrix q,s;
-	int n,j0;
-	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
-		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
-
 	if(Omega==0) {
 		op->add_d("G","G",ones(nr,nth));
 		op->set_rhs("G",zeros(nr,nth));
 		return;
 	}
+
+	symbolic S(3,2);
+	sym rho_,s_,w_,G_;
+	sym_vec v_,Gvec_(CONTRAVARIANT);
 	
-	s=r*sin(th);
-	rhs=zeros(nr,nth);
+	S.set_map(map);
+	rho_=S.regvar("rho");S.set_value("rho",rho);
+	w_=S.regvar("w");S.set_value("w",w);
+	G_=S.regvar("G");S.set_value("G",G,11);
 	
+	Gvec_(0)=0*S.one;Gvec_(1)=0*S.one;Gvec_(2)=G_/S.r/S.sint;
+	v_=curl(Gvec_)/rho_;
+	s_=S.r*S.sint;
 	
-	// w
+	sym eq;
 	
-	map.add_lap(op,"G","w",-s*s,w);
-	rhs-=-s*s*map.lap(w);
-	q=sin(th)/rz*(r*cos(th)+rt*sin(th))*G-2*sin(th)/rz*(r*sin(th)-rt*cos(th));
-	op->add_l("G","w",q,D);
-	rhs-=q*(D,w);
-	q=(-sin(th)*sin(th)*G-2*sin(th)*cos(th));
-	op->add_r("G","w",q,Dt);
-	rhs-=q*(w,Dt);
-	q=(G,map.leg.D_11)/r/rz;
-	op->add_l("G","lz",q,D);
-	rhs-=q*(D,s*s*w);
-	q=-(D,G)/r/rz;
-	op->add_r("G","lz",q,Dt);
-	rhs-=q*(s*s*w,Dt);
+	eq=div(rho_*s_*s_*w_*v_)-div(s_*s_*grad(w_));
 	
-	// G
+	matrix rhs;
+	rhs=-eq.eval();
 	
-	q=sin(th)/rz*(r*cos(th)+rt*sin(th))*(D,w)-sin(th)*sin(th)*(w,Dt);
-	op->add_d("G","G",q);
-	q=-(s*s*w,Dt)/r/rz;
-	op->add_l("G","G",q,D);
-	q=(D,s*s*w)/r/rz;
-	op->add_r("G","G",q,map.leg.D_11);
-	
-	// r
-	
-	q=-((D,s*s*w)*(G,map.leg.D_11)-(s*s*w,Dt)*(D,G))/r/r/rz
-		+sin(th)*cos(th)/rz*(D,w)*G-2*r*sin(th)*sin(th)*map.lap(w)-2*sin(th)*sin(th)/rz*(D,w);
-	op->add_d("G","r",q);
-	q=-((D,s*s*w)*(G,map.leg.D_11)-(s*s*w,Dt)*(D,G))/r/rz/rz
-		-sin(th)/rz/rz*(r*cos(th)+rt*sin(th))*(D,w)*G+2*sin(th)/rz/rz*(r*sin(th)-rt*cos(th))*(D,w);
-	op->add_d("G","rz",q);
-	q=sin(th)*sin(th)/rz*(D,w)*G+2*sin(th)*cos(th)/rz*(D,w);
-	op->add_r("G","r",q,Dt);
-	
+	eq.add(op,"G","G");
+	eq.add(op,"G","rho");
+	eq.add(op,"G","w");
+	eq.add(op,"G","r");
+
+	int n,j0;
+
 	j0=0;
 	for(n=0;n<ndomains;n++) {
 		if(!n) {
@@ -1011,6 +980,17 @@ void star2d::solve_map(solver *op) {
 		if(n<ndomains) j0+=map.gl.npts[n];
 	}
 	op->set_rhs("Ri",rhs);
+	
+	matrix gamma;
+	gamma=(sqrt(1+map.rt*map.rt/r/r)).row(-1);
+
+	n=ndomains-1;
+	op->bc_top1_add_d(n,"gamma","gamma",2*gamma);
+	op->bc_top1_add_d(n,"gamma","r",(2*map.rt*map.rt/r/r/r).row(-1));
+	op->bc_top1_add_r(n,"gamma","r",(-2*map.rt/r/r).row(-1),Dt);
+	op->set_rhs("gamma",zeros(1,nth));
+	
+	
 }
 
 /*
@@ -1088,7 +1068,7 @@ void star2d::solve_gsup(solver *op) {
 
 	matrix q,g;
 	int n=ndomains-1;
-	matrix &gzz=map.gzz,&gzt=map.gzt,&rz=map.rz;
+	matrix &rt=map.rt;
 	
 	g=gsup();
 	
@@ -1098,20 +1078,22 @@ void star2d::solve_gsup(solver *op) {
 	op->bc_top1_add_d(n,"gsup","log_R",g);
 	op->bc_top1_add_d(n,"gsup","rho",g/rho.row(-1));
 
-	q=pc/R/rhoc/rho*sqrt(gzz);
-	op->bc_top1_add_l(n,"gsup","p",q.row(-1),D.block(n).row(-1));
-	q=pc/R/rhoc/rho*gzt/sqrt(gzz);
-	op->bc_top1_add_r(n,"gsup","p",q.row(-1),Dt);
+	symbolic S(2,1);
+	sym p_,gamma_,eq;
+	sym_vec n_(COVARIANT);
+	gamma_=S.regvar("gamma");
+	p_=S.regvar("p");
+	S.set_map(map);
+	S.set_value("p",p);
+	S.set_value("gamma",sqrt(1-rt*rt/r/r));
+	n_(0)=Dz(S.r)/gamma_;n_(1)=0*S.one;n_(2)=0*S.one;
 	
-	q=(gzt/sqrt(gzz)*(-r*gzt*(D,p)+(r*gzt*gzt/gzz-2/r)*(p,Dt)))/rho;
-	op->bc_top1_add_d(n,"gsup","r",pc/R/rhoc*q.row(-1));
-	q=(-sqrt(gzz)/rz*(D,p))/rho;
-	op->bc_top1_add_d(n,"gsup","rz",pc/R/rhoc*q.row(-1));
-	q=(1/sqrt(gzz)*(-gzt/rz*(D,p)+(gzt*gzt/rz/gzz-1/r/r/rz)*(p,Dt)))/rho;
-	op->bc_top1_add_r(n,"gsup","r",pc/R/rhoc*q.row(-1),Dt);
+	eq=(n_,grad(p_));
+	eq.bc_top1_add(op,n,"gsup","p",pc/R/rhoc/rho.row(-1));
+	eq.bc_top1_add(op,n,"gsup","gamma",pc/R/rhoc/rho.row(-1));
+	eq.bc_top1_add(op,n,"gsup","r",pc/R/rhoc/rho.row(-1));
 	
-	op->set_rhs("gsup",zeros(1,nth));
-		
+	op->set_rhs("gsup",zeros(1,nth));	
 		
 		
 }
@@ -1120,7 +1102,7 @@ void star2d::solve_Teff(solver *op) {
 
 	matrix q,Te,F;
 	int n=ndomains-1;
-	matrix &gzz=map.gzz,&gzt=map.gzt,&rz=map.rz;
+	matrix &rt=map.rt;
 	
 	Te=Teff();
 	F=SIG_SB*pow(Te,4);
@@ -1130,17 +1112,20 @@ void star2d::solve_Teff(solver *op) {
 	op->bc_top1_add_d(n,"Teff","log_R",F);
 	op->bc_top1_add_d(n,"Teff","opa.xi",-F/opa.xi.row(-1));
 
-	q=opa.xi*Tc/R*sqrt(gzz);
-	op->bc_top1_add_l(n,"Teff","T",q.row(-1),D.block(n).row(-1));
-	q=opa.xi*Tc/R*gzt/sqrt(gzz);
-	op->bc_top1_add_r(n,"Teff","T",q.row(-1),Dt);
+	symbolic S(2,1);
+	sym T_,gamma_,eq;
+	sym_vec n_(COVARIANT);
+	gamma_=S.regvar("gamma");
+	T_=S.regvar("T");
+	S.set_map(map);
+	S.set_value("T",T);
+	S.set_value("gamma",sqrt(1-rt*rt/r/r));
+	n_(0)=Dz(S.r)/gamma_;n_(1)=0*S.one;n_(2)=0*S.one;
 	
-	q=(gzt/sqrt(gzz)*(-r*gzt*(D,T)+(r*gzt*gzt/gzz-2/r)*(T,Dt)))*opa.xi;
-	op->bc_top1_add_d(n,"Teff","r",Tc/R*q.row(-1));
-	q=(-sqrt(gzz)/rz*(D,T))*opa.xi;
-	op->bc_top1_add_d(n,"Teff","rz",Tc/R*q.row(-1));
-	q=(1/sqrt(gzz)*(-gzt/rz*(D,T)+(gzt*gzt/rz/gzz-1/r/r/rz)*(T,Dt)))*opa.xi;
-	op->bc_top1_add_r(n,"Teff","r",1/R/Tc*q.row(-1),Dt);
+	eq=(n_,grad(T_));
+	eq.bc_top1_add(op,n,"Teff","T",Tc/R*opa.xi.row(-1));
+	eq.bc_top1_add(op,n,"Teff","gamma",Tc/R*opa.xi.row(-1));
+	eq.bc_top1_add(op,n,"Teff","r",Tc/R*opa.xi.row(-1));
 	
 	op->set_rhs("Teff",zeros(1,nth));
 		
@@ -1192,8 +1177,6 @@ void star2d::check_jacobian(solver *op,const char *eqn) {
 	i=op->get_id("s");
 	y[i]=zeros(nr,nth);
 	i=op->get_id("opa.k");
-	y[i]=zeros(nr,nth);
-	i=op->get_id("lz");
 	y[i]=zeros(nr,nth);
 	
 	
@@ -1284,6 +1267,8 @@ void star2d::check_jacobian(solver *op,const char *eqn) {
 	y[i]=B.w-w;
 	i=op->get_id("G");
 	y[i]=B.G-G;	
+	i=op->get_id("gamma");
+	y[i]=sqrt(1-B.map.rt*B.map.rt/B.r/B.r)-sqrt(1-map.rt*map.rt/r/r);	
 	
 	/*
 	matrix dlnp,dlnT,dlnrho,dlnrho2,dq,dq2;

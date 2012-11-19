@@ -141,6 +141,7 @@ symbolic::symbolic(int n_var,int max_der): r(_r),sint(_sint),cost(_cost),one(_on
 
 	nvar=n_var;
 	maxder=max_der;
+	tol=1e-10;
 	
 	var_name=new char*[nvar];
 	var_value=new matrix[nvar];
@@ -174,23 +175,22 @@ symbolic::symbolic(int n_var,int max_der): r(_r),sint(_sint),cost(_cost),one(_on
 	t=_one.addterm();
 	t->num=1;
 	
+	_g.set_context(this);
 	_g(0,0)=(r*r+Dt(r)*Dt(r))/r/r/Dz(r)/Dz(r);
 	_g(0,1)=-Dt(r)/r/r/Dz(r);
 	_g(1,0)=g(0,1);
 	_g(1,1)=1/r/r;
 	_g(2,2)=1/r/r/sint/sint;
-	_g.set_context(this);
 	
+	_g_.set_context(this);
 	_g_(0,0)=Dz(r)*Dz(r);
 	_g_(0,1)=Dz(r)*Dt(r);
 	_g_(1,0)=g_(0,1);
 	_g_(1,1)=r*r+Dt(r)*Dt(r);
 	_g_(2,2)=r*r*sint*sint;
-	_g_.set_context(this);
 	
 	_sqrt_g=r*r*Dz(r)*sint;
 	
-	tol=1e-10;
 	
 }
 

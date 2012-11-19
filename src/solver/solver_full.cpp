@@ -58,11 +58,11 @@ solver_full::~solver_full() {
 }
 
 
-void solver_full::set_block(int iblock,const matrix &a) {
+void solver_full::set_block(int iblock,matrix &a) {
 
 	
 	N[iblock]=a.nrows();
-	if(!oc) m[iblock]=a;
+	if(!oc) m[iblock].swap(a);
 	else write_block(iblock,a);
 	lu_flag=0;
 	if(iblock>0) blk_index(iblock-1,0)=0;
@@ -70,17 +70,17 @@ void solver_full::set_block(int iblock,const matrix &a) {
 	
 }
 
-void solver_full::set_blocksup(int iblock,const matrix &a) {
+void solver_full::set_blocksup(int iblock,matrix &a) {
 
-	if(!oc) msup[iblock]=a;
+	if(!oc) msup[iblock].swap(a);
 	else write_blocksup(iblock,a);
 	blk_index(iblock,1)=1;
 	lu_flag=0;
 }
 
-void solver_full::set_blockinf(int iblock,const matrix &a) {
+void solver_full::set_blockinf(int iblock,matrix &a) {
 
-	if(!oc) minf[iblock]=a;
+	if(!oc) minf[iblock].swap(a);
 	else write_blockinf(iblock,a);
 	blk_index(iblock,0)=1;
 	lu_flag=0;
@@ -153,7 +153,8 @@ void solver_full::lu_block(int i) {
 	c[i]=ones(1,n);
 	dgeequ_(&n,&n,m[i].data(),&n,r[i].data(),c[i].data(),&rowcnd,&colcnd,&amax,&info);
 
-	m[i]=r[i]*m[i]*c[i];
+	m[i]*=r[i];
+	m[i]*=c[i];
 
 	c[i].redim(n,1);
 	//char str[25];

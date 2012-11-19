@@ -16,6 +16,7 @@ class star1d;
 
 class star2d {
 	void copy(const star2d &);
+	void init1d(const star1d &A,int npts_th,int npts_ex);
   public:
   	star2d();
   	mapping map;
@@ -56,57 +57,56 @@ class star2d {
 	int nuclear();
 	int eq_state();
 
-	void init(const star1d &A,int npts_th,int npts_ex);
-	int init(const char *input_file,const char *param_file,int argc,char *argv[]);
-	int check_arg(char *arg,char *val,int *change_grid);
-	int read(const char *input_file);
+	virtual int init(const char *input_file,const char *param_file,int argc,char *argv[]);
+	virtual int check_arg(char *arg,char *val,int *change_grid);
+	virtual int read(const char *input_file);
 	int read_old(const char *input_file);
-	void write(const char *output_file,char output_mode) const;
-	void interp(mapping map_old);
+	virtual void write(const char *output_file,char output_mode) const;
+	virtual void interp(mapping map_old);
 	
 	
-	solver *init_solver();
-	double solve(solver *);
-	void register_variables(solver *op);
+	virtual solver *init_solver();
+	virtual double solve(solver *);
+	virtual void register_variables(solver *op);
 	
-	void solve_poisson(solver *);
-	void solve_pressure(solver *);
-	void solve_temp(solver *);
-	void solve_dim(solver *);
-	void solve_map(solver *);
-	void solve_Omega(solver *);
-	void solve_rot(solver *);
-	void solve_dyn(solver *);
-	void solve_gsup(solver *);
-	void solve_Teff(solver *);
-	void solve_vbl(solver *,const char *eqn,matrix &rhs);
-	void solve_definitions(solver *);
+	virtual void solve_poisson(solver *);
+	virtual void solve_pressure(solver *);
+	virtual void solve_temp(solver *);
+	virtual void solve_dim(solver *);
+	virtual void solve_map(solver *);
+	virtual void solve_Omega(solver *);
+	virtual void solve_rot(solver *);
+	virtual void solve_dyn(solver *);
+	virtual void solve_gsup(solver *);
+	virtual void solve_Teff(solver *);
+	virtual void solve_vbl(solver *,const char *eqn,matrix &rhs);
+	virtual void solve_definitions(solver *);
 	
-	void update_map(matrix dR);
+	virtual void update_map(matrix dR);
 	
-	void atmosphere();
-	void solve_atm(solver *);
-	void atm_simple();
-	void solve_atm_simple(solver *);
+	virtual void atmosphere();
+	virtual void solve_atm(solver *);
+	virtual void atm_simple();
+	virtual void solve_atm_simple(solver *);
 
 	
-	void upd_Xr();
-	void calc_veloc();
+	virtual void upd_Xr();
+	virtual void calc_veloc();
 	
-	double luminosity() const;
-	matrix Teff() const;
-	matrix N2() const;
-	matrix gsup() const;
-	double virial_3P() const;
-	double virial_L() const;
-	double virial_W() const;
-	double virial_ps() const;
-	double virial() const;
-	double energy_test() const;
-	matrix stream() const;
-	double apparent_luminosity(double i) const;
+	virtual double luminosity() const;
+	virtual matrix Teff() const;
+	virtual matrix N2() const;
+	virtual matrix gsup() const;
+	virtual double virial_3P() const;
+	virtual double virial_L() const;
+	virtual double virial_W() const;
+	virtual double virial_ps() const;
+	virtual double virial() const;
+	virtual double energy_test() const;
+	virtual matrix stream() const;
+	virtual double apparent_luminosity(double i) const;
 	
-	void fill();
+	virtual void fill();
 	
 	void draw(figure *,const matrix &,int parity=0) const;
 	void drawi(figure *,const matrix &,int sr,int st,int parity=0) const;
@@ -114,7 +114,7 @@ class star2d {
 	void drawci(figure *,const matrix &,int sr,int st,int ncontours,int parity=0) const;
 	void spectrum(figure *,const matrix &,int parity=0) const;
 
-	void check_jacobian(solver *op,const char *eqn);
+	virtual void check_jacobian(solver *op,const char *eqn);
 
 };
 
@@ -156,8 +156,8 @@ class star1d : public star2d {
 	
 	matrix N2() const;
 	double luminosity() const;
-	double Teff() const;
-	double gsup() const;
+	matrix Teff() const;
+	matrix gsup() const;
 	
 	void fill();
 	

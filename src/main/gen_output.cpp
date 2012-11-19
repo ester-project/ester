@@ -336,7 +336,7 @@ void write(const star1d &A,char *var,char *fmt) {
 			fwrite(&d,sizeof(double),1,stdout);
 		}
 	} else if(!strcmp(var,"Teff")) {
-		d=A.Teff();
+		d=A.Teff()(0);
 		if(fmt) fprintf(stdout,fmt,d);
 		else {
 			fwrite(&d,sizeof(double),1,stdout);

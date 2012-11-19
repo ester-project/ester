@@ -228,6 +228,28 @@ void matrix::write_fmt(const char *fmt,FILE *fp) const {
 	}
 }
 
+void matrix::swap(matrix &a) {
+
+	double *p0;
+	int nf0,nc0;
+	
+	p0=p;
+	nf0=nf;nc0=nc;
+	
+	nf=a.nf;nc=a.nc;
+	p=a.p;
+	a.nf=nf0;a.nc=nc0;
+	a.p=p0;
+
+}
+
+void matrix::zero(int nrows,int ncols) {
+
+	dim(nrows,ncols);
+	for(int i=0;i<nf*nc;i++) p[i]=0;
+	
+}
+
 matrix matrix::operator+(const matrix &a) const {
 
     matrix res;
@@ -1032,69 +1054,101 @@ matrix matrix::operator&&(double n) const {
 
 matrix &matrix::operator+=(const matrix &a) {
     
-    int i,N;
-    double *pa,*pi;
+    int i,j,k,N;
 
-	if( (nf!=a.nf) || (nc!=a.nc) ) {
+	N=nc*nf;
+	if(nf==a.nf&&nc==a.nc) {
+    	for(i=0;i<N;i++) 
+    		p[i]+=a.p[i];
+	} else if(nf==a.nf&&a.nc==1) {
+		for(i=0,j=0;i<N;i++,j=(++j)%nf)
+			p[i]+=a.p[j];
+	} else if(a.nf==1&&nc==a.nc) {
+		k=0;
+		for(j=0;j<nc;j++)
+			for(i=0;i<nf;i++,k++)
+				p[k]+=a.p[j];
+	} else if(a.nf==1&&a.nc==1) {
+		*this+=*a.p;
+	} else {
 		*this=(*this)+a;
-		return *this;
 	}
-
-    pa=a.p;pi=p;
-    N=nc*nf;
-    for(i=0;i<N;i++) 
-    	*(pi+i)+=*(pa+i);
+    
     return *this;
 }
 
 matrix &matrix::operator-=(const matrix &a) {
     
-    int i,N;
-    double *pa,*pi;
+    int i,j,k,N;
 
-	if( (nf!=a.nf) || (nc!=a.nc) ) {
+	N=nc*nf;
+	if(nf==a.nf&&nc==a.nc) {
+    	for(i=0;i<N;i++) 
+    		p[i]-=a.p[i];
+	} else if(nf==a.nf&&a.nc==1) {
+		for(i=0,j=0;i<N;i++,j=(++j)%nf)
+			p[i]-=a.p[j];
+	} else if(a.nf==1&&nc==a.nc) {
+		k=0;
+		for(j=0;j<nc;j++)
+			for(i=0;i<nf;i++,k++)
+				p[k]-=a.p[j];
+	} else if(a.nf==1&&a.nc==1) {
+		*this-=*a.p;
+	} else {
 		*this=(*this)-a;
-		return *this;
 	}
-
-    pa=a.p;pi=p;
-    N=nc*nf;
-    for(i=0;i<N;i++) 
-    	*(pi+i)-=*(pa+i);
+    
     return *this;
 }
 
 matrix &matrix::operator*=(const matrix &a) {
     
-    int i,N;
-    double *pa,*pi;
+    int i,j,k,N;
 
-	if( (nf!=a.nf) || (nc!=a.nc) ) {
+	N=nc*nf;
+	if(nf==a.nf&&nc==a.nc) {
+    	for(i=0;i<N;i++) 
+    		p[i]*=a.p[i];
+	} else if(nf==a.nf&&a.nc==1) {
+		for(i=0,j=0;i<N;i++,j=(++j)%nf)
+			p[i]*=a.p[j];
+	} else if(a.nf==1&&nc==a.nc) {
+		k=0;
+		for(j=0;j<nc;j++)
+			for(i=0;i<nf;i++,k++)
+				p[k]*=a.p[j];
+	} else if(a.nf==1&&a.nc==1) {
+		*this*=*a.p;
+	} else {
 		*this=(*this)*a;
-		return *this;
 	}
 
-    pa=a.p;pi=p;
-    N=nc*nf;
-    for(i=0;i<N;i++) 
-    	*(pi+i)*=*(pa+i);
     return *this;
 }
 
 matrix &matrix::operator/=(const matrix &a) {
     
-    int i,N;
-    double *pa,*pi;
+    int i,j,k,N;
 
-	if( (nf!=a.nf) || (nc!=a.nc) ) {
+	N=nc*nf;
+	if(nf==a.nf&&nc==a.nc) {
+    	for(i=0;i<N;i++) 
+    		p[i]/=a.p[i];
+	} else if(nf==a.nf&&a.nc==1) {
+		for(i=0,j=0;i<N;i++,j=(++j)%nf)
+			p[i]/=a.p[j];
+	} else if(a.nf==1&&nc==a.nc) {
+		k=0;
+		for(j=0;j<nc;j++)
+			for(i=0;i<nf;i++,k++)
+				p[k]/=a.p[j];
+	} else if(a.nf==1&&a.nc==1) {
+		*this/=*a.p;
+	} else {
 		*this=(*this)/a;
-		return *this;
 	}
-
-    pa=a.p;pi=p;
-    N=nc*nf;
-    for(i=0;i<N;i++) 
-    	*(pi+i)/=*(pa+i);
+    
     return *this;
 }
 

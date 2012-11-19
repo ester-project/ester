@@ -23,6 +23,8 @@ class matrix {
     int read(int nrow,int ncol,FILE *fp,char mode='t');
     int write(FILE *fp=stdout,char mode='t') const;
     void write_fmt(const char *fmt,FILE *fp=stdout) const;
+    void swap(matrix &);
+    void zero(int nrows,int ncols);
     
     matrix operator+(const matrix &) const;
     friend matrix operator+(double,const matrix &);

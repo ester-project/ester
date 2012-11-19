@@ -35,16 +35,16 @@ double star1d::luminosity() const {
 
 }
 
-double star1d::Teff() const {
+matrix star1d::Teff() const {
 
 	//return pow(luminosity()/4./PI/R/R/SIG_SB,0.25);
-	return pow(-opa.xi(-1)*(D,T)(-1)/SIG_SB*units.T/units.r,0.25);
+	return pow(-opa.xi(-1)*(D,T)(-1)/SIG_SB*units.T/units.r,0.25)*ones(1,1);
 
 }
 
-double star1d::gsup() const {
+matrix star1d::gsup() const {
 
-	return (D.row(-1),phi)(0)*units.phi/units.r;
+	return (D.row(-1),phi)(0)*units.phi/units.r*ones(1,1);
 
 }
 

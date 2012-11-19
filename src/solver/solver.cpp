@@ -177,7 +177,7 @@ void solver::destroy() {
 	int i;
 	
 	initd=0;
-	delete op;
+	if(op!=NULL) delete op;
 	
 	for(i=0;i<nb;i++) {
 		block[i].destroy();
@@ -812,17 +812,22 @@ int solver::cgs(const matrix &rhs,matrix &x,int maxit) {
 
 void solver::create() {
 
+	if(op!=NULL) {
+		delete op;
+		op=NULL;
+	}
+
 	if(!strcmp(type,"full")) {
-		if(op==NULL) op=new solver_full(nb);
+		op=new solver_full(nb);
 		create_full();
 	}else if(!strcmp(type,"full-oc")) {
-		if(op==NULL) op=new solver_full(nb,1);
+		op=new solver_full(nb,1);
 		create_full();
 	} else if(!strcmp(type,"iter")) {
-		if(op==NULL) op=new solver_iter();
+		op=new solver_iter();
 	} else {
 		strcpy(type,"full");
-		if(op==NULL) op=new solver_full(nb);
+		op=new solver_full(nb);
 		create_full();
 	}
 	op->verbose=verbose;
@@ -840,7 +845,7 @@ void solver::create_full() {
 	for(n=0;n<nb;n++) {
 		nn=0;
 		for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) nn+=nr[n][ivar]*nth[n][ivar];
-		opi=zeros(nn,nn);
+		opi.zero(nn,nn);
 		j0=0;
 		
 		for(kk=0;kk<3;kk++) {
@@ -1011,15 +1016,15 @@ void solver::create_full() {
 			}
 		}
 		}
-		op->set_block(n,opi);
 		if (debug) check_full(n,opi,0);
+		op->set_block(n,opi);
 		
 		if(n>0) {
 			nn=0;
 			for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) nn+=nbot[n][ivar]*nth[n][ivar];
 			nn2=0;
 			for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) nn2+=nr[n-1][ivar]*nth[n-1][ivar];
-			opi=zeros(nn,nn2);
+			if(nn) opi.zero(nn,nn2);
 			j0=0;
 			set=0;
 			for(kk=0;kk<3;kk++) {
@@ -1084,8 +1089,8 @@ void solver::create_full() {
 				}
 			}
 			}
-			if(set) op->set_blockinf(n-1,opi);
 			if (debug&set) check_full(n,opi,-1);
+			if(set) op->set_blockinf(n-1,opi);
 			
 		}
 		if(n<nb-1) {
@@ -1093,7 +1098,7 @@ void solver::create_full() {
 			for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) nn+=ntop[n][ivar]*nth[n][ivar];
 			nn2=0;
 			for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) nn2+=nr[n+1][ivar]*nth[n+1][ivar];
-			opi=zeros(nn,nn2);
+			if(nn) opi.zero(nn,nn2);
 			j0=0;
 			set=0;
 			for(kk=0;kk<3;kk++) {
@@ -1158,8 +1163,8 @@ void solver::create_full() {
 				}
 			}
 			}
-			if(set) op->set_blocksup(n,opi);
 			if(debug&set) check_full(n,opi,1);
+			if(set) op->set_blocksup(n,opi);
 		}
 		if(verbose) {printf("#");fflush(stdout);}
 	}
@@ -1507,7 +1512,9 @@ int solver::check_struct() {
 	if(debug) {
 		for(j=0;j<nv;j++) {
 			if(!reg(j)) continue;
-			printf("%d %s:\n",j,var[j]);
+			printf("%d %s",j,var[j]);
+			if(dep(j)) printf(" (dep) ");
+			printf(":\n");
 			for(i=0;i<nb;i++) {
 				printf("\t%d: %dx%d (nbot=%d,ntop=%d)\n",i,nr[i][j],nth[i][j],nbot[i][j],ntop[i][j]);
 			}

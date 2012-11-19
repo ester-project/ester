@@ -67,7 +67,7 @@ $(ESTER_ROOT)/utils/ester_build: $(LIB)
 		echo '#!/bin/bash'> $@
 		echo "file=\$$1" >> $@
 		echo "shift" >> $@
-		echo "$(CC) \$$file $(CCFLAGS) $(LDFLAGS) -lester $(LIBS)" \$$@>> $@
+		echo "$(CC) \$$file $(CCFLAGS) $(LDFLAGS) -lester $(LIBS)" '$(VARS)' \$$@>> $@
 		chmod u+x $@
 
 
@@ -80,7 +80,7 @@ parser: matrix
 solver: matrix
 symbolic: matrix mapping solver
 physics: global matrix numdiff
-star: global matrix numdiff mapping parser physics solver graphics
+star: global matrix numdiff mapping parser physics solver graphics symbolic
 
 dist: 
 	tar -C $(ESTER_ROOT)/.. -cf ester.tar ester/src --exclude *.o --exclude *.a --exclude ester.tar.gz
