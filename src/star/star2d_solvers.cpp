@@ -59,14 +59,14 @@ void star2d::calc_veloc() {
 	vt/=rho;
 }
 
-solver *star2d::init_solver() {
+solver *star2d::init_solver(int nvar_add) {
 
 	int nvar;
 	solver *op;
 	
 	nvar=33;
 	op=new solver;
-	op->init(ndomains+1,nvar,"full");
+	op->init(ndomains+1,nvar+nvar_add,"full");
 	
 	op->maxit_ref=10;op->use_cgs=1;op->maxit_cgs=20;op->debug=0;
 	op->rel_tol=1e-12;op->abs_tol=1e-20;

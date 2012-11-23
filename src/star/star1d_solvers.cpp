@@ -47,7 +47,7 @@ void star1d::upd_Xr() {
 }
 
 
-solver *star1d::init_solver() {
+solver *star1d::init_solver(int nvar_add) {
 
 	int nvar;
 	solver *op;
@@ -55,7 +55,7 @@ solver *star1d::init_solver() {
 	nvar=27;
 	
 	op=new solver();
-	op->init(ndomains,nvar,"full");
+	op->init(ndomains,nvar+nvar_add,"full");
 	
 	op->maxit_ref=10;op->use_cgs=0;op->maxit_cgs=20;
 	op->rel_tol=1e-12;op->abs_tol=1e-20;
@@ -223,7 +223,7 @@ void star1d::solve_definitions(solver *op) {
 	op->add_d("rz","Ri",(D,map.J[2]));
 	op->add_d("rz","dRi",(D,map.J[3]));
 	
-	op->add_d("s","log_T",eos.cp);
+	op->add_d("s","T",eos.cp/T);
 	op->add_d("s","log_Tc",eos.cp);
 	op->add_d("s","p",-eos.cp*eos.del_ad/p);
 	op->add_d("s","log_pc",-eos.cp*eos.del_ad);

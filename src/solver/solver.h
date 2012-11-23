@@ -171,6 +171,7 @@ public:
 	void reset();
 	void reset(int iblock);
 	void reset(int iblock,int ieq);
+	void reset(int iblock,const char *eq_name);
 	void regvar(const char *var_name,int dependent=0);
 	inline void regvar_dep(const char *var_name) {regvar(var_name,1);}
 	int get_nvar();

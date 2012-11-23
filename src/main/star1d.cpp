@@ -56,10 +56,13 @@ int main(int argc,char *argv[]) {
 	int conv_set=A.conv;
 	double Xc_set=A.Xc;
 	// If no input file, ignore core convection until the model starts to converge
-	if(*config.input_file==0) A.conv=0;
+	if(*config.input_file==0) {
+		if(A.conv) A.Xc=1;
+		A.conv=0;
+	}
 	err=1;
 	while(!last_it) {
-		if(err<0.1) {
+		if(err<0.1&&!*config.input_file) {
 			A.conv=conv_set;
 			A.Xc=Xc_set;
 		}
