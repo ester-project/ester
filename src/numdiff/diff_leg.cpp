@@ -109,6 +109,7 @@ matrix diff_leg::nodes(int n,matrix &w) {
 
 	int i,info,fin=2;
 	matrix x,p,x0;
+	double tol=1e-13;
 
 	x=zeros(1,n);
 	p=vector_t(1,n-1,n-1);
@@ -122,7 +123,7 @@ matrix diff_leg::nodes(int n,matrix &w) {
 		for(int j=1;j<=n;j++) 
 			p.setrow(j,p.row(j)/sqrt(2*j+1));
 		x+=p.row(n)*(1-x*x)/n/(x*p.row(n)-p.row(n-1));
-		if(max(abs(x-x0))<1e-13) fin--;
+		if(max(abs(x-x0))<tol) fin--;
 	}
 	
 	w=n*x*p.row(n)-n*p.row(n-1);

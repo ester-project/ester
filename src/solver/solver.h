@@ -7,11 +7,8 @@ class solver_operator {
 public:
 	int verbose;
 	virtual ~solver_operator() {};
-	virtual void set_block(int iblock,matrix &)=0;
-	virtual void set_blocksup(int iblock,matrix &)=0;
-	virtual void set_blockinf(int iblock,matrix &)=0;
-	virtual void fwd_subs(matrix &)=0;
-	virtual void back_subs(matrix &)=0;
+	virtual void left_precond(matrix &)=0;
+	virtual void right_precond(matrix &)=0;
 	virtual matrix solve(const matrix &)=0;
 };
 
@@ -33,14 +30,16 @@ class solver_full: public solver_operator {
 	void read_blockinf(int i);
 	void write_blockinf(int i,const matrix &);
 	void flush_blockinf(int i);
+	void fwd_subs(matrix &);
+	void back_subs(matrix &);
 public:
 	solver_full(int nblocks,int offcore=0);
 	~solver_full();
 	void set_block(int iblock,matrix &);
 	void set_blocksup(int iblock,matrix &);
 	void set_blockinf(int iblock,matrix &);
-	void fwd_subs(matrix &);
-	void back_subs(matrix &);
+	void left_precond(matrix &x) {fwd_subs(x);}
+	void right_precond(matrix &x) {back_subs(x);}
 	matrix solve(const matrix &);
 };
 
@@ -49,11 +48,8 @@ class solver_iter: public solver_operator {
 public:
 	solver_iter() {};
 	~solver_iter() {};
-	void set_block(int iblock,matrix &) {};
-	void set_blocksup(int iblock,matrix &) {};
-	void set_blockinf(int iblock,matrix &) {};
-	void fwd_subs(matrix &) {};
-	void back_subs(matrix &) {};
+	void left_precond(matrix &) {};
+	void right_precond(matrix &) {};
 	matrix solve(const matrix &a) {return 0*a;};
 };
 	

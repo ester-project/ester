@@ -49,8 +49,11 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     
     N=T.nrows()*T.ncols();
 
+	double Xi,Zi,t6i,p_mbi,rhoi;
     for(i=0;i<N;i++) {
-    	eos5_xtrin_(X.data()+i,&Z,&t6(i),&p_mb(i),&rho(i));
+    	Xi=X(i);Zi=Z;t6i=t6(i);p_mbi=p_mb(i);
+    	eos5_xtrin_(&Xi,&Zi,&t6i,&p_mbi,&rhoi);
+    	rho(i)=rhoi;
     	if(rho(i)==-9e99) {
    			printf("Values outside OPAL eos table\n");
     	}

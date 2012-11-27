@@ -12,8 +12,6 @@ int star2d::opacity() {
     	error=opa_houdek(Xr,Z,T*Tc,rho*rhoc,opa);
 	} else if(!strcmp(opa.name,"kramer")) {
     	error=opa_kramer(T*Tc,rho*rhoc,opa);
-    } else if(!strcmp(opa.name,"opals")) {
-    	error=opa_opals(Xr,Z,T*Tc,rho*rhoc,opa);
     } else {
     	printf("Unknown opacity method: %s\n",opa.name);
     	return 1;

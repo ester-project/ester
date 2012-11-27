@@ -17,13 +17,13 @@ solver_full::solver_full(int nblocks,int offcore) {
 	if(nb>1) {
 		msup=new matrix[nb-1];
 		minf=new matrix[nb-1];
-		blk_index=zeros(nb-1,2);
+		blk_index.zero(nb-1,2);
 	} else {
 		msup=NULL;
 		minf=NULL;
 	}
 	ipiv=new int*[nb];
-	ipiv_flag=zeros(nb,1);
+	ipiv_flag.zero(nb,1);
 	lu_flag=0;
 	
 	oc=offcore;

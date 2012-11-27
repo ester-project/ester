@@ -18,7 +18,7 @@ This creates 2 executables and place them in $(ESTER_DIR)/bin. The executables a
 	For calculating a rotating stellar model. The input parameters M, Xc and Omega_bk have been replaced by 
 		- Rp or R : Polar radius
 		- Re : Equatorial radius
-		- Teff : Effective temperature.
+		- Teff : Polar effective temperature.
 	If these parameters are not set in the command-line or in a parameter file, the new model will 
 	have the same radius and Teff that the input model.
 	

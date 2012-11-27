@@ -2,9 +2,6 @@
 #include<string.h>
 #include<stdlib.h>
 #include<cmath>
-extern "C" {
-#include CBLAS
-}
 
 //#define PERF_LOG
 
@@ -761,7 +758,7 @@ int solver::cgs(const matrix &rhs,matrix &x,int maxit) {
 	mult(y);
 	wrap(y,&r);
 	r=rhs-r;
-	op->fwd_subs(r);
+	op->left_precond(r);
 	r_=r;
 	k=0;
 	fin=0;
@@ -770,7 +767,7 @@ int solver::cgs(const matrix &rhs,matrix &x,int maxit) {
 			error=1;
 			break;
 		}
-		s=cblas_ddot(n,r_.data(),1,r.data(),1);
+		s=sum(r_*r);
 		if(!s) {
 			error=2;
 			break;
@@ -784,22 +781,22 @@ int solver::cgs(const matrix &rhs,matrix &x,int maxit) {
 			p=u+a*(q+a*p);
 		}
 		v=p;
-		op->back_subs(v);
+		op->right_precond(v);
 		unwrap(y,&v);
 		mult(y);
 		wrap(y,&v);
-		op->fwd_subs(v);
-		a=s/cblas_ddot(n,r_.data(),1,v.data(),1);
+		op->left_precond(v);
+		a=s/sum(r_*v);
 		q=u-a*v;
 		v=u+q;
-		op->back_subs(v);
+		op->right_precond(v);
 		err_abs=abs(a*v);
 		err_rel=abs(err_abs/(x+(x==0)));
 		x=x+a*v;
 		unwrap(y,&v);
 		mult(y);
 		wrap(y,&v);
-		op->fwd_subs(v);
+		op->left_precond(v);
 		r=r-a*v;
 		s_1=s;
 		fin=!exist((err_rel>rel_tol)&&(err_abs>abs_tol));
@@ -830,9 +827,8 @@ void solver::create() {
 	} else if(!strcmp(type,"iter")) {
 		op=new solver_iter();
 	} else {
-		strcpy(type,"full");
-		op=new solver_full(nb);
-		create_full();
+		fprintf(stderr,"Unknown solver type \"%s\"\n",type); 
+		exit(1);
 	}
 	op->verbose=verbose;
 
@@ -1021,7 +1017,7 @@ void solver::create_full() {
 		}
 		}
 		if (debug) check_full(n,opi,0);
-		op->set_block(n,opi);
+		((solver_full *) op)->set_block(n,opi);
 		
 		if(n>0) {
 			nn=0;
@@ -1094,7 +1090,7 @@ void solver::create_full() {
 			}
 			}
 			if (debug&set) check_full(n,opi,-1);
-			if(set) op->set_blockinf(n-1,opi);
+			if(set) ((solver_full *) op)->set_blockinf(n-1,opi);
 			
 		}
 		if(n<nb-1) {
@@ -1168,7 +1164,7 @@ void solver::create_full() {
 			}
 			}
 			if(debug&set) check_full(n,opi,1);
-			if(set) op->set_blocksup(n,opi);
+			if(set) ((solver_full *) op)->set_blocksup(n,opi);
 		}
 		if(verbose) {printf("#");fflush(stdout);}
 	}

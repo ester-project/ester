@@ -11,7 +11,7 @@ extern"C" {
 	} e_;
 }
 
-double opa_opal_i(double X,double Z,double T,double rho,double *dlogkt,double *dlogkr) {
+double opa_opal_i(double X,double Z,double T,double rho,double &dlogkt,double &dlogkr) {
     
     double t6,r;
     
@@ -19,8 +19,8 @@ double opa_opal_i(double X,double Z,double T,double rho,double *dlogkt,double *d
     r=rho/t6/t6/t6;
     
     opacgn93_(&Z,&X,&t6,&r);
-    *dlogkt=e_.dopact;
-    *dlogkr=e_.dopacr;
+    dlogkt=e_.dopact;
+    dlogkr=e_.dopacr;
     
 	return e_.opact;
 }
@@ -29,23 +29,19 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa) {
 
 	int i,N,error=0;
-	double *pX,*pT,*prho,*pk,*pdkt,*pdkr;
 	matrix dlnkT,dlnkrho;
 
 	opa.k.dim(T.nrows(),T.ncols());
 	dlnkT.dim(T.nrows(),T.ncols());
 	dlnkrho.dim(T.nrows(),T.ncols());
 	N=T.nrows()*T.ncols();
-	pX=X.data();
-	pT=T.data();
-	prho=rho.data();
-	pk=opa.k.data();
-	pdkt=dlnkT.data();
-	pdkr=dlnkrho.data();
+	double dlogkt,dlogkr;
 	
 	for(i=0;i<N;i++) {
-		pk[i]=opa_opal_i(pX[i],Z,pT[i],prho[i],pdkt+i,pdkr+i);
-		if(pk[i]==-99) error=1;
+		opa.k(i)=opa_opal_i(X(i),Z,T(i),rho(i),dlogkt,dlogkr);
+		if(opa.k(i)==-99) error=1;
+		dlnkT(i)=dlogkt;
+		dlnkrho(i)=dlogkr;
 	}
 	opa.k=pow(10,opa.k);
 	dlnkT-=3*dlnkrho;

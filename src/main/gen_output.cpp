@@ -55,7 +55,7 @@ void readconf(char *line) {
 void matrix_fmt(char *fmt,matrix a) {
 
 	int i,j;
-	double *p;
+	mat_type *p;
 
 	if(transpose) a=a.transpose();
 	p=a.data();

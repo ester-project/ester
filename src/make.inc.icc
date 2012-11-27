@@ -3,9 +3,9 @@ ESTER_ROOT=$(CURDIR)/..
 USE_PGPLOT=1
 
 CC=icpc
-CCFLAGS=-O2 -fp-model precise -ip -fPIC  
+CCFLAGS=-O2 -ip -fPIC -parallel
 FC=ifort
-FCFLAGS=-O2 -r8 -nowarn -fp-model precise -fpp -fPIC
+FCFLAGS=-O2 -r8 -nowarn -fpp -fPIC
 LD=icpc
 LDFLAGS=
 
