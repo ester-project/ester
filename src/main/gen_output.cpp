@@ -566,12 +566,12 @@ void write(const star2d &A,char *var,char *fmt) {
 	} else if(!strcmp(var,"opa")) {
 		if(fmt) fprintf(stdout,fmt,A.opa.name);
 		else {
-			fwrite(A.opa.name,sizeof(char),strlen(A.opa.name),stdout);
+			fwrite(A.opa.name,sizeof(char),strlen(A.opa.name)+1,stdout);
 		}
 	} else if(!strcmp(var,"eos")) {
 		if(fmt) fprintf(stdout,fmt,A.eos.name);
 		else {
-			fwrite(A.eos.name,sizeof(char),strlen(A.eos.name),stdout);
+			fwrite(A.eos.name,sizeof(char),strlen(A.eos.name)+1,stdout);
 		}
 	} else if(!strcmp(var,"r")) {
 		if(dim) m=A.r*A.units.r;

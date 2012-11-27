@@ -8,7 +8,13 @@ rcParams['patch.antialiased']=False
 
 class star2d:
 	def __init__(self,file):
-		names=['R/R_SUN','M/M_SUN','L/L_SUN','M','L','Xr','r','z','th','opa.k','w','p','rho','eos.G1','eos.del_ad','T','D','opa.xi','Teff','gsup','rex','map.R','R','nuc.eps','N2','eos.del_ad','Omega','phi','phiex','Dex','Dt','Dtodd','Dt2','Omega_bk','eos.cp','eos.G3_1','eos.cv','eos.d','eos.chi_T','eos.chi_rho','opa.dlnxi_lnrho','opa.dlnxi_lnT','nuc.pp','nuc.cno','vr','vt','G','virial','energy_test','eos.s']		
+		names=['th','z','D','r','Dt','Dt2','xif','surff','Omega','Omega_bk','Omegac','X','Z','Xc',
+				'rhoc','Tc','pc','M','R','Rp','Re','L','R/R_SUN','Rp/R_SUN','Re/R_SUN',
+				'M/M_SUN','L/L_SUN','rex','phi','phiex','rho','p','T','w','G','Xr',
+				'N2','opa.k','opa.xi','opa.dlnxi_lnT','opa.dlnxi_lnrho','eos.G1','eos.cp',
+				'eos.del_ad','eos.G3_1','eos.cv','eos.prad','eos.chi_T','eos.chi_rho',
+				'eos.d','nuc.eps','nuc.pp','nuc.cno','Teff','gsup','I','Dex','Dt','Dtodd','Dt2',
+				'It','map.R','Dtodd','vr','vt','virial','energy_test','eos.s','opa','eos']
 		fd,template_file=tempfile.mkstemp(prefix='star_template_',suffix='.tmp')
 		fp=os.fdopen(fd,'w')
 		fp.write('\\conf{equator=1}\n\\conf{pole=1}\n\\conf{dim=1}\n')
@@ -25,26 +31,44 @@ class star2d:
 		self.nr=struct.unpack('i',fp.read(4))[0]
 		self.nth=struct.unpack('i',fp.read(4))[0]+2
 		self.nex=struct.unpack('i',fp.read(4))[0]
-		self.ndom=struct.unpack('i',fp.read(4))[0]
-		self.npts=fromfile(fp,'i',self.ndom)
+		self.ndomains=struct.unpack('i',fp.read(4))[0]
+		self.npts=fromfile(fp,'i',self.ndomains)
 		self.conv=struct.unpack('i',fp.read(4))[0]
 		for x in names:
 			x=x.replace('/','_')
 			x=x.replace('.','_')
-			if x=='eps' or x=='eps_c' or x=='M' or x=='L' or x=='Omega_bk' or x=='R' or x=='Omega' or x=='Omegac' or x=='R_R_SUN' or x=='Omega_bk' or x=='M_M_SUN' or x=='L_L_SUN' or x=='virial' or x=='energy_test':
+			if x=='eps' or x=='eps_c' or x=='M' or x=='L' or x=='Omega_bk' or x=='R' or x=='Omega' \
+				 or x=='Omegac' or x=='R_R_SUN' or x=='Omega_bk' or x=='M_M_SUN' or x=='L_L_SUN' \
+				 or x=='virial' or x=='energy_test' or x=='surff' or x=='X' or x=='Z' or x=='Xc' \
+				 or x=='rhoc' or x=='pc' or x=='Tc' or x=='Rp' or x=='Re' or x=='Rp_R_SUN' or x=='Re_R_SUN':
 				s="self."+x+"=struct.unpack('d',fp.read(8))[0]"
+			elif x=='opa' or x=='eos':
+				c=list();
+				cc=fp.read(1);
+				while not cc=='\x00':
+					c.append(cc);
+					cc=fp.read(1);
+				s=str();
+				s=s.join(c);
+				s="self."+x+"='"+s+"'"
 			elif x=='Teff' or x=='gsup':
+				s="self."+x+"=fromfile(fp,'d',"+str(self.nth)+")"
+			elif x=='I':
+				s="self."+x+"=fromfile(fp,'d',"+str(self.nr)+")"
+			elif x=='It':
 				s="self."+x+"=fromfile(fp,'d',"+str(self.nth)+")"
 			elif x=='th':
 				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.nth)+"),[1,"+str(self.nth)+"],'F')"
 			elif x=='z':
 				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.nr)+"),["+str(self.nr)+",1],'F')"
+			elif x=='xif':
+				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.ndomains+1)+"),["+str(self.ndomains+1)+",1],'F')"
 			elif x=='D':
 				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.nr*self.nr)+"),["+str(self.nr)+","+str(self.nr)+"],'F')"
 			elif x=='Dt' or x=='Dt2' or x=='Dtodd':
 				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.nth*self.nth)+"),["+str(self.nth)+","+str(self.nth)+"],'F')"
 			elif x=='map_R':
-				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.ndom*self.nth)+"),["+str(self.ndom)+","+str(self.nth)+"],'F')"
+				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.ndomains*self.nth)+"),["+str(self.ndomains)+","+str(self.nth)+"],'F')"
 			elif x=='rex' or x=='phiex':
 				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.nex*self.nth)+"),["+str(self.nex)+","+str(self.nth)+"],'F')"
 			elif x=='Dex':
