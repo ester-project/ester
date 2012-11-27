@@ -9,7 +9,7 @@ ifeq ($(USE_PGPLOT),1)
 	VARS:=$(VARS) -DUSE_PGPLOT=1
 endif
 CCFLAGS:=$(CCFLAGS) -I $(ESTER_ROOT)/include 
-LDFLAGS:=$(LDFLAGS) -L $(ESTER_ROOT)/lib -Wl,-R,$(ESTER_ROOT)/lib
+LDFLAGS:=$(LDFLAGS) -L $(ESTER_ROOT)/lib -Wl,-rpath,$(ESTER_ROOT)/lib
 
 export
 
