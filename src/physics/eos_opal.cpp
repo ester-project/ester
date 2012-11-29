@@ -54,9 +54,6 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	Xi=X(i);Zi=Z;t6i=t6(i);p_mbi=p_mb(i);
     	eos5_xtrin_(&Xi,&Zi,&t6i,&p_mbi,&rhoi);
     	rho(i)=rhoi;
-    	if(rho(i)==-9e99) {
-   			printf("Values outside OPAL eos table\n");
-    	}
     	eos.s(i)=1e6*(*(eeos_.eos+2));
 		eos.G1(i)=*(eeos_.eos+7);
 		eos.del_ad(i)=1/(*(eeos_.eos+8));
@@ -66,6 +63,9 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	eos.cv(i)=1e6*(*(eeos_.eos+4));
     	eos.chi_rho(i)=*(eeos_.eos+5);
     	eos.chi_T(i)=*(eeos_.eos+6);
+    }
+    if(exist(rho==-9e99)) {
+   		printf("Values outside OPAL eos table\n");
     }
 
     return 0;

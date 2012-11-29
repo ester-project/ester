@@ -1,6 +1,8 @@
 
 include make.inc
 
+UNAME:=$(shell uname -s)
+
 LDFLAGS:=$(LDFLAGS) -L $(ESTER_ROOT)/tables/houdek/v9/lib
 LIBS:=-lopint $(LIBS) 
 
@@ -14,7 +16,11 @@ LDFLAGS:=$(LDFLAGS) -L $(ESTER_ROOT)/lib -Wl,-rpath,$(ESTER_ROOT)/lib
 export
 
 DIRS = global matrix numdiff graphics mapping parser solver symbolic physics star
-LIB=$(ESTER_ROOT)/lib/libester.so
+ifeq ($(UNAME),Darwin)
+	LIB=$(ESTER_ROOT)/lib/libester.dylib
+else
+	LIB=$(ESTER_ROOT)/lib/libester.so
+endif
 ALL_LIBS = $(foreach dir,$(DIRS),$(dir)/lib$(dir).a)
 MAIN_CPP = $(wildcard main/*.cpp)
 MAIN_EXES = $(addprefix $(ESTER_ROOT)/bin/,$(notdir $(MAIN_CPP:.cpp=)))
@@ -46,8 +52,14 @@ main/%.o : main/%.cpp $(LIB)
 	$(CC) -c -o $@ $< $(CCFLAGS) $(VARS)
 
 $(LIB): $(ALL_LIBS)
+ifeq ($(UNAME),Darwin)
+	$(LD) $(LDFLAGS) -dynamiclib -o $@ \
+		$(foreach lib,$(ALL_LIBS),-force_load $(lib)) $(LIBS)
+else
+	echo $(UNAME)
 	$(LD) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(ALL_LIBS) \
 		-Wl,--no-whole-archive
+endif
 
 $(ALL_LIBS): $(DIRS)
 
