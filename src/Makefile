@@ -56,7 +56,6 @@ ifeq ($(UNAME),Darwin)
 	$(LD) $(LDFLAGS) -dynamiclib -o $@ \
 		$(foreach lib,$(ALL_LIBS),-force_load $(lib)) $(LIBS)
 else
-	echo $(UNAME)
 	$(LD) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(ALL_LIBS) \
 		-Wl,--no-whole-archive
 endif
