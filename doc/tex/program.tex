@@ -59,15 +59,29 @@ stellar model to be calculated (see below).
 \item[] {\tt -v}{\it n}. Same as {\tt -verbose} {\it n}.
 \end{itemize}
 
+\section{Default values}
+
+Default values to be used by {\tt star1d} or {\tt star2d} may be set up
+with the files {\tt ester/config/1d\_default.par} and {\tt
+ester/config/2d\_default.par}.
+
+In the distribution of ESTER, the proposed default values are such that
+the star is divided in 8 domains with 30 points in
+each domains. The bounding surfaces of the domains are located at
+0,0.2,0.5,0.65,0.75,0.85,0.95,0.99,1. Opacities and equation of state
+are computed through OPAL tables. These inputs allow the calculation of
+a 3 M$_\odot$ model (but not only of course) from scratch.
 
 \section{{\tt star1d} input parameters}
-The input parameters for {\tt star1d} can be passed in the command line or in a text file
-specified with the option {\tt -param\_file} {\it file} (or just {\tt -p} {\it file}). It
-can also be used simultaneously, in this case the parameters given in the command line take
-precedence over those specified in the file. In the text file they are written in the 
-form {\tt param\_name}={\it param\_value} and in the command line as 
-{\tt -param\_name} {\it param\_value}.
-Here is the list of valid parameters 
+
+The input parameters for {\tt star1d} can be passed in the command line
+or in a text file specified with the option {\tt -param\_file} {\it file}
+(or just {\tt -p} {\it file}). It can also be used simultaneously, in
+this case the parameters given in the command line take precedence over
+those specified in the file. In the text file they are written in the
+form {\tt param\_name}={\it param\_value} and in the command line as {\tt
+-param\_name} {\it param\_value}.  Here is the list of valid parameters
+
 \begin{itemize}
 \item {\tt ndomains}. The number of subdomains to use.
 \item {\tt npts}. Number of points in each subdomain. It is specified as a 
@@ -76,13 +90,16 @@ If only one value is specified, it will be used for all the subdomains, for exam
 \mint{bash}|$ star1d -ndomains 4 -npts 20,20,20,20|  %$
 is equivalent to
 \mint{bash}|$ star1d -ndomains 4 -npts 20|  %$
-\item {\tt xif}. The position of each subdomain as a comma-separated list. The list
-should contain the first and the last points of the entire domain (that should be 0 and 1),
-having a total of {\tt ndomains}+1 values. If only one value is specified ($\gamma$),
+\item {\tt xif}. The position of each subdomain as a comma-separated
+list. The list should contain the first and the last points of the entire
+domain (that should be 0 and 1), having a total of {\tt ndomains}+1
+values. If only one value is specified ($\gamma$),
  the positions are calculated using the formula
-$$\mathtt{xif(i)}=1-\left(1-\frac{i}{\mathtt{ndomains}}\right)^\gamma \quad \gamma>0$$
-where $\gamma=1$ corresponds to equally-spaced subdomains, for $\gamma>1$ they are more
-concentrated near the surface, and the opposite for $\gamma<1$. 
+$$\mathtt{xif(i)}=1-\left(1-\frac{i}{\mathtt{ndomains}}\right)^\gamma
+\quad \gamma>0$$ where $\gamma=1$ corresponds to equally-spaced
+subdomains, for $\gamma>1$ they are more concentrated near the surface,
+and the opposite for $\gamma<1$.
+
 \item {\tt M}. The mass in units of solar mass.
 \item {\tt X}. Mass fraction of hydrogen.
 \item {\tt Z}. Mass fraction of metals.
@@ -94,15 +111,20 @@ $$X(\vec r)=\left\{
 \mathtt{X}&\mbox{otherwise}
 \end{array}\right.$$
 If there is no convective core, this parameter is ignored.
-\item {\tt conv}. The number of subdomains within the convective core. If {\tt conv=0} the
-model will be completely radiative.
-\item {\tt surff}. This parameter is used for truncating the stellar model at some point 
-below the surface. The surface pressure will be {\tt surff} times the "real´´ value and
-the boundary conditions will be adjusted in consequence. This parameter is provided only for
-testing purposes as it does not produce an accurate representation of the internal layers
+
+\item {\tt conv}. The number of subdomains within the convective core. If
+{\tt conv=0} the model will be completely radiative.
+
+\item {\tt surff}. This parameter is used for truncating the stellar model
+at some point below the surface. The surface pressure will be {\tt surff}
+times the "real´´ value and the boundary conditions will be adjusted
+in consequence. This parameter is provided only for testing purposes as
+it does not produce an accurate representation of the internal layers
 of the star. For regular calculations it should be {\tt surff=1}.
-\item {\tt Tc}. Initial estimation of the central temperature. To be updated during the
-calculation.
+
+\item {\tt Tc}. Initial estimation of the central temperature. To be
+updated during the calculation.
+
 \item {\tt pc}. Initial estimation of the central pressure. To be updated during the
 calculation.
 \item {\tt opa}. Type of opacity law. Possible values are:
@@ -129,32 +151,36 @@ when using an input file.
 
 \section{{\tt star2d} input parameters}
 
-The program {\tt star2d} admits the same parameters than {\tt star1d} plus some extra
-specific options:
+Note that the input of {\tt star2d} can be a non-rotating 1D model calculated 
+with {\tt star1d}.
+
+The program {\tt star2d} admits the same parameters than {\tt star1d}
+plus some extra specific options:
+
 \begin{itemize}
-\item {\tt nth}. The number of grid points in the latitude.
-\item {\tt nex}. Nuber of radial points in the external domain.
+\item {\tt nth}. The number of grid points in latitude.
+\item {\tt nex}. Number of radial points in the external domain.
 \item {\tt Omega\_bk}. Angular velocity at the equator in units of the critical velocity
 $\Omega_c=\sqrt{\frac{GM}{R_e^3}}$.
 \item {\tt Ekman}. Ekman number.
 \end{itemize}
 
-The default values are written in the file {\tt ester/config/2d\_default.par}.
-Note that the input of {\tt star2d} can be a non-rotating 1D model calculated 
-with {\tt star1d}.
 \subsection{Some recipes}
-The typical workflow to calculate a model starts with the calculation of the corresponding
-1D model and using it as an input for {\tt star2d}. For example, to calculate 
-the structure of a 5$M_\odot$ star with OPAL opacity rotating at with $\Omega=0.7\Omega_c$
-we can do:
+
+The typical workflow to calculate a model starts with the calculation of
+the corresponding 1D model and using it as an input for {\tt star2d}. For
+example, to calculate the structure of a 5$M_\odot$ star with OPAL
+opacity rotating at with $\Omega=0.7\Omega_c$ we can do:
+
 \begin{minted}{bash}
 $ star1d -M 5 -opa opal -o model1d
 $ star2d -i model1d -nth 24 -Omega_bk 0.7 -o model2d
 \end{minted}
 
-As the code uses the Newton's method, sometimes it is not possible to converge to a solution
-if the initial estimation is too far from it. In this case we can use some intermediate steps.
-For example, if we want to calculate the structure of a 2.5$M_\odot$ star rotating with 
+As the code uses the Newton's method, sometimes it is not possible
+to converge to a solution if the initial estimation is too far from
+it. In this case we can use some intermediate steps.  For example, if
+we want to calculate the structure of a 2.5$M_\odot$ star rotating with
 $\Omega=0.9\Omega_c$, we should probably do
 
 \medskip
@@ -170,29 +196,29 @@ $\Omega=0.9\Omega_c$, we should probably do
 \end{tabular}
 \medskip
 
-Executing {\tt star2d} with {\tt maxit=0} can be used to interpolate a model without
-recalculating it.
+Executing {\tt star2d} with {\tt maxit=0} can be used to interpolate a
+model without recalculating it.
 
 \medskip
 \noindent
 \verb|$ star2d -i model -npts |{\it npts\_new}\verb| -nth |{\it nth\_new}\verb| -o model_interp -maxit 0|
 
 \medskip
-Pressing Ctrl-C at any time during the execution of {\tt star2d} will terminate
-the program, giving the possibility of finishing the current iteration and write the result in the
-output file.
+Pressing Ctrl-C at any time during the execution of {\tt star2d} will
+terminate the program, giving the possibility of finishing the current
+iteration and write the result in the output file.
 
 
 
 
 \section{Generating custom output files}
 
-The output files generated by {\tt star1d} and {\tt star2d} contain just the minimal 
-information necessary to reconstruct the code. However, sometimes a more detailed output 
-is required.
-This can be done using the program {\tt gen\_output} included in the distribution. This
-program reads a template from the standard input and write the result in the standard output.
-A typical call would be
+The output files generated by {\tt star1d} and {\tt star2d} contain just
+the minimal information necessary to reconstruct the code. However,
+sometimes a more detailed output is required.  This can be done using
+the program {\tt gen\_output} included in the distribution. This program
+reads a template from the standard input and write the result in the
+standard output.  A typical call would be
 
 \medskip
 \noindent
@@ -448,6 +474,10 @@ print A.p[0,0] # Prints the central pressure
 
 A.draw(A.w) # Makes a plot of the differential rotation
 show() # Needed in non-interactive mode of matplotlib
+
+Note that 'dotted variables' like opa.k are accessed via A.opa_k under
+python.
+
 \end{minted}
 
 
