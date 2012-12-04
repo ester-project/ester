@@ -21,17 +21,18 @@ a {\tt distclean}).
 At the moment there is only one library that needs to be build, the package for interpolating opacity tables created by G\"unter Houdek.
 After checking the {\tt Makefile} located at {\tt ester/tables/houdek/v9} we do
 \mint{bash}|root/ester/src$ make tables| %$
-Now, we are prepared to compile the main library.
-The main variables for the compilation should be defined in a file named {\verb1 make.inc 1}.
-Two examples are included, {\tt make.inc.icc} and {\tt make.inc.gcc},
- for the Intel compiler and the GNU compiler respectively (tested under Ubuntu 12.04).
-After setting the proper values for the compilation we execute {\tt make all} or just
-\mint{bash}|root/ester/src$ make| %$
-To remove intermediate files we can also do
-\mint{bash}|root/ester/src$ make clean| %$
-The main library is created in {\tt ester/lib/libester.so}, the include files are in {\tt ester/include} and the executables
-in {\tt ester/bin}. We can add the latter directory to the system path, for the \emph{bash} shell
-\mint{bash}|$ export PATH="your_root_directory/ester/bin:$PATH"|
+Now, we are prepared to compile the main library. The first step is to
+create the {\verb1 make.inc 1} file from the two examples
+that are included, {\tt make.inc.icc} and {\tt make.inc.gcc},
+ for the Intel compiler and the GNU compiler respectively (tested under
+ Ubuntu 12.04).
+After setting the appropriate values for the compilation we execute {\tt make
+all} or just \mint{bash}|root/ester/src$ make| %$ To remove intermediate
+files we can also do \mint{bash}|root/ester/src$ make clean| %$ The main
+library is created in {\tt ester/lib/libester.so}, the include files
+are in {\tt ester/include} and the executables in {\tt ester/bin}. We
+can add the latter directory to the system path, for the \emph{bash}
+shell \mint{bash}|$ export PATH="your_root_directory/ester/bin:$PATH"|
 or include this line in your {\tt .bashrc} file.
 
 
