@@ -1,0 +1,4 @@
+#!/bin/bash
+file=$1
+shift
+icpc $file -O2 -fp-model precise -ip -fPIC  -I/usr/include/x86_64-linux-gnu -I /home/rieutord/ester-project/src/../include   -L /home/rieutord/ester-project/src/../tables/houdek/v9/lib -L /home/rieutord/ester-project/src/../lib -Wl,-R,/home/rieutord/ester-project/src/../lib -lester -lcpgplot -lpgplot -lX11 -lpng12   -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lifcore -lifport -lgfortran -lopint $@
