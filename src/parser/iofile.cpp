@@ -182,7 +182,7 @@ int INFILE::read(const char *tag,matrix *a) {
 		fread(&nc,sizeof(int),1,fp);
 	}
 
-	if(a->read(nr,nc,fp,mode)) return 0;
+	if(!a->read(nr,nc,fp,mode)) return 0;
 	else return 1;
 
 }

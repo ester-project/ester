@@ -65,7 +65,7 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	eos.chi_T(i)=*(eeos_.eos+6);
     }
     if(exist(rho==-9e99)) {
-   		printf("Values outside OPAL eos table\n");
+   		fprintf(stderr,"Values outside OPAL eos table\n");
     }
 
     return 0;

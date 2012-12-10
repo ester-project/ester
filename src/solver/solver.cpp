@@ -253,6 +253,12 @@ void solver::reset(int iblock,const char *eq_name) {
 	reset(iblock,get_id(eq_name));
 }
 
+void solver::reset(const char *eq_name) {
+
+	for(int i=0;i<nb;i++) 
+		reset(i,eq_name);
+}
+
 void solver::set_nr(int *nr) {
 	int i;
 

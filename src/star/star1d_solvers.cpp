@@ -36,7 +36,7 @@ void star1d::upd_Xr() {
 	
 	Xr=X*ones(nr,1);
 	if(!conv) {
-		if(Xc!=1) printf("Warning: Non-homogeneus composition without core convection not implemented\n");
+		//if(Xc!=1) printf("Warning: Non-homogeneus composition without core convection not implemented\n");
 		Xc=1;
 		return;
 	}
@@ -107,6 +107,8 @@ double star1d::solve(solver *op) {
 	int info[5];
 	matrix rho0;
 	double err,err2;
+	
+	check_map();
 	
 	op->reset();
 	solve_definitions(op);
@@ -191,7 +193,7 @@ void star1d::update_map(matrix dR) {
 
 	if(ndomains==1) return;
 
-	double h=1,dmax=0.1;config.newton_dmax;
+	double h=1,dmax=config.newton_dmax;
 	
 	matrix R0;
 	R0=map.R;
@@ -389,11 +391,11 @@ void star1d::solve_temp(solver *op) {
 		
 		if(n) op->bc_bot2_add_d(n,"Frad","rz",Frad.row(j0));
 		op->bc_top1_add_d(n,"Frad","rz",Frad.row(j1));
-		
+	
 		j0=j1+1;
 	}
 	op->set_rhs("Frad",rhs_Frad);
-		
+	
 	
 	//Temperature
 	
@@ -486,7 +488,6 @@ void star1d::solve_temp(solver *op) {
 			} else {
 				op->bc_bot2_add_d(n,"Lambda","Frad",4*PI*(r*r).row(j0));
 				op->bc_bot2_add_d(n,"Lambda","r",4*PI*(Frad*2*r).row(j0));
-				op->bc_bot2_add_d(n,"Lambda","rz",4*PI*(Frad*r*r).row(j0));
 				op->bc_bot1_add_d(n,"Lambda","lum",-ones(1,1));
 				rhs_Lambda(n)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
 			}
@@ -576,10 +577,7 @@ void star1d::solve_dim(solver *op) {
 void star1d::solve_map(solver *op) {
 
 	int n,j0;
-	double *Ri;
 	matrix rhs;
-	
-	Ri=map.gl.xif;
 	
 	rhs=zeros(ndomains,1);
 	for(n=0;n<ndomains;n++) {
@@ -591,27 +589,28 @@ void star1d::solve_map(solver *op) {
 	
 	rhs=zeros(ndomains,1);
 	j0=0;
-	for(n=0;n<conv;n++) {
-		if(!n || conv==ndomains) op->bc_top1_add_d(n,"Ri","Ri",ones(1,1));
+	for(n=0;n<ndomains;n++) {
+		if(!n) op->add_d(n,"Ri","Ri",ones(1,1));
 		else {
-			op->bc_top1_add_d(n,"Ri","Ri",ones(1,1)/Ri[n]);
-			op->bc_top2_add_d(n,"Ri","Ri",-ones(1,1)/Ri[n+1]);
+			matrix delta;
+			delta=zeros(1,map.gl.npts[n]);delta(0)=1;delta(-1)=-1;
+			op->bc_bot2_add_l(n,"Ri","log_p",ones(1,1),delta);
+			delta=zeros(1,map.gl.npts[n-1]);delta(0)=1;delta(-1)=-1;
+			op->bc_bot1_add_l(n,"Ri","log_p",-ones(1,1),delta);
+			rhs(n)=log(p(j0+map.gl.npts[n]-1))-log(p(j0))-log(p(j0-1))+log(p(j0-map.gl.npts[n-1]));
 		}
 		j0+=map.gl.npts[n];
 	}
 	
-	n=conv;
-	if(!conv) {
-		op->bc_bot2_add_d(n,"Ri","Ri",ones(1,1));
-	} else if(conv<ndomains) {
+	if(conv) {
 		matrix ds;
+		for(n=0,j0=0;n<conv;n++) j0+=map.gl.npts[n];
+		n=conv;
 		ds=eos.cp*((D,log(T))-eos.del_ad*(D,log(p)));
+		op->reset(n,"Ri");
 		op->bc_bot2_add_l(n,"Ri","s",ones(1,1),D.block(n).row(0));
+		op->bc_bot2_add_d(n,"Ri","rz",-ones(1,1)*ds(j0));
 		rhs(n)=-ds(j0);
-	}
-	for(n=conv+1;n<ndomains;n++) {
-		op->bc_bot2_add_d(n,"Ri","Ri",ones(1,1)/(1-Ri[n]));
-		op->bc_bot1_add_d(n,"Ri","Ri",-ones(1,1)/(1-Ri[n-1]));
 	}
 	op->set_rhs("Ri",rhs);
 }
@@ -629,7 +628,7 @@ void star1d::solve_gsup(solver *op) {
 	op->bc_top1_add_d(n,"gsup","log_R",g);
 
 	q=-pc/R/rhoc*ones(1,1);
-	op->bc_top1_add_l(n,"gsup","p",q,D.block(n).row(-1));
+	op->bc_top1_add_l(n,"gsup","phi",q,D.block(n).row(-1));
 	
 	q=(D,phi);
 	op->bc_top1_add_d(n,"gsup","rz",pc/R/rhoc*q.row(-1));

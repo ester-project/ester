@@ -30,6 +30,18 @@ void star2d::spectrum(figure *pfig,const matrix &y,int parity) const {
 	map.spectrum(pfig,y,parity);
 }
 
+void star2d::calc_units() {
+
+	units.phi=pc/rhoc;
+	units.p=pc;
+	units.rho=rhoc;
+	units.T=Tc;
+	units.r=R;
+	units.Omega=sqrt(pc/rhoc)/R;
+	units.v=sqrt(pc/rhoc);
+	units.F=pc/R/rhoc;
+}
+
 double star2d::luminosity() const {
 
 	return 2*PI*(map.gl.I,(rho*nuc.eps*r*r*map.rz,map.leg.I_00))(0)*units.rho*units.r*units.r*units.r;

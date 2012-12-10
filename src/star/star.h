@@ -16,10 +16,11 @@ class star1d;
 
 class star2d {
   protected:
-	void copy(const star2d &);
+	virtual void copy(const star2d &);
 	void init1d(const star1d &A,int npts_th,int npts_ex);
+	virtual int check_tag(const char *tag) const;
+	virtual void write_tag(OUTFILE *fp,char mode) const;
   public:
-  	star2d();
   	mapping map;
   	const int &nr,&nth,&nex,&ndomains;
 	const matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
@@ -47,11 +48,15 @@ class star2d {
 	} units;
 	void calc_units();
 
+	star2d();
 	virtual ~star2d();
 	star2d(const star2d &);
 	star2d &operator=(const star2d &);
 	struct config_struct {
-		double newton_dmax,verbose;
+		double newton_dmax;
+		int verbose;
+		int core_convec;
+		double min_core_size;
 	} config;
 	
 	int opacity();
@@ -61,10 +66,9 @@ class star2d {
 	virtual int init(const char *input_file,const char *param_file,int argc,char *argv[]);
 	virtual int check_arg(char *arg,char *val,int *change_grid);
 	virtual int read(const char *input_file);
-	int read_old(const char *input_file);
-	virtual void write(const char *output_file,char output_mode) const;
-	virtual void interp(mapping map_old);
-	
+	virtual int read_old(const char *input_file);
+	virtual void write(const char *output_file,char output_mode='b') const;
+	virtual void interp(mapping_redist *red);
 	
 	virtual solver *init_solver(int nvar_add=0);
 	virtual double solve(solver *);
@@ -109,6 +113,13 @@ class star2d {
 	
 	virtual void fill();
 	
+	// star_map.cpp
+	virtual void remap(int ndomains,int *npts,int nth,int nex);
+	virtual matrix check_boundaries(int ndomains,int &conv_new,double p_cc=0) const;
+	virtual matrix find_boundaries(matrix pif) const;
+	virtual void check_map();
+	virtual int check_convec(double &p_cc,matrix &Rcc);
+	
 	void draw(figure *,const matrix &,int parity=0) const;
 	void drawi(figure *,const matrix &,int sr,int st,int parity=0) const;
 	void drawc(figure *,const matrix &,int ncontours,int parity=0) const;
@@ -121,16 +132,16 @@ class star2d {
 
 class star1d : public star2d {
   protected:
-	void copy(const star1d &);
+    virtual int check_tag(const char *tag) const;
+	virtual void write_tag(OUTFILE *fp,char mode) const;
   public:	
+  	// star1d_class.cpp
 	star1d();
 	~star1d();
 	star1d(const star1d &);
 	star1d &operator=(const star1d &);
 	virtual int init(const char *input_file,const char *param_file,int argc,char *argv[]);
 	virtual int check_arg(char *arg,char *val,int *change_grid);
-	virtual int read(const char *input_file);
-	virtual void write(const char *output_file,char output_mode) const;
 	virtual int read_old(const char *input_file);
 	
 	virtual solver *init_solver(int nvar_add=0);

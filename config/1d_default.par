@@ -1,7 +1,6 @@
 #Default parameters for star1d
 
 ndomains=8
-xif=0,0.2,0.5,0.65,0.75,0.85,0.95,0.99,1
 npts=30,30,30,30,30,30,30,30
 
 M=5
@@ -9,7 +8,6 @@ X=0.7
 Z=0.02
 
 Xc=1
-conv=1
 surff=1
 
 Tc=3e7

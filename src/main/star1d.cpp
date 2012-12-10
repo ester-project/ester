@@ -3,24 +3,7 @@
 #include<string.h>
 #include"star.h"
 
-figure *fig;
-
-class configuration {
-public:
-	int minit,maxit;
-	double tol,newton_dmax;
-	int verbose;
-	char plot_device[64];
-	double plot_interval;
-	char input_file[256];
-	char param_file[256];
-	char output_file[256];
-	char output_mode;
-	configuration(int argc,char *argv[]);
-	~configuration(){};
-	void missing_argument(const char *arg);
-	int check_arg(const char *arg,const char *val);
-};
+#include"read_config.cpp"
 
 int main(int argc,char *argv[]) {
 
@@ -29,6 +12,7 @@ int main(int argc,char *argv[]) {
 	tiempo t;
 	double t_plot,t_output;
 	configuration config(argc,argv);
+	figure *fig;
 	
 	t.start();
 	if(config.verbose) {
@@ -52,21 +36,18 @@ int main(int argc,char *argv[]) {
 	if(config.verbose>2) op->verbose=1;
 	A.config.newton_dmax=config.newton_dmax;
 	if(config.verbose>1) A.config.verbose=1;
+	A.config.core_convec=config.core_convec;
+	A.config.min_core_size=config.min_core_size;
 	
-	int conv_set=A.conv;
-	double Xc_set=A.Xc;
 	// If no input file, ignore core convection until the model starts to converge
 	if(*config.input_file==0) {
-		if(A.conv) A.Xc=1;
-		A.conv=0;
+		A.config.core_convec=0;
 	}
 	err=1;
 	while(!last_it) {
 		if(err<0.1&&!*config.input_file) {
-			A.conv=conv_set;
-			A.Xc=Xc_set;
+			A.config.core_convec=config.core_convec;
 		}
-		
 		nit++;
 		//A.check_jacobian(op,"log_T");exit(0);
 		err=A.solve(op);
@@ -106,132 +87,6 @@ int main(int argc,char *argv[]) {
 	return 0;
 }
 
-configuration::configuration(int argc,char *argv[]) {
-	
-	int i,i_arg,k;
-	char *arg,*val;
-	char file[256],line[256];
-	cmdline_parser cmd;
-	file_parser fp;
-	
-	verbose=1;
-	strcpy(plot_device,"/NULL");
-	plot_interval=10;
-	strcpy(output_file,"star.out");
-	*input_file=0;
-	*param_file=0;
-	output_mode='b';
-	minit=1;
-	maxit=200;
-	tol=1e-8;
-	newton_dmax=0.5;
-	
-	sprintf(file,"%s/config/star.cfg",ESTER_ROOT);
-	if(!fp.open(file)) 
-		printf("Can't open configuration file %s\n",file);
-	else {
-		while(k=fp.get(arg,val)) {			
-			if(i=check_arg(arg,val)) {
-				printf("Sintax error in configuration file %s, line %d\n",file,k);
-				if(i==2) missing_argument(arg);
-				if(i==1) {
-					printf("Unknown parameter %s\n",arg);
-					exit(1);
-				}
-			}
-		}
-		fp.close();
-	}
-	
-	cmd.open(argc,argv);
-	while(int err_code=cmd.get(arg,val)) {
-		if(err_code==-1) exit(1);
-		err_code=check_arg(arg,val);
-		if(err_code==2) missing_argument(arg);
-		if(err_code==0) cmd.ack(arg,val);
-	}
-	cmd.close();
-
-}
-
-int configuration::check_arg(const char *arg,const char *val) {
-
-	int err=0;
-
-	if(!strcmp(arg,"v0"))
-		verbose=0;
-	else if(!strcmp(arg,"v1"))
-		verbose=1;
-	else if(!strcmp(arg,"v2"))
-		verbose=2;
-	else if(!strcmp(arg,"v3"))
-		verbose=3;
-	else if(!strcmp(arg,"verbose")) {
-		if(val==NULL) return 2;
-		verbose=atoi(val);
-		verbose=verbose>3?3:verbose;
-		verbose=verbose<0?0:verbose;
-	} 
-	else if(!strcmp(arg,"o")||!strcmp(arg,"output_file")) {
-		if(val==NULL) return 2;
-		strcpy(output_file,val);
-	}
-	else if(!strcmp(arg,"i")||!strcmp(arg,"input_file")) {
-		if(val==NULL) return 2;
-		strcpy(input_file,val);
-	}  
-	else if(!strcmp(arg,"p")||!strcmp(arg,"param_file")) {
-		if(val==NULL) return 2;
-		strcpy(param_file,val);
-	}  
-	else if(!strcmp(arg,"ascii")) 
-		output_mode='t';
-	else if(!strcmp(arg,"binary"))
-		output_mode='b';
-	else if(!strcmp(arg,"output_mode")) {
-		if(val==NULL) return 2;
-		if(val[0]!='b'&&val[0]!='t') 
-			printf("Ignoring unknown output_mode %s\n",val);
-		else output_mode=val[0];
-	}
-	else if(!strcmp(arg,"plot_interval")) {
-		if(val==NULL) return 2;
-		plot_interval=atof(val);
-	}
-	else if(!strcmp(arg,"noplot")) {
-		strcpy(plot_device,"/NULL");
-	}
-	else if(!strcmp(arg,"plot_device")) {
-		if(val==NULL) return 2;
-		strcpy(plot_device,val);
-	}
-	else if(!strcmp(arg,"maxit")) {
-		if(val==NULL) return 2;
-		maxit=atoi(val);
-	}
-	else if(!strcmp(arg,"minit")) {
-		if(val==NULL) return 2;
-		minit=atoi(val);
-	}
-	else if(!strcmp(arg,"tol")) {
-		if(val==NULL) return 2;
-		tol=atof(val);
-	}
-	else if(!strcmp(arg,"newton_dmax")) {
-		if(val==NULL) return 2;
-		newton_dmax=atof(val);
-	}
-	else err=1;
-
-	return err;
-
-}
-
-void configuration::missing_argument(const char *arg) {
-	
-	fprintf(stderr,"Error: Argument to '%s' missing\n",arg);
-	exit(1);
-}
 
 
 

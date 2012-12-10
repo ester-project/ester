@@ -1,8 +1,11 @@
 #include"mapping.h"
 #include"constants.h"
 #include<stdlib.h>
+#include<cmath>
 
-mapping::mapping(int ndom): gl(ndom),D(gl.D),Dt(leg.D_00),Dt2(leg.D2_00),Dt_odd(leg.D_11),z(gl.x),th(leg.th) {
+mapping::mapping(int ndom): gl(ndom),D(gl.D),Dt(leg.D_00),Dt2(leg.D2_00)
+			,Dt_odd(leg.D_11),z(gl.x),th(leg.th),
+			nr(gl.N),nth(leg.npts),nex(ex.gl.N),ndomains(gl.ndomains) {
 
 	ex.gl.set_ndomains(1);
 	ex.gl.set_xif(1.,2.);
@@ -14,6 +17,7 @@ mapping::mapping(int ndom): gl(ndom),D(gl.D),Dt(leg.D_00),Dt2(leg.D2_00),Dt_odd(
 mapping::~mapping() {}
 
 mapping::mapping(const mapping &map):
+		nr(gl.N),nth(leg.npts),nex(ex.gl.N),ndomains(gl.ndomains),
 		eps_(map.eps_),eta_(map.eta_),
 		gl(map.gl),leg(map.leg),
 		r(map.r),rz(map.rz),rzz(map.rzz),rt(map.rt),rtt(map.rtt),rzt(map.rzt),
@@ -32,13 +36,13 @@ mapping &mapping::operator=(const mapping &map) {
 
 	eps_=map.eps_;
 	eta_=map.eta_;
-	ex.z=map.ex.z;ex.D=map.ex.D;
     gl=map.gl;
     leg=map.leg;
     r=map.r;rz=map.rz;rzz=map.rzz;rt=map.rt;rtt=map.rtt;rzt=map.rzt;
     gzz=map.gzz;gzt=map.gzt;gtt=map.gtt;
     R=map.R;
     ex.gl=map.ex.gl;
+    ex.z=map.ex.z;ex.D=map.ex.D;
     ex.r=map.ex.r;ex.rz=map.ex.rz;ex.rzz=map.ex.rzz;ex.rt=map.ex.rt;ex.rtt=map.ex.rtt;ex.rzt=map.ex.rzt;
     ex.gzz=map.ex.gzz;ex.gzt=map.ex.gzt;ex.gtt=map.ex.gtt;
 	mode=map.mode;
@@ -397,45 +401,51 @@ matrix mapping::stream(const matrix &Fz) const {
 	matrix Ft;
 	return stream(Fz,Ft);
 }
-    
-void mapping::interps(const mapping &map_old,matrix &Tr,matrix &Tex,
-		matrix &Tt_00,matrix &Tt_01,matrix &Tt_10,matrix &Tt_11) const {
+  
+matrix mapping::eval(const matrix &y,const matrix &ri, const matrix &thi,int parity) const {
 
-	matrix m;
-	int i,j,k;
-	
-	if(gl.ndomains!=map_old.gl.ndomains) {
-		printf("mapping::interps : Changing number of domains not yet implemented\n");
+	if(ri.nrows()!=thi.nrows()||ri.ncols()!=thi.ncols()) {
+		fprintf(stderr,"Error: (mapping.eval) Matrix dimensions must agree\n");
 		exit(1);
 	}
-	for(i=0;i<gl.ndomains;i++) {
-		gl.xif[i+1]=map_old.gl.xif[i+1];
+	if(y.nrows()!=gl.N||y.ncols()!=leg.npts) {
+		fprintf(stderr,"Error: (mapping.eval) Matrix dimensions must agree\n");
+		exit(1);
 	}
 	
-	m=zeros(map_old.gl.N,1);
-	m=map_old.gl.eval(m,gl.x,Tr);
-	j=0;k=0;
-	for(i=0;i<gl.ndomains;i++) {
-		Tr.setrow(k,zeros(1,map_old.gl.N));Tr(k,j)=1;
-		j+=map_old.gl.npts[i];
-		k+=gl.npts[i];
-		Tr.setrow(k-1,zeros(1,map_old.gl.N));Tr(k-1,j-1)=1;
+	matrix yi(ri.nrows(),ri.ncols());
+	int N=ri.nrows()*ri.ncols();
+	matrix yth,T,rth,rzth;
+	double zi;
+	for(int i=0;i<N;i++) {
+		yth=leg.eval(y,thi(i),T,parity/10,parity%10);
+		rth=leg.eval_00(r,thi(i),T);
+		rzth=(rz,T);
+		zi=ri(i)/max(rth);
+		if(zi-1>-1e-10&&zi-1<1e-10) zi=1;
+		if(zi<1e-10&&zi>-1e-10) zi=0;
+		if(zi>1||zi<0) {
+			fprintf(stderr,"Error: (mapping.eval) Coordinates (r,theta)=(%f,%f) are out of bounds\n",
+				ri(i),thi(i));
+			exit(1);
+		}
+		int fin=0,nit=0;
+		if(zi==0||zi==1) fin=99;
+		while(fin<2) {
+			double dzi;
+			dzi=-(gl.eval(rth,zi)(0)-ri(i))/gl.eval(rzth,zi)(0);
+			if(fabs(dzi)<1e-10) fin++;
+			nit++;
+			if(nit>100) {
+				fprintf(stderr,"Error: (mapping.eval) Failed to converge\n");
+				exit(1);
+			}
+			zi+=dzi;
+		}
+		yi(i)=gl.eval(yth,zi)(0);
 	}
 	
-	m=zeros(map_old.ex.gl.N,1);
-	m=map_old.ex.gl.eval(m,ex.gl.x,Tex);
-
-	m=zeros(1,map_old.leg.npts);
-	m=map_old.leg.eval_00(m,leg.th,Tt_00);
-	
-	m=zeros(1,map_old.leg.npts);
-	m=map_old.leg.eval_01(m,leg.th,Tt_01);
-	
-	m=zeros(1,map_old.leg.npts);
-	m=map_old.leg.eval_10(m,leg.th,Tt_10);
-	
-	m=zeros(1,map_old.leg.npts);
-	m=map_old.leg.eval_11(m,leg.th,Tt_11);
+	return yi;
 
 }
 

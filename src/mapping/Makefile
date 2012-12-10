@@ -1,4 +1,4 @@
-SRC=mapping.cpp
+SRC=mapping.cpp mapping_redist.cpp
 SRC_H=mapping.h
 DEPS=constants.h matrix.h numdiff.h graphics.h solver.h
 

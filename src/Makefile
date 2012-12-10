@@ -3,15 +3,15 @@ include make.inc
 
 UNAME:=$(shell uname -s)
 
-LDFLAGS:=$(LDFLAGS) -L $(ESTER_ROOT)/tables/houdek/v9/lib
+LDFLAGS:=$(LDFLAGS) -L$(ESTER_ROOT)/tables/houdek/v9/lib
 LIBS:=-lopint $(LIBS) 
 
 VARS=-DCBLAS=\<$(BLAS_H)\> -DLAPACK=\<$(LAPACK_H)\> -DESTER_ROOT=\"$(ESTER_ROOT)\"
 ifeq ($(USE_PGPLOT),1) 
 	VARS:=$(VARS) -DUSE_PGPLOT=1
 endif
-CCFLAGS:=$(CCFLAGS) -I $(ESTER_ROOT)/include 
-LDFLAGS:=$(LDFLAGS) -L $(ESTER_ROOT)/lib -Wl,-rpath,$(ESTER_ROOT)/lib
+CCFLAGS:=$(CCFLAGS) -I$(ESTER_ROOT)/include 
+LDFLAGS:=$(LDFLAGS) -L$(ESTER_ROOT)/lib -Wl,-rpath,$(ESTER_ROOT)/lib
 
 export
 
@@ -22,34 +22,27 @@ else
 	LIB=$(ESTER_ROOT)/lib/libester.so
 endif
 ALL_LIBS = $(foreach dir,$(DIRS),$(dir)/lib$(dir).a)
-MAIN_CPP = $(wildcard main/*.cpp)
-MAIN_EXES = $(addprefix $(ESTER_ROOT)/bin/,$(notdir $(MAIN_CPP:.cpp=)))
-
 
 CLEANDIRS = $(DIRS:%=clean-%)
 DISTCLEANDIRS = $(DIRS:%=distclean-%)
 
-.PHONY: all dirs $(DIRS) clean $(CLEANDIRS) distclean $(DISTCLEANDIRS) 
+.PHONY: all dirs $(DIRS) clean $(CLEANDIRS) distclean $(DISTCLEANDIRS) main
 
-all: $(MAIN_EXES) $(LIB) $(ESTER_ROOT)/utils/ester_build
+all: main $(LIB) $(ESTER_ROOT)/utils/ester_build
 
 tables: 
 	make -C ../tables	
 
 clean: $(CLEANDIRS)
-	rm -f main/*.o
+	make -C main clean
 
 distclean: clean $(DISTCLEANDIRS)
 	rm -f $(ESTER_ROOT)/bin/*
 	rm -f $(LIB)
 	make -C ../tables clean
 
-
-$(ESTER_ROOT)/bin/% : main/%.o
-	$(LD) -o $@ $< $(LDFLAGS) -lester $(LIBS)
-	
-main/%.o : main/%.cpp $(LIB)
-	$(CC) -c -o $@ $< $(CCFLAGS) $(VARS)
+main: $(LIB)
+	$(MAKE) -C main
 
 $(LIB): $(ALL_LIBS)
 ifeq ($(UNAME),Darwin)

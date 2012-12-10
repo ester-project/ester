@@ -48,7 +48,7 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	opa.xi=16*SIG_SB*pow(T,3)/(3*opa.k*rho);
 	opa.dlnxi_lnrho=-1-dlnkrho;
     opa.dlnxi_lnT=3-dlnkT;
-	if(error) printf("Values outside OPAL opacity table\n");
+	if(error) fprintf(stderr,"Values outside OPAL opacity table\n");
 	
 	return error;
 		

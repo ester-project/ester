@@ -38,7 +38,7 @@ void star2d::upd_Xr() {
 	
 	Xr=X*ones(nr,nth);
 	if(!conv) {
-		if(Xc!=1) printf("Warning: Non-homogeneus composition without core convection not implemented\n");
+		//if(Xc!=1) printf("Warning: Non-homogeneus composition without core convection not implemented\n");
 		Xc=1;
 		return;
 	}
@@ -132,6 +132,7 @@ double star2d::solve(solver *op) {
 		w=Omega*ones(nr,nth);
 	}
 
+	check_map();
 
 	op->reset();
 	
@@ -863,34 +864,36 @@ void star2d::solve_dim(solver *op) {
 	op->set_rhs("log_R",rhs);
 }
 
+
 void star2d::solve_map(solver *op) {
 
 	int n,j0;
 	matrix Ri,TT,q,rhs;
 
+	map.leg.eval_00(map.leg.th,0,TT);
+
 	rhs=zeros(ndomains+1,1);
-	
 	j0=0;
-	for(n=0;n<conv;n++) {
-		if(!n || conv==ndomains) op->bc_top1_add_d(n,"eta","eta",ones(1,1));
+	for(n=0;n<ndomains;n++) {
+		if(!n) op->add_d(n,"eta","eta",ones(1,1));
 		else {
-			op->bc_top1_add_d(n,"eta","eta",ones(1,1)/map.gl.xif[n]);
-			op->bc_top2_add_d(n,"eta","eta",-ones(1,1)/map.gl.xif[n+1]);
+			matrix delta;
+			delta=zeros(1,map.gl.npts[n]);delta(0)=1;delta(-1)=-1;
+			op->bc_bot2_add_lr(n,"eta","log_p",ones(1,1),delta,TT);
+			delta=zeros(1,map.gl.npts[n-1]);delta(0)=1;delta(-1)=-1;
+			op->bc_bot1_add_lr(n,"eta","log_p",-ones(1,1),delta,TT);
+			rhs(n)=(log(p.row(j0+map.gl.npts[n]-1))-log(p.row(j0))
+				-log(p.row(j0-1))+log(p.row(j0-map.gl.npts[n-1])),TT)(0);
 		}
 		j0+=map.gl.npts[n];
 	}
-	map.leg.eval_00(map.leg.th,0,TT);
-	n=conv;
-	if(!conv) {
-		op->bc_bot2_add_d(n,"eta","eta",ones(1,1));
-	} else if(conv<ndomains) {
-		op->bc_bot2_add_d(n,"eta","eta",ones(1,1));
-		op->bc_bot2_add_r(n,"eta","Ri",-ones(1,1),TT);
-	}
-	
-	for(n=conv+1;n<ndomains;n++) {
-		op->bc_bot2_add_d(n,"eta","eta",ones(1,1)/(1-map.gl.xif[n]));
-		op->bc_bot1_add_d(n,"eta","eta",-ones(1,1)/(1-map.gl.xif[n-1]));
+
+	if(conv) {
+		n=conv;
+		op->reset(n,"eta");
+		op->add_d(n,"eta","eta",ones(1,1));
+		op->add_r(n,"eta","Ri",-ones(1,1),TT);
+		rhs(n)=0;
 	}
 	
 	op->add_d(ndomains,"eta","eta",ones(1,1));

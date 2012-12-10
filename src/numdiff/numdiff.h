@@ -64,6 +64,8 @@ class diff_leg {
   	matrix eval_11(const matrix &y,double thi) const;
   	matrix eval_11(const matrix &y,double thi,matrix &T) const;
   	matrix eval(const matrix &y,const matrix &thi,matrix &T,int par_pol,int par_eq) const;
+  	inline matrix eval(const matrix &y,double thi,matrix &T,int par_pol,int par_eq) const 
+  		{return eval(y,thi*ones(1,1),T,par_pol,par_eq);}
   	matrix l_00() const;
   	matrix l_01() const;
   	matrix l_10() const;

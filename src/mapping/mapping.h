@@ -12,6 +12,7 @@ class mapping {
   	int mode;   // mode=0 Bonazzola, mode=1 rzz=0 at the boundaries 
     diff_gl gl;
     diff_leg leg;
+    const int &nr,&nth,&ndomains;
     matrix_block_diag &D;
     matrix &z,&Dt,&Dt2,&th,&Dt_odd;
     matrix r,rz,rzz,rt,rtt,rzt,gzz,gzt,gtt;
@@ -23,6 +24,7 @@ class mapping {
     	diff_gl gl;
     	matrix J[4];
     } ex;
+    const int &nex;
     
     mapping(int ndom=1);
   	~mapping();
@@ -46,9 +48,8 @@ class mapping {
     matrix stream(const matrix &Fz,matrix &Ft) const;
     matrix stream(const matrix &Fz) const;
     
+    matrix eval(const matrix &y,const matrix &ri, const matrix &thi,int parity=0) const; 	
     
-    void interps(const mapping &map_old,matrix &Tr,matrix &Tex,
-    	matrix &Tt_00,matrix &Tt_01,matrix &Tt_10,matrix &Tt_11) const;
     	
 	matrix draw0(const matrix &A,int parity,matrix &x,matrix &y) const;
 	void draw(figure *pfig,const matrix &A,int parity=0) const;
@@ -58,6 +59,26 @@ class mapping {
 	void drawci(figure *pfig,const matrix &A,int sr,int st,int ncontours,int parity=0) const;
 	void spectrum(figure *pfig,const matrix &y,int parity=0) const;
 
+};
+
+class mapping_redist {
+	mapping map,map_new;
+	int remapped,redist,changed_npts;
+	int nth,ndomains,*npts,*fixed,nex;
+	matrix R,zmap,T,Tt[4],Tex;
+	void remap();
+public:
+	mapping_redist(const mapping &map);
+	~mapping_redist();
+	void set_nth(int nth);
+	void set_nex(int nex);
+	void set_ndomains(int ndom);
+	void set_npts(int *npts);
+	void set_R(const matrix &R);
+	void set_fixed(int idom_new,int idom_old);
+	mapping get_map();
+	matrix interp(const matrix &y,int parity=0);
+	matrix interp_ex(const matrix &y,int parity=0);
 };
 
 /*

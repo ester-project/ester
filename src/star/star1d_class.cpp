@@ -17,128 +17,20 @@ star1d &star1d::operator=(const star1d &A) {
 
 }
 
-void star1d::write(const char *output_file,char mode) const {
+void star1d::write_tag(OUTFILE *fp,char mode) const {
 
-	OUTFILE fp;
 	char tag[7]="star1d";
 	
-	fp.open(output_file,mode);
-	if(mode=='b') {
-		fp.write("tag",tag,7);
-		fp.write("ndomains",&ndomains);
-		fp.write("npts",map.gl.npts,ndomains);
-		fp.write("xif",map.gl.xif,ndomains+1);
-		fp.write("M",&M);
-		fp.write("R",&R);
-		fp.write("X",&X);
-		fp.write("Z",&Z);
-		fp.write("Xc",&Xc);
-		fp.write("conv",&conv);
-		fp.write("surff",&surff);
-		fp.write("Tc",&Tc);
-		fp.write("pc",&pc);
-		fp.write("opa.name",opa.name,strlen(opa.name)+1);
-		fp.write("eos.name",eos.name,strlen(eos.name)+1);
-		fp.write("nuc.name",nuc.name,strlen(nuc.name)+1);
-		fp.write("atm_name",atm_name,strlen(atm_name)+1);
-	} else {
-		fp.write_fmt("tag","%s",&tag);
-		fp.write_fmt("ndomains","%d",&ndomains);
-		fp.write_fmt("npts","%d",map.gl.npts,ndomains);
-		fp.write_fmt("xif","%.16e",map.gl.xif,ndomains+1);
-		fp.write_fmt("M","%.16e",&M);
-		fp.write_fmt("R","%.16e",&R);
-		fp.write_fmt("X","%.16e",&X);
-		fp.write_fmt("Z","%.16e",&Z);
-		fp.write_fmt("Xc","%.16e",&Xc);
-		fp.write_fmt("conv","%d",&conv);
-		fp.write_fmt("surff","%.16e",&surff);
-		fp.write_fmt("Tc","%.16e",&Tc);
-		fp.write_fmt("pc","%.16e",&pc);
-		fp.write_fmt("opa.name","%s",&opa.name);
-		fp.write_fmt("eos.name","%s",&eos.name);
-		fp.write_fmt("nuc.name","%s",&nuc.name);
-		fp.write_fmt("atm_name","%s",&atm_name);
-	}
-	
-	fp.write("phi",&phi);
-	fp.write("p",&p);
-	fp.write("T",&T);
-	
-	fp.close();
-
+	if(mode=='b') fp->write("tag",tag,7);
+	else fp->write_fmt("tag","%s",&tag);
+		
 }
 
-int star1d::read(const char *input_file){
+int star1d::check_tag(const char *tag) const {
 
-	char tag[1024],mode;
-	int ndom;
-	INFILE fp;
-	
-	if(fp.open(input_file,'b')) mode='b';
-	else if(fp.open(input_file,'t')) mode='t';
-	else return read_old(input_file);
-	
-	if(mode=='t') fp.read_fmt("tag","%s",tag);
-	else {
-		if(fp.len("tag")>16) tag[0]='\0';
-		else fp.read("tag",tag);
-	}
-	tag[16]='\0';
-	if(strcmp(tag,"star1d")) {
-		fp.close();
-		return 0;
-	}
-	
-	if(mode=='b') {
-		fp.read("ndomains",&ndom);
-		map.gl.set_ndomains(ndom);
-		fp.read("npts",map.gl.npts);
-		fp.read("xif",map.gl.xif);
-		fp.read("M",&M);
-		fp.read("R",&R);
-		fp.read("X",&X);
-		fp.read("Z",&Z);
-		fp.read("Xc",&Xc);
-		fp.read("conv",&conv);
-		fp.read("surff",&surff);
-		fp.read("Tc",&Tc);
-		fp.read("pc",&pc);
-		fp.read("opa.name",opa.name);
-		fp.read("eos.name",eos.name);
-		fp.read("nuc.name",nuc.name);
-		fp.read("atm_name",atm_name);
-	} else {
-		fp.read_fmt("ndomains","%d",&ndom);
-		map.gl.set_ndomains(ndom);
-		fp.read_fmt("npts","%d",map.gl.npts);
-		fp.read_fmt("xif","%le",map.gl.xif);
-		fp.read_fmt("M","%le",&M);
-		fp.read_fmt("R","%le",&R);
-		fp.read_fmt("X","%le",&X);
-		fp.read_fmt("Z","%le",&Z);
-		fp.read_fmt("Xc","%le",&Xc);
-		fp.read_fmt("conv","%d",&conv);
-		fp.read_fmt("surff","%le",&surff);
-		fp.read_fmt("Tc","%le",&Tc);
-		fp.read_fmt("pc","%le",&pc);
-		fp.read_fmt("opa.name","%s",opa.name);
-		fp.read_fmt("eos.name","%s",eos.name);
-		fp.read_fmt("nuc.name","%s",nuc.name);
-		fp.read_fmt("atm_name","%s",atm_name);
-	}
-		
-	map.leg.npts=1;
-	map.init();
-	
-	fp.read("phi",&phi);
-	fp.read("p",&p);
-	fp.read("T",&T);
-	
-	fp.close();
-	fill();
+	if(strcmp(tag,"star1d")) return 0;
 	return 1;
-	
+
 }
 
 int star1d::read_old(const char *input_file){
@@ -223,7 +115,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 	cmdline_parser cmd;
 	file_parser fp;
 	char *arg,*val,default_params[256];
-	diff_gl gl0;
+	mapping map0;
 	int i,k,change_grid=0;
 	matrix Tr;
 
@@ -234,7 +126,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 			printf("Error reading input file: %s\n",input_file);
 			return 0;
 		}
-		gl0=map.gl;
+		map0=map;
 	} else {
 		if(!fp.open(default_params)) { 
 			printf("Can't open default parameters file %s\n",default_params);
@@ -298,19 +190,28 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 	}
 	cmd.close();
 	
+	if((change_grid&1)&&!(change_grid&2)) {
+		fprintf(stderr,"Must specify number of points per domain (npts)\n");
+		exit(1);
+	}
 	if (*input_file) {
 		if(change_grid) {
-			map.init();
-			T=gl0.eval(T,map.gl.x,Tr);
-			p=(Tr,p);
-			phi=(Tr,phi);
+			mapping map_new;
+			map_new=map;
+			map=map0;
+			remap(map_new.ndomains,map_new.gl.npts,map_new.nth,map_new.nex);
 		}
 	} else {
 		map.leg.npts=1;
+		for(i=0;i<=ndomains;i++) map.gl.xif[i]=i*1./ndomains;
 		map.init();
 		T=1-0.5*r*r;
 		p=T;
 		phi=-T;
+		G=0*T;
+		w=0*T;
+		conv=0;
+		phiex=zeros(map.nex,map.nth);
 	}
 	
 	fill();
@@ -327,7 +228,11 @@ int star1d::check_arg(char *arg,char *val,int *change_grid) {
 	if(!strcmp(arg,"ndomains")) {
 		if(val==NULL) return 2;
 		map.gl.set_ndomains(atoi(val));
-		*change_grid=1;
+		*change_grid=*change_grid|1;
+		if(*change_grid&2) {
+			fprintf(stderr,"ndomains must be specified before npts\n");
+			exit(1);
+		}
 	}
 	else if(!strcmp(arg,"npts")) {
 		if(val==NULL) return 2;
@@ -343,25 +248,10 @@ int star1d::check_arg(char *arg,char *val,int *change_grid) {
 				*(map.gl.npts+i)=*map.gl.npts;
 			}
 		}	
-		*change_grid=1;
+		*change_grid=*change_grid|2;
 	}
 	else if(!strcmp(arg,"xif")) {
-		if(val==NULL) return 2;
-		tok=strtok(val,",");
-		i=0;
-		while(tok!=NULL) {
-			*(map.gl.xif+i)=atof(tok);
-			tok=strtok(NULL,",");
-			i++;
-		}
-		if(i==1) {
-			double gamma=*map.gl.xif;
-			*map.gl.xif=0;
-			for(i=1;i<map.gl.ndomains;i++) 
-				*(map.gl.xif+i)=1.-pow(1-(double) i/map.gl.ndomains,gamma);
-			*(map.gl.xif+map.gl.ndomains)=1;
-		}		
-		*change_grid=1;
+		fprintf(stderr,"Warning: Parameter xif is now automatically handled by the code and cannot be modified by the user\n"); 
 	}
 	else if(!strcmp(arg,"M")) {
 		if(val==NULL) return 2;
@@ -380,8 +270,7 @@ int star1d::check_arg(char *arg,char *val,int *change_grid) {
 		Xc=atof(val);
 	}
 	else if(!strcmp(arg,"conv")) {
-		if(val==NULL) return 2;
-		conv=atoi(val);
+		fprintf(stderr,"Param. conv is no longer modifiable. Disable core convection with core_convec 0.\n");
 	}
 	else if(!strcmp(arg,"surff")) {
 		if(val==NULL) return 2;

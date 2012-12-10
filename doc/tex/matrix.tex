@@ -430,6 +430,16 @@ using increments nstep and mstep.}
 \function{data()}{Method}{None}{Pointer to double}
 {Returns a pointer to the first element in the matrix. The elements are stored consecutively in column order.}
 
+\function{swap()}{Method}{matrix}{None}
+{Swaps the contents of the current matrix object and the one used as argument.}
+
+\function{zero(n,m)}{Method}
+{n (int): Number of rows\newline
+m (int): Number of columns}
+{None}
+{Creates a nxm matrix of all zeros. Note that a.zero(n,m) is equivalent to a=zeros(n,m) but avoids
+the creation of an intermediate object, saving memory for large matrices.}
+
 \funcsec{\bf File input/output}
 \subsection{File input/output}
 
@@ -438,7 +448,7 @@ using increments nstep and mstep.}
 mode (char): Write mode (optional, default='t')}
 {int}
 {Writes a matrix in the file pointed by fp in text mode (mode='t') or binary mode (mode='b').
-The matrix is written in column order. Returns 0 on success, 1 otherwise.}
+The matrix is written in column order. Returns 1 on success, 0 otherwise.}
 
 \function{read(n,m,fp,mode)}{Method}
 {n (int): Number of rows\newline
@@ -447,7 +457,7 @@ fp (FILE *): File pointer\newline
 mode (char): Write mode (optional, default='t')}
 {int}
 {Reads a nxm matrix from the file pointed by fp in text mode (mode='t') or binary mode (mode='b').
-The matrix is read in column order. Returns 0 on success, 1 otherwise.}
+The matrix is read in column order. Returns 1 on success, 0 otherwise.}
 
 \function{write\_fmt(format,fp)}{Method}
 {format (char *): Format string\newline

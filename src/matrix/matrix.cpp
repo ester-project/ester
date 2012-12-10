@@ -229,13 +229,13 @@ int Matrix<double>::read(int nfil,int ncol,FILE *fp,char mode) {
     tam=nc*nf;           
 
     if (mode=='b') {
-        if((int)fread(p,sizeof(double),tam,fp)!=tam) return 1;
+        if((int)fread(p,sizeof(double),tam,fp)!=tam) return 0;
         }
     else
         for(i=0;i<tam;i++) {
-            if(fscanf(fp,"%le",&p[i])==EOF) return 1;
+            if(fscanf(fp,"%le",&p[i])==EOF) return 0;
             }
-    return 0;
+    return 1;
 }
 
 template <>
@@ -247,13 +247,13 @@ int Matrix<float>::read(int nfil,int ncol,FILE *fp,char mode) {
     tam=nc*nf;           
 
     if (mode=='b') {
-        if((int)fread(p,sizeof(float),tam,fp)!=tam) return 1;
+        if((int)fread(p,sizeof(float),tam,fp)!=tam) return 0;
         }
     else
         for(i=0;i<tam;i++) {
-            if(fscanf(fp,"%e",&p[i])==EOF) return 1;
+            if(fscanf(fp,"%e",&p[i])==EOF) return 0;
             }
-    return 0;
+    return 1;
 }
 
 template <class Type>
@@ -263,12 +263,12 @@ int Matrix<Type>::write(FILE *fp,char mode) const {
 
     tam=nf*nc;
     if (mode=='b') {
-        if((int)fwrite(p,sizeof(Type),tam,fp)!=tam) return 1;
+        if((int)fwrite(p,sizeof(Type),tam,fp)!=tam) return 0;
         }
     else {
         j=0;
         for(i=0;i<tam;i++) {
-            if(fprintf(fp,"%.16e ",p[i])==EOF) return 1;
+            if(fprintf(fp,"%.16e ",p[i])==EOF) return 0;
             j++;
             if (j==nf) {
                 j=0;
@@ -276,7 +276,7 @@ int Matrix<Type>::write(FILE *fp,char mode) const {
             }
         }
     }
-    return 0;
+    return 1;
 }
 
 template <class Type>
