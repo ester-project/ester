@@ -3,38 +3,64 @@
 
 The ESTER library depends on some external libraries that should be installed in the system, namely:
 \begin{itemize}
-\item BLAS and LAPACK, for matrix algebra
-\item PGPLOT (CPGPLOT) for graphics output
+\item BLAS, CBLAS and LAPACK, for matrix algebra. There are several versions available, as 
+for example:
+\begin{itemize}
+\item Netlib. This is the original implementation. The LAPACK library can be found at
+\url{http://www.netlib.org/lapack}, and already contains BLAS, but CBLAS should be downloaded
+separately from \url{http://www.netlib.org/blas}.
+\item ATLAS (Automatically Tuned Linear Algebra Software). An implementation of LAPACK/BLAS that
+is automatically optimized during the compilation process. It can be found at
+\url{http://math-atlas.sourceforge.net/}. It contains LAPACK, BLAS and CBLAS.
+\item Intel MKL. Contains an optimized version of LAPACK, BLAS and CBLAS for Intel processors.
 \end{itemize}
-The library PGPLOT is optative and can be deactivated in the {\tt Makefile} ({\tt make.inc}) setting the variable {\tt USE\_PGPLOT=0}.
+\item PGPLOT (CPGPLOT) for graphics output (optional). It can be disabled in the 
+{\tt Makefile} ({\tt make.inc}) setting the variable {\tt USE\_PGPLOT=0}.
+\end{itemize}
+As there are some routines written in Fortran, it is also needed to link against the standard
+fortran libraries ({\tt libgfortran} for the GNU fortran compiler and {\tt libifcore} and 
+{\tt libifport} for the Intel compiler).
+
+\subsection{A note about the performance of the code}
+The performance of the ESTER code depends strongly on LAPACK. To get the best results,
+use an optimized (and parallelized) version.
+
+\pagebreak
 
 \section{Installation}
+The current version of the ESTER code can be downloaded using {\tt svn} from the project server by doing
+\mint{bash}|$ svn checkout http://ester-project.googlecode.com/svn/trunk/ ester| %$
+or from the project website \url{http://code.google.com/p/ester-project}.
 
-Unpack the file of the distribution (normally {\tt ester.tar.gz}) in the desired directory
-\mint{bash}|root$ tar zxvf ester.tar.gz| %$
-Go to the directory {\tt ester/src}
-\mint{bash}|root$ cd ester/src| %$
-To clean out any previous installation we can do
-\mint{bash}|root/ester/src$ make distclean| %$
-First we have to compile the third-party libraries included in the distribution. This only have to be done the first time (or after
-a {\tt distclean}). 
-At the moment there is only one library that needs to be build, the package for interpolating opacity tables created by G\"unter Houdek.
-After checking the {\tt Makefile} located at {\tt ester/tables/houdek/v9} we do
-\mint{bash}|root/ester/src$ make tables| %$
-Now, we are prepared to compile the main library. The first step is to
-create the {\verb1 make.inc 1} file from the two examples
-that are included, {\tt make.inc.icc} and {\tt make.inc.gcc},
- for the Intel compiler and the GNU compiler respectively (tested under
- Ubuntu 12.04).
-After setting the appropriate values for the compilation we execute {\tt make
-all} or just \mint{bash}|root/ester/src$ make| %$ To remove intermediate
-files we can also do \mint{bash}|root/ester/src$ make clean| %$ The main
-library is created in {\tt ester/lib/libester.so}, the include files
+The first step is to create the file {\tt make.inc} in the directory {\tt src}
+ from the two examples that are included, 
+{\tt make.inc.icc} and {\tt make.inc.gcc}, for the Intel compiler and the GNU compiler respectively.
+After setting the appropriate values for the compilation, we must start by doing 
+\mint{bash}|ester/src$ make tables| %$
+This will build some third-party libraries included in the distribution and initialise
+the tables of opacity and equation of state.
+
+We can now build the main program by doing
+\mint{bash}|ester/src$ make| %$
+To remove intermediate files we can also do 
+\mint{bash}|ester/src$ make clean| %$
+The main library is created in {\tt ester/lib/libester.so}, the header files
 are in {\tt ester/include} and the executables in {\tt ester/bin}. We
 can add the latter directory to the system path, for the \emph{bash}
-shell \mint{bash}|$ export PATH="your_root_directory/ester/bin:$PATH"|
-or include this line in your {\tt .bashrc} file.
+shell 
+\mint{bash}|$ export PATH="your_root_directory/ester/bin:$PATH"|
+or, to make this change permanent, include this line in your {\tt .bashrc} file.
 
+\subsection{Updating the code}
+In order to update to the last version using {\tt svn}, from the root directory of the ESTER distribution
+execute
+\mint{bash}|ester$ svn update| %$
+Depending on the update, sometimes we can do just
+\mint{bash}|ester/src$ make| %$
+from the {\tt src} directory. But it is safer to clean out the previous installation using
+\mint{bash}|ester/src$ make distclean| %$
+and then
+\mint{bash}|ester/src$ make tables; make| %$
 
 \section{Checking the installation}
 
@@ -42,12 +68,12 @@ To check the functionality of the program we are going to calculate the structur
 First we calculate the structure of the corresponding 1D non-rotating star. Change to your working directory and execute
 \mint{bash}|$ star1d| %$
 Then we use the output file (by default {\tt star.out}) as the starting point for the 2D calculation
-\mint{bash}|$ star2d -i star.out -Omega_bk 0.7|   %$
-This calculates the structure of a star rotating at 70$\%$ of the break-up velocity $\Omega_k=\sqrt{\frac{GM}{R_e^3}}$.
+\mint{bash}|$ star2d -i star.out -Omega_bk 0.5|   %$
+This calculates the structure of a star rotating at 50$\%$ of the break-up velocity $\Omega_k=\sqrt{\frac{GM}{R_e^3}}$.
 
 \section{Using the library}
 
-To use the ESTER library in a C program you should write at the beginning of your source file
+To use the ESTER library in a C++ program you should write at the beginning of your source file
 \mint{bash}|#include "ester.h"|
 To facilitate the process of compiling and linking against the library and all its dependencies, we provide an automatically generated
 script {\tt ester/utils/ester\_build} so, all you have to do is
