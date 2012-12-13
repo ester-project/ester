@@ -480,14 +480,7 @@ void figure::contour(const matrix &z,const char *line) {
 
 #else
 
-static int msg=0;
-
-figure::figure(const char *device) {
-	if(!msg) {
-		fprintf(stderr,"Graphics functionality disabled at compile time. Recompile with USE_PGPLOT=1\n");
-		msg=1;
-	}
-}
+figure::figure(const char *device) {}
 figure::~figure() {}
 void figure::plot(const matrix &x,const matrix &y,const char *line) {}
 void figure::plot(const matrix &y,const char *line) {}

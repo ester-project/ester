@@ -1,5 +1,22 @@
 \chapter{Basic usage}
 
+The ESTER code calculates the structure and mean flows of an isolated (non-magnetic) rotating
+star. It uses realistic physics (tabulated opacity and EOS) and completely accounts for
+the deformation of the star.
+The mean flows are calculated self-consistently in the limit of low viscosity, so there is
+no need to impose an arbitrary prescription for the differential rotation of the star.
+
+At this moment, chemical evolution is not included, but it can be faked by tweaking the fractional
+abundance of hydrogen in the convective core.
+
+Surface convection is not included yet, so the computation is limited to stars with mass above
+$\sim 2 M_\odot$.
+
+For a detailed description of the physics involved in the models, 
+see Rieutord \& Espinosa Lara 2012 (\href{http://arxiv.org/abs/1208.4926}{arXiv:1208.4926}) and
+Espinosa Lara \& Rieutord 2013 (\href{http://arxiv.org/abs/1212.0778}{arXiv:1212.0778}, submitted to A\&A).
+The code is still in development, so new functionality will be added in future versions.
+
 There are three executables provided with the library:
 \begin{itemize}
 \item {\tt star1d} For calculating the structure of a 1D non-rotating star
@@ -30,11 +47,14 @@ $$\vec x^{N+1}=\vec x^N+h \delta\vec x^N$$
 according to this value.
 This parameter can be used to stabilize the convergence when the initial estimation is far
 from the solution.
+\item {\tt core\_convec} (default 1). Use 0 to disable core convection.
+\item {\tt min\_core\_size} (default 0.01). The minimum size of the convective core
+in fraction of the polar radius).
 \item {\tt output\_file} (default {\tt star.out}). Name of the output file.
 \item {\tt output\_mode} (default {\tt b}). Type of the output file {\tt b} for binary
 and {\tt t} for text output.
 \item {\tt verbose} (default 1). Level of verbosity, from 0 (quiet) to 4.
-\item {\tt plot\_device} (default {\tt /NULL}. Plotting device for PGPLOT, 
+\item {\tt plot\_device} (default {\tt /XSERVE}. Plotting device for PGPLOT, 
 see the documentation of PGPLOT for details. For output in a X window use {\tt /XSERVE}.
 To disable the graphic output use {\tt /NULL}.
 \item {\tt plot\_interval} (default 10). Minimum time in seconds to update the graphic output.
@@ -67,8 +87,7 @@ ester/config/2d\_default.par}.
 
 In the distribution of ESTER, the proposed default values are such that
 the star is divided in 8 domains with 30 points in
-each domains. The bounding surfaces of the domains are located at
-0,0.2,0.5,0.65,0.75,0.85,0.95,0.99,1. Opacities and equation of state
+each domains. Opacities and equation of state
 are computed through OPAL tables. These inputs allow the calculation of
 a 3 M$_\odot$ model (but not only of course) from scratch.
 
@@ -90,15 +109,6 @@ If only one value is specified, it will be used for all the subdomains, for exam
 \mint{bash}|$ star1d -ndomains 4 -npts 20,20,20,20|  %$
 is equivalent to
 \mint{bash}|$ star1d -ndomains 4 -npts 20|  %$
-\item {\tt xif}. The position of each subdomain as a comma-separated
-list. The list should contain the first and the last points of the entire
-domain (that should be 0 and 1), having a total of {\tt ndomains}+1
-values. If only one value is specified ($\gamma$),
- the positions are calculated using the formula
-$$\mathtt{xif(i)}=1-\left(1-\frac{i}{\mathtt{ndomains}}\right)^\gamma
-\quad \gamma>0$$ where $\gamma=1$ corresponds to equally-spaced
-subdomains, for $\gamma>1$ they are more concentrated near the surface,
-and the opposite for $\gamma<1$.
 
 \item {\tt M}. The mass in units of solar mass.
 \item {\tt X}. Mass fraction of hydrogen.
@@ -111,9 +121,6 @@ $$X(\vec r)=\left\{
 \mathtt{X}&\mbox{otherwise}
 \end{array}\right.$$
 If there is no convective core, this parameter is ignored.
-
-\item {\tt conv}. The number of subdomains within the convective core. If
-{\tt conv=0} the model will be completely radiative.
 
 \item {\tt surff}. This parameter is used for truncating the stellar model
 at some point below the surface. The surface pressure will be {\tt surff}
@@ -148,8 +155,6 @@ If some parameters are omitted, the program will take the value from the input f
 {\tt -input\_file} or {\tt -i}) or from the default parameters file in 
 {\tt ester/config/1d\_default.par} when no input file is specified.
 
-At the moment, the code does not permit to change the number of domains and/or their position
-when using an input file.
 
 \section{{\tt star2d} input parameters}
 
@@ -172,11 +177,11 @@ $\Omega_c=\sqrt{\frac{GM}{R_e^3}}$.
 The typical workflow to calculate a model starts with the calculation of
 the corresponding 1D model and using it as an input for {\tt star2d}. For
 example, to calculate the structure of a 5$M_\odot$ star with OPAL
-opacity rotating at with $\Omega=0.7\Omega_c$ we can do:
+opacity rotating at with $\Omega=0.5\Omega_c$ we can do:
 
 \begin{minted}{bash}
 $ star1d -M 5 -opa opal -o model1d
-$ star2d -i model1d -nth 24 -Omega_bk 0.7 -o model2d
+$ star2d -i model1d -nth 24 -Omega_bk 0.5 -o model2d
 \end{minted}
 
 As the code uses the Newton's method, sometimes it is not possible
@@ -187,11 +192,9 @@ $\Omega=0.9\Omega_c$, we should probably do
 
 \medskip
 \noindent\begin{tabular}{lp{4.5cm}}
-\verb|$ star1d -M 2.5 -o model1d -conv 0 |  
-&(Deactivate core convection to improve convergence)\\
-\verb|$ star1d -i model1d -o model1d -conv 1| &	
-(Re-activate core convection)\\
-\verb|$ star2d -i model1d -nth 24 -Omega_bk 0.7 -o model2d| &	
+\verb|$ star1d -M 2.5 -o model1d |  
+&(Start with a non rotating 1D model)\\
+\verb|$ star2d -i model1d -nth 24 -Omega_bk 0.5 -o model2d| &	
 (Using an intermediate value for rotation) \\
 \verb|$ star2d -i model2d -nth 32 -Omega_bk 0.9 -o model2d| &	
 (Calculating the final model) 
@@ -210,13 +213,10 @@ Pressing Ctrl-C at any time during the execution of {\tt star2d} will
 terminate the program, giving the possibility of finishing the current
 iteration and write the result in the output file.
 
-
-
-
 \section{Generating custom output files}
 
 The output files generated by {\tt star1d} and {\tt star2d} contain just
-the minimal information necessary to reconstruct the code. However,
+the minimal information necessary to reconstruct the model. However,
 sometimes a more detailed output is required.  This can be done using
 the program {\tt gen\_output} included in the distribution. This program
 reads a template from the standard input and write the result in the
@@ -477,12 +477,10 @@ print A.p[0,0] # Prints the central pressure
 A.draw(A.w) # Makes a plot of the differential rotation
 show() # Needed in non-interactive mode of matplotlib
 
-Note that 'dotted variables' like opa.k are accessed via A.opa_k under
-python.
-
 \end{minted}
 
-
+Note that ``dotted variables'' like \verb|opa.k| are accessed via \verb|A.opa_k| under
+python.
 
 
 
