@@ -37,7 +37,6 @@ void star1d::upd_Xr() {
 	Xr=X*ones(nr,1);
 	if(!conv) {
 		//if(Xc!=1) printf("Warning: Non-homogeneus composition without core convection not implemented\n");
-		Xc=1;
 		return;
 	}
 	ic=0;
