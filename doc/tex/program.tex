@@ -213,6 +213,119 @@ Pressing Ctrl-C at any time during the execution of {\tt star2d} will
 terminate the program, giving the possibility of finishing the current
 iteration and write the result in the output file.
 
+\section{Spatial resolution and memory requirements}
+
+The ESTER code uses a direct method to solve the equations of structure of a star. This type of method
+involves the factorization of a big matrix that arises from the discretization of the equations.
+The main drawback is that memory requirements are high, but the stiffness of the equations prevents
+the convergence of an iterative (matrix-free) method that will be more memory efficient.
+
+The memory needed by the calculation can be estimated as:
+
+$$\mathrm{RAM\ Used}\gtrsim25\times n_d\times n_r^2 \times n_\theta^2 \times 8\, \mathrm{bytes}$$
+
+where
+
+\medskip
+
+\begin{tabular}{l}
+$n_d$: Number of domains \\
+$n_r$: Number of radial points per domain \\
+$n_\theta$: Number of points in latitude \\
+\end{tabular}
+
+\medskip
+
+Of course, this is a lower limit, the actual memory used can be between $\sim$10\% and $\sim$50\% higher than
+this value.
+This overhead increases with the number of domains and decreases with the overall number
+of points. As an example, the following table shows the memory usage for some configurations (this is
+only approximated, real values are machine-dependent):
+
+\begin{center}
+\begin{tabular}{c|c|c|c|c|c}
+$n_d$&$n_r$&$n_\theta$&RAM (estimated)&RAM (real)&Overhead\\
+\hline
+8&30&24& 791 Mb & 986 Mb & 25\% \\
+8&50&32& 3.81 Gb & 4.27 Gb & 12\% \\
+32&25&32& 3.81 Gb & 4.61 Gb & 21\% \\
+\end{tabular}
+\end{center}
+
+The first case correspond to the default values and, in most cases, 
+gives a decent representation of the structure of the star for moderate rotation rates.
+If more precision is required, we need to increase the resolution. In particular, to
+achieve a good precision for high rotation values, the number of points in latitude should
+be incremented. 
+
+As seen in the second and third cases in the table, the total number of radial points $n_d\times n_r$ can be 
+increased, without affecting considerably the memory usage, just by increasing the number of domains.
+Or equivalently, we can reduce the memory requirements by distributing the radial points over
+more domains. 
+
+As a rule of thumb, if the number of domains is doubled, keeping the total number of
+radial points, the memory required is reduced in a factor $\sqrt{2}$. However this does not
+necessarily imply an improvement in precision, as the order of the integration method is also reduced,
+so it should be used carefully.
+
+\subsection{Estimating the precision of the output model}
+
+The ESTER code uses spectral methods to calculate the structure of the star. 
+The star is subdivided in a certain number of domains and, in each domain, the variables
+are represented by a double truncated series of orthogonal polynomials in the radial ($\zeta$)
+ and $\theta$ directions, for example
+$$\rho(\zeta,\theta)=\sum_{i=0}^{n_r-1}\sum_{j=0}^{n_\theta-1}\rho_{ij}T_i(\zeta)P_j(\theta)$$
+When $n_r$ and $n_\theta$ are high enough, the spectral representation will converge to the
+exact function. 
+To check the convergence of the coefficients $\rho_ij$, the corresponding normalised spectra
+for the density ($\rho$) 
+are shown in the graphics output of ESTER (see \ref{fig:spectrum1d} and \ref{fig:spectrum2d}).
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig/spectrum1d.eps}
+\caption{Example of spectrum plot showing the normalised coefficients $\rho_{i}$ in a logarithmic scale
+ in the graphical output of star1d.
+\label{fig:spectrum1d}}
+\end{figure} 
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig/spectrum2d.eps}
+\caption{Example of 2D-spectrum showing the logarithm of the normalised coefficients $\rho_{ij}$ 
+in the graphical output of star2d.
+\label{fig:spectrum2d}}
+\end{figure}
+
+\pagebreak
+
+There are two other indicators that can be used to estimate the quality of the solution:
+\begin{itemize}
+\item {\bf The virial test}. It is the normalised residual resulting from the virial theorem.
+Ideally, it should be zero. It is mainly influenced by the internal layers and even with
+low resolution we can get very good values $\lesssim10^{-9}$.
+\item {\bf The energy test}. It is the relative difference between the luminosity of the star
+obtained as the integral over the volume of the energy generation rate and that obtained
+as the integral of the energy flux at the surface. It is highly influenced by the quality
+of the solution in the most external layers. Due to the use of tabulated opacities which are not
+quite smooth, the energy test will be always higher than $10^{-5}$--$10^{-6}$. 
+\end{itemize}
+
+In the following table, we can see an example of the precision achieved for three different
+configurations. The three configurations use approximately 1 Gb of RAM, but have different
+number of domains. We have used a model with 1600 radial points distributed over 16 domains
+and $n_\theta=48$ (approx. 70 Gb of RAM) as a reference to calculate the errors.
+
+\begin{center}
+\begin{tabular}{c|c|c||c|c|c|c|c|c}
+$n_d$ & $n_r$ & $n_\theta$ & Virial test & Energy test &
+$\Delta\rho/\rho$ & $\Delta R/R$ & $\Delta T_\mathrm{eff}/T_\mathrm{eff}$ & $\Delta \Omega/\Omega$ \\
+\hline
+8 & 30 & 24 & 1.848e-09 & 1.192e-03 & 
+1.613e-04 & 5.157e-05 & 3.338e-04 & 3.739e-04 \\
+16 & 21 & 24 & 1.851e-11 & 1.726e-04 &
+1.065e-04 & 4.702e-05 & 1.215e-04 & 4.446e-04 \\
+32 & 15 & 24 & 3.377e-10 & 3.447e-05 &
+2.780e-05 & 2.021e-06 & 1.736e-05 & 3.095e-04 \\
+\end{tabular}
+\end{center}
+
 \section{Generating custom output files}
 
 The output files generated by {\tt star1d} and {\tt star2d} contain just
@@ -240,6 +353,7 @@ variable (see table below) and {\it fmt} is a valid format for the C function {\
 (e.g. {\tt \%d} for an integer, {\tt \%f} for float, {\tt \%e} for exponential notation).
 If {\tt fmt} is omitted {\tt\$\{}{\it var}{\tt \}} the variable is written in binary format.
 \end{itemize}
+\pagebreak
 \begin{longtable}{|l|p{8cm}|c|c|}
 \caption{Non-exhaustive list of codes for the model variables in the template file}\\
 \hline

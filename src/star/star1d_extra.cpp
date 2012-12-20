@@ -53,7 +53,7 @@ matrix star1d::N2() const {
 	int i,j0;
 	matrix N2;
 
-	N2=-(D,p)*eos.d*((D,T)/T-eos.del_ad*(D,p)/p)/rho;
+	N2=-(D,p)/rho*((D,p)/p/eos.G1-(D,rho)/rho);
 	N2(0)=0;
 
 	N2=N2*units.phi/units.r/units.r;

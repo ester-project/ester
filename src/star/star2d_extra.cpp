@@ -52,8 +52,8 @@ matrix star2d::N2() const {
 
 	matrix N2;
 
-   	N2=-eos.d*(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-(D,log(p))*eos.del_ad)-
-    	eos.d*(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-(log(p),Dt)*eos.del_ad);
+   	N2=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,p)/p/eos.G1-(D,rho)/rho)
+		-(map.gzt*(D,p)+map.gtt*(p,Dt))*((p,Dt)/p/eos.G1-(rho,Dt)/rho);
     N2=N2/rho;
     N2.setrow(0,zeros(1,nth));
 
