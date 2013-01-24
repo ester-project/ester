@@ -6,6 +6,16 @@ import tempfile
 
 rcParams['patch.antialiased']=False
 
+SIG_SB=5.670400e-5;
+K_BOL=1.3806503e-16;
+HYDROGEN_MASS=1.67353249e-24;
+A_RAD=7.565767e-15;
+GRAV=6.67384e-8;
+
+M_SUN=1.9891e33;
+R_SUN=6.95508e10;
+L_SUN=3.8396e33;
+
 class star2d:
 	def __init__(self,file):
 		names=['th','z','D','r','Dt','Dt2','xif','surff','Omega','Omega_bk','Omegac','X','Z','Xc',
