@@ -43,19 +43,18 @@ int main(int argc,char *argv[]) {
 	if(config.verbose>2) op->verbose=1;
 	A.config.newton_dmax=config.newton_dmax;
 	if(config.verbose>1) A.config.verbose=1;
-	A.config.core_convec=config.core_convec;
-	A.config.min_core_size=config.min_core_size;
 	
 	// If no input file, ignore core convection until the model starts to converge
+	int core_convec_set=A.core_convec;
 	if(*config.input_file==0) {
-		A.config.core_convec=0;
+		A.core_convec=0;
 	}
 	
 	while(!last_it) {
 		nit++;
 		
 		if(err<0.1&&!*config.input_file) {
-			A.config.core_convec=config.core_convec;
+			A.core_convec=core_convec_set;
 		}
 		
 		//A.check_jacobian(op,"w");exit(0);

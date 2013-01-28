@@ -8,8 +8,6 @@ star2d::star2d() :r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2)
 
 	config.newton_dmax=0.5;
 	config.verbose=0;
-	config.min_core_size=0.01;
-	config.core_convec=1;
 
 }
 
@@ -66,6 +64,9 @@ void star2d::copy(const star2d &A) {
 	Omega=A.Omega;Omega_bk=A.Omega_bk;
 	Ekman=A.Ekman;
 	
+	core_convec=A.core_convec;
+	min_core_size=A.min_core_size;
+	
 }
 
 void star2d::write(const char *output_file,char mode) const {
@@ -96,6 +97,8 @@ void star2d::write(const char *output_file,char mode) const {
 		fp.write("Omega",&Omega);
 		fp.write("Omega_bk",&Omega_bk);
 		fp.write("Ekman",&Ekman);
+		fp.write("core_convec",&core_convec);
+		fp.write("min_core_size",&min_core_size);
 	} else {
 		fp.write_fmt("ndomains","%d",&ndomains);
 		fp.write_fmt("npts","%d",map.gl.npts,ndomains);
@@ -118,6 +121,8 @@ void star2d::write(const char *output_file,char mode) const {
 		fp.write_fmt("Omega","%.16e",&Omega);
 		fp.write_fmt("Omega_bk","%.16e",&Omega_bk);
 		fp.write_fmt("Ekman","%.16e",&Ekman);
+		fp.write_fmt("core_convec","%d",&core_convec);
+		fp.write_fmt("min_core_size","%.16e",&min_core_size);
 	}
 	
 	fp.write("phi",&phi);
@@ -176,6 +181,8 @@ int star2d::read(const char *input_file){
 		if(!fp.read("Omega",&Omega)) Omega=0;
 		if(!fp.read("Omega_bk",&Omega_bk)) Omega_bk=0;
 		if(!fp.read("Ekman",&Ekman)) Ekman=0;
+		if(!fp.read("core_convec",&core_convec)) core_convec=1;
+		if(!fp.read("min_core_size",&min_core_size)) min_core_size=0.01;
 	} else {
 		fp.read_fmt("ndomains","%d",&ndom);
 		map.gl.set_ndomains(ndom);
@@ -199,6 +206,8 @@ int star2d::read(const char *input_file){
 		if(!fp.read_fmt("Omega","%le",&Omega)) Omega=0;
 		if(!fp.read_fmt("Omega_bk","%le",&Omega_bk)) Omega_bk=0;
 		if(!fp.read_fmt("Ekman","%le",&Ekman)) Ekman=0;
+		if(!fp.read_fmt("core_convec","%d",&core_convec)) core_convec=1;
+		if(!fp.read_fmt("min_core_size","%le",&min_core_size)) min_core_size=0.01;
 	}
 		
 	map.init();
@@ -326,7 +335,8 @@ int star2d::read_old(const char *input_file){
 	} else {
 		fscanf(fp,"%le\n",&Ekman);
 	}
-	
+	core_convec=1;
+	min_core_size=0.01;
 	fclose(fp);
 	fill();
 	return 1;
@@ -506,6 +516,8 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 	strcpy(eos.name,A.eos.name);
 	strcpy(nuc.name,A.nuc.name);
 	strcpy(atm_name,A.atm_name);
+	core_convec=A.core_convec;
+	min_core_size=A.min_core_size;
 	Tc=A.Tc;pc=A.pc;
 	R=A.R;M=A.M;
 	X=A.X;Z=A.Z;
@@ -626,6 +638,14 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
 	else if(!strcmp(arg,"Ekman")) {
 		if(val==NULL) return 2;
 		Ekman=atof(val);
+	}
+	else if(!strcmp(arg,"core_convec")) {
+		if(val==NULL) return 2;
+		core_convec=atoi(val);
+	}
+	else if(!strcmp(arg,"min_core_size")) {
+		if(val==NULL) return 2;
+		min_core_size=atof(val);
 	}
 	else err=1;
 

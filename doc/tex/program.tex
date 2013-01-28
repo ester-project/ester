@@ -47,9 +47,6 @@ $$\vec x^{N+1}=\vec x^N+h \delta\vec x^N$$
 according to this value.
 This parameter can be used to stabilize the convergence when the initial estimation is far
 from the solution.
-\item {\tt core\_convec} (default 1). Use 0 to disable core convection.
-\item {\tt min\_core\_size} (default 0.01). The minimum size of the convective core
-in fraction of the polar radius).
 \item {\tt output\_file} (default {\tt star.out}). Name of the output file.
 \item {\tt output\_mode} (default {\tt b}). Type of the output file {\tt b} for binary
 and {\tt t} for text output.
@@ -150,6 +147,9 @@ schemes", {\it Bull. Ast. Soc. India}, {\bf 24}, 317.
 \end{itemize}
 \item {\tt nuc}. Type of nuclear reactions. At the moment, only {\tt simple} is implemented.
 \item {\tt atm}. Type of atmosphere. At the moment, only {\tt simple} is implemented.
+\item {\tt core\_convec} (default 1). Use 0 to disable core convection.
+\item {\tt min\_core\_size} (default 0.01). The minimum size of the convective core
+in fraction of the polar radius).
 \end{itemize}
 If some parameters are omitted, the program will take the value from the input file (set with
 {\tt -input\_file} or {\tt -i}) or from the default parameters file in 

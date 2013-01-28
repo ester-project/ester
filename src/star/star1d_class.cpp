@@ -104,6 +104,9 @@ int star1d::read_old(const char *input_file){
 	p.read(nr,1,fp,mode);
 	T.read(nr,1,fp,mode);
 	
+	core_convec=1;
+	min_core_size=0.01;
+		
 	fclose(fp);
 	fill();
 	return 1;
@@ -222,87 +225,19 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 
 int star1d::check_arg(char *arg,char *val,int *change_grid) {
 
-	int err=0,i;
-	char *tok;
-
-	if(!strcmp(arg,"ndomains")) {
-		if(val==NULL) return 2;
-		map.gl.set_ndomains(atoi(val));
-		*change_grid=*change_grid|1;
-		if(*change_grid&2) {
-			fprintf(stderr,"ndomains must be specified before npts\n");
-			exit(1);
-		}
+	if(!strcmp(arg,"nth")) {
+		printf("nth=1 for 1D model\n");
+		return 1;
+	} else if(!strcmp(arg,"nex")) {
+		printf("No external domain for 1D model\n");
+		return 1;
+	} else if(!strcmp(arg,"Omega_bk")) {
+		printf("Omega_bk=0 in 1D model\n");
+		return 1;
+	} else if(!strcmp(arg,"Ekman")) {
+		return 1;
 	}
-	else if(!strcmp(arg,"npts")) {
-		if(val==NULL) return 2;
-		tok=strtok(val,",");
-		i=0;
-		while(tok!=NULL) {
-			*(map.gl.npts+i)=atoi(tok);
-			tok=strtok(NULL,",");
-			i++;
-		}
-		if(i==1) {
-			for(i=1;i<map.gl.ndomains;i++) {
-				*(map.gl.npts+i)=*map.gl.npts;
-			}
-		}	
-		*change_grid=*change_grid|2;
-	}
-	else if(!strcmp(arg,"xif")) {
-		fprintf(stderr,"Warning: Parameter xif is now automatically handled by the code and cannot be modified by the user\n"); 
-	}
-	else if(!strcmp(arg,"M")) {
-		if(val==NULL) return 2;
-		M=atof(val)*M_SUN;
-	}
-	else if(!strcmp(arg,"X")) {
-		if(val==NULL) return 2;
-		X=atof(val);
-	}
-	else if(!strcmp(arg,"Z")) {
-		if(val==NULL) return 2;
-		Z=atof(val);
-	}
-	else if(!strcmp(arg,"Xc")) {
-		if(val==NULL) return 2;
-		Xc=atof(val);
-	}
-	else if(!strcmp(arg,"conv")) {
-		fprintf(stderr,"Param. conv is no longer modifiable. Disable core convection with core_convec 0.\n");
-	}
-	else if(!strcmp(arg,"surff")) {
-		if(val==NULL) return 2;
-		surff=atof(val);
-	}
-	else if(!strcmp(arg,"Tc")) {
-		if(val==NULL) return 2;
-		Tc=atof(val);
-	}
-	else if(!strcmp(arg,"pc")) {
-		if(val==NULL) return 2;
-		pc=atof(val);
-	}
-	else if(!strcmp(arg,"opa")) {
-		if(val==NULL) return 2;
-		strcpy(opa.name,val);
-	}
-	else if(!strcmp(arg,"eos")) {
-		if(val==NULL) return 2;
-		strcpy(eos.name,val);
-	}
-	else if(!strcmp(arg,"nuc")) {
-		if(val==NULL) return 2;
-		strcpy(nuc.name,val);
-	}
-	else if(!strcmp(arg,"atm")) {
-		if(val==NULL) return 2;
-		strcpy(atm_name,val);
-	}
-	else err=1;
-
-	return err;
+	return star2d::check_arg(arg,val,change_grid);
 
 }
 

@@ -42,6 +42,8 @@ class star2d {
 	double surff;
 	int conv;
 	double Xc;
+	int core_convec;
+	double min_core_size;
 
 	struct units_struct {
 		double rho,p,phi,T,Omega,r,v,F;
@@ -55,8 +57,6 @@ class star2d {
 	struct config_struct {
 		double newton_dmax;
 		int verbose;
-		int core_convec;
-		double min_core_size;
 	} config;
 	
 	int opacity();

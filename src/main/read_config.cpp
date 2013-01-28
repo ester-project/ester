@@ -1,7 +1,9 @@
+#include "version.h"
+
 class configuration {
 public:
-	int minit,maxit,core_convec;
-	double tol,newton_dmax,spec_diff,min_core_size;
+	int minit,maxit;
+	double tol,newton_dmax;
 	int verbose;
 	char plot_device[64];
 	double plot_interval;
@@ -35,8 +37,6 @@ configuration::configuration(int argc,char *argv[]) {
 	maxit=200;
 	tol=1e-8;
 	newton_dmax=0.5;
-	core_convec=1;
-	min_core_size=0.01;
 	
 	sprintf(file,"%s/config/star.cfg",ESTER_ROOT);
 	if(!fp.open(file)) 
@@ -134,14 +134,6 @@ int configuration::check_arg(const char *arg,const char *val) {
 	else if(!strcmp(arg,"newton_dmax")) {
 		if(val==NULL) return 2;
 		newton_dmax=atof(val);
-	}
-	else if(!strcmp(arg,"core_convec")) {
-		if(val==NULL) return 2;
-		core_convec=atoi(val);
-	}
-	else if(!strcmp(arg,"min_core_size")) {
-		if(val==NULL) return 2;
-		min_core_size=atof(val);
 	}
 	else err=1;
 

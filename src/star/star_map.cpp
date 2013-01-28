@@ -142,19 +142,19 @@ void star2d::check_map() {
 
 int star2d::check_convec(double &p_cc,matrix &Rcc) {
 
-	if(!config.core_convec) return 0;
+	if(!core_convec) return 0;
 
 	if(conv) {
 		int j=0;
 		for(int n=0;n<conv;n++) j+=map.gl.npts[n];
-		if(z(j)<0.9*config.min_core_size) {
+		if(z(j)<0.9*min_core_size) {
 			if(config.verbose) printf("Size(convective core) < min_core_size. Removing...\n");
 			return 0;
 		} else return conv;
 	}
 	// else
 	int i=0;
-	while(z(i)<config.min_core_size) i++;
+	while(z(i)<min_core_size) i++;
 	matrix n2;
 	n2=N2();
 	if(map.leg.eval_00(n2.row(i),0)(0)>=0) return 0;

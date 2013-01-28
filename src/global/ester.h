@@ -2,6 +2,7 @@
 #define _ESTER_H
 
 #include"constants.h"
+#include"version.h"
 #include"graphics.h"
 #include"mapping.h"
 #include"matrix.h"
@@ -11,6 +12,5 @@
 #include"solver.h"
 #include"star.h"
 #include"symbolic.h"
-
 
 #endif
