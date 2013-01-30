@@ -44,12 +44,16 @@ We can now build the main program by doing
 \mint{bash}|ester/src$ make| %$
 To remove intermediate files we can also do 
 \mint{bash}|ester/src$ make clean| %$
-The main library is created in {\tt ester/lib/libester.so}, the header files
-are in {\tt ester/include} and the executables in {\tt ester/bin}. We
-can add the latter directory to the system path, for the \emph{bash}
-shell 
-\mint{bash}|$ export PATH="your_root_directory/ester/bin:$PATH"|
-or, to make this change permanent, include this line in your {\tt .bashrc} file.
+
+The main executable is located in {\tt ester/bin/}. To be able to call ester 
+without including the full path, you can include this directory in your PATH
+environment variable. Alternatively, you can create a symbolic link in
+a directory included in your PATH, for example:
+\mint{bash}|$ ln -s ~/ester/bin/ester ~/bin/ester| %$
+In this example, we are supposing that the ESTER library is located in \verb|~/ester|
+and the directory \verb|~/bin| is included in the PATH. If you are interested also
+in making your own programs using the ESTER library, you can also do:
+\mint{bash}|$ ln -s ~/ester/bin/ester_build ~/bin/ester_build| %$
 
 \subsection{Updating the code}
 In order to update to the last version using {\tt svn}, from the root directory of the ESTER distribution
@@ -66,9 +70,9 @@ and then
 
 To check the functionality of the program we are going to calculate the structure of a star using the default values for the parameters.
 First we calculate the structure of the corresponding 1D non-rotating star. Change to your working directory and execute
-\mint{bash}|$ star1d| %$
+\mint{bash}|$ ester 1d| %$
 Then we use the output file (by default {\tt star.out}) as the starting point for the 2D calculation
-\mint{bash}|$ star2d -i star.out -Omega_bk 0.5|   %$
+\mint{bash}|$ ester 2d -i star.out -Omega_bk 0.5|   %$
 This calculates the structure of a star rotating at 50$\%$ of the break-up velocity $\Omega_k=\sqrt{\frac{GM}{R_e^3}}$.
 
 \section{Using the library}
@@ -76,8 +80,10 @@ This calculates the structure of a star rotating at 50$\%$ of the break-up veloc
 The ESTER code can be used as a C++ library. We just have to add the following line at the beginning of our
 C++ program
 \mint{bash}|#include "ester.h"|
+The main library is created in {\tt ester/lib/libester.so} and the header files
+are in {\tt ester/include}.
 To facilitate the process of compiling and linking against the library and all its dependencies, we provide an automatically generated
-script {\tt ester/utils/ester\_build} so, all you have to do is
+script {\tt ester/bin/ester\_build} so, all you have to do is
 \mint{bash}|$ ester_build your_cpp_program.cpp -o your_executable| %$
 
 

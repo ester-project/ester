@@ -1,0 +1,14 @@
+
+usage: ester <command> [options]
+
+AVAILABLE COMMANDS:
+
+    1d      Calculate model of a 1D non-rotating star
+    2d      Calculate model of a 2D rotating star
+    info    Get information about a model
+    output  Generate custom output from a model
+    version Show version number
+    help    Show this help
+	
+Type 'ester help <command>' for help on a specific command
+

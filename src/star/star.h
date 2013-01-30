@@ -44,6 +44,8 @@ class star2d {
 	double Xc;
 	int core_convec;
 	double min_core_size;
+	
+	char version[32];
 
 	struct units_struct {
 		double rho,p,phi,T,Omega,r,v,F;
@@ -69,6 +71,8 @@ class star2d {
 	virtual int read_old(const char *input_file);
 	virtual void write(const char *output_file,char output_mode='b') const;
 	virtual void interp(mapping_redist *red);
+	
+	virtual void dump_info();
 	
 	virtual solver *init_solver(int nvar_add=0);
 	virtual double solve(solver *);
@@ -143,6 +147,8 @@ class star1d : public star2d {
 	virtual int init(const char *input_file,const char *param_file,int argc,char *argv[]);
 	virtual int check_arg(char *arg,char *val,int *change_grid);
 	virtual int read_old(const char *input_file);
+	
+	virtual void dump_info();
 	
 	virtual solver *init_solver(int nvar_add=0);
 	virtual void register_variables(solver *op);

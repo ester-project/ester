@@ -1,0 +1,15 @@
+
+Generates custom output from a model
+
+usage: ester output FILE
+
+Description:
+  Reads the model contained in FILE and generates output based 
+  on a template read from stdin. 
+  A typical call could be
+  	
+         ester output FILE < template_file > output_file
+         
+  Read the user guide in (ESTER_DIR)/doc/ester.pdf for instructions 
+  on creating a template file.
+  

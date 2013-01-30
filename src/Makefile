@@ -28,7 +28,7 @@ DISTCLEANDIRS = $(DIRS:%=distclean-%)
 
 .PHONY: all dirs $(DIRS) clean $(CLEANDIRS) distclean $(DISTCLEANDIRS) main
 
-all: main $(LIB) $(ESTER_ROOT)/utils/ester_build
+all: main $(LIB) $(ESTER_ROOT)/bin/ester_build
 
 tables: 
 	make -C ../tables	
@@ -67,12 +67,12 @@ $(DISTCLEANDIRS):
 
 .PHONY: ester_build
 
-$(ESTER_ROOT)/utils/ester_build: $(LIB)
+$(ESTER_ROOT)/bin/ester_build: $(LIB)
 		echo '#!/bin/bash'> $@
 		echo "file=\$$1" >> $@
 		echo "shift" >> $@
 		echo "$(CC) \$$file $(CCFLAGS) $(LDFLAGS) -lester $(LIBS)" '$(VARS)' \$$@>> $@
-		chmod u+x $@
+		chmod +x $@
 
 
 global:

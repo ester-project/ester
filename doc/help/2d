@@ -1,0 +1,67 @@
+
+Calculate a 2d model of a rotating star
+
+usage: ester 2d [options]
+
+VALID OPTIONS:
+
+  Global configuration (defaults in (ESTER_DIR)/config/star.cfg):
+
+    -i [-input_file] FILE  : Use model in FILE as the starting point for 
+                             the calculation  
+    -o [-output_file] FILE : Save output in FILE
+    -output_mode ARG       : Type of the output file. Use b for binary
+                             and t for text output
+    -ascii                 : Same as -output_mode t
+    -binary                : Same as -output_mode b
+    -verbose ARG [-vARG]   : Verbosity level from 0 (quiet) to 4 
+    -maxit VALUE           : Maximum number of iterations
+    -minit VALUE           : Minimum number of iterations
+    -tol VALUE             : Relative tolerance
+    -newton_dmax VALUE     : Maximum relative change per iteration allowed 
+    -plot_device ARG       : Name of PGPLOT device used for graphic output
+    -noplot                : No graphic output (-plot_device /NULL)
+    -plot_interval VALUE   : Minimum interval in seconds between graphic 
+                             updates
+                             
+  Model parameters:
+                             
+    -p [-param_file] FILE  : Name of the file containing the default 
+                             parameters for the calculation 
+                             (default: (ESTER_DIR)/config/1d_default.par)
+    -M VALUE               : Mass in solar masses
+    -X VALUE               : Hydrogen mass fraction
+    -Z VALUE               : Metals mass fraction
+    -Xc VALUE              : If there is a convective core, X_core/X_env
+    -Omega_bk VALUE        : Rotation velocity at the equator in units of
+                             the keplerian velocity
+    -ndomains VALUE        : Number of domains
+    -npts VALUE            : If only one value is specified, number of 
+    -npts val1,val2,...      radial points per domain. 
+                             To specify the number of points in each 
+                             domain use a comma-separated list.
+    -nth VALUE             : Number of grid points in latitude
+    -nex VALUE             : Number of radial points in external domain
+    -opa ARG               : Opacity type. Possible values:
+                                opal 
+                                houdek
+                                kramer
+    -eos ARG               : Type of equation of state. Possible values:
+                                opal
+                                ideal+rad
+                                ideal
+    -nuc ARG               : Type of nuclear reaction. Possible values:
+                                simple
+    -atm ARG               : Type of atmosphere. Possible values:
+                                simple
+    -Tc VALUE              : Initial value for the central temperature
+    -pc VALUE              : Initial value for the central pressure
+    -Ekman VALUE           : Ekman number (ignored).
+    -surff VALUE           : For truncating the model below the surface
+                             use a value greater than 1.
+                             VALUE ~ boundary pressure/surface pressure
+    -core_convec VALUE     : 1 to enable convection at the core, 0 to
+                             disable.
+    -min_core_size VALUE   : Minimum relative size of the convective core
+                             to be considered in the calculation
+                               

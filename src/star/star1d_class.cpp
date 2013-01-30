@@ -106,6 +106,7 @@ int star1d::read_old(const char *input_file){
 	
 	core_convec=1;
 	min_core_size=0.01;
+	strcpy(version,"0");
 		
 	fclose(fp);
 	fill();
@@ -226,19 +227,77 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 int star1d::check_arg(char *arg,char *val,int *change_grid) {
 
 	if(!strcmp(arg,"nth")) {
-		printf("nth=1 for 1D model\n");
 		return 1;
 	} else if(!strcmp(arg,"nex")) {
-		printf("No external domain for 1D model\n");
 		return 1;
 	} else if(!strcmp(arg,"Omega_bk")) {
-		printf("Omega_bk=0 in 1D model\n");
 		return 1;
 	} else if(!strcmp(arg,"Ekman")) {
 		return 1;
 	}
 	return star2d::check_arg(arg,val,change_grid);
 
+}
+
+void star1d::dump_info() {
+
+	printf("\n1d ESTER model file  (Version %s)\n\n",version);
+	
+	printf("General parameters:\n\n");
+	printf("\tMass = %.5f Msun (%e g)\n",M/M_SUN,M);
+	printf("\tRadius = %.5f Rsun (%e cm)\n",R/R_SUN,R);
+	printf("\tLuminosity = %.4f Lsun (%e erg/s)\n",luminosity()/L_SUN,luminosity());
+	printf("\tTeff = %.2f\n",Teff()(0));
+	printf("\tlog(geff) = %.4f\n",log10(gsup())(0));
+	printf("\tX=%.4f   Y=%.4f   Z=%.4f\n",X,Y,Z);
+	printf("\n");
+	
+	if(conv==0) printf("No convective core\n\n");
+	else {
+		printf("Convective core:\n\n");
+		int jcc=0;
+		for(int n=0;n<conv;n++) jcc+=map.gl.npts[n];
+		jcc--;
+		double mcc=4*PI*(map.gl.I.block(0,0,0,jcc),
+			(rho*r*r*map.rz).block(0,jcc,0,-1))(0)*units.rho*units.r*units.r*units.r;
+		printf("\tMass_core = %.5f Msun (%e g)\n",mcc/M_SUN,mcc);
+		double rcc=r(jcc)*units.r;
+		printf("\tRadius_core (p) = %.5f Rsun (%e cm)\n",rcc/R_SUN,rcc);
+		printf("\tX_core/X_env = %.4f\n",Xc);
+		printf("\n");
+	}
+	printf("Central values:\n\n");
+	printf("\tTemperature = %e K\n",Tc);
+	printf("\tDensity = %e g/cm3\n",rhoc);
+	printf("\tPressure = %e dyn/cm2\n",pc);
+	printf("\n");
+	
+	printf("Grid parameters:\n\n");
+	printf("\t # of domains = %d\n",ndomains);
+	printf("\t # of domains in convective core = %d\n",conv);
+	printf("\t nr = %d    (",nr);
+	for(int n=0;n<ndomains;n++) {
+		printf("%d",map.gl.npts[n]);
+		if(n<ndomains-1) printf(",");
+	}
+	printf(")\n");
+	printf("\n");
+	
+	printf("Additional parameters:\n\n");
+	printf("\tOpacity = %s\n",opa.name);
+	printf("\tEquation of state = %s\n",eos.name);
+	printf("\tNuclear reactions = %s\n",nuc.name);
+	printf("\tAtmosphere = %s\n",atm_name);
+	printf("\tsurff = %e\n",surff);
+	printf("\tcore_convec = %d\n",core_convec);
+	printf("\tmin_core_size = %e\n",min_core_size);
+	printf("\n");
+	
+	printf("Tests:\n\n");
+	printf("\tVirial test = %e\n",virial());
+	printf("\tEnergy test = %e\n",energy_test());
+	printf("\n");
+	
 }
 
 
