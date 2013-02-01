@@ -673,7 +673,8 @@ void star2d::dump_info() {
 	printf("\tMass = %.5f Msun (%e g)\n",M/M_SUN,M);
 	printf("\tRadius (p) = %.5f Rsun (%e cm)\n",R/R_SUN,R);
 	double re=map.leg.eval_00(r.row(-1),PI/2)(0);
-	printf("\tRadius (e) = %.5f Rsun (%e cm)  (flat.=%.3f)\n",R/R_SUN*re,R*re,1.-1./re);
+	printf("\tRadius (e) = %.5f Rsun (%e cm)\n",R/R_SUN*re,R*re);
+	printf("\tFlatness = %.3f\n",1.-1./re);
 	printf("\tLuminosity = %.4f Lsun (%e erg/s)\n",luminosity()/L_SUN,luminosity());
 	printf("\tTeff (p) = %.2f\n",map.leg.eval_00(Teff(),0)(0));
 	printf("\tTeff (e) = %.2f\n",map.leg.eval_00(Teff(),PI/2)(0));
