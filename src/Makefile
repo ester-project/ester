@@ -97,5 +97,6 @@ dist:
 	tar -C $(ESTER_ROOT)/.. -rf ester.tar ester/utils
 	gzip ester.tar
 	
-
+test:
+	make -C ../test/models
 

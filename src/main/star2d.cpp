@@ -138,8 +138,9 @@ int main(int argc,char *argv[]) {
 	A.write(config.output_file,config.output_mode);
 
 
-
-	delete fig;
+	if(config.verbose) {
+		delete fig;
+	}
 
 	op->destroy();
 	t.stop();

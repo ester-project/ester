@@ -17,7 +17,7 @@ see Rieutord \& Espinosa Lara 2012 (\href{http://arxiv.org/abs/1208.4926}{arXiv:
 Espinosa Lara \& Rieutord 2013 (\href{http://arxiv.org/abs/1212.0778}{arXiv:1212.0778}, submitted to A\&A).
 The code is still in development, so new functionality will be added in future versions.
 
-To execute the program, we use the following syntax:
+To execute the program, use the following syntax:
 \begin{center}
 ester \emph{command} [\emph{options}]
 \end{center}
@@ -351,9 +351,9 @@ standard output.  A typical call would be
 
 The template file is a regular text file with the following rules:
 \begin{itemize}
-\item Plain text are copied from the template to the output file. It cannot contain 
+\item Plain text is copied from the template to the output file. It cannot contain 
 the reserved characters {\tt \$} and {\tt \textbackslash}.
-\item Line breaks are ignored. To insert a line break in the output file we have to insert
+\item Line breaks are ignored. To insert a line break in the output file you have to insert
 a blank line in the template.
 \item Variables from the model are written in the form 
 \mbox{{\tt \$\{}{\it var}{\tt ,}{\it fmt}{\tt \}}}, where {\it var} is the code for the
@@ -403,17 +403,21 @@ pc&Central pressure&*&*\\
 \hline
 M&Mass&*&*\\
 \hline
-Rp&Polar radius&*&*\\
+R&(Polar) Radius&*&*\\
 \hline
-Re&Equatorial radius&*&*\\
+Rp&Polar radius&&*\\
+\hline
+Re&Equatorial radius&&*\\
 \hline
 L&Luminosity&*&*\\
 \hline
 M/M\_SUN&Mass in solar units&*&*\\
 \hline
-Rp/R\_SUN&Polar radius in solar units&*&*\\
+R/R\_SUN&(Polar) Radius in solar units&*&*\\
 \hline
-Re/R\_SUN&Polar radius in solar units&*&*\\
+Rp/R\_SUN&Polar radius in solar units&&*\\
+\hline
+Re/R\_SUN&Equatorial radius in solar units&&*\\
 \hline
 L/L\_SUN&Luminosity in solar units&*&*\\
 \hline

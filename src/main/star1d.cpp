@@ -78,8 +78,10 @@ int main(int argc,char *argv[]) {
 	op->destroy();
 	A.write(config.output_file,config.output_mode);
 	
-	delete fig;
-
+	if(config.verbose) {
+		delete fig;
+	}
+	
 	t.stop();
 	if(config.verbose) 
 		printf("%2.2f seconds\n",t.value());	

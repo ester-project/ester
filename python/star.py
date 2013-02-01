@@ -33,7 +33,7 @@ class star2d:
 			fp.write('${'+x+'}')
 		fp.close()
 		fd,out_file=tempfile.mkstemp(prefix='star_out_',suffix='.tmp')
-		status=os.system('gen_output '+file+' < '+template_file+' > '+out_file)
+		status=os.system('ester output '+file+' < '+template_file+' > '+out_file)
 		if status:
 			self.nr=0
 			return
