@@ -20,22 +20,22 @@ if len(sys.argv)>=2:
 if command=='1d':
 	cmd="star1d"
 	out=call([ester_root+"/bin/"+cmd]+sys.argv[2:])
-	exit(out)
+	sys.exit(out)
 
 elif command=='2d':
 	cmd="star2d"
 	out=call([ester_root+"/bin/"+cmd]+sys.argv[2:])
-	exit(out)
+	sys.exit(out)
 
 elif command=='output':
 	cmd="gen_output"
 	out=call([ester_root+"/bin/"+cmd]+sys.argv[2:])
-	exit(out)
+	sys.exit(out)
 	
 elif command=='info':
 	cmd="ester_info"
 	out=call([ester_root+"/bin/"+cmd]+sys.argv[2:])
-	exit(out)
+	sys.exit(out)
 	
 elif command=='version':
 	cmd="version"
@@ -51,4 +51,4 @@ elif command=='help':
 			print("No help on '"+subcmd+"'")
 else:
 	print("Unknown command '"+command+"'")
-	exit(1)
+	sys.exit(1)

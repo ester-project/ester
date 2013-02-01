@@ -21,14 +21,14 @@ def exec_cmd(cmd,infile=None,outfile=None):
 		out=call(cmd.split(),stdin=f_in,stdout=f_out)
 	except:
 		print("TEST FAILED !!!")
-		exit(1)
+		sys.exit(1)
 	if f_in:
 		f_in.close()
 	if f_out:
 		f_out.close()
 	if out:
 		print("TEST FAILED !!!")
-		exit(1)
+		sys.exit(1)
 	return out
 
 def compare_files(file1,file2):
@@ -41,22 +41,19 @@ def compare_files(file1,file2):
 	except:
 		f1.close()
 		return(False)
-	while True:
-		l1=f1.readline()
-		l2=f2.readline()
-		if not l1==l2:
-			f1.close()
-			f2.close()
-			return False
-		if (not l1) and (not l2):
-			f1.close()
-			f2.close()
-			return True
+	if not f1.read()==f2.read():
+		f1.close()
+		f2.close()
+		return False
+	else:
+		f1.close()
+		f2.close()
+		return True
 			
 
 print("Test model #1:")
 cmd="ester 1d -M 5" 
-cmd=cmd+" -p 1d.par -noplot -tol 1e-8 -maxit 100 -o test_model1"
+cmd=cmd+" -p 1d.par -noplot -tol 1e-8 -maxit 100 -o test_model1 -i aaa"
 exec_cmd(cmd)
 cmd="ester output test_model1"
 exec_cmd(cmd,"template_1d","test_out")
@@ -66,7 +63,7 @@ if test_result:
 	print("TEST OK\n")
 else:
 	print("TEST FAILED !!!")
-	exit(1)
+	sys.exit(1)
 
 
 print("Test model #2:")
@@ -81,7 +78,7 @@ if test_result:
 	print("TEST OK\n")
 else:
 	print("TEST FAILED !!!")
-	exit(1)
+	sys.exit(1)
 
 
 print("Test model #3:")
@@ -96,7 +93,7 @@ if test_result:
 	print("TEST OK\n")
 else:
 	print("TEST FAILED !!!")
-	exit(1)
+	sys.exit(1)
 
 print("Test model #4:")
 cmd="ester 2d -i test_model3 -Omega_bk 0.3" 
@@ -110,7 +107,7 @@ if test_result:
 	print("TEST OK\n")
 else:
 	print("TEST FAILED !!!")
-	exit(1)
+	sys.exit(1)
 
 os.remove("test_model1")
 os.remove("test_model2")

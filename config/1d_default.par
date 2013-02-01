@@ -20,3 +20,4 @@ atm=simple
 
 core_convec=1			# Deactivate core convection with core_convec=0
 min_core_size=0.01		# Minimum size of convective core (in fraction of polar radius)
+
