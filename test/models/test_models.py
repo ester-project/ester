@@ -53,7 +53,7 @@ def compare_files(file1,file2):
 
 print("Test model #1:")
 cmd="ester 1d -M 5" 
-cmd=cmd+" -p 1d.par -noplot -tol 1e-8 -maxit 100 -o test_model1 -i aaa"
+cmd=cmd+" -p 1d.par -noplot -tol 1e-8 -maxit 100 -o test_model1"
 exec_cmd(cmd)
 cmd="ester output test_model1"
 exec_cmd(cmd,"template_1d","test_out")
