@@ -39,13 +39,16 @@ int main(int argc,char *argv[]) {
 	
 	// If no input file, ignore core convection until the model starts to converge
 	int core_convec_set=A.core_convec;
+	int env_convec_set=A.env_convec;
 	if(*config.input_file==0) {
 		A.core_convec=0;
+		A.env_convec=0;
 	}
 	err=1;
 	while(!last_it) {
 		if(err<0.1&&!*config.input_file) {
 			A.core_convec=core_convec_set;
+			A.env_convec=env_convec_set;
 		}
 		nit++;
 		//A.check_jacobian(op,"log_T");exit(0);

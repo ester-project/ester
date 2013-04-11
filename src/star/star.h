@@ -9,8 +9,17 @@
 #include"constants.h"
 #include"parser.h"
 #include"graphics.h"
+#include"debug.h"
+#include"symbolic.h"
 
 #include<cmath>
+#include<vector>
+
+#define PRES T
+#define LOG_PRES "log_T"
+#define T_CONSTANT_DOMAINS
+//#define PHOTOSPHERE 1
+//#define KINEMATIC_VISC
 
 class star1d;
 
@@ -36,14 +45,19 @@ class star2d {
   	opa_struct opa;
 	nuc_struct nuc;
 	eos_struct eos;
-	char atm_name[16];
+	atm_struct atm;
 	matrix ps,Ts;
 	double m,pi_c,Lambda;
 	double surff;
 	int conv;
 	double Xc;
 	int core_convec;
+	int env_convec;
 	double min_core_size;
+	std::vector<int> domain_type;
+	#define RADIATIVE 0
+	#define CORE 1
+	#define CONVECTIVE 2
 	
 	char version[32];
 
@@ -61,9 +75,10 @@ class star2d {
 		int verbose;
 	} config;
 	
-	int opacity();
-	int nuclear();
-	int eq_state();
+	virtual void opacity();
+	virtual void nuclear();
+	virtual void eq_state();
+	virtual void atmosphere();
 
 	virtual int init(const char *input_file,const char *param_file,int argc,char *argv[]);
 	virtual int check_arg(char *arg,char *val,int *change_grid);
@@ -90,18 +105,14 @@ class star2d {
 	virtual void solve_Teff(solver *);
 	virtual void solve_vbl(solver *,const char *eqn,matrix &rhs);
 	virtual void solve_definitions(solver *);
+	virtual void solve_atm(solver *);
 	
 	virtual void update_map(matrix dR);
-	
-	virtual void atmosphere();
-	virtual void solve_atm(solver *);
-	virtual void atm_simple();
-	virtual void solve_atm_simple(solver *);
-
 	
 	virtual void upd_Xr();
 	virtual void calc_veloc();
 	
+	virtual matrix entropy() const;
 	virtual double luminosity() const;
 	virtual matrix Teff() const;
 	virtual matrix N2() const;
@@ -119,8 +130,11 @@ class star2d {
 	
 	// star_map.cpp
 	virtual void remap(int ndomains,int *npts,int nth,int nex);
-	virtual matrix check_boundaries(int ndomains,int &conv_new,double p_cc=0) const;
-	virtual matrix find_boundaries(matrix pif) const;
+	virtual bool remap_domains(int ndom, mapping_redist &red);
+	virtual matrix find_boundaries(const matrix &logTi) const;
+	virtual std::vector<int> distribute_domains(int ndom,matrix &zif,bool check_only=false) const;
+	virtual matrix distribute_domains(int ndomains,int &conv_new,double p_cc=0) const;
+	virtual matrix find_boundaries_old(matrix pif) const;
 	virtual void check_map();
 	virtual int check_convec(double &p_cc,matrix &Rcc);
 	
@@ -129,6 +143,11 @@ class star2d {
 	void drawc(figure *,const matrix &,int ncontours,int parity=0) const;
 	void drawci(figure *,const matrix &,int sr,int st,int ncontours,int parity=0) const;
 	void spectrum(figure *,const matrix &,int parity=0) const;
+
+	matrix kconv() const;
+	void add_kconv(solver *op,const char *eqn,const matrix &d);
+	void add_dkconv_dz(solver *op,const char *eqn,const matrix &d);
+	void kconv_common(matrix &kc,matrix &Ja,matrix &Jb,symbolic &S,sym &a_,sym &b_) const;
 
 	virtual void check_jacobian(solver *op,const char *eqn);
 
@@ -161,11 +180,6 @@ class star1d : public star2d {
 	virtual void solve_definitions(solver *);
 	virtual void solve_Teff(solver *);
 	virtual void solve_gsup(solver *);
-	
-	virtual void atmosphere();
-	virtual void solve_atm(solver *);
-	virtual void atm_simple();
-	virtual void solve_atm_simple(solver *);
 	
 	virtual void update_map(matrix dR);
 	

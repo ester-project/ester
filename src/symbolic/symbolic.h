@@ -185,8 +185,9 @@ class symbolic {
 	inline sym G(int i,int j,int k) const {return christoffel(i,j,k);};
 public:
 	sym_tens &g,&g_;
+	sym &sqrt_g;
 	double tol;
-	const sym &r,&sint,&cost,&one,&sqrt_g;
+	const sym &r,&sint,&cost,&one;
 	symbolic(int n_var,int max_der);
 	~symbolic();
 	sym regvar(const char *name);

@@ -23,8 +23,8 @@ class star2d:
 				'M/M_SUN','L/L_SUN','rex','phi','phiex','rho','p','T','w','G','Xr',
 				'N2','opa.k','opa.xi','opa.dlnxi_lnT','opa.dlnxi_lnrho','eos.G1','eos.cp',
 				'eos.del_ad','eos.G3_1','eos.cv','eos.prad','eos.chi_T','eos.chi_rho',
-				'eos.d','nuc.eps','nuc.pp','nuc.cno','Teff','gsup','I','Dex','Dt','Dtodd','Dt2',
-				'It','map.R','Dtodd','vr','vt','virial','energy_test','eos.s','opa','eos']
+				'eos.d','nuc.eps','nuc.pp','nuc.cno','Teff','gsup','I','Dex','Dtodd',
+				'It','map.R','vr','vt','virial','energy_test','eos.s','opa','eos']
 		fd,template_file=tempfile.mkstemp(prefix='star_template_',suffix='.tmp')
 		fp=os.fdopen(fd,'w')
 		fp.write('\\conf{equator=1}\n\\conf{pole=1}\n\\conf{dim=1}\n')
@@ -157,7 +157,78 @@ class star2d:
 		hold(hh)
 		
 		
+class star1d:
+	def __init__(self,file):
+		names=['D','r','xif','surff','X','Z','Xc',
+				'rhoc','Tc','pc','M','R','L','R/R_SUN',
+				'M/M_SUN','L/L_SUN','phi','rho','p','T','Xr',
+				'N2','opa.k','opa.xi','opa.dlnxi_lnT','opa.dlnxi_lnrho','eos.G1','eos.cp',
+				'eos.del_ad','eos.G3_1','eos.cv','eos.prad','eos.chi_T','eos.chi_rho',
+				'eos.d','nuc.eps','nuc.pp','nuc.cno','Teff','gsup','I',
+				'eos.s','opa','eos']
+		fd,template_file=tempfile.mkstemp(prefix='star_template_',suffix='.tmp')
+		fp=os.fdopen(fd,'w')
+		fp.write('\\conf{dim=1}\n')
+		fp.write('${nr}${ndomains}${npts}${conv}')
+		for x in names:
+			fp.write('${'+x+'}')
+		fp.close()
+		fd,out_file=tempfile.mkstemp(prefix='star_out_',suffix='.tmp')
+		status=os.system('ester output '+file+' < '+template_file+' > '+out_file)
+		if status:
+			self.nr=0
+			return
+		fp=os.fdopen(fd,'rb')
+		self.nr=struct.unpack('i',fp.read(4))[0]
+		self.ndomains=struct.unpack('i',fp.read(4))[0]
+		self.npts=fromfile(fp,'i',self.ndomains)
+		self.conv=struct.unpack('i',fp.read(4))[0]
+		self.nth=1
+		for x in names:
+			x=x.replace('/','_')
+			x=x.replace('.','_')
+			if x=='eps' or x=='eps_c' or x=='M' or x=='L' or x=='R' \
+				 or x=='R_R_SUN' or x=='M_M_SUN' or x=='L_L_SUN' \
+				 or x=='virial' or x=='energy_test' or x=='surff' or x=='X' or x=='Z' or x=='Xc' \
+				 or x=='rhoc' or x=='pc' or x=='Tc':
+				s="self."+x+"=struct.unpack('d',fp.read(8))[0]"
+			elif x=='opa' or x=='eos':
+				c=list();
+				cc=fp.read(1);
+				while not cc=='\x00':
+					c.append(cc);
+					cc=fp.read(1);
+				s=str();
+				s=s.join(c);
+				s="self."+x+"='"+s+"'"
+			elif x=='Teff' or x=='gsup':
+				s="self."+x+"=fromfile(fp,'d',"+str(self.nth)+")"
+			elif x=='I':
+				s="self."+x+"=fromfile(fp,'d',"+str(self.nr)+")"
+			elif x=='xif':
+				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.ndomains+1)+"),["+str(self.ndomains+1)+",1],'F')"
+			elif x=='D':
+				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.nr*self.nr)+"),["+str(self.nr)+","+str(self.nr)+"],'F')"
+			elif x=='map_R':
+				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.ndomains*self.nth)+"),["+str(self.ndomains)+","+str(self.nth)+"],'F')"
+			else:
+				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.nr*self.nth)+"),["+str(self.nr)+","+str(self.nth)+"],'F')"
+			exec(s)
+		fp.close()
+		os.system('rm '+template_file)
+		os.system('rm '+out_file)
+		self.z=self.r
+		self.rz=dot(self.D,self.r)
+		self.rzz=dot(self.D,self.rz)
+		self.rt=0*self.r
+		self.rtt=0*self.r
+		self.rzt=0*self.r
+		self.gzz=1./self.rz**2*(1.+self.rt**2/self.r**2)
+		self.gzz[0,:]=1./self.rz[0,:]**2
+		self.gzt=-self.rt/self.r**2/self.rz
+		self.gzt[0,:]=0
+		self.gtt=1./self.r**2
 		
 	
 	
-		
+

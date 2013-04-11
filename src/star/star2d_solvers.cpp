@@ -5,7 +5,7 @@
 #include"symbolic.h"
 
 void star2d::fill() {
-	
+DEBUG_FUNCNAME	
 	Y=1.-X-Z;
 	upd_Xr();
 
@@ -33,7 +33,7 @@ void star2d::fill() {
 
 
 void star2d::upd_Xr() {
-
+DEBUG_FUNCNAME
 	int ic,n;
 	
 	Xr=X*ones(nr,nth);
@@ -49,6 +49,7 @@ void star2d::upd_Xr() {
 }
 
 void star2d::calc_veloc() {
+DEBUG_FUNCNAME
 // vr=rz*V^zeta vt=r*V^theta
 	vr=(G,map.leg.D_11)/r+(map.rt/r+cos(th)/sin(th))/r*G;
 	vr.setrow(0,zeros(1,nth));
@@ -59,7 +60,7 @@ void star2d::calc_veloc() {
 }
 
 solver *star2d::init_solver(int nvar_add) {
-
+DEBUG_FUNCNAME
 	int nvar;
 	solver *op;
 	
@@ -75,7 +76,7 @@ solver *star2d::init_solver(int nvar_add) {
 }
 
 void star2d::register_variables(solver *op) {
-
+DEBUG_FUNCNAME
 	int i,var_nr[ndomains+1];
 	
 	for(i=0;i<ndomains;i++) 
@@ -121,7 +122,7 @@ void star2d::register_variables(solver *op) {
 }
 
 double star2d::solve(solver *op) {
-
+DEBUG_FUNCNAME
 	int info[5];
 	matrix rho0;
 	double err,err2,h,dmax;
@@ -134,7 +135,7 @@ double star2d::solve(solver *op) {
 	check_map();
 
 	op->reset();
-	
+
 	solve_definitions(op);
 	solve_poisson(op);
 	solve_pressure(op);
@@ -220,7 +221,7 @@ double star2d::solve(solver *op) {
 }
 
 void star2d::update_map(matrix dR) {
-
+DEBUG_FUNCNAME
 	double h=1,dmax=config.newton_dmax;
 	
 	matrix R0;
@@ -232,10 +233,11 @@ void star2d::update_map(matrix dR) {
 		h/=2;
 		map.R=R0+h*dR;
 	}
+
 }
 
 void star2d::solve_definitions(solver *op) {
-
+DEBUG_FUNCNAME
 	op->add_d("rho","p",rho/eos.chi_rho/p);
 	op->add_d("rho","T",-rho*eos.d/T);
 	op->add_d("rho","log_pc",rho/eos.chi_rho);
@@ -274,6 +276,7 @@ void star2d::solve_definitions(solver *op) {
 	op->add_d(ndomains,"rz","eta",(Dex,map.ex.J[0]));
 	op->add_d(ndomains,"rz","Ri",(Dex,map.ex.J[2]));
 	
+	//	Valid only for homogeneus composition !!!!!!
 	op->add_d("s","T",eos.cp/T);
 	op->add_d("s","log_Tc",eos.cp);
 	op->add_d("s","p",-eos.cp*eos.del_ad/p);
@@ -282,7 +285,7 @@ void star2d::solve_definitions(solver *op) {
 }
 
 void star2d::solve_poisson(solver *op) {
-
+DEBUG_FUNCNAME
 	matrix q,rhs1,rhs2,rhs;
 	int n,j0;
 	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
@@ -341,7 +344,7 @@ void star2d::solve_poisson(solver *op) {
 }
 
 void star2d::solve_pressure(solver *op) {
-
+DEBUG_FUNCNAME
 	matrix q,rhs_p,rhs_pi_c;
 	int n,j0;
 	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
@@ -404,7 +407,7 @@ void star2d::solve_pressure(solver *op) {
 
 
 void star2d::solve_rot(solver *op) {
-
+DEBUG_FUNCNAME
 	matrix q,TT,rhs;
 	int n,j0;
 	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
@@ -488,7 +491,7 @@ void star2d::solve_rot(solver *op) {
 }
 
 void star2d::solve_vbl(solver *op,const char *eqn,matrix &rhs) {
-
+DEBUG_FUNCNAME
 	matrix qeq,TT;
 	int n;
 	int limit_layer=1;
@@ -497,26 +500,36 @@ void star2d::solve_vbl(solver *op,const char *eqn,matrix &rhs) {
 		qeq=ones(1,nth); // w constante
 	} else {
 		qeq=zeros(1,nth); //limit layer
+		qeq(0)=1;
 	}
-	qeq(0)=1;
 	n=ndomains-1;
 	
-	symbolic S(2,1);
+	#ifdef KINEMATIC_VISC
+	symbolic S(3,1);
+	sym rho_;
+	#else
+	symbolic S(3,1);
+	#endif
 	sym G_,w_,s_;
 	sym_vec n_(COVARIANT),t_(CONTRAVARIANT);
 	
 	S.set_map(map);
 	G_=S.regvar("G");S.set_value("G",G,11);
 	w_=S.regvar("w");S.set_value("w",w);
-	
+	#ifdef KINEMATIC_VISC
+	rho_=S.regvar("rho");S.set_value("rho",rho);
+	#endif
 	n_(0)=Dz(S.r);n_(1)=0*S.one;n_(2)=0*S.one;
 	t_(0)=0*S.one;t_(1)=1/S.r;t_(2)=0*S.one;
 	s_=S.r*S.sint;
 	
 	sym eq;
-	
+	#ifdef KINEMATIC_VISC
+	eq=rho_*s_*s_*(n_,grad(w_))+G_*(t_,grad(s_*s_*w_));	
+	eq.bc_top1_add(op,n,eqn,"rho",1-qeq);
+	#else
 	eq=s_*s_*(n_,grad(w_))+G_*(t_,grad(s_*s_*w_));	
-	
+	#endif
 	eq.bc_top1_add(op,n,eqn,"w",1-qeq);
 	eq.bc_top1_add(op,n,eqn,"G",1-qeq);
 	eq.bc_top1_add(op,n,eqn,"r",1-qeq);
@@ -537,7 +550,7 @@ void star2d::solve_vbl(solver *op,const char *eqn,matrix &rhs) {
 }
 
 void star2d::solve_dyn(solver *op) {
-
+DEBUG_FUNCNAME
 	if(Omega==0) {
 		op->add_d("G","G",ones(nr,nth));
 		op->set_rhs("G",zeros(nr,nth));
@@ -559,7 +572,11 @@ void star2d::solve_dyn(solver *op) {
 	
 	sym eq;
 	
+	#ifdef KINEMATIC_VISC
+	eq=div(rho_*s_*s_*w_*v_)-div(rho_*s_*s_*grad(w_));
+	#else
 	eq=div(rho_*s_*s_*w_*v_)-div(s_*s_*grad(w_));
+	#endif
 	
 	matrix rhs;
 	rhs=-eq.eval();
@@ -594,7 +611,7 @@ void star2d::solve_dyn(solver *op) {
 
 
 void star2d::solve_temp(solver *op) {
-
+DEBUG_FUNCNAME
 	int n,j0;
 	matrix q;
 	char eqn[8];
@@ -675,67 +692,77 @@ void star2d::solve_temp(solver *op) {
 	//Temperature
 	
 	matrix rhs_T,rhs_Lambda;
-	matrix TT,qconv,qrad;
+	matrix TT,qcore,qenv;
 	
-	qrad=zeros(nr,nth);
-	qconv=qrad;
+	qenv=zeros(nr,nth);
+	qcore=qenv;
 	j0=0;
 	for(n=0;n<ndomains;n++) {
-		if(n<conv) qconv.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth));
-		else qrad.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth));
+		if(n<conv) qcore.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth));
+		else qenv.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth));
 		j0+=map.gl.npts[n];
 	}
 	
 	
 	rhs_T=zeros(nr,nth);
 
-	// T
-	map.add_lap(op,eqn,"T",qrad,T);
-	rhs_T+=-qrad*map.lap(T);
-	q=gzz*(D,log(opa.xi))+gzt*(log(opa.xi),Dt);
-	op->add_l(eqn,"T",qrad*q,D);
-	rhs_T+=-qrad*q*(D,T);
-	q=gzt*(D,log(opa.xi))+gtt*(log(opa.xi),Dt);
-	op->add_r(eqn,"T",qrad*q,Dt);
-	rhs_T+=-qrad*q*(T,Dt);
+	symbolic S(4,2);
+	sym T_,xi_,s_,G_;
+	sym div_Frad;
 	
-	// r
-	q=(D,log(opa.xi))*(D,T)*2*rt/r/rz*gzt
-		-((D,log(opa.xi))*(T,Dt)+(log(opa.xi),Dt)*(D,T))*2*gzt/r
-		-(log(opa.xi),Dt)*(T,Dt)*2/r/r/r;
-	op->add_d(eqn,"r",qrad*q);
-	q=-(D,log(opa.xi))*(D,T)*2/rz*gzz
-		-((D,log(opa.xi))*(T,Dt)+(log(opa.xi),Dt)*(D,T))*gzt/rz;
-	op->add_l(eqn,"r",qrad*q,D);
-	q=-(D,log(opa.xi))*(D,T)*2/rz*gzt
-		-((D,log(opa.xi))*(T,Dt)+(log(opa.xi),Dt)*(D,T))/r/r/rz;
-	op->add_r(eqn,"r",qrad*q,Dt);
+	S.set_map(map);
 	
-	//rho
-	q=Lambda*nuc.eps/opa.xi;
-	op->add_d(eqn,"rho",qrad*q);
-		
-	rhs_T+=-qrad*Lambda*rho*nuc.eps/opa.xi;
+	T_=S.regvar("T");
+	xi_=S.regvar("opa.xi");
+	s_=S.regvar("s");
+	G_=S.regvar("G");
+	S.set_value("T",T);
+	S.set_value("opa.xi",opa.xi);
+	S.set_value("s",entropy());
+	S.set_value("G",G);
+	
 
-	//opa.xi
-	q=gzz*(D,T)+gzt*(T,Dt);
-	op->add_li(eqn,"opa.xi",qrad*q,D,1/opa.xi);
-	q=gzt*(D,T)+gtt*(T,Dt);
-	op->add_ri(eqn,"opa.xi",qrad*q,Dt,1/opa.xi);
-	q=-Lambda*rho*nuc.eps/opa.xi/opa.xi;
-	op->add_d(eqn,"opa.xi",qrad*q);
+	div_Frad=-div(-xi_*grad(T_))/xi_;
 	
-	//nuc.eps
-	q=Lambda*rho/opa.xi;
-	op->add_d(eqn,"nuc.eps",qrad*q);
+	div_Frad.add(op,eqn,"T",qenv);
+	div_Frad.add(op,eqn,"opa.xi",qenv);
+	div_Frad.add(op,eqn,"r",qenv);
+	rhs_T-=div_Frad.eval()*qenv;
+
 	
-	//Lambda
-	q=rho*nuc.eps/opa.xi;
-	op->add_d(eqn,"Lambda",qrad*q);
+	op->add_d(eqn,"nuc.eps",qenv*Lambda*rho/opa.xi);
+	op->add_d(eqn,"rho",qenv*Lambda*nuc.eps/opa.xi);	
+	op->add_d(eqn,"Lambda",qenv*rho*nuc.eps/opa.xi);
+	op->add_d(eqn,"opa.xi",-qenv*Lambda*rho*nuc.eps/opa.xi/opa.xi);
+	rhs_T+=-qenv*Lambda*rho*nuc.eps/opa.xi;
 	
-	op->add_l(eqn,"s",qconv,D);
-	//rhs_T+=-qconv*(D,eos.s);
-	rhs_T+=-qconv*eos.cp*((D,log(T))-eos.del_ad*(D,log(p)));
+	// Advection
+	/*
+	sym adv;
+	sym_vec rhov_,phivec(COVARIANT);
+	
+	phivec(0)=0*S.one;phivec(1)=0*S.one;phivec(2)=S.r*S.sint;
+	rhov_=curl(G_*phivec);
+	adv=-T_*(rhov_,grad(s_))/xi_;
+	
+	adv.add(op,eqn,"T",qenv*Ekman*sqrt(rhoc*pc)*R);
+	adv.add(op,eqn,"s",qenv*Ekman*sqrt(rhoc*pc)*R);
+	adv.add(op,eqn,"G",qenv*Ekman*sqrt(rhoc*pc)*R);
+	adv.add(op,eqn,"opa.xi",qenv*Ekman*sqrt(rhoc*pc)*R);
+	
+	matrix advec;
+	
+	advec=qenv*Ekman*sqrt(rhoc*pc)*R*adv.eval();
+	
+	op->add_d(eqn,"log_R",advec);
+	op->add_d(eqn,"log_pc",0.5*advec);
+	op->add_d(eqn,"log_rhoc",0.5*advec);
+	rhs_T+=-advec;
+	*/
+	//Core convection
+	op->add_l(eqn,"s",qcore,D);
+	//rhs_T+=-qcore*(D,eos.s);
+	rhs_T+=-qcore*(D,entropy());
 	
 	rhs_Lambda=zeros(ndomains,1);
 	
@@ -753,14 +780,20 @@ void star2d::solve_temp(solver *op) {
 		}
 		if(n>=conv) {
 			if(n<ndomains-1) {
-				op->bc_top1_add_d(n,eqn,"Frad",rz.row(j0+map.gl.npts[n]-1));
+				/*op->bc_top1_add_d(n,eqn,"Frad",rz.row(j0+map.gl.npts[n]-1));
 				op->bc_top2_add_d(n,eqn,"Frad",-rz.row(j0+map.gl.npts[n]-1));
 				op->bc_top1_add_d(n,eqn,"rz",Frad.row(j0+map.gl.npts[n]-1));
 				op->bc_top2_add_d(n,eqn,"rz",-Frad.row(j0+map.gl.npts[n]-1));
 				
 				rhs_T.setrow(j0+map.gl.npts[n]-1,
 					-Frad.row(j0+map.gl.npts[n]-1)*rz.row(j0+map.gl.npts[n]-1)
-					+Frad.row(j0+map.gl.npts[n])*rz.row(j0+map.gl.npts[n]));
+					+Frad.row(j0+map.gl.npts[n])*rz.row(j0+map.gl.npts[n]));*/
+				op->bc_top1_add_l(n,eqn,"T",1/rz.row(j0+map.gl.npts[n]-1),D.block(n).row(-1));
+				op->bc_top1_add_d(n,eqn,"rz",-((D,T)/rz/rz).row(j0+map.gl.npts[n]-1));
+				op->bc_top2_add_l(n,eqn,"T",-1/rz.row(j0+map.gl.npts[n]),D.block(n+1).row(0));
+				op->bc_top2_add_d(n,eqn,"rz",((D,T)/rz/rz).row(j0+map.gl.npts[n]));
+				rhs_T.setrow(j0+map.gl.npts[n]-1,
+					((D,T)/rz).row(j0+map.gl.npts[n])-((D,T)/rz).row(j0+map.gl.npts[n]-1));
 			} else {
 				op->bc_top1_add_d(n,eqn,"T",ones(1,nth));
 				op->bc_top1_add_d(n,eqn,"Ts",-ones(1,nth));
@@ -796,7 +829,7 @@ void star2d::solve_temp(solver *op) {
 }
 
 void star2d::solve_dim(solver *op) {
-
+DEBUG_FUNCNAME
 	int n,j0;
 	matrix q,rhs;
 	
@@ -865,40 +898,20 @@ void star2d::solve_dim(solver *op) {
 
 
 void star2d::solve_map(solver *op) {
-
+DEBUG_FUNCNAME
 	int n,j0;
-	matrix Ri,TT,q,rhs;
+	matrix Ri,rhs,TT,q;
 
-	map.leg.eval_00(map.leg.th,0,TT);
 
-	rhs=zeros(ndomains+1,1);
-	j0=0;
-	for(n=0;n<ndomains;n++) {
-		if(!n) op->add_d(n,"eta","eta",ones(1,1));
-		else {
-			matrix delta;
-			delta=zeros(1,map.gl.npts[n]);delta(0)=1;delta(-1)=-1;
-			op->bc_bot2_add_lr(n,"eta","log_p",ones(1,1),delta,TT);
-			delta=zeros(1,map.gl.npts[n-1]);delta(0)=1;delta(-1)=-1;
-			op->bc_bot1_add_lr(n,"eta","log_p",-ones(1,1),delta,TT);
-			rhs(n)=(log(p.row(j0+map.gl.npts[n]-1))-log(p.row(j0))
-				-log(p.row(j0-1))+log(p.row(j0-map.gl.npts[n-1])),TT)(0);
-		}
-		j0+=map.gl.npts[n];
-	}
+	matrix gamma;
+	gamma=(sqrt(1+map.rt*map.rt/r/r)).row(-1);
 
-	if(conv) {
-		n=conv;
-		op->reset(n,"eta");
-		op->add_d(n,"eta","eta",ones(1,1));
-		op->add_r(n,"eta","Ri",-ones(1,1),TT);
-		rhs(n)=0;
-	}
-	
-	op->add_d(ndomains,"eta","eta",ones(1,1));
-	
-	op->set_rhs("eta",rhs);
-	
+	n=ndomains-1;
+	op->bc_top1_add_d(n,"gamma","gamma",2*gamma);
+	op->bc_top1_add_d(n,"gamma","r",(2*map.rt*map.rt/r/r/r).row(-1));
+	op->bc_top1_add_r(n,"gamma","r",(-2*map.rt/r/r).row(-1),Dt);
+	op->set_rhs("gamma",zeros(1,nth));
+
 	rhs=zeros(ndomains,1);
 	for(n=0;n<ndomains;n++) {
 		op->bc_top1_add_d(n,"deta","deta",ones(1,1));
@@ -914,6 +927,17 @@ void star2d::solve_map(solver *op) {
 		op->bc_top2_add_d(n,"dRi","Ri",-ones(1,nth));
 	}
 	op->set_rhs("dRi",rhs);
+
+	map.leg.eval_00(map.leg.th,0,TT);
+
+	rhs=zeros(ndomains+1,1);
+	op->add_d(0,"eta","eta",ones(1,1));
+	for(n=1;n<ndomains;n++) {
+		op->add_d(n,"eta","eta",ones(1,1));
+		op->add_r(n,"eta","Ri",-ones(1,1),TT);
+	}
+	op->add_d(ndomains,"eta","eta",ones(1,1));
+	op->set_rhs("eta",rhs);
 	
 	Ri=zeros(ndomains+1,nth);
 	Ri.setblock(1,ndomains,0,-1,map.R);
@@ -921,79 +945,76 @@ void star2d::solve_map(solver *op) {
 	
 	op->add_d(0,"Ri","Ri",ones(1,nth));
 //for(n=1;n<=ndomains;n++) op->add_d(n,"Ri","Ri",ones(1,nth));op->set_rhs("Ri",rhs);return;
+	j0=map.gl.npts[0];
+	for(n=1;n<ndomains;n++) {
+		if(n==conv) {
+			symbolic S(2,1);
+			sym p_,s_,eq;
+			p_=S.regvar("p");
+			s_=S.regvar("s");
+			S.set_map(map);
+			S.set_value("p",p);
+			S.set_value("s",entropy());
+
+			eq=(grad(p_),grad(s_))/S.r/S.r;
+			eq.bc_bot2_add(op,n,"Ri","p",ones(1,nth));
+			eq.bc_bot2_add(op,n,"Ri","s",ones(1,nth));
+			eq.bc_bot2_add(op,n,"Ri","r",ones(1,nth));
+		
+			rhs.setrow(n,-eq.eval().row(j0));
+		} else {
+			#ifdef T_CONSTANT_DOMAINS
+			map.leg.eval_00(map.leg.th,zeros(1,nth),TT);
+			q=zeros(1,nth);
+			q(0,nth-1)=1;
+			matrix delta;
+			delta=zeros(1,map.gl.npts[n]);delta(0)=1;delta(-1)=-1;
+			op->bc_bot2_add_lr(n,"Ri",LOG_PRES,q,delta,TT);
+			delta=zeros(1,map.gl.npts[n-1]);delta(0)=1;delta(-1)=-1;
+			op->bc_bot1_add_lr(n,"Ri",LOG_PRES,-q,delta,TT);
+			rhs.setrow(n,(log(PRES.row(j0+map.gl.npts[n]-1))-log(PRES.row(j0))
+			-log(PRES.row(j0-1))+log(PRES.row(j0-map.gl.npts[n-1])),TT));
+			op->bc_bot2_add_d(n,"Ri",LOG_PRES,(1-q));
+			op->bc_bot2_add_r(n,"Ri",LOG_PRES,q-1,TT);
+			rhs.setrow(n,rhs.row(n)+(1-q)*(-log(PRES.row(j0))+log((PRES.row(j0),TT))));
+			#else
+			matrix delta;
+			delta=zeros(1,map.gl.npts[n]);delta(0)=1;delta(-1)=-1;
+			op->bc_bot2_add_l(n,"Ri",LOG_PRES,ones(1,nth),delta);
+			delta=zeros(1,map.gl.npts[n-1]);delta(0)=1;delta(-1)=-1;
+			op->bc_bot1_add_l(n,"Ri",LOG_PRES,-ones(1,nth),delta);
+			rhs.setrow(n,log(PRES.row(j0+map.gl.npts[n]-1))-log(PRES.row(j0))
+			-log(PRES.row(j0-1))+log(PRES.row(j0-map.gl.npts[n-1])));
+			#endif
+		}
+		j0+=map.gl.npts[n];
+	}
+	n=ndomains;
 	map.leg.eval_00(map.leg.th,zeros(1,nth),TT);
 	q=zeros(1,nth);
 	q(0,nth-1)=1;
-	j0=map.gl.npts[0];
-	for(n=1;n<=ndomains;n++) {
-		if(n!=conv) {
-			op->bc_bot2_add_r(n,"Ri","Ri",q,TT);
-			op->bc_bot2_add_d(n,"Ri","eta",-q);
-			rhs.setrow(n,q*(-(Ri.row(n),TT)+map.gl.xif[n]));
-		}
-		if(n<ndomains) {
-			if(n!=conv) {
-				op->bc_bot2_add_d(n,"Ri","p",(1-q));
-				op->bc_bot2_add_r(n,"Ri","p",q-1,TT);
-				rhs.setrow(n,rhs.row(n)
-					+(1-q)*(-p.row(j0)+(p.row(j0),TT)));
-			} else {
-				matrix qq,drs,dts;
-				matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
-					&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
-			
-				drs=eos.cp*((D,log(T))-eos.del_ad*(D,log(p)));
-				dts=eos.cp*((log(T),Dt)-eos.del_ad*(log(p),Dt));
-				//drs=(D,eos.s);
-				//dts=(eos.s,Dt);
-				
-				qq=gzz*(D,p)+gzt*(p,Dt);
-				op->bc_bot2_add_l(n,"Ri","s",qq.row(j0),D.block(n).row(0));
-				qq=gzt*(D,p)+gtt*(p,Dt);
-				op->bc_bot2_add_r(n,"Ri","s",qq.row(j0),Dt);
-				qq=gzz*drs+gzt*dts;
-				op->bc_bot2_add_l(n,"Ri","p",qq.row(j0),D.block(n).row(0));
-				qq=gzt*drs+gtt*dts;
-				op->bc_bot2_add_r(n,"Ri","p",qq.row(j0),Dt);
-				
-				qq=-2*r*gzt*gzt*(D,p)*drs-2/r*gzt*((D,p)*dts+(p,Dt)*drs)-2/r/r/r*(dts*(p,Dt));
-				op->bc_bot2_add_d(n,"Ri","r",qq.row(j0));
-				qq=-2/rz*gzz*(D,p)*drs-gzt/rz*((D,p)*dts+(p,Dt)*drs);
-				op->bc_bot2_add_d(n,"Ri","rz",qq.row(j0));
-				qq=-2/rz*gzt*(D,p)*drs-1/r/r/rz*((D,p)*dts+(p,Dt)*drs);
-				op->bc_bot2_add_r(n,"Ri","r",qq.row(j0),Dt);
-				
-				qq=gzz*(D,p)*drs+gzt*((D,p)*dts+(p,Dt)*drs)+gtt*(dts*(p,Dt));
-				rhs.setrow(n,-qq.row(j0));
-			}			
-		}
-		if(n==ndomains) {
-			// Isobar
-			op->bc_bot1_add_d(n,"Ri","p",(1-q));
-			op->bc_bot1_add_r(n,"Ri","p",q-1,TT);
-			rhs.setrow(n,rhs.row(n)
-				+(1-q)*(-p.row(-1)+(p.row(-1),TT)));
-			// Photosphere
-			/*op->bc_bot1_add_d(n,"Ri","p",ones(1,nth));
-			op->bc_bot1_add_d(n,"Ri","ps",-ones(1,nth));
-			rhs.setrow(n,rhs.row(n)
-				+(-p.row(-1)+ps));*/
-		}
-		if(n<ndomains) j0+=map.gl.npts[n];
-	}
+	op->bc_bot2_add_r(n,"Ri","Ri",q,TT);
+	rhs.setrow(n,q*(-(Ri.row(n),TT)+1));
+	op->bc_bot1_add_d(n,"Ri","p",(1-q));
+	#ifndef PHOTOSPHERE
+	// Isobar
+	op->bc_bot1_add_r(n,"Ri","p",-(1-q),TT);
+	rhs.setrow(n,rhs.row(n)+(1-q)*(-p.row(-1)+(p.row(-1),TT)));
+	#else
+	// Photosphere
+	op->bc_bot1_add_d(n,"Ri","ps",-(1-q)*PHOTOSPHERE);
+	rhs.setrow(n,rhs.row(n)+(1-q)*PHOTOSPHERE*(-p.row(-1)+ps));
+	op->bc_bot1_add_r(n,"Ri","p",-(1-q)*(1.-PHOTOSPHERE),TT);
+	rhs.setrow(n,rhs.row(n)+(1-q)*(1.-PHOTOSPHERE)*(-p.row(-1)+(p.row(-1),TT)));
+	#endif
+	
 	op->set_rhs("Ri",rhs);
 	
-	matrix gamma;
-	gamma=(sqrt(1+map.rt*map.rt/r/r)).row(-1);
-
-	n=ndomains-1;
-	op->bc_top1_add_d(n,"gamma","gamma",2*gamma);
-	op->bc_top1_add_d(n,"gamma","r",(2*map.rt*map.rt/r/r/r).row(-1));
-	op->bc_top1_add_r(n,"gamma","r",(-2*map.rt/r/r).row(-1),Dt);
-	op->set_rhs("gamma",zeros(1,nth));
 	
 	
 }
+
+
 
 /*
 void star2d::solve_Omega(solver *op) {
@@ -1023,7 +1044,7 @@ void star2d::solve_Omega(solver *op) {
 */
 
 void star2d::solve_Omega(solver *op) {
-
+DEBUG_FUNCNAME
 	int n;
 	matrix rhs;
 
@@ -1067,7 +1088,7 @@ void star2d::solve_Omega(solver *op) {
 
 
 void star2d::solve_gsup(solver *op) {
-
+DEBUG_FUNCNAME
 	matrix q,g;
 	int n=ndomains-1;
 	matrix &rt=map.rt;
@@ -1101,7 +1122,7 @@ void star2d::solve_gsup(solver *op) {
 }
 
 void star2d::solve_Teff(solver *op) {
-
+DEBUG_FUNCNAME
 	matrix q,Te,F;
 	int n=ndomains-1;
 	matrix &rt=map.rt;
@@ -1135,8 +1156,52 @@ void star2d::solve_Teff(solver *op) {
 		
 }
 
-void star2d::check_jacobian(solver *op,const char *eqn) {
+void star2d::solve_atm(solver *op) {
 
+	if(!strcmp(atm.name,"simple")) {
+		matrix q;
+		double qq;
+		int n=ndomains-1;
+	
+		op->bc_top1_add_d(n,"ps","ps",1/ps);
+		op->bc_top1_add_d(n,"ps","gsup",-1/gsup());
+		op->bc_top1_add_d(n,"ps","opa.k",1/opa.k.row(-1));
+		op->bc_top1_add_d(n,"ps","log_pc",ones(1,nth));
+		op->set_rhs("ps",zeros(1,nth));
+	
+		op->bc_top1_add_d(n,"Ts","Ts",1/Ts);
+		op->bc_top1_add_d(n,"Ts","p",-0.25/p.row(-1));
+		op->bc_top1_add_d(n,"Ts","ps",0.25/ps);
+		op->bc_top1_add_d(n,"Ts","Teff",-1/Teff());
+		op->bc_top1_add_d(n,"Ts","log_Tc",ones(1,nth));
+		op->set_rhs("Ts",zeros(1,nth));
+		return;
+	}
+
+
+	matrix q;
+	double qq;
+	int n=ndomains-1;
+	
+	op->bc_top1_add_d(n,"ps","ps",1/ps);
+	op->bc_top1_add_d(n,"ps","gsup",-atm.dlnps_lng/gsup());
+	op->bc_top1_add_d(n,"ps","Teff",-atm.dlnps_lnTeff/Teff());
+	op->bc_top1_add_d(n,"ps","log_pc",ones(1,nth));
+	op->set_rhs("ps",zeros(1,nth));
+	
+	op->bc_top1_add_d(n,"Ts","Ts",1/Ts);
+	op->bc_top1_add_d(n,"Ts","p",-0.25/p.row(-1));
+	op->bc_top1_add_d(n,"Ts","ps",0.25/ps);
+	op->bc_top1_add_d(n,"Ts","gsup",-atm.dlnTs_lng/gsup());
+	op->bc_top1_add_d(n,"Ts","Teff",-atm.dlnTs_lnTeff/Teff());
+	op->bc_top1_add_d(n,"Ts","log_Tc",ones(1,nth));
+	op->set_rhs("Ts",zeros(1,nth));
+	
+}
+
+
+void star2d::check_jacobian(solver *op,const char *eqn) {
+DEBUG_FUNCNAME
 	star2d B;
 	matrix rhs,drhs,drhs2,qq;
 	matrix *y;

@@ -1,14 +1,14 @@
 #include"star.h"
 #include<stdlib.h>
 #include<string.h>
+#include"symbolic.h"
 
 void star1d::fill() {
-
+DEBUG_FUNCNAME
 	Y=1.-X-Z;
 	upd_Xr();
 
 	eq_state();
-	
 	opacity();
 	nuclear();
 	
@@ -31,7 +31,7 @@ void star1d::fill() {
 
 
 void star1d::upd_Xr() {
-
+DEBUG_FUNCNAME
 	int ic,n;
 	
 	Xr=X*ones(nr,1);
@@ -47,7 +47,7 @@ void star1d::upd_Xr() {
 
 
 solver *star1d::init_solver(int nvar_add) {
-
+DEBUG_FUNCNAME
 	int nvar;
 	solver *op;
 	
@@ -64,7 +64,7 @@ solver *star1d::init_solver(int nvar_add) {
 }
 
 void star1d::register_variables(solver *op) {
-
+DEBUG_FUNCNAME
 	int i,var_nr[ndomains];
 	
 	for(i=0;i<ndomains;i++) 
@@ -102,7 +102,7 @@ void star1d::register_variables(solver *op) {
 }
 
 double star1d::solve(solver *op) {
-
+DEBUG_FUNCNAME
 	int info[5];
 	matrix rho0;
 	double err,err2;
@@ -140,7 +140,7 @@ double star1d::solve(solver *op) {
 				printf("Not converged (Error %d)\n",info[3]);
 		}
 	}
-	
+
 	double q,h;
 		
 	h=1;
@@ -189,7 +189,7 @@ double star1d::solve(solver *op) {
 }
 
 void star1d::update_map(matrix dR) {
-
+DEBUG_FUNCNAME
 	if(ndomains==1) return;
 
 	double h=1,dmax=config.newton_dmax;
@@ -207,7 +207,7 @@ void star1d::update_map(matrix dR) {
 }
 
 void star1d::solve_definitions(solver *op) {
-
+DEBUG_FUNCNAME
 	op->add_d("rho","p",rho/eos.chi_rho/p);
 	op->add_d("rho","log_T",-rho*eos.d);
 	op->add_d("rho","log_pc",rho/eos.chi_rho);
@@ -224,6 +224,7 @@ void star1d::solve_definitions(solver *op) {
 	op->add_d("rz","Ri",(D,map.J[2]));
 	op->add_d("rz","dRi",(D,map.J[3]));
 	
+	//	Valid only for homogeneus composition !!!!!!
 	op->add_d("s","T",eos.cp/T);
 	op->add_d("s","log_Tc",eos.cp);
 	op->add_d("s","p",-eos.cp*eos.del_ad/p);
@@ -248,7 +249,7 @@ void star1d::solve_definitions(solver *op) {
 }
 
 void star1d::solve_poisson(solver *op) {
-
+DEBUG_FUNCNAME
 	int n,j0;
 	matrix rhs;
 
@@ -292,7 +293,7 @@ void star1d::solve_poisson(solver *op) {
 }
 
 void star1d::solve_pressure(solver *op) {
-
+DEBUG_FUNCNAME
 	int n,j0;
 	matrix rhs_p,rhs_pi_c;
 	char eqn[8];
@@ -331,7 +332,7 @@ void star1d::solve_pressure(solver *op) {
 
 
 void star1d::solve_temp(solver *op) {
-
+DEBUG_FUNCNAME
 	int n,j0;
 	matrix q;
 	char eqn[8];
@@ -399,58 +400,78 @@ void star1d::solve_temp(solver *op) {
 	//Temperature
 	
 	matrix rhs_T,rhs_Lambda;
-	matrix qconv,qrad;
+	matrix qcore,qenv;
 	
-	qrad=zeros(nr,1);
-	qconv=qrad;
+	qenv=zeros(nr,1);
+	qcore=qenv;
 	j0=0;
 	for(n=0;n<ndomains;n++) {
-		if(n<conv) qconv.setblock(j0,j0+map.gl.npts[n]-1,0,0,ones(map.gl.npts[n],1));
-		else qrad.setblock(j0,j0+map.gl.npts[n]-1,0,0,ones(map.gl.npts[n],1));
+		if(n<conv) qcore.setblock(j0,j0+map.gl.npts[n]-1,0,0,ones(map.gl.npts[n],1));
+		else qenv.setblock(j0,j0+map.gl.npts[n]-1,0,0,ones(map.gl.npts[n],1));
 		j0+=map.gl.npts[n];
 	}
 	
 	
 	rhs_T=zeros(nr,1);
 
-	// T
+	symbolic S(2+env_convec*3,2);
+	sym T_,xi_;
+	sym div_Frad;
 	
-	op->add_l(eqn,"T",ones(nr,1),(D,D));	
-	op->add_l(eqn,"T",2./r,D);
-	rhs_T+=-qrad*((D,D,T)+2/r*(D,T));
-	q=(D,log(opa.xi));
-	op->add_l(eqn,"T",qrad*q,D);
-	rhs_T+=-qrad*q*(D,T);
+	S.set_map(map);
 	
-	// r
-	op->add_d(eqn,"r",-2./r/r*(D,T));
-	op->add_d(eqn,"rz",-2.*(D,D,T)-2./r*(D,T));
-	q=-(D,log(opa.xi))*(D,T)*2.;
-	op->add_d(eqn,"rz",qrad*q);
-	
-	//rho
-	q=Lambda*nuc.eps/opa.xi;
-	op->add_d(eqn,"rho",qrad*q);
-		
-	rhs_T+=-qrad*Lambda*rho*nuc.eps/opa.xi;
+	T_=S.regvar("T");
+	xi_=S.regvar("opa.xi");
+	S.set_value("T",T);
+	S.set_value("opa.xi",opa.xi);
 
-	//opa.xi
-	q=(D,T);
-	op->add_li(eqn,"opa.xi",qrad*q,D,1/opa.xi);
-	q=-Lambda*rho*nuc.eps/opa.xi/opa.xi;
-	op->add_d(eqn,"opa.xi",qrad*q);
+	div_Frad=-div(-xi_*grad(T_))/xi_;
 	
-	//nuc.eps
-	q=Lambda*rho/opa.xi;
-	op->add_d(eqn,"nuc.eps",qrad*q);
+	div_Frad.add(op,eqn,"T",qenv);
+	div_Frad.add(op,eqn,"opa.xi",qenv);
+	div_Frad.add(op,eqn,"r",qenv);
+	rhs_T-=div_Frad.eval()*qenv;
+
 	
-	//Lambda
-	q=rho*nuc.eps/opa.xi;
-	op->add_d(eqn,"Lambda",qrad*q);
+	op->add_d(eqn,"nuc.eps",qenv*Lambda*rho/opa.xi);
+	op->add_d(eqn,"rho",qenv*Lambda*nuc.eps/opa.xi);	
+	op->add_d(eqn,"Lambda",qenv*rho*nuc.eps/opa.xi);
+	op->add_d(eqn,"opa.xi",-qenv*Lambda*rho*nuc.eps/opa.xi/opa.xi);
+	rhs_T+=-qenv*Lambda*rho*nuc.eps/opa.xi;
 	
-	op->add_l(eqn,"s",qconv,D);
-	//rhs_T+=-qconv*(D,eos.s);
-	rhs_T+=-qconv*eos.cp*((D,log(T))-eos.del_ad*(D,log(p)));
+	
+	//Convection
+	
+	/*if(env_convec) {
+		sym kc_,rho_,s_;
+		sym div_Fconv;
+		
+		kc_=S.regvar("kc");
+		rho_=S.regvar("rho");
+		s_=S.regvar("s");
+		S.set_value("kc",kconv());
+		S.set_value("rho",rho);
+		S.set_value("s",entropy());
+		
+		div_Fconv=-div(-rho_*T_*grad(s_)*kc_)/xi_;
+		
+		div_Fconv.add(op,eqn,"T",qenv);
+		div_Fconv.add(op,eqn,"rho",qenv);
+		div_Fconv.add(op,eqn,"s",qenv);
+		div_Fconv.add(op,eqn,"r",qenv);
+		div_Fconv.add(op,eqn,"opa.xi",qenv);
+		
+		add_kconv(op,eqn,div_Fconv.jacobian("kc",0,0).eval()*qenv);
+		add_dkconv_dz(op,eqn,div_Fconv.jacobian("kc",1,0).eval()*qenv);
+		
+		rhs_T-=div_Fconv.eval()*qenv;
+		
+	}*/
+	
+	//Core convection
+	op->add_l(eqn,"s",qcore,D);
+	//rhs_T+=-qcore*(D,eos.s);
+	rhs_T+=-qcore*(D,entropy());
 	
 	rhs_Lambda=zeros(ndomains,1);
 	
@@ -466,10 +487,12 @@ void star1d::solve_temp(solver *op) {
 		}
 		if(n>=conv) {
 			if(n<ndomains-1) {
-				op->bc_top1_add_d(n,eqn,"Frad",ones(1,1));
-				op->bc_top2_add_d(n,eqn,"Frad",-ones(1,1));
+				op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+				op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+				op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j0+map.gl.npts[n]-1));
+				op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j0+map.gl.npts[n]));
 				
-				rhs_T(j0+map.gl.npts[n]-1)=-Frad(j0+map.gl.npts[n]-1)+Frad(j0+map.gl.npts[n]);
+				rhs_T(j0+map.gl.npts[n]-1)=-(D,T)(j0+map.gl.npts[n]-1)+(D,T)(j0+map.gl.npts[n]);
 			} else {
 				op->bc_top1_add_d(n,eqn,"T",ones(1,1));
 				op->bc_top1_add_d(n,eqn,"Ts",-ones(1,1));
@@ -505,7 +528,7 @@ void star1d::solve_temp(solver *op) {
 
 
 void star1d::solve_dim(solver *op) {
-
+DEBUG_FUNCNAME
 	int n,j0;
 	matrix q,rhs;
 	
@@ -574,7 +597,7 @@ void star1d::solve_dim(solver *op) {
 }
 
 void star1d::solve_map(solver *op) {
-
+DEBUG_FUNCNAME
 	int n,j0;
 	matrix rhs;
 	
@@ -593,34 +616,44 @@ void star1d::solve_map(solver *op) {
 		else {
 			matrix delta;
 			delta=zeros(1,map.gl.npts[n]);delta(0)=1;delta(-1)=-1;
-			op->bc_bot2_add_l(n,"Ri","log_p",ones(1,1),delta);
+			op->bc_bot2_add_l(n,"Ri",LOG_PRES,ones(1,1),delta);
 			delta=zeros(1,map.gl.npts[n-1]);delta(0)=1;delta(-1)=-1;
-			op->bc_bot1_add_l(n,"Ri","log_p",-ones(1,1),delta);
-			rhs(n)=log(p(j0+map.gl.npts[n]-1))-log(p(j0))-log(p(j0-1))+log(p(j0-map.gl.npts[n-1]));
+			op->bc_bot1_add_l(n,"Ri",LOG_PRES,-ones(1,1),delta);
+			rhs(n)=log(PRES(j0+map.gl.npts[n]-1))-log(PRES(j0))-log(PRES(j0-1))+log(PRES(j0-map.gl.npts[n-1]));
 		}
 		j0+=map.gl.npts[n];
 	}
 	
 	if(conv) {
-		matrix ds;
 		for(n=0,j0=0;n<conv;n++) j0+=map.gl.npts[n];
 		n=conv;
-		ds=eos.cp*((D,log(T))-eos.del_ad*(D,log(p)));
 		op->reset(n,"Ri");
-		op->bc_bot2_add_l(n,"Ri","s",ones(1,1),D.block(n).row(0));
-		op->bc_bot2_add_d(n,"Ri","rz",-ones(1,1)*ds(j0));
-		rhs(n)=-ds(j0);
+		
+		symbolic S(2,1);
+		sym p_,s_,eq;
+		p_=S.regvar("p");
+		s_=S.regvar("s");
+		S.set_map(map);
+		S.set_value("p",p);
+		S.set_value("s",entropy());
+	
+		eq=(grad(p_),grad(s_))/S.r/S.r;
+		eq.bc_bot2_add(op,n,"Ri","p",ones(1,nth));
+		eq.bc_bot2_add(op,n,"Ri","s",ones(1,nth));
+		eq.bc_bot2_add(op,n,"Ri","r",ones(1,nth));
+			
+		rhs(n)=-eq.eval()(j0);	
 	}
 	op->set_rhs("Ri",rhs);
 }
 
 void star1d::solve_gsup(solver *op) {
-
+DEBUG_FUNCNAME
 	matrix q,g;
 	int n=ndomains-1;
 	
 	g=gsup()*ones(1,1);
-	
+	/*
 	op->bc_top1_add_d(n,"gsup","gsup",ones(1,1));
 	op->bc_top1_add_d(n,"gsup","log_pc",-g);
 	op->bc_top1_add_d(n,"gsup","log_rhoc",g);
@@ -631,6 +664,11 @@ void star1d::solve_gsup(solver *op) {
 	
 	q=(D,phi);
 	op->bc_top1_add_d(n,"gsup","rz",pc/R/rhoc*q.row(-1));
+	*/
+	op->bc_top1_add_d(n,"gsup","gsup",1./g);
+	op->bc_top1_add_d(n,"gsup","log_rhoc",-ones(1,1));
+	op->bc_top1_add_d(n,"gsup","log_R",-ones(1,1));
+	op->bc_top1_add_d(n,"gsup","m",-ones(1,1)/m);
 	
 	op->set_rhs("gsup",zeros(1,1));
 		
@@ -639,7 +677,7 @@ void star1d::solve_gsup(solver *op) {
 }
 
 void star1d::solve_Teff(solver *op) {
-
+DEBUG_FUNCNAME
 	matrix q,Te,F;
 	int n=ndomains-1;
 	
@@ -656,6 +694,12 @@ void star1d::solve_Teff(solver *op) {
 	
 	q=-(D,T)*opa.xi;
 	op->bc_top1_add_d(n,"Teff","rz",Tc/R*q.row(-1));
+
+/*	op->bc_top1_add_d(n,"Teff","Teff",4./Te);
+	op->bc_top1_add_d(n,"Teff","log_Tc",-ones(1,1));
+	op->bc_top1_add_d(n,"Teff","log_R",ones(1,1));
+	op->bc_top1_add_d(n,"Teff","lum",-ones(1,1)/luminosity()*R*Tc);*/
+	
 	
 	op->set_rhs("Teff",zeros(1,1));
 		
@@ -663,7 +707,7 @@ void star1d::solve_Teff(solver *op) {
 
 
 void star1d::check_jacobian(solver *op,const char *eqn) {
-
+DEBUG_FUNCNAME
 	star1d B;
 	matrix rhs,drhs,drhs2,qq;
 	matrix *y;

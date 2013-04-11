@@ -449,6 +449,20 @@ matrix mapping::eval(const matrix &y,const matrix &ri, const matrix &thi,int par
 
 }
 
+matrix mapping::zeta_to_r(const matrix &z) const {
+	matrix rr(z.nrows(),z.ncols());
+	
+	if(z.ncols()!=leg.npts) {
+		fprintf(stderr,"Error: (mapping.zeta_to_r) Matrix must have nth columns\n");
+		exit(1);
+	}
+	
+	for(int j=0;j<leg.npts;j++) {
+		rr.setcol(j,gl.eval(r.col(j),z.col(j)));
+	}	
+	return rr;
+}
+
 matrix mapping::draw0(const matrix &A,int parity,matrix &x,matrix &y) const {
 	
 	matrix zz(gl.N,4*leg.npts+1);

@@ -47,6 +47,7 @@ class mapping {
     void add_lap_ex(solver *op,const char* eqn,const char * varn,const matrix &d,const matrix &phi) const;
     matrix stream(const matrix &Fz,matrix &Ft) const;
     matrix stream(const matrix &Fz) const;
+    matrix zeta_to_r(const matrix &z) const;
     
     matrix eval(const matrix &y,const matrix &ri, const matrix &thi,int parity=0) const; 	
     

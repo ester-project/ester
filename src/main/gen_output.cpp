@@ -227,12 +227,12 @@ void write(const star1d &A,char *var,char *fmt) {
 	} else if(!strcmp(var,"opa")) {
 		if(fmt) fprintf(stdout,fmt,A.opa.name);
 		else {
-			fwrite(A.opa.name,sizeof(char),strlen(A.opa.name),stdout);
+			fwrite(A.opa.name,sizeof(char),strlen(A.opa.name)+1,stdout);
 		}
 	} else if(!strcmp(var,"eos")) {
 		if(fmt) fprintf(stdout,fmt,A.eos.name);
 		else {
-			fwrite(A.eos.name,sizeof(char),strlen(A.eos.name),stdout);
+			fwrite(A.eos.name,sizeof(char),strlen(A.eos.name)+1,stdout);
 		}
 	} else if(!strcmp(var,"r")) {
 		if(dim) m=A.r*A.units.r;
@@ -323,6 +323,9 @@ void write(const star1d &A,char *var,char *fmt) {
 	} else if(!strcmp(var,"eos.chi_rho")) {
 		if(fmt) matrix_fmt(fmt,A.eos.chi_rho);
 		else A.eos.chi_rho.write(stdout,'b');
+	} else if(!strcmp(var,"eos.s")) {
+		if(fmt) matrix_fmt(fmt,A.eos.s);
+		else A.eos.s.write(stdout,'b');
 	} else if(!strcmp(var,"L")) {
 		d=A.luminosity();
 		if(fmt) fprintf(stdout,fmt,d);
@@ -337,6 +340,12 @@ void write(const star1d &A,char *var,char *fmt) {
 		}
 	} else if(!strcmp(var,"Teff")) {
 		d=A.Teff()(0);
+		if(fmt) fprintf(stdout,fmt,d);
+		else {
+			fwrite(&d,sizeof(double),1,stdout);
+		}
+	} else if(!strcmp(var,"gsup")) {
+		d=A.gsup()(0);
 		if(fmt) fprintf(stdout,fmt,d);
 		else {
 			fwrite(&d,sizeof(double),1,stdout);

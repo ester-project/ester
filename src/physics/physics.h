@@ -16,9 +16,21 @@ struct opa_struct {
 	char name[16];
 };
 
-int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
+struct atm_struct {
+	matrix ps,Ts,dlnps_lng,dlnps_lnTeff,dlnTs_lng,dlnTs_lnTeff;
+	char name[16];
+};
+
+int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa);
-int opa_opals(const matrix &X,double Z,const matrix &T,const matrix &rho,
+int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
+		matrix &rho,eos_struct &eos);
+int nuc_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
+		nuc_struct &nuc);
+int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
+		const char *eos_name,const char *opa_name,atm_struct &atm);
+
+int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa);
 int opa_houdek(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa);
@@ -34,6 +46,9 @@ int eos_idealrad(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos);
 int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos);
-		
+
+int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
+		const char *eos_name,const char *opa_name,atm_struct &atm);
+	
 #endif
 

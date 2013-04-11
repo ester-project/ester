@@ -33,7 +33,7 @@ star2d &star2d::operator=(const star2d &A) {
 }
 
 void star2d::copy(const star2d &A) {
-
+DEBUG_FUNCNAME
 	phi=A.phi;
 	p=A.p;
 	T=A.T;
@@ -43,7 +43,7 @@ void star2d::copy(const star2d &A) {
 	opa=A.opa;
 	eos=A.eos;
 	nuc=A.nuc;
-	strcpy(atm_name,A.atm_name);
+	atm=A.atm;
 	config=A.config;
 	units=A.units;
 	
@@ -67,12 +67,15 @@ void star2d::copy(const star2d &A) {
 	Ekman=A.Ekman;
 	
 	core_convec=A.core_convec;
+	env_convec=A.env_convec;
 	min_core_size=A.min_core_size;
+	
+	domain_type=A.domain_type;
 	
 }
 
 void star2d::write(const char *output_file,char mode) const {
-
+DEBUG_FUNCNAME
 	OUTFILE fp;
 
 	char cur_version[32];	
@@ -92,17 +95,19 @@ void star2d::write(const char *output_file,char mode) const {
 		fp.write("Z",&Z);
 		fp.write("Xc",&Xc);
 		fp.write("conv",&conv);
+		fp.write("domain_type",&domain_type[0],ndomains);
 		fp.write("surff",&surff);
 		fp.write("Tc",&Tc);
 		fp.write("pc",&pc);
 		fp.write("opa.name",opa.name,strlen(opa.name)+1);
 		fp.write("eos.name",eos.name,strlen(eos.name)+1);
 		fp.write("nuc.name",nuc.name,strlen(nuc.name)+1);
-		fp.write("atm_name",atm_name,strlen(atm_name)+1);
+		fp.write("atm.name",atm.name,strlen(atm.name)+1);
 		fp.write("Omega",&Omega);
 		fp.write("Omega_bk",&Omega_bk);
 		fp.write("Ekman",&Ekman);
 		fp.write("core_convec",&core_convec);
+		fp.write("env_convec",&env_convec);
 		fp.write("min_core_size",&min_core_size);
 		fp.write("version",cur_version,strlen(cur_version)+1);
 	} else {
@@ -117,17 +122,19 @@ void star2d::write(const char *output_file,char mode) const {
 		fp.write_fmt("Z","%.16e",&Z);
 		fp.write_fmt("Xc","%.16e",&Xc);
 		fp.write_fmt("conv","%d",&conv);
+		fp.write_fmt("domain_type","%d",&domain_type[0],ndomains);
 		fp.write_fmt("surff","%.16e",&surff);
 		fp.write_fmt("Tc","%.16e",&Tc);
 		fp.write_fmt("pc","%.16e",&pc);
 		fp.write_fmt("opa.name","%s",&opa.name);
 		fp.write_fmt("eos.name","%s",&eos.name);
 		fp.write_fmt("nuc.name","%s",&nuc.name);
-		fp.write_fmt("atm_name","%s",&atm_name);
+		fp.write_fmt("atm.name","%s",&atm.name);
 		fp.write_fmt("Omega","%.16e",&Omega);
 		fp.write_fmt("Omega_bk","%.16e",&Omega_bk);
 		fp.write_fmt("Ekman","%.16e",&Ekman);
 		fp.write_fmt("core_convec","%d",&core_convec);
+		fp.write_fmt("env_convec","%d",&core_convec);
 		fp.write_fmt("min_core_size","%.16e",&min_core_size);
 		fp.write_fmt("version","%s",&cur_version);
 	}
@@ -145,7 +152,7 @@ void star2d::write(const char *output_file,char mode) const {
 }
 
 int star2d::read(const char *input_file){
-
+DEBUG_FUNCNAME
 	char tag[32],mode;
 	int ndom;
 	INFILE fp;
@@ -178,17 +185,25 @@ int star2d::read(const char *input_file){
 		fp.read("Z",&Z);
 		fp.read("Xc",&Xc);
 		fp.read("conv",&conv);
+		domain_type.resize(ndomains);
+		if(!fp.read("domain_type",&domain_type[0])) {
+			for(int n=0;n<ndomains;n++) {
+				if(n<conv) domain_type[n]=CORE;
+				else domain_type[n]=RADIATIVE;
+			}
+		}
 		fp.read("surff",&surff);
 		fp.read("Tc",&Tc);
 		fp.read("pc",&pc);
 		fp.read("opa.name",opa.name);
 		fp.read("eos.name",eos.name);
 		fp.read("nuc.name",nuc.name);
-		fp.read("atm_name",atm_name);
+		if(!fp.read("atm.name",atm.name)) strcpy(atm.name,"simple");
 		if(!fp.read("Omega",&Omega)) Omega=0;
 		if(!fp.read("Omega_bk",&Omega_bk)) Omega_bk=0;
 		if(!fp.read("Ekman",&Ekman)) Ekman=0;
 		if(!fp.read("core_convec",&core_convec)) core_convec=1;
+		if(!fp.read("env_convec",&env_convec)) env_convec=0;
 		if(!fp.read("min_core_size",&min_core_size)) min_core_size=0.01;
 		if(!fp.read("version",version)) strcpy(version,"0");
 	} else {
@@ -204,17 +219,25 @@ int star2d::read(const char *input_file){
 		fp.read_fmt("Z","%le",&Z);
 		fp.read_fmt("Xc","%le",&Xc);
 		fp.read_fmt("conv","%d",&conv);
+		domain_type.resize(ndomains);
+		if(!fp.read_fmt("domain_type","%d",&domain_type[0])) {
+			for(int n=0;n<ndomains;n++) {
+				if(n<conv) domain_type[n]=CORE;
+				else domain_type[n]=RADIATIVE;
+			}
+		}
 		fp.read_fmt("surff","%le",&surff);
 		fp.read_fmt("Tc","%le",&Tc);
 		fp.read_fmt("pc","%le",&pc);
 		fp.read_fmt("opa.name","%s",opa.name);
 		fp.read_fmt("eos.name","%s",eos.name);
 		fp.read_fmt("nuc.name","%s",nuc.name);
-		fp.read_fmt("atm_name","%s",atm_name);
+		if(!fp.read_fmt("atm.name","%s",atm.name)) strcpy(atm.name,"simple");
 		if(!fp.read_fmt("Omega","%le",&Omega)) Omega=0;
 		if(!fp.read_fmt("Omega_bk","%le",&Omega_bk)) Omega_bk=0;
 		if(!fp.read_fmt("Ekman","%le",&Ekman)) Ekman=0;
 		if(!fp.read_fmt("core_convec","%d",&core_convec)) core_convec=1;
+		if(!fp.read_fmt("env_convec","%d",&env_convec)) env_convec=1;
 		if(!fp.read_fmt("min_core_size","%le",&min_core_size)) min_core_size=0.01;
 		if(!fp.read_fmt("version","%s",version)) strcpy(version,"0");
 	}
@@ -237,7 +260,7 @@ int star2d::read(const char *input_file){
 }
 
 void star2d::write_tag(OUTFILE *fp,char mode) const {
-
+DEBUG_FUNCNAME
 	char tag[7]="star2d";
 	
 	if(mode=='b') fp->write("tag",tag,7);
@@ -246,14 +269,14 @@ void star2d::write_tag(OUTFILE *fp,char mode) const {
 }
 
 int star2d::check_tag(const char *tag) const {
-
+DEBUG_FUNCNAME
 	if(strcmp(tag,"star2d")) return 0;
 	return 1;
 
 }
 
 int star2d::read_old(const char *input_file){
-
+DEBUG_FUNCNAME
 	FILE *fp,*fp2;
 	char tag[7],mode,*c;
 	int ndom,i;
@@ -307,7 +330,7 @@ int star2d::read_old(const char *input_file){
 		c=nuc.name;
 		*c=fgetc(fp);
 		while(*(c++)!='\0') *c=fgetc(fp);
-		c=atm_name;
+		c=atm.name;
 		*c=fgetc(fp);
 		while(*(c++)!='\0') *c=fgetc(fp);
 	} else {
@@ -326,7 +349,7 @@ int star2d::read_old(const char *input_file){
 		fscanf(fp,"%s\n",opa.name);
 		fscanf(fp,"%s\n",eos.name);
 		fscanf(fp,"%s\n",nuc.name);
-		fscanf(fp,"%s\n",atm_name);
+		fscanf(fp,"%s\n",atm.name);
 	}
 	map.init();
 	map.R.read(ndomains,nth,fp,mode);
@@ -345,8 +368,14 @@ int star2d::read_old(const char *input_file){
 		fscanf(fp,"%le\n",&Ekman);
 	}
 	core_convec=1;
+	env_convec=1;
 	min_core_size=0.01;
 	strcpy(version,"0");
+	domain_type.resize(ndomains);
+	for(int n=0;n<ndomains;n++) {
+		if(n<conv) domain_type[n]=CORE;
+		else domain_type[n]=RADIATIVE;
+	}
 	fclose(fp);
 	fill();
 	return 1;
@@ -354,7 +383,7 @@ int star2d::read_old(const char *input_file){
 }
 
 int star2d::init(const char *input_file,const char *param_file,int argc,char *argv[]) {
-
+DEBUG_FUNCNAME
 	cmdline_parser cmd;
 	file_parser fp;
 	char *arg,*val,default_params[256];
@@ -476,6 +505,8 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 		w=zeros(nr,nth);
 		G=zeros(nr,nth);
 		conv=0;
+		domain_type.resize(ndomains);
+		for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
 	}
 	fill();
 	return 1;
@@ -483,7 +514,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 }
 
 void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
-
+DEBUG_FUNCNAME
 	matrix thd;
 	char *arg,*val,default_params[256];
 	int k;
@@ -522,11 +553,13 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 	
 	surff=A.surff;
 	conv=A.conv;
+	domain_type=A.domain_type;
 	strcpy(opa.name,A.opa.name);
 	strcpy(eos.name,A.eos.name);
 	strcpy(nuc.name,A.nuc.name);
-	strcpy(atm_name,A.atm_name);
+	strcpy(atm.name,A.atm.name);
 	core_convec=A.core_convec;
+	env_convec=A.env_convec;
 	min_core_size=A.min_core_size;
 	Tc=A.Tc;pc=A.pc;
 	R=A.R;M=A.M;
@@ -540,7 +573,7 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 }
 
 void star2d::interp(mapping_redist *red) {
-
+DEBUG_FUNCNAME
 	p=red->interp(p);
 	phi=red->interp(phi);
 	T=red->interp(T);
@@ -552,7 +585,7 @@ void star2d::interp(mapping_redist *red) {
 }
 
 int star2d::check_arg(char *arg,char *val,int *change_grid) {
-
+DEBUG_FUNCNAME
 	int err=0,i;
 	char *tok;
 
@@ -645,7 +678,7 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
 	}
 	else if(!strcmp(arg,"atm")) {
 		if(val==NULL) return 2;
-		strcpy(atm_name,val);
+		strcpy(atm.name,val);
 	}
 	else if(!strcmp(arg,"Ekman")) {
 		if(val==NULL) return 2;
@@ -654,6 +687,10 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
 	else if(!strcmp(arg,"core_convec")) {
 		if(val==NULL) return 2;
 		core_convec=atoi(val);
+	}
+	else if(!strcmp(arg,"env_convec")) {
+		if(val==NULL) return 2;
+		env_convec=atoi(val);
 	}
 	else if(!strcmp(arg,"min_core_size")) {
 		if(val==NULL) return 2;
@@ -666,7 +703,7 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
 }
 
 void star2d::dump_info() {
-
+DEBUG_FUNCNAME
 	printf("\n2d ESTER model file  (Version %s)\n\n",version);
 	
 	printf("General parameters:\n\n");
@@ -735,10 +772,11 @@ void star2d::dump_info() {
 	printf("\tOpacity = %s\n",opa.name);
 	printf("\tEquation of state = %s\n",eos.name);
 	printf("\tNuclear reactions = %s\n",nuc.name);
-	printf("\tAtmosphere = %s\n",atm_name);
+	printf("\tAtmosphere = %s\n",atm.name);
 	printf("\tsurff = %e\n",surff);
 	printf("\tcore_convec = %d\n",core_convec);
 	printf("\tmin_core_size = %e\n",min_core_size);
+	printf("\tenv_convec = %d\n",env_convec);
 	printf("\n");
 	
 	printf("Tests:\n\n");

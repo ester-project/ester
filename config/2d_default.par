@@ -1,7 +1,7 @@
 #Default parameters for star2d
 
-ndomains=8
-npts=30,30,30,30,30,30,30,30
+ndomains=32
+npts=15
 nth=24
 nex=30
 
@@ -25,5 +25,7 @@ Omega_bk=0
 Ekman=1
 
 core_convec=1			# Deactivate core convection with core_convec=0
-min_core_size=0.01		# Minimum size of convective core (in fraction of polar radius)
+min_core_size=0.03		# Minimum size of convective core (in fraction of polar radius)
+env_convec=0
+
 

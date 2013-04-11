@@ -10,7 +10,7 @@ star1d::~star1d() {
 star1d::star1d(const star1d &A) : star2d(A) {}
 
 star1d &star1d::operator=(const star1d &A) {
-
+DEBUG_FUNCNAME
 	star2d::operator=(A);
 	
 	return *this;
@@ -18,7 +18,7 @@ star1d &star1d::operator=(const star1d &A) {
 }
 
 void star1d::write_tag(OUTFILE *fp,char mode) const {
-
+DEBUG_FUNCNAME
 	char tag[7]="star1d";
 	
 	if(mode=='b') fp->write("tag",tag,7);
@@ -27,14 +27,14 @@ void star1d::write_tag(OUTFILE *fp,char mode) const {
 }
 
 int star1d::check_tag(const char *tag) const {
-
+DEBUG_FUNCNAME
 	if(strcmp(tag,"star1d")) return 0;
 	return 1;
 
 }
 
 int star1d::read_old(const char *input_file){
-
+DEBUG_FUNCNAME
 	FILE *fp;
 	char tag[7],mode,*c;
 	int ndom,i;
@@ -81,7 +81,7 @@ int star1d::read_old(const char *input_file){
 		c=nuc.name;
 		*c=fgetc(fp);
 		while(*(c++)!='\0') *c=fgetc(fp);
-		c=atm_name;
+		c=atm.name;
 		*c=fgetc(fp);
 		while(*(c++)!='\0') *c=fgetc(fp);
 	} else {
@@ -95,7 +95,7 @@ int star1d::read_old(const char *input_file){
 		fscanf(fp,"%s\n",opa.name);
 		fscanf(fp,"%s\n",eos.name);
 		fscanf(fp,"%s\n",nuc.name);
-		fscanf(fp,"%s\n",atm_name);
+		fscanf(fp,"%s\n",atm.name);
 	}
 	map.leg.npts=1;
 	map.init();
@@ -105,9 +105,15 @@ int star1d::read_old(const char *input_file){
 	T.read(nr,1,fp,mode);
 	
 	core_convec=1;
+	env_convec=0;
 	min_core_size=0.01;
 	strcpy(version,"0");
-		
+	domain_type.resize(ndomains);
+	for(int n=0;n<ndomains;n++) {
+		if(n<conv) domain_type[n]=CORE;
+		else domain_type[n]=RADIATIVE;
+	}
+	
 	fclose(fp);
 	fill();
 	return 1;
@@ -115,7 +121,7 @@ int star1d::read_old(const char *input_file){
 }
 
 int star1d::init(const char *input_file,const char *param_file,int argc,char *argv[]) {
-
+DEBUG_FUNCNAME
 	cmdline_parser cmd;
 	file_parser fp;
 	char *arg,*val,default_params[256];
@@ -215,6 +221,8 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		G=0*T;
 		w=0*T;
 		conv=0;
+		domain_type.resize(ndomains);
+		for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
 		phiex=zeros(map.nex,map.nth);
 	}
 	
@@ -225,7 +233,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 }
 
 int star1d::check_arg(char *arg,char *val,int *change_grid) {
-
+DEBUG_FUNCNAME
 	if(!strcmp(arg,"nth")) {
 		return 1;
 	} else if(!strcmp(arg,"nex")) {
@@ -240,7 +248,7 @@ int star1d::check_arg(char *arg,char *val,int *change_grid) {
 }
 
 void star1d::dump_info() {
-
+DEBUG_FUNCNAME
 	printf("\n1d ESTER model file  (Version %s)\n\n",version);
 	
 	printf("General parameters:\n\n");
@@ -287,9 +295,10 @@ void star1d::dump_info() {
 	printf("\tOpacity = %s\n",opa.name);
 	printf("\tEquation of state = %s\n",eos.name);
 	printf("\tNuclear reactions = %s\n",nuc.name);
-	printf("\tAtmosphere = %s\n",atm_name);
+	printf("\tAtmosphere = %s\n",atm.name);
 	printf("\tsurff = %e\n",surff);
 	printf("\tcore_convec = %d\n",core_convec);
+	printf("\tenv_convec = %d\n",core_convec);
 	printf("\tmin_core_size = %e\n",min_core_size);
 	printf("\n");
 	

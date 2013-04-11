@@ -1471,7 +1471,18 @@ void solver::add(int iblock,const char *eqn, const char *varn,const char *block_
 		exit(1);
 	}
 	
-	bb[iblock].add(ieq,ivar,type,d,l,r,i);	
+	matrix *ll,L;
+	ll=NULL;
+	if(type=='l'||type=='f'||type=='m'||type=='g') {
+		L=*l;
+		ll=&L;
+		if((!strcmp(block_type,"bc_bot1"))||(!strcmp(block_type,"bc_bot2"))
+			||(!strcmp(block_type,"bc_top1"))||(!strcmp(block_type,"bc_top2"))) {	
+			if(l->nrows()==1||d->nrows()>1) L=L*ones(d->nrows(),1);
+		}
+	}
+	
+	bb[iblock].add(ieq,ivar,type,d,ll,r,i);	
 
 }
 

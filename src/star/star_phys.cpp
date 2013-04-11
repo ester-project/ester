@@ -1,60 +1,65 @@
 #include"star.h"
 #include<string.h>
 #include<stdio.h>
+#include<stdlib.h>
 
-int star2d::opacity() {
+void star2d::opacity() {
 
-	int error=0;
+	int error;
 
-	if(!strcmp(opa.name,"opal")) {
-		error=opa_opal(Xr,Z,Tc*T,rhoc*rho,opa);
-	} else if(!strcmp(opa.name,"houdek")) {
-    	error=opa_houdek(Xr,Z,T*Tc,rho*rhoc,opa);
-	} else if(!strcmp(opa.name,"kramer")) {
-    	error=opa_kramer(T*Tc,rho*rhoc,opa);
-    } else {
-    	printf("Unknown opacity method: %s\n",opa.name);
-    	return 1;
-    }
+	error=opa_calc(Xr,Z,Tc*T,rhoc*rho,opa);
 	
-	return error;
+	if(error) exit(1);
+	
 }
 
-int star2d::nuclear() {
+void star2d::nuclear() {
 
-	int error=0;
+	int error;
+
+	error=nuc_calc(Xr,Z,T*Tc,rho*rhoc,nuc);
 	
-	if(!strcmp(nuc.name,"simple")) {
-		error=nuc_simple(Xr,Z,T*Tc,rho*rhoc,nuc);
-    } else {
-    	printf("Unknown nuc. reac. type: %s\n",nuc.name);
-    	return 1;
-    }
-	
-	return error;
+	if(error) exit(1);
 
 }
 
-int star2d::eq_state() {
+void star2d::eq_state() {
 
 	int error;
 	
-	if(!strcmp(eos.name,"ideal"))
-		error=eos_ideal(Xr,Z,T*Tc,p*pc,rho,eos);
-	else if(!strcmp(eos.name,"ideal+rad"))
-		error=eos_idealrad(Xr,Z,T*Tc,p*pc,rho,eos);
-	else if(!strcmp(eos.name,"opal")) 
-		error=eos_opal(Xr,Z,T*Tc,p*pc,rho,eos);
-	else {
-		printf("Unknown equation of state: %s\n",eos.name);
-    	return 1;
-    }
-	
+	error=eos_calc(Xr,Z,T*Tc,p*pc,rho,eos);	
+
 	rhoc=rho(0);
 	rho=rho/rhoc;
 	
-	return error;
+	if(error) exit(1);
 
 }
+
+void star2d::atmosphere() {
+
+	int error;
+	
+	if(!strcmp(atm.name,"simple")) {
+		ps=surff*gsup()/opa.k.row(-1)/pc;
+		matrix q;
+		q=surff*p.row(-1)/ps;
+		Ts=pow(q,0.25)*Teff()/Tc;
+		return;
+	}
+	
+	
+	error=atm_calc(Xr,Z,gsup(),Teff(),eos.name,opa.name,atm);
+	
+	if(error) exit(1);
+	
+	matrix q;
+	ps=surff*atm.ps/pc;
+	q=surff*p.row(-1)/ps;//q=ones(1,nth);
+	Ts=pow(q,0.25)*atm.Ts/Tc;
+
+}
+
+
 
 

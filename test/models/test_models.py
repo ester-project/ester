@@ -56,39 +56,34 @@ cmd="ester 1d -M 5"
 cmd=cmd+" -p 1d.par -noplot -tol 1e-8 -maxit 100 -o test_model1"
 exec_cmd(cmd)
 cmd="ester output test_model1"
-exec_cmd(cmd,"template_1d","test_out")
-test_result=compare_files("out1","test_out")
-os.remove("test_out")
+exec_cmd(cmd,"template_1d","test_out1")
+test_result=compare_files("out1","test_out1")
 if test_result:
 	print("TEST OK\n")
 else:
 	print("TEST FAILED !!!")
 	sys.exit(1)
-
 
 print("Test model #2:")
 cmd="ester 2d -i test_model1 -Omega_bk 0.5" 
 cmd=cmd+" -p 2d.par -noplot -tol 1e-8 -maxit 100 -o test_model2"
 exec_cmd(cmd)
 cmd="ester output test_model2"
-exec_cmd(cmd,"template_2d","test_out")
-test_result=compare_files("out2","test_out")
-os.remove("test_out")
+exec_cmd(cmd,"template_2d","test_out2")
+test_result=compare_files("out2","test_out2")
 if test_result:
 	print("TEST OK\n")
 else:
 	print("TEST FAILED !!!")
 	sys.exit(1)
 
-
 print("Test model #3:")
 cmd="ester 1d -M 10 -Xc 0.5 -i test_model1 -ndomains 16 -npts 20" 
 cmd=cmd+" -noplot -tol 1e-8 -maxit 100 -o test_model3"
 exec_cmd(cmd)
 cmd="ester output test_model3"
-exec_cmd(cmd,"template_1d","test_out")
-test_result=compare_files("out3","test_out")
-os.remove("test_out")
+exec_cmd(cmd,"template_1d","test_out3")
+test_result=compare_files("out3","test_out3")
 if test_result:
 	print("TEST OK\n")
 else:
@@ -100,9 +95,8 @@ cmd="ester 2d -i test_model3 -Omega_bk 0.3"
 cmd=cmd+" -p 2d.par -noplot -tol 1e-8 -maxit 100 -o test_model4"
 exec_cmd(cmd)
 cmd="ester output test_model4"
-exec_cmd(cmd,"template_2d","test_out")
-test_result=compare_files("out4","test_out")
-os.remove("test_out")
+exec_cmd(cmd,"template_2d","test_out4")
+test_result=compare_files("out4","test_out4")
 if test_result:
 	print("TEST OK\n")
 else:
@@ -113,5 +107,9 @@ os.remove("test_model1")
 os.remove("test_model2")
 os.remove("test_model3")
 os.remove("test_model4")
+os.remove("test_out1")
+os.remove("test_out2")
+os.remove("test_out3")
+os.remove("test_out4")
 
 print("\n---------- All tests OK ---------------\n");
