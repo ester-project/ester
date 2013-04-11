@@ -94,16 +94,13 @@ class star2d {
 	virtual void register_variables(solver *op);
 	
 	virtual void solve_poisson(solver *);
-	virtual void solve_pressure(solver *);
+	virtual void solve_mov(solver *);
 	virtual void solve_temp(solver *);
 	virtual void solve_dim(solver *);
 	virtual void solve_map(solver *);
 	virtual void solve_Omega(solver *);
-	virtual void solve_rot(solver *);
-	virtual void solve_dyn(solver *);
 	virtual void solve_gsup(solver *);
 	virtual void solve_Teff(solver *);
-	virtual void solve_vbl(solver *,const char *eqn,matrix &rhs);
 	virtual void solve_definitions(solver *);
 	virtual void solve_atm(solver *);
 	

@@ -138,7 +138,7 @@ DEBUG_FUNCNAME
 
 	solve_definitions(op);
 	solve_poisson(op);
-	solve_pressure(op);
+	solve_mov(op);
 	solve_temp(op);
 	solve_dim(op);
 	solve_map(op);
@@ -146,8 +146,7 @@ DEBUG_FUNCNAME
 	solve_atm(op);
 	solve_gsup(op);
 	solve_Teff(op);
-	solve_rot(op);
-	solve_dyn(op);
+	
 
 	op->solve(info);
 	
@@ -343,272 +342,176 @@ DEBUG_FUNCNAME
 	op->set_rhs("phi",rhs);
 }
 
-void star2d::solve_pressure(solver *op) {
+void star2d::solve_mov(solver *op) {
 DEBUG_FUNCNAME
-	matrix q,rhs_p,rhs_pi_c;
-	int n,j0;
-	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
-		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
-	char eqn[8];
+	static bool eqinit=false;
+	static symbolic S(5,2);
+	static sym eq_vort,eq_phi,bc,bc_w;
+	static sym_vec eqmov;
+	
+	if(!eqinit) {
+		eqinit=true;
+		sym p,G,w,rho,phi;
+		sym mu;
+		
+		p=S.regvar("p");
+		G=S.regvar("G");
+		w=S.regvar("w");
+		rho=S.regvar("rho");
+		phi=S.regvar("phi");
+		
+		#ifdef KINEMATIC_VISC
+			mu=rho;
+		#else
+			mu=S.one;
+		#endif
+		
+		sym_vec V,phivec(COVARIANT),svec;
+		sym s;
+		phivec(0)=0*S.one;phivec(1)=0*S.one;phivec(2)=S.r*S.sint;
+		s=S.r*S.sint;
+		svec=grad(s);
+		V=curl(G*phivec)/rho;
+		
+		eqmov=grad(p)+rho*grad(phi)-rho*s*w*w*svec;
+		eqmov=covariant(eqmov);
+		
+		eq_vort=(phivec,curl(eqmov/rho));
+		
+		eq_phi=div(rho*s*s*w*V)-div(mu*s*s*grad(w));
+		
+		sym_vec nvec(COVARIANT),tvec(CONTRAVARIANT);
+		
+		nvec(0)=Dz(S.r);nvec(1)=0*S.one;nvec(2)=0*S.one;
+		tvec(0)=0*S.one;tvec(1)=1/S.r;tvec(2)=0*S.one;
+		
+		bc=mu*s*s*(nvec,grad(w))+G*(tvec,grad(s*s*w));
+		
+		bc_w=covariant(eqmov-grad(p))(1);
+	}
+	
+	S.set_value("p",p);
+	S.set_value("G",G,11);
+	S.set_value("w",w);
+	S.set_value("rho",rho);
+	S.set_value("phi",phi);
+	S.set_map(map);
 	
 	op->add_d("p","log_p",p);
-	strcpy(eqn,"log_p");
 	
-	// p	
-	q=ones(nr,nth);
-	op->add_l(eqn,"p",q,D);
+	eqmov(0).add(op,"log_p","p");
+	eqmov(0).add(op,"log_p","w");
+	eqmov(0).add(op,"log_p","rho");
+	eqmov(0).add(op,"log_p","phi");
+	eqmov(0).add(op,"log_p","r");
+	op->set_rhs("log_p",-eqmov(0).eval());
 	
-	// phi
-	q=rho;
-	op->add_l(eqn,"phi",q,D);
-
-	//rho
-	q=(D,phi)-w*w*r*rz*sin(th)*sin(th);
-	op->add_d(eqn,"rho",q);
-
-	//w
-	q=-rho*r*rz*sin(th)*sin(th);
-	op->add_d(eqn,"w",2*w*q);
-
-	// r
-	q=-rho*w*w*rz*sin(th)*sin(th);
-	op->add_d(eqn,"r",q);
-	q=-rho*w*w*r*sin(th)*sin(th);
-	op->add_l(eqn,"r",q,D);
-
-	rhs_p=-(D,p)-rho*(D,phi)+rho*w*w*r*rz*sin(th)*sin(th);
-	rhs_pi_c=zeros(ndomains,1);
-
+	eq_vort.add(op,"w","p");
+	eq_vort.add(op,"w","w");
+	eq_vort.add(op,"w","rho");
+	eq_vort.add(op,"w","r");
+	op->set_rhs("w",-eq_vort.eval());
+	
+	eq_phi.add(op,"G","w");
+	eq_phi.add(op,"G","G");
+	eq_phi.add(op,"G","rho");
+	eq_phi.add(op,"G","r");
+	op->set_rhs("G",-eq_phi.eval());
+	
+	// Boundary conditions
+	
+	matrix rhs;
+	matrix q,TT;
+	int j0;
+	
+	// log_p
+	rhs=op->get_rhs("log_p");
+	op->bc_bot2_add_d(0,"log_p","p",ones(1,nth));
+	rhs.setrow(0,-p.row(0)+1);
+	
+	j0=map.gl.npts[0];
+	for(int n=1;n<ndomains;n++) {
+		op->bc_bot2_add_d(n,"log_p","p",ones(1,nth));
+		op->bc_bot1_add_d(n,"log_p","p",-ones(1,nth));
+		rhs.setrow(j0,-p.row(j0)+p.row(j0-1));	
+		j0+=map.gl.npts[n];
+	}
+	op->set_rhs("log_p",rhs);
+	
+	// w
+	rhs=op->get_rhs("w");
+	op->bc_bot2_add_l(0,"w","w",ones(1,nth),D.block(0).row(0));
+	rhs.setrow(0,-(D,w).row(0));
 	j0=0;
-	for(n=0;n<ndomains;n++) {
-		if(!n) {
-			op->bc_bot2_add_d(n,eqn,"p",ones(1,nth));
-			rhs_p.setrow(0,1-p.row(0));	
-		} else {
-			op->bc_bot2_add_d(n,eqn,"p",ones(1,nth));
-			op->bc_bot1_add_d(n,eqn,"p",-ones(1,nth));
-			rhs_p.setrow(j0,-p.row(j0)+p.row(j0-1));	
-		}
+	for(int n=0;n<ndomains-1;n++) {
+		bc_w.bc_top1_add(op,n,"w","w");
+		bc_w.bc_top1_add(op,n,"w","rho");
+		bc_w.bc_top1_add(op,n,"w","phi");
+		bc_w.bc_top1_add(op,n,"w","r");
+		bc_w.bc_top2_add(op,n,"w","w",-ones(1,nth));
+		bc_w.bc_top2_add(op,n,"w","rho",-ones(1,nth));
+		bc_w.bc_top2_add(op,n,"w","phi",-ones(1,nth));
+		bc_w.bc_top2_add(op,n,"w","r",-ones(1,nth));
+		rhs.setrow(j0+map.gl.npts[n]-1,
+			-bc_w.eval().row(j0+map.gl.npts[n]-1)+bc_w.eval().row(j0+map.gl.npts[n]));
+		
+		j0+=map.gl.npts[n];
+	}
+	
+	q=ones(1,nth);
+	q(0)=0;
+	map.leg.eval_00(th,PI/2*ones(1,nth),TT);
+	bc.bc_top1_add(op,ndomains-1,"w","G",q);
+	bc.bc_top1_add(op,ndomains-1,"w","w",q);
+	bc.bc_top1_add(op,ndomains-1,"w","rho",q);
+	bc.bc_top1_add(op,ndomains-1,"w","r",q);
+	op->bc_top1_add_r(ndomains-1,"w","w",(1-q),TT);
+	op->bc_top1_add_d(ndomains-1,"w","Omega",-(1-q));
+	rhs.setrow(-1,-q*bc.eval().row(-1)-(1-q)*((w.row(-1),TT)-Omega));
+	op->set_rhs("w",rhs);
+	
+	//G
+	rhs=op->get_rhs("G");
+	op->bc_bot2_add_d(0,"G","G",ones(1,nth));
+	rhs.setrow(0,-G.row(0));
+	j0=map.gl.npts[0];
+	for(int n=1;n<ndomains;n++) {
+		op->bc_bot2_add_d(n,"G","G",ones(1,nth));
+		op->bc_bot1_add_d(n,"G","G",-ones(1,nth));
+		rhs.setrow(j0,-G.row(j0)+G.row(j0-1));
+	
+		j0+=map.gl.npts[n];
+	}
+	op->set_rhs("G",rhs);
+	
+	//pi_c
+	rhs=zeros(ndomains,1);
+	j0=0;
+	for(int n=0;n<ndomains;n++) {
 		if(n<ndomains-1) {
 			op->bc_top1_add_d(n,"pi_c","pi_c",ones(1,1));
 			op->bc_top2_add_d(n,"pi_c","pi_c",-ones(1,1));
 		} else {
-			map.leg.eval_00(th,0,q);
-			op->bc_top1_add_r(n,"pi_c","ps",-ones(1,1),q);
-			op->bc_top1_add_r(n,"pi_c","p",ones(1,1),q);
-			rhs_pi_c(ndomains-1)=(ps-p.row(-1),q)(0);
+			map.leg.eval_00(th,0,TT);
+			op->bc_top1_add_r(n,"pi_c","ps",-ones(1,1),TT);
+			op->bc_top1_add_r(n,"pi_c","p",ones(1,1),TT);
+			rhs(ndomains-1)=(ps-p.row(-1),TT)(0);
 		}
 		
 		j0+=map.gl.npts[n];
 	}
-	op->set_rhs(eqn,rhs_p);
-	op->set_rhs("pi_c",rhs_pi_c);
-}
-
-
-void star2d::solve_rot(solver *op) {
-DEBUG_FUNCNAME
-	matrix q,TT,rhs;
-	int n,j0;
-	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
-		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
+	op->set_rhs("pi_c",rhs);
 	
 	if(Omega==0) {
+		op->reset("w");
 		op->add_d("w","w",ones(nr,nth));
 		op->add_d("w","Omega",-ones(nr,nth));
 		op->set_rhs("w",zeros(nr,nth));
-		return;
-	}
-	
-	// w
-	
-	q=(r*cos(th)+rt*sin(th))/rz;
-	op->add_l("w","w",2*w*q,D);
-	q=-sin(th)*ones(nr,nth);
-	op->add_r("w","w",2*w*q,Dt);
-	q=(r*cos(th)+rt*sin(th))/rz*2*(D,w)-sin(th)*2*(w,Dt);
-	op->add_d("w","w",q);
-	
-	// p
-	
-	q=-(rho,Dt)/rho/rho/r/rz/sin(th);
-	op->add_l("w","p",q,D);
-	q=(D,rho)/rho/rho/r/rz/sin(th);
-	op->add_r("w","p",q,Dt);
-
-	//rho
-	q=-2./rho/rho/rho/r/rz/sin(th)*((p,Dt)*(D,rho)-(D,p)*(rho,Dt));
-	op->add_d("w","rho",q);
-	q=1./rho/rho/r/rz/sin(th)*(p,Dt);
-	op->add_l("w","rho",q,D);
-	q=-1./rho/rho/r/rz/sin(th)*(D,p);
-	op->add_r("w","rho",q,Dt);
-	
-	// r
-	q=cos(th)/rz*2*w*(D,w)-1./rho/rho/r/r/rz/sin(th)*((p,Dt)*(D,rho)-(D,p)*(rho,Dt));
-	op->add_d("w","r",q);
-	q=-(r*cos(th)+rt*sin(th))/rz/rz*2*w*(D,w)-1./rho/rho/r/rz/rz/sin(th)*((p,Dt)*(D,rho)-(D,p)*(rho,Dt));
-	op->add_l("w","r",q,D);
-	q=sin(th)/rz*2*w*(D,w);
-	op->add_r("w","r",q,Dt);
-
-	rhs=-(r*cos(th)+rt*sin(th))/rz*2*w*(D,w)+
-			sin(th)*2*w*(w,Dt)-1./rho/rho/r/rz/sin(th)*((p,Dt)*(D,rho)-(D,p)*(rho,Dt));
-	
-	j0=0;
-	for(n=0;n<ndomains;n++) {
-		if(!n) {
-			op->bc_bot2_add_l(n,"w","w",ones(1,nth),D.block(n).row(0));
-			rhs.setrow(0,-(D,w).row(0));
-		}
-		if(n<ndomains-1) {
-			q=-rho*r*sin(th)*(r*cos(th)+rt*sin(th));
-			op->bc_top1_add_d(n,"w","w",2.*(w*q).row(j0+map.gl.npts[n]-1));
-			op->bc_top2_add_d(n,"w","w",-2.*(w*q).row(j0+map.gl.npts[n]));
-			op->bc_top1_add_r(n,"w","phi",rho.row(j0+map.gl.npts[n]-1),Dt);
-			op->bc_top2_add_r(n,"w","phi",-rho.row(j0+map.gl.npts[n]),Dt);
-			q=-2.*rho*w*w*sin(th)*(r*cos(th)+rt*sin(th));
-			op->bc_top1_add_d(n,"w","r",q.row(j0+map.gl.npts[n]-1));
-			op->bc_top2_add_d(n,"w","r",-q.row(j0+map.gl.npts[n]));
-			q=-rho*w*w*r*sin(th)*sin(th);
-			op->bc_top1_add_r(n,"w","r",q.row(j0+map.gl.npts[n]-1),Dt);
-			op->bc_top2_add_r(n,"w","r",-q.row(j0+map.gl.npts[n]),Dt);
-			q=(phi,Dt)-w*w*r*sin(th)*(r*cos(th)+rt*sin(th));
-			op->bc_top1_add_d(n,"w","rho",q.row(j0+map.gl.npts[n]-1));
-			op->bc_top2_add_d(n,"w","rho",-q.row(j0+map.gl.npts[n]));
-			q=rho*(phi,Dt)-rho*w*w*r*sin(th)*(r*cos(th)+rt*sin(th));
-			rhs.setrow(j0+map.gl.npts[n]-1,
-					-q.row(j0+map.gl.npts[n]-1)+q.row(j0+map.gl.npts[n]));
-		}
-		
-		j0+=map.gl.npts[n];
-	}
-	
-	
-	
-	solve_vbl(op,"w",rhs);
-	op->set_rhs("w",rhs);
-}
-
-void star2d::solve_vbl(solver *op,const char *eqn,matrix &rhs) {
-DEBUG_FUNCNAME
-	matrix qeq,TT;
-	int n;
-	int limit_layer=1;
-	
-	if(!limit_layer) {
-		qeq=ones(1,nth); // w constante
-	} else {
-		qeq=zeros(1,nth); //limit layer
-		qeq(0)=1;
-	}
-	n=ndomains-1;
-	
-	#ifdef KINEMATIC_VISC
-	symbolic S(3,1);
-	sym rho_;
-	#else
-	symbolic S(3,1);
-	#endif
-	sym G_,w_,s_;
-	sym_vec n_(COVARIANT),t_(CONTRAVARIANT);
-	
-	S.set_map(map);
-	G_=S.regvar("G");S.set_value("G",G,11);
-	w_=S.regvar("w");S.set_value("w",w);
-	#ifdef KINEMATIC_VISC
-	rho_=S.regvar("rho");S.set_value("rho",rho);
-	#endif
-	n_(0)=Dz(S.r);n_(1)=0*S.one;n_(2)=0*S.one;
-	t_(0)=0*S.one;t_(1)=1/S.r;t_(2)=0*S.one;
-	s_=S.r*S.sint;
-	
-	sym eq;
-	#ifdef KINEMATIC_VISC
-	eq=rho_*s_*s_*(n_,grad(w_))+G_*(t_,grad(s_*s_*w_));	
-	eq.bc_top1_add(op,n,eqn,"rho",1-qeq);
-	#else
-	eq=s_*s_*(n_,grad(w_))+G_*(t_,grad(s_*s_*w_));	
-	#endif
-	eq.bc_top1_add(op,n,eqn,"w",1-qeq);
-	eq.bc_top1_add(op,n,eqn,"G",1-qeq);
-	eq.bc_top1_add(op,n,eqn,"r",1-qeq);
-	
-	rhs.setrow(-1,-(1-qeq)*eq.eval().row(-1));
-
-	if(!limit_layer) {
-		rhs.setrow(-1,-w.row(-1)+Omega);
-		op->bc_top1_add_d(n,eqn,"w",qeq);
-		op->bc_top1_add_d(n,eqn,"Omega",-qeq);
-	} else {
-		map.leg.eval_00(th,PI/2*ones(1,nth),TT);
-		rhs.setrow(-1,rhs.row(-1)+qeq*(-(w.row(-1),TT)(0)+Omega));
-		op->bc_top1_add_r(n,eqn,"w",qeq,TT);
-		op->bc_top1_add_d(n,eqn,"Omega",-qeq);
-	}	
-
-}
-
-void star2d::solve_dyn(solver *op) {
-DEBUG_FUNCNAME
-	if(Omega==0) {
+		op->reset("G");
 		op->add_d("G","G",ones(nr,nth));
 		op->set_rhs("G",zeros(nr,nth));
-		return;
 	}
-
-	symbolic S(3,2);
-	sym rho_,s_,w_,G_;
-	sym_vec v_,Gvec_(CONTRAVARIANT);
-	
-	S.set_map(map);
-	rho_=S.regvar("rho");S.set_value("rho",rho);
-	w_=S.regvar("w");S.set_value("w",w);
-	G_=S.regvar("G");S.set_value("G",G,11);
-	
-	Gvec_(0)=0*S.one;Gvec_(1)=0*S.one;Gvec_(2)=G_/S.r/S.sint;
-	v_=curl(Gvec_)/rho_;
-	s_=S.r*S.sint;
-	
-	sym eq;
-	
-	#ifdef KINEMATIC_VISC
-	eq=div(rho_*s_*s_*w_*v_)-div(rho_*s_*s_*grad(w_));
-	#else
-	eq=div(rho_*s_*s_*w_*v_)-div(s_*s_*grad(w_));
-	#endif
-	
-	matrix rhs;
-	rhs=-eq.eval();
-	
-	eq.add(op,"G","G");
-	eq.add(op,"G","rho");
-	eq.add(op,"G","w");
-	eq.add(op,"G","r");
-
-	int n,j0;
-
-	j0=0;
-	for(n=0;n<ndomains;n++) {
-		if(!n) {
-			op->bc_bot2_add_d(n,"G","G",ones(1,nth));
-			rhs.setrow(0,-G.row(0));
-		} else {
-			op->bc_bot2_add_d(n,"G","G",ones(1,nth));
-			op->bc_bot1_add_d(n,"G","G",-ones(1,nth));
-			rhs.setrow(j0,-G.row(j0)+G.row(j0-1));
-		}
-	
-		j0+=map.gl.npts[n];
-	}
-	
-	
-	op->set_rhs("G",rhs);
-
-	
 }
-
-
 
 void star2d::solve_temp(solver *op) {
 DEBUG_FUNCNAME
