@@ -346,7 +346,7 @@ void star2d::solve_mov(solver *op) {
 DEBUG_FUNCNAME
 	static bool eqinit=false;
 	static symbolic S(5,2);
-	static sym eq_vort,eq_phi,bc,bc_w;
+	static sym eq_vort,eq_phi,bc,ic_w;
 	static sym_vec eqmov;
 	
 	if(!eqinit) {
@@ -387,7 +387,7 @@ DEBUG_FUNCNAME
 		
 		bc=mu*s*s*(nvec,grad(w))+G*(tvec,grad(s*s*w));
 		
-		bc_w=covariant(eqmov-grad(p))(1);
+		ic_w=covariant(eqmov-grad(p))(1);
 	}
 	
 	S.set_value("p",p);
@@ -444,16 +444,16 @@ DEBUG_FUNCNAME
 	rhs.setrow(0,-(D,w).row(0));
 	j0=0;
 	for(int n=0;n<ndomains-1;n++) {
-		bc_w.bc_top1_add(op,n,"w","w");
-		bc_w.bc_top1_add(op,n,"w","rho");
-		bc_w.bc_top1_add(op,n,"w","phi");
-		bc_w.bc_top1_add(op,n,"w","r");
-		bc_w.bc_top2_add(op,n,"w","w",-ones(1,nth));
-		bc_w.bc_top2_add(op,n,"w","rho",-ones(1,nth));
-		bc_w.bc_top2_add(op,n,"w","phi",-ones(1,nth));
-		bc_w.bc_top2_add(op,n,"w","r",-ones(1,nth));
+		ic_w.bc_top1_add(op,n,"w","w");
+		ic_w.bc_top1_add(op,n,"w","rho");
+		ic_w.bc_top1_add(op,n,"w","phi");
+		ic_w.bc_top1_add(op,n,"w","r");
+		ic_w.bc_top2_add(op,n,"w","w",-ones(1,nth));
+		ic_w.bc_top2_add(op,n,"w","rho",-ones(1,nth));
+		ic_w.bc_top2_add(op,n,"w","phi",-ones(1,nth));
+		ic_w.bc_top2_add(op,n,"w","r",-ones(1,nth));
 		rhs.setrow(j0+map.gl.npts[n]-1,
-			-bc_w.eval().row(j0+map.gl.npts[n]-1)+bc_w.eval().row(j0+map.gl.npts[n]));
+			-ic_w.eval().row(j0+map.gl.npts[n]-1)+ic_w.eval().row(j0+map.gl.npts[n]));
 		
 		j0+=map.gl.npts[n];
 	}

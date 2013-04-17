@@ -375,8 +375,8 @@ void mapping::add_lap_ex(solver *op,const char* eqn,const char * varn,const matr
 matrix mapping::stream(const matrix &Fz,matrix &Ft) const {
 
 	// Calculates the stream function of the divergenceless vector field whose
-	// zeta-contravariant coordinate is Fz (for Fz even at pole and equator).
-	// Returns also the theta-contravariant coordinate Ft
+	// zeta-contravariant component is Fz (for Fz even at pole and equator).
+	// Returns also the theta-contravariant component Ft
 	
 	matrix f;
 	

@@ -96,6 +96,7 @@ public:
 	sym_vec operator/(const sym &) const;
 	sym_vec operator/(double) const;
 	friend sym_vec cross(const sym_vec &,const sym_vec &);
+	friend sym_tens tensor(const sym_vec &,const sym_vec &);
 	sym D(const sym &) const;
 	sym_vec D(const sym_vec &) const;
 	bool is_covariant();
@@ -109,6 +110,7 @@ sym_vec operator-(const sym_vec &v);
 sym_vec operator*(const sym &,const sym_vec &);
 sym_vec operator*(double,const sym_vec &);
 sym_vec cross(const sym_vec &,const sym_vec &);
+sym_tens tensor(const sym_vec &,const sym_vec &);
 
 class sym_tens {
 	sym s[3][3];
@@ -127,6 +129,7 @@ public:
 	sym_tens operator+(const sym_tens &) const;
 	sym_tens operator-(const sym_tens &) const;
 	friend sym_tens operator-(const sym_tens &v);
+	friend sym_tens tensor(const sym_vec &,const sym_vec &);
 	sym_tens operator*(const sym &) const;
 	sym_tens operator*(double) const;
 	sym_tens operator/(const sym &) const;

@@ -751,6 +751,20 @@ sym_vec cross(const sym_vec &v1,const sym_vec &v2) {
 
 }
 
+sym_tens tensor(const sym_vec &v1,const sym_vec &v2) {
+
+	sym_tens tnew(v1.type,v2.type);
+
+	tnew.set_context(v1.check_context(v2));
+	for(int i=0;i<3;i++) {
+		for(int j=0;j<3;j++) {
+			tnew(i,j)=v1(i)*v2(j);
+		}
+	}
+	return tnew;
+
+}
+
 sym_tens sym_tens::set_variance(const sym_tens &t) const {
 
 	return set_variance(t.type[0],t.type[1]);
