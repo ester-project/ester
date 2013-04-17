@@ -5,7 +5,7 @@ USE_PGPLOT=1
 CC=icpc
 CCFLAGS=-O2 -ip -fPIC -parallel
 FC=ifort
-FCFLAGS=-O2 -r8 -nowarn -fpp -fPIC
+FCFLAGS=-O2 -r8 -nowarn -fpp -fPIC -extend-source
 LD=icpc
 LDFLAGS=
 

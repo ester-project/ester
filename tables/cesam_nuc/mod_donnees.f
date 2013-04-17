@@ -93,7 +93,7 @@
 	1 nom_ctes, nom_des, nom_diffm, nom_diffw, nom_difft,
 	2 nom_etat, nom_frad, nom_nuc, nom_nuc_cpl, nom_output, nom_pertm,
 	3 nom_pertw, nom_tdetau, nom_thw
-	CHARACTER (len=31), SAVE, PUBLIC :: nom_fich2
+	CHARACTER (len=256), SAVE, PUBLIC :: nom_fich2
 	CHARACTER (len=33), PARAMETER, PUBLIC, DIMENSION(0:5) :: thw=
 	1 (/ 'sans rotation                    ',
 	2    'rotation solide                  ',

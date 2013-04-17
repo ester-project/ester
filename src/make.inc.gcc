@@ -5,7 +5,7 @@ USE_PGPLOT=1
 CC=g++
 CCFLAGS=-O3 -fPIC
 FC=gfortran
-FCFLAGS=-O3 -fPIC -fno-align-commons -fdefault-real-8
+FCFLAGS=-O3 -fPIC -fno-align-commons -fdefault-real-8 -ffixed-line-length-132
 LD=g++
 LDFLAGS=
 

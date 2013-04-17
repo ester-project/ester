@@ -1,84 +1,84 @@
 
-!**************************************************************************
+c**************************************************************************
 
 	SUBROUTINE ppcno9(t,ro,comp,dcomp,jac,deriv,fait,
 	1 epsilon,et,ero,ex,hhe,be7e,b8e,n13e,o15e,f17e)
 
-!	routine private du module mod_nuc
+c	routine private du module mod_nuc
 
-!	CYCLEs PP, CNO 
-!	cf. Clayton p. 380, 392 et 430
+c	CYCLEs PP, CNO 
+c	cf. Clayton p. 380, 392 et 430
 
-!	éléments pris en compte:
-!	H1, He3, He4, C12, C13, N14, N15, O16, O17, Ex
-!	Ex est l'élément fictif complément, il n'intéresse que la diffusion
-!	H2, Li7, Be7 à l'équilibre
+c	éléments pris en compte:
+c	H1, He3, He4, C12, C13, N14, N15, O16, O17, Ex
+c	Ex est l'élément fictif complément, il n'intéresse que la diffusion
+c	H2, Li7, Be7 à l'équilibre
 
-!	au premier appel une table ppcno est crée automatiquement par
-!	rq_reac --> tabul_nuc
+c	au premier appel une table ppcno est crée automatiquement par
+c	rq_reac --> tabul_nuc
 
-!	Auteur: P. Morel, Département J.D. Cassini, O.C.A.
-!	CESAM2k
+c	Auteur: P. Morel, Département J.D. Cassini, O.C.A.
+c	CESAM2k
 
-! entrées :
-!	t : température cgs
-!	ro : densité cgs
-!	deriv=.true. : on calcule le jacobien
-!	fait=1 : initialisation de la composition chimique
-!	    =2 : calcul de dcomp et jacobien si deriv
-!	    =3 : énergie nucléaire et dérivées / t et ro
-!	    =4 : production de neutrinos
+c entrées :
+c	t : température cgs
+c	ro : densité cgs
+c	deriv=.true. : on calcule le jacobien
+c	fait=1 : initialisation de la composition chimique
+c	    =2 : calcul de dcomp et jacobien si deriv
+c	    =3 : énergie nucléaire et dérivées / t et ro
+c	    =4 : production de neutrinos
 
-! entrées/sorties :
-!	comp : abondances par mole
+c entrées/sorties :
+c	comp : abondances par mole
 
-! sorties
-!	dcomp : dérivée temporelle (unité de temps : 10**6 ans)
-!	jac : jacobien (unité de temps : 10**6 ans)
-!	epsilon, et, ero, ex : énergie thermonucléaire (unité de temps : s)
-!			   : et dérivées /t, ro ,X
-!	hhe, be7e, b8e, n13e, o15e, f17e : nombre de neutrinos g/s
-!	hhe réaction : H1(p,e+ nu)H2
-!	be7e réaction : Be7(e-,nu g)Li7
-!	b8e réaction : B8(,e+ nu)Be8
-!	n13e réaction : N13(,e+ nu)C13
-!	o15e réaction : O15(e+,nu)N15 
-!	f17e réaction : F17(,e+ nu)O17
+c sorties
+c	dcomp : dérivée temporelle (unité de temps : 10**6 ans)
+c	jac : jacobien (unité de temps : 10**6 ans)
+c	epsilon, et, ero, ex : énergie thermonucléaire (unité de temps : s)
+c			   : et dérivées /t, ro ,X
+c	hhe, be7e, b8e, n13e, o15e, f17e : nombre de neutrinos g/s
+c	hhe réaction : H1(p,e+ nu)H2
+c	be7e réaction : Be7(e-,nu g)Li7
+c	b8e réaction : B8(,e+ nu)Be8
+c	n13e réaction : N13(,e+ nu)C13
+c	o15e réaction : O15(e+,nu)N15 
+c	f17e réaction : F17(,e+ nu)O17
 
-! initialisation de
-!	ab_min : abondances négligeables
-!	ab_ini : abondances initiales
+c initialisation de
+c	ab_min : abondances négligeables
+c	ab_ini : abondances initiales
 
-!	r(1) : réaction H1(p,e+ nu)H2			PP
-!	r(2) : réaction H2(p,g)H3
-!	r(3) : réaction He3(He3,2p)He4
-!	r(4) : réaction He3(a,g)Be7
-!	r(5) : réaction Li7(p,a)He4
-!	r(6) : réaction Be7(e-,nu g)Li7
-!	r(7) : réaction Be7(p,g)B8(,e+ nu)Be8(a)He4
+c	r(1) : réaction H1(p,e+ nu)H2			PP
+c	r(2) : réaction H2(p,g)H3
+c	r(3) : réaction He3(He3,2p)He4
+c	r(4) : réaction He3(a,g)Be7
+c	r(5) : réaction Li7(p,a)He4
+c	r(6) : réaction Be7(e-,nu g)Li7
+c	r(7) : réaction Be7(p,g)B8(,e+ nu)Be8(a)He4
 
-!	r(8) : réaction C12(p,g)N13(,e+ nu)C13		CNO
-!	r(9) : réaction C13(p,g)N14
-!	r(10) : réaction N14(p,g)O15(e+,nu)N15
-!	r(11) : réaction N15(p,g)O16
-!	r(12) : réaction N15(p,a)C12
-!	r(13) : réaction O16(p,g)F17(,e+ nu)O17
-!	r(14) : réaction O17(p,a)N14
+c	r(8) : réaction C12(p,g)N13(,e+ nu)C13		CNO
+c	r(9) : réaction C13(p,g)N14
+c	r(10) : réaction N14(p,g)O15(e+,nu)N15
+c	r(11) : réaction N15(p,g)O16
+c	r(12) : réaction N15(p,a)C12
+c	r(13) : réaction O16(p,g)F17(,e+ nu)O17
+c	r(14) : réaction O17(p,a)N14
 
-!	indices des éléments
+c	indices des éléments
 
-!	H1 : 1
-!	He3 : 2
-!	He4 : 3
-!	C12 : 4
-!	C13 : 5
-!	N14 : 6
-!	N15 : 7
-!	O16 : 8
-!	O17 : 9
-!	Ex : 10
+c	H1 : 1
+c	He3 : 2
+c	He4 : 3
+c	C12 : 4
+c	C13 : 5
+c	N14 : 6
+c	N15 : 7
+c	O16 : 8
+c	O17 : 9
+c	Ex : 10
 
-!----------------------------------------------------------------------
+c----------------------------------------------------------------------
 
 	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, fmin_abon, ihe4,
 	1 i_ex, langue, nchim, nom_elem, nom_xheavy,
@@ -112,36 +112,36 @@
 	
 	CHARACTER (len=2) :: text
 		
-!--------------------------------------------------------------------------
+c--------------------------------------------------------------------------
 
 2000	FORMAT(8es10.3)
 2001	FORMAT(5es15.8)
 2002	FORMAT(11es8.1)
 	
-! initialisations
+c initialisations
 	SELECT CASE(fait)
 	CASE(0)
 	 
-! définition de nchim: nombre d'éléments chimiques dont on
-! calcule l'abondance H1, He3, He4, C13, C13, N14, N15, O16, O17, Ex
+c définition de nchim: nombre d'éléments chimiques dont on
+c calcule l'abondance H1, He3, He4, C13, C13, N14, N15, O16, O17, Ex
 	 nchim=9+1
 
-! appel d'initialisation pour tabulation des réactions nucléaires
-! allocations fictives
+c appel d'initialisation pour tabulation des réactions nucléaires
+c allocations fictives
 	 ALLOCATE(drx(1,1),dqx(1,1),r(1),drt(1),dro(1),q(1),
 	1 dqt(1),dqo(1),dmuex(1))
 	 CALL rq_reac(comp,1.d7,1.d0,r,drt,dro,drx,q,dqt,dqo,dqx,mue,dmuex) 
-!	 PAUSE'après case0'
+c	 PAUSE'après case0'
 	 
 	 DEALLOCATE(dqx,drx) ; ALLOCATE(dqx(nreac,nchim),drx(nreac,nchim))
 	 
 	CASE(1)
 
-! détermination des abondances initiales, He3+He4=Y0
-! Z0 = somme des éléments plus lourds que helium, dans Z rapports en nombre
+c détermination des abondances initiales, He3+He4=Y0
+c Z0 = somme des éléments plus lourds que helium, dans Z rapports en nombre
 	 CALL abon_ini
 	 
-! Ex : élément fictif moyenne des éléments # CNO
+c Ex : élément fictif moyenne des éléments # CNO
 	 charge_ex=0.d0 ; mass_ex=0.d0 ; sum_a=0.d0
 	 B1: DO i=3,nelem_ini		!à partir de Li=3
 	  IF(elem(i) == ' C')CYCLE B1
@@ -173,10 +173,10 @@
 	1 'et de charge :',i3)
 	 END SELECT
 	 	 
-!	 PRINT*,nchim
-!	 WRITE(*,2000)nucleo(1:nchim) 
+c	 PRINT*,nchim
+c	 WRITE(*,2000)nucleo(1:nchim) 
 	 
-! détermination des abondances initiales, a(équation,élément)
+c détermination des abondances initiales, a(équation,élément)
 	 ALLOCATE(a(nchim,nchim),indpc(nchim),b(1,nchim))
 	 a=0.d0 ; b=0.d0 ; indpc=1	
 		
@@ -204,8 +204,8 @@
 	 a(6,8)=a(6,8)+1.d0	!O16	 		
 	 a(6,9)=a(6,9)+1.d0	!O17
 	
-! rapports isotopiques		
-!	 a(7,1)=1.d0		!H1		
+c rapports isotopiques		
+c	 a(7,1)=1.d0		!H1		
 	 a(7,2)=1.d0		!He3
 	 a(7,3)=-he3she4z	!He3/He4 avec H2 dans He3		
 
@@ -218,10 +218,10 @@
 	 a(10,9)=1.d0		!O17
 	 a(10,8)=-o17so16	!O17/O16
 	
-!	 PRINT*,nchim
-!	 DO i=1,nchim
-!	  WRITE(*,2002)a(i,1:nchim),b(1,i)
-!	 ENDDO
+c	 PRINT*,nchim
+c	 DO i=1,nchim
+c	  WRITE(*,2002)a(i,1:nchim),b(1,i)
+c	 ENDDO
 
 	 CALL gauss_band(a,b,indpc,nchim,nchim,nchim,1,inversible)
 	 IF(.not.inversible)THEN
@@ -230,25 +230,25 @@
 	  STOP
 	 ENDIF
 
-! allocations diverses
+c allocations diverses
 	 DEALLOCATE(drt,dro,r,q,dqt,dqo,dmuex)
 	 ALLOCATE(ab_ini(nchim),ab_min(nchim),drt(nreac),dro(nreac),
 	1 r(nreac),q(nreac),dqt(nreac),dqo(nreac),anuc(nchim),
 	2 dmuex(nchim),dh2x(nchim),denx(nchim),dbe7x(nchim),dli7x(nchim))
 
-! abondances initiales et abondances négligeables	 
+c abondances initiales et abondances négligeables	 
 	 comp(1:nchim)=MAX(1.d-29,b(1,1:nchim))
 	 ab_ini(1:nchim)=comp(1:nchim)*nucleo(1:nchim)
 	 ab_min=ab_ini*fmin_abon	 
 	 
-! nombre/volume des métaux dans Z		
+c nombre/volume des métaux dans Z		
 	 nbz=SUM(comp(ihe4+1:nchim))	 
 	 
-! abondances en DeX, H=12
+c abondances en DeX, H=12
 	 ALLOCATE(comp_dex(nchim))
 	 comp_dex=12.d0+LOG10(comp/comp(1))
 	 
-! écritures
+c écritures
 	 SELECT CASE(langue)	  
 	 CASE('english')	
 	  WRITE(2,1002) ; WRITE(*,1002) 
@@ -349,13 +349,13 @@
 8	  FORMAT(/,'évol. temporelle, test de précision sur H1 et He4')
 	 END SELECT
 
-! définitions diverses
+c définitions diverses
 	 ab_min=ab_min/nucleo ; anuc=ANINT(nucleo)	!nombre atomique
 
-! nettoyage
+c nettoyage
 	 DEALLOCATE(a,b,comp_dex,indpc)
 	 	 
-! les réactions	 	 
+c les réactions	 	 
 	CASE(2)
 	 dcomp=0.d0 ; jac=0.d0
 	
@@ -363,10 +363,10 @@
 	
 	 CALL rq_reac(comp,t,ro,r,drt,dro,drx,q,dqt,dqo,dqx,mue,dmuex)	
 
-!	 WRITE(*,*)'comp' ; WRITE(*,2000)comp(1:nchim)
-!	 WRITE(*,*)'réactions' ; WRITE(*,2000)r(1:nreac)
+c	 WRITE(*,*)'comp' ; WRITE(*,2000)comp(1:nchim)
+c	 WRITE(*,*)'réactions' ; WRITE(*,2000)r(1:nreac)
 
-! équations d'évolution
+c équations d'évolution
 	 dcomp(1)=-(3.d0*r(1)*comp(1)+r(8)*comp(4)+r(9)*comp(5)+r(10)*comp(6)
 	1 +(r(11)+r(12))*comp(7)+r(13)*comp(8)+r(14)*comp(9))*comp(1)
 	2 +(2.d0*r(3)*comp(2)-r(4)*comp(3))*comp(2)			!H1
@@ -380,24 +380,24 @@
 	 dcomp(8)=(r(11)*comp(7)-r(13)*comp(8))*comp(1)			!O16
 	 dcomp(9)=(r(13)*comp(8)-r(14)*comp(9))*comp(1)			!O17
 
-! Pour vérifications SUM dcomp*nucleo=0
-!	 PRINT*,'ppcno9, vérifications SUM dcomp*nucleo=0'
-!	 WRITE(*,2000)DOT_PRODUCT(dcomp,anuc) ; PAUSE'vérif' 
+c Pour vérifications SUM dcomp*nucleo=0
+c	 PRINT*,'ppcno9, vérifications SUM dcomp*nucleo=0'
+c	 WRITE(*,2000)DOT_PRODUCT(dcomp,anuc) ; PAUSE'vérif' 
 
 	 dcomp(10)=-DOT_PRODUCT(dcomp,anuc)/anuc(10) 	!cons. des baryons	
 	 	 
-! calcul du jacobien
+c calcul du jacobien
 	 IF(deriv)THEN	!jac(i,j) : équation, i : élément j
 	
-! équation dcomp(1)
-!	  dcomp(1)=-(3.*r(1)*comp(1)+r(8)*comp(4)+r(9)*comp(5)+r(10)*comp(6)
-!	1 +(r(11)+r(12))*comp(7)+r(13)*comp(8)+r(14)*comp(9))*comp(1)
-!	2 +(2.*r(3)*comp(2)-r(4)*comp(3))*comp(2)			!H1
+c équation dcomp(1)
+c	  dcomp(1)=-(3.*r(1)*comp(1)+r(8)*comp(4)+r(9)*comp(5)+r(10)*comp(6)
+c	1 +(r(11)+r(12))*comp(7)+r(13)*comp(8)+r(14)*comp(9))*comp(1)
+c	2 +(2.*r(3)*comp(2)-r(4)*comp(3))*comp(2)			!H1
 
 	  jac(1,1)=-6.d0*r(1)*comp(1)-r(8)*comp(4)-r(9)*comp(5)
 	1 -r(10)*comp(6)-(r(11)+r(12))*comp(7)-r(13)*comp(8)
 	2 -r(14)*comp(9)				!d /H1
-	  jac(1,2)=4.d0*r(3)*comp(2)-r(4)*comp(3)	!d /He3
+	  jac(1,2)=4.d0*r(3)*comp(2)-r(4)*comp(3)		!d /He3
 	  jac(1,3)=-r(4)*comp(2)			!d /He4
 	  jac(1,4)=-r(8)*comp(1)			!d /C12
 	  jac(1,5)=-r(9)*comp(1)			!d /C13
@@ -415,8 +415,8 @@
 	5  +(2.*drx(3,i)*comp(2)-drx(4,i)*comp(3))*comp(2)
 	  ENDDO
 			 
-! équation dcomp(2)
-!	  dcomp(2)=r(1)*comp(1)**2-(2.*r(3)*comp(2)+r(4)*comp(3))*comp(2)!He3
+c équation dcomp(2)
+c	  dcomp(2)=r(1)*comp(1)**2-(2.*r(3)*comp(2)+r(4)*comp(3))*comp(2)!He3
 
 	  jac(2,1)=2.d0*r(1)*comp(1)			!d /H1
 	  jac(2,2)=-4.d0*r(3)*comp(2)-r(4)*comp(3)	!d /He3
@@ -428,9 +428,9 @@
 	2  +drx(4,i)*comp(3))*comp(2)
 	  ENDDO
 	 
-! équation dcomp(3)
-!	  dcomp(3)=(r(3)*comp(2)+r(4)*comp(3))*comp(2)
-!	1	+(r(12)*comp(7)+r(14)*comp(9))*comp(1)	!He4
+c équation dcomp(3)
+c	  dcomp(3)=(r(3)*comp(2)+r(4)*comp(3))*comp(2)
+c	1	+(r(12)*comp(7)+r(14)*comp(9))*comp(1)	!He4
 
 	  jac(3,1)=r(12)*comp(7)+r(14)*comp(9)		!d /H1
 	  jac(3,2)=2.d0*r(3)*comp(2)+r(4)*comp(3)		!d /He3
@@ -444,8 +444,8 @@
 	2  +(drx(12,i)*comp(7)+drx(14,i)*comp(9))*comp(1)
 	  ENDDO
 	 
-! équation dcomp(4)
-!	  dcomp(4)=(-r(8)*comp(4)+r(12)*comp(7))*comp(1)	!C12
+c équation dcomp(4)
+c	  dcomp(4)=(-r(8)*comp(4)+r(12)*comp(7))*comp(1)	!C12
 
 	  jac(4,1)=-r(8)*comp(4)+r(12)*comp(7)			!d /H1
 	  jac(4,4)=-r(8)*comp(1)				!d /C12
@@ -456,8 +456,8 @@
 	1  +(-drx(8,i)*comp(4)+drx(12,i)*comp(7))*comp(1)
 	  ENDDO
 	 	 
-! équation dcomp(5)
-!	  dcomp(5)=(r(8)*comp(4)-r(9)*comp(5))*comp(1)	!C13
+c équation dcomp(5)
+c	  dcomp(5)=(r(8)*comp(4)-r(9)*comp(5))*comp(1)	!C13
 	
 	  jac(5,1)=r(8)*comp(4)-r(9)*comp(5)		!d /H1
 	  jac(5,4)=r(8)*comp(1)				!d /C12
@@ -467,8 +467,8 @@
 	   jac(5,i)=jac(5,i)+(drx(8,i)*comp(4)-drx(9,i)*comp(5))*comp(1)
 	  ENDDO
 	
-! équation dcomp(6)
-!	  dcomp(6)=(r(9)*comp(5)-r(10)*comp(6)+r(14)*comp(9))*comp(1)	!N14
+c équation dcomp(6)
+c	  dcomp(6)=(r(9)*comp(5)-r(10)*comp(6)+r(14)*comp(9))*comp(1)	!N14
 
 	  jac(6,1)=r(9)*comp(5)-r(10)*comp(6)+r(14)*comp(9)	!d /H1
 	  jac(6,5)=r(9)*comp(1)				!d /C13
@@ -481,8 +481,8 @@
 	2  +drx(14,i)*comp(9))*comp(1)
 	  ENDDO
 	 	 
-! équation dcomp(7)
-!	  dcomp(7)=(r(10)*comp(6)-(r(11)+r(12))*comp(7))*comp(1)	!N15
+c équation dcomp(7)
+c	  dcomp(7)=(r(10)*comp(6)-(r(11)+r(12))*comp(7))*comp(1)	!N15
 	
 	  jac(7,1)=r(10)*comp(6)-(r(11)+r(12))*comp(7)	!d /H1
 	  jac(7,6)=r(10)*comp(1)			            !d /N14
@@ -493,8 +493,8 @@
 	1  +(drx(10,i)*comp(6)-(drx(11,i)+drx(12,i))*comp(7))*comp(1)
 	  ENDDO
 	 	 
-! équation dcomp(8)
-!	  dcomp(8)=(r(11)*comp(7)-r(13)*comp(8))*comp(1)			!O16
+c équation dcomp(8)
+c	  dcomp(8)=(r(11)*comp(7)-r(13)*comp(8))*comp(1)			!O16
 
 	  jac(8,1)=r(11)*comp(7)-r(13)*comp(8)		!d /H1
 	  jac(8,7)=r(11)*comp(1)			!d /N15
@@ -504,8 +504,8 @@
 	   jac(8,i)=jac(8,i)+(drx(11,i)*comp(7)-drx(13,i)*comp(8))*comp(1)
 	  ENDDO
 	 
-! équation dcomp(9)
-!	  dcomp(9)=(r(13)*comp(8)-r(14)*comp(9))*comp(1)			!O17
+c équation dcomp(9)
+c	  dcomp(9)=(r(13)*comp(8)-r(14)*comp(9))*comp(1)			!O17
 
 	  jac(9,1)=r(13)*comp(8)-r(14)*comp(9)		!d /H1
 	  jac(9,8)=r(13)*comp(1)			!d /O16
@@ -515,8 +515,8 @@
 	   jac(9,i)=jac(9,i)+(drx(13,i)*comp(8)-drx(14,i)*comp(9))*comp(1)
 	  ENDDO		 
 
-! équation dcomp(10)	 
-!	  dcomp(10)=-SUM(anuc*dcomp)/anuc(10)!conservation des baryons
+c équation dcomp(10)	 
+c	  dcomp(10)=-SUM(anuc*dcomp)/anuc(10)!conservation des baryons
 
 	  DO j=1,10
 	   DO i=1,9
@@ -525,24 +525,24 @@
 	   jac(10,j)=-jac(10,j)/anuc(10)	   
 	  ENDDO
 
-! unités de temps pour intégration temporelle
+c unités de temps pour intégration temporelle
 	  jac=jac*secon6
 	  
-!	  PAUSE'après case2 deriv'
+c	  PAUSE'après case2 deriv'
 	 ENDIF		!deriv
 
 	 dcomp=dcomp*secon6
 
 	CASE(3)
 
-! calcul de la production d'énergie nucléaire et dérivées
-! pour H2(H,g)He3, q(2)H**2=q(2)*r(1)/r(2)	 
+c calcul de la production d'énergie nucléaire et dérivées
+c pour H2(H,g)He3, q(2)H**2=q(2)*r(1)/r(2)	 
 	 epsilon(1:4)=0.d0 ; et=0.d0 ; ero=0.d0 ; ex=0.d0
 	 IF(t <= t_inf)RETURN
 	
 	 CALL rq_reac(comp,t,ro,r,drt,dro,drx,q,dqt,dqo,dqx,mue,dmuex)
 
-! mue : nombre d'électrons / mole /g = 1/poids mol. moy. par e-
+c mue : nombre d'électrons / mole /g = 1/poids mol. moy. par e-
 	 IF(comp(1) > 0.d0)THEN
 	  h2=r(1)/r(2)*comp(1) ; den=r(6)*mue+r(7)*comp(1)
 	  be7=r(4)*comp(2)*comp(3)/den ; li7=r(6)*be7*mue/r(5)/comp(1)
@@ -550,25 +550,17 @@
 	  h2=0.d0 ; be7=0.d0 ; li7=0.d0
 	 ENDIF
 	
-!	 PRINT*,'h2,li7,be7' ; WRITE(*,2000)h2,li7,be7
+c	 PRINT*,'h2,li7,be7' ; WRITE(*,2000)h2,li7,be7
 
-! énergie PP
+c énergie PP
 	 epsilon(2)=(q(1)*comp(1)+q(2)*h2+q(5)*li7+q(7)*be7)*comp(1)
 	1 +(q(3)*comp(2)+q(4)*comp(3))*comp(2)+q(6)*mue*be7
-         print*,'In ppcno9 q(1)=',q(1)
-         print*,'In ppcno9 q(2)=',q(2)
-         print*,'In ppcno9 q(3)=',q(3)
-         print*,'In ppcno9 q(4)=',q(4)
-         print*,'In ppcno9 q(5)=',q(5)
-         print*,'In ppcno9 q(6)=',q(6)
-         print*,'In ppcno9 q(7)=',q(7)
-         print*,'In ppcno9 eps_ppI=',comp(1)**2*q(1)+q(2)*h2*comp(1)+q(3)*comp(2)**2
-! énergie CNO
+c énergie CNO
 	 epsilon(3)=(q(8)*comp(4)+q(9)*comp(5)+q(10)*comp(6)
 	1 +(q(11)+q(12))*comp(7)+q(13)*comp(8)+q(14)*comp(9))*comp(1)
-! énergie totale
+c énergie totale
 	 epsilon(1)=epsilon(2)+epsilon(3)
-!	 PAUSE'apres case3 avant deriv'
+c	 PAUSE'apres case3 avant deriv'
 	 
 	 IF(deriv)THEN	
 	  IF(h2 > 0.d0)THEN
@@ -645,7 +637,7 @@
 	6  +dqx(10,i)*comp(6)+(dqx(11,i)+dqx(12,i))*comp(7)
 	7  +dqx(13,i)*comp(8)+dqx(14,i)*comp(9))*comp(1)
 	  ENDDO
-!	  PAUSE'apres case3 deriv'
+c	  PAUSE'apres case3 deriv'
 	 
 	 ENDIF	!deriv
 	 
@@ -661,7 +653,7 @@
 	  hhe=0.d0 ; be7e=0.d0 ; b8e=0.d0
 	  n13e=0.d0 ; o15e=0.d0 ; f17e=0.d0
 	 ENDIF
-!	 PAUSE'apres case4'
+c	 PAUSE'apres case4'
 
 	CASE DEFAULT
 	 PRINT*,'ppcno0, fait ne peut prendre que les valeurs 1, 2, 3 ou 4'
