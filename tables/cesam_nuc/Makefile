@@ -1,5 +1,5 @@
 F90 = $(FC)
-FFLAGS90     = -O -c -w -extend-source $(FCFLAGS)
+FFLAGS90     = -O -c -w $(FCFLAGS)
 
 AR           = ar
 RANLIB       = ranlib
