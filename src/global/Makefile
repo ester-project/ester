@@ -1,5 +1,5 @@
 SRC=global.cpp
-SRC_H=constants.h ester.h version.h debug.h
+SRC_H=constants.h ester.h version.h debug.h create_map.h
 DEPS=
 
 LIB=lib$(DIR).a

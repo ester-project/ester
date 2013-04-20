@@ -12,4 +12,9 @@ extern const double M_SUN;
 extern const double R_SUN;
 extern const double L_SUN;
 
+#include <map>
+#include <string>
+
+extern std::map<std::string,double> AMASS;
+
 #endif

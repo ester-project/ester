@@ -66,7 +66,7 @@ else:
 
 print("Test model #2:")
 cmd="ester 2d -i test_model1 -Omega_bk 0.5" 
-cmd=cmd+" -p 2d.par -noplot -tol 1e-8 -maxit 100 -o test_model2"
+cmd=cmd+" -p 2d.par -noplot -tol 1e-8 -maxit 10 -o test_model2"
 exec_cmd(cmd)
 cmd="ester output test_model2"
 exec_cmd(cmd,"template_2d","test_out2")
@@ -92,7 +92,7 @@ else:
 
 print("Test model #4:")
 cmd="ester 2d -i test_model3 -Omega_bk 0.3" 
-cmd=cmd+" -p 2d.par -noplot -tol 1e-8 -maxit 100 -o test_model4"
+cmd=cmd+" -p 2d.par -noplot -tol 1e-8 -maxit 10 -o test_model4"
 exec_cmd(cmd)
 cmd="ester output test_model4"
 exec_cmd(cmd,"template_2d","test_out4")
