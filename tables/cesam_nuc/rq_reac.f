@@ -77,16 +77,16 @@
 	  WRITE(2,4) ; WRITE(*,4)
 4         FORMAT('écrantage de Mitler')
 	 ELSE
-	  WRITE(2,5) ; WRITE(*,5)
+c	  WRITE(2,5) ; WRITE(*,5)
 5         FORMAT('écrantage faible')
 	 ENDIF
 	 	 	 
 !	 WRITE(*,2000)q0 ; PAUSE'les q'
 	 
-	 WRITE(2,1)t_inf ; WRITE(*,1)t_inf
+c	 WRITE(2,1)t_inf ; WRITE(*,1)t_inf
 1	 FORMAT('Température d''amorçage des réactions nucléaires:',
 	1 es10.3)
- 	 WRITE(2,2)t_sup ; WRITE(*,2)t_sup
+c 	 WRITE(2,2)t_sup ; WRITE(*,2)t_sup
 2	 FORMAT('Température maximale pour les réactions nucléaires:',
 	1 es10.3,/)
 	
@@ -315,8 +315,8 @@
 	  drx(i,j)=r(i)/ecran(i)*decrx(i,j)
 	 ENDDO
 	 q(i)=r(i)*q0(i) ; dqt(i)=drt(i)*q0(i) ; dqo(i)=dro(i)*q0(i)
-         if (i ==1) print*,'in rq rho,t',ro,t
-         print*,'in rq i,r,q0,q,ecran',i,r(i),q0(i),q(i),ecran(i)
+c         if (i ==1) print*,'in rq rho,t',ro,t
+c         print*,'in rq i,r,q0,q,ecran',i,r(i),q0(i),q(i),ecran(i)
 	 DO j=1,nchim
 	  dqx(i,j)=drx(i,j)*q0(i)
 	 ENDDO

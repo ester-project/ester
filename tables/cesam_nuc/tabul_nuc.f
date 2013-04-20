@@ -64,10 +64,10 @@
 
 	SELECT CASE (langue)
 	CASE('english')
-	 WRITE(2,1001)nom_nuc ; WRITE(*,1001)nom_nuc
+c	 WRITE(2,1001)nom_nuc ; WRITE(*,1001)nom_nuc
 1001	 FORMAT('Thermonuclear reactions tabulated for : ',a20)	
 	CASE DEFAULT
-	 WRITE(2,1)nom_nuc ; WRITE(*,1)nom_nuc
+c	 WRITE(2,1)nom_nuc ; WRITE(*,1)nom_nuc
 1	 FORMAT('Réactions nucléaires tabulées pour: ',a20)
 	END SELECT 
 	 
@@ -85,10 +85,10 @@
 	CASE ('ppcno9','ppcno9Fe')
 	 SELECT CASE (langue)
 	 CASE('english')
-	  WRITE(2,1003) ; WRITE(*,1003) 
+c	  WRITE(2,1003) ; WRITE(*,1003) 
 1003	  FORMAT('PP+CNO, 9 species, H2, Li7, Be7 at equilibrium',/)
 	 CASE DEFAULT	
-	  WRITE(2,3) ; WRITE(*,3) 
+c	  WRITE(2,3) ; WRITE(*,3) 
 3	  FORMAT('PP+CNO, 9 éléments, H2, Li7, Be7 à l''équilibre',/)
 	 END SELECT
 	 	  
@@ -544,11 +544,11 @@
 	 n_temp=NINT(t_sup*1.d-6)*2
 	 SELECT CASE (langue)
 	 CASE('english')
-	  WRITE(2,1024)n_temp,t_inf,t_sup ; WRITE(*,1024)n_temp,t_inf,t_sup
+c	  WRITE(2,1024)n_temp,t_inf,t_sup ; WRITE(*,1024)n_temp,t_inf,t_sup
 1024	  FORMAT('Number of tabulated  points : ',i5,' from',es10.3,'K to',
 	1 es10.3,'K')
 	 CASE DEFAULT
-	  WRITE(2,24)n_temp,t_inf,t_sup ; WRITE(*,24)n_temp,t_inf,t_sup
+c	  WRITE(2,24)n_temp,t_inf,t_sup ; WRITE(*,24)n_temp,t_inf,t_sup
 24	  FORMAT('Nombre de points de tabulation : ',i5,' de',es10.3,'K à',
 	1 es10.3,'K')
 	 END SELECT
@@ -580,7 +580,7 @@
 	WRITE(2,20) ; WRITE(*,20) ; STOP
 20	FORMAT('Cau-Fow, Adelb, NACRE')	
 	END SELECT
-
+	
 ! initialisations (ti=20.d6) des énergies: q0, masses réduites: ar,
 ! masses des noyaux: nucleo, charges des noyaux: zi
 ! charges des noyaux Z1, Z2 des noyaux de la réaction : izz
@@ -630,27 +630,27 @@
 ! écritures diverses	 
 	SELECT CASE (langue)
 	CASE('english')
-	 WRITE(2,1011) ; WRITE(*,1011)
+c	 WRITE(2,1011) ; WRITE(*,1011)
 1011	 FORMAT(/,'isotopes employed :')
 	CASE DEFAULT
-	 WRITE(2,11) ; WRITE(*,11)
+c	 WRITE(2,11) ; WRITE(*,11)
 11	 FORMAT(/,'isotopes utilisés dans les réactions :')
 	END SELECT	
 	DO i=1,nchim_reac
-	 WRITE(*,15)i,nom_elem(i) ; WRITE(2,15)i,nom_elem(i)
+c	 WRITE(*,15)i,nom_elem(i) ; WRITE(2,15)i,nom_elem(i)
 15	 FORMAT(i3,' : ',a)
 	ENDDO
 
 	SELECT CASE (langue)
 	CASE('english')	
-	 WRITE(2,1012) ; WRITE(*,1012)
+c	 WRITE(2,1012) ; WRITE(*,1012)
 1012	 FORMAT(/,'thermonuclear reactions at work :')
 	CASE DEFAULT	  
-	 WRITE(2,12) ; WRITE(*,12)
+c	 WRITE(2,12) ; WRITE(*,12)
 12	 FORMAT(/,'réactions nucléaires utilisées :')
 	END SELECT	
 	DO i=1,nreac
-	 WRITE(*,15)i,nom_react(nb(i)) ; WRITE(2,15)i,nom_react(nb(i))
+c	 WRITE(*,15)i,nom_react(nb(i)) ; WRITE(2,15)i,nom_react(nb(i))
 	ENDDO	
 		
 	RETURN

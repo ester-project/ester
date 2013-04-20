@@ -17,7 +17,7 @@ c--------------------------------------------------------------------
 	
 	LOGICAL, SAVE, PUBLIC :: no_croiss=.FALSE.
 
-	PUBLIC :: arb_rom, boite, box, bsp1ddn, bsp1dn, bsp_dis, bsp_gal,
+	PUBLIC :: arb_rom, bsp1ddn, bsp1dn, bsp_dis, bsp_gal,
 	1 bvald, bval1, coll, delete_doubles, fermi_dirac,
 	2 gauss_band, intgauss, left_right, linf, matinv, min_max,
 	3 max_local, neville, newton, noedif, noein, noeud, newspl,
@@ -27,9 +27,7 @@ c--------------------------------------------------------------------
 
 c--------------------------------------------------------------------
 
-	INCLUDE 'arb_rom.f'
-	INCLUDE 'boite.f'
-	INCLUDE 'box.f'		
+	INCLUDE 'arb_rom.f'	
 	INCLUDE 'bsp1dn.f'
 	INCLUDE 'bsp1ddn.f'
 	INCLUDE 'bsp_dis.f'

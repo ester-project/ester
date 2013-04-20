@@ -148,10 +148,10 @@
 	CASE('solaire_gn')	!Z/X=2.440E-02, [Fe/H]= 7.5-12, Z= 1.727E-02	
 	 SELECT CASE(langue)
 	 CASE('english')	
-	  WRITE(*,1002) ; WRITE(2,1002)
+c	  WRITE(*,1002) ; WRITE(2,1002)
 1002	  FORMAT('Solar mixture of Grevesse & Noels 93')	
 	 CASE DEFAULT
-	  WRITE(*,2) ; WRITE(2,2)
+c	  WRITE(*,2) ; WRITE(2,2)
 2	  FORMAT('Mixture solaire de Grevesse & Noels 93')
 	 END SELECT
 	 ab(1)=12.00d0 ; ab(2)=10.99d0 ; ab(3)=1.16d0  ; ab(4)=1.15d0  ; ab(5)=2.60d0
@@ -424,14 +424,14 @@
 	ELSE
 	 SELECT CASE(langue)	  
 	 CASE('english')
-	  WRITE(*,1018)x0,y0,z0,z0/x0
-	  WRITE(2,1018)x0,y0,z0,z0/x0
+c	  WRITE(*,1018)x0,y0,z0,z0/x0
+c	  WRITE(2,1018)x0,y0,z0,z0/x0
 1018	  FORMAT(/,'One uses the input data X0:',es10.3,', Y0:',es10.3,
 	1 ', Z0:',es10.3,/,'Z0/X0:',es10.3,
 	2 ' and the ratios metal/Z of the mixture')	
 	 CASE DEFAULT	 
-	  WRITE(*,18)x0,y0,z0,z0/x0
-	  WRITE(2,18)x0,y0,z0,z0/x0
+c	  WRITE(*,18)x0,y0,z0,z0/x0
+c	  WRITE(2,18)x0,y0,z0,z0/x0
 18	  FORMAT(/,'On utilise les données X0:',es10.3,', Y0:',es10.3,
 	1 ', Z0:',es10.3,/,'Z0/X0:',es10.3,
 	2 ' et les rapports métaux/Z de la mixture')
@@ -440,26 +440,26 @@
 		
 	SELECT CASE(langue)	  
 	CASE('english')	
-	 WRITE(*,1020) ; WRITE(2,1020)
+c	 WRITE(*,1020) ; WRITE(2,1020)
 1020	 FORMAT(/,'mixture used')	
 	CASE DEFAULT	 
-	 WRITE(*,20) ; WRITE(2,20)
+c	 WRITE(*,20) ; WRITE(2,20)
 20	 FORMAT(/,'mixture retenue')	
 	END SELECT	 
-	WRITE(*,2000)LOG10(ab) ; WRITE(2,2000)LOG10(ab)
+c	WRITE(*,2000)LOG10(ab) ; WRITE(2,2000)LOG10(ab)
 
 ! abondances(en nombre) des métaux dans Z
 	abon_rela=ab/SUM(ab(3:nelem_ini))
 	SELECT CASE(langue)	  
 	CASE('english')	
-	 WRITE(*,1019) ; WRITE(2,1019)
+c	 WRITE(*,1019) ; WRITE(2,1019)
 1019	 FORMAT(/,'relative abundances(by number) of metals within Z')
 	CASE DEFAULT	 
-	 WRITE(*,19) ; WRITE(2,19)
+c	 WRITE(*,19) ; WRITE(2,19)
 19	 FORMAT(/,'abondances(en nombre) des métaux dans Z')	
 	END SELECT	 
-	WRITE(*,2000)abon_rela(3:nelem_ini)
-	WRITE(2,2000)abon_rela(3:nelem_ini)
+c	WRITE(*,2000)abon_rela(3:nelem_ini)
+c	WRITE(2,2000)abon_rela(3:nelem_ini)
 
 ! produit abondance * masse pour calcul des abondances relatives en masse
 !	et écriture des abondances des métaux dans Z	
@@ -467,14 +467,14 @@
 	abon_relam=abon_m/SUM(abon_m(3:nelem_ini))	
 	SELECT CASE(langue)	  
 	CASE('english')	
-	 WRITE(*,1025) ; WRITE(2,1025)
+c	 WRITE(*,1025) ; WRITE(2,1025)
 1025	 FORMAT(/,'relative abundances(by mass) of metals within Z')
 	CASE DEFAULT	 
-	 WRITE(*,25) ; WRITE(2,25)
+c	 WRITE(*,25) ; WRITE(2,25)
 25	 FORMAT(/,'abondances(en masse) des métaux dans Z')	
 	END SELECT	 
-	WRITE(*,2000)abon_relam(3:nelem_ini) ; WRITE(*,*)
-	WRITE(2,2000)abon_relam(3:nelem_ini) ; WRITE(2,*)
+c	WRITE(*,2000)abon_relam(3:nelem_ini) ; WRITE(*,*)
+c	WRITE(2,2000)abon_relam(3:nelem_ini) ; WRITE(2,*)
 	
 ! définition des rapports isotopiques, recherche d'un fichier de rap.iso.
 	chain=TRIM(nom_fich2)//'.rap_iso'	 
@@ -520,11 +520,11 @@
 	ELSE		!rapports isotopiques d'Anders & Grevesse
 	 SELECT CASE(langue)
 	 CASE('english')
-	  WRITE(*,1006) ; WRITE(2,1006)
+c	  WRITE(*,1006) ; WRITE(2,1006)
 1006	  FORMAT('Isotopic ratios according to Anders & Grevesse',/,
 	1 'but He3/He4 by Gautier & Morel 97')	
 	 CASE DEFAULT
-	  WRITE(*,6) ; WRITE(2,6)
+c	  WRITE(*,6) ; WRITE(2,6)
 6	  FORMAT('Rapports isotopiques suivant Anders & Grevesse',/,
 	1 'sauf He3/He4 de Gautier & Morel 97')
 	 END SELECT	
@@ -542,19 +542,19 @@
 	 mg26smg25=11.01d0/10.00d0     !table 3 de Anders & Grevesse
 	 be7sz=1.d-29    		!Be7 arbitraire	
 	ENDIF
-	WRITE(*,21)h2sh1,he3she4,he3she4z
-	WRITE(2,21)h2sh1,he3she4,he3she4z	
+c	WRITE(*,21)h2sh1,he3she4,he3she4z
+c	WRITE(2,21)h2sh1,he3she4,he3she4z	
 21	FORMAT('H2/H1=',es10.3,', He3/He4(pms)=',es10.3,', He3/He4(Zams)=',
 	1 es10.3)
-	WRITE(*,22)li6sli7,be7sbe9,c13sc12
-	WRITE(2,22)li6sli7,be7sbe9,c13sc12
+c	WRITE(*,22)li6sli7,be7sbe9,c13sc12
+c	WRITE(2,22)li6sli7,be7sbe9,c13sc12
 22	FORMAT('Li6/Li7=',es10.3,', Be7/Be9=',es10.3, ', C13/C12=',es10.3)
-	WRITE(*,23)n15sn14,o17so16,o18so16,ne22sne20
-	WRITE(2,23)n15sn14,o17so16,o18so16,ne22sne20	
+c	WRITE(*,23)n15sn14,o17so16,o18so16,ne22sne20
+c	WRITE(2,23)n15sn14,o17so16,o18so16,ne22sne20	
 23	FORMAT('N15/N14=',es10.3,', O17/O16=',es10.3,', O18/O16=',es10.3,
 	1 ', Ne22/Ne20=',es10.3)
-	WRITE(*,24)mg25smg24,mg26smg25,be7sz
-	WRITE(2,24)mg25smg24,mg26smg25,be7sz	
+c	WRITE(*,24)mg25smg24,mg26smg25,be7sz
+c	WRITE(2,24)mg25smg24,mg26smg25,be7sz	
 24	FORMAT('Mg25/Mg24=',es10.3,', Mg26/Mg25=',es10.3,', Be7/Z=',
 	1 es10.3,/)	
 		

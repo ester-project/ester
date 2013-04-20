@@ -906,10 +906,10 @@ c	 ENDDO
 
 	 SELECT CASE(langue)
 	 CASE('english')
-	  WRITE(*,1005) ; WRITE(2,1005)
+c	  WRITE(*,1005) ; WRITE(2,1005)
 1005	  FORMAT('thermonuclear reactions of the compilation :') 	
 	 CASE DEFAULT
-	  WRITE(*,5) ; WRITE(2,5)
+c	  WRITE(*,5) ; WRITE(2,5)
 5	  FORMAT('réactions thermonucléaires de la compilation :')	 
 	 END SELECT	 
 	 SELECT CASE (total)
@@ -920,7 +920,7 @@ c	 ENDDO
 	  WRITE(*,2) ; WRITE(2,2)
 2	  FORMAT('Aldeberger et al. 1997')
 	 CASE(2)
-	  WRITE(*,3) ; WRITE(2,3)
+c	  WRITE(*,3) ; WRITE(2,3)
 3	  FORMAT('NACRE')
 	 CASE DEFAULT
 	  PRINT*,'total ne peut prendre que les valeurs 0, 1, 2 et non:',

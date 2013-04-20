@@ -3,8 +3,9 @@ include make.inc
 
 UNAME:=$(shell uname -s)
 
-LDFLAGS:=$(LDFLAGS) -L$(ESTER_ROOT)/tables/houdek/v9/lib
-LIBS:=-lopint $(LIBS) 
+FCFLAGS:=$(FCFLAGS) -I$(ESTER_ROOT)/tables/cesam_nuc
+LDFLAGS:=$(LDFLAGS) -L$(ESTER_ROOT)/tables/houdek/v9/lib -L$(ESTER_ROOT)/tables/cesam_nuc
+LIBS:=-lopint -lnuc $(LIBS) 
 
 VARS=-DCBLAS=\<$(BLAS_H)\> -DLAPACK=\<$(LAPACK_H)\> -DESTER_ROOT=\"$(ESTER_ROOT)\"
 ifeq ($(USE_PGPLOT),1) 

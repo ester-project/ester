@@ -3,7 +3,7 @@ SRC=eos_ideal.cpp eos_idealrad.cpp eos_opal.cpp \
 	opa_houdek.cpp opa_kramer.cpp opa_opal.cpp \
 	atm_onelayer.cpp \
 	physics.cpp
-SRC_F=EOS5_xtrin.F xztrin21.F ZFS_interp_EOS5.F
+SRC_F=EOS5_xtrin.F xztrin21.F ZFS_interp_EOS5.F nuc_cesam_for.F
 SRC_H=physics.h
 DEPS=constants.h matrix.h numdiff.h
 

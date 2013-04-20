@@ -162,13 +162,13 @@ c Ex : élément fictif moyenne des éléments # CNO
 	 i_ex=nchim 	!indice de l'élément chimique reliquat	 
 	 SELECT CASE(langue)	  
 	 CASE('english')	
-	  WRITE(*,1023)TRIM(nom_elem(nchim)),NINT(mass_ex),NINT(charge_ex)
-	  WRITE(2,1023)TRIM(nom_elem(nchim)),NINT(mass_ex),NINT(charge_ex)	 
+c	  WRITE(*,1023)TRIM(nom_elem(nchim)),NINT(mass_ex),NINT(charge_ex)
+c	  WRITE(2,1023)TRIM(nom_elem(nchim)),NINT(mass_ex),NINT(charge_ex)	 
 1023	  FORMAT(a,': fictitious species /= CNO, of mass : ',i3,/,
 	1 'and charge :',i3)	 
 	 CASE DEFAULT	 
-	  WRITE(*,23)TRIM(nom_elem(nchim)),NINT(mass_ex),NINT(charge_ex)
-	  WRITE(2,23)TRIM(nom_elem(nchim)),NINT(mass_ex),NINT(charge_ex)	 
+c	  WRITE(*,23)TRIM(nom_elem(nchim)),NINT(mass_ex),NINT(charge_ex)
+c	  WRITE(2,23)TRIM(nom_elem(nchim)),NINT(mass_ex),NINT(charge_ex)	 
 23	  FORMAT(a,': élément fictif /= CNO, de masse : ',i3,/,
 	1 'et de charge :',i3)
 	 END SELECT
@@ -251,101 +251,101 @@ c abondances en DeX, H=12
 c écritures
 	 SELECT CASE(langue)	  
 	 CASE('english')	
-	  WRITE(2,1002) ; WRITE(*,1002) 
+c	  WRITE(2,1002) ; WRITE(*,1002) 
 1002	  FORMAT(/,'PP + CNO thermonuclear reactions',/)
-	  WRITE(2,1003)nreac ; WRITE(*,1003)nreac 
+c	  WRITE(2,1003)nreac ; WRITE(*,1003)nreac 
 1003	  FORMAT('number of reaction : ',i3)
-	  WRITE(2,1004)nchim ; WRITE(*,1004)nchim
+c	  WRITE(2,1004)nchim ; WRITE(*,1004)nchim
 1004	  FORMAT('number of species : ',i3)
-	  WRITE(2,1020)x0,y0,z0,z0/x0 ; WRITE(*,1020)x0,y0,z0,z0/x0
+c	  WRITE(2,1020)x0,y0,z0,z0/x0 ; WRITE(*,1020)x0,y0,z0,z0/x0
 1020	  FORMAT(/,'Initial abundances/mass computed with :',/,
 	1 'X0=',es10.3,', Y0=',es10.3,', Z0=',es10.3,/,'Z0/X0=',es10.3,/,
 	2 'H1=X0, H2+He3+He4=Y0, with H2 in He3',/,
 	3 'Z0 = 1-X0-Y0 = C12+C13+N14+N15+O16+O17+Ex',/)	
-	  WRITE(2,1)ab_ini(1:nchim) ; WRITE(*,1)ab_ini(1:nchim)
+c	  WRITE(2,1)ab_ini(1:nchim) ; WRITE(*,1)ab_ini(1:nchim)
 1	  FORMAT('H1 :',es10.3,', He3 :',es10.3,', He4 :',es10.3,
 	1 ', C12 :',es10.3,', C13 :',es10.3,/,'N14 :',es10.3,
 	2 ', N15 :',es10.3,', O16 :',es10.3,', O17 :',es10.3,
 	3 ', Ex :',es10.3)
-	  WRITE(2,1009)comp_dex ; WRITE(*,1009)comp_dex
+c	  WRITE(2,1009)comp_dex ; WRITE(*,1009)comp_dex
 1009	  FORMAT(/,'Initial abundances/number: 12+Log10(Ni/Nh)',/,
 	1 'H1:',es10.3,', He3:',es10.3,', He4:',es10.3,
 	2 ', C12:',es10.3,', C13:',es10.3,/,'N14:',es10.3,
 	3 ', N15 :',es10.3,', O16 :',es10.3,', O17 :',es10.3,
 	4 ', Ex :',es10.3)
-	  WRITE(2,1021)(comp(4)+comp(5))/nbz,(comp(6)+comp(7))/nbz,
-	1 (comp(8)+comp(9))/nbz,comp(10)/nbz
-	  WRITE(*,1021)(comp(4)+comp(5))/nbz,(comp(6)+comp(7))/nbz,
-	1 (comp(8)+comp(9))/nbz,comp(10)/nbz
+c	  WRITE(2,1021)(comp(4)+comp(5))/nbz,(comp(6)+comp(7))/nbz,
+c	1 (comp(8)+comp(9))/nbz,comp(10)/nbz
+c	  WRITE(*,1021)(comp(4)+comp(5))/nbz,(comp(6)+comp(7))/nbz,
+c	1 (comp(8)+comp(9))/nbz,comp(10)/nbz
 1021	  FORMAT(/,'mass ratio by number within Z :',/,'C/Z :',es10.3,
 	1 ', N/Z :',es10.3,', O/Z :',es10.3,', Ex/Z :',es10.3)	
-	  WRITE(2,1022)(ab_ini(4)+ab_ini(5))/z0,(ab_ini(6)+ab_ini(7))/z0,
-	1 (ab_ini(8)+ab_ini(9))/z0,ab_ini(10)/z0
-	  WRITE(*,1022)(ab_ini(4)+ab_ini(5))/z0,(ab_ini(6)+ab_ini(7))/z0,
-	1 (ab_ini(8)+ab_ini(9))/z0,ab_ini(10)/z0
+c	  WRITE(2,1022)(ab_ini(4)+ab_ini(5))/z0,(ab_ini(6)+ab_ini(7))/z0,
+c	1 (ab_ini(8)+ab_ini(9))/z0,ab_ini(10)/z0
+c	  WRITE(*,1022)(ab_ini(4)+ab_ini(5))/z0,(ab_ini(6)+ab_ini(7))/z0,
+c	1 (ab_ini(8)+ab_ini(9))/z0,ab_ini(10)/z0
 1022	  FORMAT(/,'mass ratio by mass within Z :',/,'C/Z :',es10.3,
 	1 ', N/Z :',es10.3,', O/Z :',es10.3,', Ex/Z :',es10.3)	
-	  WRITE(2,1014)he3she4z,c13sc12,n15sn14,o17so16
-	  WRITE(*,1014)he3she4z,c13sc12,n15sn14,o17so16
+c	  WRITE(2,1014)he3she4z,c13sc12,n15sn14,o17so16
+c	  WRITE(*,1014)he3she4z,c13sc12,n15sn14,o17so16
 1014	  FORMAT(/,'Isotopic ratios by nomber :',/,
 	1 'He3/He4=',es10.3,', C13/C12=',es10.3,
 	2 ', N15/N14=',es10.3,', O17/O16=',es10.3)	
-	  WRITE(2,1005)ab_min(1:nchim) ; WRITE(*,1005)ab_min(1:nchim)
+c	  WRITE(2,1005)ab_min(1:nchim) ; WRITE(*,1005)ab_min(1:nchim)
 1005	  FORMAT(/,'threhold for neglectable abundances/mass :',/,
 	1 'H1:',es10.3,', He3:',es10.3,', He4:',es10.3,
 	2 ', C12:',es10.3,', C13:',es10.3,/,'N14:',es10.3,
 	3 ', N15:',es10.3,', O16:',es10.3,', O17:',es10.3,', Ex:',es10.3)
-	  WRITE(2,1006) ; WRITE(*,1006)
+c	  WRITE(2,1006) ; WRITE(*,1006)
 1006	  FORMAT(/,'H2, Li7, Be7 at equilibrium')
-	  WRITE(2,1007) ; WRITE(*,1007)
+c	  WRITE(2,1007) ; WRITE(*,1007)
 1007	  FORMAT('Use of a table')
-	  WRITE(2,1008) ; WRITE(*,1008)
+c	  WRITE(2,1008) ; WRITE(*,1008)
 1008	  FORMAT('Temporal evolution, test of precision on H1 He4')
 	 CASE DEFAULT
-	  WRITE(2,2) ; WRITE(*,2) 
+c	  WRITE(2,2) ; WRITE(*,2) 
 2	  FORMAT(/,'Réactions thermonucléaires des cycles PP, CNO',/)
-	  WRITE(2,3)nreac ; WRITE(*,3)nreac 
+c	  WRITE(2,3)nreac ; WRITE(*,3)nreac 
 3	  FORMAT('nombre de réactions : ',i3)
-	  WRITE(2,4)nchim ; WRITE(*,4)nchim
+c	  WRITE(2,4)nchim ; WRITE(*,4)nchim
 4	  FORMAT('nombre d''éléments chimiques : ',i3)
-	  WRITE(2,20)x0,y0,z0,z0/x0 ; WRITE(*,20)x0,y0,z0,z0/x0
+c	  WRITE(2,20)x0,y0,z0,z0/x0 ; WRITE(*,20)x0,y0,z0,z0/x0
 20	  FORMAT(/,'abondances initiales/gramme déduites de:',/,
 	1 'X0=',es10.3,', Y0=',es10.3,', Z0=',es10.3,/,'Z0/X0=',es10.3,/,
 	2 'H1=X0, H2+He3+He4=Y0, avec H2 dans He3',/,
 	3 'Z0 = 1-X0-Y0 = C12+C13+N14+N15+O16+O17+Ex',/)	
-	  WRITE(2,1)ab_ini(1:nchim) ; WRITE(*,1)ab_ini(1:nchim)
-	  WRITE(2,9)comp_dex ; WRITE(*,9)comp_dex
+c	  WRITE(2,1)ab_ini(1:nchim) ; WRITE(*,1)ab_ini(1:nchim)
+c	  WRITE(2,9)comp_dex ; WRITE(*,9)comp_dex
 9	  FORMAT(/,'Abondances initiales en nombre: 12+Log10(Ni/Nh)',/,
 	1 'H1:',es10.3,', He3:',es10.3,', He4:',es10.3,
 	2 ', C12:',es10.3,', C13:',es10.3,/,'N14:',es10.3,
 	3 ', N15:',es10.3,', O16:',es10.3,', O17:',es10.3,', Ex:',es10.3)
-	  WRITE(2,21)(comp(4)+comp(5))/nbz,(comp(6)+comp(7))/nbz,
-	1 (comp(8)+comp(9))/nbz,comp(10)/nbz
-	  WRITE(*,21)(comp(4)+comp(5))/nbz,(comp(6)+comp(7))/nbz,
-	1 (comp(8)+comp(9))/nbz,comp(10)/nbz
+c	  WRITE(2,21)(comp(4)+comp(5))/nbz,(comp(6)+comp(7))/nbz,
+c	1 (comp(8)+comp(9))/nbz,comp(10)/nbz
+c	  WRITE(*,21)(comp(4)+comp(5))/nbz,(comp(6)+comp(7))/nbz,
+c	1 (comp(8)+comp(9))/nbz,comp(10)/nbz
 21	  FORMAT(/,'rapports en nombre dans Z:',/,'C/Z:',es10.3,', N/Z:',
 	1 es10.3,', O/Z:',es10.3,', Ex/Z:',es10.3)	
-	  WRITE(2,22)(ab_ini(4)+ab_ini(5))/z0,(ab_ini(6)+ab_ini(7))/z0,
-	1 (ab_ini(8)+ab_ini(9))/z0,ab_ini(10)/z0
-	  WRITE(*,22)(ab_ini(4)+ab_ini(5))/z0,(ab_ini(6)+ab_ini(7))/z0,
-	1 (ab_ini(8)+ab_ini(9))/z0,ab_ini(10)/z0
+c	  WRITE(2,22)(ab_ini(4)+ab_ini(5))/z0,(ab_ini(6)+ab_ini(7))/z0,
+c	1 (ab_ini(8)+ab_ini(9))/z0,ab_ini(10)/z0
+c	  WRITE(*,22)(ab_ini(4)+ab_ini(5))/z0,(ab_ini(6)+ab_ini(7))/z0,
+c	1 (ab_ini(8)+ab_ini(9))/z0,ab_ini(10)/z0
 22	  FORMAT(/,'rapports en masse dans Z:',/,'C/Z:',es10.3,', N/Z:',
 	1 es10.3,', O/Z:',es10.3,', Ex/Z:',es10.3)	
-	  WRITE(2,14)he3she4z,c13sc12,n15sn14,o17so16
-	  WRITE(*,14)he3she4z,c13sc12,n15sn14,o17so16
+c	  WRITE(2,14)he3she4z,c13sc12,n15sn14,o17so16
+c	  WRITE(*,14)he3she4z,c13sc12,n15sn14,o17so16
 14	  FORMAT(/,'Rapports isotopiques en nombre:',/,
 	1 'He3/He4=',es10.3,', C13/C12=',es10.3,
 	2 ', N15/N14=',es10.3,', O17/O16=',es10.3)	
-	  WRITE(2,5)ab_min(1:nchim) ; WRITE(*,5)ab_min(1:nchim)
+c	  WRITE(2,5)ab_min(1:nchim) ; WRITE(*,5)ab_min(1:nchim)
 5	  FORMAT(/,'abondances/gramme négligeables:',/,
 	1 'H1:',es10.3,', He3:',es10.3,', He4:',es10.3,
 	2 ', C12:',es10.3,', C13:',es10.3,/,'N14:',es10.3,
 	3 ', N15:',es10.3,', O16:',es10.3,', O17:',es10.3,', Ex:',es10.3)
-	  WRITE(2,6) ; WRITE(*,6)
+c	  WRITE(2,6) ; WRITE(*,6)
 6	  FORMAT(/,'H2, Li7, Be7 à l''équilibre')
-	  WRITE(2,7) ; WRITE(*,7)
+c	  WRITE(2,7) ; WRITE(*,7)
 7	  FORMAT(/,'on utilise une table')
-	  WRITE(2,8) ; WRITE(*,8)
+c	  WRITE(2,8) ; WRITE(*,8)
 8	  FORMAT(/,'évol. temporelle, test de précision sur H1 et He4')
 	 END SELECT
 

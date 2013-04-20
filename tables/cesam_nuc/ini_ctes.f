@@ -106,10 +106,10 @@
 ! commentaires
 	SELECT CASE(langue)
 	CASE('english')	
-	 WRITE(*,1001)nom_ctes ; WRITE(2,1001)nom_ctes
+c	 WRITE(*,1001)nom_ctes ; WRITE(2,1001)nom_ctes
 1001	 FORMAT('Use of the physical constants of the set ',a)	
 	CASE DEFAULT
-	 WRITE(*,1)nom_ctes ; WRITE(2,1)nom_ctes
+c	 WRITE(*,1)nom_ctes ; WRITE(2,1)nom_ctes
 1	 FORMAT('Utilisation des constantes physiques de l''ensemble: ',a)
 	END SELECT
 

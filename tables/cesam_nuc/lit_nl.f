@@ -78,7 +78,7 @@
 	LOGICAL :: ok
 
 	CHARACTER (len=20) :: nom_des_rot
-	CHARACTER (len=50) :: chain
+	CHARACTER (len=256) :: chain
 
 ! NAMELISTs de CESAM2k avec diffusion du moment cinétique
 	NAMELIST/nl_cesam/nom_chemin,nom_ctes,nom_des,nom_output,
@@ -121,26 +121,37 @@
 
 	SELECT CASE(langue)
 	CASE('english')
-	 WRITE(*,1001)chain ; WRITE(2,1001)chain
+c	 WRITE(*,1001)chain ; WRITE(2,1001)chain
 1001	 FORMAT(t10,'NAMELISTS of the input file : ',a,/)
 	CASE DEFAULT
-	 WRITE(*,1)chain ; WRITE(2,1)chain
+c	 WRITE(*,1)chain ; WRITE(2,1)chain
 1	 FORMAT(t10,'NAMELISTS du fichier: ',a,/)
 	END SELECT
 
 	READ(3,nl_cesam,ERR=100,END=100)
-	WRITE(*,nl_cesam) ; WRITE(2,nl_cesam)
-	READ(3,nl_mass,ERR=100,END=100) ; WRITE(*,nl_mass) ; WRITE(2,nl_mass)
-	READ(3,nl_evol,ERR=100,END=100) ; WRITE(*,nl_evol) ; WRITE(2,nl_evol)
-	READ(3,nl_chim,ERR=100,END=100) ; WRITE(*,nl_chim) ; WRITE(2,nl_chim)
-	READ(3,nl_conv,ERR=100,END=100) ; WRITE(*,nl_conv) ; WRITE(2,nl_conv)
-	READ(3,nl_diff,ERR=100,END=100) ; WRITE(*,nl_diff) ; WRITE(2,nl_diff)
-	READ(3,nl_rot,ERR=100,END=100)  ; WRITE(*,nl_rot)  ; WRITE(2,nl_rot)
-	READ(3,nl_etat,ERR=100,END=100) ; WRITE(*,nl_etat) ; WRITE(2,nl_etat)
-	READ(3,nl_opa,ERR=100,END=100)  ; WRITE(*,nl_opa)  ; WRITE(2,nl_opa)
-	READ(3,nl_nuc,ERR=100,END=100)  ; WRITE(*,nl_nuc)  ; WRITE(2,nl_nuc)
-	READ(3,nl_atm,ERR=100,END=100)  ; WRITE(*,nl_atm)  ; WRITE(2,nl_atm)
-	CLOSE(unit=3) ; WRITE(*,*); WRITE(2,*)
+c	WRITE(*,nl_cesam) ; WRITE(2,nl_cesam)
+	READ(3,nl_mass,ERR=100,END=100) 
+c	WRITE(*,nl_mass) ; WRITE(2,nl_mass)
+	READ(3,nl_evol,ERR=100,END=100)
+c	WRITE(*,nl_evol) ; WRITE(2,nl_evol)
+	READ(3,nl_chim,ERR=100,END=100)
+c	WRITE(*,nl_chim) ; WRITE(2,nl_chim)
+	READ(3,nl_conv,ERR=100,END=100)
+c	WRITE(*,nl_conv) ; WRITE(2,nl_conv)
+	READ(3,nl_diff,ERR=100,END=100)
+c	WRITE(*,nl_diff) ; WRITE(2,nl_diff)
+	READ(3,nl_rot,ERR=100,END=100)
+c	WRITE(*,nl_rot)  ; WRITE(2,nl_rot)
+	READ(3,nl_etat,ERR=100,END=100)
+c	WRITE(*,nl_etat) ; WRITE(2,nl_etat)
+	READ(3,nl_opa,ERR=100,END=100)
+c	WRITE(*,nl_opa)  ; WRITE(2,nl_opa)
+	READ(3,nl_nuc,ERR=100,END=100)
+c	WRITE(*,nl_nuc)  ; WRITE(2,nl_nuc)
+	READ(3,nl_atm,ERR=100,END=100)
+c	WRITE(*,nl_atm)  ; WRITE(2,nl_atm)
+	CLOSE(unit=3)
+c	WRITE(*,*); WRITE(2,*)
 	
 ! limite JPZ pour la rotation supprimée
 	IF(lim_jpz)THEN
@@ -289,12 +300,12 @@
 	 SELECT CASE(langue)
 	 CASE('english')
 	  IF(x0 == 0.d0)CALL pause('WARNING : x0=0')
-	  WRITE(*,1009)z0 ; WRITE(2,1009)z0
+c	  WRITE(*,1009)z0 ; WRITE(2,1009)z0
 1009	  FORMAT('The initial metallicity is computed from X0 and Y0, Z0=',
 	1   es10.3)
 	 CASE DEFAULT
 	  IF(x0 == 0.d0)CALL pause('ATTENTION : x0=0')
-	  WRITE(*,9)z0 ; WRITE(2,9)z0
+c	  WRITE(*,9)z0 ; WRITE(2,9)z0
 9	  FORMAT('Métallicité initiale déduite de X0 et Y0, Z0=',es10.3)
 	 END SELECT
 	ENDIF
