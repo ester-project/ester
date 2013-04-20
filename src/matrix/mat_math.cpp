@@ -3,10 +3,10 @@
 #include<stdlib.h>
 #include"matrix.h"
 
-template <class Type>
-Matrix<Type> cos(const Matrix<Type> &a) {
+
+matrix cos(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -17,10 +17,10 @@ Matrix<Type> cos(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> sin(const Matrix<Type> &a) {
+
+matrix sin(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -31,10 +31,10 @@ Matrix<Type> sin(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> tan(const Matrix<Type> &a) {
+
+matrix tan(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -45,10 +45,10 @@ Matrix<Type> tan(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> acos(const Matrix<Type> &a) {
+
+matrix acos(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -59,10 +59,10 @@ Matrix<Type> acos(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> asin(const Matrix<Type> &a) {
+
+matrix asin(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -73,10 +73,10 @@ Matrix<Type> asin(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> atan(const Matrix<Type> &a) {
+
+matrix atan(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -87,10 +87,10 @@ Matrix<Type> atan(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> cosh(const Matrix<Type> &a) {
+
+matrix cosh(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -101,10 +101,10 @@ Matrix<Type> cosh(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> sinh(const Matrix<Type> &a) {
+
+matrix sinh(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -115,10 +115,10 @@ Matrix<Type> sinh(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> tanh(const Matrix<Type> &a) {
+
+matrix tanh(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -129,10 +129,10 @@ Matrix<Type> tanh(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> exp(const Matrix<Type> &a) {
+
+matrix exp(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -143,10 +143,10 @@ Matrix<Type> exp(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> log(const Matrix<Type> &a) {
+
+matrix log(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -157,10 +157,10 @@ Matrix<Type> log(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> log10(const Matrix<Type> &a) {
+
+matrix log10(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -171,10 +171,10 @@ Matrix<Type> log10(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> sqrt(const Matrix<Type> &a) {
+
+matrix sqrt(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -185,10 +185,10 @@ Matrix<Type> sqrt(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> abs(const Matrix<Type> &a) {
+
+matrix abs(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -199,10 +199,10 @@ Matrix<Type> abs(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> floor(const Matrix<Type> &a) {
+
+matrix floor(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -213,10 +213,10 @@ Matrix<Type> floor(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> ceil(const Matrix<Type> &a) {
+
+matrix ceil(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -227,10 +227,10 @@ Matrix<Type> ceil(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> round(const Matrix<Type> &a) {
+
+matrix round(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -241,10 +241,10 @@ Matrix<Type> round(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> atan2(const Matrix<Type> &a,const Matrix<Type> &b) {
 
-	Matrix<Type> res(a.nf,a.nc);
+matrix atan2(const matrix &a,const matrix &b) {
+
+	matrix res(a.nf,a.nc);
     int i,N;
     
     if( (b.nf!=a.nf) || (b.nc!=a.nc) ) {
@@ -260,10 +260,10 @@ Matrix<Type> atan2(const Matrix<Type> &a,const Matrix<Type> &b) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> atan2(double n,const Matrix<Type> &a) {
 
-	Matrix<Type> res(a.nf,a.nc);
+matrix atan2(double n,const matrix &a) {
+
+	matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -274,10 +274,10 @@ Matrix<Type> atan2(double n,const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> atan2(const Matrix<Type> &a,double n) {
 
-	Matrix<Type> res(a.nf,a.nc);
+matrix atan2(const matrix &a,double n) {
+
+	matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -288,10 +288,10 @@ Matrix<Type> atan2(const Matrix<Type> &a,double n) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> pow(const Matrix<Type> &a,const Matrix<Type> &b) {
 
-	Matrix<Type> res(a.nf,a.nc);
+matrix pow(const matrix &a,const matrix &b) {
+
+	matrix res(a.nf,a.nc);
     int i,N;
     
     if( (b.nf!=a.nf) || (b.nc!=a.nc) ) {
@@ -307,10 +307,10 @@ Matrix<Type> pow(const Matrix<Type> &a,const Matrix<Type> &b) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> pow(double n,const Matrix<Type> &a) {
 
-	Matrix<Type> res(a.nf,a.nc);
+matrix pow(double n,const matrix &a) {
+
+	matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -321,10 +321,10 @@ Matrix<Type> pow(double n,const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> pow(const Matrix<Type> &a,double n) {
 
-	Matrix<Type> res(a.nf,a.nc);
+matrix pow(const matrix &a,double n) {
+
+	matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -335,74 +335,6 @@ Matrix<Type> pow(const Matrix<Type> &a,double n) {
     return res;
 }
 
-template <class Type> 
-Matrix<Type> pow(const Matrix<Type> &a,int n) {
 
-	Matrix<Type> res(a.nf,a.nc);
-    int i,N;
-    
-    N=a.nc*a.nf;
-    
-    for(i=0;i<N;i++)
-    	// There is no pow(double,int) in the Intel compiler math library
-    	#ifdef __INTEL_COMPILER
-    	res.p[i]=pow(a.p[i],(mat_type)n);
-    	#else
-    	res.p[i]=pow(a.p[i],n);
-    	#endif
-    	
-    return res;
-}
 
-// Explicit instantiations
-
-template Matrix<double> cos(const Matrix<double> &);
-template Matrix<double> sin(const Matrix<double> &);
-template Matrix<double> tan(const Matrix<double> &);
-template Matrix<double> acos(const Matrix<double> &);
-template Matrix<double> asin(const Matrix<double> &);
-template Matrix<double> atan(const Matrix<double> &);
-template Matrix<double> cosh(const Matrix<double> &);
-template Matrix<double> sinh(const Matrix<double> &);
-template Matrix<double> tanh(const Matrix<double> &);
-template Matrix<double> exp(const Matrix<double> &);
-template Matrix<double> log(const Matrix<double> &);
-template Matrix<double> log10(const Matrix<double> &);
-template Matrix<double> sqrt(const Matrix<double> &);
-template Matrix<double> abs(const Matrix<double> &);
-template Matrix<double> floor(const Matrix<double> &);
-template Matrix<double> ceil(const Matrix<double> &);
-template Matrix<double> round(const Matrix<double> &);
-template Matrix<double> atan2(const Matrix<double> &,const Matrix<double> &);
-template Matrix<double> atan2(double,const Matrix<double> &);
-template Matrix<double> atan2(const Matrix<double> &,double);
-template Matrix<double> pow(const Matrix<double> &,const Matrix<double> &);
-template Matrix<double> pow(double,const Matrix<double> &);
-template Matrix<double> pow(const Matrix<double> &,double);
-template Matrix<double> pow(const Matrix<double> &,int);
-
-template Matrix<float> cos(const Matrix<float> &);
-template Matrix<float> sin(const Matrix<float> &);
-template Matrix<float> tan(const Matrix<float> &);
-template Matrix<float> acos(const Matrix<float> &);
-template Matrix<float> asin(const Matrix<float> &);
-template Matrix<float> atan(const Matrix<float> &);
-template Matrix<float> cosh(const Matrix<float> &);
-template Matrix<float> sinh(const Matrix<float> &);
-template Matrix<float> tanh(const Matrix<float> &);
-template Matrix<float> exp(const Matrix<float> &);
-template Matrix<float> log(const Matrix<float> &);
-template Matrix<float> log10(const Matrix<float> &);
-template Matrix<float> sqrt(const Matrix<float> &);
-template Matrix<float> abs(const Matrix<float> &);
-template Matrix<float> floor(const Matrix<float> &);
-template Matrix<float> ceil(const Matrix<float> &);
-template Matrix<float> round(const Matrix<float> &);
-template Matrix<float> atan2(const Matrix<float> &,const Matrix<float> &);
-template Matrix<float> atan2(double,const Matrix<float> &);
-template Matrix<float> atan2(const Matrix<float> &,double);
-template Matrix<float> pow(const Matrix<float> &,const Matrix<float> &);
-template Matrix<float> pow(double,const Matrix<float> &);
-template Matrix<float> pow(const Matrix<float> &,double);
-template Matrix<float> pow(const Matrix<float> &,int);
 

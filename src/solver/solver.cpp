@@ -1324,7 +1324,8 @@ void solver::unwrap(matrix *y,const matrix *x) {
 void solver::add(const char *eqn, const char *varn,const char *block_type,char type,const matrix *d,const matrix_block_diag *l,const matrix *r,const matrix *i) {
 	
 	int k,j0,j1;
-	matrix *dd,*ll,*ii;
+	const matrix *ll;
+	matrix *dd,*ii;
 	char err_msg[256];
 	int error=0;
 	

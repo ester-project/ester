@@ -31,7 +31,7 @@ int opa_houdek(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	int i,N,error=0;
 	matrix dlnkT,dlnkrho;
     static int init=0;
-	char tabnam[81];
+	char tabnam[80];
 	int iorder,imode;
 	double eps;
 
@@ -41,7 +41,6 @@ int opa_houdek(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		maceps_(&eps);
 		sprintf(tabnam,"%s/tables/houdek/v9/OPINTPATH_AX",ESTER_ROOT);
 		for(i=strlen(tabnam);i<80;i++) tabnam[i]=' ';
-		tabnam[80]='\0';
 		opinit_(&eps,&iorder,tabnam,&imode,80);	
     	init=1;
     }

@@ -4,8 +4,8 @@ extern "C" {
 #include CBLAS
 }
 
-template <class Type>
-Matrix_block_diag<Type>::Matrix_block_diag(int nblocks) {
+
+matrix_block_diag::matrix_block_diag(int nblocks) {
 
 	if(nblocks<0) {
 		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks can't be negative\n");
@@ -16,30 +16,30 @@ Matrix_block_diag<Type>::Matrix_block_diag(int nblocks) {
 		exit(1);
 	}
 	nb=nblocks;
-	m=new Matrix<Type>[nb];
+	m=new matrix[nb];
 	
 }
 
-template <class Type>
-Matrix_block_diag<Type>::~Matrix_block_diag() {
+
+matrix_block_diag::~matrix_block_diag() {
 
 	delete [] m;
 	
 }
 
-template <class Type>
-Matrix_block_diag<Type>::Matrix_block_diag(const Matrix_block_diag<Type> &a) {
+
+matrix_block_diag::matrix_block_diag(const matrix_block_diag &a) {
 	
 	int i;
 
 	nb=a.nb;
-	m=new Matrix<Type>[nb];
+	m=new matrix[nb];
 	for(i=0;i<nb;i++) m[i]=a.m[i];
 	
 }
 
-template <class Type>
-Matrix_block_diag<Type> &Matrix_block_diag<Type>::operator=(const Matrix_block_diag<Type> &a) {
+
+matrix_block_diag &matrix_block_diag::operator=(const matrix_block_diag &a) {
 
 	int i;
 
@@ -49,8 +49,8 @@ Matrix_block_diag<Type> &Matrix_block_diag<Type>::operator=(const Matrix_block_d
 	return *this;
 }
 
-template <class Type>
-Matrix_block_diag<Type> & Matrix_block_diag<Type>::set_nblocks(int nblocks) {
+
+matrix_block_diag & matrix_block_diag::set_nblocks(int nblocks) {
 
 	if(nblocks<0) {
 		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks can't be negative\n");
@@ -64,17 +64,17 @@ Matrix_block_diag<Type> & Matrix_block_diag<Type>::set_nblocks(int nblocks) {
 	if(nblocks!=nb) {
 		nb=nblocks;
 		delete [] m;
-		m=new Matrix<Type>[nb];
+		m=new matrix[nb];
 	}
 	return *this;
 }
 
-template <class Type>
-Matrix_block_diag<Type>::operator Matrix<Type>() const{
+
+matrix_block_diag::operator matrix() const{
 
 	int n,i,j;
 	
-	Matrix<Type> a;
+	matrix a;
 	a.zero(nrows(),ncols());
 
 	i=0;j=0;
@@ -86,8 +86,8 @@ Matrix_block_diag<Type>::operator Matrix<Type>() const{
 	return a;
 }
 
-template <class Type>	
-Matrix<Type> &Matrix_block_diag<Type>::block(int i) const {
+	
+matrix &matrix_block_diag::block(int i){
 
 	if(i<0) i+=nb;
 	if(i<0||i>=nb) {
@@ -98,14 +98,25 @@ Matrix<Type> &Matrix_block_diag<Type>::block(int i) const {
 	
 }
 
-template <class Type>
-int Matrix_block_diag<Type>::nblocks() const {
+const matrix &matrix_block_diag::block(int i) const {
+
+	if(i<0) i+=nb;
+	if(i<0||i>=nb) {
+		fprintf(stderr,"ERROR: (matrix_block_diag) Index exceeds number of blocks\n");
+		exit(1);
+	}
+	return m[i];
+	
+}
+
+
+int matrix_block_diag::nblocks() const {
 
 	return nb;
 }
 
-template <class Type>
-int Matrix_block_diag<Type>::nrows() const {
+
+int matrix_block_diag::nrows() const {
 
 	int i,n=0;
 
@@ -115,8 +126,8 @@ int Matrix_block_diag<Type>::nrows() const {
 	
 }
 
-template <class Type>
-int Matrix_block_diag<Type>::ncols() const {
+
+int matrix_block_diag::ncols() const {
 
 	int i,n=0;
 
@@ -126,8 +137,7 @@ int Matrix_block_diag<Type>::ncols() const {
 	
 }
 
-template <>
-Matrix<double> Matrix_block_diag<double>::operator,(const Matrix<double> &a) const {
+matrix matrix_block_diag::operator,(const matrix &a) const {
 	
 	int i,n=0,n2=0;
 
@@ -135,7 +145,7 @@ Matrix<double> Matrix_block_diag<double>::operator,(const Matrix<double> &a) con
 		fprintf(stderr,"ERROR: (matrix_block_diag) Dimensions must agree\n");
 		exit(1);
 	}
-	Matrix<double> res(nrows(),a.nc);
+	matrix res(nrows(),a.nc);
 
 	for(i=0;i<nb;i++) {
 		cblas_dgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,m[i].nf,a.nc,m[i].nc,1,m[i].p,m[i].nf,a.p+n2,a.nf,0,res.p+n,res.nf);
@@ -145,30 +155,10 @@ Matrix<double> Matrix_block_diag<double>::operator,(const Matrix<double> &a) con
 	return res;
 }
 
-template <>
-Matrix<float> Matrix_block_diag<float>::operator,(const Matrix<float> &a) const {
-	
-	int i,n=0,n2=0;
-
-	if(ncols()!=a.nf) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Dimensions must agree\n");
-		exit(1);
-	}
-	Matrix<float> res(nrows(),a.nc);
-
-	for(i=0;i<nb;i++) {
-		cblas_sgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,m[i].nf,a.nc,m[i].nc,1,m[i].p,m[i].nf,a.p+n2,a.nf,0,res.p+n,res.nf);
-		n+=m[i].nf;n2+=m[i].nc;
-	}
-	
-	return res;
-}
-
-template <class Type>
-Matrix_block_diag<Type> Matrix_block_diag<Type>::operator,(const Matrix_block_diag<Type> &a) const {
+matrix_block_diag matrix_block_diag::operator,(const matrix_block_diag &a) const {
 
 	int i;
-	Matrix_block_diag<Type> res(nb);
+	matrix_block_diag res(nb);
 
 	if(nb!=a.nb) {
 		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks must agree\n");
@@ -181,8 +171,7 @@ Matrix_block_diag<Type> Matrix_block_diag<Type>::operator,(const Matrix_block_di
 	
 }
 
-template<>
-Matrix<double> operator,(const Matrix<double> &a,const Matrix_block_diag<double> &b) {
+matrix operator,(const matrix &a,const matrix_block_diag &b) {
 
 	int i;
 	unsigned n=0,n2=0;
@@ -191,7 +180,7 @@ Matrix<double> operator,(const Matrix<double> &a,const Matrix_block_diag<double>
 		fprintf(stderr,"ERROR: (matrix_block_diag) Dimensions must agree\n");
 		exit(1);
 	}
-	Matrix<double> res(a.nrows(),b.ncols());
+	matrix res(a.nrows(),b.ncols());
 
 	for(i=0;i<b.nb;i++) {
 		cblas_dgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,a.nrows(),b.m[i].ncols(),b.m[i].nrows(),1,a.data()+n2,a.nrows(),b.m[i].data(),b.m[i].nrows(),0,res.data()+n,res.nrows());
@@ -202,33 +191,11 @@ Matrix<double> operator,(const Matrix<double> &a,const Matrix_block_diag<double>
 
 }
 
-template<>
-Matrix<float> operator,(const Matrix<float> &a,const Matrix_block_diag<float> &b) {
-
-	int i;
-	unsigned n=0,n2=0;
-
-	if(a.ncols()!=b.nrows()) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Dimensions must agree\n");
-		exit(1);
-	}
-	Matrix<float> res(a.nrows(),b.ncols());
-
-	for(i=0;i<b.nb;i++) {
-		cblas_sgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,a.nrows(),b.m[i].ncols(),b.m[i].nrows(),1,a.data()+n2,a.nrows(),b.m[i].data(),b.m[i].nrows(),0,res.data()+n,res.nrows());
-		n+=b.m[i].ncols()*a.nrows();n2+=b.m[i].nrows()*a.nrows();
-	}
-	
-	return res;
-
-}
-
-template <class Type>
-Matrix_block_diag<Type> Matrix_block_diag<Type>::operator*(const Matrix<Type> &z) const {
+matrix_block_diag matrix_block_diag::operator*(const matrix &z) const {
 
 	int k,i,j;
-	Matrix_block_diag<Type> res(nb);
-	Matrix<Type> zi;
+	matrix_block_diag res(nb);
+	matrix zi;
 	
 	if((z.nc!=ncols()&&z.nc!=1)||(z.nf!=nrows()&&z.nf!=1)) {
 		fprintf(stderr,"ERROR: (matrix_block_diag) Dimensions must agree\n");
@@ -248,12 +215,12 @@ Matrix_block_diag<Type> Matrix_block_diag<Type>::operator*(const Matrix<Type> &z
 	return res;
 }
 
-template <class Type>
-Matrix_block_diag<Type> Matrix_block_diag<Type>::operator/(const Matrix<Type> &z) const {
+
+matrix_block_diag matrix_block_diag::operator/(const matrix &z) const {
 
 	int k,i,j;
-	Matrix_block_diag<Type> res(nb);
-	Matrix<Type> zi;
+	matrix_block_diag res(nb);
+	matrix zi;
 	
 	if((z.nc!=ncols()&&z.nc!=1)||(z.nf!=nrows()&&z.nf!=1)) {
 		fprintf(stderr,"ERROR: (matrix_block_diag) Dimensions must agree\n");
@@ -273,11 +240,11 @@ Matrix_block_diag<Type> Matrix_block_diag<Type>::operator/(const Matrix<Type> &z
 	return res;
 }
 
-template <class Type>
-Matrix_block_diag<Type> Matrix_block_diag<Type>::operator*(mat_type n) const {
+
+matrix_block_diag matrix_block_diag::operator*(double n) const {
 
 	int i;
-	Matrix_block_diag<Type> res(nb);
+	matrix_block_diag res(nb);
 	
 	for(i=0;i<nb;i++) 
 		res.m[i]=n*m[i];
@@ -285,11 +252,11 @@ Matrix_block_diag<Type> Matrix_block_diag<Type>::operator*(mat_type n) const {
 	return res;
 }
 
-template <class Type>
-Matrix_block_diag<Type> Matrix_block_diag<Type>::operator/(mat_type n) const {
+
+matrix_block_diag matrix_block_diag::operator/(double n) const {
 
 	int i;
-	Matrix_block_diag<Type> res(nb);
+	matrix_block_diag res(nb);
 	
 	for(i=0;i<nb;i++) 
 		res.m[i]=m[i]/n;
@@ -298,10 +265,10 @@ Matrix_block_diag<Type> Matrix_block_diag<Type>::operator/(mat_type n) const {
 	
 }
 
-template <class Type>
-Matrix_block_diag<Type> Matrix_block_diag<Type>::operator*(const Matrix_block_diag<Type> &a) const {
 
-	Matrix_block_diag<Type> res(nb);
+matrix_block_diag matrix_block_diag::operator*(const matrix_block_diag &a) const {
+
+	matrix_block_diag res(nb);
 	int i;
 
 	if(nb!=a.nb) {
@@ -316,10 +283,10 @@ Matrix_block_diag<Type> Matrix_block_diag<Type>::operator*(const Matrix_block_di
 	
 }
 
-template <class Type>
-Matrix_block_diag<Type> Matrix_block_diag<Type>::operator+(const Matrix_block_diag<Type> &a) const {
 
-	Matrix_block_diag<Type> res(nb);
+matrix_block_diag matrix_block_diag::operator+(const matrix_block_diag &a) const {
+
+	matrix_block_diag res(nb);
 	int i;
 
 	if(nb!=a.nb) {
@@ -334,10 +301,10 @@ Matrix_block_diag<Type> Matrix_block_diag<Type>::operator+(const Matrix_block_di
 	
 }
 
-template <class Type>
-Matrix_block_diag<Type> Matrix_block_diag<Type>::operator-(const Matrix_block_diag<Type> &a) const {
 
-	Matrix_block_diag<Type> res(nb);
+matrix_block_diag matrix_block_diag::operator-(const matrix_block_diag &a) const {
+
+	matrix_block_diag res(nb);
 	int i;
 
 	if(nb!=a.nb) {
@@ -352,10 +319,10 @@ Matrix_block_diag<Type> Matrix_block_diag<Type>::operator-(const Matrix_block_di
 	
 }
 
-template <class Type>
-Matrix_block_diag<Type> operator-(const Matrix_block_diag<Type> &a) {
+
+matrix_block_diag operator-(const matrix_block_diag &a) {
 	
-	Matrix_block_diag<Type> res(a.nb);
+	matrix_block_diag res(a.nb);
 	int i;
 	
 	for(i=0;i<a.nb;i++) 
@@ -364,12 +331,12 @@ Matrix_block_diag<Type> operator-(const Matrix_block_diag<Type> &a) {
 	return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix_block_diag<Type>::row(int n) const {
+
+matrix matrix_block_diag::row(int n) const {
 
 	int i=0,j,nf;
-	Matrix<Type> res;
-	Type *pres,*pp;
+	matrix res;
+	double *pres,*pp;
 	
 	nf=nrows();
 	if(n<0) n+=nf;
@@ -393,8 +360,8 @@ Matrix<Type> Matrix_block_diag<Type>::row(int n) const {
 
 }
 
-template <class Type>
-Type Matrix_block_diag<Type>::operator()(int nfil,int ncol) const {
+
+double matrix_block_diag::operator()(int nfil,int ncol) const {
 
 	int n;
 	
@@ -416,10 +383,10 @@ Type Matrix_block_diag<Type>::operator()(int nfil,int ncol) const {
 
 }
 
-template <class Type>
-Matrix_block_diag<Type> eye(const Matrix_block_diag<Type> &a) {
 
-	Matrix_block_diag<Type> I(a.nb);
+matrix_block_diag eye(const matrix_block_diag &a) {
+
+	matrix_block_diag I(a.nb);
 	int i;
 	
 	for(i=0;i<a.nb;i++) I.m[i]=eye(a.m[i].nrows());
@@ -427,10 +394,10 @@ Matrix_block_diag<Type> eye(const Matrix_block_diag<Type> &a) {
 	return I;
 }
 
-template <class Type>
-Matrix_block_diag<Type> Matrix_block_diag<Type>::transpose() const {
 
-	Matrix_block_diag<Type> a(nb);
+matrix_block_diag matrix_block_diag::transpose() const {
+
+	matrix_block_diag a(nb);
 	int i;
 	
 	for(i=0;i<nb;i++)
@@ -440,17 +407,6 @@ Matrix_block_diag<Type> Matrix_block_diag<Type>::transpose() const {
 	
 }
 
-// Explicit instantiations
 
-template class Matrix_block_diag<double>;
-template class Matrix_block_diag<float>;
-
-template Matrix<double> operator,(const Matrix<double> &,const Matrix_block_diag<double> &);
-template Matrix_block_diag<double> operator-(const Matrix_block_diag<double>&);
-template Matrix_block_diag<double> eye(const Matrix_block_diag<double> &);
-
-template Matrix<float> operator,(const Matrix<float> &,const Matrix_block_diag<float> &);
-template Matrix_block_diag<float> operator-(const Matrix_block_diag<float>&);
-template Matrix_block_diag<float> eye(const Matrix_block_diag<float> &);
 
 

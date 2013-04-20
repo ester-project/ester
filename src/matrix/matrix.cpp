@@ -4,8 +4,8 @@
 #include<string.h>
 #include"matrix.h"
 
-template <class Type>
-Matrix<Type>::Matrix(int nfil,int ncol) {
+
+matrix::matrix(int nfil,int ncol) {
 	
 	unsigned tam;
 
@@ -24,54 +24,54 @@ Matrix<Type>::Matrix(int nfil,int ncol) {
 	nf=nfil;
     nc=ncol;
     tam=unsigned(nf)*unsigned(nc);
-	p=new Type[tam];
+	p=new double[tam];
 }
 
-template <class Type>
-Matrix<Type>::~Matrix() {
+
+matrix::~matrix() {
 
 	delete [] p;
 }
 
-template <class Type>
-Matrix<Type>::Matrix(const Matrix<Type> &a) {
+
+matrix::matrix(const matrix &a) {
 
     unsigned tam;
 
     nc=a.nc;
     nf=a.nf;
     tam=unsigned(nf)*unsigned(nc);
-	p=new Type[tam];
+	p=new double[tam];
 
-	memcpy(p,a.p,nc*nf*sizeof(Type));
+	memcpy(p,a.p,nc*nf*sizeof(double));
 
 }
 
-template <class Type>
-int Matrix<Type>::nrows() const {
+
+int matrix::nrows() const {
 
 	return nf;
 }
 
-template <class Type>
-int Matrix<Type>::ncols() const {
+
+int matrix::ncols() const {
 
 	return nc;
 }
 
-template <class Type>
-Type *Matrix<Type>::data() const {
+
+double *matrix::data() const {
 
 	return p;
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::dim(int nfil,int ncol) {
+
+matrix &matrix::dim(int nfil,int ncol) {
     
     unsigned tam;
     
     if(nfil<0||ncol<0) {
-		fprintf(stderr,"ERROR: Can't create Matrix<Type> with negative size\n");
+		fprintf(stderr,"ERROR: Can't create matrix with negative size\n");
 		exit(1);
 	}
 	if(nfil==0) {
@@ -88,7 +88,7 @@ Matrix<Type> &Matrix<Type>::dim(int nfil,int ncol) {
     	nf=nfil;
     	nc=ncol;
     	tam=unsigned(nf)*unsigned(nc);
-		p=new Type[tam];
+		p=new double[tam];
     } else {
     	nf=nfil;
     	nc=ncol;
@@ -97,8 +97,8 @@ Matrix<Type> &Matrix<Type>::dim(int nfil,int ncol) {
     return *this;
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::redim(int nfil,int ncol) {
+
+matrix &matrix::redim(int nfil,int ncol) {
     
     int tam;
     
@@ -117,7 +117,7 @@ Matrix<Type> &Matrix<Type>::redim(int nfil,int ncol) {
 	}
     
     if(nfil*ncol!=nf*nc) {
-    	fprintf(stderr,"ERROR: Matrix<Type>.redim: Number of elements doesn't match\n");
+    	fprintf(stderr,"ERROR: matrix.redim: Number of elements doesn't match\n");
     	exit(1);
     }    
     nf=nfil;nc=ncol;
@@ -125,53 +125,20 @@ Matrix<Type> &Matrix<Type>::redim(int nfil,int ncol) {
     return *this;
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::operator=(const Matrix<Type> &a) {
+
+matrix &matrix::operator=(const matrix &a) {
         
     if(&a==this) return *this;
 	if (nf!=a.nf||nc!=a.nc)
     	dim(a.nf,a.nc);
 
-	memcpy(p,a.p,nc*nf*sizeof(Type));
-    
-    return *this;
-}
-template <class Type>
-template <class Type2>
-Matrix<Type> &Matrix<Type>::operator=(const Matrix<Type2> &a) {
-    
-	if (nf!=a.nf||nc!=a.nc)
-    	dim(a.nf,a.nc);
-
-    int N;
-    N=a.nf*a.nc;
-	for(int i=0;i<N;i++)
-		p[i]=a.p[i];
+	memcpy(p,a.p,nc*nf*sizeof(double));
     
     return *this;
 }
 
-template Matrix<double> &Matrix<double>::operator=(const Matrix<float> &a);
-template Matrix<float> &Matrix<float>::operator=(const Matrix<double> &a);
 
-template <class Type>
-template <class Type2>
-Matrix<Type>::operator Matrix<Type2>() const {
-
-	Matrix<Type2> a;
-	int N;
-	N=nf*nc;
-	for(int i=0;i<N;i++)
-		a.p[i]=p[i];
-		
-	return a;
-}
-
-template Matrix<float>::operator Matrix<double>() const;
-template Matrix<double>::operator Matrix<float>() const;
-
-template <class Type>
-Type &Matrix<Type>::operator()(int ifil,int icol) {
+double &matrix::operator()(int ifil,int icol) {
 
 	if(ifil<0) ifil+=nf;
 	if(icol<0) icol+=nc;
@@ -183,8 +150,8 @@ Type &Matrix<Type>::operator()(int ifil,int icol) {
 	
 }
 
-template <class Type>
-Type &Matrix<Type>::operator()(int ielem) {
+
+double &matrix::operator()(int ielem) {
 	
 	if(ielem<0) ielem+=nf*nc;
 	if(ielem>=nf*nc||ielem<0) {
@@ -195,8 +162,8 @@ Type &Matrix<Type>::operator()(int ielem) {
 	
 }
 
-template <class Type>
-Type Matrix<Type>::operator()(int ifil,int icol) const {
+
+const double &matrix::operator()(int ifil,int icol) const {
 
 	if(ifil<0) ifil+=nf;
 	if(icol<0) icol+=nc;
@@ -208,8 +175,8 @@ Type Matrix<Type>::operator()(int ifil,int icol) const {
 	
 }
 
-template <class Type>
-Type Matrix<Type>::operator()(int ielem) const {
+
+const double &matrix::operator()(int ielem) const {
 	
 	if(ielem<0) ielem+=nf*nc;
 	if(ielem>=nf*nc||ielem<0) {
@@ -220,8 +187,8 @@ Type Matrix<Type>::operator()(int ielem) const {
 	
 }
 
-template <>
-int Matrix<double>::read(int nfil,int ncol,FILE *fp,char mode) {
+
+int matrix::read(int nfil,int ncol,FILE *fp,char mode) {
     
     int i,tam;
 
@@ -238,32 +205,13 @@ int Matrix<double>::read(int nfil,int ncol,FILE *fp,char mode) {
     return 1;
 }
 
-template <>
-int Matrix<float>::read(int nfil,int ncol,FILE *fp,char mode) {
-    
-    int i,tam;
-
-    dim(nfil,ncol);
-    tam=nc*nf;           
-
-    if (mode=='b') {
-        if((int)fread(p,sizeof(float),tam,fp)!=tam) return 0;
-        }
-    else
-        for(i=0;i<tam;i++) {
-            if(fscanf(fp,"%e",&p[i])==EOF) return 0;
-            }
-    return 1;
-}
-
-template <class Type>
-int Matrix<Type>::write(FILE *fp,char mode) const {
+int matrix::write(FILE *fp,char mode) const {
    
     int tam,i,j;
 
     tam=nf*nc;
     if (mode=='b') {
-        if((int)fwrite(p,sizeof(Type),tam,fp)!=tam) return 0;
+        if((int)fwrite(p,sizeof(double),tam,fp)!=tam) return 0;
         }
     else {
         j=0;
@@ -279,8 +227,8 @@ int Matrix<Type>::write(FILE *fp,char mode) const {
     return 1;
 }
 
-template <class Type>
-void Matrix<Type>::write_fmt(const char *fmt,FILE *fp) const {
+
+void matrix::write_fmt(const char *fmt,FILE *fp) const {
 
 	int i,j;
 	
@@ -293,10 +241,10 @@ void Matrix<Type>::write_fmt(const char *fmt,FILE *fp) const {
 	}
 }
 
-template <class Type>
-void Matrix<Type>::swap(Matrix<Type> &a) {
 
-	Type *p0;
+void matrix::swap(matrix &a) {
+
+	double *p0;
 	int nf0,nc0;
 	
 	p0=p;
@@ -309,18 +257,18 @@ void Matrix<Type>::swap(Matrix<Type> &a) {
 
 }
 
-template <class Type>
-void Matrix<Type>::zero(int nrows,int ncols) {
+
+void matrix::zero(int nrows,int ncols) {
 
 	dim(nrows,ncols);
 	for(int i=0;i<nf*nc;i++) p[i]=0;
 	
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator+(const Matrix<Type> &a) const {
 
-    Matrix<Type> res;
+matrix matrix::operator+(const matrix &a) const {
+
+    matrix res;
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
@@ -339,7 +287,7 @@ Matrix<Type> Matrix<Type>::operator+(const Matrix<Type> &a) const {
 		for(i=0;i<N;i++)
        	    res.p[i]=p[i]+a.p[i];
 	} else {
-		Type *pi,*pa,*pres;
+		double *pi,*pa,*pres;
 		pi=p;pa=a.p;pres=res.p;
 		for(i=0;i<resnc;i++) {
     	   	for(j=0;j<resnf;j++) {
@@ -356,10 +304,10 @@ Matrix<Type> Matrix<Type>::operator+(const Matrix<Type> &a) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator+(mat_type n) const {
 
-    Matrix<Type> res(nf,nc);
+matrix matrix::operator+(double n) const {
+
+    matrix res(nf,nc);
     int i,N;
     
     N=nc*nf;
@@ -369,10 +317,10 @@ Matrix<Type> Matrix<Type>::operator+(mat_type n) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator-(const Matrix<Type> &a) const {
 
-    Matrix<Type> res;
+matrix matrix::operator-(const matrix &a) const {
+
+    matrix res;
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
@@ -391,7 +339,7 @@ Matrix<Type> Matrix<Type>::operator-(const Matrix<Type> &a) const {
 		for(i=0;i<N;i++)
        	    res.p[i]=p[i]-a.p[i];
 	} else {
-		Type *pi,*pa,*pres;
+		double *pi,*pa,*pres;
 		pi=p;pa=a.p;pres=res.p;
 		for(i=0;i<resnc;i++) {
     	   	for(j=0;j<resnf;j++) {
@@ -408,10 +356,10 @@ Matrix<Type> Matrix<Type>::operator-(const Matrix<Type> &a) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> operator-(mat_type n,const Matrix<Type> &a) {
+
+matrix operator-(double n,const matrix &a) {
 	
-	Matrix<Type> res(a.nf,a.nc);
+	matrix res(a.nf,a.nc);
     int i,N;
     
     N=a.nc*a.nf;
@@ -420,10 +368,10 @@ Matrix<Type> operator-(mat_type n,const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator-(mat_type n) const {
 
-    Matrix<Type> res(nf,nc);
+matrix matrix::operator-(double n) const {
+
+    matrix res(nf,nc);
     int i,N;
     
     N=nc*nf;
@@ -434,10 +382,10 @@ Matrix<Type> Matrix<Type>::operator-(mat_type n) const {
 
 }
 
-template <class Type>
-Matrix<Type> operator-(const Matrix<Type> &a) {
+
+matrix operator-(const matrix &a) {
     
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     N=a.nc*a.nf;
     for(i=0;i<N;i++)
@@ -446,10 +394,10 @@ Matrix<Type> operator-(const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator*(const Matrix<Type> &a) const {
 
-    Matrix<Type> res;
+matrix matrix::operator*(const matrix &a) const {
+
+    matrix res;
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
@@ -468,7 +416,7 @@ Matrix<Type> Matrix<Type>::operator*(const Matrix<Type> &a) const {
 		for(i=0;i<N;i++)
        	    res.p[i]=p[i]*a.p[i];
 	} else {
-		Type *pi,*pa,*pres;
+		double *pi,*pa,*pres;
 		pi=p;pa=a.p;pres=res.p;
 		for(i=0;i<resnc;i++) {
         	for(j=0;j<resnf;j++) {
@@ -486,10 +434,10 @@ Matrix<Type> Matrix<Type>::operator*(const Matrix<Type> &a) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator*(mat_type n) const {
+
+matrix matrix::operator*(double n) const {
     
-    Matrix<Type> res(nf,nc);
+    matrix res(nf,nc);
     int i,N;
     
     N=nc*nf;
@@ -499,10 +447,10 @@ Matrix<Type> Matrix<Type>::operator*(mat_type n) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator/(const Matrix<Type> &a) const {
 
-    Matrix<Type> res;
+matrix matrix::operator/(const matrix &a) const {
+
+    matrix res;
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
@@ -521,7 +469,7 @@ Matrix<Type> Matrix<Type>::operator/(const Matrix<Type> &a) const {
 		for(i=0;i<N;i++)
        	    res.p[i]=p[i]/a.p[i];
 	} else {
-		Type *pi,*pa,*pres;
+		double *pi,*pa,*pres;
 		pi=p;pa=a.p;pres=res.p;
 		for(i=0;i<resnc;i++) {
     	   	for(j=0;j<resnf;j++) {
@@ -538,10 +486,10 @@ Matrix<Type> Matrix<Type>::operator/(const Matrix<Type> &a) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> operator/(mat_type n,const Matrix<Type> &a) {
+
+matrix operator/(double n,const matrix &a) {
 	
-	Matrix<Type> res(a.nf,a.nc);
+	matrix res(a.nf,a.nc);
     int i,N;
 
     N=a.nc*a.nf;
@@ -550,10 +498,10 @@ Matrix<Type> operator/(mat_type n,const Matrix<Type> &a) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator/(mat_type n) const {
 
-    Matrix<Type> res(nf,nc);
+matrix matrix::operator/(double n) const {
+
+    matrix res(nf,nc);
     int i,N;
     
     N=nc*nf;
@@ -563,10 +511,10 @@ Matrix<Type> Matrix<Type>::operator/(mat_type n) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator==(const Matrix<Type> &a) const {
 
-    Matrix<Type> res;
+matrix matrix::operator==(const matrix &a) const {
+
+    matrix res;
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
@@ -585,7 +533,7 @@ Matrix<Type> Matrix<Type>::operator==(const Matrix<Type> &a) const {
 		for(i=0;i<N;i++)
        	    res.p[i]=(p[i]==a.p[i]);
 	} else {
-		Type *pi,*pa,*pres;
+		double *pi,*pa,*pres;
 		pi=p;pa=a.p;pres=res.p;
 		for(i=0;i<resnc;i++) {
     	   	for(j=0;j<resnf;j++) {
@@ -602,10 +550,10 @@ Matrix<Type> Matrix<Type>::operator==(const Matrix<Type> &a) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator==(mat_type n) const {
+
+matrix matrix::operator==(double n) const {
 	
-	Matrix<Type> res(nf,nc);
+	matrix res(nf,nc);
     int i,N;
     
     N=nc*nf;
@@ -615,10 +563,10 @@ Matrix<Type> Matrix<Type>::operator==(mat_type n) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator!=(const Matrix<Type> &a) const {
 
-    Matrix<Type> res;
+matrix matrix::operator!=(const matrix &a) const {
+
+    matrix res;
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
@@ -637,7 +585,7 @@ Matrix<Type> Matrix<Type>::operator!=(const Matrix<Type> &a) const {
 		for(i=0;i<N;i++)
        	    res.p[i]=(p[i]!=a.p[i]);
 	} else {
-		Type *pi,*pa,*pres;
+		double *pi,*pa,*pres;
 		pi=p;pa=a.p;pres=res.p;
 		for(i=0;i<resnc;i++) {
     	   	for(j=0;j<resnf;j++) {
@@ -654,10 +602,10 @@ Matrix<Type> Matrix<Type>::operator!=(const Matrix<Type> &a) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator!=(mat_type n) const {
+
+matrix matrix::operator!=(double n) const {
 	
-	Matrix<Type> res(nf,nc);
+	matrix res(nf,nc);
     int i,N;
     
     N=nc*nf;
@@ -666,10 +614,10 @@ Matrix<Type> Matrix<Type>::operator!=(mat_type n) const {
     	
     return res;}
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator>(const Matrix<Type> &a) const{
 
-    Matrix<Type> res;
+matrix matrix::operator>(const matrix &a) const{
+
+    matrix res;
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
@@ -688,7 +636,7 @@ Matrix<Type> Matrix<Type>::operator>(const Matrix<Type> &a) const{
 		for(i=0;i<N;i++)
 			res.p[i]=(p[i]>a.p[i]);
 	} else {
-		Type *pi,*pa,*pres;
+		double *pi,*pa,*pres;
 		pi=p;pa=a.p;pres=res.p;
 		for(i=0;i<resnc;i++) {
     	   	for(j=0;j<resnf;j++) {
@@ -705,10 +653,10 @@ Matrix<Type> Matrix<Type>::operator>(const Matrix<Type> &a) const{
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator>(mat_type n) const {
+
+matrix matrix::operator>(double n) const {
 	
-	Matrix<Type> res(nf,nc);
+	matrix res(nf,nc);
     int i,N;
     
     N=nc*nf;
@@ -718,10 +666,10 @@ Matrix<Type> Matrix<Type>::operator>(mat_type n) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator<(mat_type n) const {
+
+matrix matrix::operator<(double n) const {
 	
-	Matrix<Type> res(nf,nc);
+	matrix res(nf,nc);
     int i,N;
     
     N=nc*nf;
@@ -731,10 +679,10 @@ Matrix<Type> Matrix<Type>::operator<(mat_type n) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator>=(const Matrix<Type> &a) const {
 
-    Matrix<Type> res;
+matrix matrix::operator>=(const matrix &a) const {
+
+    matrix res;
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
@@ -753,7 +701,7 @@ Matrix<Type> Matrix<Type>::operator>=(const Matrix<Type> &a) const {
 		for(i=0;i<N;i++)
        	    res.p[i]=(p[i]>=a.p[i]);
 	} else {
-		Type *pi,*pa,*pres;
+		double *pi,*pa,*pres;
 		pi=p;pa=a.p;pres=res.p;
 		for(i=0;i<resnc;i++) {
     	   	for(j=0;j<resnf;j++) {
@@ -770,10 +718,10 @@ Matrix<Type> Matrix<Type>::operator>=(const Matrix<Type> &a) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator>=(mat_type n) const {
+
+matrix matrix::operator>=(double n) const {
 	
-	Matrix<Type> res(nf,nc);
+	matrix res(nf,nc);
     int i,N;
     
     N=nc*nf;
@@ -783,10 +731,10 @@ Matrix<Type> Matrix<Type>::operator>=(mat_type n) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator<=(mat_type n) const {
+
+matrix matrix::operator<=(double n) const {
 	
-	Matrix<Type> res(nf,nc);
+	matrix res(nf,nc);
     int i,N;
     
     N=nc*nf;
@@ -796,10 +744,10 @@ Matrix<Type> Matrix<Type>::operator<=(mat_type n) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator||(const Matrix<Type> &a) const {
 
-    Matrix<Type> res;
+matrix matrix::operator||(const matrix &a) const {
+
+    matrix res;
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
@@ -818,7 +766,7 @@ Matrix<Type> Matrix<Type>::operator||(const Matrix<Type> &a) const {
 		for(i=0;i<N;i++)
        	    res.p[i]=(p[i]||a.p[i]);
 	} else {
-		Type *pi,*pa,*pres;
+		double *pi,*pa,*pres;
 		pi=p;pa=a.p;pres=res.p;
 		for(i=0;i<resnc;i++) {
     	   	for(j=0;j<resnf;j++) {
@@ -835,10 +783,10 @@ Matrix<Type> Matrix<Type>::operator||(const Matrix<Type> &a) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator||(mat_type n) const {
+
+matrix matrix::operator||(double n) const {
 	
-	Matrix<Type> res(nf,nc);
+	matrix res(nf,nc);
     int i,N;
     
     N=nc*nf;
@@ -848,10 +796,10 @@ Matrix<Type> Matrix<Type>::operator||(mat_type n) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator&&(const Matrix<Type> &a) const {
 
-    Matrix<Type> res;
+matrix matrix::operator&&(const matrix &a) const {
+
+    matrix res;
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
@@ -870,7 +818,7 @@ Matrix<Type> Matrix<Type>::operator&&(const Matrix<Type> &a) const {
 		for(i=0;i<N;i++)
        	    res.p[i]=(p[i]&&a.p[i]);
 	} else {
-		Type *pi,*pa,*pres;
+		double *pi,*pa,*pres;
 		pi=p;pa=a.p;pres=res.p;
 		for(i=0;i<resnc;i++) {
     	   	for(j=0;j<resnf;j++) {
@@ -887,10 +835,10 @@ Matrix<Type> Matrix<Type>::operator&&(const Matrix<Type> &a) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::operator&&(mat_type n) const {
+
+matrix matrix::operator&&(double n) const {
 	
-	Matrix<Type> res(nf,nc);
+	matrix res(nf,nc);
     int i,N;
     
     N=nc*nf;
@@ -900,8 +848,8 @@ Matrix<Type> Matrix<Type>::operator&&(mat_type n) const {
     return res;
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::operator+=(const Matrix<Type> &a) {
+
+matrix &matrix::operator+=(const matrix &a) {
     
     int i,j,k,N;
 
@@ -926,8 +874,8 @@ Matrix<Type> &Matrix<Type>::operator+=(const Matrix<Type> &a) {
     return *this;
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::operator-=(const Matrix<Type> &a) {
+
+matrix &matrix::operator-=(const matrix &a) {
     
     int i,j,k,N;
 
@@ -952,8 +900,8 @@ Matrix<Type> &Matrix<Type>::operator-=(const Matrix<Type> &a) {
     return *this;
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::operator*=(const Matrix<Type> &a) {
+
+matrix &matrix::operator*=(const matrix &a) {
     
     int i,j,k,N;
 
@@ -978,8 +926,8 @@ Matrix<Type> &Matrix<Type>::operator*=(const Matrix<Type> &a) {
     return *this;
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::operator/=(const Matrix<Type> &a) {
+
+matrix &matrix::operator/=(const matrix &a) {
     
     int i,j,k,N;
 
@@ -1004,8 +952,8 @@ Matrix<Type> &Matrix<Type>::operator/=(const Matrix<Type> &a) {
     return *this;
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::operator+=(mat_type n) {
+
+matrix &matrix::operator+=(double n) {
     
 	int i,N;
 	N=nc*nf;
@@ -1014,8 +962,8 @@ Matrix<Type> &Matrix<Type>::operator+=(mat_type n) {
 	return *this;
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::operator-=(mat_type n) {
+
+matrix &matrix::operator-=(double n) {
     
     int i,N;
 	N=nc*nf;
@@ -1024,8 +972,8 @@ Matrix<Type> &Matrix<Type>::operator-=(mat_type n) {
 	return *this;
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::operator*=(mat_type n) {
+
+matrix &matrix::operator*=(double n) {
 
 	int i,N;
 	N=nc*nf;
@@ -1034,8 +982,8 @@ Matrix<Type> &Matrix<Type>::operator*=(mat_type n) {
 	return *this;
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::operator/=(mat_type n) {
+
+matrix &matrix::operator/=(double n) {
 
 	int i,N;
 	N=nc*nf;
@@ -1044,11 +992,11 @@ Matrix<Type> &Matrix<Type>::operator/=(mat_type n) {
 	return *this;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::row(int ifil) const {
 
-	Matrix<Type> res(1,nc);
-	Type *pi;
+matrix matrix::row(int ifil) const {
+
+	matrix res(1,nc);
+	double *pi;
 	int i;
 	
 	if(ifil<0) ifil+=nf;
@@ -1064,10 +1012,10 @@ Matrix<Type> Matrix<Type>::row(int ifil) const {
 	return res;
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::setrow(int ifil,const Matrix<Type> &a) {
 
-	Type *pi;
+matrix &matrix::setrow(int ifil,const matrix &a) {
+
+	double *pi;
 	int i;
 	
 	if(ifil<0) ifil+=nf;
@@ -1088,11 +1036,11 @@ Matrix<Type> &Matrix<Type>::setrow(int ifil,const Matrix<Type> &a) {
 		
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::col(int icol) const {
 
-	Matrix<Type> res(nf,1);
-	Type *pi;
+matrix matrix::col(int icol) const {
+
+	matrix res(nf,1);
+	double *pi;
 	int i,N;
 	
 	if(icol<0) icol+=nc;
@@ -1109,10 +1057,10 @@ Matrix<Type> Matrix<Type>::col(int icol) const {
 	return res;
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::setcol(int icol,const Matrix<Type> &a) {
 
-	Type *pi;
+matrix &matrix::setcol(int icol,const matrix &a) {
+
+	double *pi;
 	int i,N;
 	
 	if(icol<0) icol+=nc;
@@ -1134,8 +1082,8 @@ Matrix<Type> &Matrix<Type>::setcol(int icol,const Matrix<Type> &a) {
 		
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::block(int ifil1,int ifil2,int icol1,int icol2) const {
+
+matrix matrix::block(int ifil1,int ifil2,int icol1,int icol2) const {
 
 	if(ifil1<0) ifil1+=nf;
 	if(ifil2<0) ifil2+=nf;
@@ -1147,8 +1095,8 @@ Matrix<Type> Matrix<Type>::block(int ifil1,int ifil2,int icol1,int icol2) const 
 		exit(1);
 	}	
 
-	Matrix<Type> res(ifil2-ifil1+1,icol2-icol1+1);
-	Type *pi,*pres;
+	matrix res(ifil2-ifil1+1,icol2-icol1+1);
+	double *pi,*pres;
 	int i,j,N1,N2;
 	
 	pi=p+ifil1+icol1*nf;pres=res.p;
@@ -1162,8 +1110,8 @@ Matrix<Type> Matrix<Type>::block(int ifil1,int ifil2,int icol1,int icol2) const 
 	return res;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::block_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,int dcol) const {
+
+matrix matrix::block_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,int dcol) const {
 
 	if(ifil1<0) ifil1+=nf;
 	if(ifil2<0) ifil2+=nf;
@@ -1175,8 +1123,8 @@ Matrix<Type> Matrix<Type>::block_step(int ifil1,int ifil2,int dfil,int icol1,int
 		exit(1);
 	}	
 
-	Matrix<Type> res(floor((ifil2-ifil1)/dfil)+1,floor((icol2-icol1)/dcol)+1);
-	Type *pi,*pres;
+	matrix res(floor((ifil2-ifil1)/dfil)+1,floor((icol2-icol1)/dcol)+1);
+	double *pi,*pres;
 	int i,j,N1,N2;
 	
 	pi=p+ifil1+icol1*nf;pres=res.p;
@@ -1190,8 +1138,8 @@ Matrix<Type> Matrix<Type>::block_step(int ifil1,int ifil2,int dfil,int icol1,int
 	return res;
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::setblock(int ifil1,int ifil2,int icol1,int icol2,const Matrix<Type> &a) {
+
+matrix &matrix::setblock(int ifil1,int ifil2,int icol1,int icol2,const matrix &a) {
 
 	if(ifil1<0) ifil1+=nf;
 	if(ifil2<0) ifil2+=nf;
@@ -1207,7 +1155,7 @@ Matrix<Type> &Matrix<Type>::setblock(int ifil1,int ifil2,int icol1,int icol2,con
 		exit(1);
 	}
 
-	Type *pi,*pa;
+	double *pi,*pa;
 	int i,j,N1,N2;
 	
 	pi=p+ifil1+icol1*nf;pa=a.p;
@@ -1222,8 +1170,8 @@ Matrix<Type> &Matrix<Type>::setblock(int ifil1,int ifil2,int icol1,int icol2,con
 	
 }
 
-template <class Type>
-Matrix<Type> &Matrix<Type>::setblock_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,int dcol,const Matrix<Type> &a) {
+
+matrix &matrix::setblock_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,int dcol,const matrix &a) {
 
 	if(ifil1<0) ifil1+=nf;
 	if(ifil2<0) ifil2+=nf;
@@ -1239,7 +1187,7 @@ Matrix<Type> &Matrix<Type>::setblock_step(int ifil1,int ifil2,int dfil,int icol1
 		exit(1);
 	}
 
-	Type *pi,*pa;
+	double *pi,*pa;
 	int i,j,N1,N2;
 	
 	pi=p+ifil1+icol1*nf;pa=a.p;
@@ -1254,12 +1202,12 @@ Matrix<Type> &Matrix<Type>::setblock_step(int ifil1,int ifil2,int dfil,int icol1
 	
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::transpose() const {
 
-	Matrix<Type> a(nc,nf);
+matrix matrix::transpose() const {
+
+	matrix a(nc,nf);
 	int i,j,N1,N2;
-	Type *pi,*pa;
+	double *pi,*pa;
 	
 	N1=nf;N2=nc;
 	pi=p;pa=a.p;
@@ -1273,12 +1221,12 @@ Matrix<Type> Matrix<Type>::transpose() const {
 	return a;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::fliplr() const {
 
-	Matrix<Type> a(nf,nc);
+matrix matrix::fliplr() const {
+
+	matrix a(nf,nc);
 	int i,j,N1,N2;
-	Type *pi,*pa;
+	double *pi,*pa;
 	
 	N1=nc;N2=nf;
 	pi=p;pa=a.p;
@@ -1293,12 +1241,12 @@ Matrix<Type> Matrix<Type>::fliplr() const {
 	return a;
 }
 
-template <class Type>
-Matrix<Type> Matrix<Type>::flipud() const {
 
-	Matrix<Type> a(nf,nc);
+matrix matrix::flipud() const {
+
+	matrix a(nf,nc);
 	int i,j,N1,N2;
-	Type *pi,*pa;
+	double *pi,*pa;
 	
 	N1=nc;N2=nf;
 	pi=p;pa=a.p;
@@ -1343,7 +1291,7 @@ matrix random_matrix(int nfil,int ncol) {
 	
 	N=nfil*ncol;
 	for(i=0;i<N;i++)
-		a.p[i]=(mat_type) rand()/RAND_MAX;
+		a.p[i]=(double) rand()/RAND_MAX;
 		
 	return a;
 
@@ -1364,9 +1312,9 @@ matrix eye(int n) {
 }
 
 
-matrix vector_t(mat_type x0,mat_type x1,int n) {
+matrix vector_t(double x0,double x1,int n) {
 
-	mat_type x,dx;
+	double x,dx;
 	int i;
 	
 	dx=(x1-x0)/(n-1);
@@ -1379,7 +1327,7 @@ matrix vector_t(mat_type x0,mat_type x1,int n) {
 	return v;
 }
 
-matrix vector(mat_type x0,mat_type x1,int n) {
+matrix vector(double x0,double x1,int n) {
 
 	matrix v;
 	
@@ -1390,10 +1338,10 @@ matrix vector(mat_type x0,mat_type x1,int n) {
 	return v;
 }
 
-template <class Type>
-Type max(const Matrix<Type> &a) {
 
-	Type x;
+double max(const matrix &a) {
+
+	double x;
 	int i,N;
 	
 	x=*(a.p);
@@ -1404,10 +1352,10 @@ Type max(const Matrix<Type> &a) {
 	return x;
 }
 
-template <class Type>
-Type min(const Matrix<Type> &a) {
 
-	Type x;
+double min(const matrix &a) {
+
+	double x;
 	int i,N;
 	
 	x=*(a.p);
@@ -1418,10 +1366,10 @@ Type min(const Matrix<Type> &a) {
 	return x;
 }
 
-template <class Type>
-Type sum(const Matrix<Type> &a) {
 
-	Type s=0;
+double sum(const matrix &a) {
+
+	double s=0;
 	int i,N;
 	
 	N=a.nf*a.nc;
@@ -1431,21 +1379,21 @@ Type sum(const Matrix<Type> &a) {
 	return s;
 }
 
-template <class Type>
-Type mean(const Matrix<Type> &a) {
+
+double mean(const matrix &a) {
 
 	return sum(a)/a.nf/a.nc;
 }
 
-template <class Type>
-Matrix<Type> max(const Matrix<Type> &a,const Matrix<Type> &b) {
+
+matrix max(const matrix &a,const matrix &b) {
 
 	if( (b.nf!=a.nf) || (b.nc!=a.nc) ) {
 		fprintf(stderr,"ERROR: (matrix.max) Dimensions must agree\n");
 		exit(1);
 	}
 
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     N=a.nc*a.nf;
     for(i=0;i<N;i++)
@@ -1453,10 +1401,10 @@ Matrix<Type> max(const Matrix<Type> &a,const Matrix<Type> &b) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> max(const Matrix<Type> &a,mat_type n) {
 
-    Matrix<Type> res(a.nf,a.nc);
+matrix max(const matrix &a,double n) {
+
+    matrix res(a.nf,a.nc);
     int i,N;
     N=a.nc*a.nf;
     for(i=0;i<N;i++)
@@ -1464,20 +1412,20 @@ Matrix<Type> max(const Matrix<Type> &a,mat_type n) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> max(mat_type n,const Matrix<Type> &a) {
+
+matrix max(double n,const matrix &a) {
 	return max(a,n);
 }
 
-template <class Type>
-Matrix<Type> min(const Matrix<Type> &a,const Matrix<Type> &b) {
+
+matrix min(const matrix &a,const matrix &b) {
 
 	if( (b.nf!=a.nf) || (b.nc!=a.nc) ) {
 		fprintf(stderr,"ERROR: (matrix.min) Dimensions must agree\n");
 		exit(1);
 	}
 
-    Matrix<Type> res(a.nf,a.nc);
+    matrix res(a.nf,a.nc);
     int i,N;
     N=a.nc*a.nf;
     for(i=0;i<N;i++)
@@ -1485,10 +1433,10 @@ Matrix<Type> min(const Matrix<Type> &a,const Matrix<Type> &b) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> min(const Matrix<Type> &a,mat_type n) {
 
-    Matrix<Type> res(a.nf,a.nc);
+matrix min(const matrix &a,double n) {
+
+    matrix res(a.nf,a.nc);
     int i,N;
     N=a.nc*a.nf;
     for(i=0;i<N;i++)
@@ -1496,13 +1444,13 @@ Matrix<Type> min(const Matrix<Type> &a,mat_type n) {
     return res;
 }
 
-template <class Type>
-Matrix<Type> min(mat_type n,const Matrix<Type> &a) {
+
+matrix min(double n,const matrix &a) {
 	return min(a,n);
 }
 
-template <class Type>
-int exist(const Matrix<Type> &a) {
+
+int exist(const matrix &a) {
 
 	int i,N;
 	N=a.nf*a.nc;
@@ -1511,8 +1459,8 @@ int exist(const Matrix<Type> &a) {
 	return 0;
 }
 
-template <class Type>
-int isequal(const Matrix<Type> &a,const Matrix<Type> &b) {
+
+int isequal(const matrix &a,const matrix &b) {
 
 	int i,N,res;
 	if(a.nf!=b.nf) return 0;
@@ -1524,41 +1472,6 @@ int isequal(const Matrix<Type> &a,const Matrix<Type> &b) {
 	return res;
 }
 
-// Explicit instantiations
 
-template class Matrix<double>;
-template class Matrix<float>;
-
-template Matrix<double> operator-(mat_type,const Matrix<double> &);
-template Matrix<double> operator-(const Matrix<double> &);
-template Matrix<double> operator/(mat_type,const Matrix<double> &);
-template double max(const Matrix<double> &);
-template double min(const Matrix<double> &);
-template double sum(const Matrix<double> &);
-template double mean(const Matrix<double> &);
-template Matrix<double> max(const Matrix<double> &,const Matrix<double> &);
-template Matrix<double> max(const Matrix<double> &,mat_type);
-template Matrix<double> max(mat_type,const Matrix<double> &);
-template Matrix<double> min(const Matrix<double> &,const Matrix<double> &);
-template Matrix<double> min(const Matrix<double> &,mat_type);
-template Matrix<double> min(mat_type,const Matrix<double> &);
-template int exist(const Matrix<double> &);
-template int isequal(const Matrix<double> &,const Matrix<double> &);
-
-template Matrix<float> operator-(mat_type,const Matrix<float> &);
-template Matrix<float> operator-(const Matrix<float> &);
-template Matrix<float> operator/(mat_type,const Matrix<float> &);
-template float max(const Matrix<float> &);
-template float min(const Matrix<float> &);
-template float sum(const Matrix<float> &);
-template float mean(const Matrix<float> &);
-template Matrix<float> max(const Matrix<float> &,const Matrix<float> &);
-template Matrix<float> max(const Matrix<float> &,mat_type);
-template Matrix<float> max(mat_type,const Matrix<float> &);
-template Matrix<float> min(const Matrix<float> &,const Matrix<float> &);
-template Matrix<float> min(const Matrix<float> &,mat_type);
-template Matrix<float> min(mat_type,const Matrix<float> &);
-template int exist(const Matrix<float> &);
-template int isequal(const Matrix<float> &,const Matrix<float> &);
 
 

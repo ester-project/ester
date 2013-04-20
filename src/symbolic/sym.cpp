@@ -263,7 +263,7 @@ void sym::dump() const {
 	symterm *t1;
 	int n=0;
 	
-	printf("Context(%lx)\n",context);
+	printf("Context(%p)\n",context);
 	t1=terms;
 	while(t1!=NULL) {
 		printf("(%d): \n",n);

@@ -3,261 +3,236 @@
 
 #include<stdio.h>
 
-typedef double mat_type;
-
-template <class Type>
-class Matrix;
-
-template <class Type>
-class Matrix_block_diag;
-
-typedef Matrix<mat_type> matrix;
-typedef Matrix_block_diag<mat_type> matrix_block_diag;
-
-template <class Type> Matrix<Type> operator+(mat_type n,const Matrix<Type> &a) {return a+n;}
-template <class Type> Matrix<Type> operator+(const Matrix<Type> &a) {return a;}
-template <class Type> Matrix<Type> operator-(mat_type,const Matrix<Type> &);
-template <class Type> Matrix<Type> operator-(const Matrix<Type> &);
-template <class Type> Matrix<Type> operator*(mat_type n,const Matrix<Type> &a) {return a*n;}
-template <class Type> Matrix<Type> operator/(mat_type,const Matrix<Type> &);
-template <class Type> Matrix<Type> operator==(mat_type n,const Matrix<Type> &a) {return a==n;}
-template <class Type> Matrix<Type> operator!=(mat_type n,const Matrix<Type> &a) {return a!=n;}
-template <class Type> Matrix<Type> operator<(mat_type n,const Matrix<Type> &a) {return a>n;}
-template <class Type> Matrix<Type> operator>(mat_type n,const Matrix<Type> &a) {return a<n;}
-template <class Type> Matrix<Type> operator<=(mat_type n,const Matrix<Type> &a) {return a>=n;}
-template <class Type> Matrix<Type> operator>=(mat_type n,const Matrix<Type> &a) {return a<=n;}
-template <class Type> Matrix<Type> operator&&(mat_type n,const Matrix<Type> &a) {return a&&n;}
-template <class Type> Matrix<Type> operator||(mat_type n,const Matrix<Type> &a) {return a||n;}
-
-matrix ones(int nfil,int ncol);
-matrix zeros(int nfil,int ncol);
-matrix random_matrix(int nfil,int ncol);
-matrix eye(int n);
-matrix vector(mat_type x0,mat_type x1,int n);
-matrix vector_t(mat_type x0,mat_type x1,int n);
-
-template <class Type> Type max(const Matrix<Type> &);
-template <class Type> Type min(const Matrix<Type> &);
-template <class Type> Type sum(const Matrix<Type> &);
-template <class Type> Type mean(const Matrix<Type> &);
-
-template <class Type> Matrix<Type> max(const Matrix<Type> &,const Matrix<Type> &);
-template <class Type> Matrix<Type> max(const Matrix<Type> &,mat_type);
-template <class Type> Matrix<Type> max(mat_type,const Matrix<Type> &);
-template <class Type> Matrix<Type> min(const Matrix<Type> &,const Matrix<Type> &);
-template <class Type> Matrix<Type> min(const Matrix<Type> &,mat_type);
-template <class Type> Matrix<Type> min(mat_type,const Matrix<Type> &);
-	
-template <class Type> int exist(const Matrix<Type> &);
-template <class Type> int isequal(const Matrix<Type> &,const Matrix<Type> &);
-
-template <class Type> Matrix<Type> cos(const Matrix<Type> &);
-template <class Type> Matrix<Type> sin(const Matrix<Type> &);
-template <class Type> Matrix<Type> tan(const Matrix<Type> &);
-template <class Type> Matrix<Type> acos(const Matrix<Type> &);
-template <class Type> Matrix<Type> asin(const Matrix<Type> &);
-template <class Type> Matrix<Type> atan(const Matrix<Type> &);
-template <class Type> Matrix<Type> cosh(const Matrix<Type> &);
-template <class Type> Matrix<Type> sinh(const Matrix<Type> &);
-template <class Type> Matrix<Type> tanh(const Matrix<Type> &);
-template <class Type> Matrix<Type> exp(const Matrix<Type> &);
-template <class Type> Matrix<Type> log(const Matrix<Type> &);
-template <class Type> Matrix<Type> log10(const Matrix<Type> &);
-template <class Type> Matrix<Type> sqrt(const Matrix<Type> &);
-template <class Type> Matrix<Type> abs(const Matrix<Type> &);
-template <class Type> Matrix<Type> floor(const Matrix<Type> &);
-template <class Type> Matrix<Type> ceil(const Matrix<Type> &);
-template <class Type> Matrix<Type> round(const Matrix<Type> &);
-template <class Type> Matrix<Type> atan2(const Matrix<Type> &,const Matrix<Type> &);
-template <class Type> Matrix<Type> atan2(mat_type,const Matrix<Type> &);
-template <class Type> Matrix<Type> atan2(const Matrix<Type> &,mat_type);
-template <class Type> Matrix<Type> pow(const Matrix<Type> &,const Matrix<Type> &);
-template <class Type> Matrix<Type> pow(mat_type,const Matrix<Type> &);
-template <class Type> Matrix<Type> pow(const Matrix<Type> &,mat_type);
-template <class Type> Matrix<Type> pow(const Matrix<Type> &,int);
-
-
-template <class Type>
-class Matrix {
-	Type *p;
+class matrix {
+	double *p;
 	int nf,nc;
 public:
-	Matrix(int nfil=1,int ncol=1);
-	~Matrix();
-	Matrix(const Matrix &);
+	matrix(int nfil=1,int ncol=1);
+	~matrix();
+	matrix(const matrix &);
 	int nrows() const;
 	int ncols() const;
-	Type *data() const;
-	Matrix &dim(int nrow,int ncol);
-	Matrix &redim(int nrow,int ncol);
-	Matrix &operator=(const Matrix &);
-	template <class Type2> Matrix &operator=(const Matrix<Type2> &);
-	template <class Type2> operator Matrix<Type2>() const;
-	Type &operator()(int irow,int icol); 
-	Type &operator()(int ielem);
-	Type operator()(int irow,int icol) const; 
-	Type operator()(int ielem) const;
+	double *data() const;
+	matrix &dim(int nrow,int ncol);
+	matrix &redim(int nrow,int ncol);
+	matrix &operator=(const matrix &);
+	double &operator()(int irow,int icol); 
+	double &operator()(int ielem);
+	const double &operator()(int irow,int icol) const; 
+	const double &operator()(int ielem) const;
 	int read(int nrow,int ncol,FILE *fp,char mode='t');
 	int write(FILE *fp=stdout,char mode='t') const;
 	void write_fmt(const char *fmt,FILE *fp=stdout) const;
-	void swap(Matrix &);
+	void swap(matrix &);
 	void zero(int nrows,int ncols);
 	    
-	friend Matrix operator-<>(mat_type,const Matrix &);
-	friend Matrix operator-<>(const Matrix &);
-	friend Matrix operator/<>(mat_type,const Matrix &);
+	friend matrix operator-(double,const matrix &);
+	friend matrix operator-(const matrix &);
+	friend matrix operator/(double,const matrix &);
 	    
-	Matrix operator+(const Matrix &) const;
-	Matrix operator+(mat_type) const;
-	Matrix operator-(const Matrix &) const;
-	Matrix operator-(mat_type) const;
-	Matrix operator*(const Matrix &) const;	
-	Matrix operator*(mat_type) const;
-	Matrix operator/(const Matrix &) const;	
-	Matrix operator/(mat_type) const;
-	Matrix operator==(const Matrix &) const;	
-	Matrix operator==(mat_type) const;
-	Matrix operator!=(const Matrix &) const;	
-	Matrix operator!=(mat_type) const;
-	Matrix operator>(const Matrix &) const;
-	Matrix operator>(mat_type) const;
-	Matrix operator<(const Matrix &a) const {return a>*this;}	
-	Matrix operator<(mat_type) const;
-	Matrix operator>=(const Matrix &) const;	
-	Matrix operator>=(mat_type) const;
-	Matrix operator<=(const Matrix &a) const {return a>=*this;}	
-	Matrix operator<=(mat_type) const;
-	Matrix operator&&(const Matrix &) const;	
-	Matrix operator&&(mat_type) const;
-	Matrix operator||(const Matrix &) const;	
-	Matrix operator||(mat_type) const;
-	Matrix &operator+=(const Matrix &);
-    Matrix &operator-=(const Matrix &);
-    Matrix &operator*=(const Matrix &);
-    Matrix &operator/=(const Matrix &);
-    Matrix &operator+=(mat_type);
-    Matrix &operator-=(mat_type);
-    Matrix &operator*=(mat_type);
-    Matrix &operator/=(mat_type);
+	matrix operator+(const matrix &) const;
+	matrix operator+(double) const;
+	matrix operator-(const matrix &) const;
+	matrix operator-(double) const;
+	matrix operator*(const matrix &) const;	
+	matrix operator*(double) const;
+	matrix operator/(const matrix &) const;	
+	matrix operator/(double) const;
+	matrix operator==(const matrix &) const;	
+	matrix operator==(double) const;
+	matrix operator!=(const matrix &) const;	
+	matrix operator!=(double) const;
+	matrix operator>(const matrix &) const;
+	matrix operator>(double) const;
+	matrix operator<(const matrix &a) const {return a>*this;}	
+	matrix operator<(double) const;
+	matrix operator>=(const matrix &) const;	
+	matrix operator>=(double) const;
+	matrix operator<=(const matrix &a) const {return a>=*this;}	
+	matrix operator<=(double) const;
+	matrix operator&&(const matrix &) const;	
+	matrix operator&&(double) const;
+	matrix operator||(const matrix &) const;	
+	matrix operator||(double) const;
+	matrix &operator+=(const matrix &);
+    matrix &operator-=(const matrix &);
+    matrix &operator*=(const matrix &);
+    matrix &operator/=(const matrix &);
+    matrix &operator+=(double);
+    matrix &operator-=(double);
+    matrix &operator*=(double);
+    matrix &operator/=(double);
     
-    Matrix row(int irow) const;
-    Matrix col(int icol) const;
-    Matrix block(int irow1,int irow2,int icol1,int icol2) const;
-    Matrix block_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol) const;
-    Matrix &setrow(int irow,const Matrix &);
-    Matrix &setcol(int icol,const Matrix &);
-    Matrix &setblock(int irow1,int irow2,int icol1,int icol2,const Matrix &);
-    Matrix &setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,const Matrix &);
+    matrix row(int irow) const;
+    matrix col(int icol) const;
+    matrix block(int irow1,int irow2,int icol1,int icol2) const;
+    matrix block_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol) const;
+    matrix &setrow(int irow,const matrix &);
+    matrix &setcol(int icol,const matrix &);
+    matrix &setblock(int irow1,int irow2,int icol1,int icol2,const matrix &);
+    matrix &setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,const matrix &);
     
-    Matrix transpose() const;
-    Matrix fliplr() const;
-    Matrix flipud() const;
+    matrix transpose() const;
+    matrix fliplr() const;
+    matrix flipud() const;
     
     friend matrix ones(int nfil,int ncol);
 	friend matrix zeros(int nfil,int ncol);
 	friend matrix random_matrix(int nfil,int ncol);
 	friend matrix eye(int n);
-	friend matrix vector(mat_type x0,mat_type x1,int n);
-    friend matrix vector_t(mat_type x0,mat_type x1,int n);
+	friend matrix vector(double x0,double x1,int n);
+    friend matrix vector_t(double x0,double x1,int n);
     
-	friend Type max<>(const Matrix &);
-	friend Type min<>(const Matrix &);
-	friend Type sum<>(const Matrix &);
-	friend Type mean<>(const Matrix &);
+	friend double max(const matrix &);
+	friend double min(const matrix &);
+	friend double sum(const matrix &);
+	friend double mean(const matrix &);
 	
-	friend Matrix max<>(const Matrix &,const Matrix &);
-    friend Matrix max<>(const Matrix &,mat_type);
-    friend Matrix max<>(mat_type,const Matrix &);
-    friend Matrix min<>(const Matrix &,const Matrix &);
-    friend Matrix min<>(const Matrix &,mat_type);
-    friend Matrix min<>(mat_type,const Matrix &);
+	friend matrix max(const matrix &,const matrix &);
+    friend matrix max(const matrix &,double);
+    friend matrix max(double,const matrix &);
+    friend matrix min(const matrix &,const matrix &);
+    friend matrix min(const matrix &,double);
+    friend matrix min(double,const matrix &);
 	
-	friend int exist<>(const Matrix &);
-    friend int isequal<>(const Matrix &,const Matrix &);
+	friend int exist(const matrix &);
+    friend int isequal(const matrix &,const matrix &);
     
-    friend Matrix cos<>(const Matrix &);
-	friend Matrix sin<>(const Matrix &);
-	friend Matrix tan<>(const Matrix &);
-	friend Matrix acos<>(const Matrix &);
-	friend Matrix asin<>(const Matrix &);
-	friend Matrix atan<>(const Matrix &);
-	friend Matrix cosh<>(const Matrix &);
-	friend Matrix sinh<>(const Matrix &);
-	friend Matrix tanh<>(const Matrix &);
-	friend Matrix exp<>(const Matrix &);
-	friend Matrix log<>(const Matrix &);
-	friend Matrix log10<>(const Matrix &);
-	friend Matrix sqrt<>(const Matrix &);
-	friend Matrix abs<>(const Matrix &);
-	friend Matrix floor<>(const Matrix &);
-	friend Matrix ceil<>(const Matrix &);
-	friend Matrix round<>(const Matrix &);
-	friend Matrix atan2<>(const Matrix &,const Matrix &);
-	friend Matrix atan2<>(double,const Matrix &);
-	friend Matrix atan2<>(const Matrix &,double);
-	friend Matrix pow<>(const Matrix &,const Matrix &);
-	friend Matrix pow<>(double,const Matrix &);
-	friend Matrix pow<>(const Matrix &,double);
-	friend Matrix pow<>(const Matrix &,int);
+    friend matrix cos(const matrix &);
+	friend matrix sin(const matrix &);
+	friend matrix tan(const matrix &);
+	friend matrix acos(const matrix &);
+	friend matrix asin(const matrix &);
+	friend matrix atan(const matrix &);
+	friend matrix cosh(const matrix &);
+	friend matrix sinh(const matrix &);
+	friend matrix tanh(const matrix &);
+	friend matrix exp(const matrix &);
+	friend matrix log(const matrix &);
+	friend matrix log10(const matrix &);
+	friend matrix sqrt(const matrix &);
+	friend matrix abs(const matrix &);
+	friend matrix floor(const matrix &);
+	friend matrix ceil(const matrix &);
+	friend matrix round(const matrix &);
+	friend matrix atan2(const matrix &,const matrix &);
+	friend matrix atan2(double,const matrix &);
+	friend matrix atan2(const matrix &,double);
+	friend matrix pow(const matrix &,const matrix &);
+	friend matrix pow(double,const matrix &);
+	friend matrix pow(const matrix &,double);
 
-    Matrix operator,(const Matrix &) const;
-    Matrix solve(Matrix) const;
-	Matrix inv() const;
+    matrix operator,(const matrix &) const;
+    matrix solve(matrix) const;
+	matrix inv() const;
     
-    friend class Matrix_block_diag<Type>;
-	friend class Matrix<float>;
-	friend class Matrix<double>;
+    friend class matrix_block_diag;
 
 };
 
-template <class Type> 
-Matrix<Type> operator,(const Matrix<Type> &,const Matrix_block_diag<Type> &);
-template <class Type> 
-Matrix_block_diag<Type> operator*(const Matrix<Type> &a,const Matrix_block_diag<Type> &D) {return D*a;}
-template <class Type> 
-Matrix_block_diag<Type> operator*(mat_type n,const Matrix_block_diag<Type> &D){return D*n;}
-template <class Type> 
-Matrix_block_diag<Type> operator+(const Matrix_block_diag<Type>&a) {return a;}
-template <class Type> 
-Matrix_block_diag<Type> operator-(const Matrix_block_diag<Type>&);
-template <class Type> 
-Matrix_block_diag<Type> eye(const Matrix_block_diag<Type> &);
+inline matrix operator+(double n,const matrix &a) {return a+n;}
+inline matrix operator+(const matrix &a) {return a;}
+matrix operator-(double,const matrix &);
+matrix operator-(const matrix &);
+inline matrix operator*(double n,const matrix &a) {return a*n;}
+matrix operator/(double,const matrix &);
+inline matrix operator==(double n,const matrix &a) {return a==n;}
+inline matrix operator!=(double n,const matrix &a) {return a!=n;}
+inline matrix operator<(double n,const matrix &a) {return a>n;}
+inline matrix operator>(double n,const matrix &a) {return a<n;}
+inline matrix operator<=(double n,const matrix &a) {return a>=n;}
+inline matrix operator>=(double n,const matrix &a) {return a<=n;}
+inline matrix operator&&(double n,const matrix &a) {return a&&n;}
+inline matrix operator||(double n,const matrix &a) {return a||n;}
 
-template <class Type>
-class Matrix_block_diag {
-	Matrix<Type> *m;
+matrix ones(int nfil,int ncol);
+matrix zeros(int nfil,int ncol);
+matrix random_matrix(int nfil,int ncol);
+matrix eye(int n);
+matrix vector(double x0,double x1,int n);
+matrix vector_t(double x0,double x1,int n);
+
+double max(const matrix &);
+double min(const matrix &);
+double sum(const matrix &);
+double mean(const matrix &);
+
+matrix max(const matrix &,const matrix &);
+matrix max(const matrix &,double);
+matrix max(double,const matrix &);
+matrix min(const matrix &,const matrix &);
+matrix min(const matrix &,double);
+matrix min(double,const matrix &);
+	
+int exist(const matrix &);
+int isequal(const matrix &,const matrix &);
+
+matrix cos(const matrix &);
+matrix sin(const matrix &);
+matrix tan(const matrix &);
+matrix acos(const matrix &);
+matrix asin(const matrix &);
+matrix atan(const matrix &);
+matrix cosh(const matrix &);
+matrix sinh(const matrix &);
+matrix tanh(const matrix &);
+matrix exp(const matrix &);
+matrix log(const matrix &);
+matrix log10(const matrix &);
+matrix sqrt(const matrix &);
+matrix abs(const matrix &);
+matrix floor(const matrix &);
+matrix ceil(const matrix &);
+matrix round(const matrix &);
+matrix atan2(const matrix &,const matrix &);
+matrix atan2(double,const matrix &);
+matrix atan2(const matrix &,double);
+matrix pow(const matrix &,const matrix &);
+matrix pow(double,const matrix &);
+matrix pow(const matrix &,double);
+
+class matrix_block_diag {
+	matrix *m;
 	int nb;
 public:
-	Matrix_block_diag(int nblocks=1);
-	~Matrix_block_diag();
-	Matrix_block_diag(const Matrix_block_diag &);
-	Matrix_block_diag & operator=(const Matrix_block_diag &);
-	Matrix_block_diag &set_nblocks(int nblocks);
-	operator Matrix<Type>() const;
-	Matrix<Type> &block(int i) const;
+	matrix_block_diag(int nblocks=1);
+	~matrix_block_diag();
+	matrix_block_diag(const matrix_block_diag &);
+	matrix_block_diag & operator=(const matrix_block_diag &);
+	matrix_block_diag &set_nblocks(int nblocks);
+	operator matrix() const;
+	const matrix &block(int i) const;
+	matrix &block(int i);
 	int nblocks() const;
 	int nrows() const;
 	int ncols() const;
-	friend Matrix<Type> operator,<>(const Matrix<Type> &,const Matrix_block_diag &);
-	Matrix<Type> operator,(const Matrix<Type> &) const;
-	Matrix_block_diag operator,(const Matrix_block_diag &) const;
-	friend Matrix_block_diag operator*<>(const Matrix<Type> &,const Matrix_block_diag &);
-	friend Matrix_block_diag operator*<>(mat_type,const Matrix_block_diag &);
-	Matrix_block_diag operator*(const Matrix<Type> &) const;
-	Matrix_block_diag operator/(const Matrix<Type> &) const;
-	Matrix_block_diag operator*(mat_type) const;
-	Matrix_block_diag operator/(mat_type) const;
-	friend Matrix_block_diag operator+<>(const Matrix_block_diag&);
-	friend Matrix_block_diag operator-<>(const Matrix_block_diag&);
-	Matrix_block_diag operator+(const Matrix_block_diag&) const;
-	Matrix_block_diag operator-(const Matrix_block_diag&) const;
-	Matrix_block_diag operator*(const Matrix_block_diag&) const;
-	Matrix<Type> row(int n) const;
-	Type operator()(int nfil,int ncol) const;
-	friend Matrix_block_diag eye<>(const Matrix_block_diag &);
-	Matrix_block_diag transpose() const;
+	friend matrix operator,(const matrix &,const matrix_block_diag &);
+	matrix operator,(const matrix &) const;
+	matrix_block_diag operator,(const matrix_block_diag &) const;
+	friend matrix_block_diag operator*(const matrix &,const matrix_block_diag &);
+	friend matrix_block_diag operator*(double,const matrix_block_diag &);
+	matrix_block_diag operator*(const matrix &) const;
+	matrix_block_diag operator/(const matrix &) const;
+	matrix_block_diag operator*(double) const;
+	matrix_block_diag operator/(double) const;
+	friend matrix_block_diag operator+(const matrix_block_diag&);
+	friend matrix_block_diag operator-(const matrix_block_diag&);
+	matrix_block_diag operator+(const matrix_block_diag&) const;
+	matrix_block_diag operator-(const matrix_block_diag&) const;
+	matrix_block_diag operator*(const matrix_block_diag&) const;
+	matrix row(int n) const;
+	double operator()(int nfil,int ncol) const;
+	friend matrix_block_diag eye(const matrix_block_diag &);
+	matrix_block_diag transpose() const;
 
 };
+
+matrix operator,(const matrix &,const matrix_block_diag &);
+inline matrix_block_diag operator*(const matrix &a,const matrix_block_diag &D) {return D*a;}
+inline matrix_block_diag operator*(double n,const matrix_block_diag &D){return D*n;}
+inline matrix_block_diag operator+(const matrix_block_diag&a) {return a;}
+matrix_block_diag operator-(const matrix_block_diag&);
+matrix_block_diag eye(const matrix_block_diag &);
 
 
 #include<sys/time.h>

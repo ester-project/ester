@@ -1,6 +1,7 @@
 all:
 	latex -shell-escape ester.tex
 	latex -shell-escape ester.tex
+	latex -shell-escape ester.tex # To set the correct page numbers in ToC
 	dvipdfm -o ../ester.pdf ester.dvi
 clean:
 	rm -f *.aux
