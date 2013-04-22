@@ -12,7 +12,7 @@ LDFLAGS=
 BLAS_LIB=-lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core
 LAPACK_LIB=
 
-LIBS=$(LAPACK_LIB) $(BLAS_LIB) -liomp5 -lpthread -lifcore -lifport -lgfortran
+LIBS=$(LAPACK_LIB) $(BLAS_LIB) -liomp5 -lpthread -lifcore -lifport
 
 ifeq ($(USE_PGPLOT),1) 
 	LIBS:=-lcpgplot $(LIBS)
