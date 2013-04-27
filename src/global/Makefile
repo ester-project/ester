@@ -1,6 +1,6 @@
 SRC=global.cpp
-SRC_H=constants.h ester.h version.h debug.h create_map.h
-DEPS=
+SRC_H=constants.h ester.h version.h debug.h
+DEPS=matrix.h
 
 LIB=lib$(DIR).a
 OBJS=$(SRC:.cpp=.o)

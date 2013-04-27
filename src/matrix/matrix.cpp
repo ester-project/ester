@@ -6,7 +6,7 @@
 
 
 matrix::matrix(int nfil,int ncol) {
-	
+
 	unsigned tam;
 
     if(nfil<0||ncol<0) {
@@ -992,8 +992,7 @@ matrix &matrix::operator/=(double n) {
 	return *this;
 }
 
-
-matrix matrix::row(int ifil) const {
+const matrix matrix::row(int ifil) const {
 
 	matrix res(1,nc);
 	double *pi;
@@ -1037,7 +1036,7 @@ matrix &matrix::setrow(int ifil,const matrix &a) {
 }
 
 
-matrix matrix::col(int icol) const {
+const matrix matrix::col(int icol) const {
 
 	matrix res(nf,1);
 	double *pi;
@@ -1056,7 +1055,6 @@ matrix matrix::col(int icol) const {
 	
 	return res;
 }
-
 
 matrix &matrix::setcol(int icol,const matrix &a) {
 
@@ -1082,8 +1080,7 @@ matrix &matrix::setcol(int icol,const matrix &a) {
 		
 }
 
-
-matrix matrix::block(int ifil1,int ifil2,int icol1,int icol2) const {
+const matrix matrix::block(int ifil1,int ifil2,int icol1,int icol2) const {
 
 	if(ifil1<0) ifil1+=nf;
 	if(ifil2<0) ifil2+=nf;
@@ -1111,7 +1108,7 @@ matrix matrix::block(int ifil1,int ifil2,int icol1,int icol2) const {
 }
 
 
-matrix matrix::block_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,int dcol) const {
+const matrix matrix::block_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,int dcol) const {
 
 	if(ifil1<0) ifil1+=nf;
 	if(ifil2<0) ifil2+=nf;
@@ -1137,7 +1134,6 @@ matrix matrix::block_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,int d
 	
 	return res;
 }
-
 
 matrix &matrix::setblock(int ifil1,int ifil2,int icol1,int icol2,const matrix &a) {
 
@@ -1203,6 +1199,7 @@ matrix &matrix::setblock_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,i
 }
 
 
+
 matrix matrix::transpose() const {
 
 	matrix a(nc,nf);
@@ -1220,7 +1217,6 @@ matrix matrix::transpose() const {
 	
 	return a;
 }
-
 
 matrix matrix::fliplr() const {
 

@@ -13,9 +13,9 @@ extern const double M_SUN=1.9891e33;
 extern const double R_SUN=6.95508e10;
 extern const double L_SUN=3.8396e33;
 
-#include"create_map.h"
+#include"matrix.h"
 
-std::map<std::string,double> AMASS = create_map<std::string,double>
+double_map AMASS = create_double_map
 		("n",1.008665)
 		("p",1.00727647)
 		("H",1.007825)

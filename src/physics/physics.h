@@ -4,7 +4,7 @@
 #include"matrix.h"
 
 struct nuc_struct {
-	matrix eps,pp,cno,d,dlneps_lnrho,dlneps_lnT;
+	matrix eps,pp,cno,dlneps_lnrho,dlneps_lnT;
 	char name[16];
 };
 struct eos_struct {
@@ -39,6 +39,8 @@ int opa_kramer(const matrix &T,const matrix &rho,
 
 int nuc_simple(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);	
+int nuc_cesam(const matrix &X,double Z,const matrix &T,const matrix &rho,
+		nuc_struct &nuc);	
 
 int eos_ideal(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos);
@@ -49,6 +51,8 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
 
 int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm);
-	
+
+double_map init_comp(double X,double Z);
+
 #endif
 

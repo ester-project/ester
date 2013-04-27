@@ -25,11 +25,11 @@ public:
 	void write_fmt(const char *fmt,FILE *fp=stdout) const;
 	void swap(matrix &);
 	void zero(int nrows,int ncols);
-	    
+	
 	friend matrix operator-(double,const matrix &);
 	friend matrix operator-(const matrix &);
 	friend matrix operator/(double,const matrix &);
-	    
+	
 	matrix operator+(const matrix &) const;
 	matrix operator+(double) const;
 	matrix operator-(const matrix &) const;
@@ -55,50 +55,50 @@ public:
 	matrix operator||(const matrix &) const;	
 	matrix operator||(double) const;
 	matrix &operator+=(const matrix &);
-    matrix &operator-=(const matrix &);
-    matrix &operator*=(const matrix &);
-    matrix &operator/=(const matrix &);
-    matrix &operator+=(double);
-    matrix &operator-=(double);
-    matrix &operator*=(double);
-    matrix &operator/=(double);
-    
-    matrix row(int irow) const;
-    matrix col(int icol) const;
-    matrix block(int irow1,int irow2,int icol1,int icol2) const;
-    matrix block_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol) const;
-    matrix &setrow(int irow,const matrix &);
-    matrix &setcol(int icol,const matrix &);
-    matrix &setblock(int irow1,int irow2,int icol1,int icol2,const matrix &);
-    matrix &setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,const matrix &);
-    
-    matrix transpose() const;
-    matrix fliplr() const;
-    matrix flipud() const;
-    
-    friend matrix ones(int nfil,int ncol);
+	matrix &operator-=(const matrix &);
+	matrix &operator*=(const matrix &);
+	matrix &operator/=(const matrix &);
+	matrix &operator+=(double);
+	matrix &operator-=(double);
+	matrix &operator*=(double);
+	matrix &operator/=(double);
+
+	const matrix row(int irow) const;
+	const matrix col(int icol) const;
+	const matrix block(int irow1,int irow2,int icol1,int icol2) const;
+	const matrix block_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol) const;
+	matrix &setrow(int irow,const matrix &);
+	matrix &setcol(int icol,const matrix &);
+	matrix &setblock(int irow1,int irow2,int icol1,int icol2,const matrix &);
+	matrix &setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,const matrix &);
+   
+	matrix transpose() const;
+	matrix fliplr() const;
+	matrix flipud() const;
+	
+	friend matrix ones(int nfil,int ncol);
 	friend matrix zeros(int nfil,int ncol);
 	friend matrix random_matrix(int nfil,int ncol);
 	friend matrix eye(int n);
 	friend matrix vector(double x0,double x1,int n);
-    friend matrix vector_t(double x0,double x1,int n);
-    
+	friend matrix vector_t(double x0,double x1,int n);
+	
 	friend double max(const matrix &);
 	friend double min(const matrix &);
 	friend double sum(const matrix &);
 	friend double mean(const matrix &);
 	
 	friend matrix max(const matrix &,const matrix &);
-    friend matrix max(const matrix &,double);
-    friend matrix max(double,const matrix &);
-    friend matrix min(const matrix &,const matrix &);
-    friend matrix min(const matrix &,double);
-    friend matrix min(double,const matrix &);
+	friend matrix max(const matrix &,double);
+	friend matrix max(double,const matrix &);
+	friend matrix min(const matrix &,const matrix &);
+	friend matrix min(const matrix &,double);
+	friend matrix min(double,const matrix &);
 	
 	friend int exist(const matrix &);
-    friend int isequal(const matrix &,const matrix &);
-    
-    friend matrix cos(const matrix &);
+	friend int isequal(const matrix &,const matrix &);
+	
+	friend matrix cos(const matrix &);
 	friend matrix sin(const matrix &);
 	friend matrix tan(const matrix &);
 	friend matrix acos(const matrix &);
@@ -122,11 +122,11 @@ public:
 	friend matrix pow(double,const matrix &);
 	friend matrix pow(const matrix &,double);
 
-    matrix operator,(const matrix &) const;
-    matrix solve(matrix) const;
+	matrix operator,(const matrix &) const;
+	matrix solve(matrix) const;
 	matrix inv() const;
-    
-    friend class matrix_block_diag;
+	
+	friend class matrix_block_diag;
 
 };
 
@@ -233,6 +233,84 @@ inline matrix_block_diag operator*(double n,const matrix_block_diag &D){return D
 inline matrix_block_diag operator+(const matrix_block_diag&a) {return a;}
 matrix_block_diag operator-(const matrix_block_diag&);
 matrix_block_diag eye(const matrix_block_diag &);
+
+#include<map>
+#include<string>
+
+class double_map : public std::map<std::string,double> {};
+
+class create_double_map
+{
+private:
+    double_map m_map;
+public:
+    create_double_map(const std::string& key, const double& val)
+    {
+        m_map[key] = val;
+    }
+
+    create_double_map& operator()(const std::string& key, const double& val)
+    {
+        m_map[key] = val;
+        return *this;
+    }
+
+    operator double_map()
+    {
+        return m_map;
+    }
+};
+
+class matrix_map_elem : public std::map<std::string,double *> {
+public:
+	operator double_map();
+	matrix_map_elem &operator=(double_map &);
+	matrix_map_elem &operator=(matrix_map_elem &);
+	matrix_map_elem &operator=(double);
+};
+
+
+class matrix_map : public std::map<std::string,matrix> {
+public:
+	matrix_map_elem operator()(int nfil, int ncol);
+	matrix_map row(int irow);
+	matrix_map col(int icol);
+	matrix_map block(int irow1,int irow2,int icol1,int icol2);
+	matrix_map block_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol);
+	matrix_map &setrow(int irow,matrix_map &);
+	matrix_map &setcol(int icol,matrix_map &);
+	matrix_map &setblock(int irow1,int irow2,int icol1,int icol2,matrix_map &);
+	matrix_map &setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,matrix_map &);
+	matrix_map &setrow(int irow,const matrix &);
+	matrix_map &setcol(int icol,const matrix &);
+	matrix_map &setblock(int irow1,int irow2,int icol1,int icol2,const matrix &);
+	matrix_map &setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,const matrix &);
+	
+	matrix sum();
+	
+};
+
+class create_matrix_map
+{
+private:
+    matrix_map m_map;
+public:
+    create_matrix_map(const std::string& key, const matrix& val)
+    {
+        m_map[key] = val;
+    }
+
+    create_matrix_map& operator()(const std::string& key, const matrix& val)
+    {
+        m_map[key] = val;
+        return *this;
+    }
+
+    operator matrix_map()
+    {
+        return m_map;
+    }
+};
 
 
 #include<sys/time.h>

@@ -1,4 +1,4 @@
-SRC=matrix.cpp mat_math.cpp mat_spec.cpp matrix_block_diag.cpp
+SRC=matrix.cpp mat_math.cpp mat_spec.cpp matrix_block_diag.cpp matrix_map.cpp
 SRC_H=matrix.h
 DEPS=
 

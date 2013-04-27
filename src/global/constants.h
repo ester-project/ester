@@ -12,9 +12,8 @@ extern const double M_SUN;
 extern const double R_SUN;
 extern const double L_SUN;
 
-#include <map>
-#include <string>
+#include"matrix.h"
 
-extern std::map<std::string,double> AMASS;
+extern double_map AMASS;
 
 #endif

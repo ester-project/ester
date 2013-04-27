@@ -76,7 +76,7 @@ $(ESTER_ROOT)/bin/ester_build: $(LIB)
 		chmod +x $@
 
 
-global:
+global: matrix
 matrix: 
 numdiff: global matrix
 graphics: matrix

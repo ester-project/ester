@@ -1,7 +1,8 @@
 SRC=eos_ideal.cpp eos_idealrad.cpp eos_opal.cpp \
-	nuc_simple.cpp \
+	nuc_simple.cpp nuc_cesam.cpp \
 	opa_houdek.cpp opa_kramer.cpp opa_opal.cpp \
 	atm_onelayer.cpp \
+	init_comp.cpp \
 	physics.cpp
 SRC_F=EOS5_xtrin.F xztrin21.F ZFS_interp_EOS5.F nuc_cesam_for.F
 SRC_H=physics.h

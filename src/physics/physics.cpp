@@ -47,6 +47,8 @@ int nuc_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	
 	if(!strcmp(nuc.name,"simple")) {
 		error=nuc_simple(X,Z,T,rho,nuc);
+	} else if(!strcmp(nuc.name,"cesam")) {
+		error=nuc_cesam(X,Z,T,rho,nuc);
     } else {
     	fprintf(stderr,"Unknown nuc. reac. type: %s\n",nuc.name);
     	return 1;
@@ -62,7 +64,7 @@ int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 	int error=0;
 	
 	if(!strcmp(atm.name,"onelayer")) {
-		atm_onelayer(X,Z,g,Teff,eos_name,opa_name,atm);
+		error=atm_onelayer(X,Z,g,Teff,eos_name,opa_name,atm);
     } else {
     	fprintf(stderr,"Unknown atmosphere type: %s\n",atm.name);
     	return 1;
@@ -72,9 +74,7 @@ int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		
 		
 }
-		
-		
-		
-		
-		
+
+
+
 
