@@ -146,6 +146,7 @@ DEBUG_FUNCNAME
 	fp.write("map.R",&map.R);
 	fp.write("w",&w);
 	fp.write("G",&G);
+	fp.write("Xr",&Xr);
 	
 	fp.close();
 
@@ -204,7 +205,7 @@ DEBUG_FUNCNAME
 		if(!fp.read("Ekman",&Ekman)) Ekman=0;
 		if(!fp.read("core_convec",&core_convec)) core_convec=1;
 		if(!fp.read("env_convec",&env_convec)) env_convec=0;
-		if(!fp.read("min_core_size",&min_core_size)) min_core_size=0.01;
+		if(!fp.read("min_core_size",&min_core_size)) min_core_size=0.03;
 		if(!fp.read("version",version)) strcpy(version,"0");
 	} else {
 		fp.read_fmt("ndomains","%d",&ndom);
@@ -238,7 +239,7 @@ DEBUG_FUNCNAME
 		if(!fp.read_fmt("Ekman","%le",&Ekman)) Ekman=0;
 		if(!fp.read_fmt("core_convec","%d",&core_convec)) core_convec=1;
 		if(!fp.read_fmt("env_convec","%d",&env_convec)) env_convec=1;
-		if(!fp.read_fmt("min_core_size","%le",&min_core_size)) min_core_size=0.01;
+		if(!fp.read_fmt("min_core_size","%le",&min_core_size)) min_core_size=0.03;
 		if(!fp.read_fmt("version","%s",version)) strcpy(version,"0");
 	}
 		
@@ -249,10 +250,11 @@ DEBUG_FUNCNAME
 	fp.read("T",&T);
 	if(!fp.read("phiex",&phiex)) phiex=zeros(nex,nth);
 	fp.read("map.R",&map.R);
+	map.remap();
 	if(!fp.read("w",&w)) w=zeros(nr,nth);
 	if(!fp.read("G",&G)) G=zeros(nr,nth);
+	if(!fp.read("Xr",&Xr)) init_Xr();
 	
-	map.remap();
 	fp.close();
 	fill();
 	return 1;
@@ -268,10 +270,10 @@ DEBUG_FUNCNAME
 		
 }
 
-int star2d::check_tag(const char *tag) const {
+bool star2d::check_tag(const char *tag) const {
 DEBUG_FUNCNAME
-	if(strcmp(tag,"star2d")) return 0;
-	return 1;
+	if(strcmp(tag,"star2d")) return false;
+	return true;
 
 }
 
@@ -369,13 +371,14 @@ DEBUG_FUNCNAME
 	}
 	core_convec=1;
 	env_convec=1;
-	min_core_size=0.01;
+	min_core_size=0.03;
 	strcpy(version,"0");
 	domain_type.resize(ndomains);
 	for(int n=0;n<ndomains;n++) {
 		if(n<conv) domain_type[n]=CORE;
 		else domain_type[n]=RADIATIVE;
 	}
+	init_Xr();
 	fclose(fp);
 	fill();
 	return 1;
@@ -508,6 +511,7 @@ DEBUG_FUNCNAME
 		domain_type.resize(ndomains);
 		for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
 	}
+	init_Xr();
 	fill();
 	return 1;
 	
@@ -522,9 +526,12 @@ DEBUG_FUNCNAME
 
 	sprintf(default_params,"%s/config/2d_default.par",ESTER_ROOT);
 
+	*this=A;
+
+	phiex=phi(nr-1)/map.ex.r;	
 	Omega_bk=0;	
 	Omega=0;
-	
+		
 	if(fp.open(default_params)) { 
 		while(k=fp.get(arg,val)) {
 			if(!strcmp(arg,"nth")&&val&&npts_th==-1) npts_th=atoi(val);		
@@ -538,35 +545,8 @@ DEBUG_FUNCNAME
 	if(npts_th==-1) npts_th=8;
 	if(npts_ex==-1) npts_ex=8;
 
-	map.gl=A.map.gl;
-	map.leg.npts=npts_th;
-	map.ex.gl.set_npts(npts_ex);
-	map.init();
-
-	thd=ones(1,npts_th);
 	
-	phi=A.phi*thd;
-	p=A.p*thd;
-	T=A.T*thd;
-	w=zeros(T.nrows(),T.ncols());
-	G=zeros(T.nrows(),T.ncols());
-	
-	surff=A.surff;
-	conv=A.conv;
-	domain_type=A.domain_type;
-	strcpy(opa.name,A.opa.name);
-	strcpy(eos.name,A.eos.name);
-	strcpy(nuc.name,A.nuc.name);
-	strcpy(atm.name,A.atm.name);
-	core_convec=A.core_convec;
-	env_convec=A.env_convec;
-	min_core_size=A.min_core_size;
-	Tc=A.Tc;pc=A.pc;
-	R=A.R;M=A.M;
-	X=A.X;Z=A.Z;
-	Xc=A.Xc;
-	
-	phiex=A.phi(A.nr-1)/map.ex.r;	
+	remap(ndomains,map.gl.npts,npts_th,npts_ex);
 
 	fill();
 
@@ -579,6 +559,7 @@ DEBUG_FUNCNAME
 	T=red->interp(T);
 	w=red->interp(w);
 	G=red->interp(G,11);
+	Xr=red->interp(Xr);
 	phiex=red->interp_ex(phiex);
 	fill();
 

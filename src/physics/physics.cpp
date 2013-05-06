@@ -40,15 +40,15 @@ int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
 	
 }
 
-int nuc_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
+int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
 		nuc_struct &nuc) {
 		
 	int error=0;
 	
 	if(!strcmp(nuc.name,"simple")) {
-		error=nuc_simple(X,Z,T,rho,nuc);
+		error=nuc_simple(X,T,rho,nuc);
 	} else if(!strcmp(nuc.name,"cesam")) {
-		error=nuc_cesam(X,Z,T,rho,nuc);
+		error=nuc_cesam(X,T,rho,nuc);
     } else {
     	fprintf(stderr,"Unknown nuc. reac. type: %s\n",nuc.name);
     	return 1;

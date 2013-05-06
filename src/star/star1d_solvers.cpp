@@ -6,7 +6,7 @@
 void star1d::fill() {
 DEBUG_FUNCNAME
 	Y=1.-X-Z;
-	upd_Xr();
+	init_Xr();
 
 	eq_state();
 	opacity();
@@ -28,23 +28,6 @@ DEBUG_FUNCNAME
 	Omega=0;Omega_bk=0;Ekman=0;Omegac=0;
 
 }
-
-
-void star1d::upd_Xr() {
-DEBUG_FUNCNAME
-	int ic,n;
-	
-	Xr=X*ones(nr,1);
-	if(!conv) {
-		//if(Xc!=1) printf("Warning: Non-homogeneus composition without core convection not implemented\n");
-		return;
-	}
-	ic=0;
-	for(n=0;n<conv;n++) ic+=map.gl.npts[n];
-	Xr.setblock(0,ic-1,0,0,Xc*X*ones(ic,1));
-	Xr.setblock(ic,nr-1,0,0,X*ones(nr-ic,1));
-}
-
 
 solver *star1d::init_solver(int nvar_add) {
 DEBUG_FUNCNAME

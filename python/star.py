@@ -20,11 +20,13 @@ class star2d:
 	def __init__(self,file):
 		names=['th','z','D','r','Dt','Dt2','xif','surff','Omega','Omega_bk','Omegac','X','Z','Xc',
 				'rhoc','Tc','pc','M','R','Rp','Re','L','R/R_SUN','Rp/R_SUN','Re/R_SUN',
-				'M/M_SUN','L/L_SUN','rex','phi','phiex','rho','p','T','w','G','Xr',
+				'M/M_SUN','L/L_SUN','rex','phi','phiex','rho','p','T','w','G',
 				'N2','opa.k','opa.xi','opa.dlnxi_lnT','opa.dlnxi_lnrho','eos.G1','eos.cp',
 				'eos.del_ad','eos.G3_1','eos.cv','eos.prad','eos.chi_T','eos.chi_rho',
 				'eos.d','nuc.eps','nuc.pp','nuc.cno','Teff','gsup','I','Dex','Dtodd',
-				'It','map.R','vr','vt','virial','energy_test','eos.s','opa','eos']
+				'It','map.R','vr','vt','virial','energy_test','eos.s','opa','eos',
+				'Xr','Yr','Zr','Xr_H','Xr_He3','Xr_He4','Xr_C12','Xr_C13','Xr_N14','Xr_N15','Xr_O16'
+				,'Xr_O17']
 		fd,template_file=tempfile.mkstemp(prefix='star_template_',suffix='.tmp')
 		fp=os.fdopen(fd,'w')
 		fp.write('\\conf{equator=1}\n\\conf{pole=1}\n\\conf{dim=1}\n')
@@ -161,11 +163,13 @@ class star1d:
 	def __init__(self,file):
 		names=['D','r','xif','surff','X','Z','Xc',
 				'rhoc','Tc','pc','M','R','L','R/R_SUN',
-				'M/M_SUN','L/L_SUN','phi','rho','p','T','Xr',
+				'M/M_SUN','L/L_SUN','phi','rho','p','T',
 				'N2','opa.k','opa.xi','opa.dlnxi_lnT','opa.dlnxi_lnrho','eos.G1','eos.cp',
 				'eos.del_ad','eos.G3_1','eos.cv','eos.prad','eos.chi_T','eos.chi_rho',
 				'eos.d','nuc.eps','nuc.pp','nuc.cno','Teff','gsup','I',
-				'eos.s','opa','eos']
+				'eos.s','opa','eos',
+				'Xr','Yr','Zr','Xr_H','Xr_He3','Xr_He4','Xr_C12','Xr_C13','Xr_N14','Xr_N15','Xr_O16'
+				,'Xr_O17']
 		fd,template_file=tempfile.mkstemp(prefix='star_template_',suffix='.tmp')
 		fp=os.fdopen(fd,'w')
 		fp.write('\\conf{dim=1}\n')

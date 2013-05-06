@@ -14,6 +14,6 @@ extern const double L_SUN;
 
 #include"matrix.h"
 
-extern double_map AMASS;
+extern const double_map AMASS;
 
 #endif

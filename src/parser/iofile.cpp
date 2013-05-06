@@ -61,6 +61,47 @@ void OUTFILE::write(const char *tag,const matrix *a) {
 	
 }
 
+void OUTFILE::write(const char *tag,const matrix_map *a) {
+
+	if(mode=='t') {
+		int nrows=1,nitems=0;
+		matrix_map::const_iterator it;
+		for(it=a->begin();it!=a->end();it++) {
+			nrows+=(it->second).ncols()+2;
+			nitems++;
+		}
+		write_tag(tag,nrows);
+		fprintf(fp,"%d\n",nitems);
+		for(it=a->begin();it!=a->end();it++) {
+			fprintf(fp,"%s\n",(it->first).c_str());
+			fprintf(fp,"%d %d\n",(it->second).nrows(),(it->second).ncols());
+			(it->second).write(fp,mode);
+		}
+	} else {
+		int nbytes=sizeof(int),nitems=0;
+		matrix_map::const_iterator it;
+		for(it=a->begin();it!=a->end();it++) {
+			nitems++;
+			nbytes+=(it->second).ncols()*(it->second).nrows()*sizeof(double)
+					+3*sizeof(int)+(it->first).length()*sizeof(char);
+		}
+		write_tag(tag,nbytes);
+		fwrite(&nitems,sizeof(int),1,fp);
+		for(it=a->begin();it!=a->end();it++) {
+			int n;
+			n=(it->first).length();
+			fwrite(&n,sizeof(int),1,fp);
+			fwrite((it->first).c_str(),sizeof(char),n,fp);
+			n=(it->second).nrows();
+			fwrite(&n,sizeof(int),1,fp);
+			n=(it->second).ncols();
+			fwrite(&n,sizeof(int),1,fp);
+			(it->second).write(fp,mode);
+		}
+	}
+	
+}
+
 void OUTFILE::write(const char *tag,void *x,unsigned long n,size_t size) {
 
 	write_tag(tag,n*size);
@@ -184,6 +225,45 @@ int INFILE::read(const char *tag,matrix *a) {
 
 	if(!a->read(nr,nc,fp,mode)) return 0;
 	else return 1;
+
+}
+
+int INFILE::read(const char *tag,matrix_map *a) {
+
+	a->clear();
+	if(!seek(tag)) return 0;
+	int nr,nc,nitems;
+	matrix m;
+	if(mode=='t') {
+		char line[512];
+		getline(line,512);
+		sscanf(line,"%d",&nitems);
+		for(int n=0;n<nitems;n++) {
+			getline(line,512);
+			std::string item(line);
+			getline(line,512);
+			sscanf(line,"%d %d",&nr,&nc);
+			if(!m.read(nr,nc,fp,mode)) return 0;
+			(*a)[item]=m;
+			getline(line,512);
+		}
+	} else {
+		fread(&nitems,sizeof(int),1,fp);
+		char item_s[512];
+		for(int n=0;n<nitems;n++) {
+			int l;
+			fread(&l,sizeof(int),1,fp);
+			fread(item_s,sizeof(char),l,fp);
+			item_s[l]='\0';
+			std::string item(item_s);
+			fread(&nr,sizeof(int),1,fp);
+			fread(&nc,sizeof(int),1,fp);
+			if(!m.read(nr,nc,fp,mode)) return 0;
+			(*a)[item]=m;
+		}
+	}
+
+	return 1;
 
 }
 

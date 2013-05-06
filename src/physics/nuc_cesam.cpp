@@ -9,7 +9,7 @@ extern "C" {
 			double *epsilon,double *et,double *ero,double *ex);
 }
 
-int nuc_cesam(const matrix &X,double Z,const matrix &T,const matrix &rho,
+int nuc_cesam(const matrix_map &X,const matrix &T,const matrix &rho,
 		nuc_struct &nuc) {
 		
 	if(!init) {
@@ -29,7 +29,7 @@ int nuc_cesam(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	for(int j=0;j<T.ncols();j++) {
 		for(int i=0;i<T.nrows();i++) {
 			double_map comp;
-			comp=init_comp(X(i,j),Z);
+			comp=X(i,j);
 			ab(0)=comp["H"];
 			ab(1)=comp["He3"];
 			ab(2)=comp["He4"];

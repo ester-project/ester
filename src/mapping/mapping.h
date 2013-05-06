@@ -79,6 +79,7 @@ public:
 	void set_fixed(int idom_new,int idom_old);
 	mapping get_map();
 	matrix interp(const matrix &y,int parity=0);
+	matrix_map interp(const matrix_map &y,int parity=0);
 	matrix interp_ex(const matrix &y,int parity=0);
 };
 

@@ -237,7 +237,12 @@ matrix_block_diag eye(const matrix_block_diag &);
 #include<map>
 #include<string>
 
-class double_map : public std::map<std::string,double> {};
+class double_map : public std::map<std::string,double> {
+public:	
+	inline double &operator[](const std::string& key) {return std::map<std::string,double>::operator[](key);}
+	inline const double &operator[](const std::string& key) const {return find(key)->second;};
+
+};
 
 class create_double_map
 {
@@ -264,7 +269,7 @@ public:
 class matrix_map_elem : public std::map<std::string,double *> {
 public:
 	operator double_map();
-	matrix_map_elem &operator=(double_map &);
+	matrix_map_elem &operator=(const double_map &);
 	matrix_map_elem &operator=(matrix_map_elem &);
 	matrix_map_elem &operator=(double);
 };
@@ -272,15 +277,18 @@ public:
 
 class matrix_map : public std::map<std::string,matrix> {
 public:
+	inline matrix &operator[](const std::string& key) {return std::map<std::string,matrix>::operator[](key);}
+	inline const matrix &operator[](const std::string& key) const {return find(key)->second;};
 	matrix_map_elem operator()(int nfil, int ncol);
-	matrix_map row(int irow);
-	matrix_map col(int icol);
-	matrix_map block(int irow1,int irow2,int icol1,int icol2);
-	matrix_map block_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol);
-	matrix_map &setrow(int irow,matrix_map &);
-	matrix_map &setcol(int icol,matrix_map &);
-	matrix_map &setblock(int irow1,int irow2,int icol1,int icol2,matrix_map &);
-	matrix_map &setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,matrix_map &);
+	const double_map operator()(int nfil, int ncol) const;
+	const matrix_map row(int irow) const;
+	const matrix_map col(int icol) const;
+	const matrix_map block(int irow1,int irow2,int icol1,int icol2) const;
+	const matrix_map block_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol) const;
+	matrix_map &setrow(int irow,const matrix_map &);
+	matrix_map &setcol(int icol,const matrix_map &);
+	matrix_map &setblock(int irow1,int irow2,int icol1,int icol2,const matrix_map &);
+	matrix_map &setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,const matrix_map &);
 	matrix_map &setrow(int irow,const matrix &);
 	matrix_map &setcol(int icol,const matrix &);
 	matrix_map &setblock(int irow1,int irow2,int icol1,int icol2,const matrix &);
@@ -311,6 +319,9 @@ public:
         return m_map;
     }
 };
+
+matrix_map operator*(const double_map &,const matrix &);
+inline matrix_map operator*(const matrix &m,const double_map &d) {return d*m;};
 
 
 #include<sys/time.h>

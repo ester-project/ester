@@ -83,6 +83,16 @@ mapping mapping_redist::get_map() {
 
 }
 
+matrix_map mapping_redist::interp(const matrix_map &y,int parity) {
+
+	matrix_map::const_iterator it;
+	matrix_map ynew;
+	for(it=y.begin();it!=y.end();it++)
+		ynew[it->first]=interp(it->second,parity);
+	return ynew;
+
+}
+
 matrix mapping_redist::interp(const matrix &y,int parity) {
 
 	if (!remapped) remap();

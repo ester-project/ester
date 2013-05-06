@@ -7,8 +7,8 @@
 void star2d::fill() {
 DEBUG_FUNCNAME	
 	Y=1.-X-Z;
-	upd_Xr();
-
+	init_Xr();
+	
 	eq_state();
 	opacity();
 	nuclear();
@@ -30,22 +30,17 @@ DEBUG_FUNCNAME
 
 }
 
+void star2d::init_Xr() {
 
+	Xr=init_comp(X,Z)*ones(nr,nth);
 
-void star2d::upd_Xr() {
-DEBUG_FUNCNAME
-	int ic,n;
+	if(!conv) return;
+
+	int n=0;
+	for(int i=0;i<conv;i++) n+=map.gl.npts[i];
 	
-	Xr=X*ones(nr,nth);
-	if(!conv) {
-		//if(Xc!=1) printf("Warning: Non-homogeneus composition without core convection not implemented\n");
-		return;
-	}
-	ic=0;
-	for(n=0;n<conv;n++) ic+=map.gl.npts[n];
-	Xr.setblock(0,ic-1,0,-1,Xc*X*ones(ic,nth));
-	Xr.setblock(ic,nr-1,0,-1,X*ones(nr-ic,nth));
-	
+	Xr.setblock(0,n-1,0,-1,init_comp(Xc*X,Z)*ones(n,nth));
+
 }
 
 void star2d::calc_veloc() {

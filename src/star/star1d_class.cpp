@@ -26,10 +26,10 @@ DEBUG_FUNCNAME
 		
 }
 
-int star1d::check_tag(const char *tag) const {
+bool star1d::check_tag(const char *tag) const {
 DEBUG_FUNCNAME
-	if(strcmp(tag,"star1d")) return 0;
-	return 1;
+	if(strcmp(tag,"star1d")) return false;
+	return true;
 
 }
 
@@ -106,7 +106,7 @@ DEBUG_FUNCNAME
 	
 	core_convec=1;
 	env_convec=0;
-	min_core_size=0.01;
+	min_core_size=0.03;
 	strcpy(version,"0");
 	domain_type.resize(ndomains);
 	for(int n=0;n<ndomains;n++) {
@@ -226,6 +226,7 @@ DEBUG_FUNCNAME
 		phiex=zeros(map.nex,map.nth);
 	}
 	
+	init_Xr();
 	fill();
 	
 	return 1;

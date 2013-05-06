@@ -11,7 +11,7 @@ matrix_map_elem::operator double_map() {
 	return res;
 }
 
-matrix_map_elem &matrix_map_elem::operator=(double_map &a) {
+matrix_map_elem &matrix_map_elem::operator=(const double_map &a) {
 	matrix_map_elem::iterator it;
 	for(it=begin();it!=end();it++) {
 		if (a.count(it->first))
@@ -48,43 +48,54 @@ matrix_map_elem matrix_map::operator()(int nfil, int ncol) {
 	return elem;
 }
 
-matrix_map matrix_map::row(int irow) {
+const double_map matrix_map::operator()(int nfil, int ncol) const {
+	
+	double_map elem;
+	matrix_map::const_iterator it;
+	for(it=begin();it!=end();it++) {
+		elem[it->first]=(it->second)(nfil,ncol);
+	}
+
+	return elem;
+}
+
+const matrix_map matrix_map::row(int irow) const {
 
 	matrix_map res;
-	matrix_map::iterator it;
+	matrix_map::const_iterator it;
 	for(it=begin();it!=end();it++) 
 		res[it->first]=(it->second).row(irow);
 	return res;
 }
 
-matrix_map matrix_map::col(int icol) {
+const matrix_map matrix_map::col(int icol) const {
 
 	matrix_map res;
-	matrix_map::iterator it;
+	matrix_map::const_iterator it;
 	for(it=begin();it!=end();it++) 
 		res[it->first]=(it->second).col(icol);
 	return res;
 }
 
-matrix_map matrix_map::block(int irow1,int irow2,int icol1,int icol2) {
+const matrix_map matrix_map::block(int irow1,int irow2,int icol1,int icol2) const {
 
 	matrix_map res;
-	matrix_map::iterator it;
+	matrix_map::const_iterator it;
 	for(it=begin();it!=end();it++) 
 		res[it->first]=(it->second).block(irow1,irow2,icol1,icol2);
 	return res;
 }
 
-matrix_map matrix_map::block_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol) {
+const matrix_map matrix_map::block_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol) const {
 
 	matrix_map res;
-	matrix_map::iterator it;
+	matrix_map::const_iterator it;
 	for(it=begin();it!=end();it++) 
 		res[it->first]=(it->second).block_step(irow1,irow2,drow,icol1,icol2,dcol);
 	return res;
 }
 
-matrix_map &matrix_map::setrow(int irow,matrix_map &a) {
+matrix_map &matrix_map::setrow(int irow,const matrix_map &a) {
 	matrix_map::iterator it;
 	for(it=begin();it!=end();it++) 
 		if (a.count(it->first))
@@ -92,7 +103,7 @@ matrix_map &matrix_map::setrow(int irow,matrix_map &a) {
 	return *this;
 }
 
-matrix_map &matrix_map::setcol(int icol,matrix_map &a) {
+matrix_map &matrix_map::setcol(int icol,const matrix_map &a) {
 	matrix_map::iterator it;
 	for(it=begin();it!=end();it++) 
 		if (a.count(it->first))
@@ -100,7 +111,7 @@ matrix_map &matrix_map::setcol(int icol,matrix_map &a) {
 	return *this;
 }
 
-matrix_map &matrix_map::setblock(int irow1,int irow2,int icol1,int icol2,matrix_map &a) {
+matrix_map &matrix_map::setblock(int irow1,int irow2,int icol1,int icol2,const matrix_map &a) {
 	matrix_map::iterator it;
 	for(it=begin();it!=end();it++) 
 		if (a.count(it->first))
@@ -108,7 +119,7 @@ matrix_map &matrix_map::setblock(int irow1,int irow2,int icol1,int icol2,matrix_
 	return *this;
 }
 
-matrix_map &matrix_map::setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,matrix_map &a) {
+matrix_map &matrix_map::setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,const matrix_map &a) {
 	matrix_map::iterator it;
 	for(it=begin();it!=end();it++) 
 		if (a.count(it->first))
@@ -153,5 +164,19 @@ matrix matrix_map::sum() {
 	return res;
 
 }
+
+matrix_map operator*(const double_map &d,const matrix &m) {
+
+	double_map::const_iterator it;
+	matrix_map A;
+	
+	for(it=d.begin();it!=d.end();it++) 
+		A[it->first]=(it->second)*m;
+	
+	return A;
+
+}
+
+
 
 

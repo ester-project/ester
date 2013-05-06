@@ -32,7 +32,9 @@ class OUTFILE {
 public:
 	int open(const char *name, char mode='b');
 	void write(const char *tag,const matrix *);
+	void write(const char *tag,const matrix_map *);
 	void write(const char *tag,matrix *m) {write(tag,(const matrix *) m);};
+	void write(const char *tag,matrix_map *m) {write(tag,(const matrix_map *) m);};
 	template <class T>
 	void write(const char *tag,T *x,unsigned long n=1) {write(tag,(void *) x,n,sizeof(T));};
 	template <class T>
@@ -55,6 +57,7 @@ public:
 	int open(const char *name, char mode='b');
 	unsigned long len(const char *tag);
 	int read(const char *tag,matrix *);
+	int read(const char *tag,matrix_map *);
 	int read(const char *tag,void *);
 	template <class T>
 	int read_fmt(const char *tag,const char *fmt,T *x) {

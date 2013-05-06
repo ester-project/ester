@@ -25,7 +25,7 @@ int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa);
 int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos);
-int nuc_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
+int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);
 int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm);
@@ -37,9 +37,9 @@ int opa_houdek(const matrix &X,double Z,const matrix &T,const matrix &rho,
 int opa_kramer(const matrix &T,const matrix &rho,
 		opa_struct &opa);
 
-int nuc_simple(const matrix &X,double Z,const matrix &T,const matrix &rho,
+int nuc_simple(const matrix_map &X,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);	
-int nuc_cesam(const matrix &X,double Z,const matrix &T,const matrix &rho,
+int nuc_cesam(const matrix_map &X,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);	
 
 int eos_ideal(const matrix &X,double Z,const matrix &T,const matrix &p,

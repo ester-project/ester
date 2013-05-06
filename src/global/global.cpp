@@ -15,7 +15,7 @@ extern const double L_SUN=3.8396e33;
 
 #include"matrix.h"
 
-double_map AMASS = create_double_map
+const double_map AMASS = create_double_map
 		("n",1.008665)
 		("p",1.00727647)
 		("H",1.007825)

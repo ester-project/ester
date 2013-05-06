@@ -27,16 +27,17 @@ class star2d {
   protected:
 	virtual void copy(const star2d &);
 	void init1d(const star1d &A,int npts_th,int npts_ex);
-	virtual int check_tag(const char *tag) const;
+	virtual bool check_tag(const char *tag) const;
 	virtual void write_tag(OUTFILE *fp,char mode) const;
   public:
   	mapping map;
   	const int &nr,&nth,&nex,&ndomains;
 	const matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
 	const matrix_block_diag &D;
-    matrix rho,phi,p,T,Xr;
+    matrix rho,phi,p,T;
     matrix phiex;
 	matrix vr,vt,G,w;
+	matrix_map Xr; 
     double X,Y,Z;
     double R,M;
     double rhoc,Tc,pc;
@@ -89,6 +90,8 @@ class star2d {
 	
 	virtual void dump_info();
 	
+	virtual void init_Xr();
+	
 	virtual solver *init_solver(int nvar_add=0);
 	virtual double solve(solver *);
 	virtual void register_variables(solver *op);
@@ -106,7 +109,6 @@ class star2d {
 	
 	virtual void update_map(matrix dR);
 	
-	virtual void upd_Xr();
 	virtual void calc_veloc();
 	
 	virtual matrix entropy() const;
@@ -152,7 +154,7 @@ class star2d {
 
 class star1d : public star2d {
   protected:
-    virtual int check_tag(const char *tag) const;
+    virtual bool check_tag(const char *tag) const;
 	virtual void write_tag(OUTFILE *fp,char mode) const;
   public:	
   	// star1d_class.cpp
@@ -179,11 +181,7 @@ class star1d : public star2d {
 	virtual void solve_gsup(solver *);
 	
 	virtual void update_map(matrix dR);
-	
-	virtual void upd_Xr();
-	
-	
-	
+
 	virtual matrix N2() const;
 	virtual double luminosity() const;
 	virtual matrix Teff() const;

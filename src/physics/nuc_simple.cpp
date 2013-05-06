@@ -1,10 +1,12 @@
 #include<cmath>
 #include"physics.h"
 
-int nuc_simple(const matrix &X,double Z,const matrix &T,const matrix &rho,nuc_struct &nuc) {
+int nuc_simple(const matrix_map &Xi,const matrix &T,const matrix &rho,nuc_struct &nuc) {
 
 	matrix T9;
 	double C,N,O,XCNO;
+	double Z=Xi["Z"](-1);
+	matrix X(Xi["X"]);
 	
 	T9=T/1e9;
 	C=0.173285;
