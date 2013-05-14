@@ -37,8 +37,8 @@ class star2d {
     matrix rho,phi,p,T;
     matrix phiex;
 	matrix vr,vt,G,w;
-	matrix_map Xr; 
-    double X,Y,Z;
+	composition_map comp; 
+    double X0,Y0,Z0;
     double R,M;
     double rhoc,Tc,pc;
     double Omega,Omega_bk,Omegac;
@@ -90,7 +90,7 @@ class star2d {
 	
 	virtual void dump_info();
 	
-	virtual void init_Xr();
+	virtual void init_comp();
 	
 	virtual solver *init_solver(int nvar_add=0);
 	virtual double solve(solver *);

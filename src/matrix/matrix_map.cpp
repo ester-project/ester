@@ -165,6 +165,38 @@ matrix matrix_map::sum() {
 
 }
 
+double double_map::sum() {
+
+	double res;
+	double_map::iterator it;
+	for(it=begin();it!=end();it++)
+		res+=it->second;
+	return res;
+
+}
+
+matrix_map matrix_map::operator*(double d) const {
+
+	matrix_map::const_iterator it;
+	matrix_map A;
+	
+	for(it=begin();it!=end();it++) 
+		A[it->first]=(it->second)*d;
+	
+	return A;
+}
+
+matrix_map matrix_map::operator*(const matrix &m) const {
+
+	matrix_map::const_iterator it;
+	matrix_map A;
+	
+	for(it=begin();it!=end();it++) 
+		A[it->first]=(it->second)*m;
+	
+	return A;
+}
+
 matrix_map operator*(const double_map &d,const matrix &m) {
 
 	double_map::const_iterator it;
@@ -177,6 +209,81 @@ matrix_map operator*(const double_map &d,const matrix &m) {
 
 }
 
+matrix_map &matrix_map::operator*=(const double_map &d) {
+	
+	double_map::const_iterator it;
+	
+	for(it=d.begin();it!=d.end();it++) {
+		if(count(it->first)) {
+			(*this)[it->first]*=(it->second);
+		}
+	}
+	return *this;
 
+}
 
+matrix_map &matrix_map::operator/=(const double_map &d) {
+	
+	double_map::const_iterator it;
+	
+	for(it=d.begin();it!=d.end();it++) {
+		if(count(it->first)) {
+			(*this)[it->first]/=(it->second);
+		}
+	}
+	return *this;
+
+}
+
+matrix_map &matrix_map::operator+=(const matrix_map &m) {
+	
+	matrix_map::const_iterator it;
+	
+	for(it=m.begin();it!=m.end();it++) {
+		if(count(it->first)) {
+			(*this)[it->first]+=(it->second);
+		}
+	}
+	return *this;
+
+}
+
+matrix_map &matrix_map::operator-=(const matrix_map &m) {
+	
+	matrix_map::const_iterator it;
+	
+	for(it=m.begin();it!=m.end();it++) {
+		if(count(it->first)) {
+			(*this)[it->first]-=(it->second);
+		}
+	}
+	return *this;
+
+}
+
+matrix_map &matrix_map::operator*=(const matrix_map &m) {
+	
+	matrix_map::const_iterator it;
+	
+	for(it=m.begin();it!=m.end();it++) {
+		if(count(it->first)) {
+			(*this)[it->first]*=(it->second);
+		}
+	}
+	return *this;
+
+}
+
+matrix_map &matrix_map::operator/=(const matrix_map &m) {
+	
+	matrix_map::const_iterator it;
+	
+	for(it=m.begin();it!=m.end();it++) {
+		if(count(it->first)) {
+			(*this)[it->first]/=(it->second);
+		}
+	}
+	return *this;
+
+}
 

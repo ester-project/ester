@@ -1,4 +1,4 @@
-SRC=solver.cpp solver_full.cpp
+SRC=solver.cpp solver_full.cpp RKF_solver.cpp
 SRC_H=solver.h
 DEPS=matrix.h
 

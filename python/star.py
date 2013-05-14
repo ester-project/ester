@@ -25,8 +25,8 @@ class star2d:
 				'eos.del_ad','eos.G3_1','eos.cv','eos.prad','eos.chi_T','eos.chi_rho',
 				'eos.d','nuc.eps','nuc.pp','nuc.cno','Teff','gsup','I','Dex','Dtodd',
 				'It','map.R','vr','vt','virial','energy_test','eos.s','opa','eos',
-				'Xr','Yr','Zr','Xr_H','Xr_He3','Xr_He4','Xr_C12','Xr_C13','Xr_N14','Xr_N15','Xr_O16'
-				,'Xr_O17']
+				'Xr','Yr','Zr','X_H','X_He3','X_He4','X_C12','X_C13','X_N14','X_N15','X_O16'
+				,'X_O17']
 		fd,template_file=tempfile.mkstemp(prefix='star_template_',suffix='.tmp')
 		fp=os.fdopen(fd,'w')
 		fp.write('\\conf{equator=1}\n\\conf{pole=1}\n\\conf{dim=1}\n')
@@ -168,8 +168,8 @@ class star1d:
 				'eos.del_ad','eos.G3_1','eos.cv','eos.prad','eos.chi_T','eos.chi_rho',
 				'eos.d','nuc.eps','nuc.pp','nuc.cno','Teff','gsup','I',
 				'eos.s','opa','eos',
-				'Xr','Yr','Zr','Xr_H','Xr_He3','Xr_He4','Xr_C12','Xr_C13','Xr_N14','Xr_N15','Xr_O16'
-				,'Xr_O17']
+				'Xr','Yr','Zr','X_H','X_He3','X_He4','X_C12','X_C13','X_N14','X_N15','X_O16'
+				,'X_O17']
 		fd,template_file=tempfile.mkstemp(prefix='star_template_',suffix='.tmp')
 		fp=os.fdopen(fd,'w')
 		fp.write('\\conf{dim=1}\n')

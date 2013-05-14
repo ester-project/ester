@@ -1199,6 +1199,31 @@ matrix &matrix::setblock_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,i
 }
 
 
+matrix matrix::concatenate(const matrix &a,int dir) const {
+
+	matrix res;
+
+	if(dir==0) {
+		if(a.nc!=nc) {
+			fprintf(stderr,"ERROR: (matrix.concatenate) Dimensions must agree\n");
+			exit(1);
+		}
+		res.dim(nf+a.nf,nc);
+		res.setblock(0,nf-1,0,-1,*this);
+		res.setblock(nf,a.nf+nf-1,0,-1,a);
+	} else {
+		if(a.nf!=nf) {
+			fprintf(stderr,"ERROR: (matrix.concatenate) Dimensions must agree\n");
+			exit(1);
+		}
+		res.dim(nf,nc+a.nc);
+		res.setblock(0,-1,0,nc-1,*this);
+		res.setblock(0,-1,nc,nc+a.nc-1,a);
+	}
+
+	return res;
+
+}
 
 matrix matrix::transpose() const {
 

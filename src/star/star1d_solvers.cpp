@@ -5,8 +5,8 @@
 
 void star1d::fill() {
 DEBUG_FUNCNAME
-	Y=1.-X-Z;
-	init_Xr();
+	Y0=1.-X0-Z0;
+	init_comp();
 
 	eq_state();
 	opacity();

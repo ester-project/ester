@@ -244,19 +244,19 @@ void write(const star2d &A,char *var,char *fmt) {
 			fwrite(&A.M,sizeof(double),1,stdout);
 		}
 	} else if(!strcmp(var,"X")) {
-		if(fmt) fprintf(stdout,fmt,A.X);
+		if(fmt) fprintf(stdout,fmt,A.X0);
 		else {
-			fwrite(&A.X,sizeof(double),1,stdout);
+			fwrite(&A.X0,sizeof(double),1,stdout);
 		}
 	} else if(!strcmp(var,"Y")) {
-		if(fmt) fprintf(stdout,fmt,A.Y);
+		if(fmt) fprintf(stdout,fmt,A.Y0);
 		else {
-			fwrite(&A.Y,sizeof(double),1,stdout);
+			fwrite(&A.Y0,sizeof(double),1,stdout);
 		}
 	} else if(!strcmp(var,"Z")) {
-		if(fmt) fprintf(stdout,fmt,A.Z);
+		if(fmt) fprintf(stdout,fmt,A.Z0);
 		else {
-			fwrite(&A.Z,sizeof(double),1,stdout);
+			fwrite(&A.Z0,sizeof(double),1,stdout);
 		}
 	} else if(!strcmp(var,"R/R_SUN")) {
 		if(fmt) fprintf(stdout,fmt,A.R/R_SUN);
@@ -382,20 +382,20 @@ void write(const star2d &A,char *var,char *fmt) {
 		if(fmt) matrix_fmt(fmt,(m,T));
 		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"Xr")) {
-		m=A.Xr["X"];
+		m=A.comp.X();
 		if(fmt) matrix_fmt(fmt,(m,T));
 		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"Yr")) {
-		m=A.Xr["Y"];
+		m=A.comp.Y();
 		if(fmt) matrix_fmt(fmt,(m,T));
 		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"Zr")) {
-		m=A.Xr["Z"];
+		m=A.comp.Z();
 		if(fmt) matrix_fmt(fmt,(m,T));
 		else (m,T).write(stdout,'b');
-	} else if(!strncmp(var,"Xr_",3)) {
+	} else if(!strncmp(var,"X_",3)) {
 		std::string elem(var+3);
-		if(A.Xr.count(elem)) m=A.Xr[elem];
+		if(A.comp.count(elem)) m=A.comp[elem];
 		else m=zeros(A.nr,A.nth);
 		if(fmt) matrix_fmt(fmt,(m,T));
 		else (m,T).write(stdout,'b');

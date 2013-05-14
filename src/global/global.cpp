@@ -8,6 +8,7 @@ extern const double K_BOL=1.3806503e-16;
 extern const double HYDROGEN_MASS=1.67353249e-24;
 extern const double A_RAD=7.565767e-15;
 extern const double GRAV=6.67384e-8;
+extern const double C_LIGHT=2.99792458e10;
 
 extern const double M_SUN=1.9891e33;
 extern const double R_SUN=6.95508e10;
@@ -15,7 +16,7 @@ extern const double L_SUN=3.8396e33;
 
 #include"matrix.h"
 
-const double_map AMASS = create_double_map
+double_map AMASS = create_double_map
 		("n",1.008665)
 		("p",1.00727647)
 		("H",1.007825)

@@ -99,7 +99,7 @@ void OUTFILE::write(const char *tag,const matrix_map *a) {
 			(it->second).write(fp,mode);
 		}
 	}
-	
+
 }
 
 void OUTFILE::write(const char *tag,void *x,unsigned long n,size_t size) {

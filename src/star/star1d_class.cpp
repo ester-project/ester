@@ -65,8 +65,8 @@ DEBUG_FUNCNAME
 		fread(map.gl.xif,sizeof(double),ndom+1,fp);
 		fread(&M,sizeof(double),1,fp);
 		fread(&R,sizeof(double),1,fp);
-		fread(&X,sizeof(double),1,fp);
-		fread(&Z,sizeof(double),1,fp);
+		fread(&X0,sizeof(double),1,fp);
+		fread(&Z0,sizeof(double),1,fp);
 		fread(&Xc,sizeof(double),1,fp);
 		fread(&conv,sizeof(int),1,fp);
 		fread(&surff,sizeof(double),1,fp);
@@ -89,7 +89,7 @@ DEBUG_FUNCNAME
 		map.gl.set_ndomains(ndom);
 		for(i=0;i<ndom;i++) fscanf(fp,"%d ",(map.gl.npts+i));
 		for(i=0;i<ndom+1;i++) fscanf(fp,"%le ",(map.gl.xif+i));
-		fscanf(fp,"\n%le %le %le %le\n",&M,&R,&X,&Z);
+		fscanf(fp,"\n%le %le %le %le\n",&M,&R,&X0,&Z0);
 		fscanf(fp,"%le %d %le\n",&Xc,&conv,&surff);		
 		fscanf(fp,"%le %le\n",&Tc,&pc);
 		fscanf(fp,"%s\n",opa.name);
@@ -226,7 +226,7 @@ DEBUG_FUNCNAME
 		phiex=zeros(map.nex,map.nth);
 	}
 	
-	init_Xr();
+	init_comp();
 	fill();
 	
 	return 1;
@@ -258,7 +258,7 @@ DEBUG_FUNCNAME
 	printf("\tLuminosity = %.4f Lsun (%e erg/s)\n",luminosity()/L_SUN,luminosity());
 	printf("\tTeff = %.2f\n",Teff()(0));
 	printf("\tlog(geff) = %.4f\n",log10(gsup())(0));
-	printf("\tX=%.4f   Y=%.4f   Z=%.4f\n",X,Y,Z);
+	printf("\tX0=%.4f   Y0=%.4f   Z0=%.4f\n",X0,Y0,Z0);
 	printf("\n");
 	
 	if(conv==0) printf("No convective core\n\n");

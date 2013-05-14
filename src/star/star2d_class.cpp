@@ -38,7 +38,7 @@ DEBUG_FUNCNAME
 	p=A.p;
 	T=A.T;
 	rho=A.rho;
-	Xr=A.Xr;
+	comp=A.comp;
 	
 	opa=A.opa;
 	eos=A.eos;
@@ -49,7 +49,7 @@ DEBUG_FUNCNAME
 	
 	R=A.R;M=A.M;
 	Tc=A.Tc;pc=A.pc;rhoc=A.rhoc;
-	X=A.X;Y=A.Y;Z=A.Z;
+	X0=A.X0;Y0=A.Y0;Z0=A.Z0;
 	surff=A.surff;
 	conv=A.conv;
 	Xc=A.Xc;
@@ -91,8 +91,8 @@ DEBUG_FUNCNAME
 		fp.write("nex",map.ex.gl.npts,1);
 		fp.write("M",&M);
 		fp.write("R",&R);
-		fp.write("X",&X);
-		fp.write("Z",&Z);
+		fp.write("X0",&X0);
+		fp.write("Z0",&Z0);
 		fp.write("Xc",&Xc);
 		fp.write("conv",&conv);
 		fp.write("domain_type",&domain_type[0],ndomains);
@@ -118,8 +118,8 @@ DEBUG_FUNCNAME
 		fp.write_fmt("nex","%d",map.ex.gl.npts,1);
 		fp.write_fmt("M","%.16e",&M);
 		fp.write_fmt("R","%.16e",&R);
-		fp.write_fmt("X","%.16e",&X);
-		fp.write_fmt("Z","%.16e",&Z);
+		fp.write_fmt("X0","%.16e",&X0);
+		fp.write_fmt("Z0","%.16e",&Z0);
 		fp.write_fmt("Xc","%.16e",&Xc);
 		fp.write_fmt("conv","%d",&conv);
 		fp.write_fmt("domain_type","%d",&domain_type[0],ndomains);
@@ -146,7 +146,7 @@ DEBUG_FUNCNAME
 	fp.write("map.R",&map.R);
 	fp.write("w",&w);
 	fp.write("G",&G);
-	fp.write("Xr",&Xr);
+	fp.write("comp",(matrix_map *)&comp);
 	
 	fp.close();
 
@@ -182,8 +182,8 @@ DEBUG_FUNCNAME
 		fp.read("nex",map.ex.gl.npts);
 		fp.read("M",&M);
 		fp.read("R",&R);
-		fp.read("X",&X);
-		fp.read("Z",&Z);
+		if(!fp.read("X0",&X0)) fp.read("X",&X0);
+		if(!fp.read("Z0",&Z0)) fp.read("Z",&Z0);
 		fp.read("Xc",&Xc);
 		fp.read("conv",&conv);
 		domain_type.resize(ndomains);
@@ -216,8 +216,8 @@ DEBUG_FUNCNAME
 		fp.read_fmt("nex","%d",map.ex.gl.npts);
 		fp.read_fmt("M","%le",&M);
 		fp.read_fmt("R","%le",&R);
-		fp.read_fmt("X","%le",&X);
-		fp.read_fmt("Z","%le",&Z);
+		if(!fp.read_fmt("X0","%le",&X0)) fp.read_fmt("X","%le",&X0);
+		if(!fp.read_fmt("Z0","%le",&Z0)) fp.read_fmt("Z","%le",&X0);;
 		fp.read_fmt("Xc","%le",&Xc);
 		fp.read_fmt("conv","%d",&conv);
 		domain_type.resize(ndomains);
@@ -253,7 +253,7 @@ DEBUG_FUNCNAME
 	map.remap();
 	if(!fp.read("w",&w)) w=zeros(nr,nth);
 	if(!fp.read("G",&G)) G=zeros(nr,nth);
-	if(!fp.read("Xr",&Xr)) init_Xr();
+	if(!fp.read("comp",(matrix_map *)&comp)) init_comp();
 	
 	fp.close();
 	fill();
@@ -314,8 +314,8 @@ DEBUG_FUNCNAME
 		map.leg.init();
 		fread(&M,sizeof(double),1,fp);
 		fread(&R,sizeof(double),1,fp);
-		fread(&X,sizeof(double),1,fp);
-		fread(&Z,sizeof(double),1,fp);
+		fread(&X0,sizeof(double),1,fp);
+		fread(&Z0,sizeof(double),1,fp);
 		fread(&Xc,sizeof(double),1,fp);
 		fread(&conv,sizeof(int),1,fp);
 		fread(&surff,sizeof(double),1,fp);
@@ -344,7 +344,7 @@ DEBUG_FUNCNAME
 		fscanf(fp,"%d %d",map.ex.gl.npts,&map.leg.npts);
 		map.ex.gl.init();
 		map.leg.init();
-		fscanf(fp,"\n%le %le %le %le\n",&M,&R,&X,&Z);
+		fscanf(fp,"\n%le %le %le %le\n",&M,&R,&X0,&Z0);
 		fscanf(fp,"%le %d %le\n",&Xc,&conv,&surff);
 		fscanf(fp,"%le %le\n",&Omega,&Omega_bk);
 		fscanf(fp,"%le %le\n",&Tc,&pc);
@@ -378,7 +378,7 @@ DEBUG_FUNCNAME
 		if(n<conv) domain_type[n]=CORE;
 		else domain_type[n]=RADIATIVE;
 	}
-	init_Xr();
+	init_comp();
 	fclose(fp);
 	fill();
 	return 1;
@@ -511,7 +511,7 @@ DEBUG_FUNCNAME
 		domain_type.resize(ndomains);
 		for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
 	}
-	init_Xr();
+	init_comp();
 	fill();
 	return 1;
 	
@@ -559,7 +559,7 @@ DEBUG_FUNCNAME
 	T=red->interp(T);
 	w=red->interp(w);
 	G=red->interp(G,11);
-	Xr=red->interp(Xr);
+	comp=red->interp(comp);
 	phiex=red->interp_ex(phiex);
 	fill();
 
@@ -615,11 +615,11 @@ DEBUG_FUNCNAME
 	}
 	else if(!strcmp(arg,"X")) {
 		if(val==NULL) return 2;
-		X=atof(val);
+		X0=atof(val);
 	}
 	else if(!strcmp(arg,"Z")) {
 		if(val==NULL) return 2;
-		Z=atof(val);
+		Z0=atof(val);
 	}
 	else if(!strcmp(arg,"Xc")) {
 		if(val==NULL) return 2;
@@ -698,7 +698,7 @@ DEBUG_FUNCNAME
 	printf("\tTeff (e) = %.2f\n",map.leg.eval_00(Teff(),PI/2)(0));
 	printf("\tlog(geff) (p) = %.4f\n",log10(map.leg.eval_00(gsup(),0)(0)));
 	printf("\tlog(geff) (e) = %.4f\n",log10(map.leg.eval_00(gsup(),PI/2)(0)));
-	printf("\tX=%.4f   Y=%.4f   Z=%.4f\n",X,Y,Z);
+	printf("\tX0=%.4f   Y0=%.4f   Z0=%.4f\n",X0,Y0,Z0);
 	printf("\n");
 	
 	printf("Rotation:\n\n");

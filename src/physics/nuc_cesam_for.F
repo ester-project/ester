@@ -80,3 +80,27 @@ c lecture du fichier de donnees
 	end
 	
 	
+	subroutine nuc_cesam_dcomp(t,ro,comp,dcomp,jac)
+	
+	USE mod_donnees, ONLY : nucleo,nchim
+	USE mod_kind
+	USE mod_nuc, Only : nuc
+	
+	IMPLICIT NONE
+	
+	REAL (kind=dp), DIMENSION(nchim,nchim) :: jac
+	REAL (kind=dp), DIMENSION(nchim) :: dcomp
+	REAL (kind=dp), DIMENSION(nchim) :: comp,ex
+	REAL (kind=dp) :: t,ro,et, ero, hhe, be7e, b8e, n13e, o15e, f17e
+	REAL (kind=dp), DIMENSION(5) :: epsilon	
+	INTEGER :: fait
+	
+	comp=comp/nucleo
+	fait=2
+	CALL nuc(t,ro,comp,dcomp,jac,.TRUE.,fait,
+	1 epsilon,et,ero,ex,hhe,be7e,b8e,n13e,o15e,f17e)
+	comp=comp*nucleo
+	dcomp=dcomp*nucleo
+	
+	end
+	

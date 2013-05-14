@@ -6,8 +6,8 @@
 
 void star2d::fill() {
 DEBUG_FUNCNAME	
-	Y=1.-X-Z;
-	init_Xr();
+	Y0=1.-X0-Z0;
+	init_comp();
 	
 	eq_state();
 	opacity();
@@ -30,16 +30,16 @@ DEBUG_FUNCNAME
 
 }
 
-void star2d::init_Xr() {
+void star2d::init_comp() {
 
-	Xr=init_comp(X,Z)*ones(nr,nth);
+	comp=initial_composition(X0,Z0)*ones(nr,nth);
 
 	if(!conv) return;
 
 	int n=0;
 	for(int i=0;i<conv;i++) n+=map.gl.npts[i];
 	
-	Xr.setblock(0,n-1,0,-1,init_comp(Xc*X,Z)*ones(n,nth));
+	comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
 
 }
 

@@ -7,6 +7,7 @@ extern const double K_BOL;
 extern const double HYDROGEN_MASS;
 extern const double A_RAD;
 extern const double GRAV;
+extern const double C_LIGHT;
 
 extern const double M_SUN;
 extern const double R_SUN;
@@ -14,6 +15,6 @@ extern const double L_SUN;
 
 #include"matrix.h"
 
-extern const double_map AMASS;
+extern double_map AMASS;
 
 #endif

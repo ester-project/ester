@@ -153,6 +153,23 @@ class solver {
 	solver_block *bc_pol;
 	solver_block *bc_eq;
 	matrix *rhs,*sol;
+	void mult_op(matrix *);
+	int cgs(const matrix &rhs,matrix &x,int maxit);
+	void create();
+	void create_full();
+	void wrap(const matrix *,matrix *);
+	void unwrap(const matrix *,matrix *);
+	void fill_void_blocks();
+	int check_struct();
+	void check_struct_error(const char *err_msg,int n,int i,int j,solver_elem *p);
+	int check_struct_block(int n,int i,int j);
+	int check_struct_bc_th(int n,int i,int j,const char *bctype);
+	int check_struct_bc(int n,int i,int j,const char *bctype);
+	void check_full(int n, const matrix &opi,int pos);
+	void subst_dep();
+	void subst_dep_eq(const char *block_type,solver_block *,int n,int i,int j);
+	void subst_dep_elem(int i,int k,solver_block *bb,solver_elem *p,const matrix &d,int n2,int m2);
+	void solve_dep();
 public:
 	int use_cgs,maxit_ref,maxit_cgs,verbose;
 	int debug;
@@ -186,23 +203,6 @@ public:
 	// info[3]: Number of iterative refinement iterations (-1 if no convergence, -2 if error)
 	// info[4]: Number of CGS iterations (-1 if no convergence, -2 if error)
 	void mult(matrix *);
-	void mult_op(matrix *);
-	int cgs(const matrix &rhs,matrix &x,int maxit);
-	void create();
-	void create_full();
-	void wrap(const matrix *,matrix *);
-	void unwrap(matrix *,const matrix *);
-	void fill_void_blocks();
-	int check_struct();
-	void check_struct_error(const char *err_msg,int n,int i,int j,solver_elem *p);
-	int check_struct_block(int n,int i,int j);
-	int check_struct_bc_th(int n,int i,int j,const char *bctype);
-	int check_struct_bc(int n,int i,int j,const char *bctype);
-	void check_full(int n, const matrix &opi,int pos);
-	void subst_dep();
-	void subst_dep_eq(const char *block_type,solver_block *,int n,int i,int j);
-	void subst_dep_elem(int i,int k,solver_block *bb,solver_elem *p,const matrix &d,int n2,int m2);
-	void solve_dep();
 	
 	void add(int iblock,const char *eqn, const char *varn,const char *block_type,char type,const matrix *d,const matrix *l,const matrix *r,const matrix *i);
 	void add(const char *eqn, const char *varn,const char *block_type,char type,const matrix *d,const matrix_block_diag *l,const matrix *r,const matrix *i);
@@ -429,5 +429,38 @@ public:
 	
 };
 
+
+class RKF_solver {
+	int nv;
+	char **var;
+	int *nr,*nc;
+	bool *reg;
+	matrix *y,k[6],x,x_eval,b4,b5,c,a,deriv,*dy;
+	double t,t_eval;
+	bool initd;
+	double step;
+	int state;
+	void wrap(const matrix *,matrix *);
+	void unwrap(const matrix *,matrix *);
+	int get_id(const char *varn);
+	void check_init();
+public:
+	double abs_tol,rel_tol;
+	RKF_solver();
+	void init(int nvar);
+	void destroy();
+	~RKF_solver() {if(!initd) destroy();};
+	void regvar(const char *var_name,const matrix &initial_value);
+	void regvars(const matrix_map &vars);
+	void set_step(double);
+	matrix get_var(const char *var_name);
+	matrix_map get_vars();
+	double get_t();
+	void set_deriv(const char *var_name,const matrix &value);
+	void set_deriv(const matrix_map &values);
+	
+	int solve(double t0,double t1);
+
+};
 
 #endif

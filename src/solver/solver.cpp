@@ -95,8 +95,8 @@ void solver::solver_block::add(int ieq,int ivar,char type,const matrix *d,const 
 solver::solver() {
 	initd=0;
 	verbose=0;
-	use_cgs=0;
-	maxit_ref=0;
+	use_cgs=1;
+	maxit_ref=10;
 	maxit_cgs=10;
 	rel_tol=1e-12;
 	abs_tol=1e-20;
@@ -412,7 +412,7 @@ void solver::solve(int *info) {
 #endif
 		if(info!=NULL) {info[2]=1;info[4]=err;}
 		if(err>=0) {
-			unwrap(sol,&y);
+			unwrap(&y,sol);
 #ifdef PERF_LOG
 			ttot.stop();
 			printf("Total: %2.3fs \nLU(%d): %2.3fs (%2.3fs) cgs(%d): %2.3fs (%2.3fs)  ref(%d): %2.3fs (%2.3fs)  create(%d): %2.3fs (%2.3fs)\n",ttot.value(),nlu,tlu.value(),tlu.value()/nlu,ncgs,tcgs.value(),tcgs.value()/ncgs,nref,tref.value(),tref.value()/nref,ncreate,tcreate.value(),tcreate.value()/ncreate);
@@ -473,7 +473,7 @@ void solver::solve(int *info) {
 			if(err<0)
 				printf("CGS refinement not converged after %d iterations. Singular matrix?\n",maxit_ref);
 	}
-	unwrap(sol,&y);
+	unwrap(&y,sol);
 	if(verbose)
 		printf("Solving dependent variables...\n");
 	solve_dep();
@@ -760,7 +760,7 @@ int solver::cgs(const matrix &rhs,matrix &x,int maxit) {
 	n=rhs.nrows();
 	
 	r=x;
-	unwrap(y,&r);
+	unwrap(&r,y);
 	mult(y);
 	wrap(y,&r);
 	r=rhs-r;
@@ -788,7 +788,7 @@ int solver::cgs(const matrix &rhs,matrix &x,int maxit) {
 		}
 		v=p;
 		op->right_precond(v);
-		unwrap(y,&v);
+		unwrap(&v,y);
 		mult(y);
 		wrap(y,&v);
 		op->left_precond(v);
@@ -799,7 +799,7 @@ int solver::cgs(const matrix &rhs,matrix &x,int maxit) {
 		err_abs=abs(a*v);
 		err_rel=abs(err_abs/(x+(x==0)));
 		x=x+a*v;
-		unwrap(y,&v);
+		unwrap(&v,y);
 		mult(y);
 		wrap(y,&v);
 		op->left_precond(v);
@@ -1200,7 +1200,7 @@ void solver::check_full(int n, const matrix &opi, int pos) {
 	for(j=0;j<nj;j++) {
 		x=zeros(solver_N,1);
 		x(j0+j)=1;
-		unwrap(y,&x);
+		unwrap(&x,y);
 		mult_op(y);
 		wrap(y,&x);
 		for(i=0;i<ni;i++) {
@@ -1271,7 +1271,7 @@ void solver::wrap(const matrix *y,matrix *x) {
 }
 
 
-void solver::unwrap(matrix *y,const matrix *x) {
+void solver::unwrap(const matrix *x,matrix *y) {
 
 	int i,j,j0[nv],i0,**n=var_nr,**nbot=var_nbot,**ntop=var_ntop,**nth=var_nth,&N=solver_N,nn,nnt;
 	matrix q;

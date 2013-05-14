@@ -14,7 +14,7 @@ FC     = gfortran
 #FFLAGS = -cxdb -fi -cs
 #FFLAGS = -native -g -C
 #FFLAGS = -fast
-FFLAGS =  -O2 -fd-lines-as-comments
+FFLAGS =  $(FCFLAGS) -fd-lines-as-comments
 #FFLAGS = -O1 -32
 #FFLAGS = -fast -xld -C
 

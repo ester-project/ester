@@ -129,7 +129,7 @@ int main(int argc,char *argv[]) {
 		printf("P_rot(p)=%.3f days     P_rot(e)=%.3f days      v_eq=%.2f km/s\n",
 			Pp,Pe,we*Re/1e5);
 		printf("P_rot(c)=%.3f days\n",2*PI/(A.w(0,0)*A.units.Omega)/3600./24.);
-		printf("X=%3.4f (Xc/X=%3.4f) Z=%3.4f\n",A.X,A.Xc,A.Z);
+		printf("X=%3.4f (Xc/X=%3.4f) Z=%3.4f\n",A.X0,A.Xc,A.Z0);
 		printf("rhoc=%e Tc=%e pc=%e\n",A.rhoc,A.Tc,A.pc);
 		if(A.conv) printf("R. conv. core (p)=%3.3f Rsun\n",*(A.map.gl.xif+A.conv)*A.R/R_SUN);
 		printf("Virial test: %e Energy test: %e\n",A.virial(),A.energy_test());

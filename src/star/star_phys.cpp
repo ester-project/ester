@@ -7,7 +7,7 @@ void star2d::opacity() {
 
 	int error;
 
-	error=opa_calc(Xr["X"],Z,Tc*T,rhoc*rho,opa);
+	error=opa_calc(comp.X(),Z0,Tc*T,rhoc*rho,opa);
 	
 	if(error) exit(1);
 	
@@ -17,7 +17,7 @@ void star2d::nuclear() {
 
 	int error;
 
-	error=nuc_calc(Xr,T*Tc,rho*rhoc,nuc);
+	error=nuc_calc(comp,T*Tc,rho*rhoc,nuc);
 	
 	if(error) exit(1);
 
@@ -27,7 +27,7 @@ void star2d::eq_state() {
 
 	int error;
 	
-	error=eos_calc(Xr["X"],Z,T*Tc,p*pc,rho,eos);	
+	error=eos_calc(comp.X(),Z0,T*Tc,p*pc,rho,eos);	
 
 	rhoc=rho(0);
 	rho=rho/rhoc;
@@ -49,7 +49,7 @@ void star2d::atmosphere() {
 	}
 	
 	
-	error=atm_calc(Xr["X"],Z,gsup(),Teff(),eos.name,opa.name,atm);
+	error=atm_calc(comp.X(),Z0,gsup(),Teff(),eos.name,opa.name,atm);
 	
 	if(error) exit(1);
 	

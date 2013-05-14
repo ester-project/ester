@@ -71,7 +71,8 @@ public:
 	matrix &setcol(int icol,const matrix &);
 	matrix &setblock(int irow1,int irow2,int icol1,int icol2,const matrix &);
 	matrix &setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,const matrix &);
-   
+   	matrix concatenate(const matrix &a,int dir=0) const;
+   	
 	matrix transpose() const;
 	matrix fliplr() const;
 	matrix flipud() const;
@@ -241,6 +242,7 @@ class double_map : public std::map<std::string,double> {
 public:	
 	inline double &operator[](const std::string& key) {return std::map<std::string,double>::operator[](key);}
 	inline const double &operator[](const std::string& key) const {return find(key)->second;};
+	double sum();
 
 };
 
@@ -294,6 +296,15 @@ public:
 	matrix_map &setblock(int irow1,int irow2,int icol1,int icol2,const matrix &);
 	matrix_map &setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,const matrix &);
 	
+	matrix_map operator*(double d) const;
+	matrix_map operator*(const matrix &m) const;
+	matrix_map &operator*=(const double_map &d); 
+	matrix_map &operator/=(const double_map &d); 
+	matrix_map &operator+=(const matrix_map &d);
+	matrix_map &operator-=(const matrix_map &d);
+	matrix_map &operator*=(const matrix_map &d);
+	matrix_map &operator/=(const matrix_map &d);
+	
 	matrix sum();
 	
 };
@@ -322,7 +333,8 @@ public:
 
 matrix_map operator*(const double_map &,const matrix &);
 inline matrix_map operator*(const matrix &m,const double_map &d) {return d*m;};
-
+inline matrix_map operator*(double d,const matrix_map &a) {return a*d;};
+inline matrix_map operator*(const matrix &m,const matrix_map &a) {return a*m;};
 
 #include<sys/time.h>
 class tiempo {
