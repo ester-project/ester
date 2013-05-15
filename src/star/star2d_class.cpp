@@ -33,7 +33,7 @@ star2d &star2d::operator=(const star2d &A) {
 }
 
 void star2d::copy(const star2d &A) {
-DEBUG_FUNCNAME
+
 	phi=A.phi;
 	p=A.p;
 	T=A.T;
@@ -712,21 +712,20 @@ DEBUG_FUNCNAME
 	printf("\tPeriod (e) = %.5f days\n",2*PI/we/units.Omega/3600./24.);
 	printf("\tPeriod (p) = %.5f days\n",2*PI/wp/units.Omega/3600./24.);
 	printf("\tPeriod (c) = %.5f days\n",2*PI/w(0,0)/units.Omega/3600./24.);
+	printf("\tLz = %e erg·s\n",Lz());
 	printf("\n");
 	
 	if(conv==0) printf("No convective core\n\n");
 	else {
 		printf("Convective core:\n\n");
-		int jcc=0;
-		for(int n=0;n<conv;n++) jcc+=map.gl.npts[n];
-		jcc--;
-		double mcc=2*PI*(map.gl.I.block(0,0,0,jcc),
-			(rho*r*r*map.rz).block(0,jcc,0,-1),map.leg.I_00)(0)*units.rho*units.r*units.r*units.r;
+		double mcc=Mcore();
 		printf("\tMass_core = %.5f Msun (%e g)\n",mcc/M_SUN,mcc);
-		double rcc_p=map.leg.eval_00(r.row(jcc),0)(0)*units.r;
+		double rcc_p=map.leg.eval_00(Rcore(),0)(0);
 		printf("\tRadius_core (p) = %.5f Rsun (%e cm)\n",rcc_p/R_SUN,rcc_p);
-		double rcc_e=map.leg.eval_00(r.row(jcc),PI/2)(0)*units.r;
+		double rcc_e=map.leg.eval_00(Rcore(),PI/2)(0);
 		printf("\tRadius_core (e) = %.5f Rsun (%e cm)  (flat.=%.3f)\n",rcc_e/R_SUN,rcc_e,1.-rcc_p/rcc_e);
+		double Lzcc=Lzcore();
+		printf("\tLz_core = %e erg·s\n",Lzcore());
 		printf("\tX_core/X_env = %.4f\n",Xc);
 		printf("\n");
 	}

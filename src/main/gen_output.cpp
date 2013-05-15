@@ -243,6 +243,24 @@ void write(const star2d &A,char *var,char *fmt) {
 		else {
 			fwrite(&A.M,sizeof(double),1,stdout);
 		}
+	} else if(!strcmp(var,"Lz")) {
+		d=A.Lz();
+		if(fmt) fprintf(stdout,fmt,d);
+		else {
+			fwrite(&d,sizeof(double),1,stdout);
+		}
+	} else if(!strcmp(var,"Mcore")) {
+		d=A.Mcore();
+		if(fmt) fprintf(stdout,fmt,d);
+		else {
+			fwrite(&d,sizeof(double),1,stdout);
+		}
+	} else if(!strcmp(var,"Lzcore")) {
+		d=A.Lzcore();
+		if(fmt) fprintf(stdout,fmt,d);
+		else {
+			fwrite(&d,sizeof(double),1,stdout);
+		}
 	} else if(!strcmp(var,"X")) {
 		if(fmt) fprintf(stdout,fmt,A.X0);
 		else {
@@ -393,8 +411,8 @@ void write(const star2d &A,char *var,char *fmt) {
 		m=A.comp.Z();
 		if(fmt) matrix_fmt(fmt,(m,T));
 		else (m,T).write(stdout,'b');
-	} else if(!strncmp(var,"X_",3)) {
-		std::string elem(var+3);
+	} else if(!strncmp(var,"X_",2)) {
+		std::string elem(var+2);
 		if(A.comp.count(elem)) m=A.comp[elem];
 		else m=zeros(A.nr,A.nth);
 		if(fmt) matrix_fmt(fmt,(m,T));

@@ -1,6 +1,6 @@
 SRC=star1d_class.cpp star1d_solvers.cpp star_phys.cpp star1d_extra.cpp \
 	star2d_class.cpp star2d_solvers.cpp star2d_extra.cpp star_map.cpp \
-	convection.cpp
+	convection.cpp star_evol.cpp
 SRC_H=star.h
 DEPS=constants.h version.h debug.h matrix.h numdiff.h mapping.h parser.h physics.h solver.h graphics.h symbolic.h
 

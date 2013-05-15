@@ -1,5 +1,5 @@
 
-MAIN = star1d star2d gen_output version ester_info ester
+MAIN = star1d star2d gen_output version ester_info star_evol ester
 MAIN_EXES = $(addprefix $(ESTER_ROOT)/bin/,$(MAIN))
 
 all: $(MAIN_EXES)
@@ -11,6 +11,10 @@ $(ESTER_ROOT)/bin/star2d: star2d.cpp read_config.cpp $(LIB)
 $(ESTER_ROOT)/bin/star1d: star1d.cpp read_config.cpp $(LIB)
 	$(CC) -c star1d.cpp $(CCFLAGS) $(VARS)
 	$(LD) -o $@ star1d.o $(LDFLAGS) -lester $(LIBS)
+
+$(ESTER_ROOT)/bin/star_evol: star_evol.cpp read_config.cpp $(LIB)
+	$(CC) -c star_evol.cpp $(CCFLAGS) $(VARS)
+	$(LD) -o $@ star_evol.o $(LDFLAGS) -lester $(LIBS)
 
 $(ESTER_ROOT)/bin/gen_output: gen_output.cpp $(LIB)
 	$(CC) -c gen_output.cpp $(CCFLAGS) $(VARS)

@@ -26,6 +26,11 @@ elif command=='2d':
 	cmd="star2d"
 	out=call([ester_root+"/bin/"+cmd]+sys.argv[2:])
 	sys.exit(out)
+	
+elif command=='evol':
+	cmd="star_evol"
+	out=call([ester_root+"/bin/"+cmd]+sys.argv[2:])
+	sys.exit(out)
 
 elif command=='output':
 	cmd="gen_output"

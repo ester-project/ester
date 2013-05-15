@@ -124,6 +124,10 @@ class star2d {
 	virtual double energy_test() const;
 	virtual matrix stream() const;
 	virtual double apparent_luminosity(double i) const;
+	virtual double Lz() const;
+	virtual double Mcore() const;
+	virtual double Lzcore() const;
+	virtual matrix Rcore() const;
 	
 	virtual void fill();
 	
@@ -192,6 +196,19 @@ class star1d : public star2d {
 	void spectrum(figure *,const matrix &,const char *line="") const;
 	
 	virtual void check_jacobian(solver *op,const char *eqn);
+};
+
+class star_evol : public star2d {
+public:
+	double Lz_obj;
+	star_evol();
+	star_evol(const star2d &);
+	virtual void fill();
+	virtual int read(const char *input_file);
+	virtual solver *init_solver(int nvar_add=0);
+	virtual void register_variables(solver *op);
+	virtual void solve_Omega(solver *);
+	
 };
 
 #endif

@@ -264,13 +264,9 @@ DEBUG_FUNCNAME
 	if(conv==0) printf("No convective core\n\n");
 	else {
 		printf("Convective core:\n\n");
-		int jcc=0;
-		for(int n=0;n<conv;n++) jcc+=map.gl.npts[n];
-		jcc--;
-		double mcc=4*PI*(map.gl.I.block(0,0,0,jcc),
-			(rho*r*r*map.rz).block(0,jcc,0,-1))(0)*units.rho*units.r*units.r*units.r;
+		double mcc=Mcore();
 		printf("\tMass_core = %.5f Msun (%e g)\n",mcc/M_SUN,mcc);
-		double rcc=r(jcc)*units.r;
+		double rcc=Rcore()(0);
 		printf("\tRadius_core (p) = %.5f Rsun (%e cm)\n",rcc/R_SUN,rcc);
 		printf("\tX_core/X_env = %.4f\n",Xc);
 		printf("\n");

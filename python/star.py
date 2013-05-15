@@ -25,8 +25,8 @@ class star2d:
 				'eos.del_ad','eos.G3_1','eos.cv','eos.prad','eos.chi_T','eos.chi_rho',
 				'eos.d','nuc.eps','nuc.pp','nuc.cno','Teff','gsup','I','Dex','Dtodd',
 				'It','map.R','vr','vt','virial','energy_test','eos.s','opa','eos',
-				'Xr','Yr','Zr','X_H','X_He3','X_He4','X_C12','X_C13','X_N14','X_N15','X_O16'
-				,'X_O17']
+				'Xr','Yr','Zr','X_H','X_He3','X_He4','X_C12','X_C13','X_N14','X_N15','X_O16',
+				'X_O17','Mcore','Lz','Lzcore']
 		fd,template_file=tempfile.mkstemp(prefix='star_template_',suffix='.tmp')
 		fp=os.fdopen(fd,'w')
 		fp.write('\\conf{equator=1}\n\\conf{pole=1}\n\\conf{dim=1}\n')
@@ -37,8 +37,7 @@ class star2d:
 		fd,out_file=tempfile.mkstemp(prefix='star_out_',suffix='.tmp')
 		status=os.system('ester output '+file+' < '+template_file+' > '+out_file)
 		if status:
-			self.nr=0
-			return
+			raise ValueError("Error reading file")
 		fp=os.fdopen(fd,'rb')
 		self.nr=struct.unpack('i',fp.read(4))[0]
 		self.nth=struct.unpack('i',fp.read(4))[0]+2
@@ -52,7 +51,8 @@ class star2d:
 			if x=='eps' or x=='eps_c' or x=='M' or x=='L' or x=='Omega_bk' or x=='R' or x=='Omega' \
 				 or x=='Omegac' or x=='R_R_SUN' or x=='Omega_bk' or x=='M_M_SUN' or x=='L_L_SUN' \
 				 or x=='virial' or x=='energy_test' or x=='surff' or x=='X' or x=='Z' or x=='Xc' \
-				 or x=='rhoc' or x=='pc' or x=='Tc' or x=='Rp' or x=='Re' or x=='Rp_R_SUN' or x=='Re_R_SUN':
+				 or x=='rhoc' or x=='pc' or x=='Tc' or x=='Rp' or x=='Re' or x=='Rp_R_SUN' or x=='Re_R_SUN' \
+				 or x=='Mcore' or x=='Lz' or x=='Lzcore':
 				s="self."+x+"=struct.unpack('d',fp.read(8))[0]"
 			elif x=='opa' or x=='eos':
 				c=list();
@@ -169,7 +169,7 @@ class star1d:
 				'eos.d','nuc.eps','nuc.pp','nuc.cno','Teff','gsup','I',
 				'eos.s','opa','eos',
 				'Xr','Yr','Zr','X_H','X_He3','X_He4','X_C12','X_C13','X_N14','X_N15','X_O16'
-				,'X_O17']
+				,'X_O17','Mcore']
 		fd,template_file=tempfile.mkstemp(prefix='star_template_',suffix='.tmp')
 		fp=os.fdopen(fd,'w')
 		fp.write('\\conf{dim=1}\n')
@@ -180,8 +180,7 @@ class star1d:
 		fd,out_file=tempfile.mkstemp(prefix='star_out_',suffix='.tmp')
 		status=os.system('ester output '+file+' < '+template_file+' > '+out_file)
 		if status:
-			self.nr=0
-			return
+			raise ValueError("Error reading file")
 		fp=os.fdopen(fd,'rb')
 		self.nr=struct.unpack('i',fp.read(4))[0]
 		self.ndomains=struct.unpack('i',fp.read(4))[0]
@@ -194,7 +193,7 @@ class star1d:
 			if x=='eps' or x=='eps_c' or x=='M' or x=='L' or x=='R' \
 				 or x=='R_R_SUN' or x=='M_M_SUN' or x=='L_L_SUN' \
 				 or x=='virial' or x=='energy_test' or x=='surff' or x=='X' or x=='Z' or x=='Xc' \
-				 or x=='rhoc' or x=='pc' or x=='Tc':
+				 or x=='rhoc' or x=='pc' or x=='Tc' or x=='Mcore':
 				s="self."+x+"=struct.unpack('d',fp.read(8))[0]"
 			elif x=='opa' or x=='eos':
 				c=list();
@@ -233,6 +232,23 @@ class star1d:
 		self.gzt[0,:]=0
 		self.gtt=1./self.r**2
 		
+def star_evol(file):
+	
+	n=0
+	A=list();
+	while(True):
+		try:
+			B=star2d(file+'_'+str(n).zfill(4));
+		except:
+			return A;
+		print(file+'_'+str(n).zfill(4));
+		A.append(B)
+		n+=1;
+		
+	
+	
+	
+	
 	
 	
 

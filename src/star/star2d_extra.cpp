@@ -48,6 +48,44 @@ double star2d::luminosity() const {
 
 }
 
+double star2d::Lz() const {
+
+	return 2*PI*(map.gl.I,(rho*w*r*r*sin(th)*sin(th)*r*r*map.rz,map.leg.I_00))(0)*units.rho*units.Omega*
+		pow(units.r,5);
+
+}
+
+double star2d::Mcore() const {
+
+	if(!conv) return 0;
+	int jcc=0;
+	for(int n=0;n<conv;n++) jcc+=map.gl.npts[n];
+	jcc--;
+	return 2*PI*(map.gl.I.block(0,0,0,jcc),
+		(rho*r*r*map.rz).block(0,jcc,0,-1),map.leg.I_00)(0)*units.rho*units.r*units.r*units.r;
+}
+
+
+double star2d::Lzcore() const {
+
+	if(!conv) return 0;
+	int jcc=0;
+	for(int n=0;n<conv;n++) jcc+=map.gl.npts[n];
+	jcc--;
+	return 2*PI*(map.gl.I.block(0,0,0,jcc),
+		(rho*w*r*r*sin(th)*sin(th)*r*r*map.rz).block(0,jcc,0,-1),map.leg.I_00)(0)*units.rho*units.Omega*
+		pow(units.r,5);
+}
+
+matrix star2d::Rcore() const {
+	
+	if(!conv) return zeros(1,nth);
+	int jcc=0;
+	for(int n=0;n<conv;n++) jcc+=map.gl.npts[n];
+	jcc--;
+	return r.row(jcc)*units.r;
+}
+
 matrix star2d::N2() const {
 
 	matrix N2;

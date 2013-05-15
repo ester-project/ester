@@ -14,7 +14,7 @@ int main(int argc,char *argv[]) {
 
 	int nit,last_it;
 	double err=1;
-	double t_plot,t_output;
+	double t_plot;
 	configuration config(argc,argv);
 	tiempo t;
 	figure *fig;
@@ -36,7 +36,7 @@ int main(int argc,char *argv[]) {
 	nit=0;
 	
 	matrix tt(config.maxit+1,1),error(config.maxit+1,1);
-	t_output=0;
+
 	t_plot=0;
 	last_it=nit>=config.maxit;
 	op=A.init_solver();
@@ -67,7 +67,6 @@ int main(int argc,char *argv[]) {
 		if(config.verbose) {
 			printf("it=%d err=%e (%2.2fs)\n",nit,err,t.value());
 			printf("\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,A.map.eps(A.ndomains-1),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
-			t_output=tt(nit-1);
 
 			if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
 				fig->semilogy(error.block(0,nit-1,0,0));
