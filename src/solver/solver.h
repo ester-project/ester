@@ -196,6 +196,7 @@ public:
 	matrix get_var(const char *varn);
 	matrix get_rhs(int ieq);
 	matrix get_var(int ivar);
+	matrix_map get_vars();
 	void solve(int *info=NULL); 
 	// info[0]: LU factorization
 	// info[1]: Iterative refinement
@@ -430,6 +431,10 @@ public:
 };
 
 
+#define RK_END 0
+#define RK_STEP 1
+#define RK_INTERMEDIATE 2
+
 class RKF_solver {
 	int nv;
 	char **var;
@@ -439,7 +444,7 @@ class RKF_solver {
 	double t,t_eval;
 	bool initd;
 	double step;
-	int state;
+	int stage;
 	void wrap(const matrix *,matrix *);
 	void unwrap(const matrix *,matrix *);
 	int get_id(const char *varn);
@@ -457,10 +462,161 @@ public:
 	matrix_map get_vars();
 	double get_t();
 	void set_deriv(const char *var_name,const matrix &value);
-	void set_deriv(const matrix_map &values);
+	void set_derivs(const matrix_map &values);
 	
 	int solve(double t0,double t1);
 
 };
+
+/*
+Runge-Kutta solver for SDIRK (Singly diagonally implicit Runge-Kutta)
+or ESDIRK (Explicit singly diagonally implicit Runge-Kutta).
+
+Butcher tableau for SDIRK methods is:
+
+		c0 | a    0    0    0  ... 0
+		c1 | a10  a    0    0  ... 0
+		c2 | a20  a21  a    0  ... 0
+		:  |        ...
+		1  | b0   b1   b2   b3 ... a
+		   |-------------------------
+		   | b0   b1   b2   b3 ... a
+
+and for ESDIRK methods:
+
+		0  | 0    0    0    0  ... 0
+		c1 | a10  a    0    0  ... 0
+		c2 | a20  a21  a    0  ... 0
+		:  |        ...
+		1  | b0   b1   b2   b3 ... a
+		   |-------------------------
+		   | b0   b1   b2   b3 ... a
+
+We want to solve the equation:
+
+		F(t,u,v,...,du/dt,dv/dt,...)=0
+
+First, define a new object:
+
+	-->	SDIRK_solver rk;
+		
+Initialize solver:
+	
+	-->	rk.init(nvar,method);
+		
+Where nvar is the number of variables an method can be:
+
+		- "be" Backward Euler (SDIRK) A-stable, L-stable
+		- "cn" Crank-Nicolson (ESDIRK) A-stable, not L-stable
+		- "sdirk2" SDIRK method of order 2 (Alexander,1977) A-stable, L-stable
+		- "sdirk3" SDIRK method of order 3 (Alexander,1977) A-stable, L-stable
+		- "sdirk4" SDIRK method of order 4 (Skvortsov,2006) A-stable, L-stable
+		- "esdirk3" ESDIRK method of order 3 (Segawa) A-stable, L-stable
+		- "esdirk4" ESDIRK method of order 4 (Segawa) A-stable, L-stable
+		
+Register variables:
+	
+	-->	rk.regvar("u",u0);
+	-->	rk.regvar("v",v0);
+	-->	...
+	
+For ESDIRK methods, the initial value of the temporal derivative is also needed:
+
+	--> if(rk.needs_initial_derivative()) {     // true for ESDIRK method
+	-->		rk.set_initial_derivative("u",du0);
+	-->		rk.set_initial_derivative("v",dv0);
+	-->		...}
+
+Set the time step:
+
+	-->	rk.set_step(h);
+	
+Start main loop:
+	--> int state;
+	--> while((state=rk.solve(t0,t1))!=RK_END) {
+	-->		double delta,t;
+	-->		matrix u0,v0,...;
+	-->		delta=rk.get_delta();
+	-->		t=rk.get_t();
+	-->		u0=rk.get_var("u");
+	-->		v0=rk.get_var("v");
+	-->		...
+Solve:
+		F(t,u,v,...,du/dt,dv/dt,...)=0
+for u,v,... using:
+		du/dt=(u-u0)/delta
+		dv/dt=(v-v0)/delta
+		...
+and write the solution:
+
+	-->		rk.set_var("u",u);
+	-->		rk.set_var("v",v);
+	-->		...
+Check if the RK step is complete:
+	-->		if(state==RK_STEP) {
+				... save variables at this step t,u,v,...
+	-->		}
+End main loop
+	-->	}
+	
+Finalize the solver:
+	-->	rk.destroy();		
+	
+The functions regvar,get_var ans set_var have their equivalents using matrix_map objects
+reg_vars, set_vars and get_vars.
+
+*/
+
+class SDIRK_solver {
+	int nv,nstages,order;
+	double alpha;
+	char **var;
+	int *nr,*nc;
+	bool *reg;
+	bool initd,first_explicit;
+	double step;
+	int stage;
+	matrix a,b,c;
+	matrix *y,x,*k,*dy,x0;
+	double t,t_eval,delta;
+	void wrap(const matrix *,matrix *);
+	void unwrap(const matrix *,matrix *);
+	int get_id(const char *varn);
+	void check_init();
+	void check_method();
+	void init_be();
+	void init_cn();
+	void init_sdirk2();
+	void init_sdirk3();
+	void init_sdirk4();
+	void init_esdirk3();
+	void init_esdirk4();
+public:
+	//double abs_tol,rel_tol;
+	SDIRK_solver();
+	void init(int nvar,const char *type);
+	void destroy();
+	~SDIRK_solver() {if(!initd) destroy();};
+	void regvar(const char *var_name,const matrix &initial_value);
+	void regvars(const matrix_map &vars);
+	void set_initial_derivative(const char *var_name,const matrix &initial_value);
+	void set_initial_derivatives(const matrix_map &vars);
+	void set_var(const char *var_name,const matrix &value);
+	void set_vars(const matrix_map &values);
+	void set_step(double);
+	double get_step();
+	double get_delta();
+	matrix get_var(const char *var_name);
+	matrix_map get_vars();
+	int number_of_stages();
+	int number_of_implicit_stages();
+	int get_order();
+	bool needs_initial_derivative();
+	double get_t();
+	
+	int solve(double t0,double t1);
+
+};
+
 
 #endif

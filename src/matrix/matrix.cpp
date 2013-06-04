@@ -3,7 +3,7 @@
 #include<stdio.h>
 #include<string.h>
 #include"matrix.h"
-
+#include<stdarg.h>
 
 matrix::matrix(int nfil,int ncol) {
 
@@ -127,7 +127,7 @@ matrix &matrix::redim(int nfil,int ncol) {
 
 
 matrix &matrix::operator=(const matrix &a) {
-        
+
     if(&a==this) return *this;
 	if (nf!=a.nf||nc!=a.nc)
     	dim(a.nf,a.nc);
@@ -265,6 +265,21 @@ void matrix::zero(int nrows,int ncols) {
 	
 }
 
+
+void matrix::values(double x,...) {
+
+	va_list ap;
+	
+	*this=this->transpose();
+	va_start(ap,x);
+	*p=x;
+	for(int i=1;i<nf*nc;i++) {
+		*(p+i)=va_arg(ap,double);
+	}
+	va_end(ap);
+	*this=this->transpose();
+
+}
 
 matrix matrix::operator+(const matrix &a) const {
 

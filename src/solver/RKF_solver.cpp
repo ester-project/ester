@@ -26,7 +26,7 @@ void RKF_solver::init(int nvar) {
 		reg[i]=false;
 	}
 	step=-1;
-	state=-1;
+	stage=-1;
 	a=zeros(6,6);c=zeros(6,1);b4=zeros(6,1);b5=zeros(6,1);
 	a(1,0)=1./4.;
 	a(2,0)=3./32.;a(2,1)=9./32.;
@@ -53,6 +53,7 @@ void RKF_solver::destroy() {
 		delete [] var[i];
 	}
 	delete [] var;
+	initd=0;
 
 }
 
@@ -123,7 +124,7 @@ matrix_map RKF_solver::get_vars() {
 
 	matrix_map map;
 	for(int i=0;i<nv;i++) 
-		map[std::string(var[i])]=y[i];
+		if(reg[i]) map[std::string(var[i])]=y[i];
 
 	return map;
 }
@@ -136,7 +137,7 @@ void RKF_solver::set_deriv(const char *var_name,const matrix &value) {
 	dy[get_id(var_name)]=value;
 }
 
-void RKF_solver::set_deriv(const matrix_map &values) {
+void RKF_solver::set_derivs(const matrix_map &values) {
 	matrix_map::const_iterator it;
 	for(it=values.begin();it!=values.end();it++) 
 		set_deriv((it->first).c_str(),it->second);
@@ -180,18 +181,19 @@ int RKF_solver::solve(double t0,double t1) {
 	check_init();
 	
 	static double h;
-	int ret_code=2;
+	static bool last_step=false;
+	int ret_code=RK_INTERMEDIATE;
 	
-	if(state==-1) { 
+	if(stage==-1) { 
 		t=t0;
 		wrap(y,&x);
 		if(step<=0) step=t1-t0;
 	} else {
 		wrap(dy,&deriv);
-		k[state]=h*deriv;
+		k[stage]=h*deriv;
 	}
 	
-	if(state==5) {
+	if(stage==5) {
 		matrix x4(x),x5(x);
 		for(int i=0;i<6;i++) {
 			x4+=b4(i)*k[i];
@@ -203,7 +205,7 @@ int RKF_solver::solve(double t0,double t1) {
 		q=max(abs(x5-x4)/tol);
 		if(q<1) {
 			x=x5;t+=h;
-			ret_code=1;
+			ret_code=RK_STEP;
 		}
 		q=0.84*pow(q,-0.25);
 		q=q>4?4:q;
@@ -211,22 +213,26 @@ int RKF_solver::solve(double t0,double t1) {
 		step=q*step;
 	}
 	
-	state=(state+1)%6;
+	stage=(stage+1)%6;
 	
-	if(state==0) {
+	if(stage==0) {
 		if(t>=t1) {
 			t_eval=t;
 			unwrap(&x,y);
-			state=-1;
-			return 0;
+			stage=-1;
+			last_step=false;
+			return RK_END;
 		}
-		h=step<t1-t?step:t1-t;
+		if(step>t1-t) {
+			h=t1-t;
+			last_step=true;
+		} else h=step;
 	}
 	
-	t_eval=t+c(state)*h;
+	t_eval=t+c(stage)*h;
 	x_eval=x;
-	for(int i=0;i<state;i++) {
-		x_eval+=a(state,i)*k[i];
+	for(int i=0;i<stage;i++) {
+		x_eval+=a(stage,i)*k[i];
 	}
 	
 	unwrap(&x_eval,y);

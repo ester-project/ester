@@ -25,6 +25,7 @@ public:
 	void write_fmt(const char *fmt,FILE *fp=stdout) const;
 	void swap(matrix &);
 	void zero(int nrows,int ncols);
+	void values(double,...);
 	
 	friend matrix operator-(double,const matrix &);
 	friend matrix operator-(const matrix &);

@@ -362,6 +362,15 @@ matrix solver::get_var(const char *varn) {
 	return sol[ivar];
 }
 
+matrix_map solver::get_vars() {
+
+	matrix_map map;
+	for(int i=0;i<nv;i++) 
+		if(reg(i)) map[std::string(var[i])]=sol[i];
+
+	return map;
+}
+
 matrix solver::get_rhs(int ieq) {
 	
 	return rhs[ieq];
