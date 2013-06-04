@@ -6,10 +6,13 @@
 #include"graphics.h"
 #include"solver.h"
 
+#define MAP_BONAZZOLA 0
+#define MAP_LINEAR 1
+
 class mapping {
 	matrix eps_,eta_;
   public:
-  	int mode;   // mode=0 Bonazzola, mode=1 rzz=0 at the boundaries 
+  	int mode;  
     diff_gl gl;
     diff_leg leg;
     const int &nr,&nth,&ndomains;

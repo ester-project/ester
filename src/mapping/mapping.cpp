@@ -10,7 +10,7 @@ mapping::mapping(int ndom): gl(ndom),D(gl.D),Dt(leg.D_00),Dt2(leg.D2_00)
 	ex.gl.set_ndomains(1);
 	ex.gl.set_xif(1.,2.);
 	ex.gl.set_npts(10);
-	mode=0;
+	mode=MAP_BONAZZOLA;
 	
 }
 
@@ -57,8 +57,8 @@ int mapping::init() {
 	int i;
 	matrix temp;
 	
-	gl.xif[0]=0;
-	gl.xif[gl.ndomains]=1;
+	//gl.xif[0]=0;
+	//gl.xif[gl.ndomains]=1;
 	R.dim(gl.ndomains,leg.npts);
 	temp=ones(1,leg.npts);
 	for(i=0;i<gl.ndomains;i++)
@@ -109,8 +109,8 @@ int mapping::remap() {
 	double a;
 	
 	eta_=leg.eval_00(R,0);
-	R.setrow(gl.ndomains-1,R.row(gl.ndomains-1)/eta_(gl.ndomains-1));
-	eta_(gl.ndomains-1)=1;
+	//R.setrow(gl.ndomains-1,R.row(gl.ndomains-1)/eta_(gl.ndomains-1));
+	//eta_(gl.ndomains-1)=1;
 	eps_=1-eta_/leg.eval_00(R,PI/2);
 	gl.xif[0]=0;
 	for(i=0;i<gl.ndomains;i++)
@@ -128,86 +128,133 @@ int mapping::remap() {
 	J[2].dim(gl.N,leg.npts);
 	J[3].dim(gl.N,leg.npts);
 	
-	jfirst=0; 
-	i=0;
-	iprev=0;
-	while (i<gl.ndomains) {
-		dj=gl.npts[i];
-		zz=gl.x.block(jfirst,jfirst+dj-1,0,0);
-		if(!jfirst) {
-			xi=zz/eta_(i);
-			if(!mode) {
+	
+	if(mode==MAP_BONAZZOLA) {
+		jfirst=0; 
+		i=0;
+		iprev=0;
+		while (i<gl.ndomains) {
+			dj=gl.npts[i];
+			zz=gl.x.block(jfirst,jfirst+dj-1,0,0);
+			if(!jfirst) {
+				xi=zz/eta_(i);
 				A=(5*xi*xi*xi-3*pow(xi,5))/2;
 				Ap=7.5*(xi*xi-pow(xi,4));
 				App=15*(xi-2*xi*xi*xi);
+				a=eps_(i)<0 ? 1/(1-eps_(i)) : 1;
+				//if(a!=1) printf("Mapping: a(%d)=%e\n",i,a);
+				a=1;
+				temp=a*zz+A*(R.row(i)-a*eta_(i));
+				r.setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=a+Ap*(R.row(i)/eta_(i)-a);
+				rz.setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=App/eta_(i)*(R.row(i)/eta_(i)-a);
+				rzz.setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=A*(R.row(i),Dt);
+				rt.setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=A*(R.row(i),Dt2);
+				rtt.setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=Ap/eta_(i)*(R.row(i),Dt);
+				rzt.setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=zeros(dj,leg.npts);
+				J[0].setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=a*(xi-A)*ones(1,leg.npts);
+				J[1].setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=zeros(dj,leg.npts);
+				J[2].setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=A*ones(1,leg.npts);
+				J[3].setblock(0,dj-1,0,leg.npts-1,temp);
 			} else {
-				A=6*pow(xi,5)-15*pow(xi,4)+10*xi*xi*xi;
-				Ap=30*(pow(xi,4)-2*xi*xi*xi+xi*xi);
-				App=60*(2*xi*xi*xi-3*xi*xi+xi);
-			}
-			a=eps_(i)<0 ? 1/(1-eps_(i)) : 1;
-			//if(a!=1) printf("Mapping: a(%d)=%e\n",i,a);
-			a=1;
-			temp=a*zz+A*(R.row(i)-a*eta_(i));
-			r.setblock(0,dj-1,0,leg.npts-1,temp);
-			temp=a+Ap*(R.row(i)/eta_(i)-a);
-			rz.setblock(0,dj-1,0,leg.npts-1,temp);
-			temp=App/eta_(i)*(R.row(i)/eta_(i)-a);
-			rzz.setblock(0,dj-1,0,leg.npts-1,temp);
-			temp=A*(R.row(i),Dt);
-			rt.setblock(0,dj-1,0,leg.npts-1,temp);
-			temp=A*(R.row(i),Dt2);
-			rtt.setblock(0,dj-1,0,leg.npts-1,temp);
-			temp=Ap/eta_(i)*(R.row(i),Dt);
-			rzt.setblock(0,dj-1,0,leg.npts-1,temp);
-			temp=zeros(dj,leg.npts);
-			J[0].setblock(0,dj-1,0,leg.npts-1,temp);
-			temp=a*(xi-A)*ones(1,leg.npts);
-			J[1].setblock(0,dj-1,0,leg.npts-1,temp);
-			temp=zeros(dj,leg.npts);
-			J[2].setblock(0,dj-1,0,leg.npts-1,temp);
-			temp=A*ones(1,leg.npts);
-			J[3].setblock(0,dj-1,0,leg.npts-1,temp);
-		} else {
-			xi=(2*zz-eta_(i)-eta_(iprev))/(eta_(i)-eta(iprev));
-			if(!mode) {
+				xi=(2*zz-eta_(i)-eta_(iprev))/(eta_(i)-eta(iprev));
 				A=0.25*(xi*xi*xi-3*xi+2);
 				Ap=0.25*(3*xi*xi-3);
 				App=1.5*xi;
-			} else {
-				A=(-3*pow(xi,5)+10*xi*xi*xi-15*xi+8)/16;
-				Ap=15*(-pow(xi,4)+2*xi*xi-1)/16;
-				App=15*(-xi*xi*xi+xi)/4;
+				a=eta_(i)*eps_(i)<eta_(iprev)*eps_(iprev) ?
+				(1-(eta_(i)*eps_(iprev)-eta_(iprev)*eps_(i))/(eta_(i)-eta_(iprev)))/(1-eps_(i))/(1-eps_(iprev))
+				 : 1;
+				 //if(a!=1) printf("Mapping: a(%d)=%e\n",i,a);
+				 a=1;
+				temp=a*zz+A*(R.row(iprev)-a*eta_(iprev))+(1-A)*(R.row(i)-a*eta_(i));
+				r.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=a-2*Ap*((R.row(i)-R.row(iprev))/(eta_(i)-eta_(iprev))-a);
+				rz.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=-4*App/(eta_(i)-eta_(iprev))*((R.row(i)-R.row(iprev))/(eta_(i)-eta_(iprev))-a);
+				rzz.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=A*(R.row(iprev),Dt)+(1-A)*(R.row(i),Dt);
+				rt.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=A*(R.row(iprev),Dt2)+(1-A)*(R.row(i),Dt2);
+				rtt.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=-2*Ap*(R.row(i)-R.row(iprev),Dt)/(eta_(i)-eta_(iprev));
+				rzt.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=zeros(dj,leg.npts);
+				J[0].setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=a*((1.+xi)/2.-(1-A))*ones(1,leg.npts);
+				J[1].setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=ones(dj,leg.npts);
+				J[2].setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=(1-A)*ones(1,leg.npts);
+				J[3].setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
 			}
-			a=eta_(i)*eps_(i)<eta_(iprev)*eps_(iprev) ?
-			(1-(eta_(i)*eps_(iprev)-eta_(iprev)*eps_(i))/(eta_(i)-eta_(iprev)))/(1-eps_(i))/(1-eps_(iprev))
-			 : 1;
-			 //if(a!=1) printf("Mapping: a(%d)=%e\n",i,a);
-			 a=1;
-			temp=a*zz+A*(R.row(iprev)-a*eta_(iprev))+(1-A)*(R.row(i)-a*eta_(i));
-			r.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
-			temp=a-2*Ap*((R.row(i)-R.row(iprev))/(eta_(i)-eta_(iprev))-a);
-			rz.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
-			temp=-4*App/(eta_(i)-eta_(iprev))*((R.row(i)-R.row(iprev))/(eta_(i)-eta_(iprev))-a);
-			rzz.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
-			temp=A*(R.row(iprev),Dt)+(1-A)*(R.row(i),Dt);
-			rt.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
-			temp=A*(R.row(iprev),Dt2)+(1-A)*(R.row(i),Dt2);
-			rtt.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
-			temp=-2*Ap*(R.row(i)-R.row(iprev),Dt)/(eta_(i)-eta_(iprev));
-			rzt.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
-			temp=zeros(dj,leg.npts);
-			J[0].setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
-			temp=a*((1.+xi)/2.-(1-A))*ones(1,leg.npts);
-			J[1].setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
-			temp=ones(dj,leg.npts);
-			J[2].setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
-			temp=(1-A)*ones(1,leg.npts);
-			J[3].setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+			iprev=i;
+			jfirst+=dj;
+			i++;
 		}
-		iprev=i;
-		jfirst+=dj;
-		i++;
+	} else {
+		jfirst=0; 
+		i=0;
+		iprev=0;
+		while (i<gl.ndomains) {
+			dj=gl.npts[i];
+			zz=gl.x.block(jfirst,jfirst+dj-1,0,0);
+			if(!jfirst) {
+				xi=zz/eta_(i);
+				temp=xi*R.row(i);
+				r.setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=R.row(i)/eta_(i)+zeros(dj,leg.npts);
+				rz.setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=zeros(dj,leg.npts);
+				rzz.setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=xi*(R.row(i),Dt);
+				rt.setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=xi*(R.row(i),Dt2);
+				rtt.setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=(R.row(i),Dt)/eta_(i)+zeros(dj,leg.npts);
+				rzt.setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=zeros(dj,leg.npts);
+				J[0].setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=zeros(dj,leg.npts);
+				J[1].setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=zeros(dj,leg.npts);
+				J[2].setblock(0,dj-1,0,leg.npts-1,temp);
+				temp=xi*ones(1,leg.npts);
+				J[3].setblock(0,dj-1,0,leg.npts-1,temp);
+			} else {
+				xi=(zz-eta_(iprev))/(eta_(i)-eta(iprev));
+				temp=R.row(iprev)+xi*(R.row(i)-R.row(iprev));
+				r.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=(R.row(i)-R.row(iprev))/(eta_(i)-eta_(iprev))+zeros(dj,leg.npts);
+				rz.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=zeros(dj,leg.npts);
+				rzz.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=(1-xi)*(R.row(iprev),Dt)+xi*(R.row(i),Dt);
+				rt.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=(1-xi)*(R.row(iprev),Dt2)+xi*(R.row(i),Dt2);
+				rtt.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=(R.row(i)-R.row(iprev),Dt)/(eta_(i)-eta_(iprev))+zeros(dj,leg.npts);
+				rzt.setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=zeros(dj,leg.npts);
+				J[0].setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=zeros(dj,leg.npts);
+				J[1].setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=ones(dj,leg.npts);
+				J[2].setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+				temp=xi*ones(1,leg.npts);
+				J[3].setblock(jfirst,jfirst+dj-1,0,leg.npts-1,temp);
+			}
+			iprev=i;
+			jfirst+=dj;
+			i++;
+		}
 	}
 
 	jfirst=0;
@@ -539,7 +586,7 @@ matrix mapping::drawi0(const matrix &A,int sr,int st,int parity,matrix &x,matrix
 	leg1.init();
 	gl1.set_ndomains(1);
 	gl1.set_npts(sr);
-	gl1.set_xif(0.,1.);
+	gl1.set_xif(gl.xif[0],gl.xif[gl.ndomains]);
 	gl1.init();
 	
 	r1=gl.eval(r,gl1.x);
@@ -626,7 +673,7 @@ void mapping::draw(figure *pfig,const matrix &A,int parity) const {
 	
 	matrix x,y,zz;
 	
-	pfig->axis(-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),1);
+	pfig->axis(-max(r.row(-1))*1.02,max(r.row(-1))*1.02,-max(r.row(-1))*1.02,max(r.row(-1))*1.02,1);
 	zz=draw0(A,parity,x,y);
 	
 	pfig->pcolor(x,y,zz);
@@ -637,7 +684,7 @@ void mapping::drawi(figure *pfig,const matrix &A,int sr,int st,int parity) const
 	
 	matrix x,y,zz;
 	
-	pfig->axis(-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),1);
+	pfig->axis(-max(r.row(-1))*1.02,max(r.row(-1))*1.02,-max(r.row(-1))*1.02,max(r.row(-1))*1.02,1);
 	zz=drawi0(A,sr,st,parity,x,y);
 	
 	pfig->pcolor(x,y,zz);
@@ -648,7 +695,7 @@ void mapping::drawc(figure *pfig,const matrix &A,int ncontours,int parity) const
 	
 	matrix x,y,zz;
 	
-	pfig->axis(-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),1);
+	pfig->axis(-max(r.row(-1))*1.02,max(r.row(-1))*1.02,-max(r.row(-1))*1.02,max(r.row(-1))*1.02,1);
 	zz=draw0(A,parity,x,y);
 	
 	pfig->plot(x.row(-1),y.row(-1));
@@ -680,7 +727,8 @@ void mapping::drawci(figure *pfig,const matrix &A,int sr,int st,int ncontours,in
 	
 	matrix x,y,zz;
 	
-	pfig->axis(-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),-1/(1-eps(gl.ndomains-1)),1/(1-eps(gl.ndomains-1)),1);
+	
+	pfig->axis(-max(r.row(-1))*1.02,max(r.row(-1))*1.02,-max(r.row(-1))*1.02,max(r.row(-1))*1.02,1);
 	zz=drawi0(A,sr,st,parity,x,y);	
 	
 	pfig->plot(x.row(-1),y.row(-1));
