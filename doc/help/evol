@@ -1,0 +1,26 @@
+
+Calculate a pseudo-evolution. 
+
+At this moment this evolution is calculated just varying Xc while maintaining 
+constant M and Lz. This behaviour is provisional and will change in future 
+versions.
+
+To use it we must specify an input model (using -i or -input_file) calculated
+using ester 1d or ester 2d:
+
+         ester evol -i input_model
+
+Other valid parameters are:
+
+   -dXc : decrement in Xc (default: 0.05)
+
+   -Xcmin : minimum value of Xc (default: 0.05)
+
+   -o outfile : The default is outfile=input_file
+
+and other parameters inherited from ester 2d (-output_mode, -verbose, ...).
+However, it is not possible to change model parameters with ester evol (as mass,
+resolution, etc.).
+The output is a series of files output_XXXX, where XXXX is an index number,
+containing the models at different stages.
+
