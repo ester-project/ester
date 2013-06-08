@@ -10,16 +10,14 @@ SRCS90      = mod_kind.f mod_numerique.f mod_donnees.f sortie.f mod_variables.f 
 
 OBJS        = mod_kind.o mod_numerique.o mod_donnees.o sortie.o mod_variables.o mod_nuc.o
 
-all: $(LIBRARY)
-	
-clean:
-	rm -f $(LIBRARY)
-	rm -f *.mod
-
-$(LIBRARY):
+all:
 	$(F90) $(FFLAGS90) $(SRCS90)
 	$(AR) cr $(LIBRARY) $(OBJS)
 	$(RANLIB) $(LIBRARY)
 	rm -f $(OBJS)
+
+clean:
+	rm -f $(LIBRARY)
+	rm -f *.mod
 
 mod_nuc.o : abon_ini.f iben.f nuc.f pp1.f pp3.f ppcno10BeBFe.f ppcno10Fe.f ppcno10K.f ppcno10.f ppcno11.f ppcno12Be.f ppcno12BeBFe.f ppcno12Li.f ppcno12.f ppcno3a12Ne.f ppcno3a9.f ppcno3aco.f ppcno9.f ppcno9Fe.f rq_reac.f tabul_nuc.f taux_nuc.f

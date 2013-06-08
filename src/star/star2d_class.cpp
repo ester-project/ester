@@ -9,7 +9,10 @@ star2d::star2d() :r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2)
 
 	config.newton_dmax=0.5;
 	config.verbose=0;
-	*version='\0';
+	version.major=ESTER_VERSION_MAJOR;
+	version.minor=ESTER_VERSION_MINOR;
+	version.rev=ESTER_REVISION;
+	version.svn=ESTER_VERSION_SVN;
 
 }
 
@@ -77,9 +80,13 @@ void star2d::copy(const star2d &A) {
 void star2d::write(const char *output_file,char mode) const {
 DEBUG_FUNCNAME
 	OUTFILE fp;
-
-	char cur_version[32];	
-	strncpy(cur_version,ESTER_VERSION,31);cur_version[31]='\0';
+	
+	struct version_struct ver;
+	
+	ver.major=ESTER_VERSION_MAJOR;
+	ver.minor=ESTER_VERSION_MINOR;
+	ver.rev=ESTER_REVISION;
+	ver.svn=ESTER_VERSION_SVN;
 	
 	fp.open(output_file,mode);
 	write_tag(&fp,mode);
@@ -109,7 +116,10 @@ DEBUG_FUNCNAME
 		fp.write("core_convec",&core_convec);
 		fp.write("env_convec",&env_convec);
 		fp.write("min_core_size",&min_core_size);
-		fp.write("version",cur_version,strlen(cur_version)+1);
+		fp.write("version.major",&ver.major);
+		fp.write("version.minor",&ver.minor);
+		fp.write("version.rev",&ver.rev);
+		fp.write("version.svn",&ver.svn);
 	} else {
 		fp.write_fmt("ndomains","%d",&ndomains);
 		fp.write_fmt("npts","%d",map.gl.npts,ndomains);
@@ -136,7 +146,10 @@ DEBUG_FUNCNAME
 		fp.write_fmt("core_convec","%d",&core_convec);
 		fp.write_fmt("env_convec","%d",&core_convec);
 		fp.write_fmt("min_core_size","%.16e",&min_core_size);
-		fp.write_fmt("version","%s",&cur_version);
+		fp.write_fmt("version.major","%d",&ver.major);
+		fp.write_fmt("version.minor","%d",&ver.minor);
+		fp.write_fmt("version.rev","%d",&ver.rev);
+		fp.write_fmt("version.svn","%d",&ver.svn);
 	}
 	
 	fp.write("phi",&phi);
@@ -174,6 +187,25 @@ DEBUG_FUNCNAME
 	}
 	
 	if(mode=='b') {
+		if(!fp.read("version.major",&version.major)) {
+			char ver[32];
+			if(fp.read("version",ver)) {
+				version.major=1;
+				version.minor=0;
+				version.rev=70;
+				if(!strcmp(ver,"1.0.0")) version.svn=0;
+				else version.svn=1;
+			} else {
+				version.major=0;
+				version.minor=0;
+				version.rev=0;
+				version.svn=1;
+			}
+		} else {
+			fp.read("version.minor",&version.minor);
+			fp.read("version.rev",&version.rev);
+			fp.read("version.svn",&version.svn);
+		}
 		fp.read("ndomains",&ndom);
 		map.gl.set_ndomains(ndom);
 		fp.read("npts",map.gl.npts);
@@ -206,8 +238,26 @@ DEBUG_FUNCNAME
 		if(!fp.read("core_convec",&core_convec)) core_convec=1;
 		if(!fp.read("env_convec",&env_convec)) env_convec=0;
 		if(!fp.read("min_core_size",&min_core_size)) min_core_size=0.03;
-		if(!fp.read("version",version)) strcpy(version,"0");
 	} else {
+		if(!fp.read_fmt("version.major","%d",&version.major)) {
+			char ver[32];
+			if(fp.read_fmt("version","%s",ver)) {
+				version.major=1;
+				version.minor=0;
+				version.rev=70;
+				if(!strcmp(ver,"1.0.0")) version.svn=0;
+				else version.svn=1;
+			} else {
+				version.major=0;
+				version.minor=0;
+				version.rev=0;
+				version.svn=1;
+			}
+		} else {
+			fp.read_fmt("version.minor","%d",&version.minor);
+			fp.read_fmt("version.rev","%d",&version.rev);
+			fp.read_fmt("version.svn","%d",&version.svn);
+		}
 		fp.read_fmt("ndomains","%d",&ndom);
 		map.gl.set_ndomains(ndom);
 		fp.read_fmt("npts","%d",map.gl.npts);
@@ -240,7 +290,6 @@ DEBUG_FUNCNAME
 		if(!fp.read_fmt("core_convec","%d",&core_convec)) core_convec=1;
 		if(!fp.read_fmt("env_convec","%d",&env_convec)) env_convec=1;
 		if(!fp.read_fmt("min_core_size","%le",&min_core_size)) min_core_size=0.03;
-		if(!fp.read_fmt("version","%s",version)) strcpy(version,"0");
 	}
 		
 	map.init();
@@ -372,7 +421,10 @@ DEBUG_FUNCNAME
 	core_convec=1;
 	env_convec=1;
 	min_core_size=0.03;
-	strcpy(version,"0");
+	version.major=0;
+	version.minor=0;
+	version.rev=0;
+	version.svn=1;
 	domain_type.resize(ndomains);
 	for(int n=0;n<ndomains;n++) {
 		if(n<conv) domain_type[n]=CORE;
@@ -685,7 +737,9 @@ DEBUG_FUNCNAME
 
 void star2d::dump_info() {
 DEBUG_FUNCNAME
-	printf("\n2d ESTER model file  (Version %s)\n\n",version);
+	printf("\n2d ESTER model file  (Version %d.%d rev %d",version.major,version.minor,version.rev);
+	if(version.svn) printf(".svn");
+	printf(")\n\n");
 	
 	printf("General parameters:\n\n");
 	printf("\tMass = %.5f Msun (%e g)\n",M/M_SUN,M);

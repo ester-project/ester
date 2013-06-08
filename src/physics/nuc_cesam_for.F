@@ -93,7 +93,7 @@ c lecture du fichier de donnees
 	REAL (kind=dp), DIMENSION(nchim) :: comp,ex
 	REAL (kind=dp) :: t,ro,et, ero, hhe, be7e, b8e, n13e, o15e, f17e
 	REAL (kind=dp), DIMENSION(5) :: epsilon	
-	INTEGER :: fait
+	INTEGER :: fait,i,j
 	
 	comp=comp/nucleo
 	fait=2
@@ -101,6 +101,11 @@ c lecture du fichier de donnees
 	1 epsilon,et,ero,ex,hhe,be7e,b8e,n13e,o15e,f17e)
 	comp=comp*nucleo
 	dcomp=dcomp*nucleo
+	do i=1,nchim
+		do j=1,nchim
+			jac(i,j)=nucleo(i)/nucleo(j)*jac(i,j)
+		end do
+	end do
 	
 	end
 	

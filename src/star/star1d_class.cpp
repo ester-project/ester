@@ -107,7 +107,10 @@ DEBUG_FUNCNAME
 	core_convec=1;
 	env_convec=0;
 	min_core_size=0.03;
-	strcpy(version,"0");
+	version.major=0;
+	version.minor=0;
+	version.rev=0;
+	version.svn=1;
 	domain_type.resize(ndomains);
 	for(int n=0;n<ndomains;n++) {
 		if(n<conv) domain_type[n]=CORE;
@@ -250,7 +253,9 @@ DEBUG_FUNCNAME
 
 void star1d::dump_info() {
 DEBUG_FUNCNAME
-	printf("\n1d ESTER model file  (Version %s)\n\n",version);
+	printf("\n1d ESTER model file  (Version %d.%d rev %d",version.major,version.minor,version.rev);
+	if(version.svn) printf(".svn");
+	printf(")\n\n");
 	
 	printf("General parameters:\n\n");
 	printf("\tMass = %.5f Msun (%e g)\n",M/M_SUN,M);

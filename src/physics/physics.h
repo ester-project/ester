@@ -23,6 +23,8 @@ struct atm_struct {
 
 class composition_map : public matrix_map {
 public:
+	matrix_map dt;
+	std::map<std::string,matrix_map> jac;
 	composition_map() {};
 	composition_map(const matrix_map &map) : matrix_map(map) {};
 	matrix X() const;
@@ -51,7 +53,7 @@ int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,
 int nuc_cesam(const composition_map &comp,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);	
 		
-composition_map nuc_cesam_dcomp(const composition_map &comp,const matrix &T,const matrix &rho,
+int nuc_cesam_dcomp(composition_map &comp,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);
 
 int eos_ideal(const matrix &X,double Z,const matrix &T,const matrix &p,

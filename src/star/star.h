@@ -60,7 +60,9 @@ class star2d {
 	#define CORE 1
 	#define CONVECTIVE 2
 	
-	char version[32];
+	struct version_struct {
+		int major,minor,rev,svn;
+	} version;
 
 	struct units_struct {
 		double rho,p,phi,T,Omega,r,v,F;

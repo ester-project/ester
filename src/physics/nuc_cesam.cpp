@@ -55,6 +55,31 @@ double_map nuc_cesam_abon(matrix ab) {
 	return comp;
 }
 
+void nuc_cesam_init_jac(composition_map &comp) {
+
+	composition_map::iterator it;
+	
+	for(it=comp.begin();it!=comp.end();it++) 
+		comp.jac[it->first]=0*comp;
+
+}
+
+void nuc_cesam_jac(composition_map &comp,const matrix &J,int i,int j) {
+
+	std::map<std::string,matrix_map> &jac=comp.jac;
+
+	jac["H"](i,j)=nuc_cesam_abon(J.row(0));
+	jac["He3"](i,j)=nuc_cesam_abon(J.row(1));
+	jac["He4"](i,j)=nuc_cesam_abon(J.row(2));
+	jac["C12"](i,j)=nuc_cesam_abon(J.row(3));
+	jac["C13"](i,j)=nuc_cesam_abon(J.row(4));
+	jac["N14"](i,j)=nuc_cesam_abon(J.row(5));
+	jac["N15"](i,j)=nuc_cesam_abon(J.row(6));
+	jac["O16"](i,j)=nuc_cesam_abon(J.row(7));
+	jac["O17"](i,j)=nuc_cesam_abon(J.row(8));
+
+}
+
 int nuc_cesam(const composition_map &comp,const matrix &T,const matrix &rho,
 		nuc_struct &nuc) {
 		
@@ -88,14 +113,13 @@ int nuc_cesam(const composition_map &comp,const matrix &T,const matrix &rho,
 	return 0;
 }
 
-composition_map nuc_cesam_dcomp(const composition_map &comp,const matrix &T,const matrix &rho,
+int nuc_cesam_dcomp(composition_map &comp,const matrix &T,const matrix &rho,
 		nuc_struct &nuc) {
 	
 	if(!init) nuc_cesam_init();
 	
-	matrix_map dcomp;
-	
-	dcomp=0*comp;
+	comp.dt=0*comp;
+	nuc_cesam_init_jac(comp);
 	double t,ro;
 	for(int j=0;j<T.ncols();j++) {
 		for(int i=0;i<T.nrows();i++) {
@@ -103,9 +127,12 @@ composition_map nuc_cesam_dcomp(const composition_map &comp,const matrix &T,cons
 			ab=nuc_cesam_abon(comp(i,j));
 			t=T(i,j);ro=rho(i,j);
 			nuc_cesam_dcomp_(&t,&ro,ab.data(),dab.data(),jac.data());
-			dcomp(i,j)=nuc_cesam_abon(dab);
+			
+			comp.dt(i,j)=nuc_cesam_abon(dab);
+			nuc_cesam_jac(comp,jac,i,j);
 		}
 	}
+	
 	
 	// As part of the mass is transformed in energy (and neutrinos), the temporal derivatives
 	// given by cesam doesn't verify Sum(dXi/dt)=0. We need to make a correction in this
@@ -124,10 +151,26 @@ composition_map nuc_cesam_dcomp(const composition_map &comp,const matrix &T,cons
 	// caused by the reaction.
 	
 	matrix dXtot;
-	dXtot=dcomp.sum();
-	dcomp-=comp*dXtot;
+	dXtot=comp.dt.sum();
+	composition_map::iterator it,it2;
+	std::map<std::string,matrix_map> Jnew;
+	matrix_map Jsum;
+	for(it=comp.begin();it!=comp.end();it++) {
+		Jsum[it->first]=zeros(T.nrows(),T.ncols());
+		for(it2=comp.begin();it2!=comp.end();it2++) {
+			Jsum[it->first]+=comp.jac[it2->first][it->first];
+		}
+	}
+	for(it=comp.begin();it!=comp.end();it++) {
+		for(it2=comp.begin();it2!=comp.end();it2++) {
+			Jnew[it->first][it2->first]=comp.jac[it->first][it2->first]-comp[it->first]*Jsum[it2->first];
+		}
+		Jnew[it->first][it->first]-=dXtot;
+	}
+	comp.jac=Jnew;
+	comp.dt-=comp*dXtot;
 	
-	return dcomp;
+	return 0;
 
 }
 

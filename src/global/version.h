@@ -1,6 +1,9 @@
 #ifndef _VERSION_H
 #define _VERSION_H
 
-#define ESTER_VERSION "1.0.0+svn"
+#define ESTER_VERSION_MAJOR 1
+#define ESTER_VERSION_MINOR 0
+#define ESTER_REVISION 105
+#define ESTER_VERSION_SVN 1
 
 #endif
