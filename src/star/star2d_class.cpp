@@ -458,6 +458,13 @@ DEBUG_FUNCNAME
 			map_new=map;
 			map=map0;
 			remap(map_new.ndomains,map_new.gl.npts,map_new.nt,map_new.nex);
+		} 
+		if(version.rev<=71) { // Force remapping for old files
+			int npts[ndomains+1];
+			for(int n=0;n<ndomains;n++) npts[n]=map.npts[n];
+			npts[ndomains]=npts[ndomains-1];
+			remap(ndomains+1,npts,map.nt,map.nex);
+			remap(ndomains,map.npts,map.nt,map.nex);
 		}
 	} else {
 		map.init();
