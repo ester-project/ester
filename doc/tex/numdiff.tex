@@ -98,7 +98,7 @@ We see that the derivative of a discretized function can be calculated
 by doing a matrix product.
 $$\Phi'=D\Phi$$
 Similarly, the second derivative will be 
-$$\Phi'=DD\Phi$$
+$$\Phi''=DD\Phi$$
 
 \subsection{Relation with spectral methods}
 
@@ -124,9 +124,9 @@ where $\mathcal{P}^{-1}_{il}=P_l(x_i)$ is the matrix inverse of $\mathcal{P}_{li
 
 \subsection{Multi-domain}
 
-One of the main drawbacks of pseudospectral collocation methods is that they does not deal correctly
+One of the main drawbacks of pseudospectral collocation methods is that they do not deal correctly
 with non-regular functions. If the function that we want approximate has discontinuities, even in its
-first derivatives, the exponential convergence is lost and the approximated function shows oscillations
+first derivatives, the exponential convergence is lost and the approximated function can show oscillations
 around the discontinuity. This is known as the Gibbs phenomenon. 
 
 There are multiple ways to deal with this problem, one of them is to use a multi-domain approach. 
@@ -224,8 +224,9 @@ ddy=(gl.D,gl.D,y); // Second derivative
 
 double integral;
 
-integral=(gl.I,y); // integral$=\int_{\mathtt{xif[0]=0}}^{\mathtt{xif[3]=10}}y(x)\mathrm{d}x$
-
+integral=(gl.I,y)(0); // integral$=\int_{\mathtt{xif[0]=0}}^{\mathtt{xif[3]=10}}y(x)\mathrm{d}x$
+						// Note the (0) at the end to convert the result 
+						// from matrix(1,1) to double
 matrix yl;
 
 yl=(gl.P,y); // Spectral coefficients
@@ -344,7 +345,7 @@ int main() {
 	
 	y_exact=x_fine*(x_fine-1)/3;
 	
-	printf("Solved using %d points\n",gl.N());
+	printf("Solved using %d points\n",gl.N);
 	printf("Max. error=%e\n",max(abs(y_fine-y_exact)));
 	
 	return 0;	
@@ -500,6 +501,9 @@ For simplicity, we will consider only type 00 functions.
 The code is as follows
 
 \begin{minted}[frame=single]{cpp}
+/* The following example illustrates the use of the numerical differentiation
+library in 2D in spherical coordinates */
+
 #include<stdio.h>
 #include"numdiff.h"
 #include"constants.h" //For the defintion of PI
