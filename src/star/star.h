@@ -28,7 +28,7 @@ class star2d {
 	virtual void copy(const star2d &);
 	void init1d(const star1d &A,int npts_th,int npts_ex);
 	virtual bool check_tag(const char *tag) const;
-	virtual void write_tag(OUTFILE *fp,char mode) const;
+	virtual void write_tag(OUTFILE *fp) const;
   public:
   	mapping map;
   	const int &nr,&nth,&nex,&ndomains;
@@ -88,7 +88,7 @@ class star2d {
 	virtual int read(const char *input_file);
 	virtual int read_old(const char *input_file);
 	virtual void write(const char *output_file,char output_mode='b') const;
-	virtual void interp(mapping_redist *red);
+	virtual void interp(remapper *red);
 	
 	virtual void dump_info();
 	
@@ -135,7 +135,7 @@ class star2d {
 	
 	// star_map.cpp
 	virtual void remap(int ndomains,int *npts,int nth,int nex);
-	virtual bool remap_domains(int ndom, mapping_redist &red);
+	virtual bool remap_domains(int ndom, remapper &red);
 	virtual matrix find_boundaries(const matrix &logTi) const;
 	virtual std::vector<int> distribute_domains(int ndom,matrix &zif,bool check_only=false) const;
 	virtual matrix distribute_domains(int ndomains,int &conv_new,double p_cc=0) const;
@@ -161,7 +161,7 @@ class star2d {
 class star1d : public star2d {
   protected:
     virtual bool check_tag(const char *tag) const;
-	virtual void write_tag(OUTFILE *fp,char mode) const;
+	virtual void write_tag(OUTFILE *fp) const;
   public:	
   	// star1d_class.cpp
 	star1d();

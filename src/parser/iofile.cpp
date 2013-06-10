@@ -2,7 +2,6 @@
 #include<string.h>
 #include<stdlib.h>
 
-
 int OUTFILE::open(const char *name,char mode_set) {
 
 	char m[3];
@@ -99,13 +98,6 @@ void OUTFILE::write(const char *tag,const matrix_map *a) {
 			(it->second).write(fp,mode);
 		}
 	}
-
-}
-
-void OUTFILE::write(const char *tag,void *x,unsigned long n,size_t size) {
-
-	write_tag(tag,n*size);
-	fwrite(x,size,n,fp);
 
 }
 
@@ -267,16 +259,5 @@ int INFILE::read(const char *tag,matrix_map *a) {
 
 }
 
-int INFILE::read(const char *tag,void *x) {
-
-	unsigned long n=seek(tag);
-
-	if(!n) return 0;
-	
-	if(n!=fread(x,1,n,fp)) return 0;
-	
-	return 1;
-	
-}
 
 

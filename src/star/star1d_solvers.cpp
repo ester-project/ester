@@ -179,8 +179,7 @@ DEBUG_FUNCNAME
 	
 	matrix R0;
 	R0=map.R;
-	dR.setblock(0,-2,0,0,dR.block(1,-1,0,0));
-	dR(-1)=0;
+	dR=dR.concatenate(zeros(1,1));
 	while(exist(abs(h*dR)>dmax*R0)) h/=2;
 	map.R+=h*dR;
 	while(map.remap()) {

@@ -1111,6 +1111,66 @@ void sym::add(solver *op,const char *eq_name,const char *var_name,const matrix &
 
 }
 
+void sym::add_ex(solver *op,int n,const char *eq_name,const char *var_name) const {
+
+	add_ex(op,n,eq_name,var_name,ones(1,1));
+
+}
+
+void sym::add_ex(solver *op,int n,const char *eq_name,const char *var_name,const matrix &d) const {
+
+	const symbolic *C;
+	C=check_context();
+	
+	int maxder=C->maxder;
+	int parity;
+	if (!strcmp(var_name,"r")) {
+		maxder++;
+		parity=0;
+	} else {
+		parity=C->var_par[C->id(var_name)];
+	}
+	
+	sym q;
+	matrix Dt,Dt2;
+	switch(parity) {
+		case 00:
+			Dt=C->map.leg.D_00;
+			Dt2=C->map.leg.D2_00;
+			break;
+		case 01:
+			Dt=C->map.leg.D_01;
+			Dt2=C->map.leg.D2_01;
+			break;
+		case 10:
+			Dt=C->map.leg.D_10;
+			Dt2=C->map.leg.D2_10;
+			break;
+		case 11:
+			Dt=C->map.leg.D_11;
+			Dt2=C->map.leg.D2_11;
+	}
+	
+	matrix_block_diag pre;
+	matrix post;
+	for(int i=0;i<maxder+1;i++)
+		for(int j=0;j<maxder+1;j++) {
+			q=jacobian(var_name,i,j);
+			if(q.terms!=NULL) {
+				pre=eye(C->map.D);
+				post=eye(C->map.leg.npts);
+				for(int k=0;k<i;k++) pre=(C->map.D,pre);
+				for(int k=0;k<j/2;k++) post=(post,Dt2);
+				if(j%2) post=(post,Dt);
+				if(i==0&&j==0) op->add_d(n,eq_name,var_name,d*q.eval());
+				else if(j==0) op->add_l(n,eq_name,var_name,d*q.eval(),pre.block(0));
+				else if(i==0) op->add_r(n,eq_name,var_name,d*q.eval(),post);
+				else op->add_lr(n,eq_name,var_name,d*q.eval(),pre.block(0),post);
+			}
+		}
+
+}
+
 void sym::add_bc(solver *op,int n,const char *type,const char *eq_name,const char *var_name,const matrix &d) const {
 
 	const symbolic *C;

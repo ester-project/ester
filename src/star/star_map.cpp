@@ -3,11 +3,11 @@
 
 void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
 DEBUG_FUNCNAME
-	mapping_redist red(map);
+	remapper red(map);
 	
 	red.set_ndomains(ndom_in);
 	red.set_npts(npts_in);
-	red.set_nth(nth_in);
+	red.set_nt(nth_in);
 	red.set_nex(nex_in);
 	
 	if(ndom_in!=ndomains) 
@@ -18,7 +18,7 @@ DEBUG_FUNCNAME
 
 }
 
-bool star2d::remap_domains(int ndom, mapping_redist &red) {
+bool star2d::remap_domains(int ndom, remapper &red) {
 DEBUG_FUNCNAME
 	//	Count zones
 	int nzones=1;
@@ -49,9 +49,9 @@ DEBUG_FUNCNAME
 	
 	index_new=distribute_domains(ndom,zif);
 	
-	red.set_R(map.zeta_to_r(zif));
+	red.set_R(zeros(1,nth).concatenate(map.zeta_to_r(zif)));
 	for(int n=0;n<nzones;n++) 
-		red.set_fixed(index_new[n],index[n]);
+		red.set_fixed(index_new[n]+1,index[n]+1);
 	// Update domain_type
 	std::vector<int> domain_type_new(ndom,0);
 	for(int n=0,izone=0;n<ndom;n++) {
@@ -261,11 +261,11 @@ DEBUG_FUNCNAME
 	double pcc;
 	matrix Rcc,pif;
 	int conv_new;
-	mapping_redist *red;
+	remapper *red;
 
 	if(check_convec(pcc,Rcc)!=conv) {
-		matrix R(ndomains,nth);
-		red=new mapping_redist(map);
+		matrix R(ndomains+1,nth);
+		red=new remapper(map);
 		if(conv) {
 			conv=0;
 			for(int n=0;n<ndomains;n++) {
@@ -273,8 +273,7 @@ DEBUG_FUNCNAME
 				else domain_type[n]=RADIATIVE;
 			}
 			pif=distribute_domains(ndomains,conv_new);
-			R.setblock(0,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0))); //faster
-			//R=find_boundaries_old(pif);
+			R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0)));
 			red->set_R(R);
 			domain_type.resize(ndomains);
 		} else {
@@ -285,13 +284,12 @@ DEBUG_FUNCNAME
 				if(n<conv) domain_type[n]=CORE;
 				else domain_type[n]=RADIATIVE;
 			}
-			R.setblock(0,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0))); //faster
-			//R=find_boundaries_old(pif);
-			R.setrow(conv-1,Rcc);
+			R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0))); 
+			R.setrow(conv,Rcc);
 			red->set_R(R);
 		}
 	} else {
-		red=new mapping_redist(map);
+		red=new remapper(map);
 		if(!remap_domains(ndomains,*red)) return;
 	}
 	if(config.verbose) {printf("Remapping...");fflush(stdout);}

@@ -54,6 +54,8 @@ public:
 	sym jacobian_r(int dz,int dt) const;
 	void add(solver *op,const char *eq_name,const char *var_name) const;
 	void add(solver *op,const char *eq_name,const char *var_name,const matrix &d) const;
+	void add_ex(solver *op,int n,const char *eq_name,const char *var_name) const;
+	void add_ex(solver *op,int n,const char *eq_name,const char *var_name,const matrix &d) const;
 	inline void bc_top1_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"top1",eq_name,var_name,ones(1,1));};
 	inline void bc_top2_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"top2",eq_name,var_name,ones(1,1));};
 	inline void bc_bot1_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"bot1",eq_name,var_name,ones(1,1));};

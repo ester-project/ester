@@ -17,12 +17,11 @@ DEBUG_FUNCNAME
 
 }
 
-void star1d::write_tag(OUTFILE *fp,char mode) const {
+void star1d::write_tag(OUTFILE *fp) const {
 DEBUG_FUNCNAME
 	char tag[7]="star1d";
 	
-	if(mode=='b') fp->write("tag",tag,7);
-	else fp->write_fmt("tag","%s",&tag);
+	fp->write("tag",tag,7);
 		
 }
 
@@ -62,7 +61,9 @@ DEBUG_FUNCNAME
 		fread(&ndom,sizeof(int),1,fp);
 		map.gl.set_ndomains(ndom);
 		fread(map.gl.npts,sizeof(int),ndom,fp);
-		fread(map.gl.xif,sizeof(double),ndom+1,fp);
+		map.leg.npts=1;
+		map.init();
+		fread(map.R.data(),sizeof(double),ndom+1,fp);
 		fread(&M,sizeof(double),1,fp);
 		fread(&R,sizeof(double),1,fp);
 		fread(&X0,sizeof(double),1,fp);
@@ -88,7 +89,9 @@ DEBUG_FUNCNAME
 		fscanf(fp,"\n%d ",&ndom);
 		map.gl.set_ndomains(ndom);
 		for(i=0;i<ndom;i++) fscanf(fp,"%d ",(map.gl.npts+i));
-		for(i=0;i<ndom+1;i++) fscanf(fp,"%le ",(map.gl.xif+i));
+		map.leg.npts=1;
+		map.init();
+		for(i=0;i<ndom+1;i++) fscanf(fp,"%le ",&map.R(i));
 		fscanf(fp,"\n%le %le %le %le\n",&M,&R,&X0,&Z0);
 		fscanf(fp,"%le %d %le\n",&Xc,&conv,&surff);		
 		fscanf(fp,"%le %le\n",&Tc,&pc);
@@ -97,9 +100,8 @@ DEBUG_FUNCNAME
 		fscanf(fp,"%s\n",nuc.name);
 		fscanf(fp,"%s\n",atm.name);
 	}
-	map.leg.npts=1;
-	map.init();
 	
+	map.remap();
 	phi.read(nr,1,fp,mode);
 	p.read(nr,1,fp,mode);
 	T.read(nr,1,fp,mode);
@@ -212,11 +214,10 @@ DEBUG_FUNCNAME
 			mapping map_new;
 			map_new=map;
 			map=map0;
-			remap(map_new.ndomains,map_new.gl.npts,map_new.nth,map_new.nex);
+			remap(map_new.ndomains,map_new.gl.npts,map_new.nt,map_new.nex);
 		}
 	} else {
 		map.leg.npts=1;
-		for(i=0;i<=ndomains;i++) map.gl.xif[i]=i*1./ndomains;
 		map.init();
 		T=1-0.5*r*r;
 		p=T;
@@ -226,7 +227,7 @@ DEBUG_FUNCNAME
 		conv=0;
 		domain_type.resize(ndomains);
 		for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
-		phiex=zeros(map.nex,map.nth);
+		phiex=zeros(map.nex,map.nt);
 	}
 	
 	init_comp();

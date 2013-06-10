@@ -89,69 +89,38 @@ DEBUG_FUNCNAME
 	ver.svn=ESTER_VERSION_SVN;
 	
 	fp.open(output_file,mode);
-	write_tag(&fp,mode);
-	if(mode=='b') {
-		fp.write("ndomains",&ndomains);
-		fp.write("npts",map.gl.npts,ndomains);
-		fp.write("xif",map.gl.xif,ndomains+1);
-		fp.write("nth",&map.leg.npts,1);
-		fp.write("nex",map.ex.gl.npts,1);
-		fp.write("M",&M);
-		fp.write("R",&R);
-		fp.write("X0",&X0);
-		fp.write("Z0",&Z0);
-		fp.write("Xc",&Xc);
-		fp.write("conv",&conv);
-		fp.write("domain_type",&domain_type[0],ndomains);
-		fp.write("surff",&surff);
-		fp.write("Tc",&Tc);
-		fp.write("pc",&pc);
-		fp.write("opa.name",opa.name,strlen(opa.name)+1);
-		fp.write("eos.name",eos.name,strlen(eos.name)+1);
-		fp.write("nuc.name",nuc.name,strlen(nuc.name)+1);
-		fp.write("atm.name",atm.name,strlen(atm.name)+1);
-		fp.write("Omega",&Omega);
-		fp.write("Omega_bk",&Omega_bk);
-		fp.write("Ekman",&Ekman);
-		fp.write("core_convec",&core_convec);
-		fp.write("env_convec",&env_convec);
-		fp.write("min_core_size",&min_core_size);
-		fp.write("version.major",&ver.major);
-		fp.write("version.minor",&ver.minor);
-		fp.write("version.rev",&ver.rev);
-		fp.write("version.svn",&ver.svn);
-	} else {
-		fp.write_fmt("ndomains","%d",&ndomains);
-		fp.write_fmt("npts","%d",map.gl.npts,ndomains);
-		fp.write_fmt("xif","%.16e",map.gl.xif,ndomains+1);
-		fp.write_fmt("nth","%d",&map.leg.npts,1);
-		fp.write_fmt("nex","%d",map.ex.gl.npts,1);
-		fp.write_fmt("M","%.16e",&M);
-		fp.write_fmt("R","%.16e",&R);
-		fp.write_fmt("X0","%.16e",&X0);
-		fp.write_fmt("Z0","%.16e",&Z0);
-		fp.write_fmt("Xc","%.16e",&Xc);
-		fp.write_fmt("conv","%d",&conv);
-		fp.write_fmt("domain_type","%d",&domain_type[0],ndomains);
-		fp.write_fmt("surff","%.16e",&surff);
-		fp.write_fmt("Tc","%.16e",&Tc);
-		fp.write_fmt("pc","%.16e",&pc);
-		fp.write_fmt("opa.name","%s",&opa.name);
-		fp.write_fmt("eos.name","%s",&eos.name);
-		fp.write_fmt("nuc.name","%s",&nuc.name);
-		fp.write_fmt("atm.name","%s",&atm.name);
-		fp.write_fmt("Omega","%.16e",&Omega);
-		fp.write_fmt("Omega_bk","%.16e",&Omega_bk);
-		fp.write_fmt("Ekman","%.16e",&Ekman);
-		fp.write_fmt("core_convec","%d",&core_convec);
-		fp.write_fmt("env_convec","%d",&core_convec);
-		fp.write_fmt("min_core_size","%.16e",&min_core_size);
-		fp.write_fmt("version.major","%d",&ver.major);
-		fp.write_fmt("version.minor","%d",&ver.minor);
-		fp.write_fmt("version.rev","%d",&ver.rev);
-		fp.write_fmt("version.svn","%d",&ver.svn);
-	}
-	
+	write_tag(&fp);
+
+	fp.write("ndomains",&ndomains);
+	fp.write("npts",map.gl.npts,ndomains);
+	fp.write("xif",map.gl.xif,ndomains+1);
+	fp.write("nth",&map.leg.npts,1);
+	fp.write("nex",map.ex.gl.npts,1);
+	fp.write("M",&M);
+	fp.write("R",&R);
+	fp.write("X0",&X0);
+	fp.write("Z0",&Z0);
+	fp.write("Xc",&Xc);
+	fp.write("conv",&conv);
+	fp.write("domain_type",&domain_type[0],ndomains);
+	fp.write("surff",&surff);
+	fp.write("Tc",&Tc);
+	fp.write("pc",&pc);
+	fp.write("opa.name",opa.name,strlen(opa.name)+1);
+	fp.write("eos.name",eos.name,strlen(eos.name)+1);
+	fp.write("nuc.name",nuc.name,strlen(nuc.name)+1);
+	fp.write("atm.name",atm.name,strlen(atm.name)+1);
+	fp.write("Omega",&Omega);
+	fp.write("Omega_bk",&Omega_bk);
+	fp.write("Ekman",&Ekman);
+	fp.write("core_convec",&core_convec);
+	fp.write("env_convec",&env_convec);
+	fp.write("min_core_size",&min_core_size);
+	fp.write("version.major",&ver.major);
+	fp.write("version.minor",&ver.minor);
+	fp.write("version.rev",&ver.rev);
+	fp.write("version.svn",&ver.svn);
+
 	fp.write("phi",&phi);
 	fp.write("p",&p);
 	fp.write("T",&T);
@@ -175,122 +144,67 @@ DEBUG_FUNCNAME
 	else if(fp.open(input_file,'t')) mode='t';
 	else return read_old(input_file);
 	
-	if(mode=='t') fp.read_fmt("tag","%s",tag);
-	else {
-		tag[0]='\0';
-		if(fp.len("tag")<=16) fp.read("tag",tag);
-	}
+	tag[0]='\0';
+	if(fp.len("tag")<=16) fp.read("tag",tag);
+
 	tag[16]='\0';
 	if(!check_tag(tag)) {
 		fp.close();
 		return 0;
 	}
 	
-	if(mode=='b') {
-		if(!fp.read("version.major",&version.major)) {
-			char ver[32];
-			if(fp.read("version",ver)) {
-				version.major=1;
-				version.minor=0;
-				version.rev=70;
-				if(!strcmp(ver,"1.0.0")) version.svn=0;
-				else version.svn=1;
-			} else {
-				version.major=0;
-				version.minor=0;
-				version.rev=0;
-				version.svn=1;
-			}
+	if(!fp.read("version.major",&version.major)) {
+		char ver[32];
+		if(fp.read("version",ver)) {
+			version.major=1;
+			version.minor=0;
+			version.rev=70;
+			if(!strcmp(ver,"1.0.0")) version.svn=0;
+			else version.svn=1;
 		} else {
-			fp.read("version.minor",&version.minor);
-			fp.read("version.rev",&version.rev);
-			fp.read("version.svn",&version.svn);
+			version.major=0;
+			version.minor=0;
+			version.rev=0;
+			version.svn=1;
 		}
-		fp.read("ndomains",&ndom);
-		map.gl.set_ndomains(ndom);
-		fp.read("npts",map.gl.npts);
-		fp.read("xif",map.gl.xif);
-		if(!fp.read("nth",&map.leg.npts)) map.leg.npts=1;
-		fp.read("nex",map.ex.gl.npts);
-		fp.read("M",&M);
-		fp.read("R",&R);
-		if(!fp.read("X0",&X0)) fp.read("X",&X0);
-		if(!fp.read("Z0",&Z0)) fp.read("Z",&Z0);
-		fp.read("Xc",&Xc);
-		fp.read("conv",&conv);
-		domain_type.resize(ndomains);
-		if(!fp.read("domain_type",&domain_type[0])) {
-			for(int n=0;n<ndomains;n++) {
-				if(n<conv) domain_type[n]=CORE;
-				else domain_type[n]=RADIATIVE;
-			}
-		}
-		fp.read("surff",&surff);
-		fp.read("Tc",&Tc);
-		fp.read("pc",&pc);
-		fp.read("opa.name",opa.name);
-		fp.read("eos.name",eos.name);
-		fp.read("nuc.name",nuc.name);
-		if(!fp.read("atm.name",atm.name)) strcpy(atm.name,"simple");
-		if(!fp.read("Omega",&Omega)) Omega=0;
-		if(!fp.read("Omega_bk",&Omega_bk)) Omega_bk=0;
-		if(!fp.read("Ekman",&Ekman)) Ekman=0;
-		if(!fp.read("core_convec",&core_convec)) core_convec=1;
-		if(!fp.read("env_convec",&env_convec)) env_convec=0;
-		if(!fp.read("min_core_size",&min_core_size)) min_core_size=0.03;
 	} else {
-		if(!fp.read_fmt("version.major","%d",&version.major)) {
-			char ver[32];
-			if(fp.read_fmt("version","%s",ver)) {
-				version.major=1;
-				version.minor=0;
-				version.rev=70;
-				if(!strcmp(ver,"1.0.0")) version.svn=0;
-				else version.svn=1;
-			} else {
-				version.major=0;
-				version.minor=0;
-				version.rev=0;
-				version.svn=1;
-			}
-		} else {
-			fp.read_fmt("version.minor","%d",&version.minor);
-			fp.read_fmt("version.rev","%d",&version.rev);
-			fp.read_fmt("version.svn","%d",&version.svn);
-		}
-		fp.read_fmt("ndomains","%d",&ndom);
-		map.gl.set_ndomains(ndom);
-		fp.read_fmt("npts","%d",map.gl.npts);
-		fp.read_fmt("xif","%le",map.gl.xif);
-		if(!fp.read_fmt("nth","%d",&map.leg.npts)) map.leg.npts=1;
-		fp.read_fmt("nex","%d",map.ex.gl.npts);
-		fp.read_fmt("M","%le",&M);
-		fp.read_fmt("R","%le",&R);
-		if(!fp.read_fmt("X0","%le",&X0)) fp.read_fmt("X","%le",&X0);
-		if(!fp.read_fmt("Z0","%le",&Z0)) fp.read_fmt("Z","%le",&X0);;
-		fp.read_fmt("Xc","%le",&Xc);
-		fp.read_fmt("conv","%d",&conv);
-		domain_type.resize(ndomains);
-		if(!fp.read_fmt("domain_type","%d",&domain_type[0])) {
-			for(int n=0;n<ndomains;n++) {
-				if(n<conv) domain_type[n]=CORE;
-				else domain_type[n]=RADIATIVE;
-			}
-		}
-		fp.read_fmt("surff","%le",&surff);
-		fp.read_fmt("Tc","%le",&Tc);
-		fp.read_fmt("pc","%le",&pc);
-		fp.read_fmt("opa.name","%s",opa.name);
-		fp.read_fmt("eos.name","%s",eos.name);
-		fp.read_fmt("nuc.name","%s",nuc.name);
-		if(!fp.read_fmt("atm.name","%s",atm.name)) strcpy(atm.name,"simple");
-		if(!fp.read_fmt("Omega","%le",&Omega)) Omega=0;
-		if(!fp.read_fmt("Omega_bk","%le",&Omega_bk)) Omega_bk=0;
-		if(!fp.read_fmt("Ekman","%le",&Ekman)) Ekman=0;
-		if(!fp.read_fmt("core_convec","%d",&core_convec)) core_convec=1;
-		if(!fp.read_fmt("env_convec","%d",&env_convec)) env_convec=1;
-		if(!fp.read_fmt("min_core_size","%le",&min_core_size)) min_core_size=0.03;
+		fp.read("version.minor",&version.minor);
+		fp.read("version.rev",&version.rev);
+		fp.read("version.svn",&version.svn);
 	}
+	fp.read("ndomains",&ndom);
+	map.gl.set_ndomains(ndom);
+	fp.read("npts",map.gl.npts);
+	fp.read("xif",map.gl.xif);
+	if(!fp.read("nth",&map.leg.npts)) map.leg.npts=1;
+	fp.read("nex",map.ex.gl.npts);
+	fp.read("M",&M);
+	fp.read("R",&R);
+	if(!fp.read("X0",&X0)) fp.read("X",&X0);
+	if(!fp.read("Z0",&Z0)) fp.read("Z",&Z0);
+	fp.read("Xc",&Xc);
+	fp.read("conv",&conv);
+	domain_type.resize(ndomains);
+	if(!fp.read("domain_type",&domain_type[0])) {
+		for(int n=0;n<ndomains;n++) {
+			if(n<conv) domain_type[n]=CORE;
+			else domain_type[n]=RADIATIVE;
+		}
+	}
+	fp.read("surff",&surff);
+	fp.read("Tc",&Tc);
+	fp.read("pc",&pc);
+	fp.read("opa.name",opa.name);
+	fp.read("eos.name",eos.name);
+	fp.read("nuc.name",nuc.name);
+	if(!fp.read("atm.name",atm.name)) strcpy(atm.name,"simple");
+	if(!fp.read("Omega",&Omega)) Omega=0;
+	if(!fp.read("Omega_bk",&Omega_bk)) Omega_bk=0;
+	if(!fp.read("Ekman",&Ekman)) Ekman=0;
+	if(!fp.read("core_convec",&core_convec)) core_convec=1;
+	if(!fp.read("env_convec",&env_convec)) env_convec=0;
+	if(!fp.read("min_core_size",&min_core_size)) min_core_size=0.03;
+	
 		
 	map.init();
 	
@@ -299,6 +213,7 @@ DEBUG_FUNCNAME
 	fp.read("T",&T);
 	if(!fp.read("phiex",&phiex)) phiex=zeros(nex,nth);
 	fp.read("map.R",&map.R);
+	if(map.R.nrows()<map.ndomains+1) map.R=zeros(1,nth).concatenate(map.R);
 	map.remap();
 	if(!fp.read("w",&w)) w=zeros(nr,nth);
 	if(!fp.read("G",&G)) G=zeros(nr,nth);
@@ -310,12 +225,11 @@ DEBUG_FUNCNAME
 	
 }
 
-void star2d::write_tag(OUTFILE *fp,char mode) const {
+void star2d::write_tag(OUTFILE *fp) const {
 DEBUG_FUNCNAME
 	char tag[7]="star2d";
 	
-	if(mode=='b') fp->write("tag",tag,7);
-	else fp->write_fmt("tag","%s",&tag);
+	fp->write("tag",tag,7);
 		
 }
 
@@ -356,11 +270,8 @@ DEBUG_FUNCNAME
 		map.gl.set_ndomains(ndom);
 		fread(map.gl.npts,sizeof(int),ndom,fp);
 		fread(map.gl.xif,sizeof(double),ndom+1,fp);
-		map.gl.init();
 		fread(map.ex.gl.npts,sizeof(int),1,fp);
-		map.ex.gl.init();
 		fread(&map.leg.npts,sizeof(int),1,fp);
-		map.leg.init();
 		fread(&M,sizeof(double),1,fp);
 		fread(&R,sizeof(double),1,fp);
 		fread(&X0,sizeof(double),1,fp);
@@ -389,10 +300,7 @@ DEBUG_FUNCNAME
 		map.gl.set_ndomains(ndom);
 		for(i=0;i<ndom;i++) fscanf(fp,"%d ",(map.gl.npts+i));
 		for(i=0;i<ndom+1;i++) fscanf(fp,"%le ",(map.gl.xif+i));
-		map.gl.init();
 		fscanf(fp,"%d %d",map.ex.gl.npts,&map.leg.npts);
-		map.ex.gl.init();
-		map.leg.init();
 		fscanf(fp,"\n%le %le %le %le\n",&M,&R,&X0,&Z0);
 		fscanf(fp,"%le %d %le\n",&Xc,&conv,&surff);
 		fscanf(fp,"%le %le\n",&Omega,&Omega_bk);
@@ -404,6 +312,7 @@ DEBUG_FUNCNAME
 	}
 	map.init();
 	map.R.read(ndomains,nth,fp,mode);
+	map.R=zeros(1,nth).concatenate(map.R);
 	map.remap();
 	phi.read(nr,nth,fp,mode);
 	phiex.read(nex,nth,fp,mode);
@@ -548,10 +457,9 @@ DEBUG_FUNCNAME
 			mapping map_new;
 			map_new=map;
 			map=map0;
-			remap(map_new.ndomains,map_new.gl.npts,map_new.nth,map_new.nex);
+			remap(map_new.ndomains,map_new.gl.npts,map_new.nt,map_new.nex);
 		}
 	} else {
-		for(i=0;i<=ndomains;i++) map.gl.xif[i]=i*1./ndomains;
 		map.init();
 		T=1-0.5*r*r;
 		p=T;
@@ -604,7 +512,7 @@ DEBUG_FUNCNAME
 
 }
 
-void star2d::interp(mapping_redist *red) {
+void star2d::interp(remapper *red) {
 DEBUG_FUNCNAME
 	p=red->interp(p);
 	phi=red->interp(phi);
@@ -646,10 +554,6 @@ DEBUG_FUNCNAME
 			}
 		}
 		*change_grid=*change_grid|2;
-	}
-	else if(!strcmp(arg,"xif")) {
-		fprintf(stderr,"Warning: Parameter xif is now automatically handled by the code and cannot be modified by the user\n"); 
-		return 1;
 	}
 	else if(!strcmp(arg,"nth")) {
 		if(val==NULL) return 2;

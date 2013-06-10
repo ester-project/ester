@@ -336,7 +336,7 @@ void write(const star2d &A,char *var,char *fmt) {
 		if(fmt) matrix_fmt(fmt,(m,T));
 		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"phiex")) {
-		if(dim) m=A.phiex*A.units.r;
+		if(dim) m=A.phiex*A.units.phi;
 		else m=A.phiex;
 		if(fmt) matrix_fmt(fmt,(m,T));
 		else (m,T).write(stdout,'b');
@@ -563,14 +563,14 @@ void write(const star2d &A,char *var,char *fmt) {
 			fwrite(&d,sizeof(double),1,stdout);
 		}
 	} else if(!strcmp(var,"eps")) {
-		d=A.map.eps(A.ndomains-1);
+		d=1-1./A.map.leg.eval_00(A.r,PI/2)(0);
 		if(fmt) fprintf(stdout,fmt,d);
 		else {
 			fwrite(&d,sizeof(double),1,stdout);
 		}
 	} else if(!strcmp(var,"eps_c")) {
 		d=0;
-		if(A.conv) d=A.map.eps(A.conv-1);
+		if(A.conv) d=1-A.map.eta(A.conv)/A.map.leg.eval_00(A.map.R.row(A.conv),PI/2)(0);
 		if(fmt) fprintf(stdout,fmt,d);
 		else {
 			fwrite(&d,sizeof(double),1,stdout);

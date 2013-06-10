@@ -141,7 +141,7 @@ symbolic::symbolic(int n_var,int max_der): r(_r),sint(_sint),cost(_cost),one(_on
 
 	nvar=n_var;
 	maxder=max_der;
-	tol=1e-10;
+	tol=1e-14;
 	
 	var_name=new char*[nvar];
 	var_value=new matrix[nvar];

@@ -26,7 +26,8 @@ DEBUG_FUNCNAME
 	atmosphere();
 
 	//Omegac=sqrt(map.leg.eval_00(((Dex,phiex)/rex/map.ex.rz).row(0),PI/2)(0));
-	Omegac=sqrt(pi_c*m/4/PI*(1-map.eps(ndomains-1))*(1-map.eps(ndomains-1))*(1-map.eps(ndomains-1)));
+	double eps=1.-1./map.leg.eval_00(r.row(-1),PI/2)(0);
+	Omegac=sqrt(pi_c*m/4/PI*(1-eps)*(1-eps)*(1-eps));
 
 }
 
@@ -220,7 +221,6 @@ DEBUG_FUNCNAME
 	
 	matrix R0;
 	R0=map.R;
-	dR=dR.block(1,ndomains,0,-1);
 	while(exist(abs(h*dR)>dmax*R0)) h/=2;
 	map.R+=h*dR;
 	while(map.remap()) {
@@ -284,9 +284,23 @@ DEBUG_FUNCNAME
 	int n,j0;
 	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
 		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
+	
+	symbolic S(1,2);
+	sym lap_phi;
+	{
+		sym phi;
+		phi=S.regvar("phi");
+		lap_phi=lap(phi);
+	}
 
-	// phi
-	map.add_lap(op,"phi","phi",ones(nr,nth),phi);
+	
+	S.set_value("phi",phi);
+	S.set_map(map);
+	
+	lap_phi.add(op,"phi","phi");
+	lap_phi.add(op,"phi","r");
+
+	rhs1=-lap_phi.eval()+pi_c*rho;
 	
 	//rho
 	op->add_d("phi","rho",-pi_c*ones(nr,nth));
@@ -295,13 +309,16 @@ DEBUG_FUNCNAME
 	op->add_d("phi","pi_c",-rho);
 
 	// phiex
-	map.add_lap_ex(op,"phi","phi",ones(nex,nth),phiex);
-
-	rhs1=map.lap(phi)-pi_c*rho;
-	rhs2=map.lap_ex(phiex);
+	S.set_value("phi",phiex);
+	S.set_map(map.ex);
+	lap_phi.add_ex(op,ndomains,"phi","phi");
+	lap_phi.add_ex(op,ndomains,"phi","r");
+	
+	rhs2=-lap_phi.eval();
+	
 	rhs=zeros(nr+nex,nth);
-	rhs.setblock(0,nr-1,0,-1,-rhs1);
-	rhs.setblock(nr,nr+nex-1,0,-1,-rhs2);
+	rhs.setblock(0,nr-1,0,-1,rhs1);
+	rhs.setblock(nr,nr+nex-1,0,-1,rhs2);
 	
 	j0=0;
 	for(n=0;n<ndomains+1;n++) {
@@ -837,8 +854,7 @@ DEBUG_FUNCNAME
 	op->add_d(ndomains,"eta","eta",ones(1,1));
 	op->set_rhs("eta",rhs);
 	
-	Ri=zeros(ndomains+1,nth);
-	Ri.setblock(1,ndomains,0,-1,map.R);
+	Ri=map.R;
 	rhs=zeros(ndomains+1,nth);
 	
 	op->add_d(0,"Ri","Ri",ones(1,nth));
@@ -1163,7 +1179,7 @@ DEBUG_FUNCNAME
 	y[i]=(B.Lambda-Lambda)*ones(ndomains,1);
 	i=op->get_id("eta");
 	y[i]=zeros(ndomains+1,1);
-	y[i].setblock(1,ndomains,0,0,B.map.eta()-map.eta());
+	y[i].setblock(1,ndomains,0,0,B.map.eta-map.eta);
 	j=i;
 	i=op->get_id("deta");
 	y[i]=y[j].block(1,ndomains,0,0)-y[j].block(0,ndomains-1,0,0);

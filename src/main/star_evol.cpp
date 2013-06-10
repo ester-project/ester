@@ -82,7 +82,7 @@ int main(int argc,char *argv[]) {
 			last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit;
 			if(config.verbose) {
 				printf("\tit=%d err=%e\n",nit,err);
-				printf("\t\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,A.map.eps(A.ndomains-1),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
+				printf("\t\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,1-1./A.map.leg.eval_00(A.r.row(-1),PI/2)(0),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
 
 			}
 		

@@ -2,6 +2,10 @@
 #define _PARSER_H
 
 #include<stdio.h>
+#include<iostream>
+#include<sstream>
+#include<typeinfo>
+#include<string.h>
 #include"matrix.h"
 
 class cmdline_parser {
@@ -28,7 +32,6 @@ class OUTFILE {
 	FILE *fp;
 	char mode;
 	void write_tag(const char *tag,unsigned long n);
-	void write(const char *tag,void *,unsigned long n,size_t size);
 public:
 	int open(const char *name, char mode='b');
 	void write(const char *tag,const matrix *);
@@ -36,7 +39,26 @@ public:
 	void write(const char *tag,matrix *m) {write(tag,(const matrix *) m);};
 	void write(const char *tag,matrix_map *m) {write(tag,(const matrix_map *) m);};
 	template <class T>
-	void write(const char *tag,T *x,unsigned long n=1) {write(tag,(void *) x,n,sizeof(T));};
+	void write(const char *tag,T *x,unsigned long n=1) {
+		size_t size=sizeof(T);
+		if(mode=='t') {
+			if(typeid(x[0])==typeid(char)) write_tag(tag,1);
+			else write_tag(tag,n);
+		} else write_tag(tag,n*size);
+		if(mode=='t') {
+			std::stringstream temp;
+			std::string str;
+			temp.setf(std::ios::scientific, std::ios::floatfield);
+			for(unsigned long i=0;i<n;i++) {
+				temp.str("");
+				temp.precision(16);
+				temp<<x[i]<<std::endl;
+				temp>>str;
+				fprintf(fp,"%s",str.c_str());
+				if(typeid(x[i])!=typeid(char)||i==n-1) fprintf(fp,"\n");
+			}
+		} else fwrite(x,size,n,fp);
+	};
 	template <class T>
 	void write_fmt(const char *tag,const char *fmt,T *x,unsigned long n=1) {
 		write_tag(tag,n);
@@ -58,7 +80,26 @@ public:
 	unsigned long len(const char *tag);
 	int read(const char *tag,matrix *);
 	int read(const char *tag,matrix_map *);
-	int read(const char *tag,void *);
+	template <class T>
+	int read(const char *tag,T *x) {
+		unsigned long n=seek(tag);
+		if(!n) return 0;
+		if(mode=='t') {
+			char str[512];
+			if(typeid(x[0])==typeid(char)) {
+				getline(str,512);
+				strcpy((char *)x,str);
+			} else {
+				for(unsigned long i=0;i<n;i++) {
+					getline(str,512);
+					std::stringstream temp(str);
+					temp>>x[i];
+				}
+			}
+		}
+		else if(n!=fread(x,1,n,fp)) return 0;
+		return 1;
+	};
 	template <class T>
 	int read_fmt(const char *tag,const char *fmt,T *x) {
 		unsigned long n=seek(tag);
