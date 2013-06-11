@@ -9,7 +9,7 @@ mapping::mapping():
 			Dt2_01(leg.D2_01),Dt_10(leg.D_10),Dt2_10(leg.D2_10),z(gl.x),th(leg.th) {
 			
 	ex.gl.set_ndomains(1);
-	ex.gl.set_xif(1.,2.);
+	ex.gl.set_xif(0.,1.);
 	ex.gl.set_npts(10);
 	ex.parent=this;
 	
@@ -210,11 +210,12 @@ int mapping::remap() {
 	gzt.setrow(0,zeros(1,leg.npts));
 	gtt=1/r/r;
 	
-	matrix zz;
-	zz=1/(2-ex.gl.x);
+	matrix xi;
+	ex.z=eta(-1)/(1-ex.gl.x);
+	xi=ex.z/eta(-1)-1;
 	
-	ex.r=zz+R.row(ndomains)-1;
-	ex.rz=ones(nex,nt);
+	ex.r=xi+R.row(ndomains);
+	ex.rz=ones(nex,nt)/eta(-1);
 	ex.rzz=zeros(nex,nt);
 	ex.rt=ones(nex,nt)*(R.row(ndomains),Dt);
 	ex.rtt=ones(nex,nt)*(R.row(ndomains),Dt2);
@@ -230,8 +231,7 @@ int mapping::remap() {
 	ex.gzt=-ex.rt/ex.r/ex.r/ex.rz;
 	ex.gtt=1/ex.r/ex.r;
 
-	ex.z=zz;
-	ex.D=ex.gl.D/ex.z/ex.z;
+	ex.D=ex.gl.D*eta(-1)/ex.z/ex.z;
 	
 	if(exist(rz<0)||exist(ex.rz<0)) {
 		fprintf(stderr,"WARNING: (mapping) Found rz<0\n");

@@ -11,6 +11,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{natbib}
 
 
 \titleformat{\section}
@@ -32,6 +33,12 @@
 \usemintedstyle{colorful}
 \fvset{tabsize=4}
 
+\hypersetup{
+  colorlinks,
+  citecolor=blue,
+  linkcolor=blue
+}
+
 \include{definitions}
 \begin{document}
 
@@ -45,7 +52,9 @@
 	\include{structure}
 	\include{matrix}
 	\include{numdiff}
+	\include{mapping}
 
-
+	\bibliography{ester}
+	\bibliographystyle{authordate1.bst}
 \end{document}
 
