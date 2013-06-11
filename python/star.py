@@ -1,8 +1,10 @@
 from numpy import *
+import matplotlib.pyplot as plt
 from matplotlib.pyplot import *
 import os
 import struct
 import tempfile
+import math
 
 rcParams['patch.antialiased']=False
 
@@ -106,13 +108,17 @@ class star2d:
 		self.gtt=1./self.r**2
 	
 	def draw(self,z):
-		x=self.r*sin(self.th)
-		y=self.r*cos(self.th)
+		x=self.r*sin(self.th)/R_SUN
+		y=self.r*cos(self.th)/R_SUN
 		x=c_[x,-x[:,-2::-1],-x[:,1:],x[:,-2::-1]]
 		y=c_[y,y[:,-2::-1],-y[:,1:],-y[:,-2::-1]]
-		z=c_[z,z[:,-2::-1],z[:,1:],z[:,-2::-1]]
-		pcolor(x,y,z,rasterized=True)
-		axis('image')
+                pi=math.acos(-1)/3600.
+		z=2*pi/c_[z,z[:,-2::-1],z[:,1:],z[:,-2::-1]]
+		#pcolor(x,y,z,rasterized=True)
+		pcolor(x,y,z,cmap=cm.gray)
+                colorbar()
+                #plt.axis('off')
+		#axis('image')
 		
 	def draw11(self,z):
 		x=self.r*sin(self.th)

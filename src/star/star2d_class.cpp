@@ -678,6 +678,9 @@ DEBUG_FUNCNAME
 	printf("\tPeriod (p) = %.5f days\n",2*PI/wp/units.Omega/3600./24.);
 	printf("\tPeriod (c) = %.5f days\n",2*PI/w(0,0)/units.Omega/3600./24.);
 	printf("\tLz = %e erg·s\n",Lz());
+	printf("\tj  = %e cm2/s (Lz/M)\n",Lz()/M);
+	printf("\tT  = %e erg   (Kinetic energy)\n",virial_L()/2);
+	printf("\tT/W = %e\n",virial_L()/virial_W()/2);
 	printf("\n");
 	
 	if(conv==0) printf("No convective core\n\n");

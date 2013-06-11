@@ -55,6 +55,7 @@ double star2d::Lz() const {
 
 }
 
+
 double star2d::Mcore() const {
 
 	if(!conv) return 0;
