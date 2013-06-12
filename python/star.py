@@ -1,10 +1,8 @@
 from numpy import *
-import matplotlib.pyplot as plt
 from matplotlib.pyplot import *
 import os
 import struct
 import tempfile
-import math
 
 rcParams['patch.antialiased']=False
 
@@ -107,31 +105,29 @@ class star2d:
 		self.gzt[0,:]=0
 		self.gtt=1./self.r**2
 	
-	def draw(self,z):
+	def draw(self,z,**kwargs):
 		x=self.r*sin(self.th)/R_SUN
 		y=self.r*cos(self.th)/R_SUN
 		x=c_[x,-x[:,-2::-1],-x[:,1:],x[:,-2::-1]]
 		y=c_[y,y[:,-2::-1],-y[:,1:],-y[:,-2::-1]]
-                pi=math.acos(-1)/3600.
-		z=2*pi/c_[z,z[:,-2::-1],z[:,1:],z[:,-2::-1]]
-		#pcolor(x,y,z,rasterized=True)
-		pcolor(x,y,z,cmap=cm.gray)
-                colorbar()
-                #plt.axis('off')
-		#axis('image')
+		z=c_[z,z[:,-2::-1],z[:,1:],z[:,-2::-1]]
+		h=pcolor(x,y,z,**kwargs)
+		axis('scaled')
+		return h
 		
-	def draw11(self,z):
-		x=self.r*sin(self.th)
-		y=self.r*cos(self.th)
+	def draw11(self,z,**kwargs):
+		x=self.r*sin(self.th)/R_SUN
+		y=self.r*cos(self.th)/R_SUN
 		x=c_[x,-x[:,-2::-1],-x[:,1:],x[:,-2::-1]]
 		y=c_[y,y[:,-2::-1],-y[:,1:],-y[:,-2::-1]]
 		z=c_[z,-z[:,-2::-1],z[:,1:],-z[:,-2::-1]]
-		pcolor(x,y,z)
-		axis('image')
+		h=pcolor(x,y,z,**kwargs)
+		axis('scaled')
+		return h
 		
 	def drawc(self,z,N=7,**kwargs):
-		x=self.r*sin(self.th)
-		y=self.r*cos(self.th)
+		x=self.r*sin(self.th)/R_SUN
+		y=self.r*cos(self.th)/R_SUN
 		x=c_[x,-x[:,-2::-1],-x[:,1:],x[:,-2::-1]]
 		y=c_[y,y[:,-2::-1],-y[:,1:],-y[:,-2::-1]]
 		z=c_[z,z[:,-2::-1],z[:,1:],z[:,-2::-1]]
@@ -143,13 +139,14 @@ class star2d:
 		plot(xs,ys,'k')
 		if not hh:
 			hold(True)
-		contour(x,y,z,N,**kwargs)
-		axis('image')
+		h=contour(x,y,z,N,**kwargs)
+		axis('scaled')
 		hold(hh)
+		return h
 	
 	def drawc11(self,z,N=7,**kwargs):
-		x=self.r*sin(self.th)
-		y=self.r*cos(self.th)
+		x=self.r*sin(self.th)/R_SUN
+		y=self.r*cos(self.th)/R_SUN
 		x=c_[x,-x[:,-2::-1],-x[:,1:],x[:,-2::-1]]
 		y=c_[y,y[:,-2::-1],-y[:,1:],-y[:,-2::-1]]
 		z=c_[z,-z[:,-2::-1],z[:,1:],-z[:,-2::-1]]
@@ -161,10 +158,10 @@ class star2d:
 		plot(xs,ys,'k')
 		if not hh:
 			hold(True)
-		contour(x,y,z,N,**kwargs)
-		axis('image')
+		h=contour(x,y,z,N,**kwargs)
+		axis('scaled')
 		hold(hh)
-		
+		return h
 		
 class star1d:
 	def __init__(self,file):
