@@ -221,6 +221,7 @@ DEBUG_FUNCNAME
 	
 	matrix R0;
 	R0=map.R;
+	dR.setrow(0,zeros(1,nth));
 	while(exist(abs(h*dR)>dmax*R0)) h/=2;
 	map.R+=h*dR;
 	while(map.remap()) {

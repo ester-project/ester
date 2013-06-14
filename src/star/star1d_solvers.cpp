@@ -180,6 +180,7 @@ DEBUG_FUNCNAME
 	matrix R0;
 	R0=map.R;
 	dR=dR.concatenate(zeros(1,1));
+	dR(0)=0;
 	while(exist(abs(h*dR)>dmax*R0)) h/=2;
 	map.R+=h*dR;
 	while(map.remap()) {
