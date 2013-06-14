@@ -217,11 +217,11 @@ sym symbolic::regvar(const char *name) {
 	}
 	int i=0;
 	while(var_name[i][0]!='\0') {
-		i++;
 		if(!strcmp(var_name[i],name)) {
 			fprintf(stderr,"Symbolic: Can't register variable (already registered)\n");
 			exit(1);
 		}
+		i++;
 		if(i==nvar) {
 			fprintf(stderr,"Symbolic: Can't register variable (increase nvar)\n");
 			exit(1);

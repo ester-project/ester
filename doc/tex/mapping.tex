@@ -157,4 +157,88 @@ J_3^{(ex)}=0
 \end{array}
 \end{equation}
 
+\subsection{Spheroidal coordinates}
+
+In the previous section, we have defined a system of spheroidal coordinates ($\zeta$,$\theta'$,$\varphi'$), 
+where $\theta'=\theta$ and $\varphi'=\varphi$ correspond to the usual spherical coordinates and $\zeta$ is
+defined by a relation $r=r(\zeta,\theta)$. These spheroidal coordinates are non-orthogonal, which means
+that the surfaces of constant $\zeta$ are not perpendicular to those of constant $\theta$.
+
+Before we continue, we should clarify a point. We have set $\theta'=\theta$, so hereafter we will remove
+the tilde ($'$) to simplify the notation. But when working with spheroidal coordinates, the partial
+derivative $\frac{\partial}{\partial\theta}$ refers to the derivative with respect to $\theta$ with $\zeta$
+constant, that is not the habitual derivative in spherical coordinates that is done holding $r$ constant.
+$$\left.\frac{\partial}{\partial\theta}\right|_{\zeta,\varphi\,\mathrm{const.}}\ne
+\left.\frac{\partial}{\partial\theta}\right|_{r,\varphi\,\mathrm{const.}}$$
+The same can be said for the azimuthal coordinate $\varphi$ but, in this case 
+$\left.\frac{\partial}{\partial\varphi}\right|_{\zeta,\theta\,\mathrm{const.}}=
+\left.\frac{\partial}{\partial\varphi}\right|_{r,\theta\,\mathrm{const.}}$.
+
+\subsubsection{Natural basis}
+
+We will start by defining the natural basis for the spheroidal coordinates, we have two sets of basis vectors:
+\begin{itemize}
+\item Covariant basis vectors: $\displaystyle\vect{E}_i=\frac{\partial\vect r}
+{\partial x^i}$
+\begin{equation}
+\vect E_\zeta=r_\zeta\rvec, \quad
+\vect E_\theta=r_\theta\rvec+r\thvec, \quad
+\vect E_\varphi=r\sin\theta\phivec,
+\end{equation}
+\item Contravariant basis vectors: $\vect E^i=\nabla x^i$
+\begin{equation}
+\vect E^\zeta=\frac{\rvec}{r_\zeta}-\frac{r_\theta}{rr_\zeta}\thvec, \quad
+\vect E^\theta=\frac{\thvec}{r},\quad
+\vect E^{\varphi}=\frac{\phivec}{r\sin\theta},
+\end{equation}
+\end{itemize}
+\noindent where $\rvec,\thvec,\phivec$ are the usual unit vectors in spherical coordinates, and
+$$r_\zeta=\frac{\partial r}{\partial\zeta}\quad r_\theta=\frac{\partial r}{\partial\theta}$$
+
+The vectors of the natural basis are not unit vectors. The covariant vector $\vect E_i$ is parallel to 
+the line $x^j=\mathrm{const.}$ with $j\ne i$, while the contravariant vector $\vect E^i$ is 
+perpendicular to the surface $x^i=\mathrm{const.}$ For orthogonal coordinates $\vect E_i\parallel\vect E^i$, but
+this is not the case for non-orthogonal coordinates.
+
+\begin{center}
+\includegraphics[width=5cm]{fig/vectors.eps}
+\end{center}
+
+The basis vectors satisfy
+\begin{equation}
+\vect E_i\cdot\vect E^j=\vect E^i\cdot\vect E_j=\delta_{ij}
+\end{equation}
+where $\delta_{ij}$ is the Kronecker's delta.
+
+The metric tensor is defined as
+\begin{equation}
+g_{ij}=\vect E_i\cdot\vect E_j=\left(
+\begin{array}{ccc}
+r_\zeta^2&r_\zeta r_\theta&0\\
+r_\zeta r_\theta&r^2+r_\theta^2&0\\
+0&0&r^2\sin^2\theta
+\end{array}
+\right)
+\end{equation}
+or, in contravariant form
+\begin{equation}
+g^{ij}=\vect E^i\cdot\vect E^j=\left(
+\begin{array}{ccc}
+\displaystyle\frac{r^2+r_\theta^2}{r^2r_\zeta^2}&\displaystyle\frac{-r_\theta}{r^2r_\zeta}&0\\
+\displaystyle\frac{-r_\theta}{r^2r_\zeta}&\displaystyle\frac{1}{r^2}&0\\
+0&0&\displaystyle\frac{1}{r^2\sin^2\theta}
+\end{array}
+\right)
+\end{equation}
+
+\subsubsection{Representation of vectors}
+
+A vector $\vect v$ can be represented either in covariant or contravariant form:
+\begin{itemize}
+\item Covariant form: $\vect v=V_\zeta\vect E^\zeta+V_\theta\vect E^\theta+V_\varphi\vect E^\varphi$
+\item Contravariant form: $\vect v=V^\zeta\vect E_\zeta+V^\theta\vect E_\theta+V^\varphi\vect E_\varphi$
+\end{itemize}
+Here, $V_i$ are the covariant components of the vector $\vec v$ and $V^i$ the contravariant components. Note that
+$$\vect E_i\cdot\vect v=V_i \qquad \mbox{and} \qquad \vect E^i\cdot\vect v=V^i$$
+
 

@@ -3,9 +3,7 @@
 #include<stdlib.h>
 #include"star.h"
 
-void output1d(const star1d &);
 void output2d(const star2d &);
-void write(const star1d &A,char *var,char *fmt);
 void write(const star2d &A,char *var,char *fmt);
 void readconf(char *line);
 void matrix_fmt(char *fmt,matrix a);
