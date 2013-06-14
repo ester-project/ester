@@ -132,8 +132,8 @@ class star2d:
 		y=c_[y,y[:,-2::-1],-y[:,1:],-y[:,-2::-1]]
 		z=c_[z,z[:,-2::-1],z[:,1:],z[:,-2::-1]]
 		hh=ishold()
-		xs=self.r[-1]*sin(self.th[-1])
-		ys=self.r[-1]*cos(self.th[-1])
+		xs=self.r[-1]*sin(self.th[-1])/R_SUN
+		ys=self.r[-1]*cos(self.th[-1])/R_SUN
 		xs=r_[xs,-xs[-2::-1],-xs[1:],xs[-2::-1]]
 		ys=r_[ys,ys[-2::-1],-ys[1:],-ys[-2::-1]]
 		plot(xs,ys,'k')
@@ -151,8 +151,8 @@ class star2d:
 		y=c_[y,y[:,-2::-1],-y[:,1:],-y[:,-2::-1]]
 		z=c_[z,-z[:,-2::-1],z[:,1:],-z[:,-2::-1]]
 		hh=ishold()
-		xs=self.r[-1]*sin(self.th[-1])
-		ys=self.r[-1]*cos(self.th[-1])
+		xs=self.r[-1]*sin(self.th[-1])/R_SUN
+		ys=self.r[-1]*cos(self.th[-1])/R_SUN
 		xs=r_[xs,-xs[-2::-1],-xs[1:],xs[-2::-1]]
 		ys=r_[ys,ys[-2::-1],-ys[1:],-ys[-2::-1]]
 		plot(xs,ys,'k')
