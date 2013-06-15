@@ -681,6 +681,7 @@ DEBUG_FUNCNAME
 	printf("\tj  = %e cm2/s (Lz/M)\n",Lz()/M);
 	printf("\tT  = %e erg   (Kinetic energy)\n",virial_L()/2);
 	printf("\tT/W = %e\n",virial_L()/virial_W()/2);
+	printf("\tKelvin-Helmholtz Time = %e yrs\n",virial_3P()/luminosity()/2/365.25/86400.);
 	printf("\n");
 	
 	if(conv==0) printf("No convective core\n\n");

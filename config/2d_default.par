@@ -1,7 +1,7 @@
 #Default parameters for star2d
 
-ndomains=32
-npts=15
+ndomains=16
+npts=30
 nth=24
 nex=30
 
