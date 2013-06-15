@@ -1,10 +1,6 @@
-ESTER_ROOT=$(HOME)/ester-project
+ESTER_ROOT=$(CURDIR)/..
 
 USE_PGPLOT=1
-
-BLAS_LIB=-lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core
-CBLAS_LIB=
-LAPACK_LIB=
 
 CC=icpc
 CCFLAGS=-O2 -ip -fPIC -parallel
@@ -12,11 +8,14 @@ FC=ifort
 FCFLAGS=-O2 -r8 -nowarn -fpp -fPIC -extend-source
 LD=icpc
 LDFLAGS=
-LIBS=$(LAPACK_LIB) $(CBLAS_LIB) $(BLAS_LIB) -liomp5 -lpthread -lifcore -lifport -lgfortran
 
+BLAS_LIB=-lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core
+LAPACK_LIB=
+
+LIBS=$(LAPACK_LIB) $(BLAS_LIB) -liomp5 -lpthread -lifcore -lifport
 
 ifeq ($(USE_PGPLOT),1) 
-	LIBS:=/usr/lib64/libcpgplot.so.5.2.2 /usr/lib64/libpgplot.so.5.2.2 -lX11 -lpng12 $(LIBS)
+	LIBS:=-lcpgplot $(LIBS)
 endif
 
 BLAS_H=$(ESTER_ROOT)/src/include/cblas.h
