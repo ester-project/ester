@@ -139,6 +139,7 @@ public:
 	sym_vec operator,(const sym_vec &) const;
 	sym_tens operator,(const sym_tens &) const;
 	sym operator%(const sym_tens &) const;
+	sym_tens T() const;
 	bool is_covariant(int);
 	bool is_contravariant(int);
 	void set_type(sym_vec_type,sym_vec_type);
@@ -209,6 +210,7 @@ public:
 	sym_tens covariant_contravariant(const sym_tens &) const;
 	sym_tens covariant_covariant(const sym_tens &) const;
 	sym_vec gradient(const sym &) const;
+	sym_tens gradient(const sym_vec &) const;
 	sym christoffel(int,int,int) const;
 	sym covderiv(const sym_vec &,int,int) const;
 	sym divergence(const sym_vec &v) const;
@@ -241,6 +243,7 @@ inline sym_tens contravariant_covariant(const sym_tens &s) {return s.check_conte
 inline sym_tens covariant_contravariant(const sym_tens &s) {return s.check_context()->covariant_contravariant(s);};
 inline sym_tens covariant_covariant(const sym_tens &s) {return s.check_context()->covariant_covariant(s);};
 inline sym_vec grad(const sym &s) {return s.check_context()->gradient(s);};
+inline sym_tens grad(const sym_vec &v) {return v.check_context()->gradient(v);};
 inline sym div(const sym_vec &v) {return v.check_context()->divergence(v);};
 inline sym_vec div(const sym_tens &t) {return t.check_context()->divergence(t);};
 inline sym lap(const sym &s) {return s.check_context()->laplacian(s);};

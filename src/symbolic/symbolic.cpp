@@ -807,6 +807,18 @@ sym_vec symbolic::gradient(const sym &s) const {
 	return grad;
 }
 
+sym_tens symbolic::gradient(const sym_vec &v) const {
+
+	sym_tens grad(v.type,COVARIANT);
+	grad.set_context(this);
+	
+	for(int i=0;i<3;i++) 
+		for(int j=0;j<3;j++)
+			grad(i,j)=covderiv(v,i,j);
+
+	return grad;
+}
+
 sym symbolic::divergence(const sym_vec &v) const {
 
 	sym s;
@@ -876,53 +888,17 @@ sym_vec symbolic::curl(const sym_vec &v) const {
 
 sym_vec symbolic::laplacian(const sym_vec &v) const {
 
-	return (grad(div(v))-curl(curl(v))).set_variance(v);
+	return (div(grad(v))).set_variance(v);
 
 }
-/*         // SLOWER
-sym_vec symbolic::laplacian(const sym_vec &v) const {
-
-	sym_vec vnew,V;
-	vnew.set_context(v.check_context());
-	vnew.type=CONTRAVARIANT;
-	
-	V=contravariant(v);
-	
-	for(int i=0;i<3;i++) {
-		for(int j=0;j<3;j++) {
-			for(int k=0;k<3;k++) {
-				vnew(i)=vnew(i)+g(j,k)*d( d(V(i),j),k);
-				for(int l=0;l<3;l++) {
-					vnew(i)=vnew(i)+g(j,k)*d(G(i,l,j)*V(l),k);
-					vnew(i)=vnew(i)+g(j,k)*(
-							G(i,l,k)*d(V(l),j)-
-							G(l,j,k)*d(V(i),l));
-					for(int m=0;m<3;m++) {
-						vnew(i)=vnew(i)+g(j,k)*(
-							G(i,l,k)*G(l,m,j)*V(m)-
-							G(l,j,k)*G(i,m,l)*V(m));
-					}
-				}
-			}
-		}
-	}
-	return vnew.set_variance(v);
-
-}
-
-*/
 
 sym_tens symbolic::stress(const sym_vec &v) const {
 
-	sym_tens t(CONTRAVARIANT,CONTRAVARIANT);
-	sym_vec V;
+	sym_tens t;
 	
 	t.set_context(this);
-	V=contravariant(v);
-	for(int i=0;i<3;i++)
-		for(int j=0;j<3;j++)
-			for(int k=0;k<3;k++)
-				t(i,j)=t(i,j)+g(i,k)*covderiv(V,j,k)+g(j,k)*covderiv(V,i,k)-2./3.*g(i,j)*covderiv(V,k,k);
+	
+	t=grad(v)+grad(v).T()-2./3.*g*div(v);
 				
 	return t;
 }

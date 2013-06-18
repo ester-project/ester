@@ -960,6 +960,19 @@ sym_vec sym_tens::operator,(const sym_vec &v) const {
 
 }
 
+sym_tens sym_tens::T() const {
+
+	sym_tens tnew(this->type[1],this->type[0]);
+	
+	tnew.set_context(check_context(*this));
+	
+	for(int i=0;i<3;i++) 
+		for(int j=0;j<3;j++)
+			tnew(i,j)=(*this)(j,i);
+	
+	return tnew;
+
+}
 
 sym_vec sym_vec::operator,(const sym_tens &t) const {
 

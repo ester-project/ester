@@ -1179,14 +1179,12 @@ DEBUG_FUNCNAME
 	i=op->get_id("Lambda");
 	y[i]=(B.Lambda-Lambda)*ones(ndomains,1);
 	i=op->get_id("eta");
-	y[i]=zeros(ndomains+1,1);
-	y[i].setblock(1,ndomains,0,0,B.map.eta-map.eta);
+	y[i]=B.map.eta-map.eta;
 	j=i;
 	i=op->get_id("deta");
 	y[i]=y[j].block(1,ndomains,0,0)-y[j].block(0,ndomains-1,0,0);
 	i=op->get_id("Ri");
-	y[i]=zeros(ndomains+1,nth);
-	y[i].setblock(1,ndomains,0,-1,B.map.R-map.R);
+	y[i]=B.map.R-map.R;
 	j=i;
 	i=op->get_id("dRi");
 	y[i]=y[j].block(1,ndomains,0,-1)-y[j].block(0,ndomains-1,0,-1);
