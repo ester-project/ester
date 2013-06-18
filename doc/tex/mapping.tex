@@ -15,6 +15,7 @@ Note that the problems in which we are interested will involve only axisymmetric
 but it could be also generalized to other geometries.
 
 \subsection{Coordinate mapping}
+\label{sect:mapping}
 
 We will consider spherical coordinates ($r,\theta,\varphi$). Let $\mathcal{D}$ be an axisymmetric domain centered
 in the origin of coordinates ($r=0$) and whose outer boundary $\partial\mathcal{D}$
@@ -210,7 +211,7 @@ The basis vectors satisfy
 \end{equation}
 where $\delta_{ij}$ is the Kronecker's delta.
 
-The metric tensor is defined as
+Using the basis vectors, we can calculate the metric tensor
 \begin{equation}
 g_{ij}=\vect E_i\cdot\vect E_j=\left(
 \begin{array}{ccc}
@@ -230,6 +231,44 @@ g^{ij}=\vect E^i\cdot\vect E^j=\left(
 \end{array}
 \right)
 \end{equation}
+Note that $g^{ij}$ is the matrix inverse of $g_{ij}$
+$$g_{ij}g^{jk}=\delta_{ij}$$
+where we have used the Einstein's summation convention, that implies summation over repeated indices.
+
+Given two points $x^i$ and $x^i+\mathrm{d}x^i$, the distance ($\mathrm{d}s$) between them 
+is given by the metric tensor:
+\begin{equation}
+\mathrm{d}s^2=g_{ij}\mathrm{d}x^i\mathrm{d}x^j=
+r_\zeta^2\mathrm{d}\zeta^2+2r_\zeta r_\theta \mathrm{d}\zeta \mathrm{d}\theta+
+(r^2+r_\theta^2)\mathrm{d}\theta^2+r^2\sin^2\theta \mathrm{d}\varphi^2
+\end{equation}
+
+The basis vectors verify
+\begin{equation}
+\vect E_i\cdot(\vect E_j\times\vect E_k)=\epsilon_{ijk}
+\end{equation}
+and
+\begin{equation}
+\vect E^i\cdot(\vect E^j\times\vect E^k)=\epsilon^{ijk}
+\end{equation}
+where $\epsilon^{ijk}$ is the Levi-Civita tensor
+\begin{equation}
+\epsilon_{ijk}=\sqrt{|g|}[i,j,k]
+\end{equation}
+\begin{equation}
+\epsilon^{ijk}=\frac{1}{\sqrt{|g|}}[i,j,k]
+\end{equation}
+where $|g|=\det(g_{ij})=r^4r_\zeta^2\sin^2\theta$ and
+\begin{equation}
+[i,j,k]=\left\{
+\begin{array}{ll}
+1&\quad\mbox{the arguments are an even permutation}\\
+-1&\quad\mbox{the arguments are an odd permutation}\\
+0&\quad\mbox{two or more arguments are equal}
+\end{array}
+\right.
+\end{equation}
+
 
 \subsubsection{Representation of vectors}
 
@@ -240,5 +279,467 @@ A vector $\vect v$ can be represented either in covariant or contravariant form:
 \end{itemize}
 Here, $V_i$ are the covariant components of the vector $\vec v$ and $V^i$ the contravariant components. Note that
 $$\vect E_i\cdot\vect v=V_i \qquad \mbox{and} \qquad \vect E^i\cdot\vect v=V^i$$
+We can use the metric tensor to pass from one representation to the other, indeed
+\begin{equation}
+V_i=\vect E_i\cdot\vect v=\vect E_i\cdot(\vect E_j V^j)=g_{ij}V^j
+\end{equation}
+and similarly
+\begin{equation}
+V^i=g^{ij}V_j
+\end{equation}
+
+Let $(v_r,v_\theta,v_\varphi)$ be the spherical components of a vector $\vect v$ such that
+$\vect v=v_r\rvec+v_\theta\thvec+v_\varphi\phivec$. Its spheroidal components will be
+\begin{equation}
+V_\zeta=r_\zeta v_r,\quad V_\theta=r_\theta v_r+r v_\theta,\quad
+V_\varphi=r\sin\theta v_\varphi
+\end{equation}
+and
+\begin{equation}
+V^\zeta=\frac{v_r}{r_\zeta}-\frac{r_\theta}{rr_\zeta}v_\theta,\quad
+V^\theta=\frac{v_\theta}{r},\quad V^\varphi=\frac{v_\varphi}{r\sin\theta}
+\end{equation}
+We can see from this expressions that $V^\theta$ an $V^\varphi$ are in fact angular velocities.
+
+
+Using the properties of the basis vectors it can be shown that the scalar product of two vectors is
+given by
+\begin{equation}
+\vect a\cdot\vect b=A_iB^i=A^iB_i
+\end{equation}
+and the cross product is
+\begin{equation}
+\begin{array}{l}
+(\vect a\times\vect b)^i=
+\epsilon^{ijk}A_jB_k\\
+(\vect a\times\vect b)_i=
+\epsilon_{ijk}A^jB^k
+\end{array}
+\end{equation}
+
+We have presented the basics of the representation of vectors in spheroidal coordinates, let'see now a little
+example. Consider a surface $\mathcal S$ defined by $\zeta=\mathrm{const.}$ as for example the surface
+of a star or the frontier between two subdomains. We want to calculate the normal and tangential
+projections of a vector $\vect v$ with respect to $\mathcal{S}$. First, we define a unit vector $\vect{\hat n}$,
+perpendicular to $\mathcal{S}$. For that, we just recall that $\vect E^\zeta$ is perpendicular to 
+the surfaces $\zeta=\mathrm{const.}$, but it is not a unit vector, so
+\begin{equation}
+\vect{\hat n}=\frac{\vect{E^\zeta}}{|\vect{E^\zeta}|}=
+\frac{\vect{E^\zeta}}{\sqrt{\vect{E^\zeta}\cdot\vect{E^\zeta}}}=
+\frac{\vect{E^\zeta}}{\sqrt{g^{\zeta\zeta}}}
+\end{equation}
+then, the normal projection is
+\begin{equation}
+\vect{\hat n}\cdot\vect{v}=\frac{V^\zeta}{\sqrt{g^{\zeta\zeta}}}=
+\frac{r_\zeta V^\zeta}{\sqrt{1+\frac{r_\theta^2}{r^2}}}
+\end{equation}
+For the parallel projection we have two vectors, the first one, in the direction of $\varphi$ is just 
+the spherical unit vector $\phivec$, in the latitudinal direction, however, it will be
+\begin{equation}
+\vect{\hat t}=\frac{\vect{E_\theta}}{|\vect{E_\theta}|}=
+\frac{\vect{E_\theta}}{\sqrt{\vect{E_\theta}\cdot\vect{E_\theta}}}=
+\frac{\vect{E_\theta}}{\sqrt{g_{\theta\theta}}}
+\end{equation}
+so, the parallel projections over $\mathcal{S}$ are
+\begin{equation}
+\vect{\hat t}\cdot\vect{v}=\frac{V_\theta}{\sqrt{g_{\theta\theta}}}=
+\frac{1}{\sqrt{1+\frac{r_\theta^2}{r^2}}}\frac{V_\theta}{r}
+\end{equation}
+and
+\begin{equation}
+\phivec\cdot\vect{v}=\frac{V_\varphi}{r\sin\theta}
+\end{equation}
+
+\subsubsection{Tensors}
+
+A second order tensor $\tens T$ is represented using 2 indices
+\begin{equation}
+\tens T=T^{ij}\vect E_i\vect E_j=T_{ij}\vect E^i\vect E^j={T^i}j\vect E_i\vect E^j
+={T_i}^j\vect E^i\vect E_j
+\end{equation}
+Again, we can use the metric tensor to lower and raise indices
+\begin{equation}
+\begin{array}{l}
+T^{ij}=g^{ik}{T_k}^j=g^{jl}{T^i}_l=g^{ik}g^{jl}T_{kl}\\
+T_{ij}=g_{ik}{T^k}_j=g_{jl}{T_i}^l=g_{ik}g_{jl}T^{kl}
+\end{array}
+\end{equation}
+
+The tensor product of 2 vectors is a tensor
+\begin{equation}
+(\vect a\;\vect b)^{ij}=a^ib^j
+\end{equation}
+The dot product between a tensor and a vector is
+\begin{equation}
+(\tens T\cdot\vect v)^i=T^{ij}V_j
+\end{equation}
+and between a vector and a tensor
+\begin{equation}
+(\vect v\cdot\tens T)^j=T^{ij}V_i
+\end{equation}
+Finally, the double dot product is a scalar
+\begin{equation}
+\tens T : \tens T=T^{ij}T_{ij}
+\end{equation}
+
+All of this can be generalized to higher order tensors. Note that vectors are in fact tensors of order 1. 
+
+\subsubsection{Differential operators}
+
+Our goal is to be able to write differential equations using spheroidal coordinates. We will start
+finding the relation between the partial derivatives with respect to the spherical coordinates and those
+calculated with respect to the spheroidal coordinates. We will add the primes ($'$) in the notation for 
+the spheroidal $\theta'$ and $\varphi'$ coordinates to clarify the notation, so the derivative with
+respect to a spheroidal coordinate is done holding the other spheroidal coordinates constant.
+Following the chain rule
+\begin{equation}
+\frac{\partial}{\partial r}=
+\frac{\partial\zeta}{\partial r}\frac{\partial}{\partial \zeta}
++\frac{\partial\theta'}{\partial r}\frac{\partial}{\partial \theta'}
++\frac{\partial\varphi'}{\partial r}\frac{\partial}{\partial \varphi'}
+\end{equation}
+Obviously, $\displaystyle \frac{\partial\theta'}{\partial r}=\frac{\partial\varphi'}{\partial r}=0$, and
+$$\mathrm{d}r=r_\zeta\mathrm{d}\zeta+r_\theta\mathrm{d}\theta$$
+$$\mathrm{d}\zeta=\frac{1}{r_\zeta}\mathrm{d}r-\frac{r_\theta}{r_\zeta}\mathrm{d}\theta$$
+where we see $\displaystyle \frac{\partial\zeta}{\partial r}=\frac{1}{r_\zeta}$
+and $\displaystyle \frac{\partial\zeta}{\partial\theta}=-\frac{r_\theta}{r_\zeta}$. Then
+\begin{equation}
+\frac{\partial}{\partial r}=\frac{1}{r_\zeta}\frac{\partial}{\partial \zeta}
+\end{equation}
+The other partial derivatives are calculated in the same way
+\begin{equation}
+\frac{\partial}{\partial\theta}=\frac{\partial}{\partial \theta'}
+-\frac{r_\theta}{r_\zeta}\frac{\partial}{\partial \zeta}
+\end{equation}
+\begin{equation}
+\frac{\partial}{\partial \varphi}=\frac{\partial}{\partial \varphi'}
+\end{equation}
+Of course, we could take this expressions and substitute them into the expressions for the differential
+operators corresponding to the spherical coordinates, but there is a much more efficient way to do it.
+
+First, let's define the general form of the gradient of a scalar quantity. The gradient will be a vector,
+whose covariant components are
+\begin{equation}
+(\nabla\phi)_i=\frac{\partial\phi}{\partial x^i}=\phi_{,i}
+\end{equation}
+where we have introduced the comma notation for the partial derivative. The contravariant components of 
+the gradient will be
+\begin{equation}
+(\nabla\phi)^i=g^{ij}\phi_{,j}
+\end{equation}
+
+We can also derive a component of a vector $V^i$ in the same way. However, this derivative
+\begin{equation}
+\frac{\partial V^i}{\partial x^j}={V^i}_{,j}
+\end{equation}
+is not a tensor, as it does not transform correctly under a change of coordinates. That's why we will introduce
+the covariant derivative
+\begin{equation}
+\nabla_jV^i={V^i}_{;j}={V^i}_{,j}+{\Gamma^i}_{kj}V^k
+\end{equation}
+Where $\displaystyle{\Gamma^i}_{kj}=\vect E^i\cdot\frac{\partial \vect E_k}{\partial x^j}$
+is a Christoffel symbol of the second kind. The covariant derivative of a vector ${V^i}_{;j}$ is a tensor
+that represents the gradient of the vector.
+\begin{equation}
+(\nabla\vect v)^{ij}=g^{jk}{(\nabla\vect v)^i}_k=g^{jk}{V^i}_{;k}
+\end{equation}
+We can also calculate the covariant derivative using the covariant components of the vector
+\begin{equation}
+\nabla_jV_i={V_i}_{;j}={V_i}_{,j}-{\Gamma^k}_{ij}V_k
+\end{equation}
+
+The Christoffel symbols can be calculated using the following relation
+\begin{equation}
+\Gamma^i_{jk}=
+\frac{1}{2}g^{il}(g_{lj,k}+g_{lk,j}-g_{jk,l})
+\end{equation}
+where we can see that they are symmetric with respect to the second and third indices $\Gamma^i_{jk}=\Gamma^i_{kj}$.
+They also verify
+\begin{equation}
+\Gamma^{i}_{ji}=\frac{\log\sqrt{|g|}}{\partial x^j}
+\end{equation}
+
+The covariant derivative of second order tensors is done in a similar way
+\begin{equation}
+\nabla_kT^{ij}={T^{ij}}_{;k}={T^{ij}}_{,k}+{\Gamma^i}_{lk}T^{lj}+{\Gamma^j}_{lk}T^{il}
+\end{equation}
+If one of the indices is covariant, then we do
+\begin{equation}
+\nabla_k{T^i}_j={{T^i}_j}_{;k}={{T^i}_j}_{,k}+{\Gamma^i}_{lk}{T^l}_j-{\Gamma^l}_{jk}{T^i}_l
+\end{equation}
+where we can see the general rule valid also for higher order tensors, the covariant derivative is equal
+to the regular derivative plus:
+\begin{itemize}
+\item For each contravariant index, we add ${\Gamma^i}_{lk}T^{\ldots l\ldots}$
+\item For each covariant index, we subtract ${\Gamma^l}_{ik}T_{\ldots l\ldots}$
+\end{itemize}
+
+Using the covariant derivative, we can calculate all the differential operators in spheroidal coordinates.
+We have already see the gradient of a scalar and a vector, similarly, the divergence of a vector will be
+\begin{equation}
+\nabla\cdot\vect v=\nabla_iV^i={V^i}_{;i}
+\end{equation}
+and for a tensor
+\begin{equation}
+(\nabla\cdot\tens T)^i=\nabla_jT^{ij}={T^{ij}}_{;j}
+\end{equation}
+Note that some authors prefer the definition $(\nabla\cdot\tens T)^j=\nabla_iT^{ij}={T^{ij}}_{;i}$.
+Using the expresion for the cross product, we can calculate the curl of a vector
+\begin{equation}
+(\nabla\times\vect v)^i=\epsilon^{ijk}\nabla_jV_k=\epsilon^{ijk}{V_k}_{;j}
+\end{equation}
+The laplacian of a scalar field will be
+\begin{equation}
+\Delta\phi=\nabla\cdot(\nabla\phi)=\nabla_i(g^{ij}\nabla_j\phi)=(g^{ij}\phi_{,j})_{;i}
+\end{equation}
+and for a vector field
+\begin{equation}
+(\Delta\vect v)^i=\nabla_j(g^{jk}\nabla_kV^i)=(g^{jk}{V^i}_{;k})_{;j}
+\end{equation}
+The material derivative is
+\begin{equation}
+\left[(\vect v\cdot\nabla)\vect v\right]^i=V^j\nabla_jV^i=V^j{V^i}_{;j}
+\end{equation}
+
+\subsubsection{Useful relations}
+\begin{itemize}
+\item Line, area and volume elements
+\begin{itemize}
+\item Line element
+\begin{equation}
+\mathrm{d}s^2=g_{ij}\mathrm{d}x^i\mathrm{d}x^j=r_\zeta^2\mathrm{d}\zeta^2+2r_\zeta r_\theta \mathrm{d}\zeta \mathrm{d}\theta+
+(r^2+r_\theta^2)\mathrm{d}\theta^2+r^2\sin^2\theta \mathrm{d}\varphi^2
+\end{equation}
+\begin{equation}
+\mathrm{d}\vect r=\vect E_i \mathrm{d}x^i=\vect E_\zeta \mathrm{d}\zeta+\vect E_\theta \mathrm{d}\theta
++\vect E_\varphi \mathrm{d}\varphi
+\end{equation}
+\item Area element in a surface $\zeta=$const.
+\begin{equation}
+\mathrm{d}\vect S=(\vect E_\theta\times \vect E_\varphi)\mathrm{d}\theta \mathrm{d}\varphi=
+r^2r_\zeta\sin\theta\vect E^\zeta \mathrm{d}\theta \mathrm{d}\varphi
+\end{equation}
+\begin{equation}
+\mathrm{d}S=|\mathrm{d}\vect S|=
+\sqrt{g^{\zeta\zeta}}r^2r_\zeta\sin\theta \mathrm{d}\theta \mathrm{d}\varphi=
+r^2\sqrt{1+\frac{r_\theta^2}{r^2}}\sin\theta \mathrm{d}\theta \mathrm{d}\varphi
+\end{equation}
+\item Area element in a surface of constant $p=p(\zeta,\theta)$.
+\begin{equation}
+\mathrm{d}\vect S=
+r^2r_\zeta\sin\theta\left(\vect E^\zeta+\frac{p_{,\theta}}{p_{,\zeta}}\vect E^{\theta}
+\right) \mathrm{d}\theta \mathrm{d}\varphi
+\end{equation}
+\begin{equation}
+\mathrm{d}S=|\mathrm{d}\vect S|=r^2r_\zeta\sin\theta
+\sqrt{g^{\zeta\zeta}+2\frac{p_{,\theta}}{p_{,\zeta}}g^{\zeta\theta}
++\left(\frac{p_{,\theta}}{p_{,\zeta}}\right)^2g^{\theta\theta}}
+\mathrm{d}\theta \mathrm{d}\varphi
+\end{equation}
+\item Volume element
+\begin{equation}
+\mathrm{d}V=\vect E_\zeta\cdot(\vect E_\theta\times\vect E_\varphi)\mathrm{d}\zeta \mathrm{d}\theta \mathrm{d}\varphi=
+r^2r_\zeta\sin\theta \mathrm{d}\zeta \mathrm{d}\theta \mathrm{d}\varphi
+\end{equation}
+\end{itemize}
+\item Differential operators
+\begin{itemize}
+\item Gradient
+\begin{equation}
+\nabla\phi=\phi_{,i}\vect E^i=\frac{\partial\phi}{\partial\zeta}\vect E^\zeta+
+\frac{\partial\phi}{\partial\theta}\vect E^\theta+\frac{\partial\phi}{\partial\varphi}\vect E^\varphi
+\end{equation}
+\item Divergence
+\begin{equation}
+\begin{array}{rl}
+\displaystyle\nabla\cdot\vect v&
+\displaystyle ={V^i}_{;i}=
+\frac{\partial V^i}{\partial x^i}+\frac{\partial\log\sqrt{|g|}}{\partial x^k}V^k=\\
+\\
+&\displaystyle =\frac{\partial V^\zeta}{\partial\zeta}+\left(\frac{2r_\zeta}{r}
++\frac{r_{\zeta\zeta}}{r_\zeta}
+\right)V^\zeta+\frac{\partial V^\theta}{\partial\theta}+\left(\frac{2r_\theta}{r}+
+\frac{\cos\theta}{\sin\theta}+\frac{r_{\zeta\theta}}{r_\zeta}\right)V^\theta+
+\frac{\partial V^\varphi}{\partial\varphi}
+\end{array}
+\end{equation}
+\item Laplacian
+\begin{equation}
+\begin{array}{rl}
+\Delta\phi&
+\displaystyle =\div(\nabla\phi)=(g^{ij}\phi_{,j})_{;i}=\frac{1}{\sqrt{|g|}}\frac{\partial}{\partial x^i}
+\left(\sqrt{|g|}g^{ij}\frac{\partial\phi}{\partial x^j}\right)=\\
+\\
+&\displaystyle =
+g^{\zeta\zeta}\frac{\partial^2\phi}{\partial\zeta^2}
++2g^{\zeta\theta}\frac{\partial^2\phi}{\partial\zeta\partial\theta}
++\frac{1}{r^2}\frac{\partial^2\phi}{\partial\theta^2}
++\frac{1}{r^2\sin^2\theta}\frac{\partial^2\phi}{\partial\varphi^2}
++\\
+&\displaystyle\quad
++\left[\frac{2}{rr_\zeta}-\frac{r_{\theta\theta}}{r^2r_\zeta}
+-g^{\zeta\zeta}\frac{r_{\zeta\zeta}}{r_\zeta}
+-g^{\zeta\theta}\left(\frac{2r_{\zeta\theta}}{r_\zeta}-\frac{\cos\theta}{\sin\theta}\right)\right]
+\frac{\partial\phi}{\partial\zeta}
++\frac{\cos\theta}{r^2\sin\theta}\frac{\partial\phi}{\partial\theta}
+\end{array}
+\end{equation}
+\item Curl
+\begin{equation}
+\begin{array}{rl}
+\displaystyle \nabla\times\vect v &
+\displaystyle = \epsilon^{ijk}V_{k;j}\vect E_i=\\
+\\
+&\displaystyle = \frac{1}{r^2r_\zeta\sin\theta}\left[
+\left(\frac{\partial V_\varphi}{\partial\theta}-
+\frac{\partial V_\theta}{\partial\varphi}\right)\vect E_\zeta +
+\left(\frac{\partial V_\zeta}{\partial\varphi}-
+\frac{\partial V_\varphi}{\partial\zeta}\right)\vect E_\theta +
+\left(\frac{\partial V_\theta}{\partial\zeta}-
+\frac{\partial V_\zeta}{\partial\theta}\right)\vect E_\varphi\right]\\
+\end{array}
+\end{equation}
+\item Material derivative
+\begin{equation}
+\begin{array}{l}
+\displaystyle(\vect a\cdot\nabla)\vect b
+ =A^j{B^i}_{;j}\vect E_i=\\
+\\
+\quad\displaystyle =\left[A^\zeta\frac{\partial B^\zeta}{\partial\zeta}+
+A^\theta\frac{\partial B^\zeta}{\partial\theta}+A^\varphi\frac{\partial B^\zeta}{\partial\varphi}
++\frac{r_{\zeta\zeta}}{r_\zeta}A^\zeta B^\zeta+\left(\frac{r_{\zeta\theta}}{r_\zeta}-\frac{r_\theta}{r}
+\right)\left(A^\zeta B^\theta+A^\theta B^\zeta\right)+\right.\\
+\quad\displaystyle \left. +\frac{1}{r_\zeta}\left(r_{\theta\theta}-
+\frac{2r_\theta^2}{r}-r\right)A^\theta B^\theta+\frac{\sin\theta}{r_\zeta}\left(
+r_\theta\cos\theta-r\sin\theta\right)A^\varphi B^{\varphi}\right]\vect E_\zeta +\\
+\\
+\quad\displaystyle +\left[A^\zeta\frac{\partial B^\theta}{\partial\zeta}+
+A^\theta\frac{\partial B^\theta}{\partial\theta}+A^\varphi\frac{\partial B^\theta}{\partial\varphi}
++\frac{r_\zeta}{r}\left(A^\zeta B^\theta+A^\theta B^\zeta\right)
++\frac{2r_\theta}{r}A^\theta B^\theta-
+\sin\theta\cos\theta A^\varphi B^{\varphi}\right]\vect E_\theta +\\
+\\
+\quad\displaystyle +\left[A^\zeta\frac{\partial B^\varphi}{\partial\zeta}+
+A^\theta\frac{\partial B^\varphi}{\partial\theta}+A^\varphi\frac{\partial B^\varphi}{\partial\varphi}
++\frac{r_\zeta}{r}\left(A^\zeta B^\varphi+A^\varphi B^\zeta\right)
++\left(\frac{r_\theta}{r}+\frac{\cos\theta}{\sin\theta}\right)
+\left(A^\theta B^\varphi+A^\varphi B^\theta\right)\right]\vect E_\varphi\\
+\end{array}
+\end{equation}
+\end{itemize}
+\item Christoffel symbols
+\begin{equation}
+\begin{array}{lll}
+\displaystyle
+\Gamma^{\zeta}_{\zeta\zeta}=\frac{r_{\zeta\zeta}}{r_\zeta}&
+\displaystyle
+\Gamma^{\zeta}_{\zeta\theta}=\Gamma^{\zeta}_{\theta\zeta}=
+\frac{r_{\zeta\theta}}{r_\zeta}-\frac{r_\theta}{r}&
+\displaystyle
+\Gamma^{\zeta}_{\theta\theta}=\frac{1}{r_\zeta}\left(r_{\theta\theta}-
+\frac{2r_\theta^2}{r}-r\right)\\
+\displaystyle
+\Gamma^{\zeta}_{\varphi\varphi}=\frac{\sin\theta}{r_\zeta}(r_\theta\cos\theta
+-r\sin\theta)&
+\displaystyle
+\Gamma^{\theta}_{\zeta\theta}=\Gamma^{\theta}_{\theta\zeta}=\frac{r_\zeta}{r}&
+\displaystyle
+\Gamma^{\theta}_{\theta\theta}=\frac{2r_{\theta}}{r}\\
+\displaystyle
+\Gamma^{\theta}_{\varphi\varphi}=-\sin\theta\cos\theta&
+\displaystyle
+\Gamma^{\varphi}_{\zeta\varphi}=\Gamma^{\varphi}_{\varphi\zeta}=\frac{r_\zeta}{r}&
+\displaystyle
+\Gamma^{\varphi}_{\theta\varphi}=\Gamma^{\varphi}_{\varphi\theta}=\frac{r_\theta}{r}+
+\frac{\cos\theta}{\sin\theta}
+\end{array}
+\end{equation}
+
+\end{itemize}
+
+\subsection{Multidomain and continuity conditions}
+
+When using multidomain we will deal with the problem of writing continuity conditions for the different variables
+on the boundaries between contiguous subdomains. The main issue is that the mapping presented in \ref{sect:mapping}
+have discontinuities in some of its derivatives, so we should take care of using the correct expressions for
+this conditions. 
+
+\begin{center}
+\begin{tabular}{c|c|c}
+& \multicolumn{2}{c}{Continuous between subdomains} \\
+& Bonazzola & Linear mapping \\
+\hline
+$r$ & Yes & Yes\\
+$r_\zeta$ & No (Yes for fixed $a_i$) & No\\
+$r_{\zeta\zeta}$ & No & Yes \\
+$r_\theta$ & Yes & Yes \\
+$r_{\theta\theta}$ & Yes & Yes \\
+$r_{\zeta\theta}$ & Yes & No \\
+\end{tabular}
+\end{center}
+
+In the case of a scalar field $\phi(r,\theta)$, if $\phi$ is continuous between subdomains, the condition is easy
+\begin{equation}
+\phi^{(+)}=\phi^{(-)}
+\end{equation}
+where $(+)$ and $(-)$ represent each side of the boundary. If we want $\phi$ to be derivable across the boundary, 
+we would write a condition for the normal derivative $\vect{\hat n}\cdot\nabla\phi$ and not for 
+$\frac{\partial\phi}{\partial\zeta}$,
+\begin{equation}
+\label{eq:map_cond_der}
+\vect{\hat n}\cdot\nabla^{(+)}\phi^{(+)}=\vect{\hat n}\cdot\nabla^{(+)}\phi^{(+)}
+\end{equation}
+where 
+\begin{equation}
+\begin{array}{rl}
+\vect{\hat n}\cdot\nabla\phi&
+\displaystyle =\frac{\vect E^\zeta}{\sqrt{g^{\zeta\zeta}}}\cdot\left(\frac{\partial\phi}{\partial\zeta}\vect E^\zeta+
+\frac{\partial\phi}{\partial\theta}\vect E^\theta+\frac{\partial\phi}{\partial\varphi}\vect E^\varphi\right)\\
+&\\&
+\displaystyle =\sqrt{g^{\zeta\zeta}}\frac{\partial\phi}{\partial\zeta}+\frac{g^{\zeta\theta}}{\sqrt{g^{\zeta\zeta}}}
+\frac{\partial\phi}{\partial\theta}\\
+&\\&
+\displaystyle =\sqrt{1+\frac{r_\theta^2}{r^2}}\left(\frac{1}{r_\zeta}\frac{\partial\phi}{\partial\zeta}-
+\frac{r_\theta}{r^2+r_\theta^2}\frac{\partial\phi}{\partial\theta}\right)
+\end{array}
+\end{equation}
+We know that $r$ and $r_\theta$ are continuous across the boundary and if $\phi$ is continuous then so is
+$\frac{\partial\phi}{\partial\theta}$, then the condition (\ref{eq:map_cond_der}) becomes
+\begin{equation}
+\frac{1}{r_\zeta^{(+)}}\left(\frac{\partial\phi}{\partial\zeta}\right)^{(+)}=
+\frac{1}{r_\zeta^{(-)}}\left(\frac{\partial\phi}{\partial\zeta}\right)^{(-)}
+\end{equation}
+that is equivalent to saying $\displaystyle\left(\frac{\partial\phi}{\partial r}\right)^{(+)}=
+\left(\frac{\partial\phi}{\partial r}\right)^{(-)}$.
+
+In the case of a vector field, the conditions are
+\begin{equation}
+\begin{array}{c}
+\displaystyle r_\zeta^{(+)} {V^\zeta}^{(+)}=r_\zeta^{(-)} {V^\zeta}^{(-)} \\
+\displaystyle {V^\theta}^{(+)}={V^\theta}^{(-)} \\
+\displaystyle {V^\varphi}^{(+)}={V^\varphi}^{(-)} 
+\end{array}
+\end{equation}
+for continuity and
+\begin{equation}
+\begin{array}{c}
+\displaystyle \left(\frac{\partial V^{\zeta}}{\partial\zeta}\right)^{(+)}
++\frac{1}{r_\zeta^{(+)}}\left(r_{\zeta\zeta}^{(+)}{V^\zeta}^{(+)}+r_{\zeta\theta}^{(+)}{V^\theta}^{(+)}\right)=
+\left(\frac{\partial V^{\zeta}}{\partial\zeta}\right)^{(-)}
++\frac{1}{r_\zeta^{(-)}}\left(r_{\zeta\zeta}^{(-)}{V^\zeta}^{(-)}+r_{\zeta\theta}^{(-)}{V^\theta}^{(-)}\right) \\
+\displaystyle \frac{1}{r_\zeta^{(+)}}\left(\frac{\partial V^{\theta}}{\partial\zeta}\right)^{(+)}= 
+\frac{1}{r_\zeta^{(-)}}\left(\frac{\partial V^{\theta}}{\partial\zeta}\right)^{(-)} \\
+\displaystyle \frac{1}{r_\zeta^{(+)}}\left(\frac{\partial V^{\varphi}}{\partial\zeta}\right)^{(+)}= 
+\frac{1}{r_\zeta^{(-)}}\left(\frac{\partial V^{\varphi}}{\partial\zeta}\right)^{(-)}
+\end{array}
+\end{equation}
+for derivability. These conditions are based on the fact that the spherical components of the vector field
+are continuous and derivable scalar functions. For a physical boundary, it could happen that 
+some components of the vector
+field are continuous (or derivable) and others are not, then none of the above conditions is correct.
+
+\section{Coordinate mapping in ESTER}
+
+
 
 
