@@ -24,13 +24,17 @@ class mapping {
     matrix R;
     matrix J[4];
     class ext_map {
+    	mapping *parent;
+    	ext_map(mapping *);
+    	void copy(const ext_map &);
       public:
     	matrix z,D;
     	matrix r,rz,rzz,rt,rtt,rzt,gzz,gzt,gtt;
     	diff_gl gl;
     	matrix J[4];
-    	mapping *parent;
+    	
     	operator mapping();
+    	friend class mapping;
     } ex;
     const int &nex;
     
@@ -38,6 +42,7 @@ class mapping {
   	~mapping();
   	mapping(const mapping &);
   	mapping &operator=(const mapping &);
+  	void copy(const mapping &);
   	void set_ndomains(int ndom);
   	void set_npts(int npts);
   	void set_nt(int nt);

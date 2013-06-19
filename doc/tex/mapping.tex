@@ -738,7 +738,73 @@ are continuous and derivable scalar functions. For a physical boundary, it could
 some components of the vector
 field are continuous (or derivable) and others are not, then none of the above conditions is correct.
 
+\pagebreak
+
 \section{Coordinate mapping in ESTER}
+
+The class \verb|mapping| combines a \verb|diff_gl| object with a \verb|diff_leg| object to perform 
+calculations in 2D. The prototype of this class is defined in \verb|mapping.h|.
+
+Let's see an example of initialization of a mapping object
+
+\begin{minted}[frame=single]{cpp}
+mapping map;
+
+map.set_ndomains(3);
+map.set_npts(20);
+map.set_nt(25);
+map.set_nex(20);
+map.init();
+
+map.R.setrow(1,0.5*ones(1,map.nt));
+map.R.setrow(2,1+0.1*sin(map.th)*sin(map.th));
+map.R.setrow(3,2+0.3*sin(map.th)*sin(map.th));
+
+map.remap();
+
+\end{minted} 
+First, we have declared the object
+\mint{cpp}|mapping map;|
+Then we set the number of domains
+\mint{cpp}|map.set_ndomains(3);|
+Our mapping will have 3 domains plus one external domain. We choose the number of points in the internal
+domains
+\mint{cpp}|map.set_npts(20);|
+That is, the 3 domains will have each one 20 points. We can also set a different number of points for
+each domain, for that we should do
+\begin{minted}{cpp}
+int npts[3];
+npts[0]=10;npts[1]=20;npts[2]=30;
+map.set_npts(npts);
+\end{minted}
+After that, we set the number of points in latitude (25) and in the external domain (20)
+\begin{minted}{cpp}
+map.set_nt(25);
+map.set_nex(20);
+\end{minted}
+If we are not using the external domain, there is no need to change its number of points (It is 10 by default).
+There is one optional parameter that we can set before initialize the mapping
+\mint{cpp}|map_mode=MAP_BONAZZOLA;|
+to use the mapping with constant $r_\zeta$ at the boundaries presented in the previous section (this is
+the default), or
+\mint{cpp}|map_mode=MAP_LINEAR;|
+to use a linear mapping. Now we can proceed with the initialization
+\mint{cpp}|map.init();|
+If we change the resolution after this point, we should call \verb|init()| again. Now
+we have a working object, with 3 spherical domains distributed uniformly from $r=0$ to $r=1$.
+If this setup is fine for us,
+then we are done with the initialization, but usually we will want to change to boundaries between
+domains. This is done using the matrix \verb|R| with size $(n_\mathrm{domains}+1)\times n_\theta$.
+Each row of \verb|R| defines a different boundary, starting with the row 0 that corresponds to the inner boundary.
+In the previous example, we have not changed the inner boundary, so our mapping contains the center of 
+coordinates, but if we want the mapping to start, for example, at $r=0.3$, we could just add
+\mint{cpp}|map.R.setrow(0,0.3*ones(1,map.nt));|
+In the definition of the boundaries we have used \verb|map.th| that contains the values of the $\theta$ coordinate.
+Once we have set the boundaries we just call \verb|remap()|
+\mint{cpp}|map.remap();|
+We can call \verb|remap()| as many times as we want if we need to change the boundaries again.
+
+
 
 
 

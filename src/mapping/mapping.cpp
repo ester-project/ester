@@ -3,15 +3,14 @@
 #include<stdlib.h>
 #include<cmath>
 
-mapping::mapping(): 
-			nr(gl.N),nex(ex.gl.N),ndomains(gl.ndomains),eta(eta_),nt(leg.npts),npts(gl.npts),
+mapping::mapping():ex(this), 
+			nr(gl.N),nt(leg.npts),ndomains(gl.ndomains),nex(ex.gl.N),eta(eta_),npts(gl.npts),
 			D(gl.D),Dt(leg.D_00),Dt2(leg.D2_00),Dt_11(leg.D_11),Dt2_11(leg.D2_11),Dt_01(leg.D_01),
 			Dt2_01(leg.D2_01),Dt_10(leg.D_10),Dt2_10(leg.D2_10),z(gl.x),th(leg.th) {
-			
+
 	ex.gl.set_ndomains(1);
 	ex.gl.set_xif(0.,1.);
 	ex.gl.set_npts(10);
-	ex.parent=this;
 	
 	mode=MAP_BONAZZOLA;
 	
@@ -19,40 +18,32 @@ mapping::mapping():
 
 mapping::~mapping() {}
 
-mapping::mapping(const mapping &map):
-		nr(gl.N),nex(ex.gl.N),ndomains(gl.ndomains),eta(eta_),eta_(map.eta_),nt(leg.npts),npts(gl.npts),
-		gl(map.gl),leg(map.leg),
-		r(map.r),rz(map.rz),rzz(map.rzz),rt(map.rt),rtt(map.rtt),rzt(map.rzt),
-		gzz(map.gzz),gzt(map.gzt),gtt(map.gtt),R(map.R),
+mapping::mapping(const mapping &map):ex(this),
+		nr(gl.N),nt(leg.npts),ndomains(gl.ndomains),nex(ex.gl.N),eta(eta_),npts(gl.npts),
 		D(gl.D),Dt(leg.D_00),Dt2(leg.D2_00),Dt_11(leg.D_11),Dt2_11(leg.D2_11),Dt_01(leg.D_01),
 		Dt2_01(leg.D2_01),Dt_10(leg.D_10),Dt2_10(leg.D2_10),z(gl.x),th(leg.th) {
 
-	ex.z=map.ex.z;ex.D=map.ex.D;
-	ex.gl=map.ex.gl;
-	ex.r=map.ex.r;ex.rz=map.ex.rz;ex.rzz=map.ex.rzz;ex.rt=map.ex.rt;
-	ex.rtt=map.ex.rtt;ex.rzt=map.ex.rzt;
-	ex.gzz=map.ex.gzz;ex.gzt=map.ex.gzt;ex.gtt=map.ex.gtt;
+	copy(map);
+
+}
+
+void mapping::copy(const mapping &map) {
+
+	gl=map.gl;leg=map.leg;
 	mode=map.mode;
+	eta_=map.eta_;
+	r=map.r;rz=map.rz;rzz=map.rzz;rt=map.rt;rtt=map.rtt;rzt=map.rzt;
+	gzz=map.gzz;gzt=map.gzt;gtt=map.gtt;
+	R=map.R;
 	J[0]=map.J[0];J[1]=map.J[1];J[2]=map.J[2];J[3]=map.J[3];
-	ex.J[0]=map.ex.J[0];ex.J[1]=map.ex.J[1];ex.J[2]=map.ex.J[2];ex.J[3]=map.ex.J[3];
+	ex.copy(map.ex);
+	
 }
 
 mapping &mapping::operator=(const mapping &map) {
 
-	eta_=map.eta_;
-    gl=map.gl;
-    leg=map.leg;
-    r=map.r;rz=map.rz;rzz=map.rzz;rt=map.rt;rtt=map.rtt;rzt=map.rzt;
-    gzz=map.gzz;gzt=map.gzt;gtt=map.gtt;
-    R=map.R;
-    ex.gl=map.ex.gl;
-    ex.z=map.ex.z;ex.D=map.ex.D;
-    ex.r=map.ex.r;ex.rz=map.ex.rz;ex.rzz=map.ex.rzz;ex.rt=map.ex.rt;ex.rtt=map.ex.rtt;ex.rzt=map.ex.rzt;
-    ex.gzz=map.ex.gzz;ex.gzt=map.ex.gzt;ex.gtt=map.ex.gtt;
-	mode=map.mode;
-	J[0]=map.J[0];J[1]=map.J[1];J[2]=map.J[2];J[3]=map.J[3];
-	ex.J[0]=map.ex.J[0];ex.J[1]=map.ex.J[1];ex.J[2]=map.ex.J[2];ex.J[3]=map.ex.J[3];
-
+	copy(map);
+	
 	return *this;
 }
 
@@ -106,7 +97,7 @@ int mapping::remap() {
 	for(int i=0;i<ndomains+1;i++)
 		gl.xif[i]=eta_(i);
 	gl.init();
-	
+
 	if(!exist(R.row(0)!=0)) eta_(0)=0;
 
 	r.dim(nr,nt);
@@ -119,7 +110,7 @@ int mapping::remap() {
 	J[1].dim(nr,nt);
 	J[2].dim(nr,nt);
 	J[3].dim(nr,nt);
-	
+
 	if(mode==MAP_BONAZZOLA) {
 		int j0=0,dj;
 		matrix q,dR,zz,xi,A,Ap,App;
@@ -198,29 +189,24 @@ int mapping::remap() {
 		
 	}
 
-	int j0=0;
-	for(int i=0;i<gl.ndomains;i++) {
-		R.setrow(i+1,r.row(j0+gl.npts[i]-1));
-		j0+=gl.npts[i];
-	}
 	
 	gzz=(r*r+rt*rt)/r/r/rz/rz;
 	gzz.setrow(0,1/rz.row(0)/rz.row(0));
 	gzt=-rt/r/r/rz;
 	gzt.setrow(0,zeros(1,leg.npts));
 	gtt=1/r/r;
-	
+
 	matrix xi;
 	ex.z=eta(-1)/(1-ex.gl.x);
 	xi=ex.z/eta(-1)-1;
-	
+
 	ex.r=xi+R.row(ndomains);
 	ex.rz=ones(nex,nt)/eta(-1);
 	ex.rzz=zeros(nex,nt);
 	ex.rt=ones(nex,nt)*(R.row(ndomains),Dt);
 	ex.rtt=ones(nex,nt)*(R.row(ndomains),Dt2);
 	ex.rzt=zeros(nex,nt);
-	
+
 	ex.J[0]=zeros(nex,nt);
 	ex.J[1]=zeros(nex,nt);
 	ex.J[2]=ones(nex,nt);
@@ -642,6 +628,22 @@ void mapping::spectrum(figure *pfig,const matrix &y,int parity) const {
 	}
 	pfig->hold(0);
 
+}
+
+mapping::ext_map::ext_map(mapping *map) {
+
+	parent=map;
+
+}
+
+void mapping::ext_map::copy(const ext_map &map) {
+
+	gl=map.gl;
+	z=map.z;D=map.D;
+	r=map.r;rz=map.rz;rzz=map.rzz;rt=map.rt;rtt=map.rtt;rzt=map.rzt;
+	gzz=map.gzz;gzt=map.gzt;gtt=map.gtt;
+	J[0]=map.J[0];J[1]=map.J[1];J[2]=map.J[2];J[3]=map.J[3];
+	
 }
 
 mapping::ext_map::operator mapping() {
