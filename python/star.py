@@ -81,7 +81,7 @@ class star2d:
 			elif x=='Dt' or x=='Dt2' or x=='Dtodd':
 				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.nth*self.nth)+"),["+str(self.nth)+","+str(self.nth)+"],'F')"
 			elif x=='map_R':
-				s="self."+x+"=reshape(fromfile(fp,'d',"+str((self.ndomains+1)*self.nth)+"),["+str(self.ndomains+1)+","+str(self.nth)+"],'F')"
+				s="self."+x+"=reshape(fromfile(fp,'d',"+str((self.ndomains)*self.nth)+"),["+str(self.ndomains)+","+str(self.nth)+"],'F')"
 			elif x=='rex' or x=='phiex':
 				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.nex*self.nth)+"),["+str(self.nex)+","+str(self.nth)+"],'F')"
 			elif x=='Dex':
@@ -217,7 +217,7 @@ class star1d:
 			elif x=='D':
 				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.nr*self.nr)+"),["+str(self.nr)+","+str(self.nr)+"],'F')"
 			elif x=='map_R':
-				s="self."+x+"=reshape(fromfile(fp,'d',"+str((self.ndomains+1)*self.nth)+"),["+str(self.ndomains+1)+","+str(self.nth)+"],'F')"
+				s="self."+x+"=reshape(fromfile(fp,'d',"+str((self.ndomains)*self.nth)+"),["+str(self.ndomains)+","+str(self.nth)+"],'F')"
 			else:
 				s="self."+x+"=reshape(fromfile(fp,'d',"+str(self.nr*self.nth)+"),["+str(self.nr)+","+str(self.nth)+"],'F')"
 			exec(s)

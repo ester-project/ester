@@ -378,8 +378,8 @@ void write(const star2d &A,char *var,char *fmt) {
 		if(fmt) matrix_fmt(fmt,(m,T));
 		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"map.R")) {
-		if(dim) m=A.map.R*A.units.r;
-		else m=A.map.R;
+		if(dim) m=A.map.R.block(1,-1,0,-1)*A.units.r;
+		else m=A.map.R.block(1,-1,0,-1);
 		if(fmt) matrix_fmt(fmt,(m,T));
 		else (m,T).write(stdout,'b');
 	} else if(!strcmp(var,"rho")) {
@@ -585,6 +585,9 @@ void write(const star2d &A,char *var,char *fmt) {
 		else {
 			fwrite(&d,sizeof(double),1,stdout);
 		}
+	} else {
+		fprintf(stderr,"Unknown variable %s\n",var);
+		exit(1);
 	}
 }
 
