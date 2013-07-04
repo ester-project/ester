@@ -1,89 +1,181 @@
 #ifndef _SYMBOLIC_H
 #define _SYMBOLIC_H
 
+#include<vector>
+#include<map>
+#include<string>
+#include<iostream>
+#include<cmath>
 #include"matrix.h"
 #include"mapping.h"
 #include"solver.h"
-#include<stdio.h>
+
+class rational {
+	int n,d;
+	rational &reduce();
+	static int gcd(int a,int b);
+public:
+	rational(int num=1,int den=1);
+	int num() const;
+	int den() const;
+	double eval() const;
+	rational operator+(const rational &q) const;
+	inline rational operator+() const {return *this;};
+	rational operator-() const;
+	inline rational operator-(const rational &q) const {return *this+(-q);};
+	rational operator*(const rational &q) const;
+	rational inv() const;
+	inline rational operator/(const rational &q) const {return *this*q.inv();};
+	inline rational &operator+=(const rational &q) {return *this=*this+q;};
+	inline rational &operator-=(const rational &q) {return *this=*this-q;};
+	inline rational &operator*=(const rational &q) {return *this=*this*q;};
+	inline rational &operator/=(const rational &q) {return *this=*this/q;};
+	rational pow(int) const;
+	bool operator==(const rational &q) const;
+	inline bool operator!=(const rational &q) const {return !(*this==q);};
+	bool operator>(const rational &q) const;
+	bool operator<(const rational &q) const;
+	inline bool operator>=(const rational &q) const {return !(*this<q);};;
+	inline bool operator<=(const rational &q) const {return !(*this>q);};;
+	friend std::ostream& operator<<(std::ostream& os, const rational&);
+};
+
+inline rational operator+(const int &n,const rational &q) {return q+rational(n);}
+inline rational operator-(const int &n,const rational &q) {return -q+rational(n);}
+inline rational operator*(const int &n,const rational &q) {return q*rational(n);}
+inline rational operator/(const int &n,const rational &q) {return q.inv()*rational(n);}
+
+inline rational operator+(const rational &q,const int &n) {return q+rational(n);}
+inline rational operator-(const rational &q,const int &n) {return q-rational(n);}
+inline rational operator*(const rational &q,const int &n) {return q*rational(n);}
+inline rational operator/(const rational &q,const int &n) {return q*rational(1,n);}
+
+inline double operator+(const double &n,const rational &q) {return n+q.eval();}
+inline double operator-(const double &n,const rational &q) {return n-q.eval();}
+inline double operator*(const double &n,const rational &q) {return n*q.eval();}
+inline double operator/(const double &n,const rational &q) {return n/q.eval();}
+
+inline double operator+(const rational &q,const double &n) {return q.eval()+n;}
+inline double operator-(const rational &q,const double &n) {return q.eval()-n;}
+inline double operator*(const rational &q,const double &n) {return q.eval()*n;}
+inline double operator/(const rational &q,const double &n) {return q.eval()/n;}
+
+rational abs(const rational &q);
+
+std::ostream& operator<<(std::ostream& os, const rational&);
+
 
 class symbolic;
-class symterm;
 class sym_vec;
 class sym_tens;
 
-enum sym_vec_type {COVARIANT,CONTRAVARIANT};
-
 class sym {
-	symterm *terms;
-	const symbolic *context;
-	symterm *addterm();
-	symterm *addterm(const symterm &);
-	void destroy();
-	void copy(const sym &);
-	sym &simplify();
-	void simplify0();
-	bool trig_simplify();
-	void trig_simplify2();
-	void add_bc(solver *op,int n,const char *type,const char *eq_name,const char *var_name,const matrix &d) const;
+	class sym_expr;
+	class symbol;
+	class sym_deriv;
+	class sym_num;
+	class sym_add;
+	class sym_prod;
+	class sym_sin;
+	class sym_cos;
+
+	symbolic *context;
+	sym_expr *expr;
+	
 public:
+	sym();
+	sym(const sym &);
+	sym(const double &);
+	~sym();
+	
+	symbolic *check_context() const;
+	symbolic *check_context(const sym &s) const;
+	symbolic *check_context(const sym_vec &s) const;
+	symbolic *check_context(const sym_tens &s) const;
+	
+	sym &operator=(const sym &);
+	friend sym operator+(const sym &,const sym &);
+	friend sym operator*(const sym &,const sym &);
+	sym &operator+=(const sym &s) {return *this=*this+s;}; 
+	sym &operator-=(const sym &s) {return *this=*this+(-1)*s;};
+	sym &operator*=(const sym &s) {return *this=*this*s;};
+	sym &operator/=(const sym &s) {return *this=*this*pow(s,-1);};
+	friend sym pow(const sym &,const rational &);
+	friend sym sin(const sym &);
+	friend sym cos(const sym &);
+	friend sym diff(const sym &,const sym &);
+	friend sym jacobian(const sym &,const sym &);
+	bool operator==(const sym &s) const;
+	inline bool operator!=(const sym &s) const {return !(*this==s);};
+
+	matrix eval() const;
+
+	friend bool sort_pair_d(const std::pair<sym_expr *,double> &,const std::pair<sym_expr *,double> &);
+	friend bool sort_pair_r(const std::pair<sym_expr *,rational> &,const std::pair<sym_expr *,rational> &);
+	friend std::ostream& operator<<(std::ostream& os, const sym::sym_expr&);
+	friend std::ostream& operator<<(std::ostream& os, const sym&);
+	
+	friend sym trig_simplify(const sym &);
+	
+	void add(solver *op,std::string eq_name,std::string var_name) const;
+	void add(solver *op,std::string eq_name,std::string var_name,const matrix &d) const;
+	void add_ex(solver *op,int n,std::string eq_name,std::string var_name) const;
+	void add_ex(solver *op,int n,std::string eq_name,std::string var_name,const matrix &d) const;
+	
+	void bc_top1_add(solver *op,int n,std::string eq_name,std::string var_name) const;
+	void bc_top2_add(solver *op,int n,std::string eq_name,std::string var_name) const;
+	void bc_bot1_add(solver *op,int n,std::string eq_name,std::string var_name) const;
+	void bc_bot2_add(solver *op,int n,std::string eq_name,std::string var_name) const;
+	void bc_top1_add(solver *op,int n,std::string eq_name,std::string var_name,const matrix &d) const;
+	void bc_top2_add(solver *op,int n,std::string eq_name,std::string var_name,const matrix &d) const;
+	void bc_bot1_add(solver *op,int n,std::string eq_name,std::string var_name,const matrix &d) const;
+	void bc_bot2_add(solver *op,int n,std::string eq_name,std::string var_name,const matrix &d) const;
+	
 	friend class symbolic;
 	friend class sym_vec;
 	friend class sym_tens;
-	sym();
-	~sym();
-	sym(const sym &);
-	void dump() const;
-	const symbolic *check_context() const;
-	const symbolic *check_context(const sym &s) const;
-	const symbolic *check_context(const sym_vec &s) const;
-	const symbolic *check_context(const sym_tens &s) const;
-	sym &operator=(const sym &);
-	sym operator+(const sym &) const;
-	sym operator+(const double) const;
-	sym operator-(const sym &) const;
-	sym operator-(const double) const;
-	friend sym operator-(const sym &);
-	sym operator*(const sym &) const;
-	sym operator*(const double) const;
-	sym operator/(const sym &) const;
-	sym operator/(const double) const;
-	friend sym operator/(const double,const sym &);
-	void write(FILE *fp=stdout) const;
-	matrix eval() const;
-	sym jacobian(const char *name,int dz,int dt) const;
-	sym jacobian_r(int dz,int dt) const;
-	void add(solver *op,const char *eq_name,const char *var_name) const;
-	void add(solver *op,const char *eq_name,const char *var_name,const matrix &d) const;
-	void add_ex(solver *op,int n,const char *eq_name,const char *var_name) const;
-	void add_ex(solver *op,int n,const char *eq_name,const char *var_name,const matrix &d) const;
-	inline void bc_top1_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"top1",eq_name,var_name,ones(1,1));};
-	inline void bc_top2_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"top2",eq_name,var_name,ones(1,1));};
-	inline void bc_bot1_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"bot1",eq_name,var_name,ones(1,1));};
-	inline void bc_bot2_add(solver *op,int n,const char *eq_name,const char *var_name) const {add_bc(op,n,"bot2",eq_name,var_name,ones(1,1));};
-	inline void bc_top1_add(solver *op,int n,const char *eq_name,const char *var_name,const matrix &d) const {add_bc(op,n,"top1",eq_name,var_name,d);};
-	inline void bc_top2_add(solver *op,int n,const char *eq_name,const char *var_name,const matrix &d) const {add_bc(op,n,"top2",eq_name,var_name,d);};
-	inline void bc_bot1_add(solver *op,int n,const char *eq_name,const char *var_name,const matrix &d) const {add_bc(op,n,"bot1",eq_name,var_name,d);};
-	inline void bc_bot2_add(solver *op,int n,const char *eq_name,const char *var_name,const matrix &d) const {add_bc(op,n,"bot2",eq_name,var_name,d);};
 };
 
-sym operator+(const double,const sym &);
-sym operator+(const sym &);
-sym operator-(const double,const sym &);
-sym operator-(const sym &);
-sym operator*(const double,const sym &);
-sym operator/(const double,const sym &);
+sym operator+(const sym &,const sym &);
+inline sym operator+(const sym &s) {return s;};
+sym operator*(const sym &,const sym &);
+inline sym operator-(const sym &s) {return (-1)*s;};
+template <class T>
+	sym operator-(const sym &s1,const T &s2) {return s1+(-s2);};
+sym pow(const sym &,const rational &);
+template <class T>
+	sym operator/(const sym &s1,const T &s2) {return s1*pow(s2,-1);};
+inline sym sqrt(const sym &s) {return pow(s,rational(1,2));};
+sym sin(const sym &);
+sym cos(const sym &);
+sym tan(const sym &);
+sym diff(const sym &,const sym &);
+sym jacobian(const sym &,const sym &);
+	
+std::ostream& operator<<(std::ostream& os, const sym&);
 
+sym trig_simplify(const sym &);
+sym_vec trig_simplify(const sym_vec &);
+sym_tens trig_simplify(const sym_tens &);
+
+enum sym_vec_type {COVARIANT,CONTRAVARIANT};
 
 class sym_vec {
 	sym s[3];
 	sym_vec_type type;
-	void set_context(const symbolic *context);
+	
+	void set_context(symbolic *context);
 public:
 	sym_vec(sym_vec_type type_set=CONTRAVARIANT);
-	const symbolic *check_context() const;
-	const symbolic *check_context(const sym &s) const;
-	const symbolic *check_context(const sym_vec &s) const;
-	const symbolic *check_context(const sym_tens &s) const;
+	
+	symbolic *check_context() const;
+	symbolic *check_context(const sym &s) const;
+	symbolic *check_context(const sym_vec &s) const;
+	symbolic *check_context(const sym_tens &s) const;
+	
+	bool is_covariant();
+	bool is_contravariant();
+	void set_type(sym_vec_type);
 	sym_vec set_variance(const sym_vec &) const;
 	sym_vec set_variance(sym_vec_type) const;
 	sym &operator()(int);
@@ -91,157 +183,146 @@ public:
 	sym operator,(const sym_vec &) const;
 	sym_vec operator,(const sym_tens &) const;
 	sym_vec operator+(const sym_vec &) const;
-	sym_vec operator-(const sym_vec &) const;
 	friend sym_vec operator-(const sym_vec &v);
 	sym_vec operator*(const sym &) const;
-	sym_vec operator*(double) const;
 	sym_vec operator/(const sym &) const;
-	sym_vec operator/(double) const;
 	friend sym_vec cross(const sym_vec &,const sym_vec &);
 	friend sym_tens tensor(const sym_vec &,const sym_vec &);
 	sym D(const sym &) const;
-	sym_vec D(const sym_vec &) const;
-	bool is_covariant();
-	bool is_contravariant();
-	void set_type(sym_vec_type);
+	sym_vec D(const sym_vec &) const;	
+		
 	friend class symbolic;
+	friend class sym;
 	friend class sym_tens;
 };
-sym_vec operator+(const sym_vec &v);
+inline sym_vec operator+(const sym_vec &v) {return v;};
 sym_vec operator-(const sym_vec &v);
-sym_vec operator*(const sym &,const sym_vec &);
-sym_vec operator*(double,const sym_vec &);
+inline sym_vec operator-(const sym_vec &v,const sym_vec &w) {return v+(-w);};
+inline sym_vec operator*(const sym &s,const sym_vec &v) {return v*s;};
 sym_vec cross(const sym_vec &,const sym_vec &);
 sym_tens tensor(const sym_vec &,const sym_vec &);
+
+std::ostream& operator<<(std::ostream& os, const sym_vec&);
 
 class sym_tens {
 	sym s[3][3];
 	sym_vec_type type[2];
-	void set_context(const symbolic *context);
+	
+	void set_context(symbolic *context);
 public:
 	sym_tens(sym_vec_type type_set0=CONTRAVARIANT,sym_vec_type type_set1=CONTRAVARIANT);
-	const symbolic *check_context() const;
-	const symbolic *check_context(const sym &s) const;
-	const symbolic *check_context(const sym_vec &s) const;
-	const symbolic *check_context(const sym_tens &s) const;
+	
+	symbolic *check_context() const;
+	symbolic *check_context(const sym &s) const;
+	symbolic *check_context(const sym_vec &s) const;
+	symbolic *check_context(const sym_tens &s) const;
+	
+	bool is_covariant(int);
+	bool is_contravariant(int);
+	void set_type(sym_vec_type,sym_vec_type);
 	sym_tens set_variance(const sym_tens &) const;
 	sym_tens set_variance(sym_vec_type,sym_vec_type) const;
 	sym &operator()(int,int);
 	sym operator()(int,int) const;
-	sym_tens operator+(const sym_tens &) const;
-	sym_tens operator-(const sym_tens &) const;
-	friend sym_tens operator-(const sym_tens &v);
-	friend sym_tens tensor(const sym_vec &,const sym_vec &);
-	sym_tens operator*(const sym &) const;
-	sym_tens operator*(double) const;
-	sym_tens operator/(const sym &) const;
-	sym_tens operator/(double) const;
 	sym_vec operator,(const sym_vec &) const;
 	sym_tens operator,(const sym_tens &) const;
+	sym_tens operator+(const sym_tens &) const;
+	friend sym_tens operator-(const sym_tens &v);
+	sym_tens operator*(const sym &) const;
+	sym_tens operator/(const sym &) const;
+	friend sym_tens tensor(const sym_vec &,const sym_vec &);
 	sym operator%(const sym_tens &) const;
 	sym_tens T() const;
-	bool is_covariant(int);
-	bool is_contravariant(int);
-	void set_type(sym_vec_type,sym_vec_type);
+	
 	friend class symbolic;
-	friend class sym_vec;
-};
-
-sym_tens operator+(const sym_tens &v);
-sym_tens operator-(const sym_tens &v);
-sym_tens operator*(const sym &,const sym_tens &);
-sym_tens operator*(double,const sym_tens &);
-
-class symterm {
-		int nvar,maxder;
-		double num;
-		int **r;
-		int cost,sint;
-		int ***var;
-		symterm *next;
-		symterm(const symbolic *context);
-		symterm(const symterm &);
-		~symterm();
-		bool operator==(const symterm &) const;
-		symterm operator*(const symterm &) const;
-		symterm operator/(const symterm &) const;
-		void dump() const;
-		friend sym operator-(const sym &);
-		friend class sym;
-		friend class symbolic;
-};
-
-class symbolic {
-	int nvar,maxder;	
-	sym _r,_sint,_cost,_one,_sqrt_g;
-	sym_tens _g,_g_;
-	char **var_name;
-	matrix *var_value;
-	int *var_par;
-	bool *is_const;
-	mapping map;
-	int id(const char *name) const;
-	void write_term(const symterm &t,FILE *) const;
-	void format_deriv(char *str,int dz,int dt,int par) const;
-	void write_var(FILE *fp,const char *str,int n) const;
-	matrix eval(const symterm &t) const;
-	void eval_deriv(matrix &,int dz,int dt,int par) const;
-	matrix eval_var(const matrix &,int n) const;
-	sym d(const sym &,int) const; 
-	inline sym G(int i,int j,int k) const {return christoffel(i,j,k);};
-public:
-	sym_tens &g,&g_;
-	sym &sqrt_g;
-	double tol;
-	const sym &r,&sint,&cost,&one;
-	symbolic(int n_var,int max_der);
-	~symbolic();
-	sym regvar(const char *name);
-	sym regconst(const char *name);
-	void set_value(const char *name,const matrix &value,int parity=0);
-	void set_map(const mapping &map);
-	sym var(const char *name) const;
-	sym Dz(const sym &) const;
-	sym Dt(const sym &) const;
-	sym_vec contravariant(const sym_vec &) const;
-	sym_vec covariant(const sym_vec &) const;
-	sym_tens contravariant_contravariant(const sym_tens &) const;
-	sym_tens contravariant_covariant(const sym_tens &) const;
-	sym_tens covariant_contravariant(const sym_tens &) const;
-	sym_tens covariant_covariant(const sym_tens &) const;
-	sym_vec gradient(const sym &) const;
-	sym_tens gradient(const sym_vec &) const;
-	sym christoffel(int,int,int) const;
-	sym covderiv(const sym_vec &,int,int) const;
-	sym divergence(const sym_vec &v) const;
-	sym_vec divergence(const sym_tens &t) const;
-	sym laplacian(const sym &s) const;
-	double perm(int i,int j,int k) const;
-	sym_vec curl(const sym_vec &v) const;
-	sym_vec laplacian(const sym_vec &v) const;
-	sym spherical(const sym &s) const;
-	sym_vec spherical(const sym_vec &s) const;
-	sym_tens spherical(const sym_tens &s) const;
-	sym_tens stress(const sym_vec &v) const;
 	friend class sym;
 	friend class sym_vec;
-	friend class sym_tens;
-	friend class symterm;
-
 };
 
-inline sym Dz(const sym &s) {return s.check_context()->Dz(s);};
-inline sym Dt(const sym &s) {return s.check_context()->Dt(s);};
-sym DzDt(const sym &);
-sym Dz(const sym &,int);
-sym Dt(const sym &,int);
-sym DzDt(const sym &,int,int);
+inline sym_tens operator+(const sym_tens &v) {return v;};
+sym_tens operator-(const sym_tens &v);
+inline sym_tens operator-(const sym_tens &v,const sym_tens &w) {return v+(-w);};
+inline sym_tens operator*(const sym &s,const sym_tens &v) {return v*s;};
+
+std::ostream& operator<<(std::ostream& os, const sym_tens&);
+
+class symbolic {
+	std::map<std::string,sym::symbol> vars;
+	std::map<std::string,matrix> val;
+	std::map<std::string,int> par;
+	mapping map;
+	sym one_;
+	int maxder;
+	inline sym d(const sym &s,int k) {return diff(s,x[k]);}; 
+	inline sym G(int i,int j,int k) {return christoffel(i,j,k);};
+	
+	void add(const sym &s,solver *op,int n,std::string type,
+			std::string eq_name,std::string var_name,const matrix &d);
+	void add_bc(const sym &s,solver *op,int n,std::string type,
+				std::string eq_name,std::string var_name,const matrix &d);
+
+public:
+	sym r,zeta,theta,phi,sqrt_g;
+	sym rz,rt,rzz,rzt,rtt;
+	sym_tens g,g_;
+	sym x[3];
+	static double tol;
+	static bool expand_products;
+	static bool trig_simplify;
+	static bool axisymmetric;
+	static bool spherical;
+	static double round_to_tol(double);
+	const sym &one;
+	symbolic();
+	~symbolic() {};
+	void init();
+	sym regvar(const std::string &name);
+	sym regconst(const std::string &name);
+	sym regvar_indep(const std::string &name);
+	sym var(const std::string &name);
+	
+	void set_value(const char *name,const matrix &value,int parity=0);
+	void set_map(const mapping &map);
+	
+	sym::sym_expr *derive(const sym::sym_expr &,const sym::symbol &); 
+	matrix get_value(const sym::sym_expr &);
+	
+	sym Dz(const sym &);
+	sym Dt(const sym &);
+	sym Dphi(const sym &);
+	sym det(const sym_tens &);
+	sym_tens inv(const sym_tens &);
+	
+	sym_vec contravariant(const sym_vec &);
+	sym_vec covariant(const sym_vec &);
+	sym_tens contravariant_contravariant(const sym_tens &);
+	sym_tens contravariant_covariant(const sym_tens &);
+	sym_tens covariant_contravariant(const sym_tens &);
+	sym_tens covariant_covariant(const sym_tens &);
+
+	double perm(int i,int j,int k);
+	
+	sym_vec gradient(const sym &);
+	sym christoffel(int,int,int);
+	sym covderiv(const sym_vec &,int,int);
+	sym_tens gradient(const sym_vec &);
+	sym divergence(const sym_vec &v);
+	sym_vec divergence(const sym_tens &t);
+	sym laplacian(const sym &s);
+	sym_vec curl(const sym_vec &v);
+	sym_vec laplacian(const sym_vec &v);
+	sym_tens stress(const sym_vec &v);
+
+	friend class sym;
+};
+
 inline sym_vec contravariant(const sym_vec &s) {return s.check_context()->contravariant(s);};
 inline sym_vec covariant(const sym_vec &s) {return s.check_context()->covariant(s);};
 inline sym_tens contravariant_contravariant(const sym_tens &s) {return s.check_context()->contravariant_contravariant(s);};
 inline sym_tens contravariant_covariant(const sym_tens &s) {return s.check_context()->contravariant_covariant(s);};
 inline sym_tens covariant_contravariant(const sym_tens &s) {return s.check_context()->covariant_contravariant(s);};
 inline sym_tens covariant_covariant(const sym_tens &s) {return s.check_context()->covariant_covariant(s);};
+
 inline sym_vec grad(const sym &s) {return s.check_context()->gradient(s);};
 inline sym_tens grad(const sym_vec &v) {return v.check_context()->gradient(v);};
 inline sym div(const sym_vec &v) {return v.check_context()->divergence(v);};
@@ -249,11 +330,152 @@ inline sym_vec div(const sym_tens &t) {return t.check_context()->divergence(t);}
 inline sym lap(const sym &s) {return s.check_context()->laplacian(s);};
 inline sym_vec curl(const sym_vec &v) {return v.check_context()->curl(v);};
 inline sym_vec lap(const sym_vec &v) {return v.check_context()->laplacian(v);};
-inline sym spherical(const sym &s) {return s.check_context()->spherical(s);};
-inline sym_vec spherical(const sym_vec &v) {return v.check_context()->spherical(v);};
-inline sym_tens spherical(const sym_tens &t) {return t.check_context()->spherical(t);};
 inline sym_tens stress(const sym_vec &v) {return v.check_context()->stress(v);};
 
+inline sym Dz(const sym &s) {return s.check_context()->Dz(s);};
+inline sym Dt(const sym &s) {return s.check_context()->Dt(s);};
+inline sym Dphi(const sym &s) {return s.check_context()->Dphi(s);};
 
+
+// Abstract node type
+class sym::sym_expr {
+public:
+	virtual ~sym_expr() {};
+	virtual int order() const=0;
+	virtual sym_expr *clone() const=0;
+	virtual sym_expr *reduce() {return this;};
+	virtual sym_expr *derive(const sym_expr &)=0;
+	virtual int comp(const sym_expr &s) const=0; // 1 if this>s, 0 if this==s, -1 if this<s
+	virtual matrix eval() const=0;
+	virtual std::ostream &print(std::ostream&) const=0;
+	bool operator>(const sym_expr &s) const {return this->comp(s)==1;};
+	bool operator<(const sym_expr &s) const {return this->comp(s)==-1;};
+	bool operator==(const sym_expr &s) const {return this->comp(s)==0;};
+	bool operator>=(const sym_expr &s) const {return this->comp(s)!=-1;};
+	bool operator<=(const sym_expr &s) const {return this->comp(s)!=1;};
+	bool operator!=(const sym_expr &s) const {return this->comp(s)!=0;};
+	sym_expr *add(const sym_expr &);
+	sym_expr *mult(const sym_expr &);
+	sym_expr *pow(const rational &);
+	sym_expr *sin();
+	sym_expr *cos();
+};
+
+std::ostream& operator<<(std::ostream& os, const sym::sym_expr&);
+
+// Node types
+
+class sym::sym_num: public sym_expr {
+public:
+	int order() const {return 0;};
+	double value;
+	sym_num() {};
+	sym_num(const double &);
+	sym_num *clone() const;
+	int comp(const sym_expr &) const;
+	sym_expr *reduce();
+	sym_expr *derive(const sym_expr &);
+	matrix eval() const;
+	std::ostream &print(std::ostream&) const;
+};
+
+class sym::symbol: public sym_expr {
+public:
+	int order() const {return 1;};
+	std::string name;
+	bool is_const,is_indep;
+	symbolic *context;
+	symbol *clone() const;
+	int comp(const sym_expr &) const;
+	sym_expr *derive(const sym_expr &);
+	matrix eval() const;
+	std::ostream &print(std::ostream&) const;
+};
+
+class sym::sym_deriv: public sym_expr {
+public:
+	sym_deriv() {};
+	~sym_deriv();
+	sym_deriv(const sym_deriv &);
+	int order() const {return 2;};
+	symbolic *context;
+	sym_expr *oper;
+	symbol var;
+	sym_deriv *clone() const;
+	int comp(const sym_expr &) const;
+	sym_expr *reduce();
+	sym_expr *derive(const sym_expr &);
+	static sym_deriv *create(sym_expr *,const symbol &);
+	matrix eval() const;
+	std::ostream &print(std::ostream&) const;
+};
+	
+class sym::sym_add: public sym_expr {
+public:
+	int order() const {return 3;};
+	std::vector<std::pair<sym_expr *,double> > oper;
+	sym_add() {};
+	sym_add(const sym_add &);
+	~sym_add();
+	sym_add *clone() const;
+	int comp(const sym_expr &) const;
+	sym_expr *reduce();
+	sym_expr *derive(const sym_expr &);
+	matrix eval() const;
+	std::ostream &print(std::ostream&) const;
+	static sym_add *create(sym_expr *,sym_expr *);
+	sym_expr *multiply(const sym_add &);
+	sym_expr *power(int n);
+};
+
+class sym::sym_prod: public sym_expr {
+public:
+	int order() const {return 4;};
+	std::vector<std::pair<sym_expr *,rational> > oper;
+	sym_prod() {};
+	sym_prod(const sym_prod &);
+	~sym_prod();
+	sym_prod *clone() const;
+	int comp(const sym_expr &) const;
+	sym_expr *reduce();
+	sym_expr *derive(const sym_expr &);
+	matrix eval() const;
+	std::ostream &print(std::ostream&) const;
+	static sym_prod *create(sym_expr *,sym_expr *);
+	static sym_prod *create_pow(sym_expr *,const rational &);
+};
+
+bool sort_pair_d(const std::pair<sym::sym_expr *,double> &,const std::pair<sym::sym_expr *,double> &);
+bool sort_pair_r(const std::pair<sym::sym_expr *,rational> &,const std::pair<sym::sym_expr *,rational> &);
+
+class sym::sym_sin: public sym_expr {
+public:
+	int order() const {return 5;};
+	sym_expr *oper;
+	sym_sin() {};
+	~sym_sin();
+	sym_sin(const sym_sin &);
+	sym_sin *clone() const;
+	int comp(const sym_expr &) const;
+	sym_expr *derive(const sym_expr &);
+	matrix eval() const;
+	std::ostream &print(std::ostream&) const;
+	static sym_sin *create(sym_expr *);
+};
+
+class sym::sym_cos: public sym_expr {
+public:
+	int order() const {return 6;};
+	sym_expr *oper;
+	sym_cos() {};
+	~sym_cos();
+	sym_cos(const sym_cos &);
+	sym_cos *clone() const;
+	int comp(const sym_expr &) const;
+	sym_expr *derive(const sym_expr &);
+	matrix eval() const;
+	std::ostream &print(std::ostream&) const;
+	static sym_cos *create(sym_expr *);
+};
 
 #endif

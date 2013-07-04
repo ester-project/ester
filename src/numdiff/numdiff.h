@@ -13,7 +13,7 @@ class diff_gl {
   	double *xif;
   	const int &ndomains,&N;
   	
-  	diff_gl(int n=1);
+  	explicit diff_gl(int n=1);
   	~diff_gl();
   	diff_gl(const diff_gl &);
   	diff_gl &operator=(const diff_gl &);

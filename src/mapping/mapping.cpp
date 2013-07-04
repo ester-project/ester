@@ -6,7 +6,7 @@
 mapping::mapping():ex(this), 
 			nr(gl.N),nt(leg.npts),ndomains(gl.ndomains),nex(ex.gl.N),eta(eta_),npts(gl.npts),
 			D(gl.D),Dt(leg.D_00),Dt2(leg.D2_00),Dt_11(leg.D_11),Dt2_11(leg.D2_11),Dt_01(leg.D_01),
-			Dt2_01(leg.D2_01),Dt_10(leg.D_10),Dt2_10(leg.D2_10),z(gl.x),th(leg.th) {
+			Dt2_01(leg.D2_01),Dt_10(leg.D_10),Dt2_10(leg.D2_10),z(gl.x),th(leg.th),I(gl.I),It(leg.I_00) {
 
 	ex.gl.set_ndomains(1);
 	ex.gl.set_xif(0.,1.);
@@ -21,7 +21,7 @@ mapping::~mapping() {}
 mapping::mapping(const mapping &map):ex(this),
 		nr(gl.N),nt(leg.npts),ndomains(gl.ndomains),nex(ex.gl.N),eta(eta_),npts(gl.npts),
 		D(gl.D),Dt(leg.D_00),Dt2(leg.D2_00),Dt_11(leg.D_11),Dt2_11(leg.D2_11),Dt_01(leg.D_01),
-		Dt2_01(leg.D2_01),Dt_10(leg.D_10),Dt2_10(leg.D2_10),z(gl.x),th(leg.th) {
+		Dt2_01(leg.D2_01),Dt_10(leg.D_10),Dt2_10(leg.D2_10),z(gl.x),th(leg.th),I(gl.I),It(leg.I_00) {
 
 	copy(map);
 

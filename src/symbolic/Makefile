@@ -1,4 +1,4 @@
-SRC=symbolic.cpp sym.cpp
+SRC=symbolic.cpp sym.cpp sym_vec.cpp sym_tens.cpp sym_expr.cpp rational.cpp
 SRC_H=symbolic.h
 DEPS=matrix.h mapping.h solver.h
 

@@ -14,7 +14,7 @@ class figure {
 	int draw_state;
 	int draw_colorbar;
 public:
-	figure(const char *device="/NULL");
+	explicit figure(const char *device="/NULL");
 	~figure();
 	void plot(const matrix &x,const matrix &y,const char *line="");
 	void plot(const matrix &y,const char *line="");

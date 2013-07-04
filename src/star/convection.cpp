@@ -4,7 +4,7 @@
 
 /*
 #define KCONV_COMMON				\
-	symbolic S(4,2);				\
+	symbolic S;				\
 	sym a_,b_;						\
 	matrix kc,Ja,Jb;				\
 	kconv_common(kc,Ja,Jb,S,a_,b_);	\
@@ -59,7 +59,7 @@ matrix star2d::kconv() const {
 
 	double alpha=1;
 
-	symbolic S(9,1);
+	symbolic S;
 	sym p_;
 	sym Hp_2_;
 	

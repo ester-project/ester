@@ -33,7 +33,7 @@ class solver_full: public solver_operator {
 	void fwd_subs(matrix &);
 	void back_subs(matrix &);
 public:
-	solver_full(int nblocks,int offcore=0);
+	explicit solver_full(int nblocks,int offcore=0);
 	~solver_full();
 	void set_block(int iblock,matrix &);
 	void set_blocksup(int iblock,matrix &);

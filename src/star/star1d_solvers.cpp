@@ -54,7 +54,7 @@ DEBUG_FUNCNAME
 		var_nr[i]=map.gl.npts[i];
 	op->set_nr(var_nr);
 
-	op->regvar("phi");
+	op->regvar("Phi");
 	op->regvar("log_p");
 	op->regvar_dep("p");
 	op->regvar("pi_c");
@@ -131,7 +131,7 @@ DEBUG_FUNCNAME
 	
 	matrix dphi,dp,dT,dpc,dTc,dRi;
 	
-	dphi=op->get_var("phi");
+	dphi=op->get_var("Phi");
 	err=max(abs(dphi/phi));
 
 	dp=op->get_var("log_p");
@@ -236,43 +236,43 @@ DEBUG_FUNCNAME
 	int n,j0;
 	matrix rhs;
 
-	op->add_l("phi","phi",ones(nr,1),(D,D));	
-	op->add_l("phi","phi",2./r,D);
-	op->add_d("phi","rho",-pi_c*ones(nr,1));
-	op->add_d("phi","pi_c",-rho);
+	op->add_l("Phi","Phi",ones(nr,1),(D,D));	
+	op->add_l("Phi","Phi",2./r,D);
+	op->add_d("Phi","rho",-pi_c*ones(nr,1));
+	op->add_d("Phi","pi_c",-rho);
 	
-	op->add_d("phi","r",-2./r/r*(D,phi));
-	op->add_d("phi","rz",-2.*(D,D,phi)-2./r*(D,phi));
+	op->add_d("Phi","r",-2./r/r*(D,phi));
+	op->add_d("Phi","rz",-2.*(D,D,phi)-2./r*(D,phi));
 	
 	rhs=-(D,D,phi)-2/r*(D,phi)+rho*pi_c;
 
 	j0=0;
 	for(n=0;n<ndomains;n++) {
 		if(!n) {
-			op->bc_bot2_add_l(n,"phi","phi",ones(1,1),D.block(0).row(0));
+			op->bc_bot2_add_l(n,"Phi","Phi",ones(1,1),D.block(0).row(0));
 			rhs(0)=-(D,phi)(0);
 		} else {
-			op->bc_bot2_add_l(n,"phi","phi",ones(1,1),D.block(n).row(0));
-			op->bc_bot1_add_l(n,"phi","phi",-ones(1,1),D.block(n-1).row(-1));
+			op->bc_bot2_add_l(n,"Phi","Phi",ones(1,1),D.block(n).row(0));
+			op->bc_bot1_add_l(n,"Phi","Phi",-ones(1,1),D.block(n-1).row(-1));
 			
-			op->bc_bot2_add_d(n,"phi","rz",-(D,phi).row(j0));
-			op->bc_bot1_add_d(n,"phi","rz",(D,phi).row(j0-1));
+			op->bc_bot2_add_d(n,"Phi","rz",-(D,phi).row(j0));
+			op->bc_bot1_add_d(n,"Phi","rz",(D,phi).row(j0-1));
 			
 			rhs(j0)=-(D,phi)(j0)+(D,phi)(j0-1);
 		}
 		if(n==ndomains-1) {
-			op->bc_top1_add_l(n,"phi","phi",ones(1,1),D.block(n).row(-1));
-			op->bc_top1_add_d(n,"phi","phi",ones(1,1));
-			op->bc_top1_add_d(n,"phi","rz",-(D,phi).row(-1));
+			op->bc_top1_add_l(n,"Phi","Phi",ones(1,1),D.block(n).row(-1));
+			op->bc_top1_add_d(n,"Phi","Phi",ones(1,1));
+			op->bc_top1_add_d(n,"Phi","rz",-(D,phi).row(-1));
 			rhs(-1)=-phi(-1)-(D,phi)(-1);
 		} else {
-			op->bc_top1_add_d(n,"phi","phi",ones(1,1));
-			op->bc_top2_add_d(n,"phi","phi",-ones(1,1));
+			op->bc_top1_add_d(n,"Phi","Phi",ones(1,1));
+			op->bc_top2_add_d(n,"Phi","Phi",-ones(1,1));
 			rhs(j0+map.gl.npts[n]-1)=-phi(j0+map.gl.npts[n]-1)+phi(j0+map.gl.npts[n]);
 		}
 		j0+=map.gl.npts[n];
 	}
-	op->set_rhs("phi",rhs);
+	op->set_rhs("Phi",rhs);
 }
 
 void star1d::solve_pressure(solver *op) {
@@ -286,7 +286,7 @@ DEBUG_FUNCNAME
 	
 	op->add_l(eqn,"p",ones(nr,1),D);	
 	op->add_d(eqn,"rho",(D,phi));
-	op->add_l(eqn,"phi",rho,D);
+	op->add_l(eqn,"Phi",rho,D);
 	
 	rhs_p=-(D,p)-rho*(D,phi);
 	rhs_pi_c=zeros(ndomains,1);
@@ -397,7 +397,7 @@ DEBUG_FUNCNAME
 	
 	rhs_T=zeros(nr,1);
 
-	symbolic S(2+env_convec*3,2);
+	symbolic S;
 	sym T_,xi_;
 	sym div_Frad;
 	
@@ -612,7 +612,7 @@ DEBUG_FUNCNAME
 		n=conv;
 		op->reset(n,"Ri");
 		
-		symbolic S(2,1);
+		symbolic S;
 		sym p_,s_,eq;
 		p_=S.regvar("p");
 		s_=S.regvar("s");
@@ -643,7 +643,7 @@ DEBUG_FUNCNAME
 	op->bc_top1_add_d(n,"gsup","log_R",g);
 
 	q=-pc/R/rhoc*ones(1,1);
-	op->bc_top1_add_l(n,"gsup","phi",q,D.block(n).row(-1));
+	op->bc_top1_add_l(n,"gsup","Phi",q,D.block(n).row(-1));
 	
 	q=(D,phi);
 	op->bc_top1_add_d(n,"gsup","rz",pc/R/rhoc*q.row(-1));
@@ -732,7 +732,7 @@ DEBUG_FUNCNAME
 	y[i]=zeros(nr,1);
 	
 	
-	i=op->get_id("phi");
+	i=op->get_id("Phi");
 	y[i]=zeros(nr,1);
 	y[i]=B.phi-phi;
 	i=op->get_id("p");

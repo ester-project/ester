@@ -1,610 +1,303 @@
 #include"symbolic.h"
-#include<stdlib.h>
-#include<string.h>
+#include<cstdlib>
+#include<cmath>
+#include<typeinfo>
 
-symterm::symterm(const symbolic *context) {
+double symbolic::tol=1e-14;
+bool symbolic::expand_products=true;
+bool symbolic::trig_simplify=false;
+bool symbolic::axisymmetric=true;
+bool symbolic::spherical=false;
 
-	nvar=context->nvar;
-	maxder=context->maxder;
-	next=NULL;
-	num=0;
-	sint=0;
-	cost=0;
-	r=new int*[maxder+2];
-	for(int i=0;i<maxder+2;i++) {
-		r[i]=new int[maxder+2-i];
-		for(int j=0;j<maxder+2-i;j++) r[i][j]=0;
-	}
-	var=new int**[nvar];
-	for(int n=0;n<nvar;n++) {
-		var[n]=new int*[maxder+1];
-		for(int i=0;i<maxder+1;i++) {
-			var[n][i]=new int[maxder+1-i];
-			for(int j=0;j<maxder+1-i;j++) var[n][i][j]=0;
-		}
-	}
-}
-
-symterm::symterm(const symterm &t) {
+symbolic::symbolic():one(one_),one_(sym(1)) {
+	one_.context=this;
+	r=regvar("r");
+	zeta=regvar_indep("zeta");
+	theta=regvar_indep("theta");
+	phi=regvar_indep("phi");
 	
-	nvar=t.nvar;
-	maxder=t.maxder;
-	next=NULL;
-	num=t.num;
-	sint=t.sint;
-	cost=t.cost;
-	r=new int*[maxder+2];
-	for(int i=0;i<maxder+2;i++) {
-		r[i]=new int[maxder+2-i];
-		for(int j=0;j<maxder+2-i;j++) r[i][j]=t.r[i][j];
-	}
-	var=new int**[nvar];
-	for(int n=0;n<nvar;n++) {
-		var[n]=new int*[maxder+1];
-		for(int i=0;i<maxder+1;i++) {
-			var[n][i]=new int[maxder+1-i];
-			for(int j=0;j<maxder+1-i;j++) var[n][i][j]=t.var[n][i][j];
-		}
-	}
-}
-
-symterm::~symterm() {
-
-	for(int i=0;i<maxder+2;i++) delete [] r[i];
-	delete [] r;
-	for(int n=0;n<nvar;n++) {
-		for(int i=0;i<maxder+1;i++) delete [] var[n][i];
-		delete [] var[n];
-	}
-	delete [] var;
-
-}
-
-bool symterm::operator==(const symterm &t) const {
-
-	for(int i=0;i<maxder+2;i++) 
-		for(int j=0;j<maxder+2-i;j++) 
-			if(r[i][j]!=t.r[i][j]) return false;
-	if(sint!=t.sint) return false;
-	if(cost!=t.cost) return false;
-	for(int n=0;n<nvar;n++) 
-		for(int i=0;i<maxder+1;i++) 
-			for(int j=0;j<maxder+1-i;j++) 
-				if(var[n][i][j]!=t.var[n][i][j]) return false;
-
-	return true;
-}
-
-symterm symterm::operator*(const symterm &t) const {
-
-	symterm tnew(*this);
+	x[0]=zeta;
+	x[1]=theta;
+	x[2]=phi;
 	
-	tnew.num=num*t.num;
-	for(int i=0;i<maxder+2;i++) 
-		for(int j=0;j<maxder+2-i;j++) 
-			tnew.r[i][j]=r[i][j]+t.r[i][j];
-	tnew.sint=sint+t.sint;
-	tnew.cost=cost+t.cost;
-	for(int n=0;n<nvar;n++) 
-		for(int i=0;i<maxder+1;i++) 
-			for(int j=0;j<maxder+1-i;j++) 
-				tnew.var[n][i][j]=var[n][i][j]+t.var[n][i][j];
-	
-	return tnew;
-
-}
-
-symterm symterm::operator/(const symterm &t)  const {
-
-	symterm tnew(*this);
-	
-	tnew.num=num/t.num;
-	for(int i=0;i<maxder+2;i++) 
-		for(int j=0;j<maxder+2-i;j++) 
-			tnew.r[i][j]=r[i][j]-t.r[i][j];
-	tnew.sint=sint-t.sint;
-	tnew.cost=cost-t.cost;
-	for(int n=0;n<nvar;n++) 
-		for(int i=0;i<maxder+1;i++) 
-			for(int j=0;j<maxder+1-i;j++) 
-				tnew.var[n][i][j]=var[n][i][j]-t.var[n][i][j];
-	
-	return tnew;
-
-}
-
-void symterm::dump() const {
-
-	printf("\tnum\t: %f\n",num);
-	printf("\tr\t: ");
-	for(int i=0;i<maxder+2;i++) 
-		for(int j=0;j<maxder+2-i;j++) printf("[%d%d] %d ",i,j,r[i][j]);
-	printf("\n");
-	printf("\tsint\t: %d\n",sint);
-	printf("\tcost\t: %d\n",cost);
-	for(int n=0;n<nvar;n++) {
-		printf("\t(%d)\t: ",n);
-		for(int i=0;i<maxder+1;i++) 
-			for(int j=0;j<maxder+1-i;j++) printf("[%d%d] %d ",i,j,var[n][i][j]);
-		printf("\n");
+	if(spherical) {
+		rz=1*one;
+		rt=0*one;
+		rzz=0*one;
+		rzt=0*one;
+		rtt=0*one;
+	} else {
+		rz=regvar("rz");
+		rt=regvar("rt");
+		rzz=regvar("rzz");
+		rzt=regvar("rzt");
+		rtt=regvar("rtt");
 	}
 	
+	g(0,0)=1/Dz(r)/Dz(r)+Dt(r)*Dt(r)/r/r/Dz(r)/Dz(r);
+	g(0,1)=-Dt(r)/r/r/Dz(r);
+	g(1,0)=g(0,1);
+	g(1,1)=1/r/r;
+	g(2,2)=1/r/r/sin(theta)/sin(theta);
+	g(0,2)=g(2,0)=g(1,2)=g(2,1)=0*one;
+	g.set_type(CONTRAVARIANT,CONTRAVARIANT);
+	
+	g_(0,0)=Dz(r)*Dz(r);
+	g_(0,1)=Dt(r)*Dz(r);
+	g_(1,0)=g_(0,1);
+	g_(1,1)=r*r+Dt(r)*Dt(r);
+	g_(2,2)=r*r*sin(theta)*sin(theta);
+	g_(0,2)=g_(2,0)=g_(1,2)=g_(2,1)=0*one;
+	g_.set_type(COVARIANT,COVARIANT);
+	
+	sqrt_g=r*r*Dz(r)*sin(theta);
+	
+	maxder=0;
 }
 
-symbolic::symbolic(int n_var,int max_der): r(_r),sint(_sint),cost(_cost),one(_one),
-				_g(CONTRAVARIANT,CONTRAVARIANT), _g_(COVARIANT,COVARIANT), g(_g),g_(_g_),sqrt_g(_sqrt_g) {
+void symbolic::init() {
+	
+	sqrt_g=1/sqrt(det(g));
+	g_=inv(g);
 
-	if(!n_var) {
-		fprintf(stderr,"Symbolic: nvar must be greater than zero\n");
+}
+
+double symbolic::round_to_tol(double value) {
+
+	if(tol==0) return value;
+// Round to nearest integer if the difference is less than symbolic::tol
+	if(fabs(value-round(value))<tol) return round(value);
+// Check also small fractions
+	for(int i=2;i<=10;i++) 
+		if(fabs(i*value-round(i*value))/i<tol) 
+			return round(i*value)/i;
+	return value;
+
+}
+
+sym symbolic::regvar(const std::string &name) {
+
+	if(name=="") {
+		std::cerr<<"Symbolic: Invalid name"<<std::endl;
 		exit(1);
 	}
-
-	nvar=n_var;
-	maxder=max_der;
-	tol=1e-14;
 	
-	var_name=new char*[nvar];
-	var_value=new matrix[nvar];
-	var_par=new int[nvar];
-	is_const=new bool[nvar];
-	for(int i=0;i<nvar;i++) {
-		var_name[i]=new char[32];
-		var_name[i][0]='\0';
-		var_par[i]=0;
-		is_const[i]=false;
-	}
-	
-	symterm *t;
-	
-	_r.context=this;
-	t=_r.addterm();
-	t->r[0][0]=1;
-	t->num=1;
-	
-	_sint.context=this;
-	t=_sint.addterm();
-	t->sint=1;
-	t->num=1;
-	
-	_cost.context=this;
-	t=_cost.addterm();
-	t->cost=1;
-	t->num=1;
-	
-	_one.context=this;
-	t=_one.addterm();
-	t->num=1;
-	
-	_g.set_context(this);
-	_g(0,0)=(r*r+Dt(r)*Dt(r))/r/r/Dz(r)/Dz(r);
-	_g(0,1)=-Dt(r)/r/r/Dz(r);
-	_g(1,0)=g(0,1);
-	_g(1,1)=1/r/r;
-	_g(2,2)=1/r/r/sint/sint;
-	
-	_g_.set_context(this);
-	_g_(0,0)=Dz(r)*Dz(r);
-	_g_(0,1)=Dz(r)*Dt(r);
-	_g_(1,0)=g_(0,1);
-	_g_(1,1)=r*r+Dt(r)*Dt(r);
-	_g_(2,2)=r*r*sint*sint;
-	
-	_sqrt_g=r*r*Dz(r)*sint;
-	
-	
-}
-
-symbolic::~symbolic() {
-	
-	for(int i=0;i<nvar;i++) 
-		delete [] var_name[i];
-	delete [] var_name;
-	delete [] var_value;
-	delete [] var_par;
-	delete [] is_const;
-
-}
-
-sym symbolic::regvar(const char *name) {
-
-	if(name[0]=='\0') {
-		fprintf(stderr,"Symbolic: Invalid name\n");
+	if(vars.count(name)) {
+		std::cerr<<"Symbolic: Can't register variable \""<<name<<"\" (already registered)"<<std::endl;
 		exit(1);
 	}
-	if(!strcmp(name,"r")) {
-		fprintf(stderr,"Symbolic: Variable name \"r\" is reserved\n");
-		exit(1);
-	}
-	int i=0;
-	while(var_name[i][0]!='\0') {
-		if(!strcmp(var_name[i],name)) {
-			fprintf(stderr,"Symbolic: Can't register variable (already registered)\n");
-			exit(1);
-		}
-		i++;
-		if(i==nvar) {
-			fprintf(stderr,"Symbolic: Can't register variable (increase nvar)\n");
-			exit(1);
-		}
-	}
-	strncpy(var_name[i],name,31);
+	
+	vars[name]=sym::symbol();
+	vars[name].name=name;
+	vars[name].context=this;
+	vars[name].is_const=false;
+	vars[name].is_indep=false;
 	
 	return var(name);
 
 }
 
-sym symbolic::regconst(const char *name) {
+sym symbolic::regconst(const std::string &name) {
 
-	sym s;
-	s=regvar(name);
-	is_const[id(name)]=true;
-	
-	return s;
+	regvar(name);
+	vars[name].is_const=true;
+	return var(name);
 
 }
 
-int symbolic::id(const char *name) const {
+sym symbolic::regvar_indep(const std::string &name) {
 
-	if(name[0]=='\0') {
-		fprintf(stderr,"Symbolic: Invalid name\n");
+	regvar(name);
+	vars[name].is_indep=true;
+	return var(name);
+
+}
+
+
+sym symbolic::var(const std::string &name) {
+
+	if(!vars.count(name)) {
+		std::cerr<<"Symbolic: Unknown variable \""<<name<<"\"\n";
 		exit(1);
 	}
-	
-	if(!strcmp(name,"r")) return -1;	
-	
-	int i=0;
-	while(strcmp(var_name[i],name)) {
-		i++;
-		if(i==nvar) {
-			fprintf(stderr,"Symbolic: Unknown variable \"%s\"\n",name);
-			exit(1);
-		}
-	}
-	return i;
 
-}
-
-sym symbolic::var(const char *name) const {
-
-	int i=id(name);
-	
 	sym s;
-	
-	if(i==-1) {
-		s=r;
-		return s;
-	}
-	
-	symterm *t;
-	
 	s.context=this;
-	t=s.addterm();
-	t->var[i][0][0]=1;
-	t->num=1;
-
+	delete s.expr;
+	s.expr=vars.find(name)->second.clone();
+	
 	return s;
-
-}
-
-void symbolic::set_map(const mapping &map_set) {
-
-	map=map_set;
-
 }
 
 void symbolic::set_value(const char *name,const matrix &value,int parity) {
 
-	int i=id(name);
-	if(i==-1) {
-		fprintf(stderr,"Symbolic: Can't assign value to variable \"r\", use set_map instead\n");
+	if(!vars.count(name)) {
+		std::cerr<<"Symbolic: Unknown variable \""<<name<<"\"\n";
 		exit(1);
 	}
-	var_value[i]=value;
-	if(parity!=0&&parity!=1&&parity!=10&&parity!=11) {
-		fprintf(stderr,"Symbolic: Unknown parity %d\n",parity);
-		exit(1);
-	}
-	var_par[i]=parity;
+	
+	val[name]=value;
+	par[name]=parity;
 
 }
 
-void symbolic::write_term(const symterm &t,FILE *fp) const {
-	
-	char str[64];
-	
-	fprintf(fp,"%+f",t.num);
-	for(int i=0;i<maxder+2;i++) {
-		for(int j=0;j<maxder+2-i;j++) {
-			if(t.r[i][j]) {
-				if(i==0&&j==0) strcpy(str,"r");
-				else if(i==1&&j==0) strcpy(str,"rz");
-				else if(i==2&&j==0) strcpy(str,"rzz");
-				else if(i==0&&j==1) strcpy(str,"rt");
-				else if(i==0&&j==2) strcpy(str,"rtt");
-				else if(i==1&&j==1) strcpy(str,"rzt");
-				else {
-					int i2,j2;
-					if(i==0) { strcpy(str,"rtt");i2=0;j2=j-2; }
-					if(i==1) { strcpy(str,"rz");i2=0;j2=j; }
-					if(i>=2) { strcpy(str,"rzz");i2=i-2;j2=j; }
-					format_deriv(str,i2,j2,00);
-				}
-				write_var(fp,str,t.r[i][j]);
-			}
-		}
-	}
-	if(t.sint) write_var(fp,"sin(th)",t.sint);
-	if(t.cost) write_var(fp,"cos(th)",t.cost);
-	for(int n=0;n<nvar;n++) {
-		for(int i=0;i<maxder+1;i++) {
-			for(int j=0;j<maxder+1-i;j++) {
-				if(t.var[n][i][j]) {
-					strcpy(str,var_name[n]);
-					format_deriv(str,i,j,var_par[n]);
-					write_var(fp,str,t.var[n][i][j]);
-				}
-			}
-		}
-	}
-	
-}
+void symbolic::set_map(const mapping &map_) {
 
-void symbolic::format_deriv(char *str,int dz,int dt,int par) const {
-
-	if(dz==0&&dt==0) return;
-	char prefix[64],suffix[32];
-	
-	strcpy(prefix,"(");
-	for(int i=0;i<dz;i++) strcat(prefix,"D,");
-	
-	char Dt2[16],Dt[16];
-	if(par==00) { strcpy(Dt2,"Dt2");strcpy(Dt,"Dt"); }
-	if(par==01) { strcpy(Dt2,"leg.D2_01");strcpy(Dt,"leg.D_01"); }
-	if(par==10) { strcpy(Dt2,"leg.D2_10");strcpy(Dt,"leg.D_10"); }
-	if(par==11) { strcpy(Dt2,"leg.D2_11");strcpy(Dt,"leg.D_11"); }
-	suffix[0]='\0';
-	for(int i=0;i<dt/2;i++) { strcat(suffix,",");strcat(suffix,Dt2);}
-	if(dt%2) { strcat(suffix,",");strcat(suffix,Dt);}
-	strcat(suffix,")");
-
-	strcat(prefix,str);
-	strcpy(str,prefix);
-	strcat(str,suffix);
-	
-}
-
-void symbolic::write_var(FILE *fp,const char *str,int n) const {
-
-	if(n>3) fprintf(fp,"*pow(%s,%d)",str,n);
-	else if(n<-3) fprintf(fp,"/pow(%s,%d)",str,-n);
-	else if(n>0) 
-		for(int i=0;i<n;i++) fprintf(fp,"*%s",str);
-	else if(n<0) 
-		for(int i=0;i<-n;i++) fprintf(fp,"/%s",str);
+	map=map_;
+	val["zeta"]=map.z*ones(map.nr,map.nt);
+	par["zeta"]=00;
+	val["theta"]=map.th*ones(map.nr,map.nt);
+	par["theta"]=-1;
+	val["r"]=map.r;
+	par["r"]=00;
+	val["rz"]=map.rz;
+	par["rz"]=00;
+	val["rt"]=map.rt;
+	par["rt"]=11;
+	val["rzz"]=map.rzz;
+	par["rzz"]=00;
+	val["rzt"]=map.rzt;
+	par["rzt"]=11;
+	val["rtt"]=map.rtt;
+	par["rtt"]=00;
 
 }
 
-matrix symbolic::eval(const symterm &t) const {
-	
-	matrix res,m;
+sym::sym_expr *symbolic::derive(const sym::sym_expr &f,const sym::symbol &x) {
+// To be called by sym_deriv::derive() and symbol::derive(), to set maxder and return special symbols for some
+// derivatives: rz,rt,rzz,rzt,rtt
 
-	res=t.num*ones(1,1);
-	
-	for(int i=0;i<maxder+2;i++) {
-		for(int j=0;j<maxder+2-i;j++) {
-			if(t.r[i][j]) {
-				if(i==0&&j==0) m=map.r;
-				else if(i==1&&j==0) m=map.rz;
-				else if(i==2&&j==0) m=map.rzz;
-				else if(i==0&&j==1) m=map.rt;
-				else if(i==0&&j==2) m=map.rtt;
-				else if(i==1&&j==1) m=map.rzt;
-				else {
-					int i2,j2;
-					if(i==0) { m=map.rtt;i2=0;j2=j-2; }
-					if(i==1) { m=map.rz;i2=0;j2=j; }
-					if(i>=2) { m=map.rzz;i2=i-2;j2=j; }
-					eval_deriv(m,i2,j2,00);
-				}
-				res*=eval_var(m,t.r[i][j]);
+	if(f==vars["r"]) {
+		if(x==vars["zeta"]) {
+			if(spherical) return new sym::sym_num(1);
+			return vars["rz"].clone();
+		}
+		if(x==vars["theta"]) {
+			if(spherical) return new sym::sym_num(0);
+			return vars["rt"].clone();
+		}
+		if(x==vars["phi"]) {
+			return new sym::sym_num(0);
+		}
+		return NULL;
+	}
+	if(!spherical) {
+		if(f==vars["rz"]) {
+			if(x==vars["zeta"]) {
+				maxder=maxder>1?maxder:1;
+				return vars["rzz"].clone();
 			}
+			if(x==vars["theta"]) {
+				maxder=maxder>1?maxder:1;
+				return vars["rzt"].clone();
+			}
+			if(x==vars["phi"]) {
+				return new sym::sym_num(0);
+			}
+			return NULL;
+		}
+		if(f==vars["rt"]) {
+			if(x==vars["zeta"]) {
+				maxder=maxder>1?maxder:1;
+				return vars["rzt"].clone();
+			}
+			if(x==vars["theta"]) {
+				maxder=maxder>1?maxder:1;
+				return vars["rtt"].clone();
+			}
+			if(x==vars["phi"]) {
+				return new sym::sym_num(0);
+			}
+			return NULL;
 		}
 	}
-	if(t.sint) res*=eval_var(sin(map.th)*ones(map.gl.N,1),t.sint);
-	if(t.cost) res*=eval_var(cos(map.th)*ones(map.gl.N,1),t.cost);
-	for(int n=0;n<nvar;n++) {
-		for(int i=0;i<maxder+1;i++) {
-			for(int j=0;j<maxder+1-i;j++) {
-				if(t.var[n][i][j]) {
-					m=var_value[n];
-					eval_deriv(m,i,j,var_par[n]);
-					res*=eval_var(m,t.var[n][i][j]);
-				}
-			}
-		}
+	if(axisymmetric) 
+		if(x==vars["phi"]) return new sym::sym_num(0);
+	
+	int der=1;
+	
+	const sym::sym_expr *s=&f;
+	
+	while(typeid(*s)==typeid(sym::sym_deriv)) {
+		s=((sym::sym_deriv *)s)->oper;
+		der++;
+	}
+	maxder=maxder>der?maxder:der;
+	
+	return NULL;
+
+}
+
+matrix symbolic::get_value(const sym::sym_expr &s) {
+
+	if(typeid(s)==typeid(sym::symbol)) {
+		return val[((sym::symbol *)&s)->name];
 	}
 	
+	if(typeid(s)==typeid(sym::sym_deriv)) {
+		int ndr=0,ndt=0;
+		const sym::sym_expr *s1=&s;
+		while(typeid(*s1)==typeid(sym::sym_deriv)) {
+			if(((sym::sym_deriv *)s1)->var==vars["zeta"]) ndr++;
+			if(((sym::sym_deriv *)s1)->var==vars["theta"]) ndt++;
+			if(((sym::sym_deriv *)s1)->var==vars["phi"]) return zeros(map.nr,map.nt);
+			s1=((sym::sym_deriv *)s1)->oper;
+		}
+		matrix_block_diag pre(eye(map.D));
+		matrix post(eye(map.nt));
+		std::string name=((sym::symbol *)s1)->name;
+		matrix dt,dt2;
+		switch (par[name]) {
+			case 00: dt=map.Dt;dt2=map.Dt2;break;
+			case 01: dt=map.Dt_01;dt2=map.Dt2_01;break;
+			case 10: dt=map.Dt_10;dt2=map.Dt2_10;break;
+			case 11: dt=map.Dt_11;dt2=map.Dt2_11;break;
+		}
+		for(int i=0;i<ndr;i++) pre=(pre,map.D);
+		for(int i=0;i<ndt/2;i++) post=(post,dt2);
+		if(ndt%2) post=(post,dt);
+		return (pre,val[name],post);
+	}
+	
+	return zeros(map.nr,map.nt);
+
+}
+
+sym symbolic::Dz(const sym &s) {
+	return diff(s,zeta);
+}
+sym symbolic::Dt(const sym &s) {
+	return diff(s,theta);
+}
+sym symbolic::Dphi(const sym &s) {
+	return diff(s,phi);
+}
+
+sym symbolic::det(const sym_tens &g) {
+	sym res=0;
+	for(int i=0;i<3;i++) {
+		res+=g(0,i)*g(1,(i+1)%3)*g(2,(i+2)%3);
+		res-=g(0,i)*g(1,(i+2)%3)*g(2,(i+1)%3);
+	}
 	return res;
 }
 
-void symbolic::eval_deriv(matrix &m,int dz,int dt,int par) const {
-
-	if(dz==0&&dt==0) return;
-	matrix_block_diag pre;
-	matrix post;
+sym_tens symbolic::inv(const sym_tens &g) {
 	
-	pre=eye(map.D);
-	for(int i=0;i<dz;i++) pre=(map.D,pre);
-	
-	matrix Dt2,Dt;
-	if(par==00) { Dt2=map.leg.D2_00;Dt=map.leg.D_00; }
-	if(par==01) { Dt2=map.leg.D2_01;Dt=map.leg.D_01; }
-	if(par==10) { Dt2=map.leg.D2_10;Dt=map.leg.D_10; }
-	if(par==11) { Dt2=map.leg.D2_11;Dt=map.leg.D_11; }
-	post=eye(map.leg.npts);
-	for(int i=0;i<dt/2;i++) post=(post,Dt2);
-	if(dt%2) post=(post,Dt);
-	
-	m=(pre,m,post);
-	
-}
-
-matrix symbolic::eval_var(const matrix &m,int n) const {
-
-	matrix res;
-	
-	res=ones(m.nrows(),m.ncols());
-
-	if(n>3||n<-3) res=pow(m,n);
-	else if(n>0) 
-		for(int i=0;i<n;i++) res*=m;
-	else if(n<0) 
-		for(int i=0;i<-n;i++) res/=m;
-		
-	return res;
-
-}
-
-sym symbolic::Dz(const sym &s) const {
-
-	sym snew;
-	snew.context=s.context;
-	
-	int maxder=s.context->maxder;
-	int nvar=s.context->nvar;
-	
-	symterm *t,*tnew;
-	
-	t=s.terms;
-	while(t!=NULL) {
-		for(int i=0;i<maxder+2;i++) {
-			for(int j=0;j<maxder+2-i;j++) {
-				if(t->r[i][j]!=0) {
-					if(i==maxder+1||j==maxder+1-i) {
-						fprintf(stderr,"WARNING: Symbolic: Maximum order of derivative exceeded (increase maxder)\n");
-						continue;
-					}
-					tnew=snew.addterm(*t);
-					tnew->num*=tnew->r[i][j];
-					tnew->r[i][j]--;
-					tnew->r[i+1][j]++;
-				}
-			}
+	sym_tens h;
+	sym d;
+	d=det(g);
+	for(int i=0;i<3;i++)
+		for(int j=0;j<3;j++) {
+			h(i,j)=( g((j+1)%3,(i+1)%3)*g((j+2)%3,(i+2)%3) - g((j+2)%3,(i+1)%3)*g((j+1)%3,(i+2)%3) )/d;
 		}
-		for(int n=0;n<nvar;n++) {
-			for(int i=0;i<maxder+1;i++) {
-				for(int j=0;j<maxder-i+1;j++) {
-					if(t->var[n][i][j]!=0&&!is_const[n]) {
-						if(i==maxder||j==maxder-i) {
-							fprintf(stderr,"WARNING: Symbolic: Maximum order of derivative exceeded (increase maxder)\n");
-							continue;
-						}	
-						tnew=snew.addterm(*t);
-						tnew->num*=tnew->var[n][i][j];
-						tnew->var[n][i][j]--;
-						tnew->var[n][i+1][j]++;
-					}
-				}
-			}
-		}
-		t=t->next;
-	}
 	
-	return snew.simplify();
-
-}
-
-sym symbolic::Dt(const sym &s) const {
-
-	sym snew;
-	snew.context=s.context;
 	
-	int maxder=s.context->maxder;
-	int nvar=s.context->nvar;
-	
-	symterm *t,*tnew;
-	
-	t=s.terms;
-	while(t!=NULL) {
-		for(int i=0;i<maxder+2;i++) {
-			for(int j=0;j<maxder+2-i;j++) {
-				if(t->r[i][j]!=0) {
-					if(i==maxder+1||j==maxder+1-i) {
-						fprintf(stderr,"WARNING: Symbolic: Maximum order of derivative exceeded (increase maxder)\n");
-						continue;
-					}
-					tnew=snew.addterm(*t);
-					tnew->num*=tnew->r[i][j];
-					tnew->r[i][j]--;
-					tnew->r[i][j+1]++;
-				}
-			}
-		}
-		if(t->sint!=0) {
-			tnew=snew.addterm(*t);
-			tnew->num*=tnew->sint;
-			tnew->sint--;
-			tnew->cost++;
-		}
-		if(t->cost!=0) {
-			tnew=snew.addterm(*t);
-			tnew->num*=-tnew->cost;
-			tnew->cost--;
-			tnew->sint++;
-		}
-		for(int n=0;n<nvar;n++) {
-			for(int i=0;i<maxder+1;i++) {
-				for(int j=0;j<maxder+1-i;j++) {
-					if(t->var[n][i][j]!=0&&!is_const[n]) {
-						if(i==maxder||j==maxder-i) {
-							fprintf(stderr,"WARNING: Symbolic: Maximum order of derivative exceeded (increase maxder)\n");
-							continue;
-						}
-						tnew=snew.addterm(*t);
-						tnew->num*=tnew->var[n][i][j];
-						tnew->var[n][i][j]--;
-						tnew->var[n][i][j+1]++;
-					}
-				}
-			}
-		}
-		t=t->next;
-	}
-
-	return snew.simplify();
-
+	return h;
 }
 
 
-sym DzDt(const sym &s) {
-	
-	return DzDt(s,1,1);
-
-}
-
-sym Dz(const sym &s,int n) {
-
-	return DzDt(s,n,0);
-
-}
-sym Dt(const sym &s,int n) {
-
-	return DzDt(s,0,n);
-
-}
-
-sym DzDt(const sym &s,int nz,int nt) {
-
-	sym snew(s);
-
-	for(int i=0;i<nz;i++) snew=Dz(snew);
-	for(int i=0;i<nt;i++) snew=Dt(snew);
-	
-	return snew;
-			
-}
-
-sym_vec symbolic::contravariant(const sym_vec &s) const {
+sym_vec symbolic::contravariant(const sym_vec &s){
 
 	if(s.type==CONTRAVARIANT) return s;
 	
@@ -617,7 +310,7 @@ sym_vec symbolic::contravariant(const sym_vec &s) const {
 
 }
 
-sym_vec symbolic::covariant(const sym_vec &s) const {
+sym_vec symbolic::covariant(const sym_vec &s) {
 
 	if(s.type==COVARIANT) return s;
 	
@@ -630,7 +323,7 @@ sym_vec symbolic::covariant(const sym_vec &s) const {
 
 }
 
-sym_tens symbolic::contravariant_contravariant(const sym_tens &s) const {
+sym_tens symbolic::contravariant_contravariant(const sym_tens &s) {
 
 	sym_tens snew(s),s2(s);
 	snew.set_type(CONTRAVARIANT,CONTRAVARIANT);
@@ -651,7 +344,7 @@ sym_tens symbolic::contravariant_contravariant(const sym_tens &s) const {
 
 }
 
-sym_tens symbolic::contravariant_covariant(const sym_tens &s) const {
+sym_tens symbolic::contravariant_covariant(const sym_tens &s) {
 
 	sym_tens snew(s),s2(s);
 	snew.set_type(CONTRAVARIANT,COVARIANT);
@@ -672,7 +365,7 @@ sym_tens symbolic::contravariant_covariant(const sym_tens &s) const {
 
 }
 
-sym_tens symbolic::covariant_contravariant(const sym_tens &s) const {
+sym_tens symbolic::covariant_contravariant(const sym_tens &s) {
 
 	sym_tens snew(s),s2(s);
 	snew.set_type(COVARIANT,CONTRAVARIANT);
@@ -693,7 +386,7 @@ sym_tens symbolic::covariant_contravariant(const sym_tens &s) const {
 
 }
 
-sym_tens symbolic::covariant_covariant(const sym_tens &s) const {
+sym_tens symbolic::covariant_covariant(const sym_tens &s) {
 
 	sym_tens snew(s),s2(s);
 	snew.set_type(COVARIANT,COVARIANT);
@@ -714,63 +407,27 @@ sym_tens symbolic::covariant_covariant(const sym_tens &s) const {
 
 }
 
-sym symbolic::spherical(const sym &s) const {
+double symbolic::perm(int i,int j,int k) {
 
-	sym snew(s);
-	symterm *t;
-	
-
-	for(t=snew.terms;t!=NULL;t=t->next) {
-		for(int i=0;i<maxder+2;i++) 
-			for(int j=0;j<maxder+2-i;j++) {
-				if(i||j) {
-					if(i==1&&j==0) t->r[i][j]=0;
-					else {
-						if(t->r[i][j]) t->num=0;
-					}
-				}
-			}
-	}
-	
-	return snew.simplify();
+	if(j==(i+1)%3&&k==(j+1)%3) return 1;
+	if(j==(i+2)%3&&k==(j+2)%3) return -1;
+	return 0;
 
 }
 
-sym_vec symbolic::spherical(const sym_vec &s) const {
+sym_vec symbolic::gradient(const sym &s) {
 
-	sym_vec snew(s);
+	sym_vec grad(COVARIANT);
+	grad.set_context(this);
 	
-	for(int i=0;i<3;i++)
-		snew(i)=spherical(s(i));
+	grad(0)=diff(s,x[0]);
+	grad(1)=diff(s,x[1]);
+	grad(2)=diff(s,x[2]);
 
-	return snew;
+	return grad;
 }
 
-sym_tens symbolic::spherical(const sym_tens &s) const {
-
-	sym_tens snew(s);
-	
-	for(int i=0;i<3;i++)
-		for(int j=0;j<3;j++)
-			snew(i,j)=spherical(s(i,j));
-
-	return snew;
-
-}
-
-
-sym symbolic::d(const sym &s,int i) const {
-
-	switch(i) {
-		case 0: return Dz(s);
-		case 1: return Dt(s);
-	}
-	
-	return 0*one;
-
-}
-
-sym symbolic::christoffel(int i,int j,int k) const {
+sym symbolic::christoffel(int i,int j,int k) {
 	
 	sym G;
 	G.context=this;
@@ -781,7 +438,7 @@ sym symbolic::christoffel(int i,int j,int k) const {
 	return G*0.5;	
 }
 
-sym symbolic::covderiv(const sym_vec &v,int i,int k) const {
+sym symbolic::covderiv(const sym_vec &v,int i,int k) {
 
 	sym dv(d(v(i),k));
 
@@ -795,19 +452,7 @@ sym symbolic::covderiv(const sym_vec &v,int i,int k) const {
 
 }
 
-sym_vec symbolic::gradient(const sym &s) const {
-
-	sym_vec grad(COVARIANT);
-	grad.set_context(this);
-	
-	grad(0)=Dz(s);
-	grad(1)=Dt(s);
-	grad(2)=0*one;
-
-	return grad;
-}
-
-sym_tens symbolic::gradient(const sym_vec &v) const {
+sym_tens symbolic::gradient(const sym_vec &v) {
 
 	sym_tens grad(v.type,COVARIANT);
 	grad.set_context(this);
@@ -819,7 +464,7 @@ sym_tens symbolic::gradient(const sym_vec &v) const {
 	return grad;
 }
 
-sym symbolic::divergence(const sym_vec &v) const {
+sym symbolic::divergence(const sym_vec &v) {
 
 	sym s;
 	sym_vec V;
@@ -836,7 +481,7 @@ sym symbolic::divergence(const sym_vec &v) const {
 
 }
 
-sym_vec symbolic::divergence(const sym_tens &t) const {
+sym_vec symbolic::divergence(const sym_tens &t) {
 
 	sym_vec v(CONTRAVARIANT);
 	sym_tens T;
@@ -854,21 +499,13 @@ sym_vec symbolic::divergence(const sym_tens &t) const {
 
 }
 
-sym symbolic::laplacian(const sym &s) const {
+sym symbolic::laplacian(const sym &s){
 
 	return divergence(gradient(s));
 
 }
 
-double symbolic::perm(int i,int j,int k) const {
-
-	if(j==(i+1)%3&&k==(j+1)%3) return 1;
-	if(j==(i+2)%3&&k==(j+2)%3) return -1;
-	return 0;
-
-}
-
-sym_vec symbolic::curl(const sym_vec &v) const {
+sym_vec symbolic::curl(const sym_vec &v) {
 
 	sym_vec res(CONTRAVARIANT),V;
 	res.set_context(this);
@@ -886,13 +523,13 @@ sym_vec symbolic::curl(const sym_vec &v) const {
 }
 
 
-sym_vec symbolic::laplacian(const sym_vec &v) const {
+sym_vec symbolic::laplacian(const sym_vec &v) {
 
 	return (div(grad(v))).set_variance(v);
 
 }
 
-sym_tens symbolic::stress(const sym_vec &v) const {
+sym_tens symbolic::stress(const sym_vec &v) {
 
 	sym_tens t;
 	
@@ -904,7 +541,139 @@ sym_tens symbolic::stress(const sym_vec &v) const {
 }
 
 
+void symbolic::add(const sym &expr,solver *op,int n,std::string type,
+				std::string eq_name,std::string var_name,const matrix &d) {
 
+	sym y=var(var_name);	
+	int der=maxder;
+	if(var_name=="r") der++;
+		
+	matrix dt,dt2;
+	switch (par[var_name]) {
+		case 00: dt=map.Dt;dt2=map.Dt2;break;
+		case 01: dt=map.Dt_01;dt2=map.Dt2_01;break;
+		case 10: dt=map.Dt_10;dt2=map.Dt2_10;break;
+		case 11: dt=map.Dt_11;dt2=map.Dt2_11;break;
+	}
+	
+	for(int i=0;i<=der;i++) {
+		for(int j=0;j<=der-i;j++) {
+			sym dy=y;
+			for(int k=0;k<i;k++) dy=Dz(dy);
+			for(int k=0;k<j;k++) dy=Dt(dy);
+			sym jac=jacobian(expr,dy);
+			if(jac!=0) {
+				matrix_block_diag pre(eye(map.D));
+				matrix post(eye(map.nt));	
+				for(int k=0;k<i;k++) pre=(map.D,pre);
+				for(int k=0;k<j/2;k++) post=(post,dt2);	
+				if(j%2) post=(post,dt);
+				matrix q=d*jac.eval()*ones(map.nr,map.nt);
+				if(type=="ex") {
+					if(i==0&&j==0) op->add_d(n,eq_name.c_str(),var_name.c_str(),q);
+					else if(j==0) op->add_l(n,eq_name.c_str(),var_name.c_str(),q,pre.block(0));
+					else if(i==0) op->add_r(n,eq_name.c_str(),var_name.c_str(),q,post);
+					else op->add_lr(n,eq_name.c_str(),var_name.c_str(),q,pre.block(0),post);
+				} else {
+					if(i==0&&j==0) op->add_d(eq_name.c_str(),var_name.c_str(),q);
+					else if(j==0) op->add_l(eq_name.c_str(),var_name.c_str(),q,pre);
+					else if(i==0) op->add_r(eq_name.c_str(),var_name.c_str(),q,post);
+					else op->add_lr(eq_name.c_str(),var_name.c_str(),q,pre,post);
+				}
+			}
+		}
+	}	
+
+}
+
+
+void symbolic::add_bc(const sym &expr,solver *op,int n,std::string type,
+				std::string eq_name,std::string var_name,const matrix &d) {
+	
+	
+	sym y=var(var_name);	
+	int der=maxder;
+	if(var_name=="r") der++;
+		
+	matrix dt,dt2;
+	switch (par[var_name]) {
+		case 00: dt=map.Dt;dt2=map.Dt2;break;
+		case 01: dt=map.Dt_01;dt2=map.Dt2_01;break;
+		case 10: dt=map.Dt_10;dt2=map.Dt2_10;break;
+		case 11: dt=map.Dt_11;dt2=map.Dt2_11;break;
+	}
+			
+	int j0=0;
+	for(int i=0;i<n;i++) {
+		j0+=map.npts[i];
+	}
+	if(type=="top1") j0+=map.npts[n]-1;
+	if(type=="top2") j0+=map.npts[n];
+	if(type=="bot1") j0--;
+	
+	void (solver::*add_d) (int,const char *,const char *,const matrix &);
+	void (solver::*add_l) (int,const char *,const char *,const matrix &,const matrix &);
+	void (solver::*add_r) (int,const char *,const char *,const matrix &,const matrix &);
+	void (solver::*add_lr) (int,const char *,const char *,const matrix &,const matrix &,const matrix &);
+	
+	if(type=="top1") {
+		add_d=&solver::bc_top1_add_d;
+		add_l=&solver::bc_top1_add_l;
+		add_r=&solver::bc_top1_add_r;
+		add_lr=&solver::bc_top1_add_lr;
+	}
+	if(type=="top2") {
+		add_d=&solver::bc_top2_add_d;
+		add_l=&solver::bc_top2_add_l;
+		add_r=&solver::bc_top2_add_r;
+		add_lr=&solver::bc_top2_add_lr;
+	}
+	if(type=="bot1") {
+		add_d=&solver::bc_bot1_add_d;
+		add_l=&solver::bc_bot1_add_l;
+		add_r=&solver::bc_bot1_add_r;
+		add_lr=&solver::bc_bot1_add_lr;
+	}
+	if(type=="bot2") {
+		add_d=&solver::bc_bot2_add_d;
+		add_l=&solver::bc_bot2_add_l;
+		add_r=&solver::bc_bot2_add_r;
+		add_lr=&solver::bc_bot2_add_lr;
+	}
+	
+	matrix D;
+	if(type=="top1") D=map.D.block(n);
+	if(type=="top2") D=map.D.block(n+1);
+	if(type=="bot1") D=map.D.block(n-1);
+	if(type=="bot2") D=map.D.block(n);
+	
+	
+	for(int i=0;i<=der;i++) {
+		for(int j=0;j<=der-i;j++) {
+			sym dy=y;
+			for(int k=0;k<i;k++) dy=Dz(dy);
+			for(int k=0;k<j;k++) dy=Dt(dy);
+			sym jac=jacobian(expr,dy);
+			if(jac!=0) {
+				matrix pre(eye(D.nrows()));
+				matrix post(eye(map.nt));	
+				for(int k=0;k<i;k++) pre=(D,pre);
+				if(type=="top1") pre=pre.row(-1);
+				if(type=="top2") pre=pre.row(0);
+				if(type=="bot1") pre=pre.row(-1);
+				if(type=="bot2") pre=pre.row(0);
+				for(int k=0;k<j/2;k++) post=(post,dt2);	
+				if(j%2) post=(post,dt);
+				matrix q=d*(jac.eval()*ones(map.nr,map.nt)).row(j0);
+				if(i==0&&j==0) (op->*add_d)(n,eq_name.c_str(),var_name.c_str(),q);
+				else if(j==0) (op->*add_l)(n,eq_name.c_str(),var_name.c_str(),q,pre);
+				else if(i==0) (op->*add_r)(n,eq_name.c_str(),var_name.c_str(),q,post);
+				else (op->*add_lr)(n,eq_name.c_str(),var_name.c_str(),q,pre,post);
+			}
+		}
+	}	
+				
+}
 
 
 

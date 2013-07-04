@@ -80,7 +80,7 @@ DEBUG_FUNCNAME
 	var_nr[ndomains]=nex;
 	op->set_nr(var_nr);
 
-	op->regvar("phi");
+	op->regvar("Phi");
 	op->regvar_dep("p");
 	op->regvar("log_p");
 	op->regvar("pi_c");
@@ -169,8 +169,8 @@ DEBUG_FUNCNAME
 	dmax=config.newton_dmax;
 	
 	matrix dphi,dphiex,dp,dT,dpc,dTc;
-	dphi=op->get_var("phi").block(0,nr-1,0,-1);
-	dphiex=op->get_var("phi").block(nr,nr+nex-1,0,-1);
+	dphi=op->get_var("Phi").block(0,nr-1,0,-1);
+	dphiex=op->get_var("Phi").block(nr,nr+nex-1,0,-1);
 	err=max(abs(dphi/phi));
 	//printf("err(phi)=%e\n",err);
 	dp=op->get_var("p");
@@ -286,34 +286,34 @@ DEBUG_FUNCNAME
 	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
 		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
 	
-	symbolic S(1,2);
+	symbolic S;
 	sym lap_phi;
 	{
 		sym phi;
-		phi=S.regvar("phi");
+		phi=S.regvar("Phi");
 		lap_phi=lap(phi);
 	}
 
 	
-	S.set_value("phi",phi);
+	S.set_value("Phi",phi);
 	S.set_map(map);
 	
-	lap_phi.add(op,"phi","phi");
-	lap_phi.add(op,"phi","r");
+	lap_phi.add(op,"Phi","Phi");
+	lap_phi.add(op,"Phi","r");
 
 	rhs1=-lap_phi.eval()+pi_c*rho;
 	
 	//rho
-	op->add_d("phi","rho",-pi_c*ones(nr,nth));
+	op->add_d("Phi","rho",-pi_c*ones(nr,nth));
 
 	//pi_c
-	op->add_d("phi","pi_c",-rho);
+	op->add_d("Phi","pi_c",-rho);
 
 	// phiex
-	S.set_value("phi",phiex);
+	S.set_value("Phi",phiex);
 	S.set_map(map.ex);
-	lap_phi.add_ex(op,ndomains,"phi","phi");
-	lap_phi.add_ex(op,ndomains,"phi","r");
+	lap_phi.add_ex(op,ndomains,"Phi","Phi");
+	lap_phi.add_ex(op,ndomains,"Phi","r");
 	
 	rhs2=-lap_phi.eval();
 	
@@ -324,25 +324,25 @@ DEBUG_FUNCNAME
 	j0=0;
 	for(n=0;n<ndomains+1;n++) {
 		if(!n) {
-			op->bc_bot2_add_l(n,"phi","phi",ones(1,nth),D.block(0).row(0));
+			op->bc_bot2_add_l(n,"Phi","Phi",ones(1,nth),D.block(0).row(0));
 			rhs.setrow(0,-(D,phi).row(0));
 		} else {
-			if(n<ndomains) op->bc_bot2_add_l(n,"phi","phi",1/rz.row(j0),D.block(n).row(0));
-			else op->bc_bot2_add_l(n,"phi","phi",1/map.ex.rz.row(0),Dex.row(0));
-			op->bc_bot1_add_l(n,"phi","phi",-1/rz.row(j0-1),D.block(n-1).row(-1));
+			if(n<ndomains) op->bc_bot2_add_l(n,"Phi","Phi",1/rz.row(j0),D.block(n).row(0));
+			else op->bc_bot2_add_l(n,"Phi","Phi",1/map.ex.rz.row(0),Dex.row(0));
+			op->bc_bot1_add_l(n,"Phi","Phi",-1/rz.row(j0-1),D.block(n-1).row(-1));
 			
 			if(n<ndomains) 
-				op->bc_bot2_add_d(n,"phi","rz",-1/rz.row(j0)/rz.row(j0)*(D,phi).row(j0));
+				op->bc_bot2_add_d(n,"Phi","rz",-1/rz.row(j0)/rz.row(j0)*(D,phi).row(j0));
 			else
-				op->bc_bot2_add_d(n,"phi","rz",-1/map.ex.rz.row(0)/map.ex.rz.row(0)*(Dex,phiex).row(0));
-			op->bc_bot1_add_d(n,"phi","rz",1/rz.row(j0-1)/rz.row(j0-1)*(D,phi).row(j0-1));
+				op->bc_bot2_add_d(n,"Phi","rz",-1/map.ex.rz.row(0)/map.ex.rz.row(0)*(Dex,phiex).row(0));
+			op->bc_bot1_add_d(n,"Phi","rz",1/rz.row(j0-1)/rz.row(j0-1)*(D,phi).row(j0-1));
 			
 			if(n<ndomains) rhs.setrow(j0,-(D,phi).row(j0)/rz.row(j0)+(D,phi).row(j0-1)/rz.row(j0-1));
 			else rhs.setrow(j0,-(Dex,phiex).row(0)/map.ex.rz.row(0)+(D,phi).row(j0-1)/rz.row(j0-1));
 		}
 		
-		op->bc_top1_add_d(n,"phi","phi",ones(1,nth));
-		if(n<ndomains) op->bc_top2_add_d(n,"phi","phi",-ones(1,nth));
+		op->bc_top1_add_d(n,"Phi","Phi",ones(1,nth));
+		if(n<ndomains) op->bc_top2_add_d(n,"Phi","Phi",-ones(1,nth));
 		if(n<ndomains) rhs.setrow(j0+map.gl.npts[n]-1,-phi.row(j0+map.gl.npts[n]-1));
 		else rhs.setrow(nr+nex-1,-phiex.row(nex-1));
 		if(n<ndomains-1) rhs.setrow(j0+map.gl.npts[n]-1,rhs.row(j0+map.gl.npts[n]-1)
@@ -352,13 +352,13 @@ DEBUG_FUNCNAME
 		
 		if(n<ndomains) j0+=map.gl.npts[n];
 	}
-	op->set_rhs("phi",rhs);
+	op->set_rhs("Phi",rhs);
 }
 
 void star2d::solve_mov(solver *op) {
 DEBUG_FUNCNAME
 	static bool eqinit=false;
-	static symbolic S(5,2);
+	static symbolic S;
 	static sym eq_vort,eq_phi,bc,ic_w;
 	static sym_vec eqmov;
 	
@@ -371,7 +371,7 @@ DEBUG_FUNCNAME
 		G=S.regvar("G");
 		w=S.regvar("w");
 		rho=S.regvar("rho");
-		phi=S.regvar("phi");
+		phi=S.regvar("Phi");
 		
 		#ifdef KINEMATIC_VISC
 			mu=rho;
@@ -381,8 +381,8 @@ DEBUG_FUNCNAME
 		
 		sym_vec V,phivec(COVARIANT),svec;
 		sym s;
-		phivec(0)=0*S.one;phivec(1)=0*S.one;phivec(2)=S.r*S.sint;
-		s=S.r*S.sint;
+		phivec(0)=0*S.one;phivec(1)=0*S.one;phivec(2)=S.r*sin(S.theta);
+		s=S.r*sin(S.theta);
 		svec=grad(s);
 		V=curl(G*phivec)/rho;
 		
@@ -407,7 +407,7 @@ DEBUG_FUNCNAME
 	S.set_value("G",G,11);
 	S.set_value("w",w);
 	S.set_value("rho",rho);
-	S.set_value("phi",phi);
+	S.set_value("Phi",phi);
 	S.set_map(map);
 	
 	op->add_d("p","log_p",p);
@@ -415,7 +415,7 @@ DEBUG_FUNCNAME
 	eqmov(0).add(op,"log_p","p");
 	eqmov(0).add(op,"log_p","w");
 	eqmov(0).add(op,"log_p","rho");
-	eqmov(0).add(op,"log_p","phi");
+	eqmov(0).add(op,"log_p","Phi");
 	eqmov(0).add(op,"log_p","r");
 	op->set_rhs("log_p",-eqmov(0).eval());
 	
@@ -459,11 +459,11 @@ DEBUG_FUNCNAME
 	for(int n=0;n<ndomains-1;n++) {
 		ic_w.bc_top1_add(op,n,"w","w");
 		ic_w.bc_top1_add(op,n,"w","rho");
-		ic_w.bc_top1_add(op,n,"w","phi");
+		ic_w.bc_top1_add(op,n,"w","Phi");
 		ic_w.bc_top1_add(op,n,"w","r");
 		ic_w.bc_top2_add(op,n,"w","w",-ones(1,nth));
 		ic_w.bc_top2_add(op,n,"w","rho",-ones(1,nth));
-		ic_w.bc_top2_add(op,n,"w","phi",-ones(1,nth));
+		ic_w.bc_top2_add(op,n,"w","Phi",-ones(1,nth));
 		ic_w.bc_top2_add(op,n,"w","r",-ones(1,nth));
 		rhs.setrow(j0+map.gl.npts[n]-1,
 			-ic_w.eval().row(j0+map.gl.npts[n]-1)+ic_w.eval().row(j0+map.gl.npts[n]));
@@ -622,7 +622,7 @@ DEBUG_FUNCNAME
 	
 	rhs_T=zeros(nr,nth);
 
-	symbolic S(4,2);
+	symbolic S;
 	sym T_,xi_,s_,G_;
 	sym div_Frad;
 	
@@ -863,7 +863,7 @@ DEBUG_FUNCNAME
 	j0=map.gl.npts[0];
 	for(n=1;n<ndomains;n++) {
 		if(n==conv) {
-			symbolic S(2,1);
+			symbolic S;
 			sym p_,s_,eq;
 			p_=S.regvar("p");
 			s_=S.regvar("s");
@@ -949,7 +949,7 @@ void star2d::solve_Omega(solver *op) {
 	dphi1=(Dex.row(0),phiex,TT)(0);
 	n=ndomains;
 	op->bc_bot2_add_d(n,"Omega2","Omega2",ones(1,1));
-	op->bc_bot2_add_lr(n,"Omega2","phi",-ones(1,1)*Omega_bk*Omega_bk/r1/rz1,Dex.row(0),TT);
+	op->bc_bot2_add_lr(n,"Omega2","Phi",-ones(1,1)*Omega_bk*Omega_bk/r1/rz1,Dex.row(0),TT);
 	op->bc_bot2_add_r(n,"Omega2","Ri",ones(1,1)*Omega_bk*Omega_bk/r1/r1/rz1*dphi1,TT);
 	op->bc_bot2_add_r(n,"Omega2","Ri",(Dex.row(0),map.ex.J[2],TT)*Omega_bk*Omega_bk/r1/rz1/rz1*dphi1,TT);
 	op->bc_bot2_add_r(n,"Omega2","eta",(Dex.row(0),map.ex.J[0],TT)*Omega_bk*Omega_bk/r1/rz1/rz1*dphi1,TT);
@@ -1016,7 +1016,7 @@ DEBUG_FUNCNAME
 	op->bc_top1_add_d(n,"gsup","log_R",g);
 	op->bc_top1_add_d(n,"gsup","rho",g/rho.row(-1));
 
-	symbolic S(2,1);
+	symbolic S;
 	sym p_,gamma_,eq;
 	sym_vec n_(COVARIANT);
 	gamma_=S.regvar("gamma");
@@ -1050,7 +1050,7 @@ DEBUG_FUNCNAME
 	op->bc_top1_add_d(n,"Teff","log_R",F);
 	op->bc_top1_add_d(n,"Teff","opa.xi",-F/opa.xi.row(-1));
 
-	symbolic S(2,1);
+	symbolic S;
 	sym T_,gamma_,eq;
 	sym_vec n_(COVARIANT);
 	gamma_=S.regvar("gamma");
@@ -1162,7 +1162,7 @@ DEBUG_FUNCNAME
 	y[i]=zeros(nr,nth);
 	
 	
-	i=op->get_id("phi");
+	i=op->get_id("Phi");
 	y[i]=zeros(nr+nex,nth);
 	y[i].setblock(0,nr-1,0,-1,B.phi-phi);
 	y[i].setblock(nr,nr+nex-1,0,-1,B.phiex-phiex);

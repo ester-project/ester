@@ -20,6 +20,7 @@ class mapping {
     const matrix &eta;
     matrix_block_diag &D;
     matrix &z,&th,&Dt,&Dt2,&Dt_11,&Dt2_11,&Dt_01,&Dt2_01,&Dt_10,&Dt2_10;
+    matrix &I,&It;
     matrix r,rz,rzz,rt,rtt,rzt,gzz,gzt,gtt;
     matrix R;
     matrix J[4];

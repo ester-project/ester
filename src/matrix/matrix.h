@@ -7,7 +7,7 @@ class matrix {
 	double *p;
 	int nf,nc;
 public:
-	matrix(int nfil=1,int ncol=1);
+	explicit matrix(int nfil=1,int ncol=1);
 	~matrix();
 	matrix(const matrix &);
 	int nrows() const;
@@ -123,6 +123,7 @@ public:
 	friend matrix pow(const matrix &,const matrix &);
 	friend matrix pow(double,const matrix &);
 	friend matrix pow(const matrix &,double);
+	friend matrix pow(const matrix &,int);
 
 	matrix operator,(const matrix &) const;
 	matrix solve(matrix) const;
@@ -192,12 +193,13 @@ matrix atan2(const matrix &,double);
 matrix pow(const matrix &,const matrix &);
 matrix pow(double,const matrix &);
 matrix pow(const matrix &,double);
+matrix pow(const matrix &,int);
 
 class matrix_block_diag {
 	matrix *m;
 	int nb;
 public:
-	matrix_block_diag(int nblocks=1);
+	explicit matrix_block_diag(int nblocks=1);
 	~matrix_block_diag();
 	matrix_block_diag(const matrix_block_diag &);
 	matrix_block_diag & operator=(const matrix_block_diag &);
