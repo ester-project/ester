@@ -627,7 +627,7 @@ A^\theta\frac{\partial B^\varphi}{\partial\theta}+A^\varphi\frac{\partial B^\var
 \end{array}
 \end{equation}
 \end{itemize}
-\item Christoffel symbols
+\item Christoffel symbols (different from 0)
 \begin{equation}
 \begin{array}{lll}
 \displaystyle
@@ -784,10 +784,10 @@ map.set_nex(20);
 \end{minted}
 If we are not using the external domain, there is no need to change its number of points (It is 10 by default).
 There is one optional parameter that we can set before initialize the mapping
-\mint{cpp}|map_mode=MAP_BONAZZOLA;|
+\mint{cpp}|map.mode=MAP_BONAZZOLA;|
 to use the mapping with constant $r_\zeta$ at the boundaries presented in the previous section (this is
 the default), or
-\mint{cpp}|map_mode=MAP_LINEAR;|
+\mint{cpp}|map.mode=MAP_LINEAR;|
 to use a linear mapping. Now we can proceed with the initialization
 \mint{cpp}|map.init();|
 If we change the resolution after this point, we should call \verb|init()| again. Now
@@ -804,6 +804,113 @@ Once we have set the boundaries we just call \verb|remap()|
 \mint{cpp}|map.remap();|
 We can call \verb|remap()| as many times as we want if we need to change the boundaries again.
 
+After the initialization, a \verb|mapping| object contains the following variables
+
+\medskip
+
+\renewcommand{\arraystretch}{1.3} 
+
+\noindent\begin{longtable}{p{3.7cm}ccp{5cm}}
+Name&Type&Size&Description\\
+\hline
+\texttt{ndomains}&\texttt{int}&&Number of domains\\
+\texttt{nr}&\texttt{int}&&Number of radial points\\
+\texttt{nt}&\texttt{int}&&Number of latitudinal points\\
+\texttt{nex}&\texttt{int}&&Number of radial points in the external domain\\
+\texttt{npts}&\texttt{int[ndomains]}&&Number of points in each domain\\
+\texttt{R}&\texttt{matrix}&(ndomains+1,nt)&Domain boundaries\\
+\texttt{eta}&\texttt{matrix}&(ndomains+1,nt)&R($\theta=0$)\\
+\texttt{z}&\texttt{matrix}&(nr,1)& Spheroidal radial coordinate $\zeta$\\
+\texttt{th}&\texttt{matrix}&(1,nt)& Colatitude $\theta$\\
+\texttt{r}&\texttt{matrix}&(nr,nt)& Spherical radial coordinate $r$\\
+\texttt{ex.r}&\texttt{matrix}&(nex,nt)& Spherical radial coordinate $r$ in
+the external domain\\
+\texttt{rz}, \texttt{rt}, \texttt{rzz}, \texttt{rtt}, \texttt{rzt}
+&\texttt{matrix}&(nr,nt)
+& $r_\zeta$, $r_\theta$, $r_{\zeta\zeta}$, $r_{\theta\theta}$, $r_{\zeta\theta}$\\
+\texttt{ex.rz}, \texttt{ex.rt}, \texttt{ex.rzz}, \texttt{ex.rtt}, \texttt{ex.rzt}
+&\texttt{matrix}&(nex,nt)
+& $r_\zeta$, $r_\theta$, $r_{\zeta\zeta}$, $r_{\theta\theta}$, $r_{\zeta\theta}$
+in the external domain\\
+\texttt{gzz}, \texttt{gzt}, \texttt{gtt}&\texttt{matrix}&(nr,nt)&
+Elements of the metric tensor $g^{\zeta\zeta}$, $g^{\zeta\theta}$ and $g^{\theta\theta}$ \\
+\texttt{ex.gzz}, \texttt{ex.gzt}, \texttt{ex.gtt}&\texttt{matrix}&(nex,nt)&
+Elements of the metric tensor $g^{\zeta\zeta}$, $g^{\zeta\theta}$ and $g^{\theta\theta}$ 
+in the external domain\\
+\texttt{D}&\texttt{matrix\_block\_diag}&(nr,nr)& Differentiation matrix $\frac{\partial}{\partial\zeta}$\\
+\texttt{ex.D}&\texttt{matrix}&(nex,nex)& Differentiation matrix $\frac{\partial}{\partial\zeta}$ in
+the external domain\\
+\texttt{Dt}, \texttt{Dt\_11}, \texttt{Dt\_01}, \texttt{Dt\_10}&\texttt{matrix}&(nt,nt)&
+Differentiation matrix $\frac{\partial}{\partial\theta}$ for each type of symmetry\\
+\texttt{Dt2}, \texttt{Dt2\_11}, \texttt{Dt2\_01}, \texttt{Dt2\_10}&\texttt{matrix}&(nt,nt)&
+Second order differentiation matrix $\frac{\partial^2}{\partial\theta^2}$ for each type of symmetry\\
+\texttt{I}&\texttt{matrix}&(1,nr)&Integration matrix $\int_{\eta_0}^{\eta_\mathrm{ndom.}}\mathrm{d}\zeta$\\
+\texttt{It}&\texttt{matrix}&(nt,1)&Integration matrix $\int_0^\pi\sin\theta\mathrm{d}\theta$ for symmetric functions\\
+\texttt{J}&\texttt{matrix[4]}&(nr,nt)&Jacobian of the mapping\\
+\texttt{ex.J}&\texttt{matrix[4]}&(nex,nt)&Jacobian of the mapping in the external
+domain\\
+\texttt{gl}&\texttt{diff\_gl}&&Numerical differentiation object for the radial direction\\
+\texttt{ex.gl}&\texttt{diff\_gl}&&Numerical differentiation object for the radial direction in the
+external domain\\
+\texttt{leg}&\texttt{diff\_leg}&&Numerical differentiation object for the latitudinal direction\\
+\end{longtable}
+
+\renewcommand{\arraystretch}{1} 
+
+A given scalar field $\phi(\zeta,\theta)$ will be represented by a 2D matrix with size \verb|nr|$\times$\verb|nt|,
+each element being the value of the function at each collocation point $\phi_{ij}=\phi(\zeta_i,\theta_j)$.
+With this representation, the operators acting on the radial direction are implemented using left multiplication
+while those acting in the latitudinal direction use right multiplication. Let's see some examples
+
+\medskip
+\renewcommand{\arraystretch}{2} 
+\begin{tabular}{c@{\quad:\quad}c}
+$\displaystyle\frac{\partial\phi}{\partial\zeta}$&\verb|(map.D,phi)|\\
+$\displaystyle\int_{\eta_0}^{\eta_\mathrm{ndom.}}\phi\,\mathrm{d}\zeta$&\verb|(map.I,phi)|\\
+$\displaystyle\frac{\partial\phi}{\partial\theta}$&\verb|(phi,map.Dt)|\\
+$\displaystyle\int_0^\pi\phi\sin\theta\,\mathrm{d}\theta$&\verb|(phi,map.It)|\\
+\end{tabular} 
+\renewcommand{\arraystretch}{1} 
+\medskip
+
+We can also use operators in both sides at the same time
+
+\medskip
+\renewcommand{\arraystretch}{2} 
+\begin{tabular}{c@{\quad:\quad}c}
+$\displaystyle\frac{\partial^2\phi}{\partial\zeta\partial\theta}$&\verb|(map.D,phi,map.Dt)|\\
+$\displaystyle
+\int_{\eta_0}^{\eta_\mathrm{ndom.}}\int_0^\pi\phi r^2 r_\zeta\sin\theta\,\mathrm{d}\zeta\mathrm{d}\theta$&
+\verb|(map.I,phi*map.r*map.r*map.rz,map.It)|\\
+\end{tabular} 
+\renewcommand{\arraystretch}{1} 
+\medskip
+
+Most of the members of a \verb|mapping| object are in fact references to the corresponding member of the
+\verb|diff_gl| or \verb|diff_leg| object presented in the previous chapter, for example \verb|map.D| is
+equivalent to \verb|map.gl.D|.
+
+We can use the interpolation functions defined in \verb|diff_gl| and \verb|diff_leg| for interpolation in $\zeta$
+and $\theta$ respectively. The \verb|mapping| class provides also a function for interpolating at 
+some points ($r_{ij}$,$\theta_{ij}$) given in spherical coordinates
+\mint{cpp}|map.eval(phi,ri,thi,parity)|
+where \verb|ri| and \verb|thi| are matrices containing the interpolation points and parity is an integer
+representing the type of symmetry of \verb|phi| (00, 01, 10 or 11). For symmetric functions (00), this parameter
+can be omitted.
+
+\subsection{Example}
+
+Let's take the example in section \ref{sec:example_diff_leg} and rewrite it for spheroidal
+coordinates, now using the \verb|mapping| class.
+
+\inputminted[frame=single]{cpp}{../code_examples/mapping/example1.cpp}
+
+The output will be the same that in the previous example
+
+\begin{verbatim}
+The value of the laplacian at (0.300000,1.047198) is 6.150000e+00
+The volume integral is 3.490659e+00
+\end{verbatim}
 
 
 

@@ -19,8 +19,9 @@ int main() {
 
 	//Initialize gl. In the example we will use 2 domains
 	gl.set_ndomains(2);
-	gl.set_xif(1e-12,0.2,1.); // Use 1e-12 as the interior limit (instead of 0)
-							  //to avoid the central singularity
+	gl.set_xif(1e-3,0.2,1.); // Use 1e-3 as the interior limit (instead of 0)
+							// to avoid a division by zero in the 
+							// calculation of the laplacian
 	gl.set_npts(100,100);
 	gl.init();
 	//Initialize leg
