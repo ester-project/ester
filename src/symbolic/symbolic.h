@@ -78,6 +78,8 @@ class sym {
 	class sym_prod;
 	class sym_sin;
 	class sym_cos;
+	class sym_exp;
+	class sym_log;
 
 	symbolic *context;
 	sym_expr *expr;
@@ -85,7 +87,9 @@ class sym {
 public:
 	sym();
 	sym(const sym &);
-	sym(const double &);
+	explicit sym(const double &);
+	explicit sym(const int &);
+	sym(const rational &q);
 	~sym();
 	
 	symbolic *check_context() const;
@@ -94,19 +98,28 @@ public:
 	symbolic *check_context(const sym_tens &s) const;
 	
 	sym &operator=(const sym &);
+	sym &operator=(double n) {return *this=sym(n);};
 	friend sym operator+(const sym &,const sym &);
 	friend sym operator*(const sym &,const sym &);
 	sym &operator+=(const sym &s) {return *this=*this+s;}; 
-	sym &operator-=(const sym &s) {return *this=*this+(-1)*s;};
+	sym &operator-=(const sym &s) {return *this=*this+sym(-1)*s;};
 	sym &operator*=(const sym &s) {return *this=*this*s;};
 	sym &operator/=(const sym &s) {return *this=*this*pow(s,-1);};
+	sym &operator+=(double n) {return *this+=sym(n);};
+	sym &operator-=(double n) {return *this-=sym(n);};
+	sym &operator*=(double n) {return *this*=sym(n);};
+	sym &operator/=(double n) {return *this/=sym(n);};
 	friend sym pow(const sym &,const rational &);
 	friend sym sin(const sym &);
 	friend sym cos(const sym &);
+	friend sym exp(const sym &);
+	friend sym log(const sym &);
 	friend sym diff(const sym &,const sym &);
 	friend sym jacobian(const sym &,const sym &);
 	bool operator==(const sym &s) const;
 	inline bool operator!=(const sym &s) const {return !(*this==s);};
+	inline bool operator==(double n) const {return *this==sym(n);};
+	inline bool operator!=(double n) const {return !(*this==sym(n));};
 
 	matrix eval() const;
 
@@ -137,18 +150,29 @@ public:
 };
 
 sym operator+(const sym &,const sym &);
+inline sym operator+(double n,const sym &s) {return s+sym(n);};
+inline sym operator+(const sym &s,double n) {return s+sym(n);};
 inline sym operator+(const sym &s) {return s;};
 sym operator*(const sym &,const sym &);
+inline sym operator*(double n,const sym &s) {return s*sym(n);};
+inline sym operator*(const sym &s,double n) {return s*sym(n);};
 inline sym operator-(const sym &s) {return (-1)*s;};
 template <class T>
 	sym operator-(const sym &s1,const T &s2) {return s1+(-s2);};
+inline sym operator-(double n,const sym &s2) {return n+(-s2);};
 sym pow(const sym &,const rational &);
+inline sym pow(const sym &s,const int &n) {return pow(s,rational(n));}
 template <class T>
 	sym operator/(const sym &s1,const T &s2) {return s1*pow(s2,-1);};
+inline sym operator/(double n,const sym &s2) {return n*pow(s2,-1);};
 inline sym sqrt(const sym &s) {return pow(s,rational(1,2));};
 sym sin(const sym &);
 sym cos(const sym &);
 sym tan(const sym &);
+sym exp(const sym &);
+sym log(const sym &);
+sym pow(const sym &,const sym &);
+inline sym pow(const sym &s,const double &n) {return pow(s,sym(n));}
 sym diff(const sym &,const sym &);
 sym jacobian(const sym &,const sym &);
 	
@@ -185,7 +209,9 @@ public:
 	sym_vec operator+(const sym_vec &) const;
 	friend sym_vec operator-(const sym_vec &v);
 	sym_vec operator*(const sym &) const;
+	sym_vec operator*(double n) const {return (*this)*sym(n);};
 	sym_vec operator/(const sym &) const;
+	sym_vec operator/(double n) const {return (*this)/sym(n);};
 	friend sym_vec cross(const sym_vec &,const sym_vec &);
 	friend sym_tens tensor(const sym_vec &,const sym_vec &);
 	sym D(const sym &) const;
@@ -199,6 +225,7 @@ inline sym_vec operator+(const sym_vec &v) {return v;};
 sym_vec operator-(const sym_vec &v);
 inline sym_vec operator-(const sym_vec &v,const sym_vec &w) {return v+(-w);};
 inline sym_vec operator*(const sym &s,const sym_vec &v) {return v*s;};
+inline sym_vec operator*(double n,const sym_vec &v) {return v*n;};
 sym_vec cross(const sym_vec &,const sym_vec &);
 sym_tens tensor(const sym_vec &,const sym_vec &);
 
@@ -229,7 +256,9 @@ public:
 	sym_tens operator+(const sym_tens &) const;
 	friend sym_tens operator-(const sym_tens &v);
 	sym_tens operator*(const sym &) const;
+	sym_tens operator*(double n) const {return (*this)*sym(n);};
 	sym_tens operator/(const sym &) const;
+	sym_tens operator/(double n) const {return (*this)/sym(n);};
 	friend sym_tens tensor(const sym_vec &,const sym_vec &);
 	sym operator%(const sym_tens &) const;
 	sym_tens T() const;
@@ -243,6 +272,7 @@ inline sym_tens operator+(const sym_tens &v) {return v;};
 sym_tens operator-(const sym_tens &v);
 inline sym_tens operator-(const sym_tens &v,const sym_tens &w) {return v+(-w);};
 inline sym_tens operator*(const sym &s,const sym_tens &v) {return v*s;};
+inline sym_tens operator*(double n,const sym_tens &v) {return v*n;};
 
 std::ostream& operator<<(std::ostream& os, const sym_tens&);
 
@@ -359,6 +389,8 @@ public:
 	sym_expr *pow(const rational &);
 	sym_expr *sin();
 	sym_expr *cos();
+	sym_expr *exp();
+	sym_expr *log();
 };
 
 std::ostream& operator<<(std::ostream& os, const sym::sym_expr&);
@@ -457,6 +489,7 @@ public:
 	sym_sin(const sym_sin &);
 	sym_sin *clone() const;
 	int comp(const sym_expr &) const;
+	sym_expr *reduce();
 	sym_expr *derive(const sym_expr &);
 	matrix eval() const;
 	std::ostream &print(std::ostream&) const;
@@ -472,10 +505,43 @@ public:
 	sym_cos(const sym_cos &);
 	sym_cos *clone() const;
 	int comp(const sym_expr &) const;
+	sym_expr *reduce();
 	sym_expr *derive(const sym_expr &);
 	matrix eval() const;
 	std::ostream &print(std::ostream&) const;
 	static sym_cos *create(sym_expr *);
+};
+
+class sym::sym_exp: public sym_expr {
+public:
+	int order() const {return 7;};
+	sym_expr *oper;
+	sym_exp() {};
+	~sym_exp();
+	sym_exp(const sym_exp &);
+	sym_exp *clone() const;
+	int comp(const sym_expr &) const;
+	sym_expr *reduce();
+	sym_expr *derive(const sym_expr &);
+	matrix eval() const;
+	std::ostream &print(std::ostream&) const;
+	static sym_exp *create(sym_expr *);
+};
+
+class sym::sym_log: public sym_expr {
+public:
+	int order() const {return 8;};
+	sym_expr *oper;
+	sym_log() {};
+	~sym_log();
+	sym_log(const sym_log &);
+	sym_log *clone() const;
+	int comp(const sym_expr &) const;
+	sym_expr *reduce();
+	sym_expr *derive(const sym_expr &);
+	matrix eval() const;
+	std::ostream &print(std::ostream&) const;
+	static sym_log *create(sym_expr *);
 };
 
 #endif

@@ -53,6 +53,14 @@ sym::sym_expr *sym::sym_expr::cos() {
 	return sym_cos::create(this);
 }
 
+sym::sym_expr *sym::sym_expr::exp() {
+	return sym_exp::create(this);
+}
+
+sym::sym_expr *sym::sym_expr::log() {
+	return sym_log::create(this);
+}
+
 ////////////////////////// sym_num ////////////////////////////////
 
 sym::sym_num::sym_num(const double &q) {
@@ -654,6 +662,20 @@ sym::sym_expr *sym::sym_prod::reduce() {
 			}	
 	}
 
+// sym_exp nodes should have exponent=1
+
+	n=oper.size();
+	for(int	i=0;i<n;i++) {
+		if(typeid(*(oper[i].first))==typeid(sym_exp)) 
+			if(oper[i].second!=1&&oper[i].second!=0) {
+				double ex=oper[i].second.eval();
+				oper[i].second=1;
+				sym_exp *sexp;
+				sexp=(sym_exp *)oper[i].first;
+				sexp->oper=sym_prod::create(sexp->oper,new sym_num(ex));
+			}	
+	}
+	
 // Sort
 	sort(oper.begin(),oper.end(),sort_pair_r);
 
@@ -864,6 +886,18 @@ int sym::sym_sin::comp(const sym_expr &s) const {
 
 }
 
+sym::sym_expr *sym::sym_sin::reduce() {
+	
+	oper=oper->reduce();
+	if(typeid(*oper)==typeid(sym_num)) {
+		double val=((sym_num *)oper)->value;
+		delete this;
+		return new sym_num(::sin(val));
+	}
+	return this;
+
+}
+
 sym::sym_expr *sym::sym_sin::derive(const sym_expr &s) {
 	
 	sym_expr *arg;
@@ -921,6 +955,18 @@ int sym::sym_cos::comp(const sym_expr &s) const {
 
 }
 
+sym::sym_expr *sym::sym_cos::reduce() {
+	
+	oper=oper->reduce();
+	if(typeid(*oper)==typeid(sym_num)) {
+		double val=((sym_num *)oper)->value;
+		delete this;
+		return new sym_num(::cos(val));
+	}
+	return this;
+
+}
+
 sym::sym_expr *sym::sym_cos::derive(const sym_expr &s) {
 	
 	sym_expr *arg;
@@ -951,3 +997,186 @@ sym::sym_cos *sym::sym_cos::create(sym_expr *s) {
 	
 	return snew;
 }
+
+///////////////////////// sym_exp //////////////////////////////
+
+sym::sym_exp::~sym_exp() {
+	delete oper;
+}
+
+sym::sym_exp::sym_exp(const sym_exp &s) {
+	oper=s.oper->clone();
+}
+
+
+sym::sym_exp *sym::sym_exp::clone() const {
+	return new sym_exp(*this);
+}
+
+int sym::sym_exp::comp(const sym_expr &s) const {
+
+	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
+	
+	sym_exp *q;
+	q=(sym_exp *) &s;
+	
+	return oper->comp(*(q->oper));
+
+}
+
+sym::sym_expr *sym::sym_exp::reduce() {
+	
+	oper=oper->reduce();
+	if(typeid(*oper)==typeid(sym_num)) {
+		double val=((sym_num *)oper)->value;
+		delete this;
+		return new sym_num(::exp(val));
+	}
+	if(typeid(*oper)==typeid(sym_log)) {
+		sym_expr *arg;
+		arg=((sym_log *)oper)->oper;
+		((sym_log *)oper)->oper=NULL;
+		delete this;
+		return arg;
+	}
+	if(typeid(*oper)==typeid(sym_add)) {
+		sym_add *sadd;
+		sadd=(sym_add *)oper;
+		for(int i=0;i<sadd->oper.size();i++) {
+			if(typeid(*(sadd->oper[i].first))==typeid(sym_log)&&sadd->oper[i].second!=0) {
+				double dex=sadd->oper[i].second;
+				rational qex=0;
+				for(int k=1;k<=10;k++) { //Check if the exponent can be repr. by a small fraction
+					if(round(k*dex)==k*dex) {
+						qex=rational(round(k*dex),k);
+						break;
+					}
+				}
+				if(qex==0) continue;
+				sym_expr *arg;
+				arg=((sym_log *)sadd->oper[i].first)->oper->clone();
+				sadd->oper[i].second=0;
+				return sym_prod::create( sym_prod::create_pow(arg,qex), this)->reduce();
+			}
+		}
+	}
+	return this;
+
+}
+
+sym::sym_expr *sym::sym_exp::derive(const sym_expr &s) {
+	
+	sym_expr *arg;
+	arg=oper->clone();
+	
+	return sym_prod::create(this,arg->derive(s));
+	
+}
+
+matrix sym::sym_exp::eval() const {
+	return ::exp(oper->eval());
+} 
+
+ostream &sym::sym_exp::print(ostream &os) const {
+	return os<<"exp("<<*oper<<")";
+}
+
+sym::sym_exp *sym::sym_exp::create(sym_expr *s) {
+
+	sym_exp *snew;
+	
+	snew=new sym_exp();
+	snew->oper=s;
+	
+	return snew;
+}
+
+///////////////////////// sym_log //////////////////////////////
+
+sym::sym_log::~sym_log() {
+	delete oper;
+}
+
+sym::sym_log::sym_log(const sym_log &s) {
+	oper=s.oper->clone();
+}
+
+
+sym::sym_log *sym::sym_log::clone() const {
+	return new sym_log(*this);
+}
+
+int sym::sym_log::comp(const sym_expr &s) const {
+
+	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
+	
+	sym_log *q;
+	q=(sym_log *) &s;
+	
+	return oper->comp(*(q->oper));
+
+}
+
+sym::sym_expr *sym::sym_log::reduce() {
+	
+	oper=oper->reduce();
+	if(typeid(*oper)==typeid(sym_num)) {
+		double val=((sym_num *)oper)->value;
+		delete this;
+		return new sym_num(::log(val));
+	}
+	if(typeid(*oper)==typeid(sym_exp)) {
+		sym_expr *arg;
+		arg=((sym_exp *)oper)->oper;
+		((sym_exp *)oper)->oper=NULL;
+		delete this;
+		return arg;
+	}
+	if(typeid(*oper)==typeid(sym_prod)) {
+		sym_prod *sprod;
+		sprod=(sym_prod *)oper;
+		for(int i=0;i<sprod->oper.size();i++) {
+			if(typeid(*(sprod->oper[i].first))==typeid(sym_exp)&&sprod->oper[i].second==1) {				
+				sym_expr *arg;
+				arg=((sym_exp *)sprod->oper[i].first)->oper->clone();
+				sprod->oper[i].second=0;
+				return sym_add::create( arg, this)->reduce();
+			}
+		}
+	}
+	
+	
+	return this;
+
+}
+
+sym::sym_expr *sym::sym_log::derive(const sym_expr &s) {
+	
+	sym_expr *arg;
+	arg=oper;
+	oper=NULL;
+	delete this;
+	sym_expr *s1=sym_prod::create_pow(arg->clone(),-1);
+	return sym_prod::create( s1,arg->derive(s));
+	
+}
+
+matrix sym::sym_log::eval() const {
+	return ::log(oper->eval());
+} 
+
+ostream &sym::sym_log::print(ostream &os) const {
+	return os<<"log("<<*oper<<")";
+}
+
+sym::sym_log *sym::sym_log::create(sym_expr *s) {
+
+	sym_log *snew;
+	
+	snew=new sym_log();
+	snew->oper=s;
+	
+	return snew;
+}
+
+

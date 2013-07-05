@@ -23,8 +23,18 @@ sym::sym(const double &q) {
 	expr=new sym::sym_num(q);
 }
 
+sym::sym(const int &q) {
+	context=NULL;
+	expr=new sym::sym_num(q);
+}
+
+sym::sym(const rational &q) {
+	context=NULL;
+	expr=new sym::sym_num(q.eval());
+}
+
 sym &sym::operator=(const sym &s) {
-	context=s.check_context();
+	context=s.context;
 	delete expr;
 	expr=s.expr->clone();
 	return *this;
@@ -195,6 +205,36 @@ sym cos(const sym &s) {
 sym tan(const sym &s) {
 
 	return sin(s)/cos(s);
+}
+
+sym exp(const sym &s) {
+	
+	sym snew;
+	
+	snew.context=s.check_context();
+	delete snew.expr;
+	snew.expr=s.expr->clone();
+	snew.expr=snew.expr->exp()->reduce();
+
+	return snew;
+}
+
+sym log(const sym &s) {
+	
+	sym snew;
+	
+	snew.context=s.check_context();
+	delete snew.expr;
+	snew.expr=s.expr->clone();
+	snew.expr=snew.expr->log()->reduce();
+
+	return snew;
+}
+
+sym pow(const sym &s,const sym &ex) {
+
+	return exp(ex*log(s));
+
 }
 
 sym diff(const sym &f,const sym &x) {

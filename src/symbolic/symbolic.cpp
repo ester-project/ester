@@ -274,7 +274,7 @@ sym symbolic::Dphi(const sym &s) {
 }
 
 sym symbolic::det(const sym_tens &g) {
-	sym res=0;
+	sym res=sym(0);
 	for(int i=0;i<3;i++) {
 		res+=g(0,i)*g(1,(i+1)%3)*g(2,(i+2)%3);
 		res-=g(0,i)*g(1,(i+2)%3)*g(2,(i+1)%3);
