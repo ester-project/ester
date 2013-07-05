@@ -1135,6 +1135,14 @@ sym::sym_expr *sym::sym_log::reduce() {
 	if(typeid(*oper)==typeid(sym_prod)) {
 		sym_prod *sprod;
 		sprod=(sym_prod *)oper;
+		if(sprod->oper.size()==1) {
+			oper=sprod->oper[0].first;
+			sprod->oper[0].first=NULL;
+			sym_expr *snew;
+			snew=sym_prod::create(new sym_num(sprod->oper[0].second.eval()),this);
+			delete sprod;
+			return snew->reduce();
+		}
 		for(int i=0;i<sprod->oper.size();i++) {
 			if(typeid(*(sprod->oper[i].first))==typeid(sym_exp)&&sprod->oper[i].second==1) {				
 				sym_expr *arg;

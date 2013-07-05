@@ -237,6 +237,10 @@ sym pow(const sym &s,const sym &ex) {
 
 }
 
+sym pow(const double &n,const sym &ex) {
+	return exp(ex*log(n));
+}
+
 sym diff(const sym &f,const sym &x) {
 	
 	if(typeid(*x.expr)==typeid(sym::symbol)) {

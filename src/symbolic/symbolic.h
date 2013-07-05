@@ -173,6 +173,7 @@ sym exp(const sym &);
 sym log(const sym &);
 sym pow(const sym &,const sym &);
 inline sym pow(const sym &s,const double &n) {return pow(s,sym(n));}
+sym pow(const double &n,const sym &s);
 sym diff(const sym &,const sym &);
 sym jacobian(const sym &,const sym &);
 	
