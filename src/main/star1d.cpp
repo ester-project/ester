@@ -77,7 +77,7 @@ int main(int argc,char *argv[]) {
 		printf("rhoc=%e Tc=%e pc=%e\n",A.rhoc,A.Tc,A.pc);
 		if(A.conv) printf("r_cz=%3.3f Rsun\n",*(A.map.gl.xif+A.conv)*A.R/R_SUN);
 	}
-	op->destroy();
+	delete op;
 	A.write(config.output_file,config.output_mode);
 	
 	if(config.verbose) {

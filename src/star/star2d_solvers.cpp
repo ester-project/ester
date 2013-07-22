@@ -132,6 +132,7 @@ DEBUG_FUNCNAME
 
 	op->reset();
 
+	if(config.verbose) {printf("Writing equations...");fflush(stdout);}
 	solve_definitions(op);
 	solve_poisson(op);
 	solve_mov(op);
@@ -142,7 +143,7 @@ DEBUG_FUNCNAME
 	solve_atm(op);
 	solve_gsup(op);
 	solve_Teff(op);
-	
+	if(config.verbose) printf("Done\n");
 
 	op->solve(info);
 	

@@ -290,11 +290,12 @@ DEBUG_FUNCNAME
 		}
 	} else {
 		red=new remapper(map);
-		if(!remap_domains(ndomains,*red)) return;
+		if(!remap_domains(ndomains,*red)) {delete red;return;}
 	}
 	if(config.verbose) {printf("Remapping...");fflush(stdout);}
 	map=red->get_map();
 	interp(red);
+	delete red;
 	if(config.verbose) printf("Done\n");
 
 }

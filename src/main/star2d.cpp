@@ -141,7 +141,7 @@ int main(int argc,char *argv[]) {
 		delete fig;
 	}
 
-	op->destroy();
+	delete op;
 	t.stop();
 	if(config.verbose) 
 		printf("%2.2f seconds\n\n",t.value());	

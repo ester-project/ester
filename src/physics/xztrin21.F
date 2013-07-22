@@ -865,7 +865,10 @@ C
       COMMON/CST/NRL,RLS,nset,tmax  ! modified
       common/alink/ N,NSM,nrlow,nrhigh,RLE,t6arr(100),xzff(100,nr)  
       LOGICAL IERR
-
+      
+      do j=1,IP
+      	U(j)=0 ! U is not correctly initialised in the original code from opal
+      enddo
 C
       NRL=2*(RLE-RLS)+1
 C

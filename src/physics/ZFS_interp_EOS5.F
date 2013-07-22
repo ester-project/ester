@@ -240,13 +240,16 @@ c     read(9,'(1h0)')
 c      call system ('gzip '//tabfile)
 c      call system ('gzip '//tabfilem)
 c      call system ('gzip '//tabfileu)
+      close (8)
+      close (9)
+      close (10)
       
       enddo
       rewind(15)
 c  Call EOS5_xtrin to load tables in memory
 	  call EOS5_xtrin(0.7,zz,2.75e1,8e4,r)
       close (15)
-
+      
 
 c	  stop
 c  380 write (*,'("File missing is ",a)') tabfile

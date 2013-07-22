@@ -167,7 +167,7 @@ matrix matrix_map::sum() {
 
 double double_map::sum() {
 
-	double res;
+	double res=0;
 	double_map::iterator it;
 	for(it=begin();it!=end();it++)
 		res+=it->second;

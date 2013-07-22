@@ -250,9 +250,9 @@ sym_tens sym_tens::T() const {
 
 std::ostream& operator<<(std::ostream& os, const sym_tens &v) {
 
-	os<<v(0,0)<<"\t"<<v(0,1)<<"\t"<<v(0,2)<<endl;
-	os<<v(1,0)<<"\t"<<v(1,1)<<"\t"<<v(1,2)<<endl;
-	os<<v(2,0)<<"\t"<<v(2,1)<<"\t"<<v(2,2)<<endl;
+	os<<v(0,0)<<" \t"<<v(0,1)<<" \t"<<v(0,2)<<endl;
+	os<<v(1,0)<<" \t"<<v(1,1)<<" \t"<<v(1,2)<<endl;
+	os<<v(2,0)<<" \t"<<v(2,1)<<" \t"<<v(2,2)<<endl;
 
 	return os;
 

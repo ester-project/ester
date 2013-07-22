@@ -62,7 +62,7 @@ void figure::plot(const matrix &x,const matrix &y,const char *line) {
 	}
 	
 	float xf[xx.nrows()],yf[yy.nrows()];
-	
+	if(draw_state) cpgbbuf();
 	n=xx.nrows();
 	mx=xx.ncols();
 	my=yy.ncols();
@@ -147,7 +147,7 @@ void figure::plot(const matrix &x,const matrix &y,const char *line) {
 	cpgsls(1);
 	cpgsci(1);
 	xlog=0;ylog=0;
-
+	if(draw_state) cpgebuf();
 }
 
 void figure::plot(const matrix &y,const char *line) {
