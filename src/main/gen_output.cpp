@@ -346,8 +346,8 @@ void write(const star2d &A,char *var,char *fmt) {
 	} else if(!strcmp(var,"th")) {
 		m=zeros(1,A.nth+pole+equator);
 		m.setblock(0,0,equator,A.nth-1+pole,A.th);
-		m(0)=PI/2;
-		m(m.ncols()-1)=0;
+		if(pole) m(0)=PI/2;
+		if(equator) m(m.ncols()-1)=0;
 		if(fmt) matrix_fmt(fmt,m);
 		else m.write(stdout,'b');
 	} else if(!strcmp(var,"Dt")) {
