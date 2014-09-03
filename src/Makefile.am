@@ -42,6 +42,7 @@ EXTRA_DIST	= main/ester_info.cpp					\
 			  $(top_srcdir)/config/1d_default.par	\
 			  $(top_srcdir)/config/2d_default.par	\
 			  $(top_srcdir)/config/star.cfg
+			  $(srcdir)/include/version.h
 
 
 bin_SCRIPTS	= main/ester

@@ -1,6 +1,8 @@
 #ifndef _SOLVER_H
 #define _SOLVER_H
 
+#include "config.h"
+#include "matrix.h"
 #include "matrix.h"
 
 /// \page term_representation Term representation in the equations
@@ -8,7 +10,6 @@
 /// \f$ D \circ (L . I \circ x . R) \f$.
 /// Where \f$ . \f$ is the matrix multiplication and \f$ \circ \f$,
 /// the Schur product.
-//TODO give an example
 
 class solver_operator {
 public:

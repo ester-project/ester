@@ -1,6 +1,7 @@
 #ifndef _PHYSICS_H
 #define _PHYSICS_H
 
+#include "config.h"
 #include "matrix.h"
 
 struct nuc_struct {

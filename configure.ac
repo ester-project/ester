@@ -135,6 +135,7 @@ C++ compiler:     $CXX
 pgplot enabled:   $have_pgplot
 found MKL:        $have_mkl
 perf_log:         $perf_log
+CXXFLAGS:         $CXXFLAGS
 LIBS:             $LIBS
 prefix:           $prefix
 -------------------------------------------------------------------------------

@@ -1,6 +1,8 @@
 #ifndef _NUMDIFF_H
 #define _NUMDIFF_H
 
+#include "config.h"
+
 #include "matrix.h"
 
 /// \brief

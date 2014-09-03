@@ -1,6 +1,7 @@
 #ifndef _MATRIX_H
 #define _MATRIX_H
 
+#include "config.h"
 #include <stdio.h>
 
 /// \brief The matrix class is used to facilitate the work with regular dense
