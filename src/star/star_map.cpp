@@ -1,5 +1,9 @@
-#include"star.h"
-#include<stdlib.h>
+#include "config.h"
+#include "star.h"
+
+extern "C" {
+#include <stdlib.h>
+}
 
 void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
 DEBUG_FUNCNAME

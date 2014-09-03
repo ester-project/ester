@@ -10,7 +10,7 @@ c    is needed everytime Z is changed.
       parameter (nruse=169)
       real moles,molesz
       character*1 blank, blank1
-      character front*3,front1*32,front2*32,front3*32,middle*24
+      character front*3,front1*38,front2*38,front3*38,middle*24
       character eend(5)*2
       character*256 tabfile,tabfilem,tabfileu,tabfilez,rootdir
       dimension z(3),moles(3),tmass(3),frac(3,6),fracz(7)
@@ -30,7 +30,7 @@ c    is needed everytime Z is changed.
      x ,icycuseu(nr),enu(nr,ntt),toffu(nr),doffu(nr)
      x ,amu_Mu(nr,ntt),alogN_eu(nr,ntt)
 		
-	  rootdir=ESTER_ROOT
+	  rootdir=ESTER_DATADIR
       lenrootdir=len(rootdir)
 99    if(rootdir(lenrootdir:lenrootdir).EQ.' ') then
 		lenrootdir=lenrootdir-1
@@ -43,11 +43,11 @@ c    is needed everytime Z is changed.
       eend(3)='4x'
       eend(4)='6x'
       eend(5)='8x'
-      front1='/tables/opal/eos_tables/EOS5_00z'
-      front2='/tables/opal/eos_tables/EOS5_02z'
-      front3='/tables/opal/eos_tables/EOS5_04z'
+      front1='/ester/tables/opal/eos_tables/EOS5_00z'
+      front2='/ester/tables/opal/eos_tables/EOS5_02z'
+      front3='/ester/tables/opal/eos_tables/EOS5_04z'
       tabfilez=
-     +	rootdir(1:lenrootdir)//'/tables/opal/eos_tables/EOS5_data'
+     +	rootdir(1:lenrootdir)//'/ester/tables/opal/eos_tables/EOS5_data'
       open (15,status='scratch')
       do kk=1,5
       tabfile=rootdir(1:lenrootdir)//front1//eend(kk)

@@ -1,7 +1,9 @@
 #ifndef _MATRIX_H
 #define _MATRIX_H
 
-#include<stdio.h>
+#include "config.h"
+
+#include <stdio.h>
 
 class matrix {
 	double *p;

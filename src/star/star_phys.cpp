@@ -1,7 +1,11 @@
-#include"star.h"
-#include<string.h>
-#include<stdio.h>
-#include<stdlib.h>
+#include "config.h"
+#include "star.h"
+
+extern "C" {
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+}
 
 void star2d::opacity() {
 

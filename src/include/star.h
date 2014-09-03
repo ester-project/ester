@@ -1,19 +1,19 @@
 #ifndef _STAR_H
 #define _STAR_H
 
-#include"matrix.h"
-#include"solver.h"
-#include"numdiff.h"
-#include"mapping.h"
-#include"physics.h"
-#include"constants.h"
-#include"parser.h"
-#include"graphics.h"
-#include"debug.h"
-#include"symbolic.h"
+#include "matrix.h"
+#include "solver.h"
+#include "numdiff.h"
+#include "mapping.h"
+#include "physics.h"
+#include "constants.h"
+#include "parser.h"
+#include "graphics.h"
+#include "debug.h"
+#include "symbolic.h"
 
-#include<cmath>
-#include<vector>
+#include <cmath>
+#include <vector>
 
 #define PRES T
 #define LOG_PRES "log_T"

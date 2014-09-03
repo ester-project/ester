@@ -1,9 +1,9 @@
-#include<stdlib.h>
-#include<stdio.h>
-#include<string.h>
-#include"star.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "star.h"
 
-#include"read_config.cpp"
+#include "read_config.h"
 
 int main(int argc,char *argv[]) {
 

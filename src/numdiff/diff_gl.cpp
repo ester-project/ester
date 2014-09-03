@@ -1,9 +1,13 @@
-#include"numdiff.h"
-#include<stdlib.h>
-#include"constants.h"
-#include<stdarg.h>
+#include "config.h"
+#include "numdiff.h"
+#include "constants.h"
 
-diff_gl::diff_gl(int n):ndomains(ndom),N(Ntot) {
+extern "C" {
+#include <stdlib.h>
+#include <stdarg.h>
+}
+
+diff_gl::diff_gl(int n):ndomains(ndom), N(Ntot) {
 
 	ndom=n;
 	npts=new int[ndom];

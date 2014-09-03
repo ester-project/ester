@@ -1,10 +1,10 @@
-#include"solver.h"
-#include<stdlib.h>
-#include<cmath>
-#include<time.h>
-#include LAPACK
+#include "solver.h"
+#include <stdlib.h>
+#include <cmath>
+#include <time.h>
+#include <lapack.h>
 extern "C" {
-#include CBLAS
+#include <cblas.h>
 }
 
 solver_full::solver_full(int nblocks,int offcore) {

@@ -1,6 +1,8 @@
 #ifndef _CONSTANTS_H
 #define _CONSTANTS_H
 
+#include "matrix.h"
+
 extern const double PI;
 extern const double SIG_SB;
 extern const double K_BOL;
@@ -12,8 +14,6 @@ extern const double C_LIGHT;
 extern const double M_SUN;
 extern const double R_SUN;
 extern const double L_SUN;
-
-#include"matrix.h"
 
 extern double_map AMASS;
 

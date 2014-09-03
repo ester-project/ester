@@ -1,10 +1,12 @@
 #ifndef _MAPPING_H
 #define _MAPPING_H
 
-#include"matrix.h"
-#include"numdiff.h"
-#include"graphics.h"
-#include"solver.h"
+#include "config.h"
+
+#include "matrix.h"
+#include "numdiff.h"
+#include "graphics.h"
+#include "solver.h"
 
 #define MAP_BONAZZOLA 0
 #define MAP_LINEAR 1

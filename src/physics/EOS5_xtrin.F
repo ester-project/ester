@@ -489,14 +489,14 @@ c..... The purpose of this subroutine is to read the data tables
       close (2)
 c..... read  tables
 
-	  rootdir=ESTER_ROOT
+	  rootdir=ESTER_DATADIR
       lenrootdir=len(rootdir)
 99    if(rootdir(lenrootdir:lenrootdir).EQ.' ') then
 		lenrootdir=lenrootdir-1
 		goto 99
 	  endif
       tabfilez= 
-     + 	rootdir(1:lenrootdir)//'/tables/opal/eos_tables/EOS5_data'
+     + 	rootdir(1:lenrootdir)//'/ester/tables/opal/eos_tables/EOS5_data'
 c       open(15, FILE=tabfilez)
  
       do 3 m=1,mx
