@@ -1,3 +1,4 @@
+#include "config.h"
 #include"star.h"
 #include<stdlib.h>
 #include<sys/time.h>

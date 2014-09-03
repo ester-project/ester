@@ -1,7 +1,7 @@
-#include<cmath>
-#include"numdiff.h"
-#include"constants.h"
-#include LAPACK
+#include <cmath>
+#include "numdiff.h"
+#include "constants.h"
+#include <lapack.h>
 
 diff_leg::diff_leg() {
 }

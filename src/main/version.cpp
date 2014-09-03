@@ -1,3 +1,4 @@
+#include "config.h"
 #include "version.h"
 #include"stdio.h"
 

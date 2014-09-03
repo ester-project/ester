@@ -1,3 +1,4 @@
+#include "config.h"
 #include<cmath>
 #include<stdio.h>
 #include<stdlib.h>

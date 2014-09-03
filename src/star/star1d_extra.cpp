@@ -1,3 +1,4 @@
+#include "config.h"
 #include"star.h"
 
 void star1d::spectrum(figure *pfig,const matrix &y,const char *line) const {

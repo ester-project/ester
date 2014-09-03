@@ -14,7 +14,7 @@
 	INTEGER :: fait
 
 c lecture du fichier de donnees
-	nom_fich2=ESTER_ROOT//'/tables/cesam_nuc/test'
+	nom_fich2=ESTER_DATADIR//'/tables/cesam_nuc/test'
 	CALL lit_nl(w_rot)    
 
 	fait=0

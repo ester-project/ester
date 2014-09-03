@@ -1,3 +1,4 @@
+#include "config.h"
 #include"mapping.h"
 #include<stdlib.h>
 

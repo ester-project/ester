@@ -1,3 +1,4 @@
+#include "config.h"
 #include"ester.h"
 #include<stdlib.h>
 

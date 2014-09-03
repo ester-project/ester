@@ -1,3 +1,4 @@
+#include "config.h"
 #include"solver.h"
 #include<string.h>
 #include<stdlib.h>

@@ -1,0 +1,24 @@
+#include "config.h"
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include "version.h"
+
+class configuration {
+public:
+	int minit,maxit;
+	double tol,newton_dmax;
+	int verbose;
+	char plot_device[64];
+	double plot_interval;
+	char input_file[256];
+	char param_file[256];
+	char output_file[256];
+	char output_mode;
+	configuration(int argc,char *argv[]);
+	~configuration(){};
+	void missing_argument(const char *arg);
+	int check_arg(const char *arg,const char *val);
+};
+

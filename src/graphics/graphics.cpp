@@ -1,3 +1,4 @@
+#include "config.h"
 #include"matrix.h"
 #include"graphics.h"
 #include<stdlib.h>

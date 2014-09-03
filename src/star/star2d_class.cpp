@@ -1,3 +1,4 @@
+#include "config.h"
 #include"star.h"
 #include"version.h"
 #include<string.h>
@@ -357,7 +358,7 @@ DEBUG_FUNCNAME
 	diff_leg leg_new;
 	matrix Tr,m0;
 
-	sprintf(default_params,"%s/config/2d_default.par",ESTER_ROOT);
+	sprintf(default_params,"%s/ester/1d_default.par", ESTER_DATADIR);
 
 	if(*input_file) {
 		if(!read(input_file)) {
@@ -491,7 +492,7 @@ DEBUG_FUNCNAME
 	int k;
 	file_parser fp;
 
-	sprintf(default_params,"%s/config/2d_default.par",ESTER_ROOT);
+	sprintf(default_params,"%s/config/2d_default.par",ESTER_DATADIR);
 
 	*this=A;
 

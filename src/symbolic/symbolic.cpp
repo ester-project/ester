@@ -1,3 +1,4 @@
+#include "config.h"
 #include"symbolic.h"
 #include<cstdlib>
 #include<cmath>

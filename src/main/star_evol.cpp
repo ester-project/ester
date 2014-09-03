@@ -1,8 +1,9 @@
-#include"ester.h"
-#include<string.h>
-#include<stdlib.h>
+#include "config.h"
+#include "ester.h"
+#include <string.h>
+#include <stdlib.h>
 
-#include"read_config.cpp"
+#include "read_config.h"
 
 int main(int argc,char *argv[]) {
 

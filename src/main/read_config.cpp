@@ -1,22 +1,6 @@
-#include "version.h"
-
-class configuration {
-public:
-	int minit,maxit;
-	double tol,newton_dmax;
-	int verbose;
-	char plot_device[64];
-	double plot_interval;
-	char input_file[256];
-	char param_file[256];
-	char output_file[256];
-	char output_mode;
-	configuration(int argc,char *argv[]);
-	~configuration(){};
-	void missing_argument(const char *arg);
-	int check_arg(const char *arg,const char *val);
-};
-
+#include "config.h"
+#include "parser.h"
+#include "read_config.h"
 
 configuration::configuration(int argc,char *argv[]) {
 	
@@ -38,7 +22,7 @@ configuration::configuration(int argc,char *argv[]) {
 	tol=1e-8;
 	newton_dmax=0.5;
 	
-	sprintf(file,"%s/config/star.cfg",ESTER_ROOT);
+	sprintf(file, "%s/ester/star.cfg", ESTER_DATADIR);
 	if(!fp.open(file)) 
 		printf("Can't open configuration file %s\n",file);
 	else {
@@ -146,4 +130,3 @@ void configuration::missing_argument(const char *arg) {
 	fprintf(stderr,"Error: Argument to '%s' missing\n",arg);
 	exit(1);
 }
-

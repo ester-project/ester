@@ -1,3 +1,4 @@
+#include "config.h"
 #include"physics.h"
 #include<string.h>
 

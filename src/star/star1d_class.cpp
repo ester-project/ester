@@ -1,3 +1,4 @@
+#include "config.h"
 #include"star.h"
 #include<string.h>
 #include<stdlib.h>
@@ -134,7 +135,7 @@ DEBUG_FUNCNAME
 	int i,k,change_grid=0;
 	matrix Tr;
 
-	sprintf(default_params,"%s/config/1d_default.par",ESTER_ROOT);
+	sprintf(default_params,"%s/ester/1d_default.par", ESTER_DATADIR);
 
 	if(*input_file) {
 		if(!read(input_file)) {
