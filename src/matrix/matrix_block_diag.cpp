@@ -1,7 +1,8 @@
-#include"matrix.h"
-#include<stdlib.h>
+#include "config.h"
+#include "matrix.h"
+#include <stdlib.h>
 extern "C" {
-#include CBLAS
+#include <cblas.h>
 }
 
 

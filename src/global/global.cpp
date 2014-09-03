@@ -1,4 +1,4 @@
-#include<cmath>
+#include <cmath>
 #include <map>
 #include <string>
 
@@ -14,7 +14,7 @@ extern const double M_SUN=1.9891e33;
 extern const double R_SUN=6.95508e10;
 extern const double L_SUN=3.8396e33;
 
-#include"matrix.h"
+#include "matrix.h"
 
 double_map AMASS = create_double_map
 		("n",1.008665)

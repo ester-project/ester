@@ -5,7 +5,7 @@ import signal
 import os
 from subprocess import call
 
-ester_root=ESTER_ROOT
+ester_root="@prefix@"
 
 
 # Let the child process handle SIGINT

@@ -1,3 +1,12 @@
+UNAME:=$(shell uname -s)
+
+FCFLAGS:=$(FCFLAGS) -I$(ESTER_ROOT)/tables/cesam_nuc
+LDFLAGS:=$(LDFLAGS) -L$(ESTER_ROOT)/tables/houdek/v9/lib -L$(ESTER_ROOT)/tables/cesam_nuc
+LIBS:=-lopint -lnuc $(LIBS) 
+
+CCFLAGS:=$(CCFLAGS) -I$(ESTER_ROOT)/include 
+LDFLAGS:=$(LDFLAGS) -L$(ESTER_ROOT)/lib -Wl,-rpath,$(ESTER_ROOT)/lib
+
 F90 = $(FC)
 FFLAGS90     = -O -c -w $(FCFLAGS)
 

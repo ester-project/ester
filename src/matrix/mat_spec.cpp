@@ -4,9 +4,9 @@
 #include<stdlib.h>
 #include<sys/time.h>
 extern "C" {
-#include CBLAS
+#include <cblas.h>
 }
-#include LAPACK
+#include <lapack.h>
 
 matrix matrix::operator,(const matrix &a) const {
 
