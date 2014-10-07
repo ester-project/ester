@@ -10,10 +10,6 @@ AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-bzip2 tar-ustar -Wall subdir-objects for
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-# m4_ifdef([LT_PREREQ], [],
-#          [m4_fatal([libtool version 2.2.6 or higher is required])])
-# LT_PREREQ([2.2.6])
-
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([config.h.in])
 
@@ -50,6 +46,8 @@ AC_TYPE_SIZE_T
 # AC_CHECK_HEADER_STDBOOL
 
 # Checks for library functions.
+AC_CHECK_LIB([m], [sqrt])
+
 # Search for mkl
 AC_SEARCH_LIBS([cblas_dgemm], [mkl_intel_lp64],
                [have_mkl=yes
@@ -58,15 +56,14 @@ AC_SEARCH_LIBS([cblas_dgemm], [mkl_intel_lp64],
                [-lmkl_intel_thread -lmkl_core -liomp5 -lpthread])
 
 AS_IF([test "x$have_mkl" == "xyes"],
-      [BLAS_LIB="MKL"
-       AC_MSG_NOTICE(blas library: mkl)],
-      [AC_SEARCH_LIBS([cblas_sgemm], [cblas blas],
+      [BLAS_LIB="MKL"], [
+       AC_SEARCH_LIBS([cblas_sgemm], [cblas blas],
                       [],
                       [AC_ERROR(cblas library not found)])
-      AC_CHECK_LIB([blas], [dgemm_], [],
-                   [AC_ERROR(blas library not found: consider setting LDFLAGS)])
-      AC_CHECK_LIB([lapack], [dgetrf_], [],
-                   [AC_ERROR(lapack lib not found: consider setting LDFLAGS)])])
+       AC_CHECK_LIB([blas], [dgemm_], [],
+                    [AC_ERROR(blas library not found: consider setting LDFLAGS)])
+       AC_CHECK_LIB([lapack], [dgetrf_], [],
+                    [AC_ERROR(lapack library not found: consider setting LDFLAGS)])])
 
 AC_FUNC_ERROR_AT_LINE
 AC_CHECK_FUNCS([floor gettimeofday pow sqrt strtoul])
