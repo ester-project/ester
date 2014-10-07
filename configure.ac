@@ -78,14 +78,28 @@ AC_CONFIG_FILES([Makefile
                  src/physics/Makefile
                  test/models/Makefile])
 
+AC_LANG_PUSH([Fortran 77])
+AC_MSG_CHECKING([whether $FC supports -fno-align-commons])
+save_fflags=$FFLAGS
+FFLAGS="-fno-align-commons"
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([])],
+                  [AC_MSG_RESULT([yes])]
+                  [fc_support_no_align_commons=yes],
+                  [AC_MSG_RESULT([no])]
+                  [fc_support_no_align_commons=no])
+FFLAGS=$save_fflags
+AC_LANG_POP([Fortran 77])
+
 AS_IF([test "x$ac_cv_fc_compiler_gnu" = "xyes"], [
-       FFLAGS="$FFLAGS -fno-align-commons"
-       FFLAGS="$FFLAGS -fdefault-real-8"
-       FFLAGS="$FFLAGS -fdefault-double-8"
-       FFLAGS="$FFLAGS -ffixed-line-length-132"
-       FFLAGS="$FFLAGS -O -c -w"
-       FFLAGS="$FFLAGS -fd-lines-as-comments"], [
-       FFLAGS="$FFLAGS -r8 -nowarn -fpp -extend-source"])
+       AS_IF([test "x$fc_support_no_align_commons" = "xyes"],
+             [FFLAGS="$FFLAGS -fno-align-commons"
+              FFLAGS="$FFLAGS -fdefault-real-8"
+              FFLAGS="$FFLAGS -fdefault-double-8"
+              FFLAGS="$FFLAGS -ffixed-line-length-132"
+              FFLAGS="$FFLAGS -O -c -w"
+              FFLAGS="$FFLAGS -fd-lines-as-comments"],
+              [AC_ERROR($FC does not support -fno-align-commons)])],
+       [FFLAGS="$FFLAGS -r8 -nowarn -fpp -extend-source"])
 
 AC_OUTPUT
 
