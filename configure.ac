@@ -1,25 +1,35 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.69])
+AC_PREREQ([2.59])
 AC_INIT([ESTER], [1.01])
 AC_CONFIG_AUX_DIR(autoconf)
 AC_CONFIG_MACRO_DIR([m4])
 
-AM_PROG_AR
-LT_INIT
+AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-bzip2 tar-ustar -Wall subdir-objects foreign])
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-AM_INIT_AUTOMAKE([-Wall subdir-objects foreign])
+# m4_ifdef([LT_PREREQ], [],
+#          [m4_fatal([libtool version 2.2.6 or higher is required])])
+# LT_PREREQ([2.2.6])
+
 AC_CONFIG_HEADERS([config.h])
-# AC_CONFIG_SRCDIR([src/])
+AC_CONFIG_SRCDIR([config.h.in])
 
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
+AC_PROG_CPP
 AC_PROG_FC
 AC_PROG_F77($FC)
+AC_PROG_AWK
+AC_PROG_INSTALL
+AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
+
+AM_PATH_PYTHON
 
 # Checks for libraries.
 
@@ -27,16 +37,17 @@ AC_PROG_LIBTOOL
 have_pgplot="no"
 AC_CHECK_HEADERS([cpgplot.h],
                  [AC_DEFINE([USE_PGPLOT], [1], [enable pgplot support])
-                 have_pgplot="yes"
-                 AC_CHECK_LIB([cpgplot], [cpgebuf], [],
+                 AC_CHECK_LIB([cpgplot], [cpgebuf], [
+                               LIBS="-lcpgplot $LIBS" have_pgplot="yes"],
                               [AC_ERROR(cpgplot library not found)])])
+
 AC_CHECK_HEADERS([stddef.h stdlib.h string.h sys/time.h])
 AC_CHECK_HEADERS([cblas.h lapack.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_HEADER_STDBOOL
 AC_C_INLINE
 AC_TYPE_SIZE_T
+# AC_CHECK_HEADER_STDBOOL
 
 # Checks for library functions.
 # Search for mkl
@@ -63,10 +74,12 @@ AC_CHECK_FUNCS([floor gettimeofday pow sqrt strtoul])
 AC_CONFIG_FILES([Makefile
                  tables/Makefile
                  tables/cesam_nuc/Makefile
-                 tables/houdek/v9/Makefile
+                 tables/houdek/v9/lib/Makefile
                  tables/opal/Makefile
                  src/Makefile
-                 src/main/ester])
+                 src/main/ester
+                 src/physics/Makefile
+                 test/models/Makefile])
 
 AS_IF([test "x$ac_cv_fc_compiler_gnu" = "xyes"], [
        FFLAGS="$FFLAGS -fno-align-commons"
@@ -78,12 +91,6 @@ AS_IF([test "x$ac_cv_fc_compiler_gnu" = "xyes"], [
        FFLAGS="$FFLAGS -r8 -nowarn -fpp -extend-source"])
 
 AC_OUTPUT
-AC_MSG_NOTICE()
-AC_MSG_NOTICE(config:)
-AC_MSG_NOTICE(FC:       $FC)
-AC_MSG_NOTICE(CC:       $CC)
-AC_MSG_NOTICE(LIBS:     $LIBS)
-AC_MSG_NOTICE(PGPLOT:   $have_pgplot)
 
 cat<< EOF
 
