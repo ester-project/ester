@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/src//include
 AM_CPPFLAGS +=-I../../tables/cesam_nuc
 AM_CPPFLAGS	+= -DESTER_DATADIR='"$(datadir)"'
 
