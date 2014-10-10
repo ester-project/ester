@@ -154,7 +154,7 @@ void figure::plot(const matrix &y,const char *line) {
 
 	matrix x;
 	
-	if(y.nrows()==1&y.ncols()>1) 
+	if(y.nrows()==1&&y.ncols()>1)
 		x=vector(1,y.ncols(),y.ncols());
 	else
 		x=vector_t(1,y.nrows(),y.nrows());
@@ -228,7 +228,7 @@ void figure::semilogx(const matrix &y,const char *line) {
 
 	matrix x;
 	
-	if(y.nrows()==1&y.ncols()>1) 
+	if(y.nrows()==1&&y.ncols()>1)
 		x=vector(1,y.ncols(),y.ncols());
 	else
 		x=vector_t(1,y.nrows(),y.nrows());
@@ -247,7 +247,7 @@ void figure::semilogy(const matrix &y,const char *line) {
 
 	matrix x;
 	
-	if(y.nrows()==1&y.ncols()>1) 
+	if(y.nrows()==1&&y.ncols()>1)
 		x=vector(1,y.ncols(),y.ncols());
 	else
 		x=vector_t(1,y.nrows(),y.nrows());
@@ -267,7 +267,7 @@ void figure::loglog(const matrix &y,const char *line) {
 
 	matrix x;
 	
-	if(y.nrows()==1&y.ncols()>1) 
+	if(y.nrows()==1&&y.ncols()>1)
 		x=vector(1,y.ncols(),y.ncols());
 	else
 		x=vector_t(1,y.nrows(),y.nrows());
