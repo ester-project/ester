@@ -1,7 +1,11 @@
-#include"parser.h"
-#include<string.h>
+#include "config.h"
+#include "parser.h"
 
-void cmdline_parser::open(int argc_in,char *argv_in[]) {
+extern "C" {
+#include <string.h>
+}
+
+void cmdline_parser::open(int argc_in, char *argv_in[]) {
 
 	argc=argc_in;
 	argv=argv_in;

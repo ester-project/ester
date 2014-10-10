@@ -1,7 +1,7 @@
-#include"physics.h"
+#include "config.h"
+#include "physics.h"
 
-double_map initial_composition(double X,double Z) {
-
+double_map initial_composition(double X, double Z) {
 	double_map comp;
 	
 	comp["H"]=X;

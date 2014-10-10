@@ -1,3 +1,6 @@
+#include "config.h"
+#include "matrix.h"
+
 #include <cmath>
 #include <map>
 #include <string>

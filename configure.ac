@@ -51,6 +51,8 @@ AC_CHECK_LIB([m], [sqrt])
 # Search for mkl
 AC_SEARCH_LIBS([cblas_dgemm], [mkl_intel_lp64],
                [have_mkl=yes
+                AC_DEFINE([USE_MKL], [1],
+                          [Use MKL lib])
                 LIBS="$LIBS -lmkl_intel_thread -lmkl_core -liomp5 -lpthread"],
                [have_mkl=no],
                [-lmkl_intel_thread -lmkl_core -liomp5 -lpthread])
@@ -101,6 +103,25 @@ AS_IF([test "x$ac_cv_fc_compiler_gnu" = "xyes"], [
               [AC_ERROR($FC does not support -fno-align-commons)])],
        [FFLAGS="$FFLAGS -r8 -nowarn -fpp -extend-source"])
 
+AC_ARG_ENABLE([perf-log],
+              AS_HELP_STRING([--enable-perf-log],
+                             [Enable performance monitoring]), [
+              perf_log=$enableval], [
+              perf_log="no"])
+AS_IF([test "x$enable_perf_log" != "xno"], [
+       AC_DEFINE([PERF_LOG], [1], [Should perf-log be enabled])
+       perf_log="yes"])
+
+AC_ARG_ENABLE([debug],
+              AS_HELP_STRING([--enable-debug],
+                             [Enable debug mode]), [
+              AC_DEFINE([DEBUG], [1], [Eanble debug mode])
+              CFLAGS="$CFLAGS -g"
+              CXXFLAGS="$CXXFLAGS -g"])
+
+# CFLAGS="$CFLAGS -Wall -O3"
+# CXXFLAGS="$CXXFLAGS -Wall -O3"
+
 AC_OUTPUT
 
 cat<< EOF
@@ -113,6 +134,7 @@ C compiler:       $CC
 C++ compiler:     $CXX
 pgplot enabled:   $have_pgplot
 found MKL:        $have_mkl
+perf_log:         $perf_log
 LIBS:             $LIBS
 prefix:           $prefix
 -------------------------------------------------------------------------------

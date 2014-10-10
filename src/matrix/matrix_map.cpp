@@ -1,4 +1,5 @@
-#include"matrix.h"
+#include "config.h"
+#include "matrix.h"
 
 using namespace std;
 
