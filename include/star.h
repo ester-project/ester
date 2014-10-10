@@ -1,8 +1,6 @@
 #ifndef _STAR_H
 #define _STAR_H
 
-#include "config.h"
-
 #include "matrix.h"
 #include "solver.h"
 #include "numdiff.h"

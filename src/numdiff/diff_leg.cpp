@@ -1,7 +1,15 @@
-#include <cmath>
+#include "config.h"
 #include "numdiff.h"
 #include "constants.h"
+
+#include <cmath>
+extern "C" {
+#ifdef USE_MKL
+#include <mkl_lapack.h>
+#else
 #include <lapack.h>
+#endif
+}
 
 diff_leg::diff_leg() {
 }

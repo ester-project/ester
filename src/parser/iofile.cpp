@@ -1,6 +1,12 @@
-#include"parser.h"
-#include<string.h>
-#include<stdlib.h>
+#include "config.h"
+#include "parser.h"
+// #include "numdiff.h"
+// #include "constants.h"
+
+extern "C" {
+#include <string.h>
+#include <stdlib.h>
+}
 
 int OUTFILE::open(const char *name,char mode_set) {
 

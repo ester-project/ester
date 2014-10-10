@@ -1,4 +1,5 @@
-#include"star.h"
+#include "config.h"
+#include "star.h"
 
 
 star_evol::star_evol() {

@@ -1,7 +1,11 @@
-#include"solver.h"
-#include<string.h>
-#include<stdlib.h>
-#include<cmath>
+#include "config.h"
+#include "solver.h"
+
+extern "C" {
+#include <string.h>
+#include <stdlib.h>
+}
+#include <cmath>
 
 SDIRK_solver::SDIRK_solver() {
 

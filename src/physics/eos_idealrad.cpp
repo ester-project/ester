@@ -1,5 +1,6 @@
-#include"physics.h"
-#include"constants.h"
+#include "config.h"
+#include "physics.h"
+#include "constants.h"
 
 int eos_idealrad(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos) {

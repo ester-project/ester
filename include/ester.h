@@ -1,10 +1,7 @@
 #ifndef _ESTER_H
 #define _ESTER_H
 
-#include "config.h"
-
 #include "constants.h"
-#include "version.h"
 #include "graphics.h"
 #include "mapping.h"
 #include "matrix.h"

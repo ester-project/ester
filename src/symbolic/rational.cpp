@@ -1,6 +1,9 @@
-#include"symbolic.h"
-#include<cstdlib>
-#include<cmath>
+#include "config.h"
+#include "symbolic.h"
+
+#include <cstdlib>
+#include <cmath>
+#include <sstream>
 
 int rational::num() const {
 	return n;
