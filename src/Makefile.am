@@ -2,8 +2,7 @@ SUBDIRS	= physics
 
 BUILT_SOURCES	= main/read_config.cpp
 
-AM_CPPFLAGS = -I$(top_srcdir)/include
-AM_CPPFLAGS +=-I$(srcdir)/include
+AM_CPPFLAGS = -I$(srcdir)/include
 AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam_nuc
 AM_CPPFLAGS	+= -DESTER_DATADIR='"$(datadir)"'
 
@@ -40,7 +39,6 @@ version 	: libnuc.la libopint.la libester.la
 star_evol	: libnuc.la libopint.la libester.la
 
 EXTRA_DIST	= main/ester_info.cpp					\
-			  include/cblas.h include/lapack.h		\
 			  $(top_srcdir)/config/1d_default.par	\
 			  $(top_srcdir)/config/2d_default.par	\
 			  $(top_srcdir)/config/star.cfg
@@ -69,19 +67,19 @@ libester_la_SOURCES		= global/global.cpp									\
                           symbolic/sym_tens.cpp symbolic/sym_vec.cpp
 
 library_includedir  	= $(includedir)/
-library_include_HEADERS = $(top_srcdir)/include/constants.h \
-						  $(top_srcdir)/include/ester.h		\
-						  $(top_srcdir)/include/mapping.h	\
-						  $(top_srcdir)/include/numdiff.h	\
-						  $(top_srcdir)/include/physics.h	\
-						  $(top_srcdir)/include/star.h		\
-						  $(top_srcdir)/include/debug.h		\
-						  $(top_srcdir)/include/graphics.h	\
-						  $(top_srcdir)/include/matrix.h	\
-						  $(top_srcdir)/include/parser.h	\
-						  $(top_srcdir)/include/solver.h	\
-						  $(top_srcdir)/include/symbolic.h	\
-						  $(top_srcdir)/include/read_config.h
+library_include_HEADERS = $(srcdir)/include/constants.h \
+						  $(srcdir)/include/ester.h		\
+						  $(srcdir)/include/mapping.h	\
+						  $(srcdir)/include/numdiff.h	\
+						  $(srcdir)/include/physics.h	\
+						  $(srcdir)/include/star.h		\
+						  $(srcdir)/include/debug.h		\
+						  $(srcdir)/include/graphics.h	\
+						  $(srcdir)/include/matrix.h	\
+						  $(srcdir)/include/parser.h	\
+						  $(srcdir)/include/solver.h	\
+						  $(srcdir)/include/symbolic.h	\
+						  $(srcdir)/include/read_config.h
 
 defaultconfigdir	= $(datadir)/ester
 defaultconfig_DATA	= $(top_srcdir)/config/1d_default.par \
