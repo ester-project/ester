@@ -2,9 +2,14 @@
 #include <stdlib.h>
 #include <cmath>
 #include <time.h>
-#include <lapack.h>
 extern "C" {
+#ifdef USE_MKL
+#include <mkl_cblas.h>
+#include <mkl_lapack.h>
+#else
 #include <cblas.h>
+#include <lapack.h>
+#endif
 }
 
 solver_full::solver_full(int nblocks,int offcore) {
