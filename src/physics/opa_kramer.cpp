@@ -1,7 +1,9 @@
-#include<cmath>
-#include"matrix.h"
-#include"constants.h"
-#include"physics.h"
+#include "config.h"
+#include "matrix.h"
+#include "constants.h"
+#include "physics.h"
+
+#include <cmath>
 
 int opa_kramer(const matrix &T,const matrix &rho,opa_struct &opa) {
 

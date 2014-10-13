@@ -1,12 +1,14 @@
 #ifndef _PARSER_H
 #define _PARSER_H
 
-#include<stdio.h>
-#include<iostream>
-#include<sstream>
-#include<typeinfo>
-#include<string.h>
-#include"matrix.h"
+#include "config.h"
+
+#include <stdio.h>
+#include <iostream>
+#include <sstream>
+#include <typeinfo>
+#include <string.h>
+#include "matrix.h"
 
 class cmdline_parser {
 	int argc,i;

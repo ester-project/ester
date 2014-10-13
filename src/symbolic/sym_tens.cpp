@@ -1,6 +1,9 @@
-#include"symbolic.h"
-#include<cstdlib>
-#include<typeinfo>
+#include "config.h"
+#include "symbolic.h"
+
+#include <cstdlib>
+#include <typeinfo>
+#include <iostream>
 
 using namespace std;
 

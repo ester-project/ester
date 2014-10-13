@@ -1,7 +1,13 @@
-#include"matrix.h"
-#include<stdlib.h>
+#include "config.h"
+#include "matrix.h"
+
 extern "C" {
-#include CBLAS
+#include <stdlib.h>
+#ifdef USE_MKL
+#include <mkl_cblas.h>
+#else
+#include <cblas.h>
+#endif
 }
 
 

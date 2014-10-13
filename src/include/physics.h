@@ -1,7 +1,9 @@
 #ifndef _PHYSICS_H
 #define _PHYSICS_H
 
-#include"matrix.h"
+#include "config.h"
+
+#include "matrix.h"
 
 struct nuc_struct {
 	matrix eps,pp,cno,dlneps_lnrho,dlneps_lnT;

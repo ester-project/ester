@@ -1,7 +1,9 @@
 #ifndef _NUMDIFF_H
 #define _NUMDIFF_H
 
-#include"matrix.h"
+#include "config.h"
+
+#include "matrix.h"
 
 class diff_gl {
 	int ndom,Ntot;

@@ -1,7 +1,8 @@
 #ifndef _SOLVER_H
 #define _SOLVER_H
 
-#include"matrix.h"
+#include "config.h"
+#include "matrix.h"
 
 class solver_operator {
 public:

@@ -1,7 +1,8 @@
 #ifndef _GRAPHICS_H
 #define _GRAPHICS_H
 
-#include"matrix.h"
+#include "config.h"
+#include "matrix.h"
 
 class figure {
 	int id;

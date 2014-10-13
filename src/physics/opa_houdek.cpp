@@ -39,7 +39,7 @@ int opa_houdek(const matrix &X,double Z,const matrix &T,const matrix &rho,
     	iorder=4;
 		imode=2;
 		maceps_(&eps);
-		sprintf(tabnam,"%s/tables/houdek/v9/OPINTPATH_AX",ESTER_ROOT);
+		sprintf(tabnam, "%s/ester/tables/houdek/v9/OPINTPATH_AX", ESTER_DATADIR);
 		for(i=strlen(tabnam);i<80;i++) tabnam[i]=' ';
 		opinit_(&eps,&iorder,tabnam,&imode,80);	
     	init=1;

@@ -1,0 +1,26 @@
+Installation:
+
+ESTER is available under the GPL Version 3 license. It is hosted either on
+google code site (https://code.google.com/p/ester-project) or on github
+(https://github.com/ester-project/ester).
+
+To use the last version of the code, you can directly clone the last
+development version form Git:
+
+shell$ git clone https://github.com/ester-project/ester.git
+shell$ cd ester
+./bootstrap
+
+Installation of the ESTER binaries and library use the common GNU-based
+process:
+shell$ ./configure --prefix=...
+shell$ make
+shell$ make install
+
+In order to use the ester library and binaries, do not forget add the
+installation directories to your PATH, LD_LIBRARY_PATH and CPATH environement
+variables.
+For instance, if you used $HOME/local as the install prefix (during the
+configure process), you should add $HOME/local/lib to your LD_LIBRARY_PATH,
+$HOME/local/include to your CPATH and $HOME/local/bin to you PATH.
+

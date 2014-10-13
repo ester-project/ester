@@ -4,9 +4,14 @@
 #include<stdlib.h>
 #include<sys/time.h>
 extern "C" {
-#include CBLAS
+#ifdef USE_MKL
+#include <mkl_lapack.h>
+#include <mkl_cblas.h>
+#else
+#include <lapack.h>
+#include <cblas.h>
+#endif
 }
-#include LAPACK
 
 matrix matrix::operator,(const matrix &a) const {
 
