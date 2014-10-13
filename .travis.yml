@@ -6,3 +6,7 @@ before_install:
     - sudo apt-get install gfortran liblapack-dev
 before_script:
     - ./bootstrap
+script:
+    - ./configure --prefix=$(pwd) && make install
+after_success:
+    - travis_wait ./bin/test_models
