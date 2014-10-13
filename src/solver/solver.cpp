@@ -503,7 +503,8 @@ void solver::mult(matrix *y) {
 
 void solver::mult_op(matrix *y) {
 
-	matrix z[nv],yy,zz,zz0;
+	matrix *z,yy,zz,zz0;
+    z = new matrix[nv];
 	int i,j,n,j0[nv];
 	solver_elem *p;
 	int **nr=var_nr,**nbot=var_nbot,**ntop=var_ntop,**nth=var_nth;
@@ -757,12 +758,13 @@ void solver::mult_op(matrix *y) {
 		}
 	}
 	for(i=0;i<nv;i++) y[i]=z[i];
-
+    delete [] z;
 }
 
 int solver::cgs(const matrix &rhs,matrix &x,int maxit) {
 	
-	matrix r,r_,u,p,q,v,err_rel,err_abs,y[nv];
+	matrix r,r_,u,p,q,v,err_rel,err_abs;
+    matrix *y = new matrix[nv];
 	int k,error=0,n,fin,i;
 	double s,a,s_1;
 	
@@ -819,6 +821,7 @@ int solver::cgs(const matrix &rhs,matrix &x,int maxit) {
 			printf("%d max. rel. error:%e max. abs. error:%e\n",k,max(err_rel*(err_abs>=abs_tol)),max(err_abs*(err_rel>=rel_tol)));
 		k++;
 	}
+    delete [] y;
 	if(error) {
 		return -error;
 	}
@@ -1191,7 +1194,8 @@ void solver::check_full(int n, const matrix &opi, int pos) {
 
 	
 	int ivar,iblock,j0=0,nj=0,i,j,i0,ni=0;
-	matrix x,y[nv];
+	matrix x;
+    matrix *y = new matrix[nv];
 
 	for(iblock=0;iblock<n+pos;iblock++) 
 		for(ivar=0;ivar<nv;ivar++) if(reg(ivar)&&!dep(ivar)) j0+=var_nr[iblock][ivar]*var_nth[iblock][ivar];
@@ -1224,8 +1228,7 @@ void solver::check_full(int n, const matrix &opi, int pos) {
 				}
 		}
 	}
-
-	
+    delete [] y;
 }
 
 void solver::wrap(const matrix *y,matrix *x) {
@@ -1657,7 +1660,7 @@ int solver::check_struct_block(int n,int i,int j) {
 		if(p->type=='d') {
 			bool cond;
 			cond= (n2==n1)||(n2==1);
-			cond= cond&&(m2==m1)||(m2==1);
+			cond= cond && ((m2==m1)||(m2==1));
 			if(!cond) {
 				sprintf(err_msg,"Term incompatible with size of variables");
 				check_struct_error(err_msg,n,i,j,p);
@@ -2076,7 +2079,7 @@ void solver::subst_dep_elem(int i,int k,solver_block *bb,solver_elem *p,const ma
 
 void solver::solve_dep() {
 	
-	matrix x[nv];
+	matrix *x = new matrix[nv];
 	
 	for(int i=0;i<nv;i++) {
 		x[i]=sol[i];
@@ -2086,6 +2089,7 @@ void solver::solve_dep() {
 		if(dep(i))
 			sol[i]=x[i];
 	}
+    delete [] x;
 }
 
 
