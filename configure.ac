@@ -108,7 +108,7 @@ AC_ARG_ENABLE([perf-log],
                              [Enable performance monitoring]), [
               perf_log=$enableval], [
               perf_log="no"])
-AS_IF([test "x$enable_perf_log" != "xno"], [
+AS_IF([test "x$enable_perf_log" == "xyes"], [
        AC_DEFINE([PERF_LOG], [1], [Should perf-log be enabled])
        perf_log="yes"])
 
