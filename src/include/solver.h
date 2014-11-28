@@ -3,6 +3,13 @@
 
 #include "matrix.h"
 
+/// \page term_representation Term representation in the equations
+/// A term in an equation is stored in the form
+/// \f$ D \circ (L . I \circ x . R) \f$.
+/// Where \f$ . \f$ is the matrix multiplication and \f$ \circ \f$,
+/// the Schur product.
+//TODO give an example
+
 class solver_operator {
 public:
 	int verbose;
@@ -53,6 +60,15 @@ public:
 	matrix solve(const matrix &a) {return 0*a;};
 };
 	
+/// \brief A solver object stores a system of equation to solve.
+///
+/// A \p solver_elem object contains all the equations for a given block. A block
+/// refers to one domain or to one set of boundary conditions.
+///
+// nv is the number of variables (equations) of the problem.
+// eq_set(i) (i<nv) is 1 if the i-th equation is defined in ths block.
+// nr[i],nth[i] is the size of the i-th equation (It is automatically taken from
+// the size of D).	
 class solver {
 
 	/* 	A solver_elem object stores one term of a equation in the form D*(L,I*x,R).
@@ -68,11 +84,25 @@ class solver {
 	
    	The set of terms in one given eq. referred to one given variable is represented
    	as a linked list of solver_elem objects. */
-
 	
+    /// \brief Stores one term of an equation.
+    ///
+    /// A full linked list of \p solver_elem represents all the terms of a given
+    /// variable in a particular equation.
+    /// \see \ref term_representation
 	class solver_elem {
+        /// Indicates which of the matrices
+        /// D, L, R, I are not unity
+        /// - 'd': D
+        /// - 'l': D,L
+        /// - 'r': D,R
+        /// - 'f': D,L,R
+        /// - 'm': D,L,I
+        /// - 's': D,R,I
+        /// - 'g': D,L,R,I
 		char type;
 		matrix D,L,R,I;
+        /// \brief Pointer to the next term in the equation.
 		solver_elem *next;
 		friend class solver_block;
 		friend class solver;
@@ -101,46 +131,90 @@ class solver {
 			add_*(...) to add a term in the equation
 	*/
 
+    /// \brief Stores all the equations for a given block
+    /// (a block can either be a domain or a set of boundary condition).
+    ///
+    /// The equations are represented as an array of linked list of solver_elem
+    /// objects \p eq.
 	class solver_block {
-		int nv,*nr,*nth;
+        int nv;	  ///< \brief The number of variables (and equation) of the
+               	  ///< problem.
+        int *nr;  ///< \brief \p nr[i] is the radial resolution of the \p i-th
+                  ///< variable
+        int *nth; ///< \brief \p nth[i] is the azimuthal resolution of the \p
+                  ///< i-th variable.
+        /// \brief Pointers to all the terms of all the equations of the block.
+        ///
+        /// eq[i][j] points to the first \p solver_elem object of the list
+        /// representing the terms of the i-th equation associated with the j-th
+        /// variable.
 		solver_elem ***eq;
+        /// \p eq_set(i) is 1 if the i-th equation is defined in this block.
 		matrix eq_set;
 		friend class solver;
 	public:
 		solver_block() {};
 		~solver_block() {};
+        /// \brief Initializes the object with \p nvar variables.
 		void init(int nvar);
+        /// \brief Destroys the object and frees memory.
 		void destroy();
+        /// \brief Resets all equations of the block.
 		void reset();
+        /// \brief Resets the \p ieq-th equation of the block.
 		void reset(int ieq);
+        /// \brief Introduces a term in an equation of the block.
+        ///
+        /// \param ieq index of the equation where the term is to be added
+        /// \param ivar index the variable of the term
+        /// \param type the \p type of term to be added
+        /// \param d the D matrix of the term
+        /// \param l the L matrix of the term
+        /// \param r the R matrix of the term
+        /// \param i the I matrix of the term
+        /// \see - \ref term_representation
 		void add(int ieq,int ivar,char type, const matrix *d, const matrix *l, const matrix *r, const matrix *i);
 		
+        /// \brief Introduces a term of \p type 'd' for the \p ivar-th variable
+        /// in the \p ieq-th equation.
 		inline void add_d(int ieq,int ivar,const matrix &d) {
 			add(ieq,ivar,'d',&d,NULL,NULL,NULL);
 		}
+        /// \brief Introduces a term of \p type 'l'.
 		inline void add_l(int ieq,int ivar,const matrix &d,const matrix &l) {
 			add(ieq,ivar,'l',&d,&l,NULL,NULL);
 		}
+        /// \brief Introduces a term of \p type 'r'.
 		inline void add_r(int ieq,int ivar,const matrix &d,const matrix &r) {
 			add(ieq,ivar,'r',&d,NULL,&r,NULL);
 		}
+        /// \brief Introduces a term of \p type 'f'.
 		inline void add_lr(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r) {
 			add(ieq,ivar,'f',&d,&l,&r,NULL);
 		}
+        /// \brief Introduces a term of \p type 'm'.
 		inline void add_li(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &i) {
 			add(ieq,ivar,'m',&d,&l,NULL,&i);
 		}
+        /// \brief Introduces a term of \p type 's'.
 		inline void add_ri(int ieq,int ivar,const matrix &d,const matrix &r,const matrix &i) {
 			add(ieq,ivar,'s',&d,NULL,&r,&i);
 		}
+        /// \brief Introduces a term of \p type 'g'.
 		inline void add_lri(int ieq,int ivar,const matrix &d,const matrix &l,const matrix &r,const matrix &i) {
 			add(ieq,ivar,'g',&d,&l,&r,&i);
 		}
 	
 	};
 
-	int nb,nv;
-	int **var_nr,**var_ntop,**var_nbot,**var_nth,solver_N,*def_nr;
+	int nb; ///< Number of blocks defined in the problem.
+    int nv; ///< Number of variables of the problem.
+	int **var_nr; ///< \p var_nr[i][j] is the radial resolution of the \p j-th variable in the \p i-th equation 
+	int **var_nth; ///< \p var_nr[i][j] is the azimuthal resolution of the \p j-th variable in the \p i-th equation 
+    int **var_ntop; ///< \p var_ntop[i][j] is the resolution of the \p i-th top boundary condition on the \p j-th variable
+    int **var_nbot; ///< \p var_nbot[i][j] is the resolution of the \p i-th bottom boundary condition on the \p j-th variable
+    int solver_N;
+    int *def_nr; ///< \p def_nr[i] is the number of radial points in the \p i-th block
 	char type[21],**var;
 	int initd,sync;
 	matrix dep,reg;

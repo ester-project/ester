@@ -16,4 +16,9 @@ EXTRA_DIST	= $(top_srcdir)/doc/help/1d		\
 			  $(top_srcdir)/doc/help/help	\
 			  $(top_srcdir)/doc/help/info	\
 			  $(top_srcdir)/doc/help/output	\
+			  $(top_srcdir)/doc/doxygen.conf
 			  $(top_srcdir)/m4
+
+doxygen:
+	cd $(top_srcdir) && doxygen doc/doxygen.conf
+

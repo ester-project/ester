@@ -3,6 +3,14 @@
 
 #include "matrix.h"
 
+/// \brief
+/// The diff_gl class implements the Gauss-Lobatto (or more properly
+/// Gauss-Lobatto-Chebyshev) collocation method.
+///
+/// The basis functions are Chebyshev polynomials of the first kind:
+/// \f$ T_l(x)=cos(l.arccos(x)) \f$,
+/// defined in \f$ [-1, 1] \f$. \n
+/// And the collocation points are \f$ x_i = -cos(\frac{i \pi}{n})\f$
 class diff_gl {
 	int ndom,Ntot;
 	void init_1();
@@ -27,6 +35,14 @@ class diff_gl {
   	matrix eval(const matrix &y,double x,matrix &T) const;
 };
 
+/// \brief The diff_leg class implements Legendre numerical differentiation.
+///
+/// The basis function are Legendre polynomials \f$ P_l(x) \f$, and, for
+/// \f$ n \f$ points, collocation points are defined as the roots of
+/// \f$ P_n(x) \f$.
+/// \f[
+/// P_n(x)= \frac{1}{2^n n!} \frac{d^n}{dx^n}[(x^2-1)]
+/// \f]
 class diff_leg {
 	matrix Pn(int n,matrix x);
 	matrix dPn(int n,matrix x,matrix p);

@@ -5,6 +5,8 @@
 #include<string.h>
 #include"symbolic.h"
 
+/// \brief Initialize star's chemical composition, equation of state, opacity,
+/// nuclear reaction and atmosphere.
 void star2d::fill() {
 DEBUG_FUNCNAME	
 	Y0=1.-X0-Z0;
@@ -118,6 +120,8 @@ DEBUG_FUNCNAME
 
 }
 
+/// \brief Performs one step of the Newton algorithm to compute the star's
+/// internal structure.
 double star2d::solve(solver *op) {
 DEBUG_FUNCNAME
 	int info[5];
@@ -233,6 +237,7 @@ DEBUG_FUNCNAME
 
 }
 
+/// \brief Writes terms depending opacity and state tables into the solver.
 void star2d::solve_definitions(solver *op) {
 DEBUG_FUNCNAME
 	op->add_d("rho","p",rho/eos.chi_rho/p);
@@ -281,6 +286,8 @@ DEBUG_FUNCNAME
 	
 }
 
+
+/// \brief Writes Poisson equation and interface conditions into the solver.
 void star2d::solve_poisson(solver *op) {
 DEBUG_FUNCNAME
 	matrix q,rhs1,rhs2,rhs;
@@ -291,12 +298,11 @@ DEBUG_FUNCNAME
 	symbolic S;
 	sym lap_phi;
 	{
-		sym phi;
-		phi=S.regvar("Phi");
-		lap_phi=lap(phi);
+        sym phi;
+        phi=S.regvar("Phi");
+        lap_phi=lap(phi);
 	}
 
-	
 	S.set_value("Phi",phi);
 	S.set_map(map);
 	
@@ -329,8 +335,11 @@ DEBUG_FUNCNAME
 			op->bc_bot2_add_l(n,"Phi","Phi",ones(1,nth),D.block(0).row(0));
 			rhs.setrow(0,-(D,phi).row(0));
 		} else {
-			if(n<ndomains) op->bc_bot2_add_l(n,"Phi","Phi",1/rz.row(j0),D.block(n).row(0));
-			else op->bc_bot2_add_l(n,"Phi","Phi",1/map.ex.rz.row(0),Dex.row(0));
+			if(n<ndomains)
+                op->bc_bot2_add_l(n,"Phi","Phi",1/rz.row(j0),D.block(n).row(0));
+			else
+                op->bc_bot2_add_l(n,"Phi","Phi",1/map.ex.rz.row(0),Dex.row(0));
+
 			op->bc_bot1_add_l(n,"Phi","Phi",-1/rz.row(j0-1),D.block(n-1).row(-1));
 			
 			if(n<ndomains) 
@@ -339,11 +348,14 @@ DEBUG_FUNCNAME
 				op->bc_bot2_add_d(n,"Phi","rz",-1/map.ex.rz.row(0)/map.ex.rz.row(0)*(Dex,phiex).row(0));
 			op->bc_bot1_add_d(n,"Phi","rz",1/rz.row(j0-1)/rz.row(j0-1)*(D,phi).row(j0-1));
 			
-			if(n<ndomains) rhs.setrow(j0,-(D,phi).row(j0)/rz.row(j0)+(D,phi).row(j0-1)/rz.row(j0-1));
-			else rhs.setrow(j0,-(Dex,phiex).row(0)/map.ex.rz.row(0)+(D,phi).row(j0-1)/rz.row(j0-1));
+			if(n<ndomains)
+                rhs.setrow(j0,-(D,phi).row(j0)/rz.row(j0)+(D,phi).row(j0-1)/rz.row(j0-1));
+			else
+                rhs.setrow(j0,-(Dex,phiex).row(0)/map.ex.rz.row(0)+(D,phi).row(j0-1)/rz.row(j0-1));
 		}
 		
 		op->bc_top1_add_d(n,"Phi","Phi",ones(1,nth));
+
 		if(n<ndomains) op->bc_top2_add_d(n,"Phi","Phi",-ones(1,nth));
 		if(n<ndomains) rhs.setrow(j0+map.gl.npts[n]-1,-phi.row(j0+map.gl.npts[n]-1));
 		else rhs.setrow(nr+nex-1,-phiex.row(nex-1));
@@ -357,6 +369,8 @@ DEBUG_FUNCNAME
 	op->set_rhs("Phi",rhs);
 }
 
+
+/// \brief Writes movement and vorticity equations into the solver
 void star2d::solve_mov(solver *op) {
 DEBUG_FUNCNAME
 	static bool eqinit=false;
@@ -528,6 +542,10 @@ DEBUG_FUNCNAME
 	}
 }
 
+
+
+/// \brief Writes temperature and luminosity equations and interface conditions
+/// into the solver.
 void star2d::solve_temp(solver *op) {
 DEBUG_FUNCNAME
 	int n,j0;
@@ -745,6 +763,7 @@ DEBUG_FUNCNAME
 	op->set_rhs("Lambda",rhs_Lambda);
 	
 }
+
 
 void star2d::solve_dim(solver *op) {
 DEBUG_FUNCNAME

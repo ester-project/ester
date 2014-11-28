@@ -1,0 +1,29 @@
+/// \mainpage
+///
+/// For an overview of ESTER, see \ref overview.
+///
+/// ESTER is divided into several pieces of software:
+///
+/// \section matrix_sec Matrix library 
+/// The matrix library provides classes to facilitate the work with matrices.
+/// \see
+/// - matrix
+///
+/// \section numdiff_sec Numerical differentiation library
+/// The numdiff library provides helper classes to ease manipulation of
+/// function's derivatives.
+/// \see
+/// - diff_gl
+/// - diff_leg
+///
+/// \section sol_sec Solver library 
+/// \see
+/// - solver
+///
+/// \section star_sec Star classes
+/// ESTER provides two classes to manipulate star objects, star1d and star2d for
+/// respectively 1 dimensional stars and 2 dimensional stars.
+/// \see
+/// - star1d
+/// - star2d
+///

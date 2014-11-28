@@ -6,6 +6,11 @@
 #include"matrix.h"
 #include<stdarg.h>
 
+
+/// \brief Default matrix constructor.
+///
+/// Creates an nfil rows by ncol columns matrix.
+/// If \p nfil and \p ncol are omitted, defaults are 1.
 matrix::matrix(int nfil,int ncol) {
 
 	unsigned tam;
@@ -28,13 +33,16 @@ matrix::matrix(int nfil,int ncol) {
 	p=new double[tam];
 }
 
-
+/// \brief Destructor
 matrix::~matrix() {
 
 	delete [] p;
 }
 
 
+/// \brief Copy constructor
+///
+/// Creates a new matrix object identical to \p a.
 matrix::matrix(const matrix &a) {
 
     unsigned tam;
@@ -49,24 +57,30 @@ matrix::matrix(const matrix &a) {
 }
 
 
+/// \brief Returns the number of rows of the matrix.
 int matrix::nrows() const {
 
 	return nf;
 }
 
 
+/// \brief Returns the columns of rows of the matrix.
 int matrix::ncols() const {
 
 	return nc;
 }
 
-
+/// \brief Returns the pointer to the matrix data.
 double *matrix::data() const {
 
 	return p;
 }
 
 
+/// \brief Re-dimension the matrix.
+///
+/// Updates the matrix dimension.
+/// \returns the updated matrix object.
 matrix &matrix::dim(int nfil,int ncol) {
     
     unsigned tam;
@@ -99,6 +113,11 @@ matrix &matrix::dim(int nfil,int ncol) {
 }
 
 
+/// \brief Re-dimension the matrix.
+///
+/// Updates the matrix dimension. The new full matrix (\p nfil x \p ncol) size
+/// must match the original matrix size (nrows() x ncols()).
+/// \returns the updated matrix object.
 matrix &matrix::redim(int nfil,int ncol) {
     
     int tam;
@@ -127,6 +146,7 @@ matrix &matrix::redim(int nfil,int ncol) {
 }
 
 
+/// \brief Affectation operator.
 matrix &matrix::operator=(const matrix &a) {
 
     if(&a==this) return *this;
@@ -139,6 +159,7 @@ matrix &matrix::operator=(const matrix &a) {
 }
 
 
+/// \brief Access matrix's elements.
 double &matrix::operator()(int ifil,int icol) {
 
 	if(ifil<0) ifil+=nf;
@@ -152,6 +173,7 @@ double &matrix::operator()(int ifil,int icol) {
 }
 
 
+/// \brief Access matrix's elements.
 double &matrix::operator()(int ielem) {
 	
 	if(ielem<0) ielem+=nf*nc;
@@ -164,6 +186,7 @@ double &matrix::operator()(int ielem) {
 }
 
 
+/// \brief Access matrix's elements.
 const double &matrix::operator()(int ifil,int icol) const {
 
 	if(ifil<0) ifil+=nf;
@@ -177,6 +200,7 @@ const double &matrix::operator()(int ifil,int icol) const {
 }
 
 
+/// \brief Access matrix's elements.
 const double &matrix::operator()(int ielem) const {
 	
 	if(ielem<0) ielem+=nf*nc;
@@ -189,6 +213,7 @@ const double &matrix::operator()(int ielem) const {
 }
 
 
+/// \brief Reads matrix data from a file.
 int matrix::read(int nfil,int ncol,FILE *fp,char mode) {
     
     int i,tam;
@@ -206,6 +231,7 @@ int matrix::read(int nfil,int ncol,FILE *fp,char mode) {
     return 1;
 }
 
+/// \brief Saves matrix to a file.
 int matrix::write(FILE *fp,char mode) const {
    
     int tam,i,j;
@@ -229,6 +255,9 @@ int matrix::write(FILE *fp,char mode) const {
 }
 
 
+/// \brief Saves matrix to a file with a special format.
+///
+/// \p fmt is the printf format used to save the matrix data to the file.
 void matrix::write_fmt(const char *fmt,FILE *fp) const {
 
 	int i,j;
@@ -243,6 +272,7 @@ void matrix::write_fmt(const char *fmt,FILE *fp) const {
 }
 
 
+/// \brief Swaps two matrices.
 void matrix::swap(matrix &a) {
 
 	double *p0;
@@ -259,6 +289,7 @@ void matrix::swap(matrix &a) {
 }
 
 
+/// \brief Sets the matrix to the \p nrows x \p ncols zero matrix.
 void matrix::zero(int nrows,int ncols) {
 
 	dim(nrows,ncols);
@@ -267,6 +298,7 @@ void matrix::zero(int nrows,int ncols) {
 }
 
 
+/// \brief Sets the values of the matrix (given in column major order).
 void matrix::values(double x,...) {
 
 	va_list ap;
@@ -282,17 +314,22 @@ void matrix::values(double x,...) {
 
 }
 
+//
+/// \brief Performs matrix addition.
+///
+/// The matrices must be of the same size.
+/// \returns Result of the element-wise addition of the two matrices.
 matrix matrix::operator+(const matrix &a) const {
 
     matrix res;
 	int i,j,resnf,resnc,N;
 	
-	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
+	if( (nf!=1 && a.nf!=1 && nf!=a.nf) || (nc!=1 && a.nc!=1 && nc!=a.nc) ) {
 		fprintf(stderr,"ERROR: (matrix.+) Dimensions must agree\n");
 		exit(1);
 	}
 	
-	if(nf>a.nf) resnf=nf;
+	if(nf>a.nf) resnf=nf; // This cannot happen
 		else resnf=a.nf;
 	if(nc>a.nc) resnc=nc;
 		else resnc=a.nc;

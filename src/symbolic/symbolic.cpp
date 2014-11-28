@@ -500,6 +500,7 @@ sym_vec symbolic::divergence(const sym_tens &t) {
 
 }
 
+/// \brief Returns the symbolic expression of the laplacian of \p s
 sym symbolic::laplacian(const sym &s){
 
 	return divergence(gradient(s));

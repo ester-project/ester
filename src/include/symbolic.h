@@ -358,6 +358,7 @@ inline sym_vec grad(const sym &s) {return s.check_context()->gradient(s);};
 inline sym_tens grad(const sym_vec &v) {return v.check_context()->gradient(v);};
 inline sym div(const sym_vec &v) {return v.check_context()->divergence(v);};
 inline sym_vec div(const sym_tens &t) {return t.check_context()->divergence(t);};
+/// \brief Returns the laplacian  of the expression \p s.
 inline sym lap(const sym &s) {return s.check_context()->laplacian(s);};
 inline sym_vec curl(const sym_vec &v) {return v.check_context()->curl(v);};
 inline sym_vec lap(const sym_vec &v) {return v.check_context()->laplacian(v);};

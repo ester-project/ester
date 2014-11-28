@@ -92,6 +92,11 @@ void solver_full::set_blockinf(int iblock,matrix &a) {
 	lu_flag=0;
 }
 
+/// \brief Solves the set of equation stored in the object given the right hand
+/// side \p rhs.
+///
+/// Solving the equation is done with Crout's method: LU factorization followed
+/// forward and backward substitution.
 matrix solver_full::solve(const matrix &rhs) {
 
 	matrix x;

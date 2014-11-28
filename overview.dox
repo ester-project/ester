@@ -1,0 +1,137 @@
+/** \page overview Overview
+
+ESTER uses a Newton's method to solve a set of PDEs.
+Solving the PDE \f$ L(u) = 0 \tag{1} \f$ with Newton's method is done by refining the
+solution by solving:
+\f$ 
+J_L(\delta u) = -L(u) \tag{2}
+\f$
+And updating the solution with \f$ u = u + \delta u \f$
+
+In order to write an equation in ESTER formalism, one has to write it in the
+form of \f$ (2) \f$.
+
+For instance the Poisson equation (\f$ \Delta \phi = \pi_c \rho \f$, with
+\f$ \pi_c = \frac{4 \pi G \rho_c^2 R^2}{p_c} \f$), is written in ESTER with:
+\f$ \Delta \phi - \pi_c \rho = 0 \f$ (to conform notation \f$ (1) \f$).
+
+This is equivalent to the code:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.py}
+lap_phi=lap(phi);
+lap_phi.add(op, "Phi", "Phi");
+lap_phi.add(op, "Phi", "r");
+
+op->add_d("Phi", "rho", -\pi_c*ones(nr, nth));
+op->add_d("Phi", "\pi_c", -rho);
+
+rhs1 = -lap_phi.eval()+\pi_c*rho;
+rhs2=-lap_phi.eval();
+
+rhs=zeros(nr+nex,nth);
+rhs.setblock(0,nr-1,0,-1,rhs1);
+rhs.setblock(nr,nr+nex-1,0,-1,rhs2);
+
+op->set_rhs("Phi",rhs);
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Line 1 defines the symbolic expression for \f$ \Delta \phi \f$ (see
+\ref symbolic).
+
+Lines 2 and 3 add the terms of \f$ \Delta \phi \f$ depending on \f$ \phi \f$ and 
+\f$ r \f$ into the Jacobian matrix of the expression.
+
+Lines 5 and 6 add the terms \f$ \frac{\partial}{\partial \rho} \pi_c \rho \f$ and 
+\f$ \frac{\partial}{\partial \pi_c} \pi_c \rho \f$ into the Jacobian matrix, this
+completes the definition of the left hand side of the equation.
+
+Line 8, and 9 build the right hand side for inner domains (
+\f$ -\Delta \phi + \pi_c \rho \f$), and the external domain (\f$ -\Delta \phi \f$).
+
+Lines 11 to 13 combine the right hand side into a single matrix, and line 15
+sets the right hand side of the equation in the solver.
+
+
+\section var_sec Variables in ESTER
+
+Variable            | Name in the code | Description 
+------------------- | ---------------- | -----------
+\f$ \phi \f$        | Phi              | gravitational potential
+\f$ p \f$           | p                | pressure
+\f$ log(p) \f$      | log_p            | log of the pressure
+\f$ \pi_c \f$       | \pi_c            | \f$ \frac{4\pi Grav \rho_c R^2}{pc} \f$
+\f$ T \f$           | T                | temperature
+\f$ log(T) \f$      | log_T            | log of the temperature
+\f$ \Lambda \f$     | Lambda           | \f$ \frac{\rho_c R^2}{T_c} \f$
+\f$ \eta \f$        | eta              | -
+\f$ \Delta\eta \f$  | deta             | -
+\f$ R_i \f$         | Ri               | -
+\f$ \Delta R_i \f$  | dRi              | -
+\f$ r \f$           | r                | radius (spherical coordinate)
+\f$ r_\zeta \f$     | rz               | \f$ \frac{\partial r}{\partial \zeta} \f$
+\f$ \Omega \f$      | Omega            | angular velocity (equator)
+\f$ log(\rho_c) \f$ | log_rhoc         | -
+\f$ log(p_c) \f$    | log_pc           | -
+\f$ log(T_c) \f$    | log_Tc           | -
+\f$ log(R) \f$      | log_R            | -
+\f$ m \f$           | m                | -
+\f$ p_s \f$         | ps               | -
+\f$ T_s \f$         | Ts               | -
+\f$ lum \f$         | lum              | -
+\f$ Frad \f$        | Frad             | -
+\f$ T_{eff} \f$     | Teff             | effective temperature at star's surface
+\f$ g_{sup} \f$     | gsup             | gravity at star's surface
+\f$ \omega \f$      | w                | angular velocity
+\f$ \Psi \f$        | G                | stream function (meridional circulation)
+\f$ \rho \f$        | rho              | density
+\f$ \xi \f$         | opa.xi           | radial conductivity
+\f$ \kappa \f$      | opa.k            | opacity
+\f$ \epsilon \f$    | nuc.eps          | nuclear reaction
+\f$ s \f$           | s                | entropy
+\f$ \gamma \f$      | gamma            | -
+
+
+\section eqlist_sec Equations solved by ESTER
+
+Euqation                                                                | Name
+----------------------------------------------------------------------- | --------
+\f$ \Delta \phi - \pi_c \rho = 0 \f$       | poisson
+\f$ \nabla p + \rho \nabla \phi - \rho s \Omega^2 \hat{s} = 0 \f$       | movement
+\f$ \hat{\varphi} . \nabla\times (\frac{mov\_eq}{\rho}) = 0 \f$         | vorticity
+\f$ \nabla. (\rho s^2 \Omega V)-\nabla. (\mu s^2\nabla \Omega) = 0 \f$  | transport of angular momentum
+\f$ -\frac{\nabla. (\xi \nabla T))}{\xi} + \frac{\Lambda \rho \epsilon}{\xi}= 0 \f$ | Heat
+
+Where:
+- \f$ s = r \  sin(\theta) \f$
+- \f$ \hat{s} = \nabla s\f$
+- \f$ \hat{\varphi} =
+\begin{pmatrix}
+0\\
+0\\
+s
+\end{pmatrix}
+\f$
+- \f$ V = \frac{\nabla\times (\Psi \hat{\varphi})}{\rho} \f$
+- \f$ \mu \f$ ??
+
+\section algo_sec Code Overview
+
+The Newton iteration is performed in star2d::solve.
+The set of equation and boundary conditions are written in the solver in
+functions:
+- star2d::solve_definitions
+- star2d::solve_poisson
+- star2d::solve_mov
+- star2d::solve_temp
+- star2d::solve_dim
+- star2d::solve_map
+- star2d::solve_Omega
+- star2d::solve_atm
+- star2d::solve_gsup
+- star2d::solve_Teff
+
+Function solver::solve stores all the terms registered in the operator in the
+previous steps into the operator matrix (see solver::wrap, solver::unwrap
+and solver::create).
+And then solves the matrix and update the solution the solution fields.
+
+*/

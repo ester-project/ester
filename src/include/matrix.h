@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+/// \brief The matrix class is used to facilitate the work with regular dense
+/// matrices. 
 class matrix {
 	double *p;
 	int nf,nc;
@@ -195,6 +197,7 @@ matrix pow(double,const matrix &);
 matrix pow(const matrix &,double);
 matrix pow(const matrix &,int);
 
+/// \brief The matrix_block_diag class is used to store block diagonal matrices.
 class matrix_block_diag {
 	matrix *m;
 	int nb;

@@ -107,6 +107,10 @@ solver::solver() {
 	debug=0;
 };
 
+
+/// \brief Initialize the solver object for \p nblock blocks, \p nvar variables,
+/// using a solver operator of type \p solver_type (either "full", "full-oc" or
+/// "iter").
 void solver::init(int nblock,int nvar,const char *solver_type) {
 
 	int i;
@@ -382,6 +386,7 @@ matrix solver::get_var(int ivar) {
 	return sol[ivar];
 }
 
+/// \brief Solves the set of equations stored in the operator object.
 void solver::solve(int *info) {
 
 	matrix y;
@@ -830,6 +835,8 @@ int solver::cgs(const matrix &rhs,matrix &x,int maxit) {
 	return k;
 }
 
+/// \brief Creates the solver solver operator depending on the \p type of solver
+/// configured (defined when calling solver::init).
 void solver::create() {
 
 	if(op!=NULL) {
@@ -853,6 +860,11 @@ void solver::create() {
 
 }
 
+/// \brief Creates a solver operator of type "full".
+///
+/// Stores all equation's terms defined in the fields \p block, \p bc_bot1,
+/// \p bc_bot2, \p bc_top1, \p bc_top2, \p bc_pol and \p bc_eq into
+/// the solver operator \p op.
 void solver::create_full() {
 
 	matrix opi;
@@ -874,7 +886,7 @@ void solver::create_full() {
 			if(kk==1) {kk0=nbot[n][ivar];kk1=nr[n][ivar]-ntop[n][ivar];}
 			if(kk==2) {kk0=nr[n][ivar]-ntop[n][ivar];kk1=nr[n][ivar];}
 			for(k=kk0;k<kk1;k++) {
-				for(l=0;l<nth[n][ivar];l++) {
+                for(l=0;l<nth[n][ivar];l++) {
 					i0=0;
 					for(ieq=0;ieq<nv;ieq++) {
 						if(!reg(ieq)||dep(ieq)) continue;
@@ -1232,6 +1244,8 @@ void solver::check_full(int n, const matrix &opi, int pos) {
     delete [] y;
 }
 
+/// \brief Stores distributed (ie. split into several blocks) matrix \p y into
+/// the single vector \p x
 void solver::wrap(const matrix *y,matrix *x) {
 
 	int i,j,j0[nv],i0,**n=var_nr,**nbot=var_nbot,**ntop=var_ntop,**nth=var_nth,&N=solver_N,nn,nnt;
@@ -1284,6 +1298,8 @@ void solver::wrap(const matrix *y,matrix *x) {
 }
 
 
+/// \brief Performs the inverse operation of the \p wrap function: restore the
+/// single vector \p x into the blocked vector y.
 void solver::unwrap(const matrix *x,matrix *y) {
 
 	int i,j,j0[nv],i0,**n=var_nr,**nbot=var_nbot,**ntop=var_ntop,**nth=var_nth,&N=solver_N,nn,nnt;
@@ -1875,6 +1891,11 @@ void solver::check_struct_error(const char *err_msg,int n,int i,int j,solver_ele
 
 }
 
+/// \brief Substitutes dependent variables defined in the solver.
+///
+/// Dependent variables are defined as an expression of other variables of the
+/// problem. This function is responsible for replacing these dependent
+/// variables with their expression.
 void solver::subst_dep() {
 
 	solver_elem *p;
@@ -1971,12 +1992,12 @@ void solver::subst_dep_eq(const char *block_type,solver_block *bb,int n,int i,in
 					if(p->type=='d'||p->type=='r'||p->type=='s') {
 						n2=1;
 						d=d.row(0);
-					}		
+					}
 				if(!strcmp(block_type,"bc_top1")||!strcmp(block_type,"bc_bot1"))
 					if(p->type=='d'||p->type=='r'||p->type=='s') {
 						n2=1;
 						d=d.row(d.nrows()-1);
-					}		
+					}
 				subst_dep_elem(i,k,&bb[n],p,d,n2,m2);
 				pdep=pdep->next;
 			}
@@ -2078,6 +2099,8 @@ void solver::subst_dep_elem(int i,int k,solver_block *bb,solver_elem *p,const ma
 
 }
 
+/// \brief Solves dependent variables: compute in the \p sol field the values of
+/// dependent variables (have to be called after solver::solve).
 void solver::solve_dep() {
 	
 	matrix *x = new matrix[nv];

@@ -4,7 +4,7 @@
 
 int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa) {
-	
+
 	int error=0;
 
 	if(!strcmp(opa.name,"opal")) {
@@ -17,7 +17,7 @@ int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
     	fprintf(stderr,"Unknown opacity method: %s\n",opa.name);
     	return 1;
     }
-	
+
 	return error;
 }
 
