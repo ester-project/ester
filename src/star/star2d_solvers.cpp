@@ -37,11 +37,27 @@ void star2d::init_comp() {
 
 	if(!conv) return;
 
-	int n=0;
-	for(int i=0;i<conv;i++) n+=map.gl.npts[i];
+    int n = 0;
+    for (int i=0; i<conv; i++) {
+        n += map.gl.npts[i];
+    }
 	
-	comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
-
+    if(stratified_comp == 0) {
+        comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
+    }
+    else {
+        comp.setblock(0, n-1, 0, -1,
+                initial_composition(Xc*X0, Z0)*ones(n, nth));
+        int m = 0;
+        int l = n;
+        double a = (1.-exp((1.-(nr/n))))/(X0*(1.-Xc));
+        for(int i=conv+1; i<ndomains; i++) {
+            m = map.gl.npts[i];
+            comp.setblock(l, l+m-1, 0, -1,
+                    initial_composition(((Xc*X0)+((1./a)*(1.-exp((1.-(l/n)))))),Z0)*ones(m,nth));
+            l += m;
+        }
+    }
 }
 
 void star2d::calc_veloc() {
