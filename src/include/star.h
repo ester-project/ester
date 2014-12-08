@@ -54,6 +54,7 @@ class star2d {
 	double Xc;
 	int core_convec;
 	int env_convec;
+	int stratified_comp;
 	double min_core_size;
 	std::vector<int> domain_type;
 	#define RADIATIVE 0
