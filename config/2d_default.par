@@ -10,6 +10,7 @@ X=0.7
 Z=0.02
 
 Xc=1
+stratified_comp=1
 surff=1
 
 Tc=3e7

@@ -116,6 +116,7 @@ DEBUG_FUNCNAME
 	fp.write("core_convec",&core_convec);
 	fp.write("env_convec",&env_convec);
 	fp.write("min_core_size",&min_core_size);
+	fp.write("stratified_comp",&stratified_comp);
 	fp.write("version.major",&ver.major);
 	fp.write("version.minor",&ver.minor);
 	fp.write("version.rev",&ver.rev);
@@ -204,6 +205,7 @@ DEBUG_FUNCNAME
 	if(!fp.read("core_convec",&core_convec)) core_convec=1;
 	if(!fp.read("env_convec",&env_convec)) env_convec=0;
 	if(!fp.read("min_core_size",&min_core_size)) min_core_size=0.03;
+	if(!fp.read("stratified_comp",&stratified_comp)) stratified_comp = 0;
 	
 		
 	map.init();
@@ -639,6 +641,10 @@ DEBUG_FUNCNAME
 	else if(!strcmp(arg,"min_core_size")) {
 		if(val==NULL) return 2;
 		min_core_size=atof(val);
+	}
+	else if(!strcmp(arg,"stratified_comp")) {
+		if(val==NULL) return 2;
+		stratified_comp = atoi(val);
 	}
 	else err=1;
 
