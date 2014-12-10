@@ -14,7 +14,7 @@ star2d::star2d() :r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2)
 	version.minor=ESTER_VERSION_MINOR;
 	version.rev=ESTER_REVISION;
 	version.svn=ESTER_VERSION_SVN;
-
+    stratified_comp = 0;
 }
 
 star2d::~star2d() {
