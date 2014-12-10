@@ -208,7 +208,6 @@ DEBUG_FUNCNAME
 	if(!fp.read("min_core_size",&min_core_size)) min_core_size=0.03;
 	if(!fp.read("stratified_comp",&stratified_comp)) stratified_comp = 0;
 	
-		
 	map.init();
 	
 	fp.read("phi",&phi);
@@ -741,7 +740,4 @@ DEBUG_FUNCNAME
 	printf("\n");
 	
 }
-
-
-
 

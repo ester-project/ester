@@ -76,7 +76,6 @@ AC_CONFIG_FILES([Makefile
                  tables/houdek/v9/lib/Makefile
                  tables/opal/Makefile
                  src/Makefile
-                 src/main/ester
                  src/physics/Makefile
                  test/models/Makefile])
 

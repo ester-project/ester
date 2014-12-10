@@ -39,6 +39,7 @@ version 	: libnuc.la libopint.la libester.la
 star_evol	: libnuc.la libopint.la libester.la
 
 EXTRA_DIST	= main/ester_info.cpp					\
+			  $(srcdir)/main/ester.in				\
 			  $(top_srcdir)/config/1d_default.par	\
 			  $(top_srcdir)/config/2d_default.par	\
 			  $(top_srcdir)/config/star.cfg
@@ -46,6 +47,14 @@ EXTRA_DIST	= main/ester_info.cpp					\
 
 
 bin_SCRIPTS	= main/ester
+CLEANFILES  = $(bin_SCRIPTS)
+
+do_subst = sed -e 's,[@]datadir[@],$(datadir),g' \
+               -e 's,[@]prefix[@],$(prefix),g'   \
+               -e 's,[@]PYTHON[@],$(PYTHON),g'
+
+main/ester: main/ester.in Makefile
+	        $(do_subst) < $< > $@
 
 lib_LTLIBRARIES			= libester.la
 libester_la_SOURCES		= global/global.cpp									\
@@ -86,5 +95,4 @@ defaultconfigdir	= $(datadir)/ester
 defaultconfig_DATA	= $(top_srcdir)/config/1d_default.par \
 					  $(top_srcdir)/config/2d_default.par \
 					  $(top_srcdir)/config/star.cfg
-
 
