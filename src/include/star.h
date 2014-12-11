@@ -77,6 +77,7 @@ class star2d {
 	struct config_struct {
 		double newton_dmax;
 		int verbose;
+		int dump_iter;
 	} config;
 	
 	virtual void opacity();
@@ -157,6 +158,7 @@ class star2d {
 
 	virtual void check_jacobian(solver *op,const char *eqn);
 
+    void hdf5_write(const char *filename) const;
 };
 
 class star1d : public star2d {

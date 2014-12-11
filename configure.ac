@@ -14,9 +14,9 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([config.h.in])
 
 # Checks for programs.
+AC_PROG_CPP
 AC_PROG_CXX
 AC_PROG_CC
-AC_PROG_CPP
 AC_PROG_FC
 AC_PROG_F77($FC)
 AC_PROG_AWK
@@ -47,6 +47,29 @@ AC_TYPE_SIZE_T
 
 # Checks for library functions.
 AC_CHECK_LIB([m], [sqrt])
+
+AC_ARG_WITH([hdf5-root],
+            AS_HELP_STRING([--with-hdf5-root],
+                           [Provide hdf5 root directory]),
+                           hdf5root=$withval)
+
+AC_ARG_ENABLE([hdf5],
+              AS_HELP_STRING([--enable-hdf5],
+                             [Enable HDF5 support]))
+AS_IF([test "x$enable_hdf5" == "xyes"], [
+       CFLAGS="$CFLAGS -I$hdf5root/include"
+       CXXFLAGS="$CXXFLAGS -I$hdf5root/include"
+       AC_CHECK_HEADERS([hdf5.h])
+       AS_IF([test "x$ac_cv_header_hdf5_h" == "xno"], [
+              AC_ERROR([Could not find HDF5 header
+    Please privde the path to HDF5 with --with-hdf5-root])])
+       LIBS="$LIBS -L$hdf5root/lib"
+       AC_CHECK_LIB([hdf5], [H5Fopen])
+       AS_IF([test "x$ac_cv_lib_hdf5_H5Fopen" == "xno"], [
+              AC_ERROR([Could not find HDF5 library
+    Please privde the path to HDF5 with --with-hdf5-root])])
+       ], [enable_hdf5="no"])
+
 
 # Search for mkl
 AC_SEARCH_LIBS([cblas_dgemm], [mkl_intel_lp64],
@@ -118,9 +141,6 @@ AC_ARG_ENABLE([debug],
               CFLAGS="$CFLAGS -g"
               CXXFLAGS="$CXXFLAGS -g"])
 
-# CFLAGS="$CFLAGS -Wall -O3"
-# CXXFLAGS="$CXXFLAGS -Wall -O3"
-
 AC_OUTPUT
 
 cat<< EOF
@@ -132,6 +152,7 @@ Fortran compiler: $FC
 C compiler:       $CC
 C++ compiler:     $CXX
 pgplot enabled:   $have_pgplot
+HDF5 enabled:     $enable_hdf5
 found MKL:        $have_mkl
 perf_log:         $perf_log
 CXXFLAGS:         $CXXFLAGS

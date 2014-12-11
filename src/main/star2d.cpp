@@ -52,8 +52,18 @@ int main(int argc,char *argv[]) {
 	}
 	
 	while(!last_it) {
+        if (A.config.dump_iter) {
+            char *filename = NULL;
+            asprintf(&filename, "%s-iter%d.hdf5",
+                    config.output_file,
+                    nit);
+            A.hdf5_write(filename);
+            free(filename);
+        }
+
 		nit++;
 		
+
 		if(err<0.1&&!*config.input_file) {
 			A.core_convec=core_convec_set;
 		}
@@ -136,6 +146,13 @@ int main(int argc,char *argv[]) {
 	}
 
 	A.write(config.output_file,config.output_mode);
+    if (A.config.dump_iter) {
+        char *filename = NULL;
+        asprintf(&filename, "%s-iter-last.hdf5",
+                config.output_file);
+        A.hdf5_write(filename);
+        free(filename);
+    }
 
 
 	if(config.verbose) {

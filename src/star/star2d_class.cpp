@@ -3,6 +3,9 @@
 #include"version.h"
 #include<string.h>
 #include<stdlib.h>
+#ifdef HAVE_LIBHDF5
+#include <hdf5.h>
+#endif
 
 star2d::star2d() :r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2)
 		,zex(map.ex.z),Dex(map.ex.D),rex(map.ex.r),
@@ -15,6 +18,7 @@ star2d::star2d() :r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2)
 	version.rev=ESTER_REVISION;
 	version.svn=ESTER_VERSION_SVN;
     stratified_comp = 0;
+    config.dump_iter = 0;
 }
 
 star2d::~star2d() {
@@ -76,6 +80,63 @@ void star2d::copy(const star2d &A) {
 	
 	domain_type=A.domain_type;
 	
+}
+
+void star2d::hdf5_write(const char *filename) const {
+#ifdef HAVE_LIBHDF5
+    hid_t file_id;
+    hid_t dataset_id, dataspace_id;
+
+    hsize_t dims[2];
+    herr_t status;
+
+    std::string dump_var_names[] = {"r", "z", "th", "rho", "phi", "p", "T", "G", "w"};
+    matrix dump_vars[] = {r, z, th, rho, phi, p, T, G, w};
+    int nvar = 9;
+
+    file_id = H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    if (file_id < 0) {
+        fprintf(stderr, "star2d::hdf5_write: Could not create file `%s'\n",
+                filename);
+        return;
+    }
+
+    dims[0] = this->w.ncols();
+    dims[1] = this->w.nrows();
+
+    for (int i=0; i<nvar; i++) {
+        char *name = NULL;
+
+        dataspace_id = H5Screate_simple(2, dims, NULL);
+        if (dataspace_id < 0) {
+            fprintf(stderr, "star2d::hdf5_write: could not create dataspace\n");
+            return;
+        }
+
+        asprintf(&name, "/%s", dump_var_names[i].c_str());
+        dataset_id = H5Dcreate2(file_id, name, H5T_NATIVE_DOUBLE, dataspace_id, 
+                H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        free(name), name = NULL;
+        if (dataset_id < 0) {
+            fprintf(stderr, "star2d::hdf5_write: could not create dataset\n");
+            return;
+        }
+
+        status = H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE,
+                H5S_ALL, H5S_ALL, H5P_DEFAULT,
+                dump_vars[i].data());
+        if (status < 0) {
+            fprintf(stderr, "star2d::hdf5_write: could not write to dataset\n");
+            return;
+        }
+
+        status = H5Dclose(dataset_id);
+        status = H5Sclose(dataspace_id);
+    }
+
+
+    status = H5Fclose(file_id);
+#endif
 }
 
 void star2d::write(const char *output_file,char mode) const {
@@ -645,6 +706,15 @@ DEBUG_FUNCNAME
 	else if(!strcmp(arg,"stratified_comp")) {
 		if(val==NULL) return 2;
 		stratified_comp = atoi(val);
+	}
+	else if(!strcmp(arg,"dump_iter")) {
+		config.dump_iter = 1;
+#ifndef HAVE_LIBHDF5
+        fprintf(stderr,
+                "Warning: the -dump_iter option will be inefective\n");
+        fprintf(stderr,
+                "         (ESTER is not built with HDF5 support)\n");
+#endif
 	}
 	else err=1;
 
