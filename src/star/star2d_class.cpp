@@ -82,43 +82,66 @@ void star2d::copy(const star2d &A) {
 	
 }
 
+#ifdef HAVE_LIBHDF5
+void write_attr(hid_t id, const char *name, double val) {
+    hsize_t dim = 1;
+    double attr = val;
+    hid_t attribute_id;
+    hid_t dataspace_id = H5Screate_simple(1, &dim, NULL);
+
+    if (dataspace_id < 0) return;
+
+    attribute_id = H5Acreate2(id, name, H5T_NATIVE_DOUBLE,
+            dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
+
+    if (H5Awrite(attribute_id, H5T_NATIVE_DOUBLE, &attr) < 0) return;
+    if (H5Sclose(dataspace_id) < 0) return;
+}
+#endif
+
 void star2d::hdf5_write(const char *filename) const {
 #ifdef HAVE_LIBHDF5
     hid_t file_id;
-    hid_t dataset_id, dataspace_id;
+    hid_t dataset_id, dataspace_id, group_id, attribute_id;
 
     hsize_t dims[2];
     herr_t status;
 
-    std::string dump_var_names[] = {"r", "z", "th", "rho", "phi", "p", "T", "G", "w"};
-    matrix dump_vars[] = {r, z, th, rho, phi, p, T, G, w};
+    std::string dump_var_names[] = {"r", "z", "th", "rho", "phi",
+        "p", "T", "G", "w"};
+    matrix dump_vars[] = {r, z, th, rho, phi,
+        p, T, G, w};
     int nvar = 9;
 
     file_id = H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
     if (file_id < 0) {
-        fprintf(stderr, "star2d::hdf5_write: Could not create file `%s'\n",
-                filename);
         return;
     }
 
-    for (int i=0; i<nvar; i++) {
-        char *name = NULL;
+    group_id = H5Gcreate2(file_id, "/star",
+            H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    if (group_id < 0) return;
 
+    write_attr(group_id, "ndomains", this->map.ndomains);
+    write_attr(group_id, "nr", this->nr);
+    write_attr(group_id, "nth", this->nth);
+    if (this->stratified_comp == 1)
+        write_attr(group_id, "stratified_comp", (double) this->stratified_comp);
+    write_attr(group_id, "convective core", this->core_convec);
+
+    for (int i=0; i<nvar; i++) {
         dims[0] = dump_vars[i].ncols();
         dims[1] = dump_vars[i].nrows();
 
         dataspace_id = H5Screate_simple(2, dims, NULL);
         if (dataspace_id < 0) {
-            fprintf(stderr, "star2d::hdf5_write: could not create dataspace\n");
             return;
         }
 
-        asprintf(&name, "/%s", dump_var_names[i].c_str());
-        dataset_id = H5Dcreate2(file_id, name, H5T_NATIVE_DOUBLE, dataspace_id, 
+        dataset_id = H5Dcreate2(group_id, dump_var_names[i].c_str(),
+                H5T_NATIVE_DOUBLE, dataspace_id,
                 H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-        free(name), name = NULL;
         if (dataset_id < 0) {
-            fprintf(stderr, "star2d::hdf5_write: could not create dataset\n");
             return;
         }
 
@@ -126,7 +149,6 @@ void star2d::hdf5_write(const char *filename) const {
                 H5S_ALL, H5S_ALL, H5P_DEFAULT,
                 dump_vars[i].data());
         if (status < 0) {
-            fprintf(stderr, "star2d::hdf5_write: could not write to dataset\n");
             return;
         }
 
@@ -134,7 +156,7 @@ void star2d::hdf5_write(const char *filename) const {
         status = H5Sclose(dataspace_id);
     }
 
-
+    status = H5Gclose(group_id);
     status = H5Fclose(file_id);
 #endif
 }
