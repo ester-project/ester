@@ -108,10 +108,10 @@ void star2d::hdf5_write(const char *filename) const {
     herr_t status;
 
     std::string dump_var_names[] = {"r", "z", "th", "rho", "phi",
-        "p", "T", "G", "w"};
+        "p", "T", "G", "w", "X"};
     matrix dump_vars[] = {r, z, th, rho, phi,
-        p, T, G, w};
-    int nvar = 9;
+        p, T, G, w, comp["H"]};
+    int nvar = 10;
 
     file_id = H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
     if (file_id < 0) {
@@ -125,9 +125,9 @@ void star2d::hdf5_write(const char *filename) const {
     write_attr(group_id, "ndomains", this->map.ndomains);
     write_attr(group_id, "nr", this->nr);
     write_attr(group_id, "nth", this->nth);
+    write_attr(group_id, "convective core", this->core_convec);
     if (this->stratified_comp == 1)
         write_attr(group_id, "stratified_comp", (double) this->stratified_comp);
-    write_attr(group_id, "convective core", this->core_convec);
 
     for (int i=0; i<nvar; i++) {
         dims[0] = dump_vars[i].ncols();
