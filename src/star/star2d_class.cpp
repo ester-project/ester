@@ -101,11 +101,11 @@ void star2d::hdf5_write(const char *filename) const {
         return;
     }
 
-    dims[0] = this->w.ncols();
-    dims[1] = this->w.nrows();
-
     for (int i=0; i<nvar; i++) {
         char *name = NULL;
+
+        dims[0] = dump_vars[i].ncols();
+        dims[1] = dump_vars[i].nrows();
 
         dataspace_id = H5Screate_simple(2, dims, NULL);
         if (dataspace_id < 0) {
