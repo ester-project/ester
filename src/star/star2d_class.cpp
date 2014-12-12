@@ -107,11 +107,12 @@ void star2d::hdf5_write(const char *filename) const {
     hsize_t dims[2];
     herr_t status;
 
+    matrix n2 = this->N2();
     std::string dump_var_names[] = {"r", "z", "th", "rho", "phi",
-        "p", "T", "G", "w", "X"};
+        "p", "T", "G", "w", "X", "N2", "nuc.eps"};
     matrix dump_vars[] = {r, z, th, rho, phi,
-        p, T, G, w, comp["H"]};
-    int nvar = 10;
+        p, T, G, w, comp["H"], n2, nuc.eps};
+    int nvar = 12;
 
     file_id = H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
     if (file_id < 0) {
