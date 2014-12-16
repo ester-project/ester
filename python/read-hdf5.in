@@ -1,6 +1,5 @@
 #!@PYTHON@
 
-import sys
 import numpy as np
 import h5py
 import matplotlib.pyplot as plt
@@ -21,7 +20,21 @@ class star:
         self.w   = f['/star/w'][:]
         self.z   = f['/star/z'][:]
 
-    def plot(self):
+        self.ndomains   = f['/star'].attrs['ndomains']
+        self.npts       = f['/star'].attrs['npts']
+        self.nth        = f['/star'].attrs['nth']
+        self.nr         = f['/star'].attrs['nr']
+
+        r = self.r[:,range(self.ndomains)*self.npts]
+        th = self.th
+        th[0] = np.pi/2
+        th[-1] = 0
+        x = r * np.sin(th)
+        y = r * np.cos(th)
+        self.grid = (x, y)
+
+
+    def plotDiffRotation(self, showDomains = 0):
         th = np.r_[[[np.pi/2]], self.th]
         th[-1] = 0
         r = np.r_[[self.r[0,:]], self.r]
@@ -34,38 +47,72 @@ class star:
 
         w = self.w
 
-        plt.subplot(221)
-
         plt.pcolor(x, y, w)
         plt.pcolor(-x, y, w)
         plt.pcolor(x, -y, w)
         plt.pcolor(-x, -y, w)
         plt.colorbar()
 
-        p = plt.subplot(222)
-        self.plotXY(self.r[0,:], self.w[0,:])
-        self.plotXY(self.r[-1,:], self.w[-1,:])
+        if showDomains == 1:
+            self.drawDomains()
+        plt.show()
+
+    def plot(self, showDomains = 0):
+        p = plt.subplot(221)
+        self.drawXY(self.r[0,:], self.w[0,:])
+        self.drawXY(self.r[-1,:], self.w[-1,:])
         p.set_title('w')
         p.legend(("equator", "pole"))
+        if showDomains == 1:
+            self.drawDomainsEq()
+
+        p = plt.subplot(222)
+        self.drawXY(self.r[0,:], self.N2[0,:])
+        self.drawXY(self.r[-1,:], self.N2[-1,:])
+        p.set_title('N2')
+        p.legend(("equator", "pole"))
+        if showDomains == 1:
+            self.drawDomainsEq()
 
         p = plt.subplot(223)
-        self.plotXY(self.r[0,:], self.T[0,:])
-        self.plotXY(self.r[-1,:], self.T[-1,:])
+        self.drawXY(self.r[0,:], self.T[0,:])
+        self.drawXY(self.r[-1,:], self.T[-1,:])
         p.set_title('T')
         p.legend(("equator", "pole"))
+        if showDomains == 1:
+            self.drawDomainsEq()
 
         p = plt.subplot(224)
-        self.plotXY(self.r[0,:], self.eps[0,:])
-        self.plotXY(self.r[-1,:], self.eps[-1,:])
+        self.drawXY(self.r[0,:], self.eps[0,:])
+        self.drawXY(self.r[-1,:], self.eps[-1,:])
         p.set_title('eps')
         p.legend(("equator", "pole"))
+        if showDomains == 1:
+            self.drawDomainsEq()
 
         plt.show()
 
-    def plotXY(self, x, y):
+    def plotXY(self, x, y, showDomains = 0):
+        self.drawXY(x, y)
+        if showDomains == 1:
+            self.drawDomainsEq()
+        plt.show()
+
+    def drawXY(self, x, y):
         plt.plot(x, y)
 
-    def plotMeridionalCirculation(self):
+    def drawDomains(self):
+        x, y = self.grid
+        plt.plot(x, y, color='b')
+        plt.plot(x, -y, color='b')
+        plt.plot(-x, y, color='b')
+        plt.plot(-x, -y, color='b')
+
+    def drawDomainsEq(self):
+        for x in self.r[0,range(self.ndomains)*self.npts]:
+            plt.axvline(x, color='grey')
+
+    def plotMeridionalCirculation(self, showDomains = 0):
         th = self.th
         th[-1] = 0
         th[0] = np.pi/2
@@ -82,7 +129,7 @@ class star:
                 self.G, 200, alpha=.5)
         plt.colorbar()
 
-        npts = self.G.shape[0]/2 # draw nth/2 isoline
+        npts = self.G.shape[0]/2 # draw nth/2 isolines
         plt.contour(x, y,
                 self.G, npts, colors='black', linewidth=.5)
         plt.contour(-x, y,
@@ -91,10 +138,17 @@ class star:
                 self.G, npts, colors='black', linewidth=.5)
         plt.contour(-x, -y,
                 self.G, npts, colors='black', linewidth=.5)
+
+        if showDomains == 1:
+            self.drawDomains()
         plt.show()
 
-for arg in sys.argv[1:]:
-    s = star(arg)
-    s.plot()
-    s.plotMeridionalCirculation()
+    def show(self):
+        plt.show()
 
+if __name__ == "__main__":
+    import sys
+    for arg in sys.argv[1:]:
+        s = star(arg)
+        s.plot()
+        s.plotMeridionalCirculation()

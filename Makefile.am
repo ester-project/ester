@@ -2,14 +2,14 @@ ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = tables src test/models
 
-bin_SCRIPTS	= ester-read-hdf5
+bin_SCRIPTS	= ester.py
 CLEANFILES  = $(bin_SCRIPTS)
 
 do_subst = sed -e 's,[@]datadir[@],$(datadir),g' \
                -e 's,[@]prefix[@],$(prefix),g'   \
                -e 's,[@]PYTHON[@],$(PYTHON),g'
 
-ester-read-hdf5: python/read-hdf5.in Makefile
+ester.py: python/read-hdf5.in Makefile
 	        $(do_subst) < $< > $@
 
 helpdir		= @datadir@/ester/doc/help/
