@@ -146,9 +146,9 @@ int main(int argc,char *argv[]) {
 	}
 
 	A.write(config.output_file,config.output_mode);
-    if (A.config.dump_iter) {
+    {
         char *filename = NULL;
-        asprintf(&filename, "%s-iter-last.hdf5",
+        asprintf(&filename, "%s.hdf5",
                 config.output_file);
         A.hdf5_write(filename);
         free(filename);
