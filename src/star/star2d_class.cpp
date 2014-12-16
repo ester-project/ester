@@ -97,6 +97,21 @@ void write_attr(hid_t id, const char *name, double val) {
     if (H5Awrite(attribute_id, H5T_NATIVE_DOUBLE, &attr) < 0) return;
     if (H5Sclose(dataspace_id) < 0) return;
 }
+
+void write_attr_int(hid_t id, const char *name, int val) {
+    hsize_t dim = 1;
+    int attr = val;
+    hid_t attribute_id;
+    hid_t dataspace_id = H5Screate_simple(1, &dim, NULL);
+
+    if (dataspace_id < 0) return;
+
+    attribute_id = H5Acreate2(id, name, H5T_NATIVE_INT,
+            dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
+
+    if (H5Awrite(attribute_id, H5T_NATIVE_INT, &attr) < 0) return;
+    if (H5Sclose(dataspace_id) < 0) return;
+}
 #endif
 
 void star2d::hdf5_write(const char *filename) const {
@@ -123,12 +138,13 @@ void star2d::hdf5_write(const char *filename) const {
             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
     if (group_id < 0) return;
 
-    write_attr(group_id, "ndomains", this->map.ndomains);
-    write_attr(group_id, "nr", this->nr);
-    write_attr(group_id, "nth", this->nth);
-    write_attr(group_id, "convective core", this->core_convec);
+    write_attr_int(group_id, "ndomains", this->map.ndomains);
+    write_attr_int(group_id, "nr", this->nr);
+    write_attr_int(group_id, "nth", this->nth);
+    write_attr_int(group_id, "npts", this->map.npts[0]);
+    write_attr_int(group_id, "convective core", this->core_convec);
     if (this->stratified_comp == 1)
-        write_attr(group_id, "stratified_comp", (double) this->stratified_comp);
+        write_attr_int(group_id, "stratified_comp", this->stratified_comp);
 
     for (int i=0; i<nvar; i++) {
         dims[0] = dump_vars[i].ncols();
@@ -153,12 +169,13 @@ void star2d::hdf5_write(const char *filename) const {
             return;
         }
 
-        status = H5Dclose(dataset_id);
-        status = H5Sclose(dataspace_id);
+        H5Dclose(dataset_id);
+        H5Sclose(dataspace_id);
     }
 
-    status = H5Gclose(group_id);
-    status = H5Fclose(file_id);
+    H5Gclose(group_id);
+    H5Fflush(file_id, H5F_SCOPE_GLOBAL);
+    H5Fclose(file_id);
 #endif
 }
 
