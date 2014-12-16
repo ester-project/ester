@@ -5,34 +5,96 @@ import numpy as np
 import h5py
 import matplotlib.pyplot as plt
 
-def plotStar(fileName):
-    f = h5py.File(fileName, 'r')
-    w = f['/star/w'][:]
-    r = f['/star/r'][:]
-    z = f['/star/z'][:]
-    th = f['/star/th'][:]
+class star:
+    def __init__(self, fileName):
+        f = h5py.File(fileName, 'r')
+        self.G   = f['/star/G'][:]
+        self.N2  = f['/star/N2'][:]
+        self.T   = f['/star/T'][:]
+        self.X   = f['/star/X'][:]
+        self.eps = f['/star/nuc.eps'][:]
+        self.p   = f['/star/p'][:]
+        self.phi = f['/star/phi'][:]
+        self.r   = f['/star/r'][:]
+        self.rho = f['/star/rho'][:]
+        self.th  = f['/star/th'][:]
+        self.w   = f['/star/w'][:]
+        self.z   = f['/star/z'][:]
 
-    th = np.r_[[[np.pi/2]], th]
-    th[-1,:] = 0
-    r = np.r_[[r[0,:]], r]
-    r = np.c_[r[:,0], r]
+    def plot(self):
+        th = np.r_[[[np.pi/2]], self.th]
+        th[-1] = 0
+        r = np.r_[[self.r[0,:]], self.r]
+        r = np.c_[r[:,0], r]
 
-    th = th * np.ones(r.shape[1])
+        th = th * np.ones(r.shape[1])
 
-    x = r * np.sin(th)
-    y = r * np.cos(th)
+        x = r * np.sin(th)
+        y = r * np.cos(th)
 
-    print "x: " + str(x.shape)
-    print "y: " + str(y.shape)
-    print "w: " + str(w.shape)
+        w = self.w
 
-    plt.pcolor(x, y, w)
-    plt.pcolor(-x, y, w)
-    plt.pcolor(x, -y, w)
-    plt.pcolor(-x, -y, w)
-    plt.colorbar()
-    plt.show()
+        plt.subplot(221)
+
+        plt.pcolor(x, y, w)
+        plt.pcolor(-x, y, w)
+        plt.pcolor(x, -y, w)
+        plt.pcolor(-x, -y, w)
+        plt.colorbar()
+
+        p = plt.subplot(222)
+        self.plotXY(self.r[0,:], self.w[0,:])
+        self.plotXY(self.r[-1,:], self.w[-1,:])
+        p.set_title('w')
+        p.legend(("equator", "pole"))
+
+        p = plt.subplot(223)
+        self.plotXY(self.r[0,:], self.T[0,:])
+        self.plotXY(self.r[-1,:], self.T[-1,:])
+        p.set_title('T')
+        p.legend(("equator", "pole"))
+
+        p = plt.subplot(224)
+        self.plotXY(self.r[0,:], self.eps[0,:])
+        self.plotXY(self.r[-1,:], self.eps[-1,:])
+        p.set_title('eps')
+        p.legend(("equator", "pole"))
+
+        plt.show()
+
+    def plotXY(self, x, y):
+        plt.plot(x, y)
+
+    def plotMeridionalCirculation(self):
+        th = self.th
+        th[-1] = 0
+        th[0] = np.pi/2
+        r = self.r
+        x = r * np.sin(th)
+        y = r * np.cos(th)
+        plt.contourf(x, y,
+                self.G, 200, alpha=.5)
+        plt.contourf(x, -y,
+                self.G, 200, alpha=.5)
+        plt.contourf(-x, y,
+                self.G, 200, alpha=.5)
+        plt.contourf(-x, -y,
+                self.G, 200, alpha=.5)
+        plt.colorbar()
+
+        npts = self.G.shape[0]/2 # draw nth/2 isoline
+        plt.contour(x, y,
+                self.G, npts, colors='black', linewidth=.5)
+        plt.contour(-x, y,
+                self.G, npts, colors='black', linewidth=.5)
+        plt.contour(x, -y,
+                self.G, npts, colors='black', linewidth=.5)
+        plt.contour(-x, -y,
+                self.G, npts, colors='black', linewidth=.5)
+        plt.show()
 
 for arg in sys.argv[1:]:
-    plotStar(arg)
+    s = star(arg)
+    s.plot()
+    s.plotMeridionalCirculation()
 
