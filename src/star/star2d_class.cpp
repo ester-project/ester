@@ -83,13 +83,13 @@ void star2d::copy(const star2d &A) {
 }
 
 #ifdef HAVE_LIBHDF5
-void write_attr(hid_t id, const char *name, hid_t type, int size,
+void write_attr(hid_t id, const char *name, hid_t type, int n,
         const void *ptr) {
     hid_t attribute_id;
     hid_t dataspace_id = H5Screate(H5S_SCALAR);
     hid_t type_id = H5Tcopy(type);
 
-    H5Tset_size(type_id, size);
+    H5Tset_size(type_id, n*H5Tget_size(type));
 
     if (dataspace_id < 0) return;
 
