@@ -141,11 +141,12 @@ void star2d::hdf5_write(const char *filename) const {
             H5T_NATIVE_INT, 1, &this->core_convec);
     write_attr(group_id, "stratified_comp",
             H5T_NATIVE_INT, 1, &this->stratified_comp);
-
     write_attr(group_id, "opacity",
             H5T_C_S1, strlen(this->opa.name)+1, this->opa.name);
     write_attr(group_id, "eos",
             H5T_C_S1, strlen(this->eos.name)+1, this->eos.name);
+    write_attr(group_id, "nconv",
+            H5T_NATIVE_INT, 1, &this->conv);
 
     for (int i=0; i<nvar; i++) {
         dims[0] = dump_vars[i].ncols();
