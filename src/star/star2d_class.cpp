@@ -98,6 +98,7 @@ void write_attr(hid_t id, const char *name, hid_t type, int size,
     if (attribute_id < 0) return;
 
     if (H5Awrite(attribute_id, type_id, ptr) < 0) return;
+
     if (H5Tclose(type_id) < 0) return;
     if (H5Sclose(dataspace_id) < 0) return;
     if (H5Aclose(attribute_id) < 0) return;
