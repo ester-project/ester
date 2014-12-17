@@ -83,34 +83,24 @@ void star2d::copy(const star2d &A) {
 }
 
 #ifdef HAVE_LIBHDF5
-void write_attr(hid_t id, const char *name, double val) {
-    hsize_t dim = 1;
-    double attr = val;
+void write_attr(hid_t id, const char *name, hid_t type, int size,
+        const void *ptr) {
     hid_t attribute_id;
-    hid_t dataspace_id = H5Screate_simple(1, &dim, NULL);
+    hid_t dataspace_id = H5Screate(H5S_SCALAR);
+    hid_t type_id = H5Tcopy(type);
+
+    H5Tset_size(type_id, size);
 
     if (dataspace_id < 0) return;
 
-    attribute_id = H5Acreate2(id, name, H5T_NATIVE_DOUBLE,
+    attribute_id = H5Acreate2(id, name, type_id,
             dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
+    if (attribute_id < 0) return;
 
-    if (H5Awrite(attribute_id, H5T_NATIVE_DOUBLE, &attr) < 0) return;
+    if (H5Awrite(attribute_id, type_id, ptr) < 0) return;
+    if (H5Tclose(type_id) < 0) return;
     if (H5Sclose(dataspace_id) < 0) return;
-}
-
-void write_attr_int(hid_t id, const char *name, int val) {
-    hsize_t dim = 1;
-    int attr = val;
-    hid_t attribute_id;
-    hid_t dataspace_id = H5Screate_simple(1, &dim, NULL);
-
-    if (dataspace_id < 0) return;
-
-    attribute_id = H5Acreate2(id, name, H5T_NATIVE_INT,
-            dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
-
-    if (H5Awrite(attribute_id, H5T_NATIVE_INT, &attr) < 0) return;
-    if (H5Sclose(dataspace_id) < 0) return;
+    if (H5Aclose(attribute_id) < 0) return;
 }
 #endif
 
@@ -138,13 +128,23 @@ void star2d::hdf5_write(const char *filename) const {
             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
     if (group_id < 0) return;
 
-    write_attr_int(group_id, "ndomains", this->map.ndomains);
-    write_attr_int(group_id, "nr", this->nr);
-    write_attr_int(group_id, "nth", this->nth);
-    write_attr_int(group_id, "npts", this->map.npts[0]);
-    write_attr_int(group_id, "convective core", this->core_convec);
-    if (this->stratified_comp == 1)
-        write_attr_int(group_id, "stratified_comp", this->stratified_comp);
+    write_attr(group_id, "ndomains",
+            H5T_NATIVE_INT, 1, &this->map.ndomains);
+    write_attr(group_id, "nr",
+            H5T_NATIVE_INT, 1, &this->nr);
+    write_attr(group_id, "nth",
+            H5T_NATIVE_INT, 1, &this->nth);
+    write_attr(group_id, "npts",
+            H5T_NATIVE_INT, 1, &this->map.npts[0]);
+    write_attr(group_id, "convective core",
+            H5T_NATIVE_INT, 1, &this->core_convec);
+    write_attr(group_id, "stratified_comp",
+            H5T_NATIVE_INT, 1, &this->stratified_comp);
+
+    write_attr(group_id, "opacity",
+            H5T_C_S1, strlen(this->opa.name)+1, this->opa.name);
+    write_attr(group_id, "eos",
+            H5T_C_S1, strlen(this->eos.name)+1, this->eos.name);
 
     for (int i=0; i<nvar; i++) {
         dims[0] = dump_vars[i].ncols();
