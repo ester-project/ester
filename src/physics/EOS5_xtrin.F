@@ -1,3 +1,4 @@
+#include "ester-config.h"
 	  subroutine EOS5_xtrin(x,ztab,t6,p,r)
 
 c     Calling propram should contain something like following lines.

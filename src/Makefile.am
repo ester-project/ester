@@ -4,7 +4,6 @@ BUILT_SOURCES	= main/read_config.cpp
 
 AM_CPPFLAGS = -I$(srcdir)/include
 AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam_nuc
-AM_CPPFLAGS	+= -DESTER_DATADIR='"$(datadir)"'
 
 noinst_LTLIBRARIES		= libnuc.la libopint.la libnuc_cesam.la
 libnuc_la_SOURCES		=
@@ -54,7 +53,7 @@ do_subst = sed -e 's,[@]datadir[@],$(datadir),g' \
                -e 's,[@]PYTHON[@],$(PYTHON),g'
 
 main/ester: main/ester.in Makefile
-	        $(do_subst) < $< > $@
+	$(do_subst) < $< > $@
 
 lib_LTLIBRARIES			= libester.la
 libester_la_SOURCES		= global/global.cpp									\

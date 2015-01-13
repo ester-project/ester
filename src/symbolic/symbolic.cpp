@@ -1,4 +1,4 @@
-#include "config.h"
+#include "ester-config.h"
 #include"symbolic.h"
 #include<cstdlib>
 #include<cmath>

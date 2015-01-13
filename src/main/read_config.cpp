@@ -1,4 +1,4 @@
-#include "config.h"
+#include "ester-config.h"
 #include "parser.h"
 #include "read_config.h"
 

@@ -1,4 +1,4 @@
-#include "config.h"
+#include "ester-config.h"
 #include<cmath>
 #include<stdio.h>
 #include<stdlib.h>

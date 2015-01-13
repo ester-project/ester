@@ -1,4 +1,4 @@
-#include "config.h"
+#include "ester-config.h"
 #include "star.h"
 
 
@@ -29,7 +29,7 @@ void star_evol::init_comp() {
     if (!converged)
         return;
     if (comp_inited) {
-        comp["H"] -= T*0.05*comp["H"]; // to be fixed
+        comp["H"] -= T*0.01*comp["H"]; // to be fixed
         return;
     }
     else {

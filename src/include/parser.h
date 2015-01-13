@@ -1,7 +1,7 @@
 #ifndef _PARSER_H
 #define _PARSER_H
 
-#include "config.h"
+#include "ester-config.h"
 #include <stdio.h>
 #include <iostream>
 #include <sstream>

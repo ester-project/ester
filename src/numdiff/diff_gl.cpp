@@ -1,4 +1,4 @@
-#include "config.h"
+#include "ester-config.h"
 #include "numdiff.h"
 #include "constants.h"
 

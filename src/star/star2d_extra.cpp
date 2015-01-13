@@ -1,4 +1,4 @@
-#include "config.h"
+#include "ester-config.h"
 #include"star.h"
 
 void star2d::draw(figure *pfig,const matrix &A,int parity) const {

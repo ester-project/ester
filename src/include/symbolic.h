@@ -1,7 +1,7 @@
 #ifndef _SYMBOLIC_H
 #define _SYMBOLIC_H
 
-#include "config.h"
+#include "ester-config.h"
 #include <vector>
 #include <map>
 #include <string>

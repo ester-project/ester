@@ -1,4 +1,4 @@
-#include "config.h"
+#include "ester-config.h"
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>

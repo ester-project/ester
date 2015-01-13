@@ -1,7 +1,7 @@
 #ifndef _SOLVER_H
 #define _SOLVER_H
 
-#include "config.h"
+#include "ester-config.h"
 #include "matrix.h"
 #include "matrix.h"
 

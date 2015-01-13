@@ -1,4 +1,4 @@
-#include "config.h"
+#include "ester-config.h"
 #include"physics.h"
 #include<string.h>
 

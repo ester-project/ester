@@ -1,4 +1,4 @@
-#include "config.h"
+#include "ester-config.h"
 #include "physics.h"
 
 double_map initial_composition(double X, double Z) {

@@ -15,9 +15,9 @@ AC_CONFIG_SRCDIR([config.h.in])
 
 # Checks for programs.
 AC_PROG_CPP
-AC_PROG_CXX
 AC_PROG_CC
-AC_PROG_FC
+AC_PROG_CXX
+AC_PROG_FC(gfortran44 gfortran ifort)
 AC_PROG_F77($FC)
 AC_PROG_AWK
 AC_PROG_INSTALL
@@ -33,8 +33,8 @@ AM_PATH_PYTHON
 have_pgplot="no"
 AC_CHECK_HEADERS([cpgplot.h],
                  [AC_DEFINE([USE_PGPLOT], [1], [enable pgplot support])
-                 AC_CHECK_LIB([cpgplot], [cpgebuf], [
-                               LIBS="-lcpgplot $LIBS" have_pgplot="yes"],
+                 AC_CHECK_LIB([cpgplot], [cpgebuf],
+                              [LIBS="-lcpgplot $LIBS" have_pgplot="yes"],
                               [AC_ERROR(cpgplot library not found)])])
 
 AC_CHECK_HEADERS([stddef.h stdlib.h string.h sys/time.h])
@@ -48,27 +48,36 @@ AC_TYPE_SIZE_T
 # Checks for library functions.
 AC_CHECK_LIB([m], [sqrt])
 
-AC_ARG_WITH([hdf5-root],
-            AS_HELP_STRING([--with-hdf5-root],
-                           [Provide hdf5 root directory]),
-                           hdf5root=$withval)
+# AC_ARG_WITH([hdf5-root],
+#             AS_HELP_STRING([--with-hdf5-root],
+#                            [Provide hdf5 root directory]),
+#                            hdf5root=$withval)
 
 AC_ARG_ENABLE([hdf5],
               AS_HELP_STRING([--enable-hdf5],
                              [Enable HDF5 support]))
-AS_IF([test "x$enable_hdf5" == "xyes"], [
-       CFLAGS="$CFLAGS -I$hdf5root/include"
-       CXXFLAGS="$CXXFLAGS -I$hdf5root/include"
+AS_IF([test "x$enable_hdf5" == "xyes"],
+      [CXX="h5c++"
+       CC="h5cc"
+       AC_MSG_CHECKING([blas library])
+       AC_COMPILE_IFELSE(
+                      [AC_LANG_SOURCE([
+                       void main(void) {}
+                       ])],
+                       [h5cc_works=yes],
+                       [h5cc_works=no])
+       AC_MSG_RESULT($h5cc_works)
+       AS_IF([test "x$h5cc_works" == "xno"],
+             [AC_ERROR(Could not find hdf5 compiler wrapper $CC)])
        AC_CHECK_HEADERS([hdf5.h])
        AS_IF([test "x$ac_cv_header_hdf5_h" == "xno"], [
-              AC_ERROR([Could not find HDF5 header
-    Please privde the path to HDF5 with --with-hdf5-root])])
-       LIBS="$LIBS -L$hdf5root/lib"
-       AC_CHECK_LIB([hdf5], [H5Fopen])
-       AS_IF([test "x$ac_cv_lib_hdf5_H5Fopen" == "xno"], [
-              AC_ERROR([Could not find HDF5 library
-    Please privde the path to HDF5 with --with-hdf5-root])])
-       ], [enable_hdf5="no"])
+              AC_ERROR([Could not find HDF5 header])])
+       # AC_CHECK_LIB([hdf5], [H5Fopen])
+    #    AS_IF([test "x$ac_cv_lib_hdf5_H5Fopen" == "xno"], [
+    #           AC_ERROR([Could not find HDF5 library
+    # Please privde the path to HDF5 with --with-hdf5-root])])
+       ],
+   [enable_hdf5="no"])
 
 
 # Search for mkl
@@ -140,6 +149,8 @@ AC_ARG_ENABLE([debug],
               AC_DEFINE([DEBUG], [1], [Eanble debug mode])
               CFLAGS="$CFLAGS -g"
               CXXFLAGS="$CXXFLAGS -g"])
+
+AC_DEFINE([ESTER_DATADIR], ["@datadir@"], [Path to ester data directory])
 
 AC_OUTPUT
 

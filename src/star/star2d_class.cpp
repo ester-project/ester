@@ -1,4 +1,4 @@
-#include "config.h"
+#include "ester-config.h"
 #include"star.h"
 #include"version.h"
 #include<string.h>

@@ -1,6 +1,10 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = tables src test/models
+SUBDIRS = . tables src test/models
+
+all-local: ester-config.h
+clean-local:
+	rm -f ester-config.h
 
 bin_SCRIPTS	= ester_visu.py
 CLEANFILES  = $(bin_SCRIPTS)
@@ -10,6 +14,9 @@ do_subst = sed -e 's,[@]datadir[@],$(datadir),g' \
                -e 's,[@]PYTHON[@],$(PYTHON),g'
 
 ester_visu.py: python/ester_visu.in Makefile
+	$(do_subst) < $< > $@
+
+ester-config.h: config.h Makefile
 	$(do_subst) < $< > $@
 
 helpdir		= @datadir@/ester/doc/help/

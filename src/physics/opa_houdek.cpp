@@ -1,9 +1,9 @@
-#include "config.h"
-#include<cmath>
-#include<string.h>
-#include"matrix.h"
-#include"constants.h"
-#include"physics.h"
+#include "ester-config.h"
+#include <cmath>
+#include <string.h>
+#include "matrix.h"
+#include "constants.h"
+#include "physics.h"
 
 extern"C" {
 	void maceps_(double *eps);
