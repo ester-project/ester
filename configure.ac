@@ -6,7 +6,7 @@ AC_INIT([ESTER], [1.0.108])
 AC_CONFIG_AUX_DIR(autoconf)
 AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-bzip2 tar-ustar -Wall subdir-objects foreign])
+AM_INIT_AUTOMAKE([1.9 dist-bzip2 dist-zip tar-ustar -Wall subdir-objects foreign])
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
