@@ -20,7 +20,7 @@ help_DATA	= doc/help/1d	\
 			  doc/help/info \
 			  doc/help/output
 
-EXTRA_DIST	= $(top_srcdir)/python/read-hdf5.in \
+EXTRA_DIST	= $(top_srcdir)/python/ester_visu.in \
 			  $(top_srcdir)/doc/help/1d			\
 			  $(top_srcdir)/doc/help/2d			\
 			  $(top_srcdir)/doc/help/evol		\
