@@ -28,9 +28,9 @@ star_evol_LDFLAGS	= -lester -lnuc_cesam -lnuc -lopint
 
 star1d_SOURCES		= main/star1d.cpp main/read_config.cpp
 star2d_SOURCES		= main/star2d.cpp main/read_config.cpp
+star_evol_SOURCES	= main/star_evol.cpp main/read_config.cpp
 gen_output_SOURCES	= main/gen_output.cpp
 version_SOURCES		= main/version.cpp
-star_evol_SOURCES	= main/star_evol.cpp main/read_config.cpp
 
 star1d		: libnuc.la libopint.la libester.la
 star2d		: libnuc.la libopint.la libester.la
@@ -42,7 +42,7 @@ EXTRA_DIST	= main/ester_info.cpp					\
 			  $(srcdir)/main/ester.in				\
 			  $(top_srcdir)/config/1d_default.par	\
 			  $(top_srcdir)/config/2d_default.par	\
-			  $(top_srcdir)/config/star.cfg
+			  $(top_srcdir)/config/star.cfg			\
 			  $(srcdir)/include/version.h
 
 

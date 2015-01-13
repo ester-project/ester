@@ -239,7 +239,7 @@ DEBUG_FUNCNAME
 
 }
 
-int star2d::read(const char *input_file){
+int star2d::read(const char *input_file) {
 DEBUG_FUNCNAME
 	char tag[32],mode;
 	int ndom;

@@ -43,9 +43,9 @@ int main(int argc,char *argv[]) {
 	if(*config.output_file==0) {
 		strcpy(config.input_file,config.output_file);
 	}
-	
+
 	star_evol A;
-	
+
 	if(!A.read(config.input_file)) {
 		star1d A1d;
 		if(!A1d.read(config.input_file)) {
@@ -72,13 +72,14 @@ int main(int argc,char *argv[]) {
 	int n=0;
 	char outfile[256];
 	
-	while(Xc>=Xcmin&&Xc<=1) {
+	while((Xc >= Xcmin && Xc <= 1)) {
 		printf("Xc=%f\n",Xc);
 		int last_it=0,nit=0;
 		double err;
 		A.Xc=Xc;
 		while(!last_it) {
 			nit++;
+            A.converged = false;
 			err=A.solve(op);
 			last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit;
 			if(config.verbose) {
@@ -86,8 +87,8 @@ int main(int argc,char *argv[]) {
 				printf("\t\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,1-1./A.map.leg.eval_00(A.r.row(-1),PI/2)(0),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
 
 			}
-		
 		}
+        A.converged = true;
 		
 		static matrix logL(log10(A.luminosity()/L_SUN)*ones(1,1));
 		static matrix logR(log10(A.R/R_SUN)*ones(1,1));
@@ -119,12 +120,17 @@ int main(int argc,char *argv[]) {
 			fig->label("X(core)","Lz_core/Lz","");
 		}
 		sprintf(outfile,"%s_%04d",config.output_file,n);
-		A.write(outfile,config.output_mode);
-		Xc-=dXc;
+        {
+            char *filename = NULL;
+            asprintf(&filename, "%s-%04d.hdf5",
+                    config.output_file,
+                    n);
+            A.hdf5_write(filename);
+            free(filename);
+        }	A.write(outfile,config.output_mode);
+		Xc = A.comp["H"](0)/A.comp["H"](-1);
+        A.fill(); // this updated the chemical composition
 		n++;
 	}
 }
-
-
-
 

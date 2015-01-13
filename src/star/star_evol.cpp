@@ -3,37 +3,43 @@
 
 
 star_evol::star_evol() {
-
+    comp_inited = false;
 	Lz_obj=0;
-
 }
 
 star_evol::star_evol(const star2d &A) : star2d(A) {
-
+    comp_inited = false;
 	Lz_obj=A.Lz();
-
 }
 
 int star_evol::read(const char *input_file) {
-
 	int out;
 	out=star2d::read(input_file);
 	Lz_obj=Lz();
+    comp_inited = true;
 	return out;
-
 }
 
 void star_evol::fill() {
-
 	star2d::fill();
 	Omega_bk=Omega/Omegac;
+}
 
+void star_evol::init_comp() {
+    if (!converged)
+        return;
+    if (comp_inited) {
+        comp["H"] -= T*0.05*comp["H"]; // to be fixed
+        return;
+    }
+    else {
+        comp_inited = true;
+        star2d::init_comp();
+    }
 }
 
 solver * star_evol::init_solver(int nvar_add) {
-
 	return star2d::init_solver(nvar_add+1);
-
 }
 
 void star_evol::register_variables(solver *op) {
@@ -96,10 +102,4 @@ void star_evol::solve_Omega(solver *op) {
 	op->bc_top1_add_d(n,"Omega","log_rhoc",0.5*ones(1,1));
 	rhs(n)=log(Lz_obj/Lz());
 	op->set_rhs("Omega",rhs);
-
 }
-
-
-
-
-

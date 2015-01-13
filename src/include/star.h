@@ -204,7 +204,10 @@ class star1d : public star2d {
 };
 
 class star_evol : public star2d {
+protected:
+    bool comp_inited;
 public:
+    bool converged;
 	double Lz_obj;
 	star_evol();
 	star_evol(const star2d &);
@@ -213,7 +216,7 @@ public:
 	virtual solver *init_solver(int nvar_add=0);
 	virtual void register_variables(solver *op);
 	virtual void solve_Omega(solver *);
-	
+    void init_comp();
 };
 
 #endif
