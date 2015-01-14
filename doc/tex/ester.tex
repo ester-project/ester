@@ -14,6 +14,17 @@
 \usepackage{natbib}
 \usepackage{amsmath}
 \usepackage{anyfontsize}
+\usepackage{listings}
+\usepackage{xspace}
+
+\DefineVerbatimEnvironment{shell}{Verbatim}{commentchar=!,gobble=3}
+% \newenvironment{shellcmd}[1][]{%
+%     % \renewcommand{\thelstnumber}{\$ }
+%     \begin{lstlisting}
+%     % \lstset{numbers=left,basicstyle=\ttfamily,#1}%
+% }{%
+%     \end{lstlisting}
+% }
 
 \titleformat{\section}
 {\vspace{.8ex}%
@@ -39,6 +50,9 @@
   citecolor=blue,
   linkcolor=blue
 }
+
+\newcommand{\git}{\texttt{git}\xspace}
+\newcommand{\eg}{\textit{e.g.,}\xspace}
 
 \include{definitions}
 \begin{document}

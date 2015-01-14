@@ -1,25 +1,33 @@
 \chapter{Getting started}
 \section{Prerequisites}
 
-The ESTER library depends on some external libraries that should be installed in the system, namely:
+The ESTER libraries depend on some external libraries that should be installed in
+the system, namely:
 \begin{itemize}
-\item BLAS, CBLAS and LAPACK, for matrix algebra. There are several versions available, as 
-for example:
-\begin{itemize}
-\item Netlib. This is the original implementation. The LAPACK library can be found at
-\url{http://www.netlib.org/lapack}, and already contains BLAS, but CBLAS should be downloaded
-separately from \url{http://www.netlib.org/blas}.
-\item ATLAS (Automatically Tuned Linear Algebra Software). An implementation of LAPACK/BLAS that
-is automatically optimized during the compilation process. It can be found at
-\url{http://math-atlas.sourceforge.net/}. It contains LAPACK, BLAS and CBLAS.
-\item Intel MKL. Contains an optimized version of LAPACK, BLAS and CBLAS for Intel processors.
+    \item BLAS, CBLAS and LAPACK, for matrix algebra. There are several
+        alternatives available, as for example:
+        \begin{itemize}
+            \item Netlib. This is the original implementation. The LAPACK
+                library can be found at \url{http://www.netlib.org/lapack}, and
+                already contains BLAS, but CBLAS should be downloaded separately
+                from \url{http://www.netlib.org/blas}.
+            \item ATLAS (Automatically Tuned Linear Algebra Software). An
+                implementation of LAPACK/BLAS that is automatically optimized
+                during the compilation process. It can be found at
+                \url{http://math-atlas.sourceforge.net/}. It contains LAPACK,
+                BLAS and CBLAS.
+            \item Intel MKL. Contains an optimized version of LAPACK, BLAS and
+                CBLAS for Intel processors.
+        \end{itemize}
+    \item PGPLOT (CPGPLOT) for graphics output (optional). PGPLOT is available
+        at \url{http://sourceforge.net/projects/pg2plplot/} or, in most Linux
+        distributions, in the \texttt{pgplot5} package.
+    \item HDF5 for standardized model output (optional). HDF5 is available at
+        \url{http://www.hdfgroup.org/downloads/}.
 \end{itemize}
-\item PGPLOT (CPGPLOT) for graphics output (optional). It can be disabled in the 
-{\tt Makefile} ({\tt make.inc}) setting the variable {\tt USE\_PGPLOT=0}.
-\end{itemize}
-As there are some routines written in Fortran, it is also needed to link against the standard
-fortran libraries ({\tt libgfortran} for the GNU fortran compiler and {\tt libifcore} and 
-{\tt libifport} for the Intel compiler).
+% As there are some routines written in Fortran, it is also needed to link against
+% the standard fortran libraries ({\tt libgfortran} for the GNU fortran compiler
+% and {\tt libifcore} and {\tt libifport} for the Intel compiler).
 
 \subsection{A note about the performance of the code}
 The performance of the ESTER code depends strongly on LAPACK. To get the best results,
@@ -28,65 +36,195 @@ use an optimized (and parallelized) version.
 \pagebreak
 
 \section{Installation}
-The current version of the ESTER code can be downloaded using {\tt svn} from the project server by doing
-\mint{bash}|$ svn checkout http://ester-project.googlecode.com/svn/trunk/ ester| %$
-or from the project website \url{http://code.google.com/p/ester-project}.
+The latest version of ESTER is available from the \git repository:
+\begin{shell}
+    $ git clone https://github.com/ester-project/ester.git
+    !$
+\end{shell}
+or from a source tarball: \url{http://ester-project.github.io/ester/}.
 
-The first step is to create the file {\tt make.inc} in the directory {\tt src}
- from the two examples that are included, 
-{\tt make.inc.icc} and {\tt make.inc.gcc}, for the Intel compiler and the GNU compiler respectively.
-After setting the appropriate values for the compilation, we must start by doing 
-\mint{bash}|ester/src$ make tables| %$
-This will build some third-party libraries included in the distribution and initialise
-the tables of opacity and equation of state.
+If you choose to get ESTER from the \git repository, you will need to have
+\texttt{libtool}, \texttt{autoconf} and \texttt{automake} installed.
+The first step after cloning the repository is to run the \texttt{bootstrap}
+script:
+\begin{shell}
+    $ cd ester
+    ester$ ./bootstrap
+\end{shell}
+This will create the \texttt{configure} script.
 
-We can now build the main program by doing
-\mint{bash}|ester/src$ make| %$
-To remove intermediate files we can also do 
-\mint{bash}|ester/src$ make clean| %$
-Finally, to verify the installation, we can do
-\mint{bash}|ester/src$ make test| %$
+\subsection{Configure}
+In this step, the \texttt{configure} script will detect the libraries and
+compiler installed on the system.
+It us preferred to configure and compile in a different directory than the top
+source directory:
+\begin{shell}
+    ester$ mkdir BUILD
+    ester$ cd BUILD
+    ester/BUILD$ ../configure [OPTION]... [VAR=VALUE]...
+    !$
+\end{shell}
 
-The main executable is located in {\tt ester/bin/}. To be able to call ester 
-without including the full path, you can include this directory in your PATH
-environment variable. Alternatively, you can create a symbolic link in
-a directory included in your PATH, for example:
-\mint{bash}|$ ln -s ~/ester/bin/ester ~/bin/ester| %$
-In this example, we are supposing that the ESTER library is located in \verb|~/ester|
-and the directory \verb|~/bin| is included in the PATH. If you are interested also
-in making your own programs using the ESTER library, you can also do:
-\mint{bash}|$ ln -s ~/ester/bin/ester_build ~/bin/ester_build| %$
+The most important configure options are:
+\begin{description}
+    \item[--prefix:] selects the installation directory (default is
+        \texttt{/usr/local}, and requires root privileges for the install step).
+    \item[--enable-hdf5:] to enable HDF5 support (this requires to have HDF5
+        library installed on the system).
+    \item[--help:] prints help and the full list of configure options.
+\end{description}
+The following variables can be used to tune the ESTER build configuration:
+\begin{description}
+    \item[FC:] Fortran compiler to be used (\eg FC=ifort)
+    \item[CC:] C compiler
+    \item[CXX:] C compiler
+\end{description}
+
+For instance, is you want to compile with Intel compilers and install ESTER in
+\texttt{\$HOME/local}, you should use:
+\begin{shell}
+    ester/BUILD$ ../configure --prefix=$HOME/local CC=icc CXX=icpc FC=ifort
+\end{shell}
+
+\paragraph{Note on enabling HDF5 support:} to compile and link programs with
+the HDF5 library, the HDF Group provides compiler wrappers (\texttt{h5cc} for C
+compiler, \texttt{h5c++} for c++ and \texttt{h5fc} for Fortran).
+Therefore, configuring with \texttt{--enable-hdf5} will result in choosing
+\texttt{h5cc} and \texttt{h5c++} for C and C++ compilers.
+You can select the C and C++ compiler used by the HDF5 wrappers with the
+environment variables \texttt{HDF5\_CC}, \texttt{HDF5\_CXX}, \texttt{HDF5\_FC}.
+
+\subsection{Build and Install}
+After the configure step, building and installing ESTER is straightforward:
+\begin{shell}
+    ester/BUILD$ make && make install
+    !$
+\end{shell}
+\texttt{make} will build the ESTER's libraries and binaries.
+And \texttt{make install} will copy the libraries into \texttt{\$prefix/lib} and
+binaries into \texttt{\$prefix/bin}.
+
+\paragraph{Note on enabling HDF5 support:} if you enabled HDF5 support, you can
+to select the compiler used by \texttt{h5c++} by setting the \texttt{HDF5\_CXX}
+variable:
+\begin{shell}
+    ester/BUILD$ export HDF5_CXX=icpc
+    ester/BUILD$ make && make install
+\end{shell}
+If you do not set \texttt{HDF5\_CXX}, the default compiler will be used (most
+probably the gnu C++ compiler).
+
+Make sure you add the install directory to you \texttt{PATH} environment
+variable to be able to launch ester without specifying the full path to the
+binary.
+If you are using \texttt{bash}, you can add the following line to your
+\texttt{.bashrc}:
+\begin{shell}
+    export PATH="$HOME/local/bin:$PATH"
+\end{shell}
+
 
 \subsection{Updating the code}
-In order to update to the last version using {\tt svn}, from the root directory of the ESTER distribution
-execute
-\mint{bash}|ester$ svn update| %$
-Depending on the update, sometimes we can do just
-\mint{bash}|ester/src$ make| %$
-from the {\tt src} directory. But it is safer to clean out the previous installation using
-\mint{bash}|ester/src$ make distclean| %$
-and then
-\mint{bash}|ester/src$ make tables; make| %$
+If you chose to download ESTER from the \git repository, you can update the code with:
+\begin{shell}
+    ester$ git pull
+    !$
+\end{shell}
+and compile the new version by going to your build directory and running
+\texttt{make install}:
+\begin{shell}
+    ester$ cd BUILD
+    ester/BUILD$ make install
+\end{shell}
 
-\section{Checking the installation}
+\section{Checking the Installation}
+To check the functionality of the program we are going to calculate the
+structure of a star using the default values for the parameters.
 
-To check the functionality of the program we are going to calculate the structure of a star using the default values for the parameters.
-First we calculate the structure of the corresponding 1D non-rotating star. Change to your working directory and execute
-\mint{bash}|$ ester 1d| %$
-Then we use the output file (by default {\tt star.out}) as the starting point for the 2D calculation
-\mint{bash}|$ ester 2d -i star.out -Omega_bk 0.5|   %$
-This calculates the structure of a star rotating at 50$\%$ of the break-up velocity $\Omega_k=\sqrt{\frac{GM}{R_e^3}}$.
+First create and go to directory where to save models:
+\begin{shell}
+    $ mkdir /tmp/models
+    $ cd /tmp/models
+\end{shell}
 
-\section{Using the library}
+Then, we calculate the structure of the corresponding 1D non-rotating star:
+\begin{shell}
+    /tmp/models$ ester 1d
+    !$
+\end{shell}
+After this step, the directory should contain file named \texttt{star.out} this
+is the model of the 1D non-rotating star.
+We can use this model as the starting point for the calculation of the 2D
+rotation model:
+\begin{shell}
+    /tmp/models$ ester 2d -i star.out -Omega_bk 0.5
+    !$
+\end{shell}
+The \texttt{-i} option specify the input model, and \texttt{-Omega\_bk} gives
+the rotation velocity as a fraction of the break-up velocity.
+In this example the star is rotating at 50\% of the break-up velocity
+($\Omega_k=\sqrt{\frac{GM}{R_e^3}}$).
 
-The ESTER code can be used as a C++ library. We just have to add the following line at the beginning of our
-C++ program
-\mint{bash}|#include "ester.h"|
-The main library is created in {\tt ester/lib/libester.so} and the header files
-are in {\tt ester/include}.
-To facilitate the process of compiling and linking against the library and all its dependencies, we provide an automatically generated
-script {\tt ester/bin/ester\_build} so, all you have to do is
-\mint{bash}|$ ester_build your_cpp_program.cpp -o your_executable| %$
+
+% The current version of the ESTER code can be downloaded using {\tt svn} from the project server by doing
+% \mint{bash}|$ svn checkout http://ester-project.googlecode.com/svn/trunk/ ester| %$
+% or from the project website \url{http://code.google.com/p/ester-project}.
+% 
+% The first step is to create the file {\tt make.inc} in the directory {\tt src}
+%  from the two examples that are included, 
+% {\tt make.inc.icc} and {\tt make.inc.gcc}, for the Intel compiler and the GNU compiler respectively.
+% After setting the appropriate values for the compilation, we must start by doing 
+% \mint{bash}|ester/src$ make tables| %$
+% This will build some third-party libraries included in the distribution and initialise
+% the tables of opacity and equation of state.
+% 
+% We can now build the main program by doing
+% \mint{bash}|ester/src$ make| %$
+% To remove intermediate files we can also do 
+% \mint{bash}|ester/src$ make clean| %$
+% Finally, to verify the installation, we can do
+% \mint{bash}|ester/src$ make test| %$
+% 
+% The main executable is located in {\tt ester/bin/}. To be able to call ester 
+% without including the full path, you can include this directory in your PATH
+% environment variable. Alternatively, you can create a symbolic link in
+% a directory included in your PATH, for example:
+% \mint{bash}|$ ln -s ~/ester/bin/ester ~/bin/ester| %$
+% In this example, we are supposing that the ESTER library is located in \verb|~/ester|
+% and the directory \verb|~/bin| is included in the PATH. If you are interested also
+% in making your own programs using the ESTER library, you can also do:
+% \mint{bash}|$ ln -s ~/ester/bin/ester_build ~/bin/ester_build| %$
+% 
+% \subsection{Updating the code}
+% In order to update to the last version using {\tt svn}, from the root directory of the ESTER distribution
+% execute
+% \mint{bash}|ester$ svn update| %$
+% Depending on the update, sometimes we can do just
+% \mint{bash}|ester/src$ make| %$
+% from the {\tt src} directory. But it is safer to clean out the previous installation using
+% \mint{bash}|ester/src$ make distclean| %$
+% and then
+% \mint{bash}|ester/src$ make tables; make| %$
+% 
+% \section{Checking the installation}
+% 
+% To check the functionality of the program we are going to calculate the structure of a star using the default values for the parameters.
+% First we calculate the structure of the corresponding 1D non-rotating star. Change to your working directory and execute
+% \mint{bash}|$ ester 1d| %$
+% Then we use the output file (by default {\tt star.out}) as the starting point for the 2D calculation
+% \mint{bash}|$ ester 2d -i star.out -Omega_bk 0.5|   %$
+% This calculates the structure of a star rotating at 50$\%$ of the break-up velocity $\Omega_k=\sqrt{\frac{GM}{R_e^3}}$.
+% 
+% \section{Using the library}
+% 
+% The ESTER code can be used as a C++ library. We just have to add the following line at the beginning of our
+% C++ program
+% \mint{bash}|#include "ester.h"|
+% The main library is created in {\tt ester/lib/libester.so} and the header files
+% are in {\tt ester/include}.
+% To facilitate the process of compiling and linking against the library and all its dependencies, we provide an automatically generated
+% script {\tt ester/bin/ester\_build} so, all you have to do is
+% \mint{bash}|$ ester_build your_cpp_program.cpp -o your_executable| %$
 
 
 
