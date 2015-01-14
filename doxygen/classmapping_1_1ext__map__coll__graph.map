@@ -1,0 +1,7 @@
+<map id="mapping::ext_map" name="mapping::ext_map">
+<area shape="rect" id="node5" href="$classmapping.html" title="mapping" alt="" coords="173,793,244,820"/>
+<area shape="rect" id="node2" href="$classdiff__gl.html" title="The diff_gl class implements the Gauss&#45;Lobatto (or more properly Gauss&#45;Lobatto&#45;Chebyshev) collocation..." alt="" coords="117,547,175,574"/>
+<area shape="rect" id="node3" href="$classmatrix.html" title="The matrix class is used to facilitate the work with regular dense matrices. " alt="" coords="175,5,234,32"/>
+<area shape="rect" id="node4" href="$classmatrix__block__diag.html" title="The matrix_block_diag class is used to store block diagonal matrices. " alt="" coords="141,243,268,269"/>
+<area shape="rect" id="node6" href="$classdiff__leg.html" title="The diff_leg class implements Legendre numerical differentiation. " alt="" coords="339,362,403,389"/>
+</map>
