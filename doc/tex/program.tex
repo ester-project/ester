@@ -1,27 +1,33 @@
 \chapter{Basic usage}
 
-The ESTER code calculates the structure and mean flows of an isolated (non-magnetic) rotating
-star. It uses realistic physics (tabulated opacity and EOS) and completely accounts for
-the deformation of the star.
-The mean flows are calculated self-consistently in the limit of low viscosity, so there is
-no need to impose an arbitrary prescription for the differential rotation of the star.
+The ESTER code calculates the axisymmetric structure and mean flows
+of an isolated (non-magnetic) rotating star. It uses realistic physics
+(tabulated opacities and EOS like those of OPAL) and completely
+accounts for the deformation of the star.  The mean flows are calculated
+self-consistently in the limit of low viscosity, so there is no need
+to impose an arbitrary prescription for the differential rotation of
+the star.  Surface convection is not included yet, so the computations
+are limited to early-type stars, that is to stars with mass typically
+above $\sim 2 M_\odot$.
 
-At this moment, chemical evolution is not included, but it can be faked by tweaking the fractional
-abundance of hydrogen in the convective core.
-
-Surface convection is not included yet, so the computation is limited to stars with mass above
-$\sim 2 M_\odot$.
+Presently, chemical evolution is not included, but it can be faked
+by tweaking the fractional abundance of hydrogen in the convective core.
 
 For a detailed description of the physics involved in the models, 
-see Rieutord \& Espinosa Lara 2012 (\href{http://arxiv.org/abs/1208.4926}{arXiv:1208.4926}) and
-Espinosa Lara \& Rieutord 2013 (\href{http://arxiv.org/abs/1212.0778}{arXiv:1212.0778}, submitted to A\&A).
-The code is still in development, so new functionality will be added in future versions.
+see Rieutord \& Espinosa Lara 2013
+(\href{http://arxiv.org/abs/1208.4926}{arXiv:1208.4926}, LNP 865, p.49) and
+Espinosa Lara \& Rieutord 2013
+(\href{http://arxiv.org/abs/1212.0778}{arXiv:1212.0778}, in A\&A 552, A35).
+The code is still in development, so new functionality will be added in
+future versions.
 
 To execute the program, use the following syntax:
+
 \begin{center}
 ester \emph{command} [\emph{options}]
 \end{center}
 where \emph{command} can be
+
 \begin{itemize}
 \item {\tt 1d} Calculate the structure of a 1D non-rotating star
 \item {\tt 2d} Calculate the structure of a 2D rotating star
@@ -36,6 +42,7 @@ where \emph{command} can be
 
 The main configuration file is located at {\tt ester/config/star.cfg}.
 This file contains the main options for the program, which are
+
 \begin{itemize}
 \item {\tt maxit} (default 200).
 Maximum number of iterations. After {\tt maxit} iterations, the program
@@ -64,12 +71,16 @@ see the documentation of PGPLOT for details. For output in a X window use {\tt /
 To disable the graphic output use {\tt /NULL}.
 \item {\tt plot\_interval} (default 10). Minimum time in seconds to update the graphic output.
 \end{itemize}
-All this options can be specified in the file {\tt ester/config/star.cfg} in the form
-{\tt option\_name=option\_value} (one per line) and in the command line as 
-{\tt -option\_name option\_value}. The options specified in the command line have precedence
-over those specified in the configuration file. 
 
+All these options can be specified in the file {\tt ester/config/star.cfg}
+in the form {\tt option\_name=option\_value} (one per line) and in
+the command line as {\tt -option\_name option\_value}. The options
+specified in the command line have precedence over those specified in
+the configuration file.
+
+\bigskip
 There are some additional options that can be included in the command line:
+
 \begin{itemize}
 \item[] {\tt -input\_file} {\it infile}. Use the file {\it infile} as the starting point
 for the iteration.
@@ -91,10 +102,11 @@ with the files {\tt ester/config/1d\_default.par} and {\tt
 ester/config/2d\_default.par}.
 
 In the distribution of ESTER, the proposed default values are such that
-the star is divided in 8 domains with 30 points in
-each domains. Opacities and equation of state
-are computed through OPAL tables. These inputs allow the calculation of
-a 3 M$_\odot$ model (but not only of course) from scratch.
+the star is divided in 8 domains with 30 points in each domains. Opacities
+and equation of state are computed through OPAL tables. These inputs
+allow the calculation of a 1D 3 M$_\odot$ model (but not only of course)
+from scratch. 2D-models cannot be computed from scratch and need a first
+1D model to start with.
 
 \section{{\tt ester 1d} input parameters}
 
@@ -130,7 +142,7 @@ If there is no convective core, this parameter is ignored.
 \item {\tt surff}. This parameter is used for truncating the stellar model
 at some point below the surface. The surface pressure will be {\tt surff}
 times the "real´´ value and the boundary conditions will be adjusted
-in consequence. This parameter is provided only for testing purposes as
+correspondingly. This parameter is provided only for testing purposes as
 it does not produce an accurate representation of the internal layers
 of the star. For regular calculations it should be {\tt surff=1}.
 
@@ -170,8 +182,8 @@ If some parameters are omitted, the program will take the value from the input f
 
 \section{{\tt ester 2d} input parameters}
 
-Note that the input of {\tt ester 2d} can be a non-rotating 1D model calculated 
-with {\tt ester 1d}.
+{\tt ester 2d} needs an input model which can be a non-rotating 1D model
+calculated with {\tt ester 1d} or a previous 2D-model.
 
 The program {\tt ester 2d} admits the same parameters than {\tt ester 1d}
 plus some extra specific options:
@@ -196,11 +208,11 @@ $ ester 1d -M 5 -opa opal -o model1d
 $ ester 2d -i model1d -nth 24 -Omega_bk 0.5 -o model2d
 \end{minted}
 
-As the code uses the Newton's method, sometimes it is not possible
+As the code uses the Newton's method, it is not possible
 to converge to a solution if the initial estimation is too far from
 it. In this case we can use some intermediate steps.  For example, if
 we want to calculate the structure of a 2.5$M_\odot$ star rotating with
-$\Omega=0.9\Omega_c$, we should probably do
+$\Omega=0.9\Omega_c$, we can do
 
 \medskip
 \noindent\begin{tabular}{lp{4.5cm}}
@@ -214,7 +226,7 @@ $\Omega=0.9\Omega_c$, we should probably do
 \medskip
 
 Executing {\tt ester 2d} with {\tt maxit=0} can be used to interpolate a
-model without recalculating it.
+model without recalculating it, like
 
 \medskip
 \noindent
@@ -227,10 +239,12 @@ iteration and write the result in the output file.
 
 \section{Spatial resolution and memory requirements}
 
-The ESTER code uses a direct method to solve the equations of structure of a star. This type of method
-involves the factorization of a big matrix that arises from the discretization of the equations.
-The main drawback is that memory requirements are high, but the stiffness of the equations prevents
-the convergence of an iterative (matrix-free) method that will be more memory efficient.
+The ESTER code uses a direct method to solve the equations of structure
+of a star. This type of method involves the factorization of a big matrix
+that arises from the discretization of the equations.  The main drawback
+is that memory requirements are high, but the stiffness of the equations
+prevents the convergence of an iterative (matrix-free) method that would
+be more memory efficient.
 
 The memory needed by the calculation can be estimated as:
 
@@ -242,17 +256,18 @@ where
 
 \begin{tabular}{l}
 $n_d$: Number of domains \\
-$n_r$: Number of radial points per domain \\
+$n_r$: Number of ``radial" points per domain \\
 $n_\theta$: Number of points in latitude \\
 \end{tabular}
 
 \medskip
 
-Of course, this is a lower limit, the actual memory used can be between $\sim$10\% and $\sim$50\% higher than
-this value.
-This overhead increases with the number of domains and decreases with the overall number
-of points. As an example, the following table shows the memory usage for some configurations (this is
-only approximated, real values are machine-dependent):
+Of course, this is a lower limit, the actual memory used can be between
+$\sim$10\% and $\sim$50\% higher than this value.  This overhead
+increases with the number of domains and decreases with the overall
+number of points. As an example, the following table shows the memory
+usage for some configurations (this is only approximated, real values
+are machine-dependent):
 
 \begin{center}
 \begin{tabular}{c|c|c|c|c|c}
@@ -264,34 +279,42 @@ $n_d$&$n_r$&$n_\theta$&RAM (estimated)&RAM (real)&Overhead\\
 \end{tabular}
 \end{center}
 
-The first case correspond to the default values and, in most cases, 
-gives a decent representation of the structure of the star for moderate rotation rates.
-If more precision is required, we need to increase the resolution. In particular, to
-achieve a good precision for high rotation values, the number of points in latitude should
-be incremented. 
+The first case correspond to the default values and, in most cases,
+gives a decent representation of the structure of the star for moderate
+rotation rates.  If more precision is required, we need to increase the
+resolution. In particular, to achieve a good precision for high rotation
+values, the number of points in latitude should be incremented.
 
-As seen in the second and third cases in the table, the total number of radial points $n_d\times n_r$ can be 
-increased, without affecting considerably the memory usage, just by increasing the number of domains.
-Or equivalently, we can reduce the memory requirements by distributing the radial points over
-more domains. 
+As seen in the second and third cases in the table, the total number
+of radial points $n_d\times n_r$ can be increased, without affecting
+considerably the memory usage, just by increasing the number of domains.
+Or equivalently, we can reduce the memory requirements by distributing
+the radial points over more domains.
 
-As a rule of thumb, if the number of domains is doubled, keeping the total number of
-radial points, the memory required is reduced in a factor $\sqrt{2}$. However this does not
-necessarily imply an improvement in precision, as the order of the integration method is also reduced,
+As a rule of thumb, if the number of domains is doubled, keeping the
+total number of radial points, the memory required is reduced in a factor
+$\sqrt{2}$. However this does not necessarily imply an improvement
+in precision, as the order of the integration method is also reduced,
 so it should be used carefully.
 
 \subsection{Estimating the precision of the output model}
 
-The ESTER code uses spectral methods to calculate the structure of the star. 
-The star is subdivided in a certain number of domains and, in each domain, the variables
-are represented by a double truncated series of orthogonal polynomials in the radial ($\zeta$)
- and $\theta$ directions, for example
-$$\rho(\zeta,\theta)=\sum_{i=0}^{n_r-1}\sum_{j=0}^{n_\theta-1}\rho_{ij}T_i(\zeta)P_j(\theta)$$
-When $n_r$ and $n_\theta$ are high enough, the spectral representation will converge to the
-exact function. 
-To check the convergence of the coefficients $\rho_ij$, the corresponding normalised spectra
-for the density ($\rho$) 
-are shown in the graphics output of ESTER (see \ref{fig:spectrum1d} and \ref{fig:spectrum2d}).
+The ESTER code uses spectral methods to calculate the structure of
+the star.  The star is subdivided in a certain number of domains and, in
+each domain, the variables are represented by a double truncated series
+of orthogonal polynomials in the ``radial" ($\zeta$) and ``horizontal"
+$\theta$ directions, for instance
+
+\[\rho(\zeta,\theta)=
+\sum_{i=0}^{n_r-1}\sum_{j=0}^{n_\theta-1}\rho_{ij}T_i(\zeta)P_j(\theta)\]
+where $T_i$ and $P_j$ are Chebyshev and Legendre polynomial
+respectively.
+When $n_r$ and $n_\theta$ are high enough, the spectral representation
+converges to the exact function.  To check the convergence of
+the solution $\rho_{ij}$, the corresponding normalised spectra for
+the density ($\rho$) are shown in the graphics output of ESTER (see
+\ref{fig:spectrum1d} and \ref{fig:spectrum2d}).
+
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/spectrum1d.eps}
 \caption{Example of spectrum plot showing the normalised coefficients $\rho_{i}$ in a logarithmic scale
@@ -305,22 +328,30 @@ in the graphical output of {\tt ester 2d}.
 \label{fig:spectrum2d}}
 \end{figure}
 
-There are two other indicators that can be used to estimate the quality of the solution:
+There are two other indicators that can be used to estimate the quality
+of the solution:
+
 \begin{itemize}
-\item {\bf The virial test}. It is the normalised residual resulting from the virial theorem.
-Ideally, it should be zero. It is mainly influenced by the internal layers and even with
-low resolution we can get very good values $\lesssim10^{-9}$.
-\item {\bf The energy test}. It is the relative difference between the luminosity of the star
-obtained as the integral over the volume of the energy generation rate and that obtained
-as the integral of the energy flux at the surface. It is highly influenced by the quality
-of the solution in the most external layers. Due to the use of tabulated opacities which are not
-quite smooth, the energy test will be always higher than $10^{-5}$--$10^{-6}$. 
+\item {\bf The virial test}. It is the normalised residual resulting from
+the virial theorem.  Ideally, it should be zero. It is mainly influenced
+by the internal layers and even with low resolution we can get very good
+values $\lesssim10^{-9}$.
+
+\item {\bf The energy test}. It is the relative difference between
+the luminosity of the star obtained as the integral over the volume
+of the energy generation rate and that obtained as the integral of the
+energy flux at the surface. It is highly influenced by the quality of
+the solution in the most external layers. Due to the use of tabulated
+opacities which are not quite smooth, the energy test will be always
+higher than $10^{-5}$--$10^{-6}$.
+
 \end{itemize}
 
-In the following table, we can see an example of the precision achieved for three different
-configurations. The three configurations use approximately 1 Gb of RAM, but have different
-number of domains. We have used a model with 1600 radial points distributed over 16 domains
-and $n_\theta=48$ (approx. 70 Gb of RAM) as a reference to calculate the errors.
+In the following table, we can see examples of the precision achieved for
+three different configurations. The three configurations use approximately
+1 Gb of RAM, but have different number of domains. We have used a model
+with 1600 radial points distributed over 16 domains and $n_\theta=48$
+(approx. 70 Gb of RAM) as a reference to calculate the errors.
 
 \begin{center}
 \begin{tabular}{c|c|c||c|c|c|c|c|c}
@@ -338,12 +369,11 @@ $\Delta\rho/\rho$ & $\Delta R/R$ & $\Delta T_\mathrm{eff}/T_\mathrm{eff}$ & $\De
 
 \section{Generating custom output files}
 
-The output files generated by {\tt ester 1d} and {\tt ester 2d} contain just
-the minimal information necessary to reconstruct the model. However,
+The output files generated by {\tt ester 1d} and {\tt ester 2d} contain
+just the minimal information necessary to reconstruct the model. However,
 sometimes a more detailed output is required.  This can be done using
- {\tt ester output}. This program
-reads a template from the standard input and write the result in the
-standard output.  A typical call would be
+{\tt ester output}. This program reads a template from the standard input
+and write the result in the standard output.  A typical call would be
 
 \medskip
 \noindent
@@ -352,16 +382,21 @@ standard output.  A typical call would be
 \medskip
 
 The template file is a regular text file with the following rules:
+
 \begin{itemize}
-\item Plain text is copied from the template to the output file. It cannot contain 
-the reserved characters {\tt \$} and {\tt \textbackslash}.
-\item Line breaks are ignored. To insert a line break in the output file you have to insert
-a blank line in the template.
-\item Variables from the model are written in the form 
-\mbox{{\tt \$\{}{\it var}{\tt ,}{\it fmt}{\tt \}}}, where {\it var} is the code for the
-variable (see table below) and {\it fmt} is a valid format for the C function {\it printf} 
-(e.g. {\tt \%d} for an integer, {\tt \%f} for float, {\tt \%e} for exponential notation).
-If {\tt fmt} is omitted {\tt\$\{}{\it var}{\tt \}} the variable is written in binary format.
+\item Plain text is copied from the template to the output file. It
+cannot contain the reserved characters {\tt \$} and {\tt \textbackslash}.
+
+\item Line breaks are ignored. To insert a line break in the output file
+you have to insert a blank line in the template.
+
+\item Variables from the model are written in the form \mbox{{\tt
+\$\{}{\it var}{\tt ,}{\it fmt}{\tt \}}}, where {\it var} is the code
+for the variable (see table below) and {\it fmt} is a valid format for
+the C function {\it printf} (e.g. {\tt \%d} for an integer, {\tt \%f}
+for float, {\tt \%e} for exponential notation).  If {\tt fmt} is omitted
+{\tt\$\{}{\it var}{\tt \}} the variable is written in binary format.
+
 \end{itemize}
 
 \begin{longtable}{|l|p{8cm}|c|c|}
@@ -508,7 +543,7 @@ It&Angular integration matrix over $\mu=\cos\theta$ &&*\\
 \end{longtable}
 For 2D variables, their values at the collocation points are written in the output file
 in matrix form. Each line corresponds to a different value of the colatitude $\theta$
-(i.e. a different column), starting at the equator.
+(i.e. a different column), {\em starting at the equator.}
 $$\begin{array}{cccc}
 p(\zeta_0,\theta_0)&p(\zeta_1,\theta_0)&p(\zeta_2,\theta_0)&\cdots\\
 p(\zeta_0,\theta_1)&p(\zeta_1,\theta_1)&p(\zeta_2,\theta_1)&\cdots\\
@@ -590,28 +625,32 @@ Pressure:
 
 \section{Python module}
 
-A basic python module for reading the models is included in the distribution. It is located
-in {\tt ester/python/star.py}. At the moment it only works for models calculated using
-{\tt ester 2d}. The variables in the models are defined as \emph{numpy}
-arrays. Here is a little example:
+\subsection{Using ESTER Native format}
+
+A basic python module for reading the models is included in the
+distribution. It is located in {\tt ester/python/star.py}. At the moment
+it only works for models calculated using {\tt ester 2d}. The variables in
+the models are defined as \emph{numpy} arrays. Here is a little example:
 
 \begin{minted}{python}
+#---------------------------------------------------------------------
 import sys
 sys.path.append('path_to/ester/python') # include the full path to the module
 
-from star import * # Loads the module
+from star import *      # Loads the module
 
 A=star2d('model_file')  # Loads a model 
 
-print A.p[0,0] # Prints the central pressure
+print A.p[0,0]          # Prints the central pressure
 
-A.draw(A.w) # Makes a plot of the differential rotation
-show() # Needed in non-interactive mode of matplotlib
-
+A.draw(A.w)             # Makes a plot of the differential rotation
+show()                  # Needed in non-interactive mode of matplotlib
+#---------------------------------------------------------------------
 \end{minted}
 
-Note that ``dotted variables'' like \verb|opa.k| are accessed via \verb|A.opa_k| under
-python.
+Note that ``dotted variables'' like \verb|opa.k| are accessed via
+\verb|A.opa_k| under python.
 
+\subsection{Using HDF5}
 
 
