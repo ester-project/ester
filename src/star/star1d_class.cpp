@@ -149,8 +149,8 @@ DEBUG_FUNCNAME
 			return 0;
 		}
 		else {
-			while(k=fp.get(arg,val)) {			
-				if(i=check_arg(arg,val,&change_grid)) {
+			while((k=fp.get(arg,val))) {
+				if((i=check_arg(arg,val,&change_grid))) {
 					printf("Sintax error in parameters file %s, line %d\n",param_file,k);
 					if(i==2) {
 						printf("Error: Argument to '%s' missing\n",arg);
@@ -173,8 +173,8 @@ DEBUG_FUNCNAME
 			return 0;
 		}
 		else {
-			while(k=fp.get(arg,val)) {			
-				if(i=check_arg(arg,val,&change_grid)) {
+			while((k=fp.get(arg,val))) {
+				if((i=check_arg(arg,val,&change_grid))) {
 					printf("Sintax error in parameters file %s, line %d\n",param_file,k);
 					if(i==2) {
 						printf("Error: Argument to '%s' missing\n",arg);

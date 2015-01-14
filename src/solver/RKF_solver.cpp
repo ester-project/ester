@@ -71,7 +71,7 @@ void RKF_solver::check_init() {
 void RKF_solver::regvar(const char *var_name,const matrix &initial_value) {
 
 	check_init();
-	int i,j;
+	int j;
 	j=0;
 	while (strlen(var[j])) {
 		if(!strcmp(var[j],var_name)) {
@@ -185,7 +185,6 @@ int RKF_solver::solve(double t0,double t1) {
 	check_init();
 	
 	static double h;
-	static bool last_step=false;
 	int ret_code=RK_INTERMEDIATE;
 	
 	if(stage==-1) { 
@@ -224,12 +223,10 @@ int RKF_solver::solve(double t0,double t1) {
 			t_eval=t;
 			unwrap(&x,y);
 			stage=-1;
-			last_step=false;
 			return RK_END;
 		}
 		if(step>t1-t) {
 			h=t1-t;
-			last_step=true;
 		} else h=step;
 	}
 	

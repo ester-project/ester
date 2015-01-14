@@ -1,4 +1,5 @@
 SUBDIRS	= physics
+AM_CXXFLAGS=-Wall
 
 BUILT_SOURCES	= main/read_config.cpp
 

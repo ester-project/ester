@@ -106,7 +106,6 @@ void output2d(const star2d &A) {
 void write(const star2d &A,char *var,char *fmt) {
 
 	int i;
-	float f;
 	double d;
 	matrix m,m2,T,T_odd;
 

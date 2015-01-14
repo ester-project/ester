@@ -7,9 +7,10 @@
 #include <hdf5.h>
 #endif
 
-star2d::star2d() :r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2)
-		,zex(map.ex.z),Dex(map.ex.D),rex(map.ex.r),
-		nr(map.gl.N),nth(map.leg.npts),nex(map.ex.gl.N),ndomains(map.gl.ndomains) {
+star2d::star2d() : nr(map.gl.N), nth(map.leg.npts), nex(map.ex.gl.N),
+    ndomains(map.gl.ndomains), r(map.r), z(map.z), th(map.th), Dt(map.Dt),
+    Dt2(map.Dt2), zex(map.ex.z), Dex(map.ex.D), rex(map.ex.r),
+    D(map.D) {
 
 	config.newton_dmax=0.5;
 	config.verbose=0;
@@ -24,9 +25,10 @@ star2d::star2d() :r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2)
 star2d::~star2d() {
 }
 
-star2d::star2d(const star2d &A) :r(map.r),z(map.z),D(map.D),th(map.th),Dt(map.Dt),Dt2(map.Dt2)
-	,zex(map.ex.z),Dex(map.ex.D),rex(map.ex.r),
-	nr(map.gl.N),nth(map.leg.npts),nex(map.ex.gl.N),ndomains(map.gl.ndomains){
+star2d::star2d(const star2d &A) : nr(map.gl.N), nth(map.leg.npts),
+    nex(map.ex.gl.N), ndomains(map.gl.ndomains), r(map.r), z(map.z), th(map.th),
+    Dt(map.Dt), Dt2(map.Dt2), zex(map.ex.z), Dex(map.ex.D), rex(map.ex.r),
+    D(map.D) {
 
 	copy(A);
 
@@ -241,13 +243,15 @@ DEBUG_FUNCNAME
 
 int star2d::read(const char *input_file) {
 DEBUG_FUNCNAME
-	char tag[32],mode;
+	char tag[32];
 	int ndom;
 	INFILE fp;
 	
-	if(fp.open(input_file,'b')) mode='b';
-	else if(fp.open(input_file,'t')) mode='t';
-	else return read_old(input_file);
+    if(!fp.open(input_file,'b')) {
+        if(!fp.open(input_file,'t')) {
+            return read_old(input_file);
+        }
+    }
 	
 	tag[0]='\0';
 	if(fp.len("tag")<=16) fp.read("tag",tag);
@@ -347,7 +351,7 @@ DEBUG_FUNCNAME
 
 int star2d::read_old(const char *input_file){
 DEBUG_FUNCNAME
-	FILE *fp,*fp2;
+	FILE *fp;
 	char tag[7],mode,*c;
 	int ndom,i;
 	
@@ -457,7 +461,7 @@ DEBUG_FUNCNAME
 	file_parser fp;
 	char *arg,*val,default_params[256];
 	mapping map0;
-	int i,j,k,change_grid=0,nt=-1,next=-1;
+	int i,k,change_grid=0,nt=-1,next=-1;
 	star1d in1d;
 	diff_leg leg_new;
 	matrix Tr,m0;
@@ -468,8 +472,8 @@ DEBUG_FUNCNAME
 		if(!read(input_file)) {
 			if(in1d.read(input_file)) {
 				if(*param_file) {
-					if(fp.open(param_file)) { 
-						while(k=fp.get(arg,val)) {
+					if(fp.open(param_file)) {
+						while((k=fp.get(arg,val))) {
 							if(!strcmp(arg,"nth")&&val) nt=atoi(val);		
 							if(!strcmp(arg,"nex")&&val) next=atoi(val);
 						}
@@ -490,13 +494,13 @@ DEBUG_FUNCNAME
 		}
 		map0=map;
 	} else {
-		if(!fp.open(default_params)) { 
+		if(!fp.open(default_params)) {
 			fprintf(stderr,"Can't open default parameters file %s\n",default_params);
 			return 0;
 		}
 		else {
-			while(k=fp.get(arg,val)) {			
-				if(i=check_arg(arg,val,&change_grid)) {
+			while((k=fp.get(arg,val))) {
+				if((i=check_arg(arg,val,&change_grid))) {
 					fprintf(stderr,"Sintax error in parameters file %s, line %d\n",default_params,k);
 					if(i==2) {
 						fprintf(stderr,"Error: Argument to '%s' missing\n",arg);
@@ -519,8 +523,8 @@ DEBUG_FUNCNAME
 			return 0;
 		}
 		else {
-			while(k=fp.get(arg,val)) {			
-				if(i=check_arg(arg,val,&change_grid)) {
+			while((k=fp.get(arg,val))) {
+				if((i=check_arg(arg,val,&change_grid))) {
 					fprintf(stderr,"Sintax error in parameters file %s, line %d\n",param_file,k);
 					if(i==2) {
 						fprintf(stderr,"Error: Argument to '%s' missing\n",arg);
@@ -604,8 +608,8 @@ DEBUG_FUNCNAME
 	Omega_bk=0;	
 	Omega=0;
 		
-	if(fp.open(default_params)) { 
-		while(k=fp.get(arg,val)) {
+	if(fp.open(default_params)) {
+		while((k=fp.get(arg,val))) {
 			if(!strcmp(arg,"nth")&&val&&npts_th==-1) npts_th=atoi(val);		
 			if(!strcmp(arg,"nex")&&val&&npts_ex==-1) npts_ex=atoi(val);
 			if(!strcmp(arg,"Omega_bk")&&val) Omega_bk=atof(val);
@@ -811,7 +815,6 @@ DEBUG_FUNCNAME
 		printf("\tRadius_core (p) = %.5f Rsun (%e cm)\n",rcc_p/R_SUN,rcc_p);
 		double rcc_e=map.leg.eval_00(Rcore(),PI/2)(0);
 		printf("\tRadius_core (e) = %.5f Rsun (%e cm)  (flat.=%.3f)\n",rcc_e/R_SUN,rcc_e,1.-rcc_p/rcc_e);
-		double Lzcc=Lzcore();
 		printf("\tLz_core = %e erg·s\n",Lzcore());
 		printf("\tX_core/X_env = %.4f\n",Xc);
 		printf("\n");

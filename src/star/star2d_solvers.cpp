@@ -308,8 +308,7 @@ void star2d::solve_poisson(solver *op) {
 DEBUG_FUNCNAME
 	matrix q,rhs1,rhs2,rhs;
 	int n,j0;
-	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
-		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
+	matrix &rz=map.rz;
 	
 	symbolic S;
 	sym lap_phi;
@@ -567,8 +566,7 @@ DEBUG_FUNCNAME
 	int n,j0;
 	matrix q;
 	char eqn[8];
-	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
-		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
+	matrix &gzz=map.gzz, &gzt=map.gzt, &rz=map.rz;
 	
 	op->add_d("T","log_T",T);
 	strcpy(eqn,"log_T");
@@ -1112,7 +1110,6 @@ void star2d::solve_atm(solver *op) {
 
 	if(!strcmp(atm.name,"simple")) {
 		matrix q;
-		double qq;
 		int n=ndomains-1;
 	
 		op->bc_top1_add_d(n,"ps","ps",1/ps);
@@ -1132,7 +1129,6 @@ void star2d::solve_atm(solver *op) {
 
 
 	matrix q;
-	double qq;
 	int n=ndomains-1;
 	
 	op->bc_top1_add_d(n,"ps","ps",1/ps);

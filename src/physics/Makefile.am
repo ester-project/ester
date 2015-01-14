@@ -1,5 +1,6 @@
 AM_CPPFLAGS  = -I$(top_srcdir)/src/include
 AM_CPPFLAGS += -I../../tables/cesam_nuc
+AM_CXXFLAGS=-Wall
 
 lib_LTLIBRARIES			= libnuc_cesam.la
 

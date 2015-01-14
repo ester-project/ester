@@ -4,9 +4,9 @@
 
 configuration::configuration(int argc,char *argv[]) {
 	
-	int i,i_arg,k;
+	int i, k;
 	char *arg,*val;
-	char file[256],line[256];
+	char file[256];
 	cmdline_parser cmd;
 	file_parser fp;
 	
@@ -26,8 +26,8 @@ configuration::configuration(int argc,char *argv[]) {
 	if(!fp.open(file)) 
 		printf("Can't open configuration file %s\n",file);
 	else {
-		while(k=fp.get(arg,val)) {			
-			if(i=check_arg(arg,val)) {
+		while((k=fp.get(arg,val))) {
+			if((i=check_arg(arg,val))) {
 				printf("Sintax error in configuration file %s, line %d\n",file,k);
 				if(i==2) missing_argument(arg);
 				if(i==1) {

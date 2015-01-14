@@ -71,7 +71,7 @@ matrix matrix::inv() const {
 		exit(1);
 	}
 	dgetri_(&res.nf,res.p,&res.nf,ipiv,&w,&lwork,&info);
-	lwork=round(w);
+	lwork = (int) round(w);
 
 	work=new double[lwork];
 	

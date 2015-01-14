@@ -274,7 +274,7 @@ void solver::set_nr(int *nr) {
 
 void solver::regvar(const char *var_name,int dependent) {
 
-	int i,j;
+	int j;
 	j=0;
 	while (strlen(var[j])) {
 		if(!strcmp(var[j],var_name)) {
@@ -771,10 +771,8 @@ int solver::cgs(const matrix &rhs,matrix &x,int maxit) {
 	
 	matrix r,r_,u,p,q,v,err_rel,err_abs;
     matrix *y = new matrix[nv];
-	int k,error=0,n,fin,i;
-	double s,a,s_1;
-	
-	n=rhs.nrows();
+	int k,error=0,fin;
+	double s,a,s_1=.0;
 	
 	r=x;
 	unwrap(&r,y);
@@ -870,7 +868,7 @@ void solver::create_full() {
 	matrix opi;
 	solver_elem *p;
 	int **nr=var_nr,**nbot=var_nbot,**ntop=var_ntop,**nth=var_nth;
-	int i,j,k,l,ivar,ieq,n,nn,i0,j0,set,nn2,kk,kk0,kk1,jj;
+	int i,j,k,l,ivar,ieq,n,nn,i0,j0,set,nn2,kk,kk0=0,kk1=0,jj;
 	
 	if(verbose) printf("\t");
 	for(n=0;n<nb;n++) {
@@ -1206,7 +1204,7 @@ void solver::create_full() {
 void solver::check_full(int n, const matrix &opi, int pos) {
 
 	
-	int ivar,iblock,j0=0,nj=0,i,j,i0,ni=0;
+	int ivar,iblock,j0=0,nj=0,i,j,i0=0,ni=0;
 	matrix x;
     matrix *y = new matrix[nv];
 
@@ -1302,7 +1300,7 @@ void solver::wrap(const matrix *y,matrix *x) {
 /// single vector \p x into the blocked vector y.
 void solver::unwrap(const matrix *x,matrix *y) {
 
-	int i,j,j0[nv],i0,**n=var_nr,**nbot=var_nbot,**ntop=var_ntop,**nth=var_nth,&N=solver_N,nn,nnt;
+	int i,j,j0[nv],i0,**n=var_nr,**nbot=var_nbot,**ntop=var_ntop,**nth=var_nth,nn,nnt;
 	matrix q;
 
 	for(j=0;j<nv;j++) {
@@ -1568,7 +1566,6 @@ int solver::check_struct() {
 		}
 	}
 
-	solver_elem *p;
 	int error=0;
 	
 	for(int n=0;n<nb;n++) {
@@ -1663,7 +1660,7 @@ int solver::check_struct_block(int n,int i,int j) {
 		}
 		
 		if(p->type=='m'||p->type=='s'||p->type=='g') {
-			bool cond;
+			bool cond = false;
 			if(p->type=='g') cond=p->I.nrows()==n2&&p->I.ncols()==m2;
 			if(p->type=='m') cond=p->I.nrows()==n2&&(p->I.ncols()==m1||p->I.ncols()==m2);
 			if(p->type=='s') cond=(p->I.nrows()==n1||p->I.nrows()==n2)&&p->I.ncols()==m2;
@@ -1710,7 +1707,7 @@ int solver::check_struct_block(int n,int i,int j) {
 
 int solver::check_struct_bc_th(int n,int i,int j,const char *bctype) {
 
-	int error=0,n1,n2,m1,m2;
+	int error=0,n1,n2,m2;
 	char err_msg[256];
 	solver_elem *p;
 
@@ -1718,7 +1715,7 @@ int solver::check_struct_bc_th(int n,int i,int j,const char *bctype) {
 	else if(!strcmp(bctype,"eq")) p=bc_eq[n].eq[i][j];
 	else return 1;
 
-	n1=var_nr[n][i];m1=var_nth[n][i];
+	n1=var_nr[n][i];
 	n2=var_nr[n][j];m2=var_nth[n][j];
 
 	while(p!=NULL) {
@@ -1752,7 +1749,7 @@ int solver::check_struct_bc_th(int n,int i,int j,const char *bctype) {
 		}
 		
 		if(p->type=='m'||p->type=='s'||p->type=='g') {
-			bool cond;
+			bool cond = false;
 			if(p->type=='g') cond=p->I.nrows()==n2&&p->I.ncols()==m2;
 			if(p->type=='m') cond=p->I.nrows()==n2&&p->I.ncols()==1;
 			if(p->type=='s') cond=(p->I.nrows()==n1||p->I.nrows()==n2)&&p->I.ncols()==m2;
@@ -1835,7 +1832,7 @@ int solver::check_struct_bc(int n,int i,int j,const char *bctype) {
 		}
 		
 		if(p->type=='m'||p->type=='s'||p->type=='g') {
-			bool cond;
+			bool cond = false;
 			if(p->type=='g') cond=p->I.nrows()==n2&&p->I.ncols()==m2;
 			if(p->type=='m') cond=p->I.nrows()==n2&&(p->I.ncols()==m1||p->I.ncols()==m2);
 			if(p->type=='s') cond=(p->I.nrows()==nc||p->I.nrows()==1)&&p->I.ncols()==m2;
@@ -1924,7 +1921,7 @@ void solver::subst_dep() {
 		}
 	}
 
-	solver_block *bb;
+	solver_block *bb = NULL;
 	char block_type[8];
 	
 	for(int k=0;k<7;k++) {
@@ -2015,85 +2012,91 @@ void solver::subst_dep_elem(int i,int k,solver_block *bb,solver_elem *p,const ma
 
 	int n1,m1;
 	matrix D,L,R,I;
-	char type_new;
+	char type_new = 'x';
 
 	n1=d.nrows();
 	m1=d.ncols();
 	
 	D=p->D;L=p->L;R=p->R;I=p->I;
 	
-	switch(p->type) {
-		
-		case 'd':
-			type_new='d';
-			D=D*d;
-			break;
-		case 'l':
-			if(n1==n2) {
-				type_new='m';
-				I=d;
-			} else {
-				type_new='d';
-				D=D*(L,d);
-			}
-			break;
-		case 'r':
-			if(m1==m2) {
-				type_new='s';
-				I=d;
-			} else {
-				type_new='d';
-				D=D*(d,R);
-			}
-			break;
-		case 'f':
-			if(n1==n2&&m1==m2) {
-				type_new='g';
-				I=d;
-			} else if(n1==n2) {
-				type_new='l';
-				D=D*(d,R);
-			} else if(m1==m2) {
-				type_new='r';
-				D=D*(L,d);
-			} else {
-				type_new='d';
-				D=D*(L,d,R);
-			}
-			break;
-		case 'm':
-			if(n1==n2) {
-				type_new='m';
-				I=I*d;
-			} else {
-				type_new='d';
-				D=D*(L,I*d);
-			}
-			break;
-		case 's':
-			if(m1==m2) {
-				type_new='s';
-				I=I*d;
-			} else {
-				type_new='d';
-				D=D*(I*d,R);
-			}
-			break;
-		case 'g':
-			if(n1==n2&&m1==m2) {
-				type_new='g';
-				I=I*d;
-			} else if(n1==n2) {
-				type_new='m';
-				I=(I*d,R);
-			} else if(m1==m2) {
-				type_new='s';
-				I=(L,I*d);
-			} else {
-				type_new='d';
-				D=D*(L,I*d,R);
-			}		
-	}
+    switch(p->type) {
+
+        case 'd':
+            type_new='d';
+            D=D*d;
+            break;
+        case 'l':
+            if(n1==n2) {
+                type_new='m';
+                I=d;
+            } else {
+                type_new='d';
+                D=D*(L,d);
+            }
+            break;
+        case 'r':
+            if(m1==m2) {
+                type_new='s';
+                I=d;
+            } else {
+                type_new='d';
+                D=D*(d,R);
+            }
+            break;
+        case 'f':
+            if(n1==n2&&m1==m2) {
+                type_new='g';
+                I=d;
+            } else if(n1==n2) {
+                type_new='l';
+                D=D*(d,R);
+            } else if(m1==m2) {
+                type_new='r';
+                D=D*(L,d);
+            } else {
+                type_new='d';
+                D=D*(L,d,R);
+            }
+            break;
+        case 'm':
+            if(n1==n2) {
+                type_new='m';
+                I=I*d;
+            } else {
+                type_new='d';
+                D=D*(L,I*d);
+            }
+            break;
+        case 's':
+            if(m1==m2) {
+                type_new='s';
+                I=I*d;
+            } else {
+                type_new='d';
+                D=D*(I*d,R);
+            }
+            break;
+        case 'g':
+            if(n1==n2&&m1==m2) {
+                type_new='g';
+                I=I*d;
+            } else if(n1==n2) {
+                type_new='m';
+                I=(I*d,R);
+            } else if(m1==m2) {
+                type_new='s';
+                I=(L,I*d);
+            } else {
+                type_new='d';
+                D=D*(L,I*d,R);
+            }
+            break;
+        default:
+            fprintf(stderr,
+                    "Error in solver::subst_dep_elem: unknown type (%c)\n",
+                    p->type);
+            exit(EXIT_FAILURE);
+    }
 	
 	bb->add(i,k,type_new,&D,&L,&R,&I);
 

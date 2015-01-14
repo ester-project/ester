@@ -4,28 +4,28 @@
 #include<stdlib.h>
 #include<cmath>
 
-mapping::mapping():ex(this), 
-			nr(gl.N),nt(leg.npts),ndomains(gl.ndomains),nex(ex.gl.N),eta(eta_),npts(gl.npts),
-			D(gl.D),Dt(leg.D_00),Dt2(leg.D2_00),Dt_11(leg.D_11),Dt2_11(leg.D2_11),Dt_01(leg.D_01),
-			Dt2_01(leg.D2_01),Dt_10(leg.D_10),Dt2_10(leg.D2_10),z(gl.x),th(leg.th),I(gl.I),It(leg.I_00) {
+mapping::mapping() : nr(gl.N), nt(leg.npts), ndomains(gl.ndomains),
+    npts(gl.npts), eta(eta_), D(gl.D), z(gl.x), th(leg.th), Dt(leg.D_00), Dt2(leg.D2_00),
+    Dt_11(leg.D_11), Dt2_11(leg.D2_11), Dt_01(leg.D_01), Dt2_01(leg.D2_01),
+    Dt_10(leg.D_10), Dt2_10(leg.D2_10), I(gl.I),
+    It(leg.I_00), ex(this), nex(ex.gl.N) { 
 
 	ex.gl.set_ndomains(1);
 	ex.gl.set_xif(0.,1.);
 	ex.gl.set_npts(10);
 	
 	mode=MAP_BONAZZOLA;
-	
 }
 
 mapping::~mapping() {}
 
-mapping::mapping(const mapping &map):ex(this),
-		nr(gl.N),nt(leg.npts),ndomains(gl.ndomains),nex(ex.gl.N),eta(eta_),npts(gl.npts),
-		D(gl.D),Dt(leg.D_00),Dt2(leg.D2_00),Dt_11(leg.D_11),Dt2_11(leg.D2_11),Dt_01(leg.D_01),
-		Dt2_01(leg.D2_01),Dt_10(leg.D_10),Dt2_10(leg.D2_10),z(gl.x),th(leg.th),I(gl.I),It(leg.I_00) {
+mapping::mapping(const mapping &map) : nr(gl.N), nt(leg.npts),
+    ndomains(gl.ndomains), npts(gl.npts), eta(eta_), D(gl.D), z(gl.x),
+    th(leg.th), Dt(leg.D_00), Dt2(leg.D2_00), Dt_11(leg.D_11),
+    Dt2_11(leg.D2_11), Dt_01(leg.D_01), Dt2_01(leg.D2_01), Dt_10(leg.D_10),
+    Dt2_10(leg.D2_10), I(gl.I), It(leg.I_00), ex(this), nex(ex.gl.N) {
 
 	copy(map);
-
 }
 
 void mapping::copy(const mapping &map) {

@@ -1,8 +1,8 @@
 #include "ester-config.h"
-#include"symbolic.h"
-#include<cstdlib>
-#include<cmath>
-#include<typeinfo>
+#include "symbolic.h"
+#include <cstdlib>
+#include <cmath>
+#include <typeinfo>
 
 double symbolic::tol=1e-14;
 bool symbolic::expand_products=true;
@@ -10,7 +10,7 @@ bool symbolic::trig_simplify=false;
 bool symbolic::axisymmetric=true;
 bool symbolic::spherical=false;
 
-symbolic::symbolic():one(one_),one_(sym(1)) {
+symbolic::symbolic() : one_(sym(1)), one(one_) {
 	one_.context=this;
 	r=regvar("r");
 	zeta=regvar_indep("zeta");

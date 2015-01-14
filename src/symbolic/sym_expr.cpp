@@ -262,7 +262,7 @@ ostream &sym::sym_deriv::print(ostream &os) const {
 
 sym::sym_add::~sym_add() {
 
-	for(int i=0;i<oper.size();i++) {
+	for(unsigned int i=0;i<oper.size();i++) {
 		delete oper[i].first;
 	}
 
@@ -271,7 +271,7 @@ sym::sym_add::~sym_add() {
 sym::sym_add::sym_add(const sym_add &s) {
 
 	oper=s.oper;
-	for(int i=0;i<oper.size();i++) 
+	for(unsigned int i=0;i<oper.size();i++) 
 		oper[i].first=s.oper[i].first->clone();
 
 }
@@ -291,7 +291,7 @@ int sym::sym_add::comp(const sym_expr &s) const {
 	c=COMPARE(oper.size(),(q->oper).size());
 	if(c!=0) return c;
 
-	for(int i=0;i<oper.size();i++) {
+	for(unsigned int i=0;i<oper.size();i++) {
 		c=oper[i].first->comp( *(q->oper[i].first) );
 		if(c!=0) return c;
 		c=COMPARE(oper[i].second,q->oper[i].second);
@@ -304,8 +304,10 @@ sym::sym_expr *sym::sym_add::reduce() {
 	
 	sym_add s_old(*this);
 
-	for(int	i=0;i<oper.size();i++) oper[i].first=oper[i].first->reduce();
-	for(int	i=0;i<oper.size();i++) oper[i].second=symbolic::round_to_tol(oper[i].second);
+	for(unsigned int i=0;i<oper.size();i++)
+        oper[i].first=oper[i].first->reduce();
+	for(unsigned int i=0;i<oper.size();i++)
+        oper[i].second=symbolic::round_to_tol(oper[i].second);
 	
 	
 // Find children nodes of type sym_add and merge them in current node
@@ -321,7 +323,7 @@ sym::sym_expr *sym::sym_add::reduce() {
 			oper[i].first=s->oper[0].first;
 			oper[i].second=q*s->oper[0].second;
 			s->oper[0].first=NULL;
-			for(int j=1;j < s->oper.size();j++) {
+			for(unsigned int j=1;j < s->oper.size();j++) {
 				oper.push_back(make_pair(s->oper[j].first,q*s->oper[j].second));
 				s->oper[j].first=NULL;
 			}
@@ -338,7 +340,7 @@ sym::sym_expr *sym::sym_add::reduce() {
 		if(typeid(*(oper[i].first))==typeid(sym_prod)) {
 			sym_prod *s;
 			s=(sym_prod *)oper[i].first;
-			for(int j=0;j<s->oper.size();j++) {
+			for(unsigned int j=0;j<s->oper.size();j++) {
 				if(typeid(*(s->oper[j].first))==typeid(sym_num)) {
 					sym_num *snum;
 					snum=(sym_num *)s->oper[j].first;
@@ -372,7 +374,7 @@ sym::sym_expr *sym::sym_add::reduce() {
 				sym_prod *sprod;
 				sprod=(sym_prod *)oper[i].first;
 				// Try to find a sin or cos in the sym_prod node with exponent at least 2
-				for(int j=0;j<sprod->oper.size();j++) {
+				for(unsigned int j=0;j<sprod->oper.size();j++) {
 					bool found=false;
 					sym_expr *test,*snew;
 					if(typeid(*(sprod->oper[j].first))==typeid(sym_sin)&&sprod->oper[j].second>=2) {
@@ -456,7 +458,7 @@ sym::sym_expr *sym::sym_add::reduce() {
 	}
 
 // Remove zeros
-	for(int i=0;i<oper.size();i++) {
+	for(unsigned int i=0;i<oper.size();i++) {
 		if(oper[i].second==0) {
 			delete oper[i].first;
 			oper.erase(oper.begin()+i--);
@@ -494,7 +496,7 @@ sym::sym_expr *sym::sym_add::reduce() {
 
 sym::sym_expr *sym::sym_add::derive(const sym_expr &s) {
 
-	for(int i=0;i<oper.size();i++)
+	for(unsigned int i=0;i<oper.size();i++)
 		oper[i].first=oper[i].first->derive(s);
 
 	return this;
@@ -504,7 +506,7 @@ matrix sym::sym_add::eval() const {
 	
 	matrix m=zeros(1,1);
 	
-	for(int i=0;i<oper.size();i++) {
+	for(unsigned int i=0;i<oper.size();i++) {
 		m+=oper[i].second*oper[i].first->eval();
 	}
 	return m;
@@ -513,7 +515,7 @@ matrix sym::sym_add::eval() const {
 ostream &sym::sym_add::print(ostream &os) const {
 
 	os<<"(";
-	for(int i=0;i<oper.size();i++) {
+	for(unsigned int i=0;i<oper.size();i++) {
 		if(oper[i].second>=0&&i) os<<"+";
 		if(oper[i].second!=1) {
 			if(oper[i].second==-1) 
@@ -542,8 +544,8 @@ sym::sym_expr *sym::sym_add::multiply(const sym_add &s) {
 
 	sym_add *snew;
 	snew=new sym_add();
-	for(int i=0;i<oper.size();i++) {
-		for(int j=0;j<s.oper.size();j++) {
+	for(unsigned int i=0;i<oper.size();i++) {
+		for(unsigned int j=0;j<s.oper.size();j++) {
 			snew->oper.push_back(make_pair(
 				sym_prod::create(oper[i].first->clone(),s.oper[j].first->clone()),
 				oper[i].second*s.oper[j].second));
@@ -585,7 +587,7 @@ sym::sym_expr *sym::sym_add::power(int n) {
 
 sym::sym_prod::~sym_prod() {
 
-	for(int i=0;i<oper.size();i++) {
+	for(unsigned int i=0;i<oper.size();i++) {
 		delete oper[i].first;
 	}
 
@@ -594,7 +596,7 @@ sym::sym_prod::~sym_prod() {
 sym::sym_prod::sym_prod(const sym_prod &s) {
 
 	oper=s.oper;
-	for(int i=0;i<oper.size();i++) 
+	for(unsigned int i=0;i<oper.size();i++) 
 		oper[i].first=s.oper[i].first->clone();
 
 }
@@ -614,7 +616,7 @@ int sym::sym_prod::comp(const sym_expr &s) const {
 	c=COMPARE(oper.size(),(q->oper).size());
 	if(c!=0) return c;
 
-	for(int i=0;i<oper.size();i++) {
+	for(unsigned int i=0;i<oper.size();i++) {
 		c=oper[i].first->comp( *(q->oper[i].first) );
 		if(c!=0) return c;
 		c=COMPARE(oper[i].second,q->oper[i].second);
@@ -627,13 +629,13 @@ sym::sym_expr *sym::sym_prod::reduce() {
 	
 	sym_prod s_old(*this);
 
-	for(int	i=0;i<oper.size();i++) oper[i].first=oper[i].first->reduce();
+	for(unsigned int i=0;i<oper.size();i++) oper[i].first=oper[i].first->reduce();
 
 // Find children nodes of type sym_prod and merge them in current node
 //  a * [b * c] --> a * b * c
 
-	int n=oper.size();
-	for(int	i=0;i<n;i++) {
+	unsigned int n=oper.size();
+	for(unsigned int i=0;i<n;i++) {
 		if(typeid(*(oper[i].first))==typeid(sym_prod)) {;
 			sym_prod *s;
 			rational q;
@@ -642,7 +644,7 @@ sym::sym_expr *sym::sym_prod::reduce() {
 			oper[i].first=s->oper[0].first;
 			oper[i].second=q*s->oper[0].second;
 			s->oper[0].first=NULL;
-			for(int j=1;j < s->oper.size();j++) {
+			for(unsigned int j=1; j<s->oper.size();j++) {
 				oper.push_back(make_pair(s->oper[j].first,q*s->oper[j].second));
 				s->oper[j].first=NULL;
 			}
@@ -653,7 +655,7 @@ sym::sym_expr *sym::sym_prod::reduce() {
 // sym_num nodes should have exponent=1
 
 	n=oper.size();
-	for(int	i=0;i<n;i++) {
+	for(unsigned int i=0;i<n;i++) {
 		if(typeid(*(oper[i].first))==typeid(sym_num)) 
 			if(oper[i].second!=1) {
 				sym_num *s;
@@ -666,7 +668,7 @@ sym::sym_expr *sym::sym_prod::reduce() {
 // sym_exp nodes should have exponent=1
 
 	n=oper.size();
-	for(int	i=0;i<n;i++) {
+	for(unsigned int i=0;i<n;i++) {
 		if(typeid(*(oper[i].first))==typeid(sym_exp)) 
 			if(oper[i].second!=1&&oper[i].second!=0) {
 				double ex=oper[i].second.eval();
@@ -703,12 +705,12 @@ sym::sym_expr *sym::sym_prod::reduce() {
 	
 // Expand powers of sym_add terms
 	if(symbolic::expand_products) {
-		for(int i=0;i<oper.size();i++) {
+		for(unsigned int i=0;i<oper.size();i++) {
 			if(typeid(*(oper[i].first))!=typeid(sym_add)) continue;
 			if(oper[i].second==0) continue;
 			if(oper[i].second.den()!=1) {
 				// Split integer and fractional part of the exponent
-				int ex=floor(oper[i].second.eval());
+				int ex=(int)floor(oper[i].second.eval());
 				if(ex!=0) {
 					oper[i].second-=ex;
 					oper.push_back(make_pair(oper[i].first->clone(),ex));
@@ -728,7 +730,7 @@ sym::sym_expr *sym::sym_prod::reduce() {
 	
 	}
 // Remove ones
-	for(int i=0;i<oper.size();i++) {
+	for(unsigned int i=0;i<oper.size();i++) {
 		if(oper[i].second==0) {
 			delete oper[i].first;
 			oper.erase(oper.begin()+i--);
@@ -741,7 +743,7 @@ sym::sym_expr *sym::sym_prod::reduce() {
 	}
 	
 // Find zeros
-	for(int i=0;i<oper.size();i++) {
+	for(unsigned int i=0;i<oper.size();i++) {
 		if(typeid(*(oper[i].first))==typeid(sym_num)) {
 			if( ((sym_num *)oper[i].first)->value==0) {
 				delete this;
@@ -770,13 +772,13 @@ sym::sym_expr *sym::sym_prod::reduce() {
 
 	if(symbolic::expand_products) {
 		n=oper.size();
-		for(int i=0;i<n;i++) {
+		for(unsigned int i=0;i<n;i++) {
 			if(typeid(*(oper[i].first))!=typeid(sym_add)) continue;
 			if(oper[i].second!=1) continue;
 			sym_add *sadd,*snew;
 			sadd=(sym_add *)oper[i].first;
 			snew=new sym_add();
-			for(int j=0;j<sadd->oper.size();j++) {
+			for(unsigned int j=0;j<sadd->oper.size();j++) {
 				sym_prod *sprod;
 				sprod=clone();
 				delete sprod->oper[i].first;
@@ -798,7 +800,7 @@ sym::sym_expr *sym::sym_prod::derive(const sym_expr &s) {
 	sym_add *snew;
 	snew=new sym_add();
 
-	for(int i=0;i<oper.size();i++) {
+	for(unsigned int i=0;i<oper.size();i++) {
 		sym_prod *sprod;
 		sprod=clone();
 		sprod->oper.push_back(make_pair(oper[i].first->clone()->derive(s),1));
@@ -815,7 +817,7 @@ matrix sym::sym_prod::eval() const {
 	
 	matrix m=ones(1,1);
 	
-	for(int i=0;i<oper.size();i++) {
+	for(unsigned int i=0;i<oper.size();i++) {
 		m*=::pow(oper[i].first->eval(),oper[i].second.eval());
 	}
 	return m;
@@ -823,11 +825,12 @@ matrix sym::sym_prod::eval() const {
 
 ostream &sym::sym_prod::print(ostream &os) const {
 
-	for(int i=0;i<oper.size();i++) {
-		if(oper[i].second>=0&&i) os<<"*";
-		else if(oper[i].second<0)
-			if(i==0) os<<"1/";
-			else os<<"/";
+	for(unsigned int i=0;i<oper.size();i++) {
+        if(oper[i].second>=0&&i) os<<"*";
+        else if(oper[i].second<0) {
+            if(i==0) os<<"1/";
+            else os<<"/";
+        }
 		os<<*(oper[i].first);
 		if(abs(oper[i].second)!=1) {
 			os<<"^";
@@ -1043,13 +1046,13 @@ sym::sym_expr *sym::sym_exp::reduce() {
 	if(typeid(*oper)==typeid(sym_add)) {
 		sym_add *sadd;
 		sadd=(sym_add *)oper;
-		for(int i=0;i<sadd->oper.size();i++) {
+		for(unsigned int i=0;i<sadd->oper.size();i++) {
 			if(typeid(*(sadd->oper[i].first))==typeid(sym_log)&&sadd->oper[i].second!=0) {
 				double dex=sadd->oper[i].second;
 				rational qex=0;
 				for(int k=1;k<=10;k++) { //Check if the exponent can be repr. by a small fraction
 					if(round(k*dex)==k*dex) {
-						qex=rational(round(k*dex),k);
+						qex=rational((int)round(k*dex),k);
 						break;
 					}
 				}
@@ -1144,7 +1147,7 @@ sym::sym_expr *sym::sym_log::reduce() {
 			delete sprod;
 			return snew->reduce();
 		}
-		for(int i=0;i<sprod->oper.size();i++) {
+		for(unsigned int i=0;i<sprod->oper.size();i++) {
 			if(typeid(*(sprod->oper[i].first))==typeid(sym_exp)&&sprod->oper[i].second==1) {				
 				sym_expr *arg;
 				arg=((sym_exp *)sprod->oper[i].first)->oper->clone();

@@ -96,7 +96,7 @@ void figure::plot(const matrix &x,const matrix &y,const char *line) {
 	cpgsch(1);
 	if(!hold_state) 
 		cpgenv(x0,x1,y0,y1,just,10*xlog+20*ylog);
-	for(i=0;i<strlen(line);i++) {
+	for(i=0;i<(int)strlen(line);i++) {
 		switch(line[i]) {
 			case '.': marker=1;break;
 			case '+': marker=2;break;
@@ -106,7 +106,7 @@ void figure::plot(const matrix &x,const matrix &y,const char *line) {
 		}
 	}
 	if(marker) line_style=0;
-	for(i=0;i<strlen(line);i++) {
+	for(i=0;i<(int)strlen(line);i++) {
 		switch(line[i]) {
 			case '-': line_style=1;break;
 			case '=': line_style=2;break;
@@ -114,7 +114,7 @@ void figure::plot(const matrix &x,const matrix &y,const char *line) {
 			case ':': line_style=4;
 		}
 	}
-	for(i=0;i<strlen(line);i++) {
+	for(i=0;i<(int)strlen(line);i++) {
 		switch(line[i]) {
 			case 'w': color=0;break;
 			case 'k': color=1;break;
@@ -285,7 +285,7 @@ void figure::label(const char *xlabel,const char *ylabel,const char *title) {
 
 void figure::pcolor(const matrix &x,const matrix &y,const matrix &z) {
 
-	int i,j,k,c,cmax;
+	int i,j,c,cmax;
 	double zz;
 	float xf[4],yf[4];
 	
@@ -383,7 +383,7 @@ void figure::contour(const matrix &x,const matrix &y,const matrix &z,const matri
 		cpgenv(x0,x1,y0,y1,just,10*xlog+20*ylog);
 		
 	int line_style=1,color=-1;
-	for(int i=0;i<strlen(line);i++) {
+	for(int i=0;i<(int)strlen(line);i++) {
 		switch(line[i]) {
 			case '-': line_style=1;break;
 			case '=': line_style=2;break;
@@ -391,7 +391,7 @@ void figure::contour(const matrix &x,const matrix &y,const matrix &z,const matri
 			case ':': line_style=4;
 		}
 	}
-	for(int i=0;i<strlen(line);i++) {
+	for(int i=0;i<(int)strlen(line);i++) {
 		switch(line[i]) {
 			case 'w': color=0;break;
 			case 'k': color=1;break;

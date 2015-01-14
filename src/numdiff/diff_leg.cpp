@@ -115,7 +115,7 @@ matrix diff_leg::dPn(int n,matrix x,matrix p) {
 
 matrix diff_leg::nodes(int n,matrix &w) {
 
-	int i,info,fin=2;
+	int info,fin=2;
 	matrix x,p,x0;
 	double tol=1e-13;
 
@@ -144,7 +144,7 @@ matrix diff_leg::nodes(int n,matrix &w) {
 
 void diff_leg::init() {
 
-	int i,n,info;
+	int i,n;
 	double ll;
 	matrix p(npts*2-1,1),dp(1,npts),d2p(1,npts);
 	matrix p_1(1,npts),p0(1,npts);

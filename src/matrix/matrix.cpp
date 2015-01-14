@@ -120,8 +120,6 @@ matrix &matrix::dim(int nfil,int ncol) {
 /// \returns the updated matrix object.
 matrix &matrix::redim(int nfil,int ncol) {
     
-    int tam;
-    
     
     if(nfil<0||ncol<0) {
 		fprintf(stderr,"ERROR: Can't create matrix with negative size\n");
@@ -911,7 +909,7 @@ matrix &matrix::operator+=(const matrix &a) {
     	for(i=0;i<N;i++) 
     		p[i]+=a.p[i];
 	} else if(nf==a.nf&&a.nc==1) {
-		for(i=0,j=0;i<N;i++,j=(++j)%nf)
+		for(i=0,j=0;i<N;i++,j=(j+1)%nf)
 			p[i]+=a.p[j];
 	} else if(a.nf==1&&nc==a.nc) {
 		k=0;
@@ -937,7 +935,7 @@ matrix &matrix::operator-=(const matrix &a) {
     	for(i=0;i<N;i++) 
     		p[i]-=a.p[i];
 	} else if(nf==a.nf&&a.nc==1) {
-		for(i=0,j=0;i<N;i++,j=(++j)%nf)
+		for(i=0,j=0;i<N;i++,j=(j+1)%nf)
 			p[i]-=a.p[j];
 	} else if(a.nf==1&&nc==a.nc) {
 		k=0;
@@ -963,7 +961,7 @@ matrix &matrix::operator*=(const matrix &a) {
     	for(i=0;i<N;i++) 
     		p[i]*=a.p[i];
 	} else if(nf==a.nf&&a.nc==1) {
-		for(i=0,j=0;i<N;i++,j=(++j)%nf)
+		for(i=0,j=0;i<N;i++,j=(j+1)%nf)
 			p[i]*=a.p[j];
 	} else if(a.nf==1&&nc==a.nc) {
 		k=0;
@@ -989,7 +987,7 @@ matrix &matrix::operator/=(const matrix &a) {
     	for(i=0;i<N;i++) 
     		p[i]/=a.p[i];
 	} else if(nf==a.nf&&a.nc==1) {
-		for(i=0,j=0;i<N;i++,j=(++j)%nf)
+		for(i=0,j=0;i<N;i++,j=(j+1)%nf)
 			p[i]/=a.p[j];
 	} else if(a.nf==1&&nc==a.nc) {
 		k=0;
@@ -1173,7 +1171,8 @@ const matrix matrix::block_step(int ifil1,int ifil2,int dfil,int icol1,int icol2
 		exit(1);
 	}	
 
-	matrix res(floor((ifil2-ifil1)/dfil)+1,floor((icol2-icol1)/dcol)+1);
+	matrix res((int) floor((ifil2-ifil1)/dfil)+1,
+            (int) floor((icol2-icol1)/dcol)+1);
 	double *pi,*pres;
 	int i,j,N1,N2;
 	
@@ -1388,7 +1387,7 @@ matrix eye(int n) {
 
 matrix vector_t(double x0,double x1,int n) {
 
-	double x,dx;
+	double dx;
 	int i;
 	
 	dx=(x1-x0)/(n-1);

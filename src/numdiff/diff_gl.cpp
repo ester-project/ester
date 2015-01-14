@@ -21,8 +21,8 @@ diff_gl::~diff_gl() {
 	delete [] xif;
 }
 
-diff_gl::diff_gl(const diff_gl &gl):ndomains(ndom),N(Ntot),
-	x(gl.x),P(gl.P),P1(gl.P1),D(gl.D),I(gl.I) {
+diff_gl::diff_gl(const diff_gl &gl) : x(gl.x), I(gl.I), P(gl.P), P1(gl.P1),
+    D(gl.D), ndomains(ndom), N(Ntot) {
 
 	int i;
 
