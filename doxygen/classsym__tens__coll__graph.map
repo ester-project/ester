@@ -1,0 +1,11 @@
+<map id="sym_tens" name="sym_tens">
+<area shape="rect" id="node3" href="$classsymbolic.html" title="symbolic" alt="" coords="48,808,122,835"/>
+<area shape="rect" id="node2" href="$classsym.html" title="sym" alt="" coords="71,1044,118,1071"/>
+<area shape="rect" id="node4" href="$classmapping.html" title="mapping" alt="" coords="200,704,271,731"/>
+<area shape="rect" id="node5" href="$classmapping_1_1ext__map.html" title="mapping::ext_map" alt="" coords="282,808,411,835"/>
+<area shape="rect" id="node6" href="$classdiff__gl.html" title="The diff_gl class implements the Gauss&#45;Lobatto (or more properly Gauss&#45;Lobatto&#45;Chebyshev) collocation..." alt="" coords="300,547,358,574"/>
+<area shape="rect" id="node7" href="$classmatrix.html" title="The matrix class is used to facilitate the work with regular dense matrices. " alt="" coords="237,5,296,32"/>
+<area shape="rect" id="node8" href="$classmatrix__block__diag.html" title="The matrix_block_diag class is used to store block diagonal matrices. " alt="" coords="203,243,330,269"/>
+<area shape="rect" id="node9" href="$classdiff__leg.html" title="The diff_leg class implements Legendre numerical differentiation. " alt="" coords="69,362,133,389"/>
+<area shape="rect" id="node10" href="$classsym_1_1sym__expr.html" title="sym::sym_expr" alt="" coords="146,808,258,835"/>
+</map>

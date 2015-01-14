@@ -1,0 +1,6 @@
+<map id="solver" name="solver">
+<area shape="rect" id="node2" href="$classmatrix.html" title="The matrix class is used to facilitate the work with regular dense matrices. " alt="" coords="19,5,78,32"/>
+<area shape="rect" id="node3" href="$classsolver_1_1solver__block.html" title="Stores all the equations for a given block (a block can either be a domain or a set of boundary condi..." alt="" coords="25,272,163,299"/>
+<area shape="rect" id="node4" href="$classsolver_1_1solver__elem.html" title="Stores one term of an equation. " alt="" coords="117,139,252,165"/>
+<area shape="rect" id="node5" href="$classsolver__operator.html" title="solver_operator" alt="" coords="188,272,299,299"/>
+</map>

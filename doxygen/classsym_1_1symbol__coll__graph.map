@@ -1,0 +1,12 @@
+<map id="sym::symbol" name="sym::symbol">
+<area shape="rect" id="node2" href="$classsym_1_1sym__expr.html" title="sym::sym_expr" alt="" coords="5,243,117,269"/>
+<area shape="rect" id="node4" href="$classsym.html" title="sym" alt="" coords="106,547,153,574"/>
+<area shape="rect" id="node3" href="$classsymbolic.html" title="symbolic" alt="" coords="148,943,223,969"/>
+<area shape="rect" id="node5" href="$classsym__tens.html" title="sym_tens" alt="" coords="146,771,225,798"/>
+<area shape="rect" id="node6" href="$classmapping.html" title="mapping" alt="" coords="390,771,461,798"/>
+<area shape="rect" id="node7" href="$classmapping_1_1ext__map.html" title="mapping::ext_map" alt="" coords="441,943,570,969"/>
+<area shape="rect" id="node8" href="$classdiff__gl.html" title="The diff_gl class implements the Gauss&#45;Lobatto (or more properly Gauss&#45;Lobatto&#45;Chebyshev) collocation..." alt="" coords="506,547,563,574"/>
+<area shape="rect" id="node9" href="$classmatrix.html" title="The matrix class is used to facilitate the work with regular dense matrices. " alt="" coords="429,5,488,32"/>
+<area shape="rect" id="node10" href="$classmatrix__block__diag.html" title="The matrix_block_diag class is used to store block diagonal matrices. " alt="" coords="395,243,522,269"/>
+<area shape="rect" id="node11" href="$classdiff__leg.html" title="The diff_leg class implements Legendre numerical differentiation. " alt="" coords="356,362,420,389"/>
+</map>
