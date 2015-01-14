@@ -347,7 +347,7 @@ DEBUG_FUNCNAME
 			schwi=map.gl.eval(schw.col(j),zi,TT)(0);
 			dschwi=(TT,dschw.col(j))(0);
 			dzi=-schwi/dschwi;
-			if(fabs(dzi<1e-9)) fin++;
+			if(fabs(dzi)<1e-9) fin++;
 			zi+=dzi;
 		}
 		Rcc(j)=map.gl.eval(r.col(j),zi,TT)(0);

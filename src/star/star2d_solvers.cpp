@@ -144,7 +144,7 @@ DEBUG_FUNCNAME
 	matrix rho0;
 	double err,err2,h,dmax;
 
-	if(Omega==0&Omega_bk!=0) {
+	if(Omega==0 && Omega_bk != 0) {
 		Omega=Omega_bk*Omegac;
 		w=Omega*ones(nr,nth);
 	}
