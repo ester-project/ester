@@ -13,10 +13,10 @@ do_subst = sed -e 's,[@]datadir[@],$(datadir),g'	\
 		   -e 's,[@]prefix[@],$(prefix),g'			\
 		   -e 's,[@]PYTHON[@],$(PYTHON),g'
 
-bin_SCRIPTS = test_models
+bin_SCRIPTS = ester-check-models
 CLEANFILES = $(bin_SCRIPTS)
 
-test_models: $(top_srcdir)/test/models/test_models.in Makefile
+ester-check-models: $(top_srcdir)/test/models/test_models.in Makefile
 	$(do_subst) < $< > $@
 	chmod +x $@
 
