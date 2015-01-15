@@ -22,25 +22,23 @@ The code is still in development, so new functionality will be added in
 future versions.
 
 To execute the program, use the following syntax:
-
-\begin{center}
-ester \emph{command} [\emph{options}]
-\end{center}
-where \emph{command} can be
-
-\begin{itemize}
-\item {\tt 1d} Calculate the structure of a 1D non-rotating star
-\item {\tt 2d} Calculate the structure of a 2D rotating star
-\item {\tt output} Generate a custom output file
-\item {\tt info} Get information about a model file
-\item {\tt help} Get help
-\end{itemize}
-
-
+\begin{shell}
+    $ ester command [options]
+    !$
+\end{shell}
+where \texttt{command} can be:
+\begin{description}
+    \item[{\tt 1d}]: Calculate the structure of a 1D non-rotating star
+    \item[{\tt 2d}]: Calculate the structure of a 2D rotating star
+    \item[{\tt output}]: Generate a custom output file
+    \item[{\tt info}]: Get information about a model file
+    \item[{\tt help}]: Get help
+\end{description}
 
 \section{Configuration files}
 
-The main configuration file is located at {\tt ester/config/star.cfg}.
+The main configuration file is located at
+\texttt{\$prefix/share/ester/config/star.cfg}.
 This file contains the main options for the program, which are
 
 \begin{itemize}
@@ -72,11 +70,12 @@ To disable the graphic output use {\tt /NULL}.
 \item {\tt plot\_interval} (default 10). Minimum time in seconds to update the graphic output.
 \end{itemize}
 
-All these options can be specified in the file {\tt ester/config/star.cfg}
-in the form {\tt option\_name=option\_value} (one per line) and in
-the command line as {\tt -option\_name option\_value}. The options
-specified in the command line have precedence over those specified in
-the configuration file.
+All these options can be specified in the file 
+\texttt{\$prefix/share/ester/config/star.cfg} in the form {\tt
+option\_name=option\_value} (one per line) and in the command line as {\tt
+-option\_name option\_value}.
+The options specified in the command line have precedence over those specified
+in the configuration file.
 
 \bigskip
 There are some additional options that can be included in the command line:
@@ -98,8 +97,8 @@ stellar model to be calculated (see below).
 \section{Default values}
 
 Default values to be used by {\tt star1d} or {\tt star2d} may be set up
-with the files {\tt ester/config/1d\_default.par} and {\tt
-ester/config/2d\_default.par}.
+with the files {\tt \$prefix/share/ester/config/1d\_default.par} and {\tt
+\$prefix/share/ester/config/2d\_default.par}.
 
 In the distribution of ESTER, the proposed default values are such that
 the star is divided in 8 domains with 30 points in each domains. Opacities
