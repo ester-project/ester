@@ -1,6 +1,7 @@
 #include "ester-config.h"
-#include"physics.h"
-#include<string.h>
+#include "utils.h"
+#include "physics.h"
+#include <string.h>
 
 int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa) {
@@ -12,9 +13,9 @@ int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	} else if(!strcmp(opa.name,"houdek")) {
     	error=opa_houdek(X,Z,T,rho,opa);
 	} else if(!strcmp(opa.name,"kramer")) {
-    	error=opa_kramer(T,rho,opa);
+        error=opa_kramer(T,rho,opa);
     } else {
-    	fprintf(stderr,"Unknown opacity method: %s\n",opa.name);
+        ester_err("Unknown opacity method: %s",opa.name);
     	return 1;
     }
 
@@ -33,7 +34,7 @@ int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
 	else if(!strcmp(eos.name,"opal")) 
 		error=eos_opal(X,Z,T,p,rho,eos);
 	else {
-		fprintf(stderr,"Unknown equation of state: %s\n",eos.name);
+        ester_err("Unknown equation of state: %s",eos.name);
     	return 1;
     }
 	
@@ -51,7 +52,7 @@ int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
 	} else if(!strcmp(nuc.name,"cesam")) {
 		error=nuc_cesam(X,T,rho,nuc);
     } else {
-    	fprintf(stderr,"Unknown nuc. reac. type: %s\n",nuc.name);
+        ester_err("Unknown nuc. reac. type: %s",nuc.name);
     	return 1;
     }
 	
@@ -67,7 +68,7 @@ int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 	if(!strcmp(atm.name,"onelayer")) {
 		error=atm_onelayer(X,Z,g,Teff,eos_name,opa_name,atm);
     } else {
-    	fprintf(stderr,"Unknown atmosphere type: %s\n",atm.name);
+        ester_err("Unknown atmosphere type: %s", atm.name);
     	return 1;
     }
 	

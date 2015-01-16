@@ -1,6 +1,7 @@
 #include "ester-config.h"
-#include"physics.h"
-#include"constants.h"
+#include "utils.h"
+#include "physics.h"
+#include "constants.h"
 
 extern"C" {
 	void zfs_interp_eos5_(double *z);
@@ -66,7 +67,7 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	eos.chi_T(i)=*(eeos_.eos+6);
     }
     if(exist(rho==-9e99)) {
-   		fprintf(stderr,"Values outside OPAL eos table\n");
+        ester_err("Values outside OPAL eos table");
    		return 1;
     }
 

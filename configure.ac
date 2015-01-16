@@ -70,15 +70,13 @@ AS_IF([test "x$enable_hdf5" == "xyes"],
        AS_IF([test "x$h5cc_works" == "xno"],
              [AC_ERROR(Could not find hdf5 compiler wrapper $CC)])
        AC_CHECK_HEADERS([hdf5.h])
+       AC_DEFINE([USE_HDF5], [1], [Enable hdf5 support])
        AS_IF([test "x$ac_cv_header_hdf5_h" == "xno"], [
               AC_ERROR([Could not find HDF5 header])])
-       # AC_CHECK_LIB([hdf5], [H5Fopen])
-    #    AS_IF([test "x$ac_cv_lib_hdf5_H5Fopen" == "xno"], [
-    #           AC_ERROR([Could not find HDF5 library
-    # Please privde the path to HDF5 with --with-hdf5-root])])
        ],
    [enable_hdf5="no"])
 
+AM_CONDITIONAL(USE_HDF5, [test "x$enable_hdf5" == "xyes"])
 
 # Search for mkl
 AC_SEARCH_LIBS([cblas_dgemm], [mkl_intel_lp64],

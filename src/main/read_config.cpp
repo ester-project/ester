@@ -1,4 +1,5 @@
 #include "ester-config.h"
+#include "utils.h"
 #include "parser.h"
 #include "read_config.h"
 
@@ -127,6 +128,6 @@ int configuration::check_arg(const char *arg,const char *val) {
 
 void configuration::missing_argument(const char *arg) {
 	
-	fprintf(stderr,"Error: Argument to '%s' missing\n",arg);
+	ester_err("Error: Argument to '%s' missing", arg);
 	exit(1);
 }

@@ -1,8 +1,9 @@
 #include "ester-config.h"
-#include"solver.h"
-#include<string.h>
-#include<stdlib.h>
-#include<cmath>
+#include "utils.h"
+#include "solver.h"
+#include <string.h>
+#include <stdlib.h>
+#include <cmath>
 
 //#define PERF_LOG
 
@@ -278,12 +279,12 @@ void solver::regvar(const char *var_name,int dependent) {
 	j=0;
 	while (strlen(var[j])) {
 		if(!strcmp(var[j],var_name)) {
-			fprintf(stderr,"ERROR: Can't register variable (already registered)\n");
+			ester_err("ERROR: Can't register variable (already registered)");
 			exit(1);
 		}
 		j++;
 		if(j==nv) {
-			fprintf(stderr,"ERROR: Can't register variable (increase nvar)\n");
+			ester_err("ERROR: Can't register variable (increase nvar)");
 			exit(1);
 		}
 	}	
@@ -314,7 +315,7 @@ int solver::get_id(const char *varn) {
 	while(strcmp(varn,var[i])||!reg(i)) {
 		i++;
 		if(i==nv) {
-			fprintf(stderr,"ERROR: Unknown variable %s\n",varn);
+			ester_err("ERROR: Unknown variable %s", varn);
 			exit(1);
 		}
 	}
@@ -346,8 +347,9 @@ void solver::set_rhs(const char *eqn,const matrix &b) {
 	int ieq;
 	ieq=get_id(eqn);
 	if(dep(ieq)) {
-		fprintf(stderr,"ERROR (solver):\n\t");
-		fprintf(stderr,"RHS not used in the definition of dependent variable \"%s\"\n",eqn);
+		ester_err("ERROR (solver):\n\t");
+		ester_err("RHS not used in the definition of dependent variable \"%s\"",
+                eqn);
 		exit(1);
 	}
 	rhs[ieq]=b;
@@ -412,7 +414,7 @@ void solver::solve(int *info) {
 	wrap(sol,&y);
 	wrap(rhs,&rhsw);
 	if(op!=NULL&&sync==0&&use_cgs&&struct_changed&&verbose) 
-		printf("WARNING: Operator structure has changed, skipping CGS iteration\n");
+		ester_warn("Operator structure has changed, skipping CGS iteration");
 	if(op!=NULL&&sync==0&&use_cgs&&!struct_changed) {
 		if(verbose)
 			printf("CGS iteration:\n");
@@ -851,7 +853,7 @@ void solver::create() {
 	} else if(!strcmp(type,"iter")) {
 		op=new solver_iter();
 	} else {
-		fprintf(stderr,"Unknown solver type \"%s\"\n",type); 
+		ester_err("Unknown solver type \"%s\"", type);
 		exit(1);
 	}
 	op->verbose=verbose;
@@ -1363,7 +1365,7 @@ void solver::add(const char *eqn, const char *varn,const char *block_type,char t
 	else ii=NULL;
 	j0=0;
 	if(strcmp(block_type,"block")&&strcmp(block_type,"bc_eq")&&strcmp(block_type,"bc_pol")) {
-		fprintf(stderr,"ERROR (solver::add) : Invalid block_type %s\n",block_type);
+		ester_err("(solver::add): Invalid block_type %s", block_type);
 		exit(1);
 	}
 	
@@ -1416,28 +1418,29 @@ void solver::add(const char *eqn, const char *varn,const char *block_type,char t
 	}
 	
 	if(error) {
-		fprintf(stderr,"ERROR (solver):\n\t%s\n\tin eq \"%s\", var \"%s\"",err_msg,eqn,varn);
+		ester_err("ERROR (solver):\n\t%s\n\tin eq \"%s\", var \"%s\"",
+                err_msg,eqn,varn);
 		switch(type) {
 			case 'd': 
-				fprintf(stderr," (type: d)\n");
+				ester_err(" (type: d)");
 				break;
 			case 'l': 
-				fprintf(stderr," (type: l)\n");
+				ester_err(" (type: l)");
 				break;
 			case 'r': 
-				fprintf(stderr," (type: r)\n");
+				ester_err(" (type: r)");
 				break;
 			case 'f': 
-				fprintf(stderr," (type: lr)\n");
+				ester_err(" (type: lr)");
 				break;
 			case 'm': 
-				fprintf(stderr," (type: li)\n");
+				ester_err(" (type: li)");
 				break;
 			case 's': 
-				fprintf(stderr," (type: ri)\n");
+				ester_err(" (type: ri)");
 				break;
 			case 'g': 
-				fprintf(stderr," (type: lri)\n");
+				ester_err(" (type: lri)");
 		}
 		exit(1);
 	}	

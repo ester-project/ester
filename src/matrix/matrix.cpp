@@ -1,10 +1,11 @@
 #include "ester-config.h"
-#include<stdlib.h>
-#include<cmath>
-#include<stdio.h>
-#include<string.h>
-#include"matrix.h"
-#include<stdarg.h>
+#include "utils.h"
+#include "matrix.h"
+#include <stdlib.h>
+#include <cmath>
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
 
 
 /// \brief Default matrix constructor.
@@ -16,15 +17,15 @@ matrix::matrix(int nfil,int ncol) {
 	unsigned tam;
 
     if(nfil<0||ncol<0) {
-		fprintf(stderr,"ERROR: Can't create matrix with negative size\n");
+		ester_err("Can't create matrix with negative size");
 		exit(1);
 	}
 	if(nfil==0) {
-		fprintf(stderr,"ERROR: Number of rows can't be zero\n");
+		ester_err("Number of rows can't be zero");
 		exit(1);
 	}
 	if(ncol==0) {
-		fprintf(stderr,"ERROR: Number of columns can't be zero\n");
+		ester_err("Number of columns can't be zero");
 		exit(1);
 	}
 	nf=nfil;
@@ -86,15 +87,15 @@ matrix &matrix::dim(int nfil,int ncol) {
     unsigned tam;
     
     if(nfil<0||ncol<0) {
-		fprintf(stderr,"ERROR: Can't create matrix with negative size\n");
+		ester_err("Can't create matrix with negative size");
 		exit(1);
 	}
 	if(nfil==0) {
-		fprintf(stderr,"ERROR: Number of rows can't be zero\n");
+		ester_err("Number of rows can't be zero");
 		exit(1);
 	}
 	if(ncol==0) {
-		fprintf(stderr,"ERROR: Number of columns can't be zero\n");
+		ester_err("Number of columns can't be zero");
 		exit(1);
 	}
     
@@ -119,27 +120,26 @@ matrix &matrix::dim(int nfil,int ncol) {
 /// must match the original matrix size (nrows() x ncols()).
 /// \returns the updated matrix object.
 matrix &matrix::redim(int nfil,int ncol) {
-    
-    
+
     if(nfil<0||ncol<0) {
-		fprintf(stderr,"ERROR: Can't create matrix with negative size\n");
-		exit(1);
-	}
-	if(nfil==0) {
-		fprintf(stderr,"ERROR: Number of rows can't be zero\n");
-		exit(1);
-	}
-	if(ncol==0) {
-		fprintf(stderr,"ERROR: Number of columns can't be zero\n");
-		exit(1);
-	}
-    
+        ester_err("Can't create matrix with negative size");
+        exit(1);
+    }
+    if(nfil==0) {
+        ester_err("Number of rows can't be zero");
+        exit(1);
+    }
+    if(ncol==0) {
+        ester_err("Number of columns can't be zero");
+        exit(1);
+    }
+
     if(nfil*ncol!=nf*nc) {
-    	fprintf(stderr,"ERROR: matrix.redim: Number of elements doesn't match\n");
-    	exit(1);
+        ester_err("matrix.redim: Number of elements doesn't match");
+        exit(1);
     }    
     nf=nfil;nc=ncol;
-    
+
     return *this;
 }
 
@@ -163,7 +163,7 @@ double &matrix::operator()(int ifil,int icol) {
 	if(ifil<0) ifil+=nf;
 	if(icol<0) icol+=nc;
 	if(ifil>=nf||ifil<0||icol>=nc||icol<0) {
-		fprintf(stderr,"ERROR: Index exceeds matrix dimensions\n");
+		ester_err("Index exceeds matrix dimensions");
 		exit(1);
 	}
 	return *(p+icol*nf+ifil);
@@ -176,7 +176,7 @@ double &matrix::operator()(int ielem) {
 	
 	if(ielem<0) ielem+=nf*nc;
 	if(ielem>=nf*nc||ielem<0) {
-		fprintf(stderr,"ERROR: Index exceeds matrix dimensions\n");
+		ester_err("Index exceeds matrix dimensions");
 		exit(1);
 	}
 	return *(p+ielem);
@@ -190,7 +190,7 @@ const double &matrix::operator()(int ifil,int icol) const {
 	if(ifil<0) ifil+=nf;
 	if(icol<0) icol+=nc;
 	if(ifil>=nf||ifil<0||icol>=nc||icol<0) {
-		fprintf(stderr,"ERROR: Index exceeds matrix dimensions\n");
+		ester_err("Index exceeds matrix dimensions");
 		exit(1);
 	}
 	return *(p+icol*nf+ifil);
@@ -203,7 +203,7 @@ const double &matrix::operator()(int ielem) const {
 	
 	if(ielem<0) ielem+=nf*nc;
 	if(ielem>=nf*nc||ielem<0) {
-		fprintf(stderr,"ERROR: Index exceeds matrix dimensions\n");
+		ester_err("Index exceeds matrix dimensions");
 		exit(1);
 	}
 	return *(p+ielem);
@@ -323,7 +323,7 @@ matrix matrix::operator+(const matrix &a) const {
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1 && a.nf!=1 && nf!=a.nf) || (nc!=1 && a.nc!=1 && nc!=a.nc) ) {
-		fprintf(stderr,"ERROR: (matrix.+) Dimensions must agree\n");
+		ester_err("(matrix.+) Dimensions must agree");
 		exit(1);
 	}
 	
@@ -375,7 +375,7 @@ matrix matrix::operator-(const matrix &a) const {
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-		fprintf(stderr,"ERROR: (matrix.-) Dimensions must agree\n");
+		ester_err("(matrix.-) Dimensions must agree");
 		exit(1);
 	}
 	
@@ -452,7 +452,7 @@ matrix matrix::operator*(const matrix &a) const {
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-		fprintf(stderr,"ERROR: (matrix.*) Dimensions must agree\n");
+		ester_err("(matrix.*) Dimensions must agree");
 		exit(1);
 	}
 	
@@ -505,7 +505,7 @@ matrix matrix::operator/(const matrix &a) const {
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-		fprintf(stderr,"ERROR: (matrix./) Dimensions must agree\n");
+		ester_err("(matrix./) Dimensions must agree");
 		exit(1);
 	}
 	
@@ -569,7 +569,7 @@ matrix matrix::operator==(const matrix &a) const {
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-		fprintf(stderr,"ERROR: (matrix.==) Dimensions must agree\n");
+		ester_err("(matrix.==) Dimensions must agree");
 		exit(1);
 	}
 	
@@ -621,7 +621,7 @@ matrix matrix::operator!=(const matrix &a) const {
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-		fprintf(stderr,"ERROR: (matrix.!=) Dimensions must agree\n");
+		ester_err("(matrix.!=) Dimensions must agree");
 		exit(1);
 	}
 	
@@ -672,7 +672,7 @@ matrix matrix::operator>(const matrix &a) const{
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-		fprintf(stderr,"ERROR: (matrix.>) Dimensions must agree\n");
+		ester_err("(matrix.>) Dimensions must agree");
 		exit(1);
 	}
 	
@@ -737,7 +737,7 @@ matrix matrix::operator>=(const matrix &a) const {
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-		fprintf(stderr,"ERROR: (matrix.>=) Dimensions must agree\n");
+		ester_err("(matrix.>=) Dimensions must agree");
 		exit(1);
 	}
 	
@@ -802,7 +802,7 @@ matrix matrix::operator||(const matrix &a) const {
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-		fprintf(stderr,"ERROR: (matrix.||) Dimensions must agree\n");
+		ester_err("(matrix.||) Dimensions must agree");
 		exit(1);
 	}
 	
@@ -854,7 +854,7 @@ matrix matrix::operator&&(const matrix &a) const {
 	int i,j,resnf,resnc,N;
 	
 	if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-		fprintf(stderr,"ERROR: (matrix.&&) Dimensions must agree\n");
+		ester_err("(matrix.&&) Dimensions must agree");
 		exit(1);
 	}
 	
@@ -1051,7 +1051,7 @@ const matrix matrix::row(int ifil) const {
 	
 	if(ifil<0) ifil+=nf;
 	if(ifil<0||ifil>=nf) {
-		fprintf(stderr,"ERROR: (matrix.row) Index exceeds matrix dimensions\n");
+		ester_err("(matrix.row) Index exceeds matrix dimensions");
 		exit(1);
 	}
 			
@@ -1070,11 +1070,11 @@ matrix &matrix::setrow(int ifil,const matrix &a) {
 	
 	if(ifil<0) ifil+=nf;
 	if(ifil<0||ifil>=nf) {
-		fprintf(stderr,"ERROR: (matrix.setrow) Index exceeds matrix dimensions\n");
+		ester_err("(matrix.setrow) Index exceeds matrix dimensions");
 		exit(1);
 	}
 	if(a.nf>1||a.nc!=nc) {
-		fprintf(stderr,"ERROR: (matrix.setrow) Dimensions must agree\n");
+		ester_err("(matrix.setrow) Dimensions must agree");
 		exit(1);
 	}	
 	
@@ -1095,7 +1095,7 @@ const matrix matrix::col(int icol) const {
 	
 	if(icol<0) icol+=nc;
 	if(icol<0||icol>=nc) {
-		fprintf(stderr,"ERROR: (matrix.col) Index exceeds matrix dimensions\n");
+		ester_err("(matrix.col) Index exceeds matrix dimensions");
 		exit(1);
 	}
 	
@@ -1114,11 +1114,11 @@ matrix &matrix::setcol(int icol,const matrix &a) {
 	
 	if(icol<0) icol+=nc;
 	if(icol<0||icol>=nc) {
-		fprintf(stderr,"ERROR: (matrix.setcol) Index exceeds matrix dimensions\n");
+		ester_err("(matrix.setcol) Index exceeds matrix dimensions");
 		exit(1);
 	}
 	if(a.nc>1||a.nf!=nf) {
-		fprintf(stderr,"ERROR: (matrix.setcol) Dimensions must agree\n");
+		ester_err("(matrix.setcol) Dimensions must agree");
 		exit(1);
 	}	
 	
@@ -1139,7 +1139,7 @@ const matrix matrix::block(int ifil1,int ifil2,int icol1,int icol2) const {
 	if(icol2<0) icol2+=nc;
 	
 	if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
-		fprintf(stderr,"ERROR: (matrix.block) Index exceeds matrix dimensions\n");
+		ester_err("(matrix.block) Index exceeds matrix dimensions");
 		exit(1);
 	}	
 
@@ -1167,7 +1167,7 @@ const matrix matrix::block_step(int ifil1,int ifil2,int dfil,int icol1,int icol2
 	if(icol2<0) icol2+=nc;
 	
 	if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
-		fprintf(stderr,"ERROR: (matrix.block_step) Index exceeds matrix dimensions\n");
+		ester_err("(matrix.block_step) Index exceeds matrix dimensions");
 		exit(1);
 	}	
 
@@ -1195,11 +1195,11 @@ matrix &matrix::setblock(int ifil1,int ifil2,int icol1,int icol2,const matrix &a
 	if(icol2<0) icol2+=nc;
 	
 	if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
-		fprintf(stderr,"ERROR: (matrix.setblock) Index exceeds matrix dimensions\n");
+		ester_err("(matrix.setblock) Index exceeds matrix dimensions");
 		exit(1);
 	}	
 	if(a.nf!=ifil2-ifil1+1||a.nc!=icol2-icol1+1) {
-		fprintf(stderr,"ERROR: (matrix.setblock) Dimensions must agree\n");
+		ester_err("(matrix.setblock) Dimensions must agree");
 		exit(1);
 	}
 
@@ -1227,11 +1227,11 @@ matrix &matrix::setblock_step(int ifil1,int ifil2,int dfil,int icol1,int icol2,i
 	if(icol2<0) icol2+=nc;
 	
 	if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
-		fprintf(stderr,"ERROR: (matrix.setblock_step) Index exceeds matrix dimensions\n");
+		ester_err("(matrix.setblock_step) Index exceeds matrix dimensions");
 		exit(1);
 	}
 	if(a.nf!=floor((ifil2-ifil1)/dfil)+1||a.nc!=floor((icol2-icol1)/dcol)+1) {
-		fprintf(stderr,"ERROR: (matrix.setblock_step) Dimensions must agree\n");
+		ester_err("(matrix.setblock_step) Dimensions must agree");
 		exit(1);
 	}
 
@@ -1257,7 +1257,8 @@ matrix matrix::concatenate(const matrix &a,int dir) const {
 
 	if(dir==0) {
 		if(a.nc!=nc) {
-			fprintf(stderr,"ERROR: (matrix.concatenate) Dimensions must agree\n");
+			ester_err("(matrix.concatenate) Dimensions must agree (%d != %d)",
+                    a.nc, nc);
 			exit(1);
 		}
 		res.dim(nf+a.nf,nc);
@@ -1265,7 +1266,7 @@ matrix matrix::concatenate(const matrix &a,int dir) const {
 		res.setblock(nf,a.nf+nf-1,0,-1,a);
 	} else {
 		if(a.nf!=nf) {
-			fprintf(stderr,"ERROR: (matrix.concatenate) Dimensions must agree\n");
+			ester_err("(matrix.concatenate) Dimensions must agree");
 			exit(1);
 		}
 		res.dim(nf,nc+a.nc);
@@ -1462,7 +1463,7 @@ double mean(const matrix &a) {
 matrix max(const matrix &a,const matrix &b) {
 
 	if( (b.nf!=a.nf) || (b.nc!=a.nc) ) {
-		fprintf(stderr,"ERROR: (matrix.max) Dimensions must agree\n");
+		ester_err("(matrix.max) Dimensions must agree");
 		exit(1);
 	}
 
@@ -1494,7 +1495,7 @@ matrix max(double n,const matrix &a) {
 matrix min(const matrix &a,const matrix &b) {
 
 	if( (b.nf!=a.nf) || (b.nc!=a.nc) ) {
-		fprintf(stderr,"ERROR: (matrix.min) Dimensions must agree\n");
+		ester_err("(matrix.min) Dimensions must agree");
 		exit(1);
 	}
 

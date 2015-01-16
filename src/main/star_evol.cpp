@@ -1,4 +1,5 @@
 #include "ester-config.h"
+#include "utils.h"
 #include "ester.h"
 #include <string.h>
 #include <stdlib.h>
@@ -25,11 +26,11 @@ int main(int argc,char *argv[]) {
 			else Xcmin=atof(val);
 		} else err_code=1;
 		if(err_code==1) {
-			fprintf(stderr,"Unknown parameter %s\n",arg);
+			ester_err("Unknown parameter %s",arg);
 			exit(1);
 		}
 		if(err_code==2) {
-			fprintf(stderr,"Argument to %s missing\n",arg);
+			ester_err("Argument to %s missing",arg);
 			exit(1);
 		}
 		cmd.ack(arg,val);
@@ -37,7 +38,7 @@ int main(int argc,char *argv[]) {
 	cmd.close();
 	
 	if(*config.input_file==0) {
-		fprintf(stderr,"Must specify an input file\n");
+		ester_err("Must specify an input file");
 		exit(1);
 	}
 	if(*config.output_file==0) {
@@ -46,10 +47,10 @@ int main(int argc,char *argv[]) {
 
 	star_evol A;
 
-	if(!A.read(config.input_file)) {
+	if(A.read(config.input_file)) {
 		star1d A1d;
-		if(!A1d.read(config.input_file)) {
-			fprintf(stderr,"Error reading input file %s\n",config.input_file);
+		if(A1d.read(config.input_file)) {
+			ester_err("Error reading input file %s", config.input_file);
 			exit(1);
 		}
 		A=A1d;

@@ -960,38 +960,10 @@ DEBUG_FUNCNAME
 	
 	op->set_rhs("Ri",rhs);
 	
-	
-	
 }
 
 
 
-/*
-void star2d::solve_Omega(solver *op) {
-
-	int n;
-	matrix rhs;
-
-	rhs=zeros(ndomains+1,1);
-	for(n=0;n<ndomains;n++) {
-		op->bc_top1_add_d(n,"Omega2","Omega2",ones(1,1));
-		op->bc_top2_add_d(n,"Omega2","Omega2",-ones(1,1));
-	}
-	matrix TT;
-	double r1,rz1,dphi1;
-	r1=map.leg.eval_00(rex.row(0),PI/2,TT)(0);
-	rz1=(map.ex.rz.row(0),TT)(0);
-	dphi1=(Dex.row(0),phiex,TT)(0);
-	n=ndomains;
-	op->bc_bot2_add_d(n,"Omega2","Omega2",ones(1,1));
-	op->bc_bot2_add_lr(n,"Omega2","Phi",-ones(1,1)*Omega_bk*Omega_bk/r1/rz1,Dex.row(0),TT);
-	op->bc_bot2_add_r(n,"Omega2","Ri",ones(1,1)*Omega_bk*Omega_bk/r1/r1/rz1*dphi1,TT);
-	op->bc_bot2_add_r(n,"Omega2","Ri",(Dex.row(0),map.ex.J[2],TT)*Omega_bk*Omega_bk/r1/rz1/rz1*dphi1,TT);
-	op->bc_bot2_add_r(n,"Omega2","eta",(Dex.row(0),map.ex.J[0],TT)*Omega_bk*Omega_bk/r1/rz1/rz1*dphi1,TT);
-	rhs(n)=-Omega2+dphi1/r1/rz1*Omega_bk*Omega_bk;
-	op->set_rhs("Omega2",rhs);
-}
-*/
 
 void star2d::solve_Omega(solver *op) {
 DEBUG_FUNCNAME
@@ -1015,25 +987,6 @@ DEBUG_FUNCNAME
 	op->set_rhs("Omega",rhs);
 
 }
-
-/*
-void star2d::solve_Omega(solver *op) {
-
-	int n;
-	matrix rhs;
-
-	rhs=zeros(ndomains+1,1);
-	for(n=0;n<ndomains;n++) {
-		op->bc_top1_add_d(n,"Omega2","Omega2",ones(1,1));
-		op->bc_top2_add_d(n,"Omega2","Omega2",-ones(1,1));
-	}
-	n=ndomains;
-	op->bc_bot2_add_d(n,"Omega2","Omega2",ones(1,1));
-	rhs(n)=-Omega2+Omega_bk*Omega_bk;
-	op->set_rhs("Omega2",rhs);
-}
-*/
-
 
 
 

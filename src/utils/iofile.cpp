@@ -208,9 +208,8 @@ unsigned long INFILE::len(const char *tag) {
 
 }
 
-int INFILE::read(const char *tag,matrix *a) {
-
-	if(!seek(tag)) return 0;
+int INFILE::read(const char *tag, matrix *a) {
+	if(!seek(tag)) return 1;
 	int nr,nc;
 	if(mode=='t') {
 		char line[512];
@@ -221,15 +220,14 @@ int INFILE::read(const char *tag,matrix *a) {
 		fread(&nc,sizeof(int),1,fp);
 	}
 
-	if(!a->read(nr,nc,fp,mode)) return 0;
-	else return 1;
-
+	if(!a->read(nr,nc,fp,mode)) return 1;
+	return 0;
 }
 
 int INFILE::read(const char *tag,matrix_map *a) {
 
 	a->clear();
-	if(!seek(tag)) return 0;
+	if(!seek(tag)) return 1;
 	int nr,nc,nitems;
 	matrix m;
 	if(mode=='t') {
@@ -241,7 +239,7 @@ int INFILE::read(const char *tag,matrix_map *a) {
 			std::string item(line);
 			getline(line,512);
 			sscanf(line,"%d %d",&nr,&nc);
-			if(!m.read(nr,nc,fp,mode)) return 0;
+			if(!m.read(nr,nc,fp,mode)) return 1;
 			(*a)[item]=m;
 			getline(line,512);
 		}
@@ -256,13 +254,12 @@ int INFILE::read(const char *tag,matrix_map *a) {
 			std::string item(item_s);
 			fread(&nr,sizeof(int),1,fp);
 			fread(&nc,sizeof(int),1,fp);
-			if(!m.read(nr,nc,fp,mode)) return 0;
+			if(!m.read(nr,nc,fp,mode)) return 1;
 			(*a)[item]=m;
 		}
 	}
 
-	return 1;
-
+	return 0;
 }
 
 

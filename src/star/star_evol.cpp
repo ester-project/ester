@@ -1,4 +1,5 @@
 #include "ester-config.h"
+#include "utils.h"
 #include "star.h"
 
 
@@ -12,9 +13,9 @@ star_evol::star_evol(const star2d &A) : star2d(A) {
 	Lz_obj=A.Lz();
 }
 
-int star_evol::read(const char *input_file) {
+int star_evol::read(const char *input_file, int dim) {
 	int out;
-	out=star2d::read(input_file);
+	out=star2d::read(input_file, dim);
 	Lz_obj=Lz();
     comp_inited = true;
 	return out;

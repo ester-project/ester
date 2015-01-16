@@ -7,6 +7,7 @@ import tempfile
 
 prefix = "@prefix@"
 datadir = "@datadir@/ester/test/models/"
+use_hdf5 = @use_hdf5@
 
 ester_check_dir = tempfile.mkdtemp()
 
@@ -16,38 +17,28 @@ except:
     print("Could not chdir into: " + ester_check_dir)
     sys.exit(1)
 
+file1 = "test_model1.hdf5" if use_hdf5 == 1 else "test_model1"
+out1 = "test_out1.hdf5" if use_hdf5 == 1 else "test_out1"
+
+file2 = "test_model2.hdf5" if use_hdf5 == 1 else "test_model2"
+out2 = "test_out2.hdf5" if use_hdf5 == 1 else "test_out2"
+
+file3 = "test_model3.hdf5" if use_hdf5 == 1 else "test_model3"
+out3 = "test_out3.hdf5" if use_hdf5 == 1 else "test_out3"
+
+file4 = "test_model4.hdf5" if use_hdf5 == 1 else "test_model4"
+out4 = "test_out4.hdf5" if use_hdf5 == 1 else "test_out4"
 
 def cleanup():
     try:
-        os.remove("test_model1")
-    except:
-        pass
-    try:
-        os.remove("test_model2")
-    except:
-        pass
-    try:
-        os.remove("test_model3")
-    except:
-        pass
-    try:
-        os.remove("test_model4")
-    except:
-        pass
-    try:
-        os.remove("test_out1")
-    except:
-        pass
-    try:
-        os.remove("test_out2")
-    except:
-        pass
-    try:
-        os.remove("test_out3")
-    except:
-        pass
-    try:
-        os.remove("test_out4")
+        os.remove(file1)
+        os.remove(out1)
+        os.remove(file2)
+        os.remove(out2)
+        os.remove(file3)
+        os.remove(out3)
+        os.remove(file4)
+        os.remove(out4)
     except:
         pass
 
@@ -100,14 +91,13 @@ def compare_files(file1,file2):
         f2.close()
         return True
 
-
 sys.stdout.write("Test model #1:\t")
-cmd="ester 1d -M 5" 
-cmd=cmd+" -p "+datadir+"/1d.par -noplot -tol 1e-8 -maxit 100 -o test_model1"
+cmd="ester 1d -M 5"
+cmd=cmd+" -p "+datadir+"/1d.par -noplot -tol 1e-8 -maxit 100 -o " + file1
 exec_cmd(cmd)
-cmd="ester output test_model1"
-exec_cmd(cmd, datadir+"template_1d", "test_out1")
-test_result=compare_files(datadir+"out1","test_out1")
+cmd="ester output " + file1
+exec_cmd(cmd, datadir+"template_1d", out1)
+test_result=compare_files(datadir+"out1", out1)
 if test_result:
     print("OK")
 else:
@@ -116,12 +106,12 @@ else:
     sys.exit(1)
 
 sys.stdout.write("Test model #2:\t")
-cmd="ester 2d -i test_model1 -Omega_bk 0.5" 
-cmd=cmd+" -p "+datadir+"2d.par -noplot -tol 1e-8 -maxit 10 -o test_model2"
+cmd="ester 2d -i "+ file1 +" -Omega_bk 0.5"
+cmd=cmd+" -p "+datadir+"2d.par -noplot -tol 1e-8 -maxit 10 -o " + file2
 exec_cmd(cmd)
-cmd="ester output test_model2"
-exec_cmd(cmd,datadir+"template_2d","test_out2")
-test_result=compare_files(datadir+"out2","test_out2")
+cmd="ester output " + file2
+exec_cmd(cmd,datadir+"template_2d", out2)
+test_result=compare_files(datadir+"out2", out2)
 if test_result:
     print("OK")
 else:
@@ -130,12 +120,12 @@ else:
     sys.exit(1)
 
 sys.stdout.write("Test model #3:\t")
-cmd="ester 1d -M 10 -Xc 0.5 -i test_model1 -ndomains 16 -npts 20" 
-cmd=cmd+" -noplot -tol 1e-8 -maxit 100 -o test_model3"
+cmd="ester 1d -M 10 -Xc 0.5 -i "+ file1 +" -ndomains 16 -npts 20"
+cmd=cmd+" -noplot -tol 1e-8 -maxit 100 -o " + file3
 exec_cmd(cmd)
-cmd="ester output test_model3"
-exec_cmd(cmd,datadir+"template_1d","test_out3")
-test_result=compare_files(datadir+"out3","test_out3")
+cmd="ester output " + file3
+exec_cmd(cmd,datadir+"template_1d", out3)
+test_result=compare_files(datadir+"out3", out3)
 if test_result:
     print("OK")
 else:
@@ -144,12 +134,12 @@ else:
     sys.exit(1)
 
 sys.stdout.write("Test model #4:\t")
-cmd="ester 2d -i test_model3 -Omega_bk 0.3" 
-cmd=cmd+" -p "+datadir+"2d.par -noplot -tol 1e-8 -maxit 10 -o test_model4"
+cmd="ester 2d -i "+ file3 +" -Omega_bk 0.3"
+cmd=cmd+" -p "+datadir+"2d.par -noplot -tol 1e-8 -maxit 10 -o " + file4
 exec_cmd(cmd)
-cmd="ester output test_model4"
-exec_cmd(cmd,datadir+"template_2d","test_out4")
-test_result=compare_files(datadir+"out4","test_out4")
+cmd="ester output " + file4
+exec_cmd(cmd,datadir+"template_2d", out4)
+test_result=compare_files(datadir+"out4", out4)
 if test_result:
     print("OK")
 else:
