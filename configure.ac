@@ -15,7 +15,6 @@ AC_CONFIG_SRCDIR([config.h.in])
 
 # Checks for programs.
 AC_PROG_CPP
-AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_FC(gfortran44 gfortran ifort)
 AC_PROG_F77($FC)
@@ -31,6 +30,7 @@ AM_PATH_PYTHON
 
 # Checks for header files.
 have_pgplot="no"
+AC_LANG_PUSH([C++])
 AC_CHECK_HEADERS([cpgplot.h],
                  [AC_DEFINE([USE_PGPLOT], [1], [enable pgplot support])
                  AC_CHECK_LIB([cpgplot], [cpgebuf],
@@ -48,54 +48,69 @@ AC_TYPE_SIZE_T
 # Checks for library functions.
 AC_CHECK_LIB([m], [sqrt])
 
-# AC_ARG_WITH([hdf5-root],
-#             AS_HELP_STRING([--with-hdf5-root],
-#                            [Provide hdf5 root directory]),
-#                            hdf5root=$withval)
-
 AC_ARG_ENABLE([hdf5],
               AS_HELP_STRING([--enable-hdf5],
                              [Enable HDF5 support]))
 AS_IF([test "x$enable_hdf5" == "xyes"],
       [CXX="h5c++"
-       CC="h5cc"
-       AC_MSG_CHECKING([blas library])
+       AC_MSG_CHECKING([if HDF5 compiler works])
        AC_COMPILE_IFELSE(
                       [AC_LANG_SOURCE([
-                       void main(void) {}
+                       int main(void) {}
                        ])],
-                       [h5cc_works=yes],
-                       [h5cc_works=no])
-       AC_MSG_RESULT($h5cc_works)
-       AS_IF([test "x$h5cc_works" == "xno"],
-             [AC_ERROR(Could not find hdf5 compiler wrapper $CC)])
-       AC_CHECK_HEADERS([hdf5.h])
+                       [h5cxx_works=yes],
+                       [h5cxx_works=no])
+       AC_MSG_RESULT($h5cxx_works)
+       AS_IF([test "x$h5cxx_works" == "xno"],
+             [AC_ERROR(HDF5 compiler wrapper ($CXX) does not work)])
+       AC_CHECK_HEADERS([H5Cpp.h])
        AC_DEFINE([USE_HDF5], [1], [Enable hdf5 support])
        AS_IF([test "x$ac_cv_header_hdf5_h" == "xno"], [
-              AC_ERROR([Could not find HDF5 header])])
+              AC_ERROR([Could not find HDF5 header hdf5.h])])
        ],
    [enable_hdf5="no"])
 
 AM_CONDITIONAL(USE_HDF5, [test "x$enable_hdf5" == "xyes"])
 
+AC_CHECK_FUNC(cblas_dgemm, [have_cblas=yes],  [have_cblas=no])
+AC_CHECK_FUNC(dgemm_     , [have_blas=yes],   [have_blas=no])
+AC_CHECK_FUNC(dgetrf_    , [have_lapack=yes], [have_lapack=no])
+
 # Search for mkl
-AC_SEARCH_LIBS([cblas_dgemm], [mkl_intel_lp64],
+AC_MSG_CHECKING([for mkl lib])
+AC_COMPILE_IFELSE(
+                  [AC_LANG_SOURCE([
+                   #include <mkl_cblas.h>
+                   void main(void) {}
+                   ])],
+                   [have_mkl=yes],
+                   [have_mkl=no])
+AC_MSG_RESULT($have_mkl)
+
+AS_IF([test "x$have_cblas" == "xno" -a "x$have_blas" == "xno" -a "x$have_lapack" == "xno"],
+      [AC_SEARCH_LIBS([dgetrf_], [mkl_intel_lp64],
                [have_mkl=yes
                 AC_DEFINE([USE_MKL], [1],
                           [Use MKL lib])
                 LIBS="$LIBS -lmkl_intel_thread -lmkl_core -liomp5 -lpthread"],
                [have_mkl=no],
-               [-lmkl_intel_thread -lmkl_core -liomp5 -lpthread])
+               [-lmkl_intel_thread -lmkl_core -liomp5 -lpthread])])
 
-AS_IF([test "x$have_mkl" == "xyes"],
-      [BLAS_LIB="MKL"], [
-       AC_SEARCH_LIBS([cblas_sgemm], [cblas blas],
-                      [],
-                      [AC_ERROR(cblas library not found)])
-       AC_CHECK_LIB([blas], [dgemm_], [],
-                    [AC_ERROR(blas library not found: consider setting LDFLAGS)])
-       AC_CHECK_LIB([lapack], [dgetrf_], [],
-                    [AC_ERROR(lapack library not found: consider setting LDFLAGS)])])
+AS_IF([test "x$have_mkl" == "xno"],
+      [AS_IF([test "x$ac_cv_header_cblas_h" == "xno"],
+             [AC_ERROR(could not find cblas.h)])
+       AS_IF([test "x$have_cblas" == "xno"],
+             [AC_SEARCH_LIBS([cblas_sgemm], [cblas blas],
+                             [],
+                             [AC_ERROR(cblas library not found)])])
+       AS_IF([test "x$have_blas" == "xno"],
+             [AC_CHECK_LIB([blas], [dgemm_], [],
+                           [AC_ERROR(blas library not found)])])
+       AS_IF([test "x$have_lapack" == "xno"],
+             [AC_CHECK_LIB([lapack], [dgetrf_], [],
+                           [AC_ERROR(blas library not found)])])])
+
+AC_LANG_POP([C++])
 
 AC_FUNC_ERROR_AT_LINE
 AC_CHECK_FUNCS([floor gettimeofday pow sqrt strtoul])
@@ -157,16 +172,14 @@ cat<< EOF
 -------------------------------------------------------------------------------
 ester build configuration:
 
-Fortran compiler: $FC
-C compiler:       $CC
-C++ compiler:     $CXX
-pgplot enabled:   $have_pgplot
-HDF5 enabled:     $enable_hdf5
-found MKL:        $have_mkl
-perf_log:         $perf_log
-CXXFLAGS:         $CXXFLAGS
-LIBS:             $LIBS
-prefix:           $prefix
+FC:         $FC
+CXX:        $CXX
+CXXFLAGS:   $CXXFLAGS
+LIBS:       $LIBS
+pgplot:     $have_pgplot
+HDF5:       $enable_hdf5
+perf_log:   $perf_log
+prefix:     $prefix
 -------------------------------------------------------------------------------
 
 EOF
