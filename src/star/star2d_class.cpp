@@ -127,6 +127,7 @@ void star2d::hdf5_write(const char *filename) const {
     H5::PredType real    = H5::PredType::IEEE_F64LE;
 
     write_attr(star, "ndomains",    integer,    &map.ndomains);
+    write_attr(star, "nr",          integer,    &nr);
     write_attr(star, "npts",        integer,    map.gl.npts, map.ndomains);
     write_attr(star, "nth",         integer,    &map.leg.npts);
     write_attr(star, "nex",         integer,    &map.ex.gl.npts[0]);
