@@ -310,7 +310,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_err("could not read 'nth' from file `%s'", input_file);
         exit(EXIT_FAILURE);
     }
-    if (map.leg.npts > 1 && dim <= 1) {
+    if ((map.leg.npts == 1 && dim == 2) || (map.leg.npts > 1 && dim == 1)) {
         return 1;
     }
     if (read_attr(star, "ndomains", &ndoms)) {

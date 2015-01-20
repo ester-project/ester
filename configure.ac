@@ -13,6 +13,8 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([config.h.in])
 
+AC_PREFIX_DEFAULT(${HOME}/local)
+
 # Checks for programs.
 AC_PROG_CPP
 AC_PROG_CXX

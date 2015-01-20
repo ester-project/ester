@@ -1,7 +1,7 @@
 #include "ester-config.h"
-#include"star.h"
-#include<string.h>
-#include<stdlib.h>
+#include "star.h"
+#include <string.h>
+#include <stdlib.h>
 
 star1d::star1d() {}
 
