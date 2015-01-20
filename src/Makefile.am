@@ -46,6 +46,7 @@ EXTRA_DIST	= $(srcdir)/main/ester.in				\
 			  $(top_srcdir)/config/2d_default.par	\
 			  $(top_srcdir)/config/star.cfg			\
 			  $(srcdir)/include/version.h			\
+			  $(srcdir)/include/lapack.h			\
 			  $(srcdir)/include/utils.h
 
 
