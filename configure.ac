@@ -17,8 +17,8 @@ AC_PREFIX_DEFAULT(${HOME}/local)
 
 # Checks for programs.
 AC_PROG_CPP
-AC_PROG_CXX
-AC_PROG_FC(gfortran44 gfortran ifort)
+AC_PROG_CXX(icpc g++ clang++)
+AC_PROG_FC(ifort gfortran44 gfortran)
 AC_PROG_F77($FC)
 AC_PROG_AWK
 AC_PROG_INSTALL
@@ -53,23 +53,24 @@ AC_CHECK_LIB([m], [sqrt])
 AC_ARG_ENABLE([hdf5],
               AS_HELP_STRING([--enable-hdf5],
                              [Enable HDF5 support]))
-AS_IF([test "x$enable_hdf5" == "xyes"],
-      [CXX="h5c++"
-       AC_MSG_CHECKING([if HDF5 compiler works])
-       AC_COMPILE_IFELSE(
+AS_IF([test "x$enable_hdf5" != "xno"],
+      [HDF5_BACKEND="$CXX"
+       CXX="h5c++"
+       AC_MSG_CHECKING([whether h5c++ works])
+       AC_LINK_IFELSE(
                       [AC_LANG_SOURCE([
+                       #include <H5Cpp.h>
                        int main(void) {}
                        ])],
-                       [h5cxx_works=yes],
-                       [h5cxx_works=no])
+                       [h5cxx_works="yes"],
+                       [h5cxx_works="no"])
        AC_MSG_RESULT($h5cxx_works)
        AS_IF([test "x$h5cxx_works" == "xno"],
-             [AC_ERROR(HDF5 compiler wrapper ($CXX) does not work)])
-       AC_CHECK_HEADERS([H5Cpp.h])
-       AC_DEFINE([USE_HDF5], [1], [Enable hdf5 support])
-       AS_IF([test "x$ac_cv_header_hdf5_h" == "xno"], [
-              AC_ERROR([Could not find HDF5 header hdf5.h])])
-       ],
+             [CXX="$HDF5_BACKEND"
+              enable_hdf5="no"],
+             [enable_hdf5="yes"
+              AC_SUBST(HDF5_BACKEND)
+              AC_DEFINE([USE_HDF5], [1], [Enable hdf5 support]) ])],
    [enable_hdf5="no"])
 
 AM_CONDITIONAL(USE_HDF5, [test "x$enable_hdf5" == "xyes"])
@@ -146,7 +147,7 @@ AS_IF([test "x$ac_cv_fc_compiler_gnu" = "xyes"], [
               FFLAGS="$FFLAGS -ffixed-line-length-132"
               FFLAGS="$FFLAGS -O -c -w"
               FFLAGS="$FFLAGS -fd-lines-as-comments"],
-              [AC_ERROR($FC does not support -fno-align-commons)])],
+             [AC_ERROR($FC does not support -fno-align-commons)])],
        [FFLAGS="$FFLAGS -r8 -nowarn -fpp -extend-source"])
 
 AC_ARG_ENABLE([perf-log],
@@ -175,7 +176,7 @@ cat<< EOF
 ester build configuration:
 
 FC:         $FC
-CXX:        $CXX
+CXX:        $HDF5_BACKEND
 CXXFLAGS:   $CXXFLAGS
 LIBS:       $LIBS
 pgplot:     $have_pgplot

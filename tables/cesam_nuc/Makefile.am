@@ -1,4 +1,6 @@
-AM_LDFLAGS = -lgfortran
+# AM_LDFLAGS = -lgfortran
+
+export HDF5_CXX=$(HDF5_BACKEND)
 
 lib_LTLIBRARIES	= libnuc.la
 

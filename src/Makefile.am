@@ -1,6 +1,8 @@
 SUBDIRS	= physics
 AM_CXXFLAGS=-Wall
 
+export HDF5_CXX=$(HDF5_BACKEND)
+
 BUILT_SOURCES	= main/read_config.cpp
 
 AM_CPPFLAGS = -I$(srcdir)/include
