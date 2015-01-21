@@ -1,4 +1,5 @@
 #include "ester-config.h"
+#include "utils.h"
 #include "parser.h"
 // #include "numdiff.h"
 // #include "constants.h"
@@ -128,7 +129,8 @@ int INFILE::open(const char *name,char mode_set) {
 			return 0;
 		}
 	} else {
-		fread(tag,sizeof(char),32,fp);
+		if (fread(tag,sizeof(char),32,fp) < 32)
+            ester_warn("could not read tag");
 		tag[32]='\0';
 		if(strcmp(tag,"ESTERdata_b")) {
 			fclose(fp);
@@ -187,13 +189,15 @@ unsigned long INFILE::seek(const char *tag) {
 	
 	} else {
 		bool found=false;
-		int tag_len;
+		size_t tag_len;
 		fseek(fp,32,SEEK_SET);
 		while(!found && fread(&tag_len,sizeof(int),1,fp)) {
 			tag2=new char[tag_len+1];
-			fread(tag2,sizeof(char),tag_len,fp);
+			if (fread(tag2,sizeof(char),tag_len,fp) < tag_len)
+                ester_warn("could not read tag2");
 			tag2[tag_len]='\0';
-			fread(&n,sizeof(unsigned long),1,fp);
+			if (fread(&n,sizeof(unsigned long),1,fp) < 1)
+                ester_warn("could not read n");
 			if(!strcmp(tag,tag2)) found=true;
 			else {fseek(fp,n,SEEK_CUR);n=0;}
 			delete [] tag2;
@@ -216,8 +220,10 @@ int INFILE::read(const char *tag, matrix *a) {
 		getline(line,512);
 		sscanf(line,"%d %d",&nr,&nc);
 	} else {
-		fread(&nr,sizeof(int),1,fp);
-		fread(&nc,sizeof(int),1,fp);
+		if (fread(&nr,sizeof(int),1,fp) < 1)
+            ester_warn("could not read nr");
+		if (fread(&nc,sizeof(int),1,fp))
+            ester_warn("could not read nc");
 	}
 
 	if(!a->read(nr,nc,fp,mode)) return 1;
@@ -244,16 +250,21 @@ int INFILE::read(const char *tag,matrix_map *a) {
 			getline(line,512);
 		}
 	} else {
-		fread(&nitems,sizeof(int),1,fp);
+		if (fread(&nitems,sizeof(int),1,fp) < 1)
+            ester_warn("could not read nitems");
 		char item_s[512];
 		for(int n=0;n<nitems;n++) {
-			int l;
-			fread(&l,sizeof(int),1,fp);
-			fread(item_s,sizeof(char),l,fp);
+			size_t l;
+			if (fread(&l,sizeof(int),1,fp) < 1)
+                ester_warn("Could not read '%s' value", tag);
+			if (fread(item_s,sizeof(char),l,fp)< l)
+                ester_warn("Could not read '%s' value", tag);
 			item_s[l]='\0';
 			std::string item(item_s);
-			fread(&nr,sizeof(int),1,fp);
-			fread(&nc,sizeof(int),1,fp);
+			if (fread(&nr,sizeof(int),1,fp) < 1)
+                ester_warn("Could not read '%s' value", tag);
+			if (fread(&nc,sizeof(int),1,fp) < 1)
+                ester_warn("Could not read '%s' value", tag);
 			if(!m.read(nr,nc,fp,mode)) return 1;
 			(*a)[item]=m;
 		}

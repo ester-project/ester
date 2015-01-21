@@ -14,7 +14,7 @@ int main(int argc,char *argv[]) {
 	tiempo t;
 	double t_plot;
 	configuration config(argc,argv);
-	figure *fig;
+	figure *fig = NULL;
 	
 	t.start();
 	if(config.verbose) {

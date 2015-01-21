@@ -1,4 +1,5 @@
 #include "ester-config.h"
+#include "utils.h"
 #include "star.h"
 #include <string.h>
 #include <stdlib.h>
@@ -41,12 +42,14 @@ DEBUG_FUNCNAME
 	if((fp=fopen(input_file,"rb")) == NULL) {
 		return 1;
 	}
-	fread(tag,1,7,fp);
+	if (fread(tag,1,7,fp) < 7)
+        ester_warn("could not read tag");
 	tag[6]='\0';
 	if(strcmp(tag,"star1d")) {
 		return 1;
 	}
-	fread(&mode,1,1,fp);
+	if (fread(&mode,1,1,fp) < 1)
+        ester_warn("could not read mode");
 	fclose(fp);
 
 	if(mode=='b')
@@ -54,25 +57,39 @@ DEBUG_FUNCNAME
 	else
 		fp=fopen(input_file,"rt");
 	
-	fread(tag,1,7,fp);
-	fread(&mode,1,1,fp);
+	if (fread(tag,1,7,fp) < 7)
+        ester_warn("could not read tag");
+	if (fread(&mode,1,1,fp) < 1)
+        ester_warn("could not read mode");
 	
 	if(mode=='b') {
-		fread(&ndom,sizeof(int),1,fp);
+		if (fread(&ndom,sizeof(int),1,fp) < 1)
+            ester_warn("could not read ndom");
 		map.gl.set_ndomains(ndom);
-		fread(map.gl.npts,sizeof(int),ndom,fp);
+		if (fread(map.gl.npts,sizeof(int),ndom,fp) < (size_t) ndom)
+            ester_warn("could not read npts");
 		map.leg.npts=1;
 		map.init();
-		fread(map.R.data(),sizeof(double),ndom+1,fp);
-		fread(&M,sizeof(double),1,fp);
-		fread(&R,sizeof(double),1,fp);
-		fread(&X0,sizeof(double),1,fp);
-		fread(&Z0,sizeof(double),1,fp);
-		fread(&Xc,sizeof(double),1,fp);
-		fread(&conv,sizeof(int),1,fp);
-		fread(&surff,sizeof(double),1,fp);
-		fread(&Tc,sizeof(double),1,fp);
-		fread(&pc,sizeof(double),1,fp);
+		if (fread(map.R.data(),sizeof(double),ndom+1,fp) < (size_t) ndom+1)
+            ester_warn("could not read map.R");
+		if (fread(&M,sizeof(double),1,fp) < 1)
+            ester_warn("could not read M");
+		if (fread(&R,sizeof(double),1,fp) < 1)
+            ester_warn("could not read R");
+		if (fread(&X0,sizeof(double),1,fp) < 1)
+            ester_warn("could not read X0");
+		if (fread(&Z0,sizeof(double),1,fp) < 1)
+            ester_warn("could not read Z0");
+		if (fread(&Xc,sizeof(double),1,fp) < 1)
+            ester_warn("could not read Xc");
+		if (fread(&conv,sizeof(int),1,fp) < 1)
+            ester_warn("could not read conv");
+		if (fread(&surff,sizeof(double),1,fp) < 1)
+            ester_warn("could not read surff");
+		if (fread(&Tc,sizeof(double),1,fp) < 1)
+            ester_warn("could not read Tc");
+		if (fread(&pc,sizeof(double),1,fp) < 1)
+            ester_warn("could not read pc");
 		c=opa.name;
 		*c=fgetc(fp);
 		while(*(c++)!='\0') *c=fgetc(fp);
@@ -86,19 +103,33 @@ DEBUG_FUNCNAME
 		*c=fgetc(fp);
 		while(*(c++)!='\0') *c=fgetc(fp);
 	} else {
-		fscanf(fp,"\n%d ",&ndom);
+		if (fscanf(fp,"\n%d ",&ndom) < 1)
+            ester_warn("could not read ndom");
 		map.gl.set_ndomains(ndom);
-		for(i=0;i<ndom;i++) fscanf(fp,"%d ",(map.gl.npts+i));
+		for(i=0;i<ndom;i++)  {
+            if (fscanf(fp,"%d ",(map.gl.npts+i)) < 1)
+                ester_warn("could not read %dth map.gl.npts", i);
+        }
 		map.leg.npts=1;
 		map.init();
-		for(i=0;i<ndom+1;i++) fscanf(fp,"%le ",&map.R(i));
-		fscanf(fp,"\n%le %le %le %le\n",&M,&R,&X0,&Z0);
-		fscanf(fp,"%le %d %le\n",&Xc,&conv,&surff);		
-		fscanf(fp,"%le %le\n",&Tc,&pc);
-		fscanf(fp,"%s\n",opa.name);
-		fscanf(fp,"%s\n",eos.name);
-		fscanf(fp,"%s\n",nuc.name);
-		fscanf(fp,"%s\n",atm.name);
+		for(i=0;i<ndom+1;i++) {
+            if (fscanf(fp,"%le ",&map.R(i)) < 1)
+                ester_warn("could not %dth map.R", i);
+        }
+		if (fscanf(fp,"\n%le %le %le %le\n",&M,&R,&X0,&Z0) < 4)
+            ester_warn("could not read M, R X0 or Z0");
+		if (fscanf(fp,"%le %d %le\n",&Xc,&conv,&surff) < 3)
+            ester_warn("could not read Xc, conv or surff");
+		if (fscanf(fp,"%le %le\n",&Tc,&pc) < 2)
+            ester_warn("could not read Tc, pc");
+		if (fscanf(fp,"%s\n",opa.name) < 1)
+            ester_warn("could not read opa.name");
+		if (fscanf(fp,"%s\n",eos.name) < 1)
+            ester_warn("could not read eos.name");
+		if (fscanf(fp,"%s\n",nuc.name) < 1)
+            ester_warn("could not read nuc.name");
+		if (fscanf(fp,"%s\n",atm.name) < 1)
+            ester_warn("could not read atm.name");
 	}
 	
 	map.remap();

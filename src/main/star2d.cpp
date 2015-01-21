@@ -58,11 +58,12 @@ int main(int argc,char *argv[]) {
     while(!last_it) {
         if (A.config.dump_iter) {
             char *filename = NULL;
-            asprintf(&filename, "%s-iter%d.hdf5",
-                    config.output_file,
-                    nit);
-            A.hdf5_write(filename);
-            free(filename);
+            if (asprintf(&filename, "%s-iter%d.hdf5",
+                        config.output_file,
+                        nit) != -1) {
+                A.hdf5_write(filename);
+                free(filename);
+            }
         }
 
         nit++;
@@ -141,12 +142,16 @@ void sig_handler(int sig) {
 	char yn;
 
 	if(sig==SIGINT) {
-		printf("\nFinish iteration and save model (y/n)?");
-		scanf(" %c",&yn);
-		if(yn=='y') {
-			killed=1;
-			return;
-		}
+		printf("\nFinish iteration and save model ([y]/n)?");
+		if (scanf(" %c",&yn) == 1) {
+            if(yn=='y') {
+                killed = 1;
+                return;
+            }
+        }
+        else {
+            killed = 1;
+        }
 	}
 	exit(sig);
 }
