@@ -17,17 +17,21 @@ except:
     print("Could not chdir into: " + ester_check_dir)
     sys.exit(1)
 
-file1 = "test_model1.hdf5" if use_hdf5 == 1 else "test_model1"
-out1 = "test_out1.hdf5" if use_hdf5 == 1 else "test_out1"
+if use_hdf5 == 1:
+    file1 = "test_model1.hdf5"
+    file2 = "test_model2.hdf5"
+    file3 = "test_model3.hdf5"
+    file4 = "test_model4.hdf5"
+else:
+    file1 = "test_model1"
+    file2 = "test_model2"
+    file3 = "test_model3"
+    file4 = "test_model4"
 
-file2 = "test_model2.hdf5" if use_hdf5 == 1 else "test_model2"
-out2 = "test_out2.hdf5" if use_hdf5 == 1 else "test_out2"
-
-file3 = "test_model3.hdf5" if use_hdf5 == 1 else "test_model3"
-out3 = "test_out3.hdf5" if use_hdf5 == 1 else "test_out3"
-
-file4 = "test_model4.hdf5" if use_hdf5 == 1 else "test_model4"
-out4 = "test_out4.hdf5" if use_hdf5 == 1 else "test_out4"
+out1 = "test_out1"
+out2 = "test_out2"
+out3 = "test_out3"
+out4 = "test_out4"
 
 def cleanup():
     try:
