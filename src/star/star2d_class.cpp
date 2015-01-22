@@ -20,6 +20,7 @@ star2d::star2d() : nr(map.gl.N), nth(map.leg.npts), nex(map.ex.gl.N),
     version.minor=ESTER_VERSION_MINOR;
     version.rev=ESTER_REVISION;
     version.svn=ESTER_VERSION_SVN;
+    version.name = std::string(VERSION);
     stratified_comp = 0;
     config.dump_iter = 0;
 }
@@ -151,6 +152,9 @@ void star2d::hdf5_write(const char *filename) const {
     write_attr(star, "min_core_size", real, &min_core_size);
 
     H5::StrType strtype;
+    strtype = H5::StrType(H5::PredType::C_S1, strlen(version.name.c_str())+1);
+    write_attr(star, "version", strtype, H5std_string(version.name));
+
     strtype = H5::StrType(H5::PredType::C_S1, strlen(opa.name)+1);
     write_attr(star, "opa.name", strtype, H5std_string(opa.name));
 
@@ -188,10 +192,10 @@ void star2d::hdf5_write(const char *filename) const {
 }
 
 void star2d::write(const char *output_file, char mode) const {
-    DEBUG_FUNCNAME
-        OUTFILE fp;
+    DEBUG_FUNCNAME;
+    OUTFILE fp;
 
-    if (strcasestr(output_file, ".hdf5") != NULL) {
+    if (isHDF5Name(output_file)) {
         hdf5_write(output_file);
         return;
     }
@@ -284,6 +288,7 @@ int read_field(H5::Group grp, const char *name, matrix &field) {
 #endif
 
 int star2d::hdf5_read(const char *input_file, int dim) {
+    DEBUG_FUNCNAME;
 #ifdef USE_HDF5
 #ifndef DEBUG
     H5::Exception::dontPrint();
@@ -313,6 +318,10 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     if ((map.leg.npts == 1 && dim == 2) || (map.leg.npts > 1 && dim == 1)) {
         return 1;
+    }
+    if (read_attr(star, "version", version.name)) {
+        ester_warn("Could not read 'version' from file `%s'", input_file);
+        version.name = "unknown";
     }
     if (read_attr(star, "ndomains", &ndoms)) {
         ester_err("Could not read 'ndomains' from file `%s'", input_file);
@@ -471,16 +480,14 @@ int star2d::hdf5_read(const char *input_file, int dim) {
 }
 
 int star2d::read(const char *input_file, int dim) {
+    DEBUG_FUNCNAME;
     char tag[32];
     int ndom;
     INFILE fp;
 
     // if input file ends with '.hdf5': read in hdf5 format
-    const char *sub = strcasestr(input_file, ".hdf5");
-    if (sub != NULL) {
-        if (strcmp(sub, ".hdf5") == 0 || strcmp(sub, ".HDF5") == 0) {
-            return hdf5_read(input_file, dim);
-        }
+    if (isHDF5Name(input_file)) {
+        return hdf5_read(input_file, dim);
     }
 
     if(!fp.open(input_file,'b')) {
@@ -500,7 +507,7 @@ int star2d::read(const char *input_file, int dim) {
 
     if(fp.read("version.major",&version.major)) {
         char ver[32];
-        if(!fp.read("version",ver)) {
+        if(fp.read("version",ver)) {
             version.major=1;
             version.minor=0;
             version.rev=70;
@@ -517,6 +524,27 @@ int star2d::read(const char *input_file, int dim) {
         fp.read("version.rev",&version.rev);
         fp.read("version.svn",&version.svn);
     }
+    char *buf = NULL;
+    if (version.svn) {
+        if (asprintf(&buf, "%d.%d rev %d",
+                version.major,
+                version.minor,
+                version.rev) == -1) {
+            ester_err("out of memory");
+            exit(EXIT_FAILURE);
+        }
+    }
+    else {
+        if (asprintf(&buf, "%d.%d.%d",
+                    version.major,
+                    version.minor,
+                    version.rev) == -1) {
+            ester_err("out of memory");
+            exit(EXIT_FAILURE);
+        }
+    }
+    version.name = std::string(buf);
+    free(buf);
     fp.read("ndomains",&ndom);
     map.gl.set_ndomains(ndom);
     fp.read("npts",map.gl.npts);
@@ -576,22 +604,22 @@ int star2d::read(const char *input_file, int dim) {
 }
 
 void star2d::write_tag(OUTFILE *fp) const {
-    DEBUG_FUNCNAME
-        char tag[7]="star2d";
+    DEBUG_FUNCNAME;
+    char tag[7]="star2d";
 
     fp->write("tag",tag,7);
 
 }
 
 bool star2d::check_tag(const char *tag) const {
-    DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
         if(strcmp(tag,"star2d")) return false;
     return true;
 
 }
 
 int star2d::read_old(const char *input_file){
-    DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
         FILE *fp;
     char tag[7],mode,*c;
     int ndom;
@@ -732,7 +760,7 @@ int star2d::read_old(const char *input_file){
 }
 
 int star2d::init(const char *input_file,const char *param_file,int argc,char *argv[]) {
-    DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
         cmdline_parser cmd;
     file_parser fp;
     char *arg,*val,default_params[256];
@@ -744,7 +772,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 
     sprintf(default_params,"%s/ester/1d_default.par", ESTER_DATADIR);
 
-    if(*input_file) {
+    if(input_file != NULL) {
         if (read(input_file)) {
             if(!in1d.read(input_file)) {
                 if(*param_file) {
@@ -870,7 +898,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 }
 
 void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
-    DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
         matrix thd;
     char *arg,*val,default_params[256];
     int k;
@@ -905,7 +933,7 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 }
 
 void star2d::interp(remapper *red) {
-    DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
         p=red->interp(p);
     phi=red->interp(phi);
     T=red->interp(T);
@@ -918,7 +946,7 @@ void star2d::interp(remapper *red) {
 }
 
 int star2d::check_arg(char *arg,char *val,int *change_grid) {
-    DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
         int err=0,i;
     char *tok;
 
@@ -1043,10 +1071,15 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
 }
 
 void star2d::dump_info() {
-    DEBUG_FUNCNAME
-        printf("\n2d ESTER model file (Version %d.%d rev %d",version.major,version.minor,version.rev);
-    if(version.svn) printf(".svn");
-    printf(")\n\n");
+    DEBUG_FUNCNAME;
+    printf("ESTER 2d model file");
+    printf(" (Version %s)\n", version.name.c_str());
+    // printf("\n2d ESTER model file (Version %d.%d rev %d",
+    //         version.major,
+    //         version.minor,
+    //         version.rev);
+    // if(version.svn) printf(".svn");
+    // printf(")\n\n");
 
     printf("General parameters:\n\n");
     printf("\tMass = %.5f Msun (%e g)\n",M/M_SUN,M);

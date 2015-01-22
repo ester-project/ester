@@ -39,4 +39,6 @@
 #define ester_debug(...) do {} while (0)
 #endif
 
+bool isHDF5Name(const char *fileName);
+
 #endif // ESTER_UTILS_H

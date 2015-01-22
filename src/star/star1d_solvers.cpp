@@ -5,7 +5,7 @@
 #include"symbolic.h"
 
 void star1d::fill() {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	Y0=1.-X0-Z0;
 	init_comp();
 
@@ -31,7 +31,7 @@ DEBUG_FUNCNAME
 }
 
 solver *star1d::init_solver(int nvar_add) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int nvar;
 	solver *op;
 	
@@ -48,7 +48,7 @@ DEBUG_FUNCNAME
 }
 
 void star1d::register_variables(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int i,var_nr[ndomains];
 	
 	for(i=0;i<ndomains;i++) 
@@ -86,7 +86,7 @@ DEBUG_FUNCNAME
 }
 
 double star1d::solve(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int info[5];
 	matrix rho0;
 	double err,err2;
@@ -173,7 +173,7 @@ DEBUG_FUNCNAME
 }
 
 void star1d::update_map(matrix dR) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	if(ndomains==1) return;
 
 	double h=1,dmax=config.newton_dmax;
@@ -191,7 +191,7 @@ DEBUG_FUNCNAME
 }
 
 void star1d::solve_definitions(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	op->add_d("rho","p",rho/eos.chi_rho/p);
 	op->add_d("rho","log_T",-rho*eos.d);
 	op->add_d("rho","log_pc",rho/eos.chi_rho);
@@ -233,7 +233,7 @@ DEBUG_FUNCNAME
 }
 
 void star1d::solve_poisson(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int n,j0;
 	matrix rhs;
 
@@ -277,7 +277,7 @@ DEBUG_FUNCNAME
 }
 
 void star1d::solve_pressure(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int n,j0;
 	matrix rhs_p,rhs_pi_c;
 	char eqn[8];
@@ -316,7 +316,7 @@ DEBUG_FUNCNAME
 
 
 void star1d::solve_temp(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int n,j0;
 	matrix q;
 	char eqn[8];
@@ -512,7 +512,7 @@ DEBUG_FUNCNAME
 
 
 void star1d::solve_dim(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int n,j0;
 	matrix q,rhs;
 	
@@ -581,7 +581,7 @@ DEBUG_FUNCNAME
 }
 
 void star1d::solve_map(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int n,j0;
 	matrix rhs;
 	
@@ -632,7 +632,7 @@ DEBUG_FUNCNAME
 }
 
 void star1d::solve_gsup(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	matrix q,g;
 	int n=ndomains-1;
 	
@@ -661,7 +661,7 @@ DEBUG_FUNCNAME
 }
 
 void star1d::solve_Teff(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	matrix q,Te,F;
 	int n=ndomains-1;
 	
@@ -691,7 +691,7 @@ DEBUG_FUNCNAME
 
 
 void star1d::check_jacobian(solver *op,const char *eqn) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	star1d B;
 	matrix rhs,drhs,drhs2,qq;
 	matrix *y;

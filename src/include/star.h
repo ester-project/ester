@@ -62,7 +62,8 @@ class star2d {
 	#define CONVECTIVE 2
 	
 	struct version_struct {
-		int major,minor,rev,svn;
+		int major, minor, rev, svn;
+        std::string name;
 	} version;
 
 	struct units_struct {
