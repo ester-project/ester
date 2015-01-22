@@ -25,7 +25,7 @@ int OUTFILE::open(const char *name,char mode_set) {
 		fprintf(fp,"%s\n",tag);
 	} else {
 		char tag[33]="ESTERdata_b";
-		fwrite(tag,sizeof(char),32,fp);
+		fwrite(tag,sizeof(tag[0]),32,fp);
 	}
 	
 	return 1;
@@ -43,9 +43,9 @@ void OUTFILE::write_tag(const char *tag,unsigned long n) {
 	if(mode=='t') fprintf(fp,"%s\n%lu\n",tag,n);
 	else {
 		int l=strlen(tag);
-		fwrite(&l,sizeof(int),1,fp);
-		fwrite(tag,sizeof(char),l,fp);
-		fwrite(&n,sizeof(unsigned long),1,fp);
+		fwrite(&l,sizeof(l),1,fp);
+		fwrite(tag,sizeof(tag[0]),l,fp);
+		fwrite(&n,sizeof(n),1,fp);
 	}
 
 }
@@ -56,15 +56,15 @@ void OUTFILE::write(const char *tag,const matrix *a) {
 		write_tag(tag,a->ncols()+1);
 		fprintf(fp,"%d %d\n",a->nrows(),a->ncols());
 	} else {
-		write_tag(tag,a->ncols()*a->nrows()*sizeof(double)+2*sizeof(int));
+		write_tag(tag, a->ncols()*a->nrows()*sizeof(double)+2*sizeof(int));
 		int n=a->nrows();
-		fwrite(&n,sizeof(int),1,fp);
+		fwrite(&n,sizeof(n),1,fp);
 		n=a->ncols();
-		fwrite(&n,sizeof(int),1,fp);
+		fwrite(&n,sizeof(n),1,fp);
 	}
-	
+
 	a->write(fp,mode);
-	
+
 }
 
 void OUTFILE::write(const char *tag,const matrix_map *a) {
@@ -129,7 +129,7 @@ int INFILE::open(const char *name,char mode_set) {
 			return 0;
 		}
 	} else {
-		if (fread(tag,sizeof(char),32,fp) < 32)
+		if (fread(tag,sizeof(tag[0]),32,fp) < 32)
             ester_warn("could not read tag");
 		tag[32]='\0';
 		if(strcmp(tag,"ESTERdata_b")) {
@@ -189,14 +189,14 @@ unsigned long INFILE::seek(const char *tag) {
 	
 	} else {
 		bool found=false;
-		size_t tag_len;
+		int tag_len;
 		fseek(fp,32,SEEK_SET);
-		while(!found && fread(&tag_len,sizeof(int),1,fp)) {
+		while(!found && fread(&tag_len,sizeof(tag_len),1,fp)) {
 			tag2=new char[tag_len+1];
-			if (fread(tag2,sizeof(char),tag_len,fp) < tag_len)
+			if (fread(tag2,sizeof(tag2[0]),tag_len,fp) < (size_t) tag_len)
                 ester_warn("could not read tag2");
 			tag2[tag_len]='\0';
-			if (fread(&n,sizeof(unsigned long),1,fp) < 1)
+			if (fread(&n,sizeof(n),1,fp) < 1)
                 ester_warn("could not read n");
 			if(!strcmp(tag,tag2)) found=true;
 			else {fseek(fp,n,SEEK_CUR);n=0;}
@@ -220,9 +220,9 @@ int INFILE::read(const char *tag, matrix *a) {
 		getline(line,512);
 		sscanf(line,"%d %d",&nr,&nc);
 	} else {
-		if (fread(&nr,sizeof(int),1,fp) < 1)
+		if (fread(&nr,sizeof(nr),1,fp) < 1)
             ester_warn("could not read nr");
-		if (fread(&nc,sizeof(int),1,fp))
+		if (fread(&nc,sizeof(nc),1,fp) < 1)
             ester_warn("could not read nc");
 	}
 
@@ -250,20 +250,20 @@ int INFILE::read(const char *tag,matrix_map *a) {
 			getline(line,512);
 		}
 	} else {
-		if (fread(&nitems,sizeof(int),1,fp) < 1)
+		if (fread(&nitems,sizeof(nitems),1,fp) < 1)
             ester_warn("could not read nitems");
 		char item_s[512];
 		for(int n=0;n<nitems;n++) {
-			size_t l;
-			if (fread(&l,sizeof(int),1,fp) < 1)
+			int l;
+			if (fread(&l,sizeof(l),1,fp) < 1)
                 ester_warn("Could not read '%s' value", tag);
-			if (fread(item_s,sizeof(char),l,fp)< l)
+			if (fread(item_s,sizeof(item_s[0]),l,fp) < (size_t) l)
                 ester_warn("Could not read '%s' value", tag);
 			item_s[l]='\0';
 			std::string item(item_s);
-			if (fread(&nr,sizeof(int),1,fp) < 1)
+			if (fread(&nr,sizeof(nr),1,fp) < 1)
                 ester_warn("Could not read '%s' value", tag);
-			if (fread(&nc,sizeof(int),1,fp) < 1)
+			if (fread(&nc,sizeof(nc),1,fp) < 1)
                 ester_warn("Could not read '%s' value", tag);
 			if(!m.read(nr,nc,fp,mode)) return 1;
 			(*a)[item]=m;
