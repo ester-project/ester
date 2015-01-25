@@ -86,13 +86,6 @@ For instance, is you want to compile with Intel compilers and install ESTER in
     ester/BUILD$ ../configure --prefix=$HOME/local CC=icc CXX=icpc FC=ifort
 \end{shell}
 
-\paragraph{Note on enabling HDF5 support:} to compile and link programs with
-the HDF5 library, the HDF Group provides compiler wrappers (\texttt{h5cc} for C
-compiler, \texttt{h5c++} for c++ and \texttt{h5fc} for Fortran).
-Therefore, configuring with \texttt{--enable-hdf5} will result in choosing
-\texttt{h5cc} and \texttt{h5c++} for C and C++ compilers.
-You can select the C and C++ compiler used by the HDF5 wrappers with the
-environment variables \texttt{HDF5\_CC}, \texttt{HDF5\_CXX}, \texttt{HDF5\_FC}.
 
 \subsection{Build and Install}
 After the configure step, building and installing ESTER is straightforward:
@@ -103,16 +96,6 @@ After the configure step, building and installing ESTER is straightforward:
 \texttt{make} will build the ESTER's libraries and binaries.
 And \texttt{make install} will copy the libraries into \texttt{\$prefix/lib} and
 binaries into \texttt{\$prefix/bin}.
-
-\paragraph{Note on enabling HDF5 support:} if you enabled HDF5 support, you can
-to select the compiler used by \texttt{h5c++} by setting the \texttt{HDF5\_CXX}
-variable:
-\begin{shell}
-    ester/BUILD$ export HDF5_CXX=icpc
-    ester/BUILD$ make && make install
-\end{shell}
-If you do not set \texttt{HDF5\_CXX}, the default compiler will be used (most
-probably the gnu C++ compiler).
 
 Make sure you add the install directory to you \texttt{PATH} environment
 variable to be able to launch ester without specifying the full path to the
