@@ -139,8 +139,8 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([])],
 FFLAGS=$save_fflags
 AC_LANG_POP([Fortran 77])
 
-AS_IF([test "x$ac_cv_fc_compiler_gnu" = "xyes"], [
-       AS_IF([test "x$fc_support_no_align_commons" = "xyes"],
+AS_IF([test "x$ac_cv_fc_compiler_gnu" == "xyes"], [
+       AS_IF([test "x$fc_support_no_align_commons" == "xyes"],
              [FFLAGS="$FFLAGS -fno-align-commons"
               FFLAGS="$FFLAGS -fdefault-real-8"
               FFLAGS="$FFLAGS -fdefault-double-8"
@@ -169,6 +169,13 @@ AC_ARG_ENABLE([debug],
 AC_DEFINE([ESTER_DATADIR], ["@datadir@"], [Path to ester data directory])
 
 AC_OUTPUT
+
+AS_IF([test "x$HDF5_BACKEND" == "xicpc" -o "x$FC" == "ifort"],
+      [
+       cat<< EOF
+
+WARNING: Using Intel compiler, check that Intel libraries are in your LD_LIBRARY_PATH
+EOF])
 
 cat<< EOF
 
