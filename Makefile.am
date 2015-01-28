@@ -37,7 +37,8 @@ EXTRA_DIST	= $(top_srcdir)/python/ester_visu.in \
 			  $(top_srcdir)/doc/help/info		\
 			  $(top_srcdir)/doc/help/output		\
 			  $(top_srcdir)/doc/doxygen.conf	\
-			  $(top_srcdir)/m4
+			  $(top_srcdir)/m4					\
+			  $(top_srcdir)/autoconf/ester_get_version.sh
 
 doxygen:
 	cd $(top_srcdir) && doxygen doc/doxygen.conf

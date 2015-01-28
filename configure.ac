@@ -2,11 +2,14 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.59])
-AC_INIT([ESTER], [1.0.108])
+AC_INIT([ESTER],
+        [m4_normalize(esyscmd([autoconf/ester_get_version.sh VERSION]))],
+        [http://ester-project.github.io/ester/],
+        [ester])
 AC_CONFIG_AUX_DIR(autoconf)
 AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE([1.9 dist-bzip2 dist-zip tar-ustar -Wall subdir-objects foreign])
+AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-bzip2 tar-ustar -Wall subdir-objects foreign])
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
@@ -199,6 +202,9 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([
               [can_run="yes"],
               [can_run="no"])
 AC_MSG_RESULT($can_run)
+
+AC_SUBST([CONFIGURE_DEPENDENCIES], ['$(top_srcdir)/VERSION'])
+
 AC_OUTPUT
 
 AS_IF([test "x$can_run" == "xno"],
