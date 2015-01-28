@@ -44,10 +44,6 @@ star_evol	: libnuc.la libopint.la libester.la
 ester_info	: libnuc.la libopint.la libester.la
 
 EXTRA_DIST	= $(srcdir)/main/ester.in				\
-			  $(top_srcdir)/config/1d_default.par	\
-			  $(top_srcdir)/config/2d_default.par	\
-			  $(top_srcdir)/config/star.cfg			\
-			  $(srcdir)/include/version.h			\
 			  $(srcdir)/include/lapack.h			\
 			  $(srcdir)/include/utils.h
 
@@ -96,9 +92,4 @@ library_include_HEADERS = $(srcdir)/include/constants.h \
 						  $(srcdir)/include/solver.h	\
 						  $(srcdir)/include/symbolic.h	\
 						  $(srcdir)/include/read_config.h
-
-defaultconfigdir	= $(datadir)/ester
-defaultconfig_DATA	= $(top_srcdir)/config/1d_default.par \
-					  $(top_srcdir)/config/2d_default.par \
-					  $(top_srcdir)/config/star.cfg
 

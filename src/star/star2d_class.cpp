@@ -2,7 +2,6 @@
 #include "utils.h"
 #include "matrix.h"
 #include "star.h"
-#include "version.h"
 #include <string.h>
 #include <stdlib.h>
 #ifdef USE_HDF5
@@ -16,11 +15,14 @@ star2d::star2d() : nr(map.gl.N), nth(map.leg.npts), nex(map.ex.gl.N),
 
     config.newton_dmax=0.5;
     config.verbose=0;
-    version.major=ESTER_VERSION_MAJOR;
-    version.minor=ESTER_VERSION_MINOR;
-    version.rev=ESTER_REVISION;
-    version.svn=ESTER_VERSION_SVN;
     version.name = std::string(VERSION);
+
+    const char *minor = strstr(VERSION, ".") + 1;
+    const char *rev = strstr(minor, ".") + 1;
+    version.major=atoi(VERSION);
+    version.minor=atoi(minor);
+    version.rev=atoi(rev);
+    version.svn=0;
     stratified_comp = 0;
     config.dump_iter = 0;
 }
@@ -200,13 +202,6 @@ void star2d::write(const char *output_file, char mode) const {
         return;
     }
 
-    struct version_struct ver;
-
-    ver.major=ESTER_VERSION_MAJOR;
-    ver.minor=ESTER_VERSION_MINOR;
-    ver.rev=ESTER_REVISION;
-    ver.svn=ESTER_VERSION_SVN;
-
     fp.open(output_file,mode);
     write_tag(&fp);
 
@@ -236,10 +231,10 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("env_convec",&env_convec);
     fp.write("min_core_size",&min_core_size);
     fp.write("stratified_comp",&stratified_comp);
-    fp.write("version.major",&ver.major);
-    fp.write("version.minor",&ver.minor);
-    fp.write("version.rev",&ver.rev);
-    fp.write("version.svn",&ver.svn);
+    fp.write("version.major",&version.major);
+    fp.write("version.minor",&version.minor);
+    fp.write("version.rev",&version.rev);
+    fp.write("version.svn",&version.svn);
 
     fp.write("phi",&phi);
     fp.write("p",&p);
@@ -295,6 +290,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
 #endif
 
     H5::H5File file;
+    H5std_string buf;
     try {
         file = H5::H5File(input_file, H5F_ACC_RDONLY);
     }
@@ -319,10 +315,11 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     if ((map.leg.npts == 1 && dim == 2) || (map.leg.npts > 1 && dim == 1)) {
         return 1;
     }
-    if (read_attr(star, "version", version.name)) {
+    if (read_attr<H5std_string&>(star, "version", buf)) {
         ester_warn("Could not read 'version' from file `%s'", input_file);
         version.name = "unknown";
     }
+    version.name = buf;
     if (read_attr(star, "ndomains", &ndoms)) {
         ester_err("Could not read 'ndomains' from file `%s'", input_file);
         exit(EXIT_FAILURE);
@@ -377,7 +374,6 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_warn("Could not read 'pc' from file `%s'", input_file);
     }
 
-    H5std_string buf;
     if (read_attr<H5std_string&>(star, "opa.name", buf)) {
         ester_warn("Could not read 'opa.name' from file `%s'", input_file);
         buf = H5std_string("opal");

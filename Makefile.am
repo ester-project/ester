@@ -6,12 +6,13 @@ SUBDIRS = . tables src test/models
 
 all-local: ester-config.h
 clean-local:
-	rm -f ester-config.h
+	rm -f ester-config.h star.cfg
 
 bin_SCRIPTS	= ester_visu.py
 CLEANFILES  = $(bin_SCRIPTS)
 
 do_subst = sed -e 's,[@]datadir[@],$(datadir),g' \
+               -e 's,[@]extension[@],$(extension),g'   \
                -e 's,[@]prefix[@],$(prefix),g'   \
                -e 's,[@]PYTHON[@],$(PYTHON),g'
 
@@ -21,7 +22,16 @@ ester_visu.py: python/ester_visu.in Makefile
 ester-config.h: config.h Makefile
 	$(do_subst) < $< > $@
 
+star.cfg: config/star.cfg.in Makefile
+	$(do_subst) < $< > $@
+
+defaultconfigdir	= $(datadir)/ester
+defaultconfig_DATA	= $(top_srcdir)/config/1d_default.par \
+					  $(top_srcdir)/config/2d_default.par \
+					  star.cfg
+
 helpdir		= @datadir@/ester/doc/help/
+
 help_DATA	= doc/help/1d	\
 			  doc/help/2d	\
 			  doc/help/evol \
@@ -34,6 +44,9 @@ EXTRA_DIST = $(top_srcdir)/README \
 			 $(top_srcdir)/INSTALL \
 			 $(top_srcdir)/LICENSE \
 			 $(top_srcdir)/python/ester_visu.in \
+			 $(top_srcdir)/config/star.cfg.in \
+			 $(top_srcdir)/config/1d_default.par \
+			 $(top_srcdir)/config/2d_default.par \
 			 $(top_srcdir)/doc/help/1d \
 			 $(top_srcdir)/doc/help/2d \
 			 $(top_srcdir)/doc/help/evol \

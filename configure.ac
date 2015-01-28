@@ -95,6 +95,7 @@ AC_ARG_ENABLE([hdf5],
               AS_HELP_STRING([--enable-hdf5],
                              [Enable HDF5 support]))
 HDF5_BACKEND="$CXX"
+extension="out"
 AS_IF([test "x$enable_hdf5" != "xno"],
       [CXX="h5c++"
        AC_MSG_CHECKING([whether h5c++ works])
@@ -108,13 +109,17 @@ AS_IF([test "x$enable_hdf5" != "xno"],
        AC_MSG_RESULT($h5cxx_works)
        AS_IF([test "x$h5cxx_works" == "xno"],
              [enable_hdf5="no"
+              extension="out"
               CXX=$HDF5_BACKEND],
              [enable_hdf5="yes"
+              extension="h5"
               AC_SUBST(HDF5_BACKEND)
               AC_DEFINE([USE_HDF5], [1], [Enable hdf5 support]) ])],
    [enable_hdf5="no"])
 
 AM_CONDITIONAL(USE_HDF5, [test "x$enable_hdf5" == "xyes"])
+
+AC_SUBST(extension)
 
 AC_LANG_POP([C++])
 
