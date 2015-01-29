@@ -1,0 +1,530 @@
+% ATTENTION VERSION POUR LATEX 2eps.
+
+\def\bbbr{{\rm I\!R}} %reelle Zahlen
+\def\bbbn{{\rm I\!N}} %natuerliche Zahlen
+%%%%%%%%%%%%% Les COMPLEXES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\bbbc{{\mathchoice {\setbox0=\hbox{$\displaystyle\rm C$}\hbox{\hbox
+to0pt{\kern0.4\wd0\vrule height0.9\ht0\hss}\box0}}
+{\setbox0=\hbox{$\textstyle\rm C$}\hbox{\hbox
+to0pt{\kern0.4\wd0\vrule height0.9\ht0\hss}\box0}}
+{\setbox0=\hbox{$\scriptstyle\rm C$}\hbox{\hbox
+to0pt{\kern0.4\wd0\vrule height0.9\ht0\hss}\box0}}
+{\setbox0=\hbox{$\scriptscriptstyle\rm C$}\hbox{\hbox
+to0pt{\kern0.4\wd0\vrule height0.9\ht0\hss}\box0}}}}
+%%%%%%%%%%% Les RATIONELS %%%%%%%%%%%%%%
+\def\bbbq{{\mathchoice {\setbox0=\hbox{$\displaystyle\rm
+Q$}\hbox{\raise
+0.15\ht0\hbox to0pt{\kern0.4\wd0\vrule height0.8\ht0\hss}\box0}}
+{\setbox0=\hbox{$\textstyle\rm Q$}\hbox{\raise
+0.15\ht0\hbox to0pt{\kern0.4\wd0\vrule height0.8\ht0\hss}\box0}}
+{\setbox0=\hbox{$\scriptstyle\rm Q$}\hbox{\raise
+0.15\ht0\hbox to0pt{\kern0.4\wd0\vrule height0.7\ht0\hss}\box0}}
+{\setbox0=\hbox{$\scriptscriptstyle\rm Q$}\hbox{\raise
+0.15\ht0\hbox to0pt{\kern0.4\wd0\vrule height0.7\ht0\hss}\box0}}}}
+\def\bbbt{{\mathchoice {\setbox0=\hbox{$\displaystyle\rm
+T$}\hbox{\hbox to0pt{\kern0.3\wd0\vrule height0.9\ht0\hss}\box0}}
+{\setbox0=\hbox{$\textstyle\rm T$}\hbox{\hbox
+to0pt{\kern0.3\wd0\vrule height0.9\ht0\hss}\box0}}
+{\setbox0=\hbox{$\scriptstyle\rm T$}\hbox{\hbox
+to0pt{\kern0.3\wd0\vrule height0.9\ht0\hss}\box0}}
+{\setbox0=\hbox{$\scriptscriptstyle\rm T$}\hbox{\hbox
+to0pt{\kern0.3\wd0\vrule height0.9\ht0\hss}\box0}}}}
+%%%% ENTIERS %%%%
+\def\bbbz{{\mathchoice {\hbox{$\sf\textstyle Z\kern-0.4em Z$}}
+{\hbox{$\sf\textstyle Z\kern-0.4em Z$}}
+{\hbox{$\sf\scriptstyle Z\kern-0.3em Z$}}
+{\hbox{$\sf\scriptscriptstyle Z\kern-0.2em Z$}}}}
+%%%% fin des entiers %%%%
+\newcommand{\fd}{fonction de distribution\ }
+\newcommand{\msun}{\mbox{\rm M$_\odot$}}
+\newcommand{\qqqquad}{\qquad\qquad}
+\newcommand{\para}{/\!/}
+\newcommand{\lnrhop}{\ln'_\rho}
+\newcommand{\lnrhopp}{\ln''_\rho}
+\newcommand{\tfv}{\hat{v}}
+\newcommand{\lambdahat}{\hat{\lambda}}
+\newcommand{\phihat}{\hat{\phi}}
+\newcommand{\omegahat}{\hat{\omega}}
+\newcommand{\Ima}{{\rm Im}}
+\renewcommand{\cosh}{{\,\rm ch\,}}
+\newcommand{\ch}{{\,\rm ch\,}}
+\newcommand{\sech}{{\,\rm sech\,}}
+\renewcommand{\sinh}{{\,\rm sh\,}}
+\newcommand{\coshc}{{\,\rm ch^2}}
+\newcommand{\sinhc}{{\,\rm sh^2}}
+\newcommand{\sh}{{\,\rm sh\,}}
+\renewcommand{\tanh}{{\,\rm th\,}}
+\renewcommand{\th}{{\,\rm th\,}}
+\newcommand{\tg}{{\,\rm tg\,}}
+\newcommand{\nsp}{\!\!\!}
+\newcommand{\ecous}{\'ecoulements\ }
+\newcommand{\lecou}{l'\'ecoulement\ }
+\newcommand{\nl}{non-lin\'eaire\ }
+\newcommand{\nls}{non-lin\'eaires\ }
+\newcommand{\nn}{non-newtonien\ }
+\newcommand{\HS}{harmoniques sph\'eriques}
+\newcommand{\MHD}{magn\'etohydrodynamique}
+\newcommand{\et}{ {\qquad {\rm et}\qquad}}
+\newcommand{\andet}{ \qquad {\rm and}\qquad}
+\newcommand{\avec}{ {\qquad {\rm avec}\qquad}}
+\newcommand{\with}{ {\qquad {\rm with}\qquad}}
+\newcommand{\sur}{ {\qquad {\rm sur}\qquad}}
+
+\newcommand{\ou}{ {\qquad {\rm ou}\qquad}}
+\newcommand{\orou}{ {\qquad {\rm or}\qquad}}
+\newcommand{\En}{ {\qquad {\rm en}\qquad}}
+\newcommand{\cad}{c'est-\`a-dire\ }
+\newcommand{\ie}{{\it i.e.}\ }
+\newcommand{\cf}{{\it cf.}\ }
+\newcommand{\cst}{{\rm Cst}}
+\newcommand{\Cte}{{\rm Cte}}
+
+\newcommand{\etal}{{\it et al.}\ }
+\newcommand{\vav}{vis-\`a-vis\ }
+\newcommand{\BA}{Boussinesq approximation\ }
+\newcommand{\BV}{Brunt-V\"ais\"al\"a}
+\newcommand{\BVF}{Brunt-V\"ais\"al\"a frequency}
+\newcommand{\nre}{nombre de Reynolds\ }
+\newcommand{\NS}{Navier-Stokes\ }
+\newcommand{\EDP}{\'equations aux d\'eriv\'ees partielles}
+\newcommand{\photo}[2]{\fbox{\parbox{#1}{#2}}}
+\newcommand{\ecco}[3]{\noindent \parbox{#1}{\hfill} \ \parbox[t]{#2}{#3}}
+%\newcommand{\encart}[1]{\begin{figure}[hbtp]\begin{center}\fbox{ \begin{minipage}{152mm}{\footnotesize #1}\end{minipage}}\end{center} \end{figure}}
+\newcommand{\encart}[2]{\begin{figure}[#1]\begin{center}\shadowbox{ \begin{minipage}{152mm}{\footnotesize #2}\end{minipage}}\end{center} \end{figure}}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\beqa}{\begin{eqnarray*}}
+\newcommand{\beqan}{\begin{eqnarray}}
+\newcommand{\greq}{\begin{equation}\left\{ \begin{array}{l}}
+\newcommand{\egreq}{\end{array}\right. \end{equation}}
+\newcommand{\nngreq}{\[\left\{ \begin{array}{l}}
+\newcommand{\nnegreq}{\end{array}\right. \]}
+\newcommand{\egreqn}[1]{\end{array}\right. \label{#1}\end{equation}}
+\newcommand{\eeq}{\end{equation}} 
+\newcommand{\eeqn}[1]{\label{#1}\end{equation}} 
+\newcommand{\eeqa}{\end{eqnarray*}}
+\newcommand{\eeqan}[1]{\label{#1}\end{eqnarray}}
+\newcommand{\hsp}{ \hspace{.5cm} }
+\newcommand{\noi}{ \noindent }
+\newcommand{\ssi}{ \Longleftrightarrow}
+\newcommand{\impl}{\; \Longrightarrow\;}
+\newcommand{\tv}{ \rightarrow}
+\newcommand{\tendvers}[1]{\overset{#1}{\longrightarrow}}
+\newcommand{\dC}{$^\circ$C}
+\newcommand{\lp}{ \left(}
+\newcommand{\rp}{ \right)}
+\newcommand{\rpi}[1]{\right)_{\!\!#1}}
+\newcommand{\dP}[1]{\frac{\partial  #1}{\partial P}}
+\newcommand{\dzdt}[1]{\frac{\partial^2  #1}{\partial t\partial z}}
+
+\newcommand{\lc}{ \left[}
+\newcommand{\rc}{ \right]}
+\newcommand{\lac}{ \left\{}
+\newcommand{\rac}{ \right\}}
+%\newcommand{\dzeta}{\zeta}
+\newcommand{\khi}{\chi}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         harmoniques                        %
+\newcommand{\ukm}{u^k_m}
+\newcommand{\vkm}{v^k_m}
+\newcommand{\wkm}{w^k_m}
+\newcommand{\ulm}{u^\ell_m}
+\newcommand{\plm}{p^\ell_m}
+\newcommand{\ulmp}{u^{\ell+1}_m}
+\newcommand{\ulpm}{u^{\ell+1}_m}
+\newcommand{\ulmm}{u^{\ell-1}_m}
+\newcommand{\vlm}{v^\ell_m}
+\newcommand{\vlmp}{v^{\ell+1}_m}
+\newcommand{\vlpm}{v^{\ell+1}_m}
+\newcommand{\vlmm}{v^{\ell-1}_m}
+\newcommand{\wlm}{w^\ell_m}
+\newcommand{\wlmp}{w^{\ell+1}_m}
+\newcommand{\wlpm}{w^{\ell+1}_m}
+\newcommand{\wlmm}{w^{\ell-1}_m}
+\newcommand{\alm}{a^\ell_m}
+\newcommand{\almp}{a^{\ell+1}_m}
+\newcommand{\alpm}{a^{\ell+1}_m}
+\newcommand{\almm}{a^{\ell-1}_m}
+\newcommand{\blm}{b^\ell_m}
+\newcommand{\blmp}{b^{\ell+1}_m}
+\newcommand{\blmm}{b^{\ell-1}_m}
+\newcommand{\clm}{c^\ell_m}
+\newcommand{\clmp}{c^{\ell+1}_m}
+\newcommand{\clpm}{c^{\ell+1}_m}
+\newcommand{\clmm}{c^{\ell-1}_m}
+\newcommand{\flm}{f_m^\ell }
+\newcommand{\glm}{g_m^\ell }
+\newcommand{\hlm}{h_m^\ell }
+\newcommand{\Allm}{A^\ell_{\ell-1}}
+\newcommand{\Allp}{A^\ell_{\ell+1}}
+\newcommand{\Bllm}{B^\ell_{\ell-1}}
+\newcommand{\Bllp}{B^\ell_{\ell+1}}
+\newcommand{\gllp}{\gamma^\ell_{\ell+1}}
+\newcommand{\gllm}{\gamma^\ell_{\ell-1}}
+\newcommand{\allp}{\alpha^\ell_{\ell+1}}
+\newcommand{\allm}{\alpha^\ell_{\ell-1}}
+
+
+\newcommand{\llp}{\ell(\ell+1)}
+\newcommand{\Yl}{Y_\ell}
+\newcommand{\YL}{Y^m_\ell}
+\newcommand{\YLC}{Y^{m*}_\ell}
+\newcommand{\YMM}{Y^m_m}
+\newcommand{\PL}{P^m_l}
+\newcommand{\YK}{Y^m_k}
+\newcommand{\NTL}{N_{\theta l}^m }
+\newcommand{\NPL}{N_{\varphi l}^m}
+\newcommand{\RLC}{ \vec{R}_{m*}^\ell }
+
+\newcommand{\RL}{ \vec{R}^m_\ell }
+\newcommand{\SL}{ \vec{S}^m_\ell }
+\newcommand{\SLC}{ \vec{S}^{m*}_\ell }
+\newcommand{\TL}{ \vec{T}^m_\ell }
+\newcommand{\TLC}{ \vec{T}^{m*}_\ell }
+\newcommand{\RCL}{ \vec{R}_m^\ell }
+\newcommand{\SCL}{ \vec{S}_m^\ell }
+\newcommand{\TCL}{ \vec{T}_m^\ell }
+\newcommand{\SK}{ \vec{S}^m_k }
+\newcommand{\TK}{ \vec{T}^m_k }
+\newcommand{\NY}{ N^{l,m} }
+\newcommand{\DYtheta}{\frac{\partial Y^0_l}{\partial\theta} }
+\newcommand{\iml}{ \frac{im}{l(l+1)} }
+\newcommand{\Sl}{ \Sigma_l}
+\newcommand{\thetalm}{\theta^\ell_m}
+\newcommand{\ul}{u^\ell}
+\newcommand{\vl}{v^\ell}
+\newcommand{\wl}{w^\ell}
+\newcommand{\thetal}{\theta^\ell}
+\newcommand{\ulp}{u^{\ell+1}}
+\newcommand{\wlp}{w^{\ell+1}}
+\newcommand{\Deltal}{\Delta_\ell}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\epst}{\epsilon}
+\newcommand{\na}{\nabla}
+\newcommand{\nak}{ \vec{\nabla}_{\!k}\, }
+\newcommand{\isph}{ \int_{4\pi}\! }
+\newcommand{\intsur}{ \int_{(S)}\! }
+\newcommand{\intvol}{ \int_{(V)}\! }
+\newcommand{\cth}{ \cos\theta }
+\newcommand{\cph}{ \cos\varphi }
+\newcommand{\ccth}{ \cos^2\theta }
+\newcommand{\sth}{ \sin\theta }
+\newcommand{\sph}{ \sin\varphi }
+\newcommand{\ssth}{ \sin^2\theta }
+\newcommand{\calA}{ {\cal A}}
+\newcommand{\calB}{{\cal B}}
+\newcommand{\calC}{\mbox{${\cal C}$}}
+\newcommand{\calD}{\mbox{${\cal D}$}}
+\newcommand{\calE}{\mbox{${\cal E}$}}
+\newcommand{\calL}{\mbox{${\cal L}$}}
+\newcommand{\calM}{\mbox{${\cal M}$}}
+\newcommand{\calN}{\mbox{${\cal N}$}}
+\newcommand{\calP}{\mbox{${\cal P}$}}
+\newcommand{\calR}{\mbox{${\cal R}$}}
+\newcommand{\calT}{\mbox{${\cal T}$}}
+\newcommand{\dotz}{\dot{z}}
+\newcommand{\dotrho}{\dot{\rho}}
+
+\newcommand{\NA}{\mbox{$ {\cal N} $}}
+\newcommand{\RM}{ {\cal R}_M}
+\newcommand{\DE}{\mbox{$ {\rm De} $}}
+\newcommand{\DL}{\mbox{$ {\cal D}_l $}}
+\newcommand{\EK}{\mbox{$ {\rm E} $}}
+\newcommand{\FR}{\mbox{$ {\rm Fr} $}}
+\newcommand{\GR}{\mbox{$ {\rm Gr} $}}
+\newcommand{\KK}{\mbox{$ {\rm K} $}}
+\newcommand{\KN}{\mbox{$ {\rm Kn} $}}
+\newcommand{\MA}{\mbox{$ {\rm M} $}}
+\newcommand{\NU}{\mbox{$ {\rm Nu} $}}
+\newcommand{\PE}{\mbox{$ {\rm Pe} $}}
+\newcommand{\PR}{\mbox{$ {\cal P} $}}
+\newcommand{\PRM}{\mbox{$ {\cal P}_m $}}
+\newcommand{\RA}{\mbox{$ {\rm Ra} $}}
+\newcommand{\RE}{\mbox{$ {\rm Re} $}}
+\newcommand{\RI}{\mbox{$ {\rm Ri} $}}
+\newcommand{\RO}{\mbox{$ {\rm Ro} $}}
+\newcommand{\TA}{\mbox{$ {\rm Ta} $}}
+\newcommand{\LE}{\mbox{$ {\rm Le} $}}
+
+\newcommand{\vu}{\vec{u}}
+\newcommand{\vU}{\vec{U}}
+\newcommand{\vup}{\vec{u'}}
+\newcommand{\er}{\vec{e}_r}
+\newcommand{\eom}{\vec{e}_\varpi}
+\newcommand{\etheta}{\vec{e}_\theta}
+\newcommand{\Etheta}{\vec{E}_\theta}
+\newcommand{\Ephi}{\vec{E}_\varphi}
+\newcommand{\Ezeta}{\vec{E}_\zeta}
+\newcommand{\EZETA}{\vec{E}^\zeta}
+\newcommand{\ETHETA}{\vec{E}^\theta}
+\newcommand{\EPHI}{\vec{E}^\varphi}
+\newcommand{\ephi}{\vec{e}_\varphi}
+\newcommand{\eb}{\vec{e}_b}
+\newcommand{\ei}{\vec{e}_i}
+\newcommand{\ek}{\vec{e}_k}
+\newcommand{\en}{\vec{e}_n}
+\newcommand{\es}{\vec{e}_s}
+\newcommand{\ex}{\vec{e}_x}
+\newcommand{\ey}{\vec{e}_y}
+\newcommand{\ez}{\vec{e}_z}
+\newcommand{\vi}{\vec{v}}
+\newcommand{\va}{\vec{a}}
+\newcommand{\vA}{\vec{A}}
+\newcommand{\vb}{\vec{b}}
+\newcommand{\vB}{\vec{B}}
+\newcommand{\vc}{\vec{c}}
+\newcommand{\vC}{\vec{C}}
+\newcommand{\vd}{\vec{d}}
+\newcommand{\ve}{\vec{e}}
+\newcommand{\vE}{\vec{E}}
+\newcommand{\vf}{\vec{f}}
+\newcommand{\vF}{\vec{F}}
+\newcommand{\vg}{\vec{g}}
+\newcommand{\vG}{\vec{G}}
+
+\newcommand{\vj}{\vec{j}}
+\newcommand{\vJ}{\vec{J}}
+\newcommand{\vk}{\vec{k}}
+\newcommand{\vL}{\vec{L}}
+\newcommand{\vm}{\vec{m}}
+\newcommand{\vM}{\vec{M}}
+\newcommand{\vn}{\vec{n}}
+\newcommand{\vN}{\vec{N}}
+\newcommand{\vp}{\vec{p}}
+\newcommand{\vP}{\vec{P}}
+\newcommand{\vq}{\vec{q}}
+\newcommand{\vQ}{\vec{Q}}
+\newcommand{\vr}{\vec{r}}
+\newcommand{\vR}{\vec{R}}
+\newcommand{\vs}{\vec{s}}
+\newcommand{\vS}{\vec{S}}
+\newcommand{\vtau}{\vec{\tau}}
+\newcommand{\vT}{\vec{T}}
+\newcommand{\vv}{\vec{v}}
+\newcommand{\vV}{\vec{V}}
+\newcommand{\vw}{\vec{w}}
+\newcommand{\vW}{\vec{W}}
+\newcommand{\vx}{\vec{x}}
+\newcommand{\vX}{\vec{X}}
+\newcommand{\vy}{\vec{y}}
+\newcommand{\vY}{\vec{Y}}
+\newcommand{\vz}{\vec{z}}
+\newcommand{\vgam}{\vec{\gamma}}
+\newcommand{\vdl}{\vec{dl}}
+\newcommand{\vo}{\vec{\omega}}
+\newcommand{\vO}{\vec{\Omega}}
+\newcommand{\vxi}{\vec{\xi}}
+\newcommand{\vpsi}{\vec{\psi}}
+\newcommand{\vzero}{\vec{0}}
+\newcommand{\dS}{d\vec{S}}
+\newcommand{\dV}{d^3\vec{r}}
+\newcommand{\dVk}{d^3\vec{k}}
+\newcommand{\dVx}{d^3\vec{x}}
+\newcommand{\dSk}{dS_k}
+\newcommand{\dl}{d\vec{l}}
+\newcommand{\dOm}{d\Omega}
+\newcommand{\vvphi}{\vec{v}_{\varphi}}
+\newcommand{\tc}{\tilde{c}}
+\newcommand{\tC}{\tilde{C}}
+\newcommand{\tE}{\tilde{E}}
+\newcommand{\tp}{\tilde{p}}
+\newcommand{\zti}{\tilde{z}}
+\newcommand{\tu}{\tilde{u}}
+\newcommand{\tiv}{\tilde{v}}
+\newcommand{\tina}{\tilde{\nabla}}
+\newcommand{\tipa}{\tilde{\partial}}
+\newcommand{\tV}{\tilde{V}}
+\newcommand{\tP}{\tilde{P}}
+\newcommand{\tphi}{\tilde{\phi}}
+\newcommand{\ttau}{\tilde{\tau}}
+\newcommand{\tzeta}{\tilde{\zeta}}
+\newcommand{\trho}{\tilde{\rho}}
+\newcommand{\rtp}{r_\theta'}
+\newcommand{\rzp}{r_\zeta'}
+
+
+\newcommand{\bu}{\overline{u}}
+\newcommand{\bp}{\overline{p}}
+\newcommand{\demi}{\frac{1}{2}}
+\newcommand{\tiers}{\frac{1}{3}}
+\newcommand{\quart}{\frac{1}{4}}
+\newcommand{\omb}{\overline{\omega}}
+\newcommand{\ubar}{\overline{u}}
+\newcommand{\Xb}{\overline{X}}
+\newcommand{\rhobar}{\overline{\rho}}
+\newcommand{\vsp}{\mbox{$ \vspace{3mm} $}}
+\newcommand{\dggg}{d^3\vg}
+\newcommand{\dGGG}{d^3\vG}
+\newcommand{\dppp}{d^3\vp}
+\newcommand{\dqqq}{d^3\vq}
+\newcommand{\drrr}{d^3\vr}
+\newcommand{\dxxx}{d^3\vx}
+\newcommand{\duuu}{d^3\vu}
+\newcommand{\dvvv}{d^3\vv}
+\newcommand{\dwww}{d^3\vw}
+\newcommand{\vcF}{\vec{\cal F}}
+\newcommand{\od}[1]{\mbox{${\cal O}(#1)$}}
+\newcommand{\dn}[1]{\frac{\partial  #1}{\partial n}}
+\newcommand{\drho}[1]{\frac{\partial  #1}{\partial \rho}}
+\newcommand{\ddrho}[1]{\frac{\partial^2  #1}{\partial \rho^2}}
+\newcommand{\dddrho}[1]{\frac{\partial^3  #1}{\partial \rho^3}}
+\newcommand{\ddddrho}[1]{\frac{\partial^4  #1}{\partial \rho^4}}
+\newcommand{\drhotheta}[1]{\frac{1}{\rho}\frac{\partial  #1}{\partial\theta}}
+
+\newcommand{\dr}[1]{\frac{\partial  #1}{\partial r}}
+\newcommand{\drj}[1]{\frac{\partial  #1}{\partial r_j}}
+\newcommand{\ds}[1]{\frac{\partial  #1}{\partial s}}
+\newcommand{\dt}[1]{\frac{\partial  #1}{\partial t}}
+\newcommand{\dT}[1]{\frac{\partial  #1}{\partial T}}
+\newcommand{\dtti}[1]{\frac{\partial  #1}{\partial \tilde{t}}}
+\newcommand{\dnh}[1]{\frac{d  #1}{dh}}
+\newcommand{\dnt}[1]{\frac{d  #1}{dt}}
+\newcommand{\dnT}[1]{\frac{d  #1}{dT}}
+\newcommand{\dntau}[1]{\frac{d  #1}{d\tau}}
+\newcommand{\dnr}[1]{\frac{d  #1}{dr}}
+\newcommand{\dns}[1]{\frac{d  #1}{ds}}
+\newcommand{\dnx}[1]{\frac{d  #1}{dx}}
+\newcommand{\dny}[1]{\frac{d  #1}{dy}}
+\newcommand{\dnz}[1]{\frac{d  #1}{dz}}
+\newcommand{\dnzeta}[1]{\frac{d #1}{d\dzeta}}
+\newcommand{\ddnp}[1]{\frac{d^2  #1}{dp^2}}
+\newcommand{\ddnr}[1]{\frac{d^2  #1}{dr^2}}
+\newcommand{\ddnt}[1]{\frac{d^2  #1}{dt^2}}
+\newcommand{\ddnx}[1]{\frac{d^2  #1}{dx^2}}
+\newcommand{\ddny}[1]{\frac{d^2  #1}{dy^2}}
+\newcommand{\ddnz}[1]{\frac{d^2  #1}{dz^2}}
+\newcommand{\Dt}[1]{\frac{D #1}{D t}}
+\newcommand{\Dtn}[1]{\frac{D^n #1}{D t^n}}
+\newcommand{\Dtm}[1]{\frac{D^m #1}{D t^m}}
+\newcommand{\Dtau}[1]{\frac{D #1}{D\tau}}
+\newcommand{\dtaub}{\frac{\partial}{\partial \tau}}
+\renewcommand{\dh}{\frac{\partial}{\partial h}}
+\newcommand{\deta}[1]{\frac{\partial #1}{\partial \eta}}
+\newcommand{\dmu}[1]{\frac{\partial #1}{\partial \mu}}
+\newcommand{\dvpi}[1]{\frac{\partial #1}{\partial \varpi}}
+\newcommand{\dtau}[1]{\frac{\partial #1}{\partial \tau}}
+\newcommand{\ddtau}[1]{\frac{\partial^2 #1}{\partial \tau^2}}
+\newcommand{\dtaup}[1]{\frac{\partial #1}{\partial \tau'}}
+\newcommand{\dtaus}[1]{\frac{\partial #1}{\partial \tau"}}
+\newcommand{\dxi}[1]{\frac{\partial  #1}{\partial \xi}}
+\newcommand{\dnxi}[1]{\frac{d  #1}{d \xi}}
+\newcommand{\dxj}[1]{\frac{\partial  #1}{\partial x_j}}
+\newcommand{\dxk}[1]{\frac{\partial  #1}{\partial x_k}}
+\newcommand{\dxpj}[1]{\frac{\partial  #1}{\partial x'_j}}
+\newcommand{\dzeta}[1]{\frac{\partial  #1}{\partial \zeta}}
+\newcommand{\ddzeta}[1]{\frac{\partial^2  #1}{\partial \zeta^2}}
+\newcommand{\dzetatheta}[1]{\frac{\partial^2  #1}{\partial \zeta\partial\theta}}
+\newcommand{\ddxi}[1]{\frac{\partial^2  #1}{\partial \xi^2}}
+\newcommand{\dk}[1]{\frac{\partial  #1}{\partial k}}
+\newcommand{\du}[1]{\frac{\partial  #1}{\partial u}}
+\newcommand{\dudv}[1]{\frac{\partial^2  #1}{\partial u\partial v}}
+\newcommand{\dup}[1]{\frac{\partial  #1}{\partial u_+}}
+\newcommand{\dum}[1]{\frac{\partial  #1}{\partial u_-}}
+\newcommand{\dv}[1]{\frac{\partial  #1}{\partial v}}
+\newcommand{\dw}[1]{\frac{\partial  #1}{\partial w}}
+\newcommand{\dx}[1]{\frac{\partial  #1}{\partial x}}
+\newcommand{\dX}[1]{\frac{\partial  #1}{\partial X}}
+\newcommand{\dy}[1]{\frac{\partial  #1}{\partial y}}
+\newcommand{\dY}[1]{\frac{\partial  #1}{\partial Y}}
+\newcommand{\dz}[1]{\frac{\partial  #1}{\partial z}}
+\newcommand{\dzti}[1]{\frac{\partial  #1}{\partial \tilde{z}}}
+\newcommand{\dtheta}[1]{\frac{\partial  #1}{\partial \theta}}
+\newcommand{\dthetap}[1]{\frac{\partial  #1}{\partial \theta'}}
+\newcommand{\dsigma}[1]{\frac{\partial  #1}{\partial \sigma}}
+\newcommand{\ddsigma}[1]{\frac{\partial^2  #1}{\partial \sigma^2}}
+\newcommand{\domega}[1]{\frac{\partial  #1}{\partial \omega}}
+\newcommand{\drtheta}[1]{\frac{1}{r}\frac{\partial  #1}{\partial\theta}}
+\newcommand{\ddr}[1]{\frac{\partial^2  #1}{\partial r^2}}
+\newcommand{\dds}[1]{\frac{\partial^2  #1}{\partial s^2}}
+\newcommand{\dddr}[1]{\frac{\partial^3  #1}{\partial r^3}}
+\newcommand{\ddt}[1]{\frac{\partial^2  #1}{\partial t^2}}
+\newcommand{\ddup}[1]{\frac{\partial^2  #1}{\partial u^2_+}}
+\newcommand{\dduv}[1]{\frac{\partial^2  #1}{\partial u\partial v}}
+\newcommand{\ddum}[1]{\frac{\partial^2  #1}{\partial u^2_-}}
+\newcommand{\ddw}[1]{\frac{\partial^2  #1}{\partial w^2}}
+\newcommand{\dupdum}[1]{\frac{\partial^2  #1}{\partial u_+\partial u_-}}
+\newcommand{\ddx}[1]{\frac{\partial^2  #1}{\partial x^2}}
+\newcommand{\dddx}[1]{\frac{\partial^3  #1}{\partial x^3}}
+\newcommand{\ddy}[1]{\frac{\partial^2  #1}{\partial y^2}}
+\newcommand{\dddw}[1]{\frac{\partial^3  #1}{\partial w^3}}
+\newcommand{\dddy}[1]{\frac{\partial^3  #1}{\partial y^3}}
+\newcommand{\dxdy}[1]{\frac{\partial^2  #1}{\partial x\partial y}}
+\newcommand{\drdz}[1]{\frac{\partial^2  #1}{\partial r\partial z}}
+\newcommand{\dsdz}[1]{\frac{\partial^2  #1}{\partial s\partial z}}
+\newcommand{\ddz}[1]{\frac{\partial^2  #1}{\partial z^2}}
+\newcommand{\ddzti}[1]{\frac{\partial^2  #1}{\partial \tilde{z}^2}}
+\newcommand{\ddtheta}[1]{\frac{\partial^2  #1}{\partial \theta^2}}
+\newcommand{\dstheta}[1]{\frac{1}{\sin\theta}\frac{\partial}{\partial\theta}\sin\theta\frac{\partial #1}{\partial\theta}}
+\newcommand{\dsint}[1]{\frac{1}{\sin\theta}\frac{\partial}{\partial\theta}(\sin\theta #1)}
+\newcommand{\drsint}[1]{\frac{1}{r\sin\theta}\frac{\partial}{\partial\theta}(\sin\theta #1)}
+\newcommand{\dntheta}[1]{\frac{d  #1}{d\theta}}
+\newcommand{\ddntheta}[1]{\frac{d^2  #1}{d\theta^2}}
+\newcommand{\dphi}[1]{\frac{\partial  #1}{\partial \varphi}}
+\newcommand{\dphip}[1]{\frac{\partial  #1}{\partial \varphi'}}
+\newcommand{\ddphi}[1]{\frac{\partial^2  #1}{\partial \varphi^2}}
+\newcommand{\ddvpi}[1]{\frac{\partial^2  #1}{\partial \varpi^2}}
+\newcommand{\dsphi}[1]{\frac{1}{s}\frac{\partial #1}{\partial\varphi}}
+\newcommand{\ddsphi}[1]{\frac{1}{\sin^2\theta}\frac{\partial^2  #1}{\partial \varphi^2}}
+\newcommand{\drsphi}[1]{\frac{1}{r\sin\theta}\frac{\partial  #1}{\partial \varphi}}
+\newcommand{\drn}[3]{\frac{\partial^{#3}  #1}{\partial #2^{#3}}}
+\newcommand{\drr}{\frac{\partial}{\partial r}}
+\newcommand{\dxx}{\frac{\partial}{\partial x}}
+\newcommand{\dtt}{\frac{\partial}{\partial t}}
+%\def\Div{\mathop{\hbox{div}}\nolimits}
+%\def\erf{\mathop{\hbox{erf}}\nolimits}
+%\def\rot{\mathop{\hbox{\overrightarrow{\displaystyle\rm Rot}}}\nolimits}
+\newcommand{\Rot}{\overrightarrow{\displaystyle\rm Rot}}
+\newcommand{\rot}{\overrightarrow{\displaystyle\rm Rot}}
+%\def\vdiv{\mathop{\hbox{\overrightarrow{\displaystyle Div}}}\nolimits}
+\newcommand{\erf}{\displaystyle{\rm erf}}
+\newcommand{\Div}{\displaystyle {\rm Div}}
+\newcommand{\vdiv}{\overrightarrow{\displaystyle Div}}
+\newcommand{\disp}[1]{\displaystyle #1}
+\newcommand{\eq}[1]{(\ref{#1})}
+\newcommand{\moy}[1]{\left\langle #1\right\rangle}
+\newcommand{\moym}[1]{\langle #1\rangle}
+\newcommand{\moyo}[2]{\overbrace{\moy{ #1 }}^{\rm #2}}
+\newcommand{\scal}[2]{\langle #1|#2 \rangle}
+\newcommand{\s}{ \scriptstyle }
+\newcommand{\sss}{ \scriptscriptstyle }
+\newcommand{\srr}{\sigma_{rr}}
+\newcommand{\stt}{\sigma_{\theta\theta}}
+\newcommand{\spp}{\sigma_{\varphi\varphi}}
+\newcommand{\szz}{\sigma_{zz}}
+\newcommand{\spr}{\sigma_{\varphi r}}
+\newcommand{\srp}{\sigma_{ r\varphi}}
+\newcommand{\spt}{\sigma_{\varphi\theta}}
+\newcommand{\stp}{\sigma_{\theta\varphi}}
+\newcommand{\srt}{\sigma_{r\theta}}
+\newcommand{\str}{\sigma_{\theta r}}
+\newcommand{\stz}{\sigma_{\theta z}}
+\newcommand{\szr}{\sigma_{zr}}
+\newcommand{\srz}{\sigma_{rz}}
+\newcommand{\sxz}{\sigma_{xz}}
+\newcommand{\syz}{\sigma_{yz}}
+\newcommand{\vgv}{(\vv\cdot\!\na)\vv}
+\newcommand{\ksi}{\xi}
+%\newcommand{\ic}{\^{\i}}
+\newcommand{\ic}{\^i}
+\newcommand{\infapp}{\raisebox{-.7ex}{$\stackrel{<}{\,\sim\,}$}}
+\newcommand{\supapp}{\raisebox{-.7ex}{$\stackrel{>}{\,\sim\,}$}}
+%\def\og{\leavemode\raise.3ex\hbox{$\scriptscriptstyle\langle\!\langle$}}
+%\def\fg{\leavemode\raise.3ex\hbox{$\scriptscriptstyle\rangle\!\rangle$}}
+%\def\og{\raise.3ex\hbox{$\scriptscriptstyle\langle\!\langle$}}
+%\def\fg{\raise.3ex\hbox{$\scriptscriptstyle\rangle\!\rangle$\ }}
+\newcommand{\fgb}{\fg\ }
+%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%TURBULENCE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\vvm}{\langle\vv\rangle}
+\newcommand{\vBm}{\langle\vB\rangle}
+\newcommand{\vvp}{\vv'}
+\newcommand{\kz}{{k_{\scriptscriptstyle\! 0}}}
+\newcommand{\kd}{{k_{\scriptscriptstyle\! D}}}
+\newcommand{\ld}{\ell_{\scriptscriptstyle\! D}}
+\newcommand{\lt}{\ell_{\scriptscriptstyle\! T}}
+%\newcommand{\epsm}{\overline{\eps}}
+\newcommand{\epsm}{\langle\eps\rangle}
+\newcommand{\epsl}{\eps_\ell}
+\newcommand{\OS}{Orr-Sommerfeld\ }
+\newcommand{\ke}{K-$\eps$\ }
+\newcommand{\nut}{\nu_{\scriptscriptstyle\! T}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
