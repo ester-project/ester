@@ -1,9 +1,11 @@
 #include "ester-config.h"
-#include <stdio.h>
+#include "utils.h"
 #include "matrix.h"
+#include <stdio.h>
 #include <cmath>
 #include <stdlib.h>
 #include <sys/time.h>
+
 extern "C" {
 #ifdef USE_MKL
 #include <mkl_lapack.h>
@@ -17,7 +19,7 @@ extern "C" {
 matrix matrix::operator,(const matrix &a) const {
 
 	if(nc!=a.nf) {
-		fprintf(stderr,"ERROR: (matrix.,) Dimensions must agree\n");
+		ester_err("(matrix.,) Dimensions must agree");
 		exit(1);
 	}
 
@@ -35,11 +37,11 @@ matrix matrix::solve(matrix b) const {
 	matrix lu(*this);
 
 	if(nf!=b.nf) {
-		fprintf(stderr,"ERROR: (matrix.solve) Dimensions must agree\n");
+		ester_err("(matrix.solve) Dimensions must agree");
 		exit(1);
 	}
 	if(nf!=nc) {
-		fprintf(stderr,"ERROR: (matrix.solve) Matrix must be square\n");
+		ester_err("(matrix.solve) Matrix must be square");
 		exit(1);
 	}
 
@@ -61,7 +63,7 @@ matrix matrix::inv() const {
 	double *work,w;
 	
 	if(nf!=nc) {
-		fprintf(stderr,"ERROR: (matrix.inv) Matrix must be square\n");
+		ester_err("(matrix.inv) Matrix must be square");
 		exit(1);
 	}
 	
@@ -71,7 +73,7 @@ matrix matrix::inv() const {
 		exit(1);
 	}
 	dgetri_(&res.nf,res.p,&res.nf,ipiv,&w,&lwork,&info);
-	lwork=round(w);
+	lwork = (int) round(w);
 
 	work=new double[lwork];
 	

@@ -1,5 +1,8 @@
 AM_CPPFLAGS  = -I$(top_srcdir)/src/include
 AM_CPPFLAGS += -I../../tables/cesam_nuc
+AM_CXXFLAGS=-Wall
+
+export HDF5_CXX=$(HDF5_BACKEND)
 
 lib_LTLIBRARIES			= libnuc_cesam.la
 

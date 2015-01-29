@@ -1,8 +1,9 @@
 #include "ester-config.h"
-#include<cmath>
-#include"matrix.h"
-#include"constants.h"
-#include"physics.h"
+#include "utils.h"
+#include "matrix.h"
+#include "constants.h"
+#include "physics.h"
+#include <cmath>
 
 extern"C" {
 	void opac_(int *izi,int *mzin,double *X,double *t6,double *r);
@@ -49,7 +50,7 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	opa.xi=16*SIG_SB*pow(T,3)/(3*opa.k*rho);
 	opa.dlnxi_lnrho=-1-dlnkrho;
     opa.dlnxi_lnT=3-dlnkT;
-	if(error) fprintf(stderr,"Values outside OPAL opacity table\n");
+	if(error) ester_err("Values outside OPAL opacity table");
 	
 	return error;
 		

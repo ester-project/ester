@@ -24,9 +24,10 @@ class star:
         self.npts       = f['/star'].attrs['npts']
         self.nth        = f['/star'].attrs['nth']
         self.nr         = f['/star'].attrs['nr']
-        self.eos        = f['/star'].attrs['eos']
-        self.opa        = f['/star'].attrs['opacity']
-        self.nconv      = f['/star'].attrs['nconv']
+        self.eos        = f['/star'].attrs['eos.name']
+        self.opa        = f['/star'].attrs['opa.name']
+        self.atm        = f['/star'].attrs['atm.name']
+        self.nconv      = f['/star'].attrs['conv']
 
         r = self.r[:,range(self.ndomains)*self.npts]
         th = self.th

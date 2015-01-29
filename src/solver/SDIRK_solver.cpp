@@ -139,7 +139,7 @@ void SDIRK_solver::check_method() {
 	}
 	
 	double tol=1e-14;
-	if(abs(sum(b)-1)>tol) {
+	if(std::abs(sum(b)-1)>tol) {
 		fprintf(stderr,"SDIRK_solver: Invalid method (sum(b_i)!=1)\n");
 		exit(1);
 	}
@@ -173,7 +173,7 @@ bool SDIRK_solver::needs_initial_derivative() {return first_explicit;}
 void SDIRK_solver::regvar(const char *var_name,const matrix &initial_value) {
 
 	check_init();
-	int i,j;
+	int j;
 	j=0;
 	while (strlen(var[j])) {
 		if(!strcmp(var[j],var_name)) {

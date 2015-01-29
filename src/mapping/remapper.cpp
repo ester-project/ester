@@ -1,6 +1,7 @@
 #include "ester-config.h"
-#include"mapping.h"
-#include<stdlib.h>
+#include "utils.h"
+#include "mapping.h"
+#include <stdlib.h>
 
 remapper::remapper(const mapping &map_in) {
 
@@ -80,7 +81,7 @@ void remapper::set_fixed(int idom_new,int idom_old) {
 
 	fixed[idom_new]=idom_old;
 	if(idom_old>map.ndomains) {
-		fprintf(stderr,"Error: (remapper) Index exceeds number of domains\n");
+		ester_err("(remapper) Index exceeds number of domains");
 		exit(1);
 	}
 
@@ -165,17 +166,17 @@ matrix remapper::interp_ex(const matrix &y,int parity) {
 void remapper::remap() {
 
 	if(ndomains!=map.ndomains&&!changed_npts) {
-		fprintf(stderr,"Error: (remapper) Should specify number of points in each domain\n");
+		ester_err("(remapper) Should specify number of points in each domain");
 		exit(1);
 	}
 
 	if(ndomains!=map.ndomains&&!redist) {
-		fprintf(stderr,"Error: (remapper) Should specify domain boundaries\n");
+		ester_err("(remapper) Should specify domain boundaries");
 		exit(1);
 	}
 	
 	if(R.nrows()!=ndomains+1) {
-		fprintf(stderr,"Error: (remapper) Incorrect size of boundary matrix R\n");
+		ester_err("(remapper) Incorrect size of boundary matrix R");
 		exit(1);
 	}
 	remapped=1;
@@ -189,7 +190,7 @@ void remapper::remap() {
 	
 	if(R.ncols()!=nt) {
 		if(R.ncols()!=map.nt) {
-			fprintf(stderr,"Error: (remapper) Incorrect size of boundary matrix R\n");
+			ester_err("Error: (remapper) Incorrect size of boundary matrix R");
 			exit(1);
 		}
 		R=map.leg.eval_00(R,map_new.th);
@@ -257,7 +258,7 @@ void remapper::remap() {
 			zi+=dzi;
 			nit++;
 			if(nit>100) {
-				fprintf(stderr,"Error: (remapper) No convergence in remap()\n");
+				ester_err("(remapper) No convergence in remap()");
 				exit(1);
 			}
 		}

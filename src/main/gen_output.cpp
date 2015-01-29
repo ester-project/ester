@@ -1,8 +1,9 @@
 #include "ester-config.h"
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
-#include"star.h"
+#include "utils.h"
+#include "star.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 void output2d(const star2d &);
 void write(const star2d &A,char *var,char *fmt);
@@ -18,15 +19,14 @@ int main(int argc,char *argv[]) {
 	star2d m2d;
 
 	input_file=argv[1];
-	if(m1d.read(input_file)) output2d(m1d);
-	else if (m2d.read(input_file)) output2d(m2d);
+	if(!m1d.read(input_file, 1)) output2d(m1d);
+	else if (!m2d.read(input_file)) output2d(m2d);
 	else {
-		fprintf(stderr,"Error reading input file: %s\n",input_file);
+		ester_err("Error reading input file: %s",input_file);
 		return 1;
 	}
 	
 	return 0;
-
 }
 
 void readconf(char *line) {
@@ -106,7 +106,6 @@ void output2d(const star2d &A) {
 void write(const star2d &A,char *var,char *fmt) {
 
 	int i;
-	float f;
 	double d;
 	matrix m,m2,T,T_odd;
 
@@ -587,9 +586,8 @@ void write(const star2d &A,char *var,char *fmt) {
 			fwrite(&d,sizeof(double),1,stdout);
 		}
 	} else {
-		fprintf(stderr,"Unknown variable %s\n",var);
+		ester_err("Unknown variable %s", var);
 		exit(1);
 	}
 }
-
 

@@ -1,12 +1,13 @@
 #include "ester-config.h"
+#include "utils.h"
 #include "parser.h"
 #include "read_config.h"
 
 configuration::configuration(int argc,char *argv[]) {
 	
-	int i,i_arg,k;
+	int i, k;
 	char *arg,*val;
-	char file[256],line[256];
+	char file[256];
 	cmdline_parser cmd;
 	file_parser fp;
 	
@@ -26,8 +27,8 @@ configuration::configuration(int argc,char *argv[]) {
 	if(!fp.open(file)) 
 		printf("Can't open configuration file %s\n",file);
 	else {
-		while(k=fp.get(arg,val)) {			
-			if(i=check_arg(arg,val)) {
+		while((k=fp.get(arg,val))) {
+			if((i=check_arg(arg,val))) {
 				printf("Sintax error in configuration file %s, line %d\n",file,k);
 				if(i==2) missing_argument(arg);
 				if(i==1) {
@@ -127,6 +128,6 @@ int configuration::check_arg(const char *arg,const char *val) {
 
 void configuration::missing_argument(const char *arg) {
 	
-	fprintf(stderr,"Error: Argument to '%s' missing\n",arg);
+	ester_err("Error: Argument to '%s' missing", arg);
 	exit(1);
 }

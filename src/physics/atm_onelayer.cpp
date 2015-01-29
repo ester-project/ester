@@ -1,8 +1,9 @@
 #include "ester-config.h"
-#include"physics.h"
-#include"constants.h"
-#include<string.h>
-#include<cmath>
+#include "utils.h"
+#include "physics.h"
+#include "constants.h"
+#include <string.h>
+#include <cmath>
 
 int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm) {
@@ -35,7 +36,7 @@ int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 			while(fin<2) {
 				nit++;
 				if(nit>100) {
-					fprintf(stderr,"Error (atm_onelayer): No convergence\n");
+					ester_err("Error (atm_onelayer): No convergence");
 					return 1;
 				}
 				double F,dF,dlogps;
@@ -58,5 +59,4 @@ int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 	}
 	
 	return 0;
-		
 }

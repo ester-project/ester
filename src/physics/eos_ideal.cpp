@@ -1,6 +1,7 @@
 #include "ester-config.h"
-#include"physics.h"
-#include"constants.h"
+#include "utils.h"
+#include "physics.h"
+#include "constants.h"
 
 int eos_ideal(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos) {

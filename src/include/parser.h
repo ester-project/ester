@@ -84,7 +84,7 @@ public:
 	template <class T>
 	int read(const char *tag,T *x) {
 		unsigned long n=seek(tag);
-		if(!n) return 0;
+		if(!n) return 1;
 		if(mode=='t') {
 			char str[512];
 			if(typeid(x[0])==typeid(char)) {
@@ -98,8 +98,8 @@ public:
 				}
 			}
 		}
-		else if(n!=fread(x,1,n,fp)) return 0;
-		return 1;
+		else if(n!=fread(x,1,n,fp)) return 1;
+		return 0;
 	};
 	template <class T>
 	int read_fmt(const char *tag,const char *fmt,T *x) {

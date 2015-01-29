@@ -8,7 +8,7 @@
 /// \brief Initialize star's chemical composition, equation of state, opacity,
 /// nuclear reaction and atmosphere.
 void star2d::fill() {
-DEBUG_FUNCNAME	
+    DEBUG_FUNCNAME;
 	Y0=1.-X0-Z0;
 	init_comp();
 	
@@ -64,7 +64,7 @@ void star2d::init_comp() {
 }
 
 void star2d::calc_veloc() {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 // vr=rz*V^zeta vt=r*V^theta
 	vr=(G,map.leg.D_11)/r+(map.rt/r+cos(th)/sin(th))/r*G;
 	vr.setrow(0,zeros(1,nth));
@@ -75,7 +75,7 @@ DEBUG_FUNCNAME
 }
 
 solver *star2d::init_solver(int nvar_add) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int nvar;
 	solver *op;
 	
@@ -91,7 +91,7 @@ DEBUG_FUNCNAME
 }
 
 void star2d::register_variables(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int i,var_nr[ndomains+1];
 	
 	for(i=0;i<ndomains;i++) 
@@ -139,12 +139,12 @@ DEBUG_FUNCNAME
 /// \brief Performs one step of the Newton algorithm to compute the star's
 /// internal structure.
 double star2d::solve(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int info[5];
 	matrix rho0;
 	double err,err2,h,dmax;
 
-	if(Omega==0&Omega_bk!=0) {
+	if(Omega==0 && Omega_bk != 0) {
 		Omega=Omega_bk*Omegac;
 		w=Omega*ones(nr,nth);
 	}
@@ -238,7 +238,7 @@ DEBUG_FUNCNAME
 }
 
 void star2d::update_map(matrix dR) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	double h=1,dmax=config.newton_dmax;
 	
 	matrix R0;
@@ -255,7 +255,7 @@ DEBUG_FUNCNAME
 
 /// \brief Writes terms depending opacity and state tables into the solver.
 void star2d::solve_definitions(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	op->add_d("rho","p",rho/eos.chi_rho/p);
 	op->add_d("rho","T",-rho*eos.d/T);
 	op->add_d("rho","log_pc",rho/eos.chi_rho);
@@ -305,11 +305,10 @@ DEBUG_FUNCNAME
 
 /// \brief Writes Poisson equation and interface conditions into the solver.
 void star2d::solve_poisson(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	matrix q,rhs1,rhs2,rhs;
 	int n,j0;
-	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
-		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
+	matrix &rz=map.rz;
 	
 	symbolic S;
 	sym lap_phi;
@@ -388,7 +387,7 @@ DEBUG_FUNCNAME
 
 /// \brief Writes movement and vorticity equations into the solver
 void star2d::solve_mov(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	static bool eqinit=false;
 	static symbolic S;
 	static sym eq_vort,eq_phi,bc,ic_w;
@@ -563,12 +562,11 @@ DEBUG_FUNCNAME
 /// \brief Writes temperature and luminosity equations and interface conditions
 /// into the solver.
 void star2d::solve_temp(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int n,j0;
 	matrix q;
 	char eqn[8];
-	matrix &gzz=map.gzz,&gzt=map.gzt,&gtt=map.gtt,
-		&rz=map.rz,&rt=map.rt,&rzz=map.rzz,&rzt=map.rzt,&rtt=map.rtt;
+	matrix &gzz=map.gzz, &gzt=map.gzt, &rz=map.rz;
 	
 	op->add_d("T","log_T",T);
 	strcpy(eqn,"log_T");
@@ -782,7 +780,7 @@ DEBUG_FUNCNAME
 
 
 void star2d::solve_dim(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int n,j0;
 	matrix q,rhs;
 	
@@ -851,7 +849,7 @@ DEBUG_FUNCNAME
 
 
 void star2d::solve_map(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int n,j0;
 	matrix Ri,rhs,TT,q;
 
@@ -962,41 +960,13 @@ DEBUG_FUNCNAME
 	
 	op->set_rhs("Ri",rhs);
 	
-	
-	
 }
 
 
 
-/*
-void star2d::solve_Omega(solver *op) {
-
-	int n;
-	matrix rhs;
-
-	rhs=zeros(ndomains+1,1);
-	for(n=0;n<ndomains;n++) {
-		op->bc_top1_add_d(n,"Omega2","Omega2",ones(1,1));
-		op->bc_top2_add_d(n,"Omega2","Omega2",-ones(1,1));
-	}
-	matrix TT;
-	double r1,rz1,dphi1;
-	r1=map.leg.eval_00(rex.row(0),PI/2,TT)(0);
-	rz1=(map.ex.rz.row(0),TT)(0);
-	dphi1=(Dex.row(0),phiex,TT)(0);
-	n=ndomains;
-	op->bc_bot2_add_d(n,"Omega2","Omega2",ones(1,1));
-	op->bc_bot2_add_lr(n,"Omega2","Phi",-ones(1,1)*Omega_bk*Omega_bk/r1/rz1,Dex.row(0),TT);
-	op->bc_bot2_add_r(n,"Omega2","Ri",ones(1,1)*Omega_bk*Omega_bk/r1/r1/rz1*dphi1,TT);
-	op->bc_bot2_add_r(n,"Omega2","Ri",(Dex.row(0),map.ex.J[2],TT)*Omega_bk*Omega_bk/r1/rz1/rz1*dphi1,TT);
-	op->bc_bot2_add_r(n,"Omega2","eta",(Dex.row(0),map.ex.J[0],TT)*Omega_bk*Omega_bk/r1/rz1/rz1*dphi1,TT);
-	rhs(n)=-Omega2+dphi1/r1/rz1*Omega_bk*Omega_bk;
-	op->set_rhs("Omega2",rhs);
-}
-*/
 
 void star2d::solve_Omega(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	int n;
 	matrix rhs;
 
@@ -1018,29 +988,10 @@ DEBUG_FUNCNAME
 
 }
 
-/*
-void star2d::solve_Omega(solver *op) {
-
-	int n;
-	matrix rhs;
-
-	rhs=zeros(ndomains+1,1);
-	for(n=0;n<ndomains;n++) {
-		op->bc_top1_add_d(n,"Omega2","Omega2",ones(1,1));
-		op->bc_top2_add_d(n,"Omega2","Omega2",-ones(1,1));
-	}
-	n=ndomains;
-	op->bc_bot2_add_d(n,"Omega2","Omega2",ones(1,1));
-	rhs(n)=-Omega2+Omega_bk*Omega_bk;
-	op->set_rhs("Omega2",rhs);
-}
-*/
-
-
 
 
 void star2d::solve_gsup(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	matrix q,g;
 	int n=ndomains-1;
 	matrix &rt=map.rt;
@@ -1074,7 +1025,7 @@ DEBUG_FUNCNAME
 }
 
 void star2d::solve_Teff(solver *op) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	matrix q,Te,F;
 	int n=ndomains-1;
 	matrix &rt=map.rt;
@@ -1112,7 +1063,6 @@ void star2d::solve_atm(solver *op) {
 
 	if(!strcmp(atm.name,"simple")) {
 		matrix q;
-		double qq;
 		int n=ndomains-1;
 	
 		op->bc_top1_add_d(n,"ps","ps",1/ps);
@@ -1132,7 +1082,6 @@ void star2d::solve_atm(solver *op) {
 
 
 	matrix q;
-	double qq;
 	int n=ndomains-1;
 	
 	op->bc_top1_add_d(n,"ps","ps",1/ps);
@@ -1153,7 +1102,7 @@ void star2d::solve_atm(solver *op) {
 
 
 void star2d::check_jacobian(solver *op,const char *eqn) {
-DEBUG_FUNCNAME
+    DEBUG_FUNCNAME;
 	star2d B;
 	matrix rhs,drhs,drhs2,qq;
 	matrix *y;

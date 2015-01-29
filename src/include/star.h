@@ -62,7 +62,8 @@ class star2d {
 	#define CONVECTIVE 2
 	
 	struct version_struct {
-		int major,minor,rev,svn;
+		int major, minor, rev, svn;
+        std::string name;
 	} version;
 
 	struct units_struct {
@@ -87,7 +88,7 @@ class star2d {
 
 	virtual int init(const char *input_file,const char *param_file,int argc,char *argv[]);
 	virtual int check_arg(char *arg,char *val,int *change_grid);
-	virtual int read(const char *input_file);
+	virtual int read(const char *input_file, int dim = 2);
 	virtual int read_old(const char *input_file);
 	virtual void write(const char *output_file,char output_mode='b') const;
 	virtual void interp(remapper *red);
@@ -159,6 +160,7 @@ class star2d {
 	virtual void check_jacobian(solver *op,const char *eqn);
 
     void hdf5_write(const char *filename) const;
+    int hdf5_read(const char *input_file, int dim);
 };
 
 class star1d : public star2d {
@@ -174,6 +176,7 @@ class star1d : public star2d {
 	virtual int init(const char *input_file,const char *param_file,int argc,char *argv[]);
 	virtual int check_arg(char *arg,char *val,int *change_grid);
 	virtual int read_old(const char *input_file);
+	virtual int read(const char *input_file, int dim = 1);
 	
 	virtual void dump_info();
 	
@@ -212,7 +215,7 @@ public:
 	star_evol();
 	star_evol(const star2d &);
 	virtual void fill();
-	virtual int read(const char *input_file);
+	virtual int read(const char *input_file, int dim = 2);
 	virtual solver *init_solver(int nvar_add=0);
 	virtual void register_variables(solver *op);
 	virtual void solve_Omega(solver *);

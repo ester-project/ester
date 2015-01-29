@@ -1,8 +1,10 @@
 #include "ester-config.h"
+#include "utils.h"
 #include "solver.h"
 #include <stdlib.h>
 #include <cmath>
 #include <time.h>
+
 extern "C" {
 #ifdef USE_MKL
 #include <mkl_cblas.h>
@@ -36,7 +38,9 @@ solver_full::solver_full(int nblocks,int offcore) {
 	
 	if(oc) {
 		sprintf(tempdir,"solver_full_oc_tmp_XXXXXX");
-		mkdtemp(tempdir);
+		if (mkdtemp(tempdir) == NULL)
+            ester_err("could not create temporary directory `%s'",
+                    tempdir);
 	}
 
 }
@@ -59,7 +63,8 @@ solver_full::~solver_full() {
 	if(oc) {
 		char tmp[100];
 		sprintf(tmp,"rm -r %s",tempdir);
-		system(tmp);
+		if (system(tmp))
+            ester_warn("could not remove %s", tempdir);
 	}
 }
 
@@ -267,8 +272,10 @@ void solver_full::read_block(int i) {
 	
 	sprintf(tmp,"%s/block_%d",tempdir,i);
 	fp=fopen(tmp,"rb");
-	fread(&nr,sizeof(int),1,fp);
-	fread(&nc,sizeof(int),1,fp);
+	if (fread(&nr,sizeof(int),1,fp) < 1)
+        ester_warn("could not read nr");
+	if (fread(&nc,sizeof(int),1,fp) < 1)
+        ester_warn("could not read nc");
 	m[i].read(nr,nc,fp,'b');
 	fclose(fp);
 	
@@ -284,8 +291,10 @@ void solver_full::write_block(int i,const matrix &a) {
 	fp=fopen(tmp,"wb");
 	nr=a.nrows();
 	nc=a.ncols();
-	fwrite(&nr,sizeof(int),1,fp);
-	fwrite(&nc,sizeof(int),1,fp);
+	if (fwrite(&nr,sizeof(int),1,fp) < 1)
+        ester_warn("could not write nr");
+	if (fwrite(&nc,sizeof(int),1,fp) < 1)
+        ester_warn("could not write nc");
 	a.write(fp,'b');
 	fclose(fp);	
 	m[i]=zeros(1,1);
@@ -306,8 +315,10 @@ void solver_full::read_blockinf(int i) {
 	
 	sprintf(tmp,"%s/blockinf_%d",tempdir,i);
 	fp=fopen(tmp,"rb");
-	fread(&nr,sizeof(int),1,fp);
-	fread(&nc,sizeof(int),1,fp);
+	if (fread(&nr,sizeof(int),1,fp) < 1)
+        ester_warn("could not read nr");
+	if (fread(&nc,sizeof(int),1,fp) < 1)
+        ester_warn("could not read nc");
 	minf[i].read(nr,nc,fp,'b');
 	fclose(fp);
 	
@@ -345,8 +356,10 @@ void solver_full::read_blocksup(int i) {
 	
 	sprintf(tmp,"%s/blocksup_%d",tempdir,i);
 	fp=fopen(tmp,"rb");
-	fread(&nr,sizeof(int),1,fp);
-	fread(&nc,sizeof(int),1,fp);
+	if (fread(&nr,sizeof(int),1,fp) < 1)
+        ester_warn("could not read nr");
+	if (fread(&nc,sizeof(int),1,fp) < 1)
+        ester_warn("could not read nc");
 	msup[i].read(nr,nc,fp,'b');
 	fclose(fp);
 	

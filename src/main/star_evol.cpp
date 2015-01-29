@@ -1,4 +1,5 @@
 #include "ester-config.h"
+#include "utils.h"
 #include "ester.h"
 #include <string.h>
 #include <stdlib.h>
@@ -10,26 +11,23 @@ int main(int argc,char *argv[]) {
 	configuration config(argc,argv);
 	cmdline_parser cmd;
 	
-	double dXc=0.05,Xcmin=0.05;
+	double Xcmin = 0.05;
 	
 	char *arg,*val;
 	cmd.open(argc,argv);
 	while(int err_code=cmd.get(arg,val)) {
 		if(err_code==-1) exit(1);
 		err_code=0;
-		if(!strcmp(arg,"dXc")) {
-			if(val==NULL) err_code=2;
-			else dXc=atof(val);
-		} else if(!strcmp(arg,"Xcmin")) {
+		if(!strcmp(arg,"Xcmin")) {
 			if(val==NULL) err_code=2;
 			else Xcmin=atof(val);
 		} else err_code=1;
 		if(err_code==1) {
-			fprintf(stderr,"Unknown parameter %s\n",arg);
+			ester_err("Unknown parameter %s",arg);
 			exit(1);
 		}
 		if(err_code==2) {
-			fprintf(stderr,"Argument to %s missing\n",arg);
+			ester_err("Argument to %s missing",arg);
 			exit(1);
 		}
 		cmd.ack(arg,val);
@@ -37,7 +35,7 @@ int main(int argc,char *argv[]) {
 	cmd.close();
 	
 	if(*config.input_file==0) {
-		fprintf(stderr,"Must specify an input file\n");
+		ester_err("Must specify an input file");
 		exit(1);
 	}
 	if(*config.output_file==0) {
@@ -46,16 +44,16 @@ int main(int argc,char *argv[]) {
 
 	star_evol A;
 
-	if(!A.read(config.input_file)) {
+	if(A.read(config.input_file)) {
 		star1d A1d;
-		if(!A1d.read(config.input_file)) {
-			fprintf(stderr,"Error reading input file %s\n",config.input_file);
+		if(A1d.read(config.input_file)) {
+			ester_err("Error reading input file %s", config.input_file);
 			exit(1);
 		}
 		A=A1d;
 	}
 	
-	figure *fig;
+	figure *fig = NULL;
 	solver *op;
 	
 	if(config.verbose) {
@@ -122,12 +120,14 @@ int main(int argc,char *argv[]) {
 		sprintf(outfile,"%s_%04d",config.output_file,n);
         {
             char *filename = NULL;
-            asprintf(&filename, "%s-%04d.hdf5",
-                    config.output_file,
-                    n);
-            A.hdf5_write(filename);
-            free(filename);
-        }	A.write(outfile,config.output_mode);
+            if (asprintf(&filename, "%s-%04d.hdf5",
+                        config.output_file,
+                        n) != -1) {
+                A.hdf5_write(filename);
+                free(filename);
+            }
+        }
+        A.write(outfile,config.output_mode);
 		Xc = A.comp["H"](0)/A.comp["H"](-1);
         A.fill(); // this updated the chemical composition
 		n++;

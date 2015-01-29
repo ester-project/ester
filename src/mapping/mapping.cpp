@@ -1,31 +1,32 @@
 #include "ester-config.h"
-#include"mapping.h"
-#include"constants.h"
-#include<stdlib.h>
-#include<cmath>
+#include "utils.h"
+#include "mapping.h"
+#include "constants.h"
+#include <stdlib.h>
+#include <cmath>
 
-mapping::mapping():ex(this), 
-			nr(gl.N),nt(leg.npts),ndomains(gl.ndomains),nex(ex.gl.N),eta(eta_),npts(gl.npts),
-			D(gl.D),Dt(leg.D_00),Dt2(leg.D2_00),Dt_11(leg.D_11),Dt2_11(leg.D2_11),Dt_01(leg.D_01),
-			Dt2_01(leg.D2_01),Dt_10(leg.D_10),Dt2_10(leg.D2_10),z(gl.x),th(leg.th),I(gl.I),It(leg.I_00) {
+mapping::mapping() : nr(gl.N), nt(leg.npts), ndomains(gl.ndomains),
+    npts(gl.npts), eta(eta_), D(gl.D), z(gl.x), th(leg.th), Dt(leg.D_00), Dt2(leg.D2_00),
+    Dt_11(leg.D_11), Dt2_11(leg.D2_11), Dt_01(leg.D_01), Dt2_01(leg.D2_01),
+    Dt_10(leg.D_10), Dt2_10(leg.D2_10), I(gl.I),
+    It(leg.I_00), ex(this), nex(ex.gl.N) { 
 
 	ex.gl.set_ndomains(1);
 	ex.gl.set_xif(0.,1.);
 	ex.gl.set_npts(10);
 	
 	mode=MAP_BONAZZOLA;
-	
 }
 
 mapping::~mapping() {}
 
-mapping::mapping(const mapping &map):ex(this),
-		nr(gl.N),nt(leg.npts),ndomains(gl.ndomains),nex(ex.gl.N),eta(eta_),npts(gl.npts),
-		D(gl.D),Dt(leg.D_00),Dt2(leg.D2_00),Dt_11(leg.D_11),Dt2_11(leg.D2_11),Dt_01(leg.D_01),
-		Dt2_01(leg.D2_01),Dt_10(leg.D_10),Dt2_10(leg.D2_10),z(gl.x),th(leg.th),I(gl.I),It(leg.I_00) {
+mapping::mapping(const mapping &map) : nr(gl.N), nt(leg.npts),
+    ndomains(gl.ndomains), npts(gl.npts), eta(eta_), D(gl.D), z(gl.x),
+    th(leg.th), Dt(leg.D_00), Dt2(leg.D2_00), Dt_11(leg.D_11),
+    Dt2_11(leg.D2_11), Dt_01(leg.D_01), Dt2_01(leg.D2_01), Dt_10(leg.D_10),
+    Dt2_10(leg.D2_10), I(gl.I), It(leg.I_00), ex(this), nex(ex.gl.N) {
 
 	copy(map);
-
 }
 
 void mapping::copy(const mapping &map) {
@@ -93,7 +94,7 @@ int mapping::init() {
 }
 
 int mapping::remap() {
-	
+
 	eta_=leg.eval_00(R,0);
 	for(int i=0;i<ndomains+1;i++)
 		gl.xif[i]=eta_(i);
@@ -221,7 +222,7 @@ int mapping::remap() {
 	ex.D=ex.gl.D*eta(-1)/ex.z/ex.z;
 	
 	if(exist(rz<0)||exist(ex.rz<0)) {
-		fprintf(stderr,"WARNING: (mapping) Found rz<0\n");
+		ester_warn("(mapping) Found rz<0");
 		return 1;
 	}
 	
@@ -282,11 +283,11 @@ matrix mapping::stream(const matrix &Fz) const {
 matrix mapping::eval(const matrix &y,const matrix &ri, const matrix &thi,int parity) const {
 
 	if(ri.nrows()!=thi.nrows()||ri.ncols()!=thi.ncols()) {
-		fprintf(stderr,"Error: (mapping.eval) Matrix dimensions must agree\n");
+		ester_err("(mapping.eval) Matrix dimensions must agree");
 		exit(1);
 	}
 	if(y.nrows()!=gl.N||y.ncols()!=leg.npts) {
-		fprintf(stderr,"Error: (mapping.eval) Matrix dimensions must agree\n");
+		ester_err("(mapping.eval) Matrix dimensions must agree");
 		exit(1);
 	}
 	
@@ -302,7 +303,7 @@ matrix mapping::eval(const matrix &y,const matrix &ri, const matrix &thi,int par
 		if(zi-1>-1e-10&&zi-1<1e-10) zi=1;
 		if(zi<1e-10&&zi>-1e-10) zi=0;
 		if(zi>1||zi<0) {
-			fprintf(stderr,"Error: (mapping.eval) Coordinates (r,theta)=(%f,%f) are out of bounds\n",
+			ester_err("(mapping.eval) Coordinates (r,theta)=(%f,%f) are out of bounds",
 				ri(i),thi(i));
 			exit(1);
 		}
@@ -314,7 +315,7 @@ matrix mapping::eval(const matrix &y,const matrix &ri, const matrix &thi,int par
 			if(fabs(dzi)<1e-10) fin++;
 			nit++;
 			if(nit>100) {
-				fprintf(stderr,"Error: (mapping.eval) Failed to converge\n");
+				ester_err("(mapping.eval) Failed to converge");
 				exit(1);
 			}
 			zi+=dzi;
@@ -330,7 +331,7 @@ matrix mapping::zeta_to_r(const matrix &z) const {
 	matrix rr(z.nrows(),z.ncols());
 	
 	if(z.ncols()!=leg.npts) {
-		fprintf(stderr,"Error: (mapping.zeta_to_r) Matrix must have nth columns\n");
+		ester_err("(mapping.zeta_to_r) Matrix must have nth columns");
 		exit(1);
 	}
 	

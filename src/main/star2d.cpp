@@ -1,11 +1,12 @@
 #include "ester-config.h"
+#include "utils.h"
+#include "star.h"
+#include "read_config.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
-#include "star.h"
-
-#include "read_config.h"
 
 int killed=0;
 
@@ -18,7 +19,7 @@ int main(int argc,char *argv[]) {
 	double t_plot;
 	configuration config(argc,argv);
 	tiempo t;
-	figure *fig;
+	figure *fig = NULL;
 	
 	signal(SIGINT,sig_handler);
 	
@@ -32,7 +33,10 @@ int main(int argc,char *argv[]) {
 	star2d A;
 	solver *op;
 	
-	if(!A.init(config.input_file,config.param_file,argc,argv)) return 1;
+	if(A.init(config.input_file,config.param_file,argc,argv)) {
+        ester_err("Could not initialize star");
+        return 1;
+    }
 	
 	nit=0;
 	
@@ -51,24 +55,23 @@ int main(int argc,char *argv[]) {
 		A.core_convec=0;
 	}
 	
-	while(!last_it) {
+    while(!last_it) {
         if (A.config.dump_iter) {
             char *filename = NULL;
-            asprintf(&filename, "%s-iter%d.hdf5",
-                    config.output_file,
-                    nit);
-            A.hdf5_write(filename);
-            free(filename);
+            if (asprintf(&filename, "%s-iter%d.hdf5",
+                        config.output_file,
+                        nit) != -1) {
+                A.hdf5_write(filename);
+                free(filename);
+            }
         }
 
-		nit++;
-		
+        nit++;
 
 		if(err<0.1&&!*config.input_file) {
-			A.core_convec=core_convec_set;
+            A.core_convec=core_convec_set;
 		}
 		
-		//A.check_jacobian(op,"w");exit(0);
 		err=A.solve(op);
 
 		tt(nit-1)=t.value();
@@ -91,31 +94,6 @@ int main(int argc,char *argv[]) {
 				A.drawci(fig,A.G,100,64,15,11);
 				fig->label("Meridional circulation","","");
 				t_plot=tt(nit-1);
-				
-/*
-				static figure fig2("/XSERVE");
-				fig2.subplot(2,2);
-				fig2.colorbar();
-				A.drawi(&fig2,A.psi,100,100);
-				fig2.colorbar();
-				A.drawi(&fig2,A.vt,100,100,11);
-				fig2.colorbar();
-				A.drawi(&fig2,A.vr,100,100);
-				fig2.colorbar();
-				A.drawi(&fig2,A.G,100,100,11);
-				static figure fig3("/XSERVE");
-				fig3.subplot(2,2);
-				fig3.colorbar();
-				A.spectrum(&fig3,A.psi);
-				fig3.colorbar();
-				A.spectrum(&fig3,A.vt,11);
-				fig3.colorbar();
-				A.spectrum(&fig3,A.vr);
-				fig3.colorbar();
-				A.spectrum(&fig3,A.G,11);
-*/
-				//A.boundary_layer();				
-				
 			}
 
 		}
@@ -146,14 +124,6 @@ int main(int argc,char *argv[]) {
 	}
 
 	A.write(config.output_file,config.output_mode);
-    {
-        char *filename = NULL;
-        asprintf(&filename, "%s.hdf5",
-                config.output_file);
-        A.hdf5_write(filename);
-        free(filename);
-    }
-
 
 	if(config.verbose) {
 		delete fig;
@@ -172,12 +142,16 @@ void sig_handler(int sig) {
 	char yn;
 
 	if(sig==SIGINT) {
-		printf("\nFinish iteration and save model (y/n)?");
-		scanf(" %c",&yn);
-		if(yn=='y') {
-			killed=1;
-			return;
-		}
+		printf("\nFinish iteration and save model ([y]/n)?");
+		if (scanf(" %c",&yn) == 1) {
+            if(yn=='y') {
+                killed = 1;
+                return;
+            }
+        }
+        else {
+            killed = 1;
+        }
 	}
 	exit(sig);
 }

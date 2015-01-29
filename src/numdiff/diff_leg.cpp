@@ -115,7 +115,7 @@ matrix diff_leg::dPn(int n,matrix x,matrix p) {
 
 matrix diff_leg::nodes(int n,matrix &w) {
 
-	int i,info,fin=2;
+	int info,fin=2;
 	matrix x,p,x0;
 	double tol=1e-13;
 
@@ -144,7 +144,7 @@ matrix diff_leg::nodes(int n,matrix &w) {
 
 void diff_leg::init() {
 
-	int i,n,info;
+	int i,n;
 	double ll;
 	matrix p(npts*2-1,1),dp(1,npts),d2p(1,npts);
 	matrix p_1(1,npts),p0(1,npts);
@@ -272,9 +272,9 @@ matrix diff_leg::eval_00(const matrix &y,const matrix &thi) const {
 
 matrix diff_leg::eval_00(const matrix &y,double thi) const {
 
-	matrix T,X(1,1);
+	matrix T, X(1,1);
 	X(0,0)=thi;
-	return this->eval_00(y,X,T);
+	return this->eval_00(y, X, T);
 }
 
 matrix diff_leg::eval_00(const matrix &y,double thi,matrix &T) const {
@@ -373,10 +373,10 @@ matrix diff_leg::eval(const matrix &y,const matrix &thi0,matrix &T,int par_pol,i
 	matrix p(1,thi.ncols()),dp(1,thi.ncols()),p_1(1,thi.ncols()),p0(1,thi.ncols());
 	double ll;
 	int i,n;
-	
+
 	x=cos(thi);
 	T.dim(y.ncols(),thi.ncols());
-	
+
 	ll=0;
 	p=ones(1,thi.ncols());
 	dp=zeros(1,thi.ncols());
@@ -387,7 +387,7 @@ matrix diff_leg::eval(const matrix &y,const matrix &thi0,matrix &T,int par_pol,i
 	dp=ll*cos(thi)/sin(thi)*p-(2*ll+1)*ll/sqrt(4*ll*ll-1)/sin(thi)*p_1;
 	if(!par_pol&&par_eq) T.setrow(0,p);
 		else if(par_pol&&!par_eq) T.setrow(0,dp);	
-		
+
 	n=npts;
 	for(i=1;i<n;i++) {
 		ll=2*i-1;
@@ -422,16 +422,15 @@ matrix diff_leg::eval(const matrix &y,const matrix &thi0,matrix &T,int par_pol,i
 			}
 		}
 	}
-	
+
 	if(!par_pol&&!par_eq) T=(P_00,T);
 	else if(!par_pol&&par_eq) T=(P_01,T);
 	else if(par_pol&&!par_eq) T=(P_10,T);
 	else if(par_pol&&par_eq) T=(P_11,T);
-	
+
 	yi=(y,T);
-	
+
 	return yi;
-	
 }
 
 matrix diff_leg::l_00() const {

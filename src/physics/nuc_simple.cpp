@@ -5,14 +5,14 @@
 int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,nuc_struct &nuc) {
 
 	matrix T9;
-	double C,N,O,XCNO;
+	double C,N,XCNO;
 	double Z=comp.Z()(-1);
 	matrix X(comp.X());
 	
 	T9=T/1e9;
 	C=0.173285;
 	N=0.053152;
-	O=0.482273;
+	// O=0.482273;
 	XCNO=Z*(C+N);
 
 	nuc.pp=8.2398e4*X*X*pow(T9,-2./3.)*exp(-3.6*pow(T9,-1./3.));

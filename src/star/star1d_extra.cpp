@@ -54,7 +54,6 @@ matrix star1d::gsup() const {
 
 matrix star1d::N2() const {
 
-	int i,j0;
 	matrix N2;
 
 	N2=-(D,p)/rho*((D,p)/p/eos.G1-(D,rho)/rho);

@@ -4,10 +4,13 @@ extern "C" {
 
 #ifdef DEBUG
 
-#define DEBUG_FUNCNAME fprintf(stderr, "%s\n", __PRETTY_FUNCTION__);
+#define DEBUG_FUNCNAME do {\
+    fprintf(stderr, "%s\n", __PRETTY_FUNCTION__); \
+} while(0)
 
 #else 
 
-#define DEBUG_FUNCNAME
+#define DEBUG_FUNCNAME do {\
+} while(0)
 
 #endif

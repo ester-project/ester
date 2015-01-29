@@ -1,10 +1,11 @@
 #include "ester-config.h"
+#include "utils.h"
+#include "star.h"
+#include "read_config.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "star.h"
-
-#include "read_config.h"
 
 int main(int argc,char *argv[]) {
 
@@ -13,19 +14,21 @@ int main(int argc,char *argv[]) {
 	tiempo t;
 	double t_plot;
 	configuration config(argc,argv);
-	figure *fig;
+	figure *fig = NULL;
 	
 	t.start();
 	if(config.verbose) {
 		fig=new figure(config.plot_device);
 		fig->subplot(2,1);
 	}
-
 	
 	star1d A;
 	solver *op;
 	
-	if(!A.init(config.input_file,config.param_file,argc,argv)) return 1;
+	if(A.init(config.input_file,config.param_file,argc,argv)) {
+        ester_err("Could not initialize star");
+        return 1;
+    }
 
 	nit=0;
 	
