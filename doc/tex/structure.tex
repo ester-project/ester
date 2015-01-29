@@ -28,7 +28,7 @@ and the expressions of the viscous force, which could be
 for a compressible, constant viscosity fluid, and of the heat flux
 
 \begin{equation} \vF = -\khi_r\na T -\frac{\khi_{\rm turb}T}{{\cal R}_M}\na s\end{equation}
-where $\khi_T$ is the turbulent diffusion of heat and $s$ the
+where $\khi_{\rm turb}$ is the turbulent diffusion of heat and $s$ the
 entropy.
 
 This set of equations is completed by boundary conditions (discussed
@@ -150,10 +150,12 @@ pressure is
 
 \beq P_s=\tau_s\frac{g_{\rm pole}}{\kappa_{\rm pole}},\eeq
 On this isobar, $T=T_{\rm eff}$ only at the pole. This definition
-permits a smooth continuity with the non-rotating models.
+permits a smooth continuity with the non-rotating models. This surface
+will be associated with the value $\zeta=1$ of the pseudo-radial
+coordinate (see the chapter on the mapping).
 
 \begin{itemize}
-\item On the gravitational potential: regularity at the centre of the
+\item {\bf On the gravitational potential:} regularity at the centre of the
 star and vanishing at infinity. However, imposing this condition on the
 surface of the star is cumbersome and leads to problem of convergence
 for very flattened stars. We thus encompass the star with an empty
@@ -165,7 +167,7 @@ boundary conditions on spherical harmonics components are simply
 \]
 which ensure the matching with a field vanishing at infinity.
 
-\item On the velocity, we demand stress-free conditions, namely
+\item {\bf On the velocity,} we demand stress-free conditions, namely
 
 \[ \vv\cdot \vn =0 \quad {\rm and}\quad ([\sigma]\vn)\wedge\vn =\vzero
 \]
@@ -190,14 +192,16 @@ function of the meridional flow. The foregoing condition is completed by
 \[ \vec{\hat\xi}\cdot\vu = 0\]
 at the surface.
 
-\item The rotation speed of the star must be specified. For this we
+\item {\bf The rotation speed} of the star must be specified. For this we
 impose the equatorial angular velocity as a fraction of the critical
 angular velocity, namely:
 
 \[ \Omega(r=R_{\rm eq},\theta=\pi/2) =
 \omega_k\sqrt{\frac{GMR^2\rho_c}{P_cR_{\rm eq}^3}}\]
+Another way of specifying the angular velocity of the star is to impose
+its total angular momentum (see integral constraints).
 
-\item On temperature: with the adopted definition of the stellar surface
+\item {\bf On temperature:} with the adopted definition of the stellar surface
 and thanks to a simple model described in \cite{ELR13}, we can ascribe
 to the surface of the star a temperature profile, such that
 
