@@ -25,6 +25,9 @@ ester-config.h: config.h Makefile
 star.cfg: config/star.cfg.in Makefile
 	$(do_subst) < $< > $@
 
+library_includedir  	= $(includedir)/
+library_include_HEADERS = ester-config.h
+
 defaultconfigdir	= $(datadir)/ester
 defaultconfig_DATA	= $(top_srcdir)/config/1d_default.par \
 					  $(top_srcdir)/config/2d_default.par \

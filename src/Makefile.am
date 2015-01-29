@@ -81,7 +81,6 @@ libester_la_SOURCES		= global/global.cpp									\
 library_includedir  	= $(includedir)/
 library_include_HEADERS = $(srcdir)/include/constants.h \
 						  $(srcdir)/include/ester.h		\
-						  ../ester-config.h		\
 						  $(srcdir)/include/mapping.h	\
 						  $(srcdir)/include/numdiff.h	\
 						  $(srcdir)/include/physics.h	\
