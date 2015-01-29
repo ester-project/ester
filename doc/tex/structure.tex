@@ -1,5 +1,221 @@
 \chapter{General structure of the code}
 
+
+\section{Equations to be solved}
+
+\subsection{With dimensional variables}
+
+We consider a lonely rotating star in a steady state. The star is
+governed by the following equations for macroscopic quantities:
+
+\begin{equation} \Delta\phi = 4\pi G\rho\end{equation}
+
+\begin{equation} \rho T \vv\cdot\nabla s = -\Div\vF + \eps_*\end{equation}
+
+\begin{equation} \rho \vv\cdot\na\vv = -\na P -\rho\na\phi+\vF_v\end{equation}
+
+\begin{equation} \Div(\rho\vv) =0\end{equation}
+which need to be completed by the equations of microphysics:
+
+\greq
+P\equiv P(\rho,T)\\
+\khi_r \equiv \khi_r(\rho,T)\\
+\eps_* \equiv \eps_*(\rho,T)\\
+\egreq
+and the expressions of the viscous force, which could be
+
+\begin{equation} \vF_v = \mu(\Delta\vv + \frac{1}{3}\na\Div\vv)\end{equation}
+for a compressible, constant viscosity fluid, and of the heat flux
+
+\begin{equation} \vF = -\khi_r\na T -\frac{\khi_{\rm turb}T}{{\cal R}_M}\na s\end{equation}
+where $\khi_T$ is the turbulent diffusion of heat and $s$ the
+entropy.
+
+This set of equations is completed by boundary conditions (discussed
+below).
+
+\subsection{Simplifications}
+
+We simplify the system of equations by first neglecting entropy
+advection by meridional circulation. We also neglect the convective
+flux: thus we avoid computing stars with an outer convective envelope
+where the convective flux is non-negligible. Core convection is
+simplified in assuming an isentropic core. Hence, the energy/entropy
+equation just reads:
+
+\begin{equation} -\Div\vF + \eps_* = 0\end{equation}
+As for the momentum equation, we split it into its azimuthal and
+meridional components. As shown in \cite[][]{ELR13}, the meridional
+components of the equation may be reduced to 
+
+\begin{equation}
+\rho s\Omega^2\es=\na p+\rho\na\phi
+\label{baroc}
+\end{equation}
+where $s$ is the cylindrical radial coordinate. The vorticity equation
+reduces to
+
+\begin{equation}
+\label{eq:vort_inv}
+s\frac{\partial\Omega^2}{\partial z}=\ephi\cdot\frac{\na
+p\times\na\rho}{\rho^2} \;.
+\end{equation}
+In these equation, the advection of the 'meridian momentum' has been
+neglected in view of the smallness of the meridional flow.
+
+The meridian circulation is important in the advection of angular
+momentum as it balances its diffusion by viscosity. So the $\ephi$
+component of the momentum equation reads:
+
+\begin{equation}
+\label{eq:angular_mom}
+\na\cdot{(\rho s^2\Omega\vu)}=\na\cdot (\mu s^2\na\Omega)
+\end{equation}
+where $\vu$ is the meridional circulation and $\mu$ the dynamical
+viscosity.
+
+
+\subsection{Scaled equations}
+
+First step is to move scaled equations with scaled quantities. We choose
+to scale pressure, density and temperature by their central values and
+other quantities as follows:
+
+\begin{center}\parbox{10cm}{
+
+Length scale $\equiv$ polar radius \dotfill $R$
+
+Pressure scale $\equiv$ central pressure \dotfill $P_c$
+
+Density scale $\equiv$ central density \dotfill $\rho_c$
+
+Temperature scale $\equiv$ central temperature \dotfill $T_c$
+
+Gravitational potential scale \dotfill  $\frac{P_c}{\rho_c}$
+
+Angular velocity scale \dotfill $\frac{1}{R}\sqrt{\frac{P_c}{\rho_c}}$
+
+%Time scale \dotfill $(R^2/\Phi_*)^{1/2}$
+
+%Entropy scale \dotfill ${\cal R}_M$
+}
+\end{center}\bigskip
+
+With these scalings, the equation now read:
+
+\begin{equation} \Delta\phi = \pi_c \rho\end{equation}
+where
+
+\begin{equation} \pi_c = \frac{4\pi G\rho_c^2}{P_c}\end{equation}
+Energy equation can be written
+
+\begin{equation} \Delta T + \na\ln\chi\cdot\na T +
+\Lambda\frac{\eps_*}{\chi_*} = 0\end{equation}
+where
+
+\begin{equation} \Lambda = \frac{\rho_c R^2}{T_c}\end{equation}
+is a dimensional constant since $\eps_*$ and $\chi_*$ are dimensional. 
+
+The momentum equation leads to
+
+\begin{equation}
+\rho s\Omega^2\es=\na p+\rho\na\phi
+\label{barocnd}
+\end{equation}
+and the vorticity equation to
+
+\begin{equation}
+s\frac{\partial\Omega^2}{\partial z}=\ephi\cdot\frac{\na
+p\times\na\rho}{\rho^2} \;.
+\end{equation}
+while angular momentum flux balance reads
+
+\begin{equation}
+\label{eq:angular_momnd}
+\na\cdot{(\rho s^2\Omega\vu)}=E\na\cdot (\mu s^2\na\Omega)
+\end{equation}
+In this latter equation we introduced the Ekman number
+
+\begin{equation} E = \frac{\mu_c}{\rho_c \Omega_0 R^2} \with
+\Omega_0=\sqrt{\frac{P_c}{R^2\rho_c}}\; .\end{equation}
+Mass conservation remains the same
+
+\begin{equation} \Div(\rho\vu) =0\end{equation}
+
+\subsection{Boundary conditions}
+
+Before presenting the boundary conditions, we should define the surface
+of the star: we take as its definition, the isobar where the polar
+pressure is 
+
+\beq P_s=\tau_s\frac{g_{\rm pole}}{\kappa_{\rm pole}},\eeq
+On this isobar, $T=T_{\rm eff}$ only at the pole. This definition
+permits a smooth continuity with the non-rotating models.
+
+\begin{itemize}
+\item On the gravitational potential: regularity at the centre of the
+star and vanishing at infinity. However, imposing this condition on the
+surface of the star is cumbersome and leads to problem of convergence
+for very flattened stars. We thus encompass the star with an empty
+domain whose outer boundary is a sphere. On this outer sphere the
+boundary conditions on spherical harmonics components are simply
+
+\[ 
+\dr{\phi_\ell}+\frac{(\ell+1)\phi_\ell}{r}=0
+\]
+which ensure the matching with a field vanishing at infinity.
+
+\item On the velocity, we demand stress-free conditions, namely
+
+\[ \vv\cdot \vn =0 \quad {\rm and}\quad ([\sigma]\vn)\wedge\vn =\vzero
+\]
+where $[\sigma]$ is the stress tensor. However, we are in the limit of
+small Ekman numbers and it is interesting (numerically) not to have to
+compute this layer. However, it is necessary to take it into account
+for computing the azimuthal velocity, which is otherwise undefined
+\cite[e.g.][]{ELR13}. \cite{ELR13} have shown that the effect of
+Ekman layer on the interior flow can be mimicked by the boundary
+condition:
+
+\begin{equation}
+\label{eq:bl}
+E\mu
+s^2\vec{\hat\xi}\cdot\na\Omega+\psi\vec{\hat\tau}\cdot\na(s^2\Omega)=0
+\qquad\mbox{on the surface}\;.
+\end{equation}
+where $\vec{\hat\xi}$ is a unit vector perpendicular to the surface
+while $\vec{\hat\tau}$ is tangential to it. $\psi$ is the stream
+function of the meridional flow. The foregoing condition is completed by
+
+\[ \vec{\hat\xi}\cdot\vu = 0\]
+at the surface.
+
+\item The rotation speed of the star must be specified. For this we
+impose the equatorial angular velocity as a fraction of the critical
+angular velocity, namely:
+
+\[ \Omega(r=R_{\rm eq},\theta=\pi/2) =
+\omega_k\sqrt{\frac{GMR^2\rho_c}{P_cR_{\rm eq}^3}}\]
+
+\item On temperature: with the adopted definition of the stellar surface
+and thanks to a simple model described in \cite{ELR13}, we can ascribe
+to the surface of the star a temperature profile, such that
+
+\beq T_b(\theta) = \lp\frac{g_{\rm pole}}{g_{\rm
+eff}(\theta)}\frac{\kappa(\theta)}{\kappa_{\rm
+pole}}\rp^{1/(n+1)}\lp\frac{-\khi_r\vn\cdot\na T}{\sigma}\rp^{1/4}\;.
+\eeqn{tb}
+where the polytropic index $n$ is set to $n=3$. So the temperature
+boundary condition are simply:
+
+\[ T(0) = 1 \andet T(\zeta=1,\theta)=T_b(\theta)/T_c\]
+
+
+\end{itemize}
+
+
+
+\section{Implementation}
 The code is divided in several libraries. Each library implements one ore more classes designed to
 handle one particular aspect of the calculation. 
 
