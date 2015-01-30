@@ -244,6 +244,14 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		cmd.ack(arg,val);
 	}
 	cmd.close();
+
+    map.gl.set_ndomains(params.ndoms);
+    for (int i=0; i<params.nnpts; i++) {
+        map.gl.npts[i] = params.npts[i];
+    }
+    for (int i=params.nnpts; i<params.ndoms; i++) {
+        map.gl.npts[i] = params.npts[params.nnpts-1];
+    }
 	
 	if((change_grid&1)&&!(change_grid&2)) {
 		fprintf(stderr,"Must specify number of points per domain (npts)\n");
@@ -287,8 +295,7 @@ int star1d::check_arg(char *arg,char *val,int *change_grid) {
 	} else if(!strcmp(arg,"Ekman")) {
 		return 1;
 	}
-	return star2d::check_arg(arg,val,change_grid);
-
+	return star2d::check_arg(arg, val, change_grid);
 }
 
 void star1d::dump_info() {

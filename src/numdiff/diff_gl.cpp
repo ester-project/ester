@@ -1,6 +1,7 @@
 #include "ester-config.h"
 #include "numdiff.h"
 #include "constants.h"
+#include "utils.h"
 
 extern "C" {
 #include <stdlib.h>
@@ -8,11 +9,10 @@ extern "C" {
 }
 
 diff_gl::diff_gl(int n):ndomains(ndom), N(Ntot) {
-
+    DEBUG_FUNCNAME;
 	ndom=n;
 	npts=new int[ndom];
 	xif=new double[ndom+1];
-	
 }
 
 diff_gl::~diff_gl() {
@@ -23,7 +23,7 @@ diff_gl::~diff_gl() {
 
 diff_gl::diff_gl(const diff_gl &gl) : x(gl.x), I(gl.I), P(gl.P), P1(gl.P1),
     D(gl.D), ndomains(ndom), N(Ntot) {
-
+    DEBUG_FUNCNAME;
 	int i;
 
 	ndom=gl.ndom;
@@ -57,7 +57,7 @@ diff_gl &diff_gl::operator=(const diff_gl &gl) {
 }
 
 void diff_gl::set_ndomains(int n) {
-
+    DEBUG_FUNCNAME;
 	ndom=n;
 	delete [] npts;
 	delete [] xif;
@@ -80,7 +80,7 @@ void diff_gl::set_xif(double x,...) {
 }
 
 void diff_gl::set_npts(int n,...) {
-
+    DEBUG_FUNCNAME;
 	va_list ap;
 	int i;
 	
@@ -93,12 +93,13 @@ void diff_gl::set_npts(int n,...) {
 }
 
 void diff_gl::init() {
-
+    DEBUG_FUNCNAME;
 	diff_gl gl1(1);
 	int i,j1,j2;
 	double x1,x2;
 	matrix T;
-	
+
+
 	Ntot=0;
 	for(i=0;i<ndom;i++)
 		Ntot+=*(npts+i);

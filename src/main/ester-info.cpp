@@ -1,5 +1,4 @@
 #include "ester-config.h"
-#include "debug.h"
 #include "utils.h"
 #include "ester.h"
 #include <stdlib.h>

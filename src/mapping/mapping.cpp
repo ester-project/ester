@@ -6,15 +6,15 @@
 #include <cmath>
 
 mapping::mapping() : nr(gl.N), nt(leg.npts), ndomains(gl.ndomains),
-    npts(gl.npts), eta(eta_), D(gl.D), z(gl.x), th(leg.th), Dt(leg.D_00), Dt2(leg.D2_00),
-    Dt_11(leg.D_11), Dt2_11(leg.D2_11), Dt_01(leg.D_01), Dt2_01(leg.D2_01),
-    Dt_10(leg.D_10), Dt2_10(leg.D2_10), I(gl.I),
+    npts(gl.npts), eta(eta_), D(gl.D), z(gl.x), th(leg.th), Dt(leg.D_00),
+    Dt2(leg.D2_00), Dt_11(leg.D_11), Dt2_11(leg.D2_11), Dt_01(leg.D_01),
+    Dt2_01(leg.D2_01), Dt_10(leg.D_10), Dt2_10(leg.D2_10), I(gl.I),
     It(leg.I_00), ex(this), nex(ex.gl.N) { 
 
 	ex.gl.set_ndomains(1);
 	ex.gl.set_xif(0.,1.);
 	ex.gl.set_npts(10);
-	
+
 	mode=MAP_BONAZZOLA;
 }
 
@@ -85,16 +85,15 @@ void mapping::set_mode(int mode_set) {
 }
 
 int mapping::init() {
-
-	R=vector_t(0.,1.,ndomains+1)*ones(1,nt);
+    DEBUG_FUNCNAME;
+	R = vector_t(0., 1., ndomains+1)*ones(1,nt);
 	leg.init();
 	ex.gl.init();
 	return remap();
-	
 }
 
 int mapping::remap() {
-
+    DEBUG_FUNCNAME;
 	eta_=leg.eval_00(R,0);
 	for(int i=0;i<ndomains+1;i++)
 		gl.xif[i]=eta_(i);
@@ -113,6 +112,8 @@ int mapping::remap() {
 	J[2].dim(nr,nt);
 	J[3].dim(nr,nt);
 
+    for (int i=0; i<ndomains; ++i)
+        npts[i] = gl.npts[i];
 	if(mode==MAP_BONAZZOLA) {
 		int j0=0,dj;
 		matrix q,dR,zz,xi,A,Ap,App;

@@ -1,9 +1,10 @@
 #include "ester-config.h"
-#include"star.h"
-#include<stdlib.h>
-#include<sys/time.h>
-#include<string.h>
-#include"symbolic.h"
+#include "star.h"
+#include "utils.h"
+#include "symbolic.h"
+#include <stdlib.h>
+#include <sys/time.h>
+#include <string.h>
 
 /// \brief Initialize star's chemical composition, equation of state, opacity,
 /// nuclear reaction and atmosphere.

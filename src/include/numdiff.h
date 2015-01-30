@@ -14,27 +14,27 @@
 /// defined in \f$ [-1, 1] \f$. \n
 /// And the collocation points are \f$ x_i = -cos(\frac{i \pi}{n})\f$
 class diff_gl {
-	int ndom,Ntot;
-	void init_1();
-  public:
-  	matrix x,I;
-  	matrix_block_diag P,P1,D;
-  	int *npts;
-  	double *xif;
-  	const int &ndomains,&N;
-  	
-  	explicit diff_gl(int n=1);
-  	~diff_gl();
-  	diff_gl(const diff_gl &);
-  	diff_gl &operator=(const diff_gl &);
-  	void set_ndomains(int n);
-  	void set_xif(double,...);
-  	void set_npts(int,...);
-  	void init();
-  	matrix eval(const matrix &y,const matrix &x,matrix &T) const;
-  	matrix eval(const matrix &y,const matrix &x) const;
-  	matrix eval(const matrix &y,double x) const;
-  	matrix eval(const matrix &y,double x,matrix &T) const;
+    int ndom,Ntot;
+    void init_1();
+public:
+    matrix x,I;
+    matrix_block_diag P,P1,D;
+    int *npts;
+    double *xif;
+    int &ndomains,&N;
+
+    explicit diff_gl(int n=1);
+    ~diff_gl();
+    diff_gl(const diff_gl &);
+    diff_gl &operator=(const diff_gl &);
+    void set_ndomains(int n);
+    void set_xif(double,...);
+    void set_npts(int,...);
+    void init();
+    matrix eval(const matrix &y,const matrix &x,matrix &T) const;
+    matrix eval(const matrix &y,const matrix &x) const;
+    matrix eval(const matrix &y,double x) const;
+    matrix eval(const matrix &y,double x,matrix &T) const;
 };
 
 /// \brief The diff_leg class implements Legendre numerical differentiation.

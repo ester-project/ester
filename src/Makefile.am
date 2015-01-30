@@ -85,7 +85,6 @@ library_include_HEADERS = $(srcdir)/include/constants.h \
 						  $(srcdir)/include/numdiff.h	\
 						  $(srcdir)/include/physics.h	\
 						  $(srcdir)/include/star.h		\
-						  $(srcdir)/include/debug.h		\
 						  $(srcdir)/include/graphics.h	\
 						  $(srcdir)/include/matrix.h	\
 						  $(srcdir)/include/parser.h	\

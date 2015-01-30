@@ -31,12 +31,17 @@
 } while(0)
 #endif
 
-#ifdef DEBUG
 #define ester_debug(...) do { \
     fprintf(stderr, __VA_ARGS__); \
 } while (0)
-#else
-#define ester_debug(...) do {} while (0)
+
+#ifdef DEBUG
+#define DEBUG_FUNCNAME do {\
+    fprintf(stderr, "%s\n", __PRETTY_FUNCTION__); \
+} while(0)
+#else 
+#define DEBUG_FUNCNAME do {\
+} while(0)
 #endif
 
 bool isHDF5Name(const char *fileName);

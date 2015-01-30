@@ -1,8 +1,9 @@
 #include "ester-config.h"
-#include"star.h"
-#include<stdlib.h>
-#include<string.h>
-#include"symbolic.h"
+#include "star.h"
+#include "symbolic.h"
+#include "utils.h"
+#include <stdlib.h>
+#include <string.h>
 
 void star1d::fill() {
     DEBUG_FUNCNAME;

@@ -1,5 +1,6 @@
 #include "ester-config.h"
 #include "star.h"
+#include "utils.h"
 
 extern "C" {
 #include <stdlib.h>
@@ -19,7 +20,6 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
 
     map=red.get_map();
     interp(&red);
-
 }
 
 bool star2d::remap_domains(int ndom, remapper &red) {
