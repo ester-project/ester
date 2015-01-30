@@ -45,7 +45,7 @@ equation just reads:
 
 \begin{equation} -\Div\vF + \eps_* = 0\end{equation}
 As for the momentum equation, we split it into its azimuthal and
-meridional components. As shown in \cite[][]{ELR13}, the meridional
+meridional components. As shown in \cite{ELR13}, the meridional
 components of the equation may be reduced to 
 
 \begin{equation}
@@ -171,13 +171,13 @@ which ensure the matching with a field vanishing at infinity.
 
 \[ \vv\cdot \vn =0 \quad {\rm and}\quad ([\sigma]\vn)\wedge\vn =\vzero
 \]
-where $[\sigma]$ is the stress tensor. However, we are in the limit of
+where $[\sigma]$ is the stress tensor. Stars are in the limit of
 small Ekman numbers and it is interesting (numerically) not to have to
-compute this layer. However, it is necessary to take it into account
-for computing the azimuthal velocity, which is otherwise undefined
-\cite[e.g.][]{ELR13}. \cite{ELR13} have shown that the effect of
-Ekman layer on the interior flow can be mimicked by the boundary
-condition:
+compute the ensuing Ekman layer. However, it is necessary to take this
+layer into account for computing the azimuthal velocity, which
+is otherwise undefined \cite[e.g.][hereafter referred to as
+ELR13]{ELR13}. ELR13 have shown that the effect of the Ekman layer on
+the interior flow can be mimicked by the boundary condition:
 
 \begin{equation}
 \label{eq:bl}
@@ -186,7 +186,7 @@ s^2\vec{\hat\xi}\cdot\na\Omega+\psi\vec{\hat\tau}\cdot\na(s^2\Omega)=0
 \qquad\mbox{on the surface}\;.
 \end{equation}
 where $\vec{\hat\xi}$ is a unit vector perpendicular to the surface
-while $\vec{\hat\tau}$ is tangential to it. $\psi$ is the stream
+while $\vec{\hat\tau}$ is tangent to it. $\psi$ is the stream
 function of the meridional flow. The foregoing condition is completed by
 
 \[ \vec{\hat\xi}\cdot\vu = 0\]
@@ -198,8 +198,9 @@ angular velocity, namely:
 
 \[ \Omega(r=R_{\rm eq},\theta=\pi/2) =
 \omega_k\sqrt{\frac{GMR^2\rho_c}{P_cR_{\rm eq}^3}}\]
-Another way of specifying the angular velocity of the star is to impose
-its total angular momentum (see integral constraints).
+where $\omega_k$ is chosen by the user. Another way of specifying the
+angular velocity of the star is to impose its total angular momentum
+(see integral constraints).
 
 \item {\bf On temperature:} with the adopted definition of the stellar surface
 and thanks to a simple model described in \cite{ELR13}, we can ascribe
@@ -217,11 +218,112 @@ boundary condition are simply:
 
 \end{itemize}
 
+\subsection{Integral constraints}
 
+\begin{itemize}
+\item Mass is an input parameter that is related to the preceding
+quantities by
+
+\beq M = \rho_cR^3\intvol \rho dV \eeq
+
+\item Angular momentum is another integral quantity that is useful to
+monitor or to impose:
+
+\beq L = \rho_cR^4\sqrt{\frac{P_c}{\rho_c}}
+\intvol r^2\sin^2\theta\Omega\rho dV \eeq
+
+\end{itemize}
+
+\subsection{The mapping}
+
+The foregoing equations and boundary conditions should be completed by
+the definition of the mapping that maps the spheroidal star to a sphere.
+This thorny subject is described at length in a separate chapter
+
+\section{The algorithm}
+
+\subsection{Discretization}
+
+This system of partial differential equation is solved using a spectral
+method or more precisely spectral elements. The star divided in
+``onion" layers where the vertical direction is discretized on the
+Gauss-Lobatto Collocation grid (associated with Chebyshev polynomials)
+and the horizontal dependence is expanded on the spherical harmonic
+basis.
+
+\subsection{Iterations}
+
+We solve the resulting discretized equations using Newton's iterative
+scheme, namely, if  we write the problem in the form
+
+\begin{equation}
+\vec F(\vec x)=\vec 0 ,
+\end{equation}
+where the vector function $\vec F$ represents the equations that we
+want to solve and $\vec x$ is the vector containing all the independent
+variables of the problem (pressure, temperature, \ldots) including the
+shape of the surface which is not known a priori.  The equations are
+linearized using the Jacobian matrix of $\vec F(\vec x)$ defined as
+
+\begin{equation}
+\delta\vec F(\vec x)=\tens J (\vec x) \delta\vec x .
+\end{equation}
+Then the correction to the solution in the $k$-th iteration will be
+calculated solving the linear system
+
+\begin{equation}
+\tens J(\vec x^{(k)})\delta \vec x^{(k)}=-\delta \vec F(\vec x^{(k)})
+\end{equation}
+and we set $\vec x^{(k+1)}=\vec x^{(k)}+\delta \vec x^{(k)}$.
+
+With an appropriate initial approximation $\vec x^{(0)}$, Newton's method
+has quadratic convergence. In practice, a rotating stellar model can be
+calculated in approximately 10 iterations starting with the corresponding
+non-rotating model.
 
 \section{Implementation}
-The code is divided in several libraries. Each library implements one ore more classes designed to
-handle one particular aspect of the calculation. 
+
+\subsection{The vector}
+
+The solution vector $\vx$ is built from the discretized variables as
+follows
+
+\begin{center}
+\begin{tabular}{lll}
+\hline
+Variable & C++ quantity & Comments \\
+\\
+$\phi$   &        "Phi"       \\
+$\ln P$  &        "log\_p"      \\
+$\pi_c$  &        "pi\_c"      \\
+$\ln T$  &        "log\_T"      \\
+$\Lambda$&        "Lambda"      \\
+$\eta$   &        "eta"      \\
+$d\eta$  &        "deta"      \\
+$R_i(\theta)$&        "Ri"      \\
+$dR_i(\theta)$&        "dRi"      \\
+$\Omega$ &        "Omega"      \\
+$\ln P_c$&        "log\_pc"      \\
+$\ln T_c$&        "log\_Tc"      \\
+$\log R$ &        "log\_R"      \\
+$m$      &        "m"      \\
+$P_s$    &        "ps"      \\
+$T_s$    &        "Ts"      \\
+Lum      &        "lum"      \\
+$F_{\rm rad}$ &        "Frad"      \\
+$T_{\rm eff}$ &        "Teff"      \\
+$g_{\rm sup}$ &        "gsup"      \\
+$\Omega()$ &        "w"      \\
+$\psi$   &        "G"      \\
+$\gamma$ &        "gamma"      \\
+      \hline
+\end{tabular}
+\end{center}
+
+\bigskip
+\bigskip
+The code is divided in several libraries. Each library implements one or
+more classes designed to handle one particular aspect of the calculation.
 
 \begin{itemize}
 \item {\bf matrix}. Matrix algebra.
