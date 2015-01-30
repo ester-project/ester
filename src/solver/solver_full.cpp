@@ -1,6 +1,7 @@
 #include "ester-config.h"
 #include "utils.h"
 #include "solver.h"
+#include <unistd.h>
 #include <stdlib.h>
 #include <cmath>
 #include <time.h>
