@@ -45,15 +45,15 @@ equation just reads:
 
 \begin{equation} -\Div\vF + \eps_* = 0\end{equation}
 As for the momentum equation, we split it into its azimuthal and
-meridional components. As shown in \cite{ELR13}, the meridional
+meridional components. The meridional
 components of the equation may be reduced to 
 
 \begin{equation}
 \rho s\Omega^2\es=\na p+\rho\na\phi
 \label{baroc}
 \end{equation}
-where $s$ is the cylindrical radial coordinate. The vorticity equation
-reduces to
+where $s$ is the cylindrical radial coordinate \cite[e.g.][hereafter
+referred to as ELR]{ELR13}. The vorticity equation reduces to
 
 \begin{equation}
 \label{eq:vort_inv}
@@ -175,8 +175,8 @@ where $[\sigma]$ is the stress tensor. Stars are in the limit of
 small Ekman numbers and it is interesting (numerically) not to have to
 compute the ensuing Ekman layer. However, it is necessary to take this
 layer into account for computing the azimuthal velocity, which
-is otherwise undefined \cite[e.g.][hereafter referred to as
-ELR13]{ELR13}. ELR13 have shown that the effect of the Ekman layer on
+is otherwise undefined (see ELR).
+ELR have shown that the effect of the Ekman layer on
 the interior flow can be mimicked by the boundary condition:
 
 \begin{equation}
@@ -203,7 +203,7 @@ angular velocity of the star is to impose its total angular momentum
 (see integral constraints).
 
 \item {\bf On temperature:} with the adopted definition of the stellar surface
-and thanks to a simple model described in \cite{ELR13}, we can ascribe
+and thanks to a simple model described in ELR, we can ascribe
 to the surface of the star a temperature profile, such that
 
 \beq T_b(\theta) = \lp\frac{g_{\rm pole}}{g_{\rm
@@ -296,7 +296,6 @@ Variable & Dependence & C++ quantity & Comments \\
 $\phi$   & $(\zeta,\theta)$ &  Phi & Gravitation potential \\
 $\ln P$  & $(\zeta,\theta)$ &  log\_p & Natural log of pressure     \\
 $\ln T$  & $(\zeta,\theta)$ &  log\_T & Natural log of temperature  \\
-$F_{\rm rad}$ &  $(\zeta,\theta)$ &  Frad & Radiative flux     \\
    w     &  $(\zeta,\theta)$ &   w  & Differential Rotation    \\
 $\psi$   &  $(\zeta,\theta)$ &   G  & Stream function    \\
 $T_{\rm eff}$ & $\theta$ &  Teff  &  Effective temperature  \\
@@ -305,6 +304,8 @@ $P_s$    &  $\theta$  &ps    &  surface pressure \\
 $T_s$    &  $\theta$  &Ts    &  surface temperature \\
 $\gamma$ &  $\theta$    & gamma    &
 $\gamma=\sqrt{g^{\zeta\zeta}}=\sqrt{1+r^2/r_\theta^2}$ at the surface \\
+$F_{\rm rad}$ &  $(\theta, idom)$ &  Frad & $\vF_\zeta$ Radiative flux
+component at each domain boundary\\
 $R_i$    &  $\theta$       &   Ri & boundaries of the domains \\
 $dR_i$   &  $\theta$       &   dRi& $R_{i+1}-R_i$      \\
 $\eta_i$ &                   &   eta& Polar radius of the domains \\
@@ -314,12 +315,15 @@ $\Lambda$&                  &  Lambda &   Dimensional constant  \\
 $\Omega$ &                  &  Omega  &   Equatorial angular velocity \\
 $\ln P_c$&                  & log\_pc &   log central pressure  \\
 $\ln T_c$&                  & log\_Tc &   log central temperature  \\
-$\log R$ &                   &log\_R  &   log polar radius \\
-$m$      &            &       m     & non-dimensional mass\\
-Lum      &            &  lum   &  Luminosity  \\
+$\log R$ &                  &log\_R  &   log polar radius \\
+$m$      &                  &       m     & non-dimensional mass\\
+Lum      &                  &  lum   &  Luminosity  \\
       \hline
 \end{tabular}
 \end{center}
+
+Note that the above table lists all the variables contained in $\vx$ but not
+in their actual order in the code.
 
 \bigskip
 \bigskip
