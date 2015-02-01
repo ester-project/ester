@@ -224,7 +224,7 @@ boundary condition are simply:
 \item Mass is an input parameter that is related to the preceding
 quantities by
 
-\beq M = \rho_cR^3\intvol \rho dV \eeq
+\beq M = \rho_cR^3\intvol \rho dV = \rho_cR^3 m\eeq
 
 \item Angular momentum is another integral quantity that is useful to
 monitor or to impose:
@@ -289,33 +289,33 @@ The solution vector $\vx$ is built from the discretized variables as
 follows
 
 \begin{center}
-\begin{tabular}{lll}
+\begin{tabular}{llll}
 \hline
-Variable & C++ quantity & Comments \\
+Variable & Dependence & C++ quantity & Comments \\
 \\
-$\phi$   &        "Phi"       \\
-$\ln P$  &        "log\_p"      \\
-$\pi_c$  &        "pi\_c"      \\
-$\ln T$  &        "log\_T"      \\
-$\Lambda$&        "Lambda"      \\
-$\eta$   &        "eta"      \\
-$d\eta$  &        "deta"      \\
-$R_i(\theta)$&        "Ri"      \\
-$dR_i(\theta)$&        "dRi"      \\
-$\Omega$ &        "Omega"      \\
-$\ln P_c$&        "log\_pc"      \\
-$\ln T_c$&        "log\_Tc"      \\
-$\log R$ &        "log\_R"      \\
-$m$      &        "m"      \\
-$P_s$    &        "ps"      \\
-$T_s$    &        "Ts"      \\
-Lum      &        "lum"      \\
-$F_{\rm rad}$ &        "Frad"      \\
-$T_{\rm eff}$ &        "Teff"      \\
-$g_{\rm sup}$ &        "gsup"      \\
-$\Omega()$ &        "w"      \\
-$\psi$   &        "G"      \\
-$\gamma$ &        "gamma"      \\
+$\phi$   & $(\zeta,\theta)$ &  "Phi" & Gravitation potential \\
+$\ln P$  & $(\zeta,\theta)$ &  "log\_p" & Natural log of pressure     \\
+$\ln T$  & $(\zeta,\theta)$ &  "log\_T" & Natural log of temperature  \\
+$F_{\rm rad}$ &  $(\zeta,\theta)$ &  ``Frad" & Radiative flux     \\
+   w     &  $(\zeta,\theta)$ &   "w"  & Differential Rotation    \\
+$\psi$   &  $(\zeta,\theta)$ &   "G"  & Stream function    \\
+$R_i$    &  $(\theta)$       &   "Ri" & boundaries of the domains \\
+$dR_i$   &  $(\theta)$       &   "dRi"& $R_{i+1}-R_i$      \\
+$\eta_i$ &                   &   "eta"& Polar radius of the domains \\
+$d\eta_i$&                   &  "deta"& $\eta_{i+1}-\eta_i$      \\
+$\pi_c$  &                  &  "pi\_c" &  Non-dimensional central pressure \\
+$\Lambda$&                  &  "Lambda" &   Dimensional constant  \\
+$\Omega$ &                  &  "Omega"  &   Equatorial angular velocity \\
+$\ln P_c$&                  & "log\_pc" &   log central pressure  \\
+$\ln T_c$&                  & "log\_Tc" &   log central temperature  \\
+$\log R$ &                   &"log\_R"  &   log polar radius \\
+$m$      &            &       "m"     & non-dimensional mass\\
+$P_s$    &               &"ps"    &  \\
+$T_s$    &               &"Ts"    &  \\
+Lum      &               &  "lum"   &  Luminosity  \\
+$T_{\rm eff}$ & $\theta$ &  "Teff"  &  Effective temperature  \\
+$g_{\rm sup}$ &  &  "gsup"  &    \\
+$\gamma$ &       & "gamma"    &  \\
       \hline
 \end{tabular}
 \end{center}

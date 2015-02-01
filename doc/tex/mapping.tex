@@ -1,27 +1,34 @@
 \chapter{Mapping. Spheroidal coordinates}
 
-We have seen at the end of the previous chapter that we can work with 2D problems combining {\tt diff\_gl} and
-{\tt diff\_leg} objects. This is exactly the purpose of the {\tt mapping} class, that contains all the elements
-to work with spherical, and more important, with deformed spheroidal domains. 
+We have seen at the end of the previous chapter that we can work with
+2D problems combining {\tt diff\_gl} and {\tt diff\_leg} objects. This
+is exactly the purpose of the {\tt mapping} class, that contains all
+the elements to work with spherical, and more important, with deformed
+spheroidal domains.
 
 \section{Introduction}
 
-Rotating stars are not spherical. The centrifugal force will flatten the star, and this flattening will
-be more important as the rotation velocity increases. For this reason, we have to find an appropriate way
-to deal with the discretization of the stellar variables in a deformed spheroidal domain.
+Rotating stars are not spherical. The centrifugal force flattens the
+star, and this flattening increases with the angular velocity. For this
+reason, we use a discretization of the stellar variables in a deformed
+spheroidal domain.
 
-Note that the problems in which we are interested will involve only axisymmetric quantities, thus essentially 
-2D. For that reason, we will restrict the discussion to axisymmetric 2D problems in a spherical-like domain,
-but it could be also generalized to other geometries.
+Note that the problems in which we are interested involves only
+axisymmetric quantities, thus essentially 2D. For that reason, we
+restrict the discussion to axisymmetric 2D problems in a spherical-like
+domain, but it can be generalized to a non-axisymmetric spheroidal
+geometry as shown in \cite{BGM98}.
 
 \subsection{Coordinate mapping}
 \label{sect:mapping}
 
-We will consider spherical coordinates ($r,\theta,\varphi$). Let $\mathcal{D}$ be an axisymmetric domain centered
-in the origin of coordinates ($r=0$) and whose outer boundary $\partial\mathcal{D}$
-can be represented by a function $R(\theta)$ that
-depends only on the colatitude. We define a new set of coordinates ($\zeta,\theta',\varphi'$) such that 
-the new radial-like coordinate $\zeta$ is constant over $\partial\mathcal{D}$. This new spheroidal
+Let ($r,\theta,\varphi$) be the spherical coordinates
+and $\mathcal{D}$ be an axisymmetric domain
+centered at the origin of coordinates ($r=0$) and whose outer boundary
+$\partial\mathcal{D}$ can be represented by a function $R(\theta)$
+that depends only on colatitude. We define a new set of coordinates
+($\zeta,\theta',\varphi'$) such that the new radial-like coordinate
+$\zeta$ is constant over $\partial\mathcal{D}$. These new spheroidal
 coordinates are defined by the transformation:
 
 \begin{equation}
@@ -33,18 +40,20 @@ r=r(\zeta,\theta')\\
 \end{array}
 \right.
 \end{equation}
+The problem reduces to find a suitable form for the function
+$r(\zeta,\theta)$.
 
-The problem reduces to find a suitable form for the function $r(\zeta,\theta)$.
+In our case we are going a little bit further. We split
+the domain $\mathcal{D}$ in $n$ subdomains $\mathcal{D}_i$ with
+$i=0,\ldots,n-1$. The frontiers between this subdomains are represented
+by a series of functions $R_i(\theta)$, $i=0,\ldots,n$, such that
+the $\mathcal{D}_i\in[R_{i}(\theta),R_{i+1}(\theta)]$.  Note that
+$R_n(\theta)=R(\theta)$ is the outer boundary of the whole domain and,
+if the domain contains the origin of coordinates $R_0(\theta)=0$.
 
-In our case we are going a little bit further. We will split the domain $\mathcal{D}$ in $n$ subdomains 
-$\mathcal{D}_i$ with $i=0,\ldots,n-1$. The frontiers between this subdomains are represented by a series
-of functions $R_i(\theta)$, $i=0,\ldots,n$, such that the $\mathcal{D}_i\in[R_{i}(\theta),R_{i+1}(\theta)]$.
-Note that $R_n(\theta)=R(\theta)$ is the outer boundary of the whole domain and, if the domain contains
-the origin of coordinates $R_0(\theta)=0$.
-
-We will have also an external domain $\mathcal{D}_{ex}$ that extends from the outer boundary $R_n(\theta)$
-to infinity. It will be useful for writing boundary conditions for certain variables as, for example, the
-gravitational potential.
+We also use an external domain $\mathcal{D}_{ex}$ that extends from the
+outer boundary $R_n(\theta)$ to infinity. It will be useful for writing
+boundary conditions for the gravitational potential.
 
 \begin{figure}
 \centering
@@ -53,8 +62,9 @@ gravitational potential.
 \end{figure}
 
 
-We will use a technique adopted from \citet{Bonazzola}, in each subdomain $\mathcal{D}_i$ we use a mapping
-in the form
+We use a technique adopted from \citet{Bonazzola}, in each subdomain
+$\mathcal{D}_i$ we use a mapping in the form
+
 \begin{equation}
 \label{eq:map}
 r(\zeta,\theta)=a_i\xi\Delta\eta_i+R_i(\theta)+A_i(\xi)(\Delta R_i(\theta)-a_i\Delta\eta_i) 
@@ -68,69 +78,87 @@ where we have defined:
 \xi&=&\displaystyle\frac{\zeta-\eta_i}{\Delta\eta_i}
 \end{eqnarray*} 
 
-The function(s) $A_i(\xi)$ and the constant(s) $a_i$ will determine the final form of the mapping. In particular,
-the function $A_i(\xi)$ should verify the following conditions:
+The function(s) $A_i(\xi)$ and the constant(s) $a_i$ determine the final
+form of the mapping. In particular, the function $A_i(\xi)$ should verify
+the following conditions:
+
 \begin{eqnarray*}
 r(\eta_i,\theta)=R(\theta) &\longrightarrow& A_i(\xi=0)=0\\
 r(\eta_{i+1},\theta)=R_{i+1}(\theta) &\longrightarrow& A_i(\xi=1)=1
 \end{eqnarray*}
+The simplest possibility is a linear mapping
 
-The simplest possibility is what we will call a linear mapping
 \begin{equation}
 A_i(\xi)=\xi \qquad a_i=0
 \end{equation}
 that gives
+
 \begin{equation}
 \label{eq:map_linear}
 r(\zeta,\theta)=R_i(\theta)+\xi\Delta R_i(\theta)
 \end{equation}
+But \citet{BGM98} proposed a mapping that satisfies some
+extra conditions to make it suitable for spectral methods. For that
+reason they set $A_i'(\xi=0)=0$ and $A_i'(\xi=1)=0$. Doing this, the
+first derivative of the mapping
 
-In \citet{Bonazzola}, the mapping proposed by the authors satisfies some extra conditions to make it suitable
-for spectral methods. For that reason they set $A_i'(\xi=0)=0$ and $A_i'(\xi=1)=0$. Doing
-this, the first derivative of the mapping
 \begin{equation}
 r_\zeta=\frac{\partial r}{\partial\zeta}=a_i+A_i'(\xi)\left(\frac{\Delta R_i(\theta)}{\Delta\eta_i}-a_i\right)
 \end{equation}
-is constant over the boundaries of the domains. This facilitates the writing of interface conditions for
-the derivatives of the variables in the problem when they are expressed in terms of their spectral coefficients.
-In this case, we will set
+is constant over the boundaries of the domains. This facilitates the
+writing of interface conditions for the derivatives of the variables
+in the problem when they are expressed in terms of their spectral
+coefficients.  In this case, we will set
+
 \begin{eqnarray}
 \label{eq:map_bonazzola}
 A_i(\xi)=-2\xi^3+3\xi^2 &\qquad& \mbox{for $i=1,\ldots,n-1$}\\
 A_0(\xi)=-1.5\xi^5+2.5\xi^3&&
 \end{eqnarray}
-The constant $a_i$ deserves some special attention. We want $r_\zeta>0$, that is, $r$ being monotonically 
-increasing with $\zeta$, then $a_i$ should satisfy the condition
+The constant $a_i$ deserves some special attention. We want $r_\zeta>0$,
+that is, $r$ being monotonically increasing with $\zeta$, then $a_i$
+should satisfy the condition
+
 \begin{equation}
 a_i(A_i'(\xi)-1)<A_i'(\xi)\frac{\Delta R_i(\theta)}{\Delta\eta_i}
 \end{equation}
 For $A_i'(\xi)=0$ (the boundaries), the condition states $a_i>0$.
-When $A'(\xi)<1$, the condition is automatically satisfied (note that $A_i'(\xi)$ is always positive).
-But, as $A(\xi)$ should go from 0 at $\xi=0$ to 1 at $\xi=1$, we know that $\max(A_i'(\xi))\ge1$, where the
-equality corresponds to the linear mapping that we have seen before. So, in the worst case, the condition
-becomes
+When $A'(\xi)<1$, the condition is automatically satisfied (note that
+$A_i'(\xi)$ is always positive).  But, since $A(\xi)$ should go from 0 at
+$\xi=0$ to 1 at $\xi=1$, we know that $\max(A_i'(\xi))\ge1$, where the
+equality corresponds to the linear mapping that we have seen before. So,
+in the worst case, the condition becomes
+
 \begin{equation}
 a_i<\frac{1}{1-1/\max(A_i'(\xi))}\frac{\min(\Delta R_i(\theta))}{\Delta\eta_i}
 \end{equation}
 or, using (\ref{eq:map_bonazzola})
+
 \begin{equation}
 \begin{array}{l}
 \displaystyle a_i<3\frac{\min(\Delta R_i(\theta))}{\Delta\eta_i} \qquad \mbox{for $i=1,\ldots,n-1$}\\
 \displaystyle a_0<\frac{15}{7}\frac{\min(\Delta R_0(\theta))}{\Delta\eta_0}
 \end{array}
+\label{cdtstab}
 \end{equation}
-In practice, we will take $a_i=1$. This is motivated by the fact that we will work with oblate domains, and
-the flattening will increase for the successive subdomains, then $\min(\Delta R_i(\theta))=\Delta\eta_i$,
-and the conditions are fully satisfied. Also, working with a fixed value of $a_i$ makes easier to work
-with problems where the frontiers between the subdomains are not known a priori, and the jacobian of 
-the mapping becomes a smooth function suitable for iterative methods.
+In practice, we take $a_i=1$. This is motivated by the fact that
+we work with oblate domains. Indeed, the flattening increases for
+the successive subdomains so that $\min(\Delta R_i(\theta))=\Delta
+R_i(0)=\Delta\eta_i$. Hence, conditions \eq{cdtstab} are fully satisfied.
+
+In addition, working with a fixed value of $a_i$ makes easier to work
+with problems where the frontiers between the subdomains are not known
+a priori, and the jacobian of the mapping becomes a smooth function
+suitable for iterative methods.
 
 The general form of the jacobian of the mapping is defined by the expression
+
 \begin{equation}
 \delta r^{i}=J_0^{(i)}(\zeta,\theta)\delta\eta_i+J_1^{(i)}(\zeta,\theta)\delta\Delta\eta_i
 +J_2^{(i)}(\zeta,\theta)\delta R_i(\theta)+J_3^{(i)}(\zeta,\theta)\delta\Delta R_i(\theta)
 \end{equation}
 and using (\ref{eq:map}), for fixed $a_i$
+
 \begin{equation}
 \begin{array}{l}
 J_0^{(i)}=0\\
@@ -145,10 +173,12 @@ For the external domain, we will take
 \xi_{ex}=\frac{\zeta-\eta_n}{\eta_n} \qquad \xi\in[0,\infty)
 \end{equation}
 and
+
 \begin{equation}
 r_{ex}(\zeta,\theta)=\xi+R(\theta)
 \end{equation}
 with jacobian
+
 \begin{equation}
 \begin{array}{l}
 J_0^{(ex)}=0\\
@@ -160,18 +190,24 @@ J_3^{(ex)}=0
 
 \subsection{Spheroidal coordinates}
 
-In the previous section, we have defined a system of spheroidal coordinates ($\zeta$,$\theta'$,$\varphi'$), 
-where $\theta'=\theta$ and $\varphi'=\varphi$ correspond to the usual spherical coordinates and $\zeta$ is
-defined by a relation $r=r(\zeta,\theta)$. These spheroidal coordinates are non-orthogonal, which means
-that the surfaces of constant $\zeta$ are not perpendicular to those of constant $\theta$.
+In the previous section, we have defined a system of spheroidal
+coordinates ($\zeta$,$\theta'$,$\varphi'$), where $\theta'=\theta$ and
+$\varphi'=\varphi$ correspond to the usual spherical coordinates and
+$\zeta$ is defined by a relation $r=r(\zeta,\theta)$. These spheroidal
+coordinates are non-orthogonal, which means that the surfaces of constant
+$\zeta$ are not perpendicular to those of constant $\theta$.
 
-Before we continue, we should clarify a point. We have set $\theta'=\theta$, so hereafter we will remove
-the tilde ($'$) to simplify the notation. But when working with spheroidal coordinates, the partial
-derivative $\frac{\partial}{\partial\theta}$ refers to the derivative with respect to $\theta$ with $\zeta$
-constant, that is not the habitual derivative in spherical coordinates that is done holding $r$ constant.
+Before we continue, we should clarify a point. We have set
+$\theta'=\theta$, so hereafter we will remove the tilde ($'$) to simplify
+the notation. But when working with spheroidal coordinates, the partial
+derivative $\frac{\partial}{\partial\theta}$ refers to the derivative
+with respect to $\theta$ with $\zeta$ constant, that is not the habitual
+derivative in spherical coordinates that is done holding $r$ constant.
+
 $$\left.\frac{\partial}{\partial\theta}\right|_{\zeta,\varphi\,\mathrm{const.}}\ne
 \left.\frac{\partial}{\partial\theta}\right|_{r,\varphi\,\mathrm{const.}}$$
-The same can be said for the azimuthal coordinate $\varphi$ but, in this case 
+
+The same can be said for the azimuthal coordinate $\varphi$ but, in this case
 $\left.\frac{\partial}{\partial\varphi}\right|_{\zeta,\theta\,\mathrm{const.}}=
 \left.\frac{\partial}{\partial\varphi}\right|_{r,\theta\,\mathrm{const.}}$.
 
