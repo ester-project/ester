@@ -289,33 +289,34 @@ The solution vector $\vx$ is built from the discretized variables as
 follows
 
 \begin{center}
-\begin{tabular}{llll}
+\begin{tabular}{lcll}
 \hline
 Variable & Dependence & C++ quantity & Comments \\
 \\
-$\phi$   & $(\zeta,\theta)$ &  "Phi" & Gravitation potential \\
-$\ln P$  & $(\zeta,\theta)$ &  "log\_p" & Natural log of pressure     \\
-$\ln T$  & $(\zeta,\theta)$ &  "log\_T" & Natural log of temperature  \\
-$F_{\rm rad}$ &  $(\zeta,\theta)$ &  ``Frad" & Radiative flux     \\
-   w     &  $(\zeta,\theta)$ &   "w"  & Differential Rotation    \\
-$\psi$   &  $(\zeta,\theta)$ &   "G"  & Stream function    \\
-$R_i$    &  $(\theta)$       &   "Ri" & boundaries of the domains \\
-$dR_i$   &  $(\theta)$       &   "dRi"& $R_{i+1}-R_i$      \\
-$\eta_i$ &                   &   "eta"& Polar radius of the domains \\
-$d\eta_i$&                   &  "deta"& $\eta_{i+1}-\eta_i$      \\
-$\pi_c$  &                  &  "pi\_c" &  Non-dimensional central pressure \\
-$\Lambda$&                  &  "Lambda" &   Dimensional constant  \\
-$\Omega$ &                  &  "Omega"  &   Equatorial angular velocity \\
-$\ln P_c$&                  & "log\_pc" &   log central pressure  \\
-$\ln T_c$&                  & "log\_Tc" &   log central temperature  \\
-$\log R$ &                   &"log\_R"  &   log polar radius \\
-$m$      &            &       "m"     & non-dimensional mass\\
-$P_s$    &               &"ps"    &  \\
-$T_s$    &               &"Ts"    &  \\
-Lum      &               &  "lum"   &  Luminosity  \\
-$T_{\rm eff}$ & $\theta$ &  "Teff"  &  Effective temperature  \\
-$g_{\rm sup}$ &  &  "gsup"  &    \\
-$\gamma$ &       & "gamma"    &  \\
+$\phi$   & $(\zeta,\theta)$ &  Phi & Gravitation potential \\
+$\ln P$  & $(\zeta,\theta)$ &  log\_p & Natural log of pressure     \\
+$\ln T$  & $(\zeta,\theta)$ &  log\_T & Natural log of temperature  \\
+$F_{\rm rad}$ &  $(\zeta,\theta)$ &  Frad & Radiative flux     \\
+   w     &  $(\zeta,\theta)$ &   w  & Differential Rotation    \\
+$\psi$   &  $(\zeta,\theta)$ &   G  & Stream function    \\
+$T_{\rm eff}$ & $\theta$ &  Teff  &  Effective temperature  \\
+$g_{\rm sup}$ & $\theta$ &  gsup  &  Effective surface gravity  \\
+$P_s$    &  $\theta$  &ps    &  surface pressure \\
+$T_s$    &  $\theta$  &Ts    &  surface temperature \\
+$\gamma$ &  $\theta$    & gamma    &
+$\gamma=\sqrt{g^{\zeta\zeta}}=\sqrt{1+r^2/r_\theta^2}$ at the surface \\
+$R_i$    &  $\theta$       &   Ri & boundaries of the domains \\
+$dR_i$   &  $\theta$       &   dRi& $R_{i+1}-R_i$      \\
+$\eta_i$ &                   &   eta& Polar radius of the domains \\
+$d\eta_i$&                   &  deta& $\eta_{i+1}-\eta_i$      \\
+$\pi_c$  &                  &  pi\_c &  Non-dimensional central pressure \\
+$\Lambda$&                  &  Lambda &   Dimensional constant  \\
+$\Omega$ &                  &  Omega  &   Equatorial angular velocity \\
+$\ln P_c$&                  & log\_pc &   log central pressure  \\
+$\ln T_c$&                  & log\_Tc &   log central temperature  \\
+$\log R$ &                   &log\_R  &   log polar radius \\
+$m$      &            &       m     & non-dimensional mass\\
+Lum      &            &  lum   &  Luminosity  \\
       \hline
 \end{tabular}
 \end{center}
