@@ -158,14 +158,22 @@ coordinate (see the chapter on the mapping).
 \item {\bf On the gravitational potential:} regularity at the centre of the
 star and vanishing at infinity. However, imposing this condition on the
 surface of the star is cumbersome and leads to problem of convergence
-for very flattened stars. We thus encompass the star with an empty
+for very flattened stars. Different solutions to this problem are
+possible. We can encompass the star within an empty
 domain whose outer boundary is a sphere. On this outer sphere the
-boundary conditions on spherical harmonics components are simply
+boundary conditions on spherical harmonics components of the
+gravitational potential are simply
 
 \[ 
 \dr{\phi_\ell}+\frac{(\ell+1)\phi_\ell}{r}=0
 \]
-which ensure the matching with a field vanishing at infinity.
+which ensure the matching with a field vanishing at infinity. This
+solution was applied successfully in the first versions of the code but
+is not appropriate when boundary conditions are implemented in real
+($\theta$) space. We now prefer using an outer domain $\zeta\in
+[1,+\infty[$ that is mapped to $[0,1[$ by an appropriate change of
+variable (see chap. 6) so as to simply set the potential to zero on the
+outer boundary of the encompassing outer domain.
 
 \item {\bf On the velocity,} we demand stress-free conditions, namely
 
@@ -239,6 +247,7 @@ monitor or to impose:
 The foregoing equations and boundary conditions should be completed by
 the definition of the mapping that maps the spheroidal star to a sphere.
 This thorny subject is described at length in a separate chapter
+(see~\ref{chap:mapping}).
 
 \section{The algorithm}
 
@@ -247,7 +256,7 @@ This thorny subject is described at length in a separate chapter
 This system of partial differential equation is solved using a spectral
 method or more precisely spectral elements. The star divided in
 ``onion" layers where the vertical direction is discretized on the
-Gauss-Lobatto Collocation grid (associated with Chebyshev polynomials)
+Gauss-Lobatto collocation grid (associated with Chebyshev polynomials)
 and the horizontal dependence is expanded on the spherical harmonic
 basis.
 
@@ -263,18 +272,20 @@ where the vector function $\vec F$ represents the equations that we
 want to solve and $\vec x$ is the vector containing all the independent
 variables of the problem (pressure, temperature, \ldots) including the
 shape of the surface which is not known a priori.  The equations are
-linearized using the Jacobian matrix of $\vec F(\vec x)$ defined as
+linearized using the Jacobian matrix $\tens J$ of $\vec F(\vec x)$ such
+that
 
 \begin{equation}
 \delta\vec F(\vec x)=\tens J (\vec x) \delta\vec x .
 \end{equation}
-Then the correction to the solution in the $k$-th iteration will be
-calculated solving the linear system
+The correction to the solution $\delta \vec x^{(k)}$ at the $k$-th
+iteration is calculated solving the linear system
 
 \begin{equation}
-\tens J(\vec x^{(k)})\delta \vec x^{(k)}=-\delta \vec F(\vec x^{(k)})
+\tens J(\vec x^{(k)})\delta \vec x^{(k)}=-\vec F(\vec x^{(k)})
 \end{equation}
-and we set $\vec x^{(k+1)}=\vec x^{(k)}+\delta \vec x^{(k)}$.
+and the solution is updated with
+$\vec x^{(k+1)}=\vec x^{(k)}+\delta \vec x^{(k)}$.
 
 With an appropriate initial approximation $\vec x^{(0)}$, Newton's method
 has quadratic convergence. In practice, a rotating stellar model can be
@@ -288,6 +299,7 @@ non-rotating model.
 The solution vector $\vx$ is built from the discretized variables as
 follows
 
+\begin{table}
 \begin{center}
 \begin{tabular}{lcll}
 \hline
@@ -304,26 +316,68 @@ $P_s$    &  $\theta$  &ps    &  surface pressure \\
 $T_s$    &  $\theta$  &Ts    &  surface temperature \\
 $\gamma$ &  $\theta$    & gamma    &
 $\gamma=\sqrt{g^{\zeta\zeta}}=\sqrt{1+r^2/r_\theta^2}$ at the surface \\
-$F_{\rm rad}$ &  $(\theta, idom)$ &  Frad & $\vF_\zeta$ Radiative flux
+$F_{\rm rad,i}$ &  $(\theta, i)$ &  Frad & $\vF_\zeta$ Radiative flux
 component at each domain boundary\\
-$R_i$    &  $\theta$       &   Ri & boundaries of the domains \\
-$dR_i$   &  $\theta$       &   dRi& $R_{i+1}-R_i$      \\
+$R_i$    &  $(\theta,i)$       &   Ri & boundaries of the domains \\
+$dR_i$   &  $(\theta,i)$       &   dRi& $R_{i+1}-R_i$      \\
 $\eta_i$ &                   &   eta& Polar radius of the domains \\
 $d\eta_i$&                   &  deta& $\eta_{i+1}-\eta_i$      \\
 $\pi_c$  &                  &  pi\_c &  Non-dimensional central pressure \\
 $\Lambda$&                  &  Lambda &   Dimensional constant  \\
 $\Omega$ &                  &  Omega  &   Equatorial angular velocity \\
-$\ln P_c$&                  & log\_pc &   log central pressure  \\
-$\ln T_c$&                  & log\_Tc &   log central temperature  \\
-$\log R$ &                  &log\_R  &   log polar radius \\
+$\ln P_c$&                  & log\_pc &   log of central pressure  \\
+$\ln T_c$&                  & log\_Tc &   log of central temperature  \\
+$\log R$ &                  &log\_R  &   log of polar radius \\
 $m$      &                  &       m     & non-dimensional mass\\
 Lum      &                  &  lum   &  Luminosity  \\
       \hline
 \end{tabular}
 \end{center}
+\caption[]
+{This table lists all the variables contained in $\vx$ but not
+in their actual order in the code.}
+\end{table}
 
-Note that the above table lists all the variables contained in $\vx$ but not
-in their actual order in the code.
+\noindent Real ordering of variables:
+
+"Phi"; "log\_p"; "pi\_c"; "log\_T"; "Lambda"; "eta"; "deta"; "Ri";
+"dRi"; "Omega"; "log\_pc"; "log\_Tc"; "log\_R"; "m"; "ps"; "Ts"; "lum"; "Frad"; "Teff"; "gsup"; "w"; "G"; "gamma"; 
+
+
+\newpage
+
+\subsection{Implementation of Newton's algorithm}
+
+The construction of ESTER's models follows the following steps:
+
+%\begin{tabular}{c}
+%\hline
+%\end{tabular}
+
+\noindent -----------------------------------------------------------------------
+\begin{enumerate}
+
+\item Read the initial model or build it (only in 1D)
+\item Build the jacobian matrix
+\item LU factorization of the jacobian matrix
+\item solve for the correction $\delta\vx$
+\item Update $\vx$
+\item recompute the RHS, $\vF(\vx_k)$ and the jacobian matrix
+\item Attempt a conjugate gradient solution to derive the new
+$\delta\vx$ using the former LU matrices as a preconditionner. Namely,
+if $L_k$ and $U_k$ are the factors of $\tens J_k$, the $k+1$ equation is
+solved with the (split-preconditioned) biconjugate gradient solver as
+
+\[ J_k^{k+1}U_k\delta\vx_{k+1} = -L_k^{-1}\vF_{k+1}  \]
+where the $J_k^{k+1}=L_k^{-1}\tens J_{k+1}U_k^{-1}$-matrix is almost
+diagonal. If the convergence of this iterative method is less than say N
+iterates, then the algorithm continues at step 5. N is chosen such that
+the N iterations are faster than a LU factorization. If convergence is
+not reached, then the algorithm continues on step 3
+
+\item if $\|\delta\vx\|\leq$tol, then stop.
+\end{enumerate}
+\noindent -----------------------------------------------------------------------
 
 \bigskip
 \bigskip
@@ -332,15 +386,28 @@ more classes designed to handle one particular aspect of the calculation.
 
 \begin{itemize}
 \item {\bf matrix}. Matrix algebra.
-\item {\bf numdiff}. Implements Gauss-Legendre and multi-domain Gauss-Lobatto
-numerical differentiation.
-\item {\bf mapping}. Defines the mapping in spheroidal coordinates $r(\zeta,\theta)$. 
-\item {\bf solver}. Resolution of systems of linear differential equations in 2D.
-\item {\bf physics}. Calculation of physical quantities (opacity, equation of state, nuclear reaction rates).
-\item {\bf star}. Provides objects and functions to calculate the structure of a star in 1D and 2D.
+
+\item {\bf numdiff}. Implements Gauss-Legendre and multi-domain
+Gauss-Lobatto numerical differentiation.
+
+\item {\bf mapping}. Defines the mapping in spheroidal coordinates
+$r(\zeta,\theta)$.
+
+\item {\bf solver}. Resolution of systems of linear differential equations
+in 2D.
+
+\item {\bf physics}. Calculation of physical quantities (opacity,
+equation of state, nuclear reaction rates).
+
+\item {\bf star}. Provides objects and functions to calculate the
+structure of a star in 1D and 2D.
+
 \item {\bf global}. Definition of global variables, e.g. physical and mathematical constants.
+
 \item {\bf graphics}. Provides graphical output through {\tt pgplot}.
-\item {\bf parser}. Parsing of configuration files and command-line arguments and file input/output.
+\item {\bf parser}. Parsing of configuration files and command-line
+arguments and file input/output.
+
 \end{itemize} 
 
 
