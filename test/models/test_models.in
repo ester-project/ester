@@ -134,43 +134,48 @@ except:
 par1d = datadir+"1d.par"
 par2d = datadir+"2d.par"
 
+def fail(cmd):
+    print "[Failed]"
+    print "Directory was: `" + check_dir + "'"
+    print "Command was: '" + cmd + "'"
+    sys.exit(1)
+
 def runCheck(check):
+    run_cmd = check['cmd'] + " " + check['args'] + " -noplot"
+    if check['param'] != "":
+        run_cmd += " -p " + check['param']
+    if check['input'] != "":
+        run_cmd += " -i " + check['input']
+    if check['output'] != "":
+        run_cmd += " -o " + check['output']
+
     print check['name']
     print "  run:\t\t", # we need the last comma to avoid newline
     sys.stdout.flush()
 
-    cmd = check['cmd'] + " " + check['args'] + " -noplot"
-    if check['param'] != "":
-        cmd += " -p " + check['param']
-    if check['input'] != "":
-        cmd += " -i " + check['input']
-    if check['output'] != "":
-        cmd += " -o " + check['output']
-
     devnull = open("/dev/null", "w")
-    code = call(cmd.split(), stdout=devnull)
+    code = call(run_cmd.split(), stdout=devnull)
     devnull.close()
     if code == 0:
         print "[OK]"
     else:
-        print "[Failed]"
-        sys.exit(1)
+        fail(run_cmd)
+
+    out_cmd = prefix + "/bin/" + "ester output " + check['output']
+    fin = open(check['template'], "r")
+    checkFile = check['output']+".check"
 
     print "  output:\t", # we need the last comma to avoid newline
     sys.stdout.flush()
 
-    cmd = "ester output " + check['output']
-    fin = open(check['template'], "r")
-    checkFile = check['output']+".check"
     fout = open(checkFile, "w")
-    code = call(cmd.split(), stdin=fin, stdout=fout)
+    code = call(out_cmd.split(), stdin=fin, stdout=fout)
     fin.close()
     fout.close()
     if code == 0:
         print "[OK]"
     else:
-        print "[Failed]"
-        sys.exit(1)
+        fail(run_cmd)
 
     print "  compare:\t", # we need the last comma to avoid newline
     sys.stdout.flush()
@@ -179,8 +184,7 @@ def runCheck(check):
     if fcmp == True:
         print "[OK]"
     else:
-        print "[Failed]"
-        sys.exit(1)
+        fail(run_cmd)
 
 def clearCheck(check):
     os.remove(check['output'])
