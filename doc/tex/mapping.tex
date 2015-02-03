@@ -171,14 +171,14 @@ J_3^{(i)}=A_i(\xi)
 \end{array}
 \end{equation}
 
-For the external domain, we will take 
+For the external domain, we take 
 \begin{equation}
-\xi_{ex}=\frac{\zeta-\eta_n}{\eta_n} \qquad \xi\in[0,\infty)
+\xi_{ex}=\frac{\xi}{1-\xi} \with \xi\in[0,1[ \andet \xi_{ex}\in[0,\infty[
 \end{equation}
-and
+so that
 
 \begin{equation}
-r_{ex}(\zeta,\theta)=\xi+R(\theta)
+r_{ex}(\zeta,\theta)=\xi_{ex}+R(\theta)
 \end{equation}
 with jacobian
 
@@ -666,13 +666,14 @@ A^\theta\frac{\partial B^\varphi}{\partial\theta}+A^\varphi\frac{\partial B^\var
 \end{array}
 \end{equation}
 \end{itemize}
+
 \item Christoffel symbols (different from 0)
 \begin{equation}
 \begin{array}{lll}
 \displaystyle
 \Gamma^{\zeta}_{\zeta\zeta}=\frac{r_{\zeta\zeta}}{r_\zeta}&
 \displaystyle
-\Gamma^{\zeta}_{\zeta\theta}=\Gamma^{\zeta}_{\theta\zeta}=
+\Gamma^{\zeta}_{\zeta\theta}=
 \frac{r_{\zeta\theta}}{r_\zeta}-\frac{r_\theta}{r}&
 \displaystyle
 \Gamma^{\zeta}_{\theta\theta}=\frac{1}{r_\zeta}\left(r_{\theta\theta}-
@@ -681,27 +682,30 @@ A^\theta\frac{\partial B^\varphi}{\partial\theta}+A^\varphi\frac{\partial B^\var
 \Gamma^{\zeta}_{\varphi\varphi}=\frac{\sin\theta}{r_\zeta}(r_\theta\cos\theta
 -r\sin\theta)&
 \displaystyle
-\Gamma^{\theta}_{\zeta\theta}=\Gamma^{\theta}_{\theta\zeta}=\frac{r_\zeta}{r}&
+\Gamma^{\theta}_{\zeta\theta}=\frac{r_\zeta}{r}&
 \displaystyle
 \Gamma^{\theta}_{\theta\theta}=\frac{2r_{\theta}}{r}\\
 \displaystyle
 \Gamma^{\theta}_{\varphi\varphi}=-\sin\theta\cos\theta&
 \displaystyle
-\Gamma^{\varphi}_{\zeta\varphi}=\Gamma^{\varphi}_{\varphi\zeta}=\frac{r_\zeta}{r}&
+\Gamma^{\varphi}_{\zeta\varphi}=\frac{r_\zeta}{r}&
 \displaystyle
-\Gamma^{\varphi}_{\theta\varphi}=\Gamma^{\varphi}_{\varphi\theta}=\frac{r_\theta}{r}+
+\Gamma^{\varphi}_{\theta\varphi}=\frac{r_\theta}{r}+
 \frac{\cos\theta}{\sin\theta}
 \end{array}
 \end{equation}
-
+where $\Gamma^i_{jk}=\Gamma^i_{kj}$ should be used for the remaining
+ones.
 \end{itemize}
 
 \subsection{Multidomain and continuity conditions}
 
-When using multidomain we will deal with the problem of writing continuity conditions for the different variables
-on the boundaries between contiguous subdomains. The main issue is that the mapping presented in \ref{sect:mapping}
-have discontinuities in some of its derivatives, so we should take care of using the correct expressions for
-this conditions. 
+When using multidomain one faces the problem of writing continuity
+conditions for the different variables on the boundaries between
+contiguous subdomains. The main issue is that the mapping presented in
+\ref{sect:mapping} has discontinuities in some of its derivatives, so
+we should be careful of using the correct expression for the continuity
+conditions.
 
 \begin{center}
 \begin{tabular}{c|c|c}
@@ -709,7 +713,7 @@ this conditions.
 & Bonazzola & Linear mapping \\
 \hline
 $r$ & Yes & Yes\\
-$r_\zeta$ & No (Yes for fixed $a_i$) & No\\
+$r_\zeta$ & No (but Yes for fixed $a_i$) & No\\
 $r_{\zeta\zeta}$ & No & Yes \\
 $r_\theta$ & Yes & Yes \\
 $r_{\theta\theta}$ & Yes & Yes \\
@@ -717,18 +721,23 @@ $r_{\zeta\theta}$ & Yes & No \\
 \end{tabular}
 \end{center}
 
-In the case of a scalar field $\phi(r,\theta)$, if $\phi$ is continuous between subdomains, the condition is easy
+In the case of a scalar field $\phi(r,\theta)$, if $\phi$ is continuous
+between subdomains, the condition is simply
+
 \begin{equation}
 \phi^{(+)}=\phi^{(-)}
 \end{equation}
-where $(+)$ and $(-)$ represent each side of the boundary. If we want $\phi$ to be derivable across the boundary, 
-we would write a condition for the normal derivative $\vect{\hat n}\cdot\nabla\phi$ and not for 
-$\frac{\partial\phi}{\partial\zeta}$,
+where $(+)$ and $(-)$ represent each side of the boundary. If we want
+$\phi$ to be derivable across the boundary, we have to write a condition
+on the normal derivative $\vect{\hat n}\cdot\nabla\phi$ (and not on
+$\frac{\partial\phi}{\partial\zeta}$), namely,
+
 \begin{equation}
 \label{eq:map_cond_der}
 \vect{\hat n}\cdot\nabla^{(+)}\phi^{(+)}=\vect{\hat n}\cdot\nabla^{(+)}\phi^{(+)}
 \end{equation}
 where 
+
 \begin{equation}
 \begin{array}{rl}
 \vect{\hat n}\cdot\nabla\phi&
@@ -742,14 +751,18 @@ where
 \frac{r_\theta}{r^2+r_\theta^2}\frac{\partial\phi}{\partial\theta}\right)
 \end{array}
 \end{equation}
-We know that $r$ and $r_\theta$ are continuous across the boundary and if $\phi$ is continuous then so is
-$\frac{\partial\phi}{\partial\theta}$, then the condition (\ref{eq:map_cond_der}) becomes
+We know that $r$ and $r_\theta$ are continuous across the boundary and
+if $\phi$ is continuous then so is $\frac{\partial\phi}{\partial\theta}$,
+thus condition (\ref{eq:map_cond_der}) becomes
+
 \begin{equation}
 \frac{1}{r_\zeta^{(+)}}\left(\frac{\partial\phi}{\partial\zeta}\right)^{(+)}=
 \frac{1}{r_\zeta^{(-)}}\left(\frac{\partial\phi}{\partial\zeta}\right)^{(-)}
 \end{equation}
-that is equivalent to saying $\displaystyle\left(\frac{\partial\phi}{\partial r}\right)^{(+)}=
-\left(\frac{\partial\phi}{\partial r}\right)^{(-)}$.
+that is equivalent to saying
+$\displaystyle\left(\frac{\partial\phi}{\partial r}\right)^{(+)}=
+\left(\frac{\partial\phi}{\partial r}\right)^{(-)}$. In general
+$r_\zeta^{(+)}\neq r_\zeta^{(-)}$.
 
 In the case of a vector field, the conditions are
 \begin{equation}
