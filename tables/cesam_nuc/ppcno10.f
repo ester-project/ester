@@ -90,7 +90,7 @@ c----------------------------------------------------------------------
 	LOGICAL, INTENT(in) :: deriv
 	REAL (kind=dp), INTENT(in):: t, ro
 	REAL (kind=dp), INTENT(inout), DIMENSION(:) :: comp
-	REAL (kind=dp), INTENT(out), DIMENSION(:,:) :: jac	
+	REAL (kind=dp), INTENT(out), DIMENSION(:,:) :: jac
 	REAL (kind=dp), INTENT(out), DIMENSION(:) :: dcomp, ex, epsilon
 	REAL (kind=dp), INTENT(out) :: et, ero, hhe, be7e, b8e, n13e,
 	1 o15e, f17e
@@ -98,7 +98,7 @@ c----------------------------------------------------------------------
 	REAL (kind=dp), ALLOCATABLE, SAVE, DIMENSION(:,:) :: drx, dqx
 	REAL (kind=dp), ALLOCATABLE, DIMENSION(:,:) :: a, b
 	REAL (kind=dp), ALLOCATABLE, SAVE, DIMENSION(:) :: anuc, comp_dex,
-	1 dmuex, dh2x, denx, dbe7x, drt, dro, r, q, dqt, dqo		
+	1 dmuex, dh2x, denx, dbe7x, drt, dro, r, q, dqt, dqo
 	REAL (kind=dp) :: mue, nbz, h2, dh2h, den, be7, dbe7he3, dbe7he4,
 	1 dbe7mue, dbe7h, mass_ex, charge_ex, sum_a
 		
@@ -151,7 +151,7 @@ c Ex : élément fictif moyenne des éléments # Li  et CNO
 	  IF(elem(i) == ' C')CYCLE b1
 	  IF(elem(i) == ' N')CYCLE b1
 	  IF(elem(i) == ' O')CYCLE b1
-	  charge_ex=charge_ex+c(i)*ab(i)	  	 
+	  charge_ex=charge_ex+c(i)*ab(i)
 	  mass_ex=mass_ex+m(i)*ab(i)
 	  sum_a=sum_a+ab(i)
 	 ENDDO B1
@@ -265,7 +265,7 @@ c	 ab_min(11)=1.d-6	!Ex
 	 ab_min=ab_ini*fmin_abon
 
 c	 nombre/volume des métaux dans Z
-		
+
 	 nbz=sum(comp(ihe4+1:nchim))
 
 c abondances en DeX, H=12

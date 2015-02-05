@@ -56,6 +56,9 @@ int nuc_cesam(const composition_map &comp,const matrix &T,const matrix &rho,
 		
 int nuc_cesam_dcomp(composition_map &comp,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);
+int rk_imps(double *t_t, double *ro_t, double **compx, double *t,
+        double *ro, double *compy, double *dt, double *esti,
+        int *n_pt, double *dm);
 
 int eos_ideal(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos);

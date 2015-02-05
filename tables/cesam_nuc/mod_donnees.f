@@ -36,7 +36,7 @@
 	
 ! variables public
 	REAL (kind=dp), SAVE, PUBLIC, ALLOCATABLE, DIMENSION(:) :: ab_ini,
-	1 ab_min, nucleo, rot_min, xvent, zi	
+	1 ab_min, nucleo, rot_min, xvent, zi
 	REAL (kind=dp), SAVE, PUBLIC, DIMENSION(28) :: abon_m
 	REAL (kind=dp), SAVE, PUBLIC :: aal27, abe7, abe9, ab11, ac12, ac13,
 	1 afe56, af18, af19, agemax, ah, ah2, ahe3, ahe4, ali6, ali7,
@@ -81,14 +81,14 @@
 ! respectivement, la résolution de l'équilibre quasi-statique, la restitution de
 ! l'atmosphère, l'évolution de la composition chimique, de la vitesse angulaire.
 !	LOGICAL, SAVE, PUBLIC :: baratine=.FALSE.
-	LOGICAL, SAVE, PUBLIC :: baratine=.TRUE., l_demi, new_bv	
+	LOGICAL, SAVE, PUBLIC :: baratine=.TRUE., l_demi, new_bv
 
-	CHARACTER (len=2), SAVE, PUBLIC :: precision	
+	CHARACTER (len=2), SAVE, PUBLIC :: precision
 	CHARACTER (len=4), SAVE, PUBLIC, ALLOCATABLE, DIMENSION(:) ::
 	1 nom_elem, nom_rot
 	CHARACTER (len=4), SAVE, PUBLIC :: arret, nom_xheavy
-	CHARACTER (len=5), SAVE, PUBLIC :: unit		
-	CHARACTER (len=10), SAVE, PUBLIC :: langue	
+	CHARACTER (len=5), SAVE, PUBLIC :: unit
+	CHARACTER (len=10), SAVE, PUBLIC :: langue
 	CHARACTER (len=20), SAVE, PUBLIC :: nom_atm, nom_abon, nom_conv,
 	1 nom_ctes, nom_des, nom_diffm, nom_diffw, nom_difft,
 	2 nom_etat, nom_frad, nom_nuc, nom_nuc_cpl, nom_output, nom_pertm,
@@ -100,12 +100,12 @@
 	3    'rot. solide cons. glob. mnt. cin.',
 	4    'diff. mnt.cin. Talon & Zahn 1997 ',
 	5    'diff. mnt.cin. Matis & Zahn 2004 ',
-	6    'cons. loc. mnt. cin.             ' /)	
-	CHARACTER (len=50), SAVE, PUBLIC, DIMENSION(8) :: f_eos, f_opa	
+	6    'cons. loc. mnt. cin.             ' /)
+	CHARACTER (len=50), SAVE, PUBLIC, DIMENSION(8) :: f_eos, f_opa
 	CHARACTER (len=50), SAVE, PUBLIC :: nom_opa, source
 	CHARACTER (len=80), SAVE, PUBLIC :: methode
 	CHARACTER (len=100), SAVE, PUBLIC :: device='/xw'
-	CHARACTER (len=255), SAVE, PUBLIC :: nom_chemin		
+	CHARACTER (len=255), SAVE, PUBLIC :: nom_chemin	
 
 	PRIVATE
 	PUBLIC :: lit_nl, ini_ctes, print_ctes

@@ -29,7 +29,7 @@
 
 	IMPLICIT NONE
 	
-	REAL(kind=dp), DIMENSION(28) :: abon_relam, add, nisnh	
+	REAL(kind=dp), DIMENSION(28) :: abon_relam, add, nisnh
 	REAL(kind=dp) :: add_Li, add_Be, add_B, add_C,
 	1 add_N, add_O, add_F, add_Ne, add_Na, add_Mg, add_Al, add_Si,
 	2 add_P, add_S, add_Cl, add_Ar, add_K, add_Ca, add_Sc, add_Ti,
@@ -40,12 +40,13 @@
 	
 	LOGICAL :: ok
 	
-	CHARACTER (len=50) :: chain
+	CHARACTER (len=256) :: chain
+
 	
 	NAMELIST/nl_mixture/ab
 	NAMELIST/nl_rap_iso/be7sbe9, be7sz, c13sc12, h2sh1,
 	1 he3she4, he3she4z, li6sli7, mg25smg24, mg26smg25, ne22sne20,
-	2 n15sn14, o17so16, o18so16	
+	2 n15sn14, o17so16, o18so16
 	NAMELIST/nl_modif_mix/ add_Li, add_Be, add_B, add_C,
 	1 add_N, add_O, add_F, add_Ne, add_Na, add_Mg, add_Al, add_Si,
 	2 add_P, add_S, add_Cl, add_Ar, add_K, add_Ca, add_Sc, add_Ti,
@@ -334,7 +335,6 @@ c	  WRITE(*,2) ; WRITE(2,2)
 	
 ! faut-il adapter la mixture initiale suivant un fichier type modif_mix?
 ! pour sécurité, on ne recherche ce fichier que si modif_chim
-	chain=TRIM(nom_fich2)//'.modif_mix'	 
 	INQUIRE(file=TRIM(chain),exist=ok) !; PRINT*,ok ; PAUSE'ok1'	 
 	IF(.NOT.ok)THEN
 	 chain='modif_mix'

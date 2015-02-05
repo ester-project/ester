@@ -273,20 +273,27 @@ int INFILE::read(const char *tag,matrix_map *a) {
 
 
 bool isHDF5Name(const char *fileName) {
-    char *name = strdup(fileName);
-    char *ext = name;
-    char *ptr = name;
+    const char *ext = NULL;
     if (fileName == NULL) {
-        free(name);
         return false;
     }
-    while ((ptr = strstr(ext, ".")) != NULL) {
-        ext = ptr + 1;
+    if ((ext = strrchr(fileName, '.')) == NULL) {
+        return false;
     }
+    ext++;
     if (strcasecmp(ext, "hdf5") == 0 || strcasecmp(ext, "h5") == 0) {
-        free(name);
         return true;
     }
-    free(name);
     return false;
+}
+
+// return file name without extension
+char *getFileNameWoExt(const char *fileName) {
+    char *name = strdup(fileName);
+    char *ext = strrchr(name, '.');
+    if (ext == NULL)
+        return name;
+    int len = strlen(fileName) - strlen(ext);
+    name[len] = '\0';
+    return name;
 }

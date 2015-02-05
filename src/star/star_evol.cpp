@@ -1,7 +1,16 @@
 #include "ester-config.h"
 #include "utils.h"
 #include "star.h"
+#include "cesam.h"
 
+#include <stdlib.h>
+
+void star_evol::update_comp() {
+
+    nuc_cesam_dcomp(comp, T, rho, nuc);
+
+    exit(EXIT_SUCCESS);
+}
 
 star_evol::star_evol() {
     comp_inited = false;
@@ -30,16 +39,17 @@ void star_evol::init_comp() {
     if (!converged)
         return;
     if (comp_inited) {
-        comp["H"] -= T*0.01*comp["H"]; // to be fixed
+        update_comp();
         return;
     }
     else {
+        cesam::init();
         comp_inited = true;
         star2d::init_comp();
     }
 }
 
-solver * star_evol::init_solver(int nvar_add) {
+solver *star_evol::init_solver(int nvar_add) {
 	return star2d::init_solver(nvar_add+1);
 }
 

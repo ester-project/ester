@@ -211,6 +211,7 @@ public:
 class star_evol : public star2d {
 protected:
     bool comp_inited;
+    void update_comp();
 public:
     bool converged;
     double Lz_obj;

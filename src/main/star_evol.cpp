@@ -68,9 +68,8 @@ int main(int argc,char *argv[]) {
 	
 	double Xc=A.Xc;
 	int n=0;
-	char outfile[256];
 	
-	while((Xc >= Xcmin && Xc <= 1)) {
+	while((Xc >= Xcmin && Xc <= 1) && n <= 2) {
 		printf("Xc=%f\n",Xc);
 		int last_it=0,nit=0;
 		double err;
@@ -117,17 +116,22 @@ int main(int argc,char *argv[]) {
 			fig->plot(XX,Lzc/A.Lz());
 			fig->label("X(core)","Lz_core/Lz","");
 		}
-		sprintf(outfile,"%s_%04d",config.output_file,n);
+
         {
+            char *name = getFileNameWoExt(config.output_file);
+            char *ext = strrchr(config.output_file, '.');
             char *filename = NULL;
-            if (asprintf(&filename, "%s-%04d.hdf5",
-                        config.output_file,
-                        n) != -1) {
-                A.hdf5_write(filename);
+            if (ext == NULL)
+                ext = strdup("");
+            if (asprintf(&filename, "%s-%04d%s",
+                        name,
+                        n,
+                        ext) != -1) {
+                A.write(filename, config.output_mode);
                 free(filename);
             }
+            free (name);
         }
-        A.write(outfile,config.output_mode);
 		Xc = A.comp["H"](0)/A.comp["H"](-1);
         A.fill(); // this updated the chemical composition
 		n++;

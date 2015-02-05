@@ -85,56 +85,57 @@ c----------------------------------------------------------------------
 	2 nucleo, secon6, t_inf, x0, y0, zi, z0
 	USE mod_kind
 	USE mod_numerique, ONLY : gauss_band
-		
+
 	IMPLICIT NONE
-	
+
 	INTEGER, INTENT(in) :: fait
 	LOGICAL, INTENT(in) :: deriv
 	REAL (kind=dp), INTENT(in):: t, ro
 	REAL (kind=dp), INTENT(inout), DIMENSION(:) :: comp
-	REAL (kind=dp), INTENT(out), DIMENSION(:,:) :: jac	
+	REAL (kind=dp), INTENT(out), DIMENSION(:,:) :: jac
 	REAL (kind=dp), INTENT(out), DIMENSION(:) :: dcomp, ex, epsilon
 	REAL (kind=dp), INTENT(out) :: et, ero, hhe, be7e, b8e, n13e,
 	1 o15e, f17e
-	
+
 	REAL (kind=dp), ALLOCATABLE, SAVE, DIMENSION(:,:) :: drx, dqx
 	REAL (kind=dp), ALLOCATABLE, DIMENSION(:,:) :: a, b
 	REAL (kind=dp), ALLOCATABLE, SAVE, DIMENSION(:) :: anuc, comp_dex,
-	1 dmuex, dh2x, denx, dbe7x, dli7x, drt, dro, r, q, dqt, dqo		
+	1 dmuex, dh2x, denx, dbe7x, dli7x, drt, dro, r, q, dqt, dqo
 	REAL (kind=dp) :: mue, nbz, den, be7, h2, li7, dh2t, dh2ro,
 	1 dent, denro, dbe7t, dbe7ro, dli7t, dli7ro,
 	2 mass_ex, charge_ex, sum_a
-		
+
 	INTEGER, ALLOCATABLE, DIMENSION(:) :: indpc
 	INTEGER :: i, j
-	
+
 	LOGICAL :: inversible
-	
+
 	CHARACTER (len=2) :: text
-		
+
 c--------------------------------------------------------------------------
 
 2000	FORMAT(8es10.3)
 2001	FORMAT(5es15.8)
 2002	FORMAT(11es8.1)
-	
+
 c initialisations
 	SELECT CASE(fait)
 	CASE(0)
-	 
+
 c définition de nchim: nombre d'éléments chimiques dont on
 c calcule l'abondance H1, He3, He4, C13, C13, N14, N15, O16, O17, Ex
 	 nchim=9+1
 
 c appel d'initialisation pour tabulation des réactions nucléaires
 c allocations fictives
-	 ALLOCATE(drx(1,1),dqx(1,1),r(1),drt(1),dro(1),q(1),
-	1 dqt(1),dqo(1),dmuex(1))
+ 	ALLOCATE(drx(1,1),dqx(1,1),
+ 	1r(1),drt(1),dro(1),q(1),
+	2 dqt(1),dqo(1),dmuex(1))
 	 CALL rq_reac(comp,1.d7,1.d0,r,drt,dro,drx,q,dqt,dqo,dqx,mue,dmuex) 
 c	 PAUSE'après case0'
-	 
+
 	 DEALLOCATE(dqx,drx) ; ALLOCATE(dqx(nreac,nchim),drx(nreac,nchim))
-	 
+
 	CASE(1)
 
 c détermination des abondances initiales, He3+He4=Y0
@@ -359,9 +360,9 @@ c les réactions
 	CASE(2)
 	 dcomp=0.d0 ; jac=0.d0
 	
-	 IF(t < t_inf)RETURN	
+	 IF(t < t_inf)RETURN
 	
-	 CALL rq_reac(comp,t,ro,r,drt,dro,drx,q,dqt,dqo,dqx,mue,dmuex)	
+	 CALL rq_reac(comp,t,ro,r,drt,dro,drx,q,dqt,dqo,dqx,mue,dmuex)
 
 c	 WRITE(*,*)'comp' ; WRITE(*,2000)comp(1:nchim)
 c	 WRITE(*,*)'réactions' ; WRITE(*,2000)r(1:nreac)
@@ -385,10 +386,10 @@ c	 PRINT*,'ppcno9, vérifications SUM dcomp*nucleo=0'
 c	 WRITE(*,2000)DOT_PRODUCT(dcomp,anuc) ; PAUSE'vérif' 
 
 	 dcomp(10)=-DOT_PRODUCT(dcomp,anuc)/anuc(10) 	!cons. des baryons	
-	 	 
+
 c calcul du jacobien
 	 IF(deriv)THEN	!jac(i,j) : équation, i : élément j
-	
+
 c équation dcomp(1)
 c	  dcomp(1)=-(3.*r(1)*comp(1)+r(8)*comp(4)+r(9)*comp(5)+r(10)*comp(6)
 c	1 +(r(11)+r(12))*comp(7)+r(13)*comp(8)+r(14)*comp(9))*comp(1)
@@ -405,7 +406,7 @@ c	2 +(2.*r(3)*comp(2)-r(4)*comp(3))*comp(2)			!H1
 	  jac(1,7)=-(r(11)+r(12))*comp(1)		!d /N15
 	  jac(1,8)=-r(13)*comp(1)			!d /O16
 	  jac(1,9)=-r(14)*comp(1)			!d /O17
-	 
+
 	  DO i=1,nchim		!dépendances dues à l'effet d'écran
 	   jac(1,i)=jac(1,i) 
 	1  -(3.d0*drx(1,i)*comp(1)+drx(8,i)*comp(4)
@@ -414,7 +415,7 @@ c	2 +(2.*r(3)*comp(2)-r(4)*comp(3))*comp(2)			!H1
 	4  +drx(13,i)*comp(8)+drx(14,i)*comp(9))*comp(1)
 	5  +(2.*drx(3,i)*comp(2)-drx(4,i)*comp(3))*comp(2)
 	  ENDDO
-			 
+
 c équation dcomp(2)
 c	  dcomp(2)=r(1)*comp(1)**2-(2.*r(3)*comp(2)+r(4)*comp(3))*comp(2)!He3
 
@@ -427,7 +428,7 @@ c	  dcomp(2)=r(1)*comp(1)**2-(2.*r(3)*comp(2)+r(4)*comp(3))*comp(2)!He3
 	1  +drx(1,i)*comp(1)**2-(2.d0*drx(3,i)*comp(2)
 	2  +drx(4,i)*comp(3))*comp(2)
 	  ENDDO
-	 
+
 c équation dcomp(3)
 c	  dcomp(3)=(r(3)*comp(2)+r(4)*comp(3))*comp(2)
 c	1	+(r(12)*comp(7)+r(14)*comp(9))*comp(1)	!He4
@@ -437,13 +438,13 @@ c	1	+(r(12)*comp(7)+r(14)*comp(9))*comp(1)	!He4
 	  jac(3,3)=r(4)*comp(2)				!d /He4
 	  jac(3,7)=r(12)*comp(1)			!d /N15
 	  jac(3,9)=r(14)*comp(1)			!d /O17
-	 
+
 	  DO i=1,nchim		!dépendances dues à l'effet d'écran
 	   jac(3,i)=jac(3,i)
 	1  +(drx(3,i)*comp(2)+drx(4,i)*comp(3))*comp(2)
 	2  +(drx(12,i)*comp(7)+drx(14,i)*comp(9))*comp(1)
 	  ENDDO
-	 
+
 c équation dcomp(4)
 c	  dcomp(4)=(-r(8)*comp(4)+r(12)*comp(7))*comp(1)	!C12
 
@@ -455,7 +456,7 @@ c	  dcomp(4)=(-r(8)*comp(4)+r(12)*comp(7))*comp(1)	!C12
 	   jac(4,i)=jac(4,i)
 	1  +(-drx(8,i)*comp(4)+drx(12,i)*comp(7))*comp(1)
 	  ENDDO
-	 	 
+
 c équation dcomp(5)
 c	  dcomp(5)=(r(8)*comp(4)-r(9)*comp(5))*comp(1)	!C13
 	

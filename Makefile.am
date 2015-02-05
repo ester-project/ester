@@ -2,7 +2,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 export HDF5_CXX=$(HDF5_BACKEND)
 
-SUBDIRS = . tables src test/models
+SUBDIRS = . cesam tables src test/models
 
 all-local: ester-config.h
 clean-local:

@@ -5,10 +5,10 @@ export HDF5_CXX=$(HDF5_BACKEND)
 
 BUILT_SOURCES	= main/read_config.cpp
 
-AM_CPPFLAGS = -I$(srcdir)/include
+AM_CPPFLAGS = -I$(srcdir)/include -I$(top_srcdir)/cesam
 AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam_nuc
 
-noinst_LTLIBRARIES		= libnuc.la libopint.la libnuc_cesam.la
+noinst_LTLIBRARIES		= libnuc.la libopint.la libnuc_cesam.la libcesam.la
 libnuc_la_SOURCES		=
 libnuc_la_LIBADD		= ../tables/cesam_nuc/libnuc.la
 
@@ -18,15 +18,17 @@ libopint_la_LIBADD		= ../tables/houdek/v9/lib/libopint.la
 libnuc_cesam_la_SOURCES	=
 libnuc_cesam_la_LIBADD	= physics/libnuc_cesam.la
 
+libcesam_la_SOURCES	=
+libcesam_la_LIBADD	= ../cesam/libcesam.la
 
 bin_PROGRAMS		= star1d star2d gen_output version star_evol ester_info
 
-star1d_LDFLAGS		= -lester -lnuc_cesam -lnuc -lopint
-star2d_LDFLAGS		= -lester -lnuc_cesam -lnuc -lopint
-gen_output_LDFLAGS	= -lester -lnuc_cesam -lnuc -lopint
-version_LDFLAGS		= -lester -lnuc_cesam -lnuc -lopint
-star_evol_LDFLAGS	= -lester -lnuc_cesam -lnuc -lopint
-ester_info_LDFLAGS	= -lester -lnuc_cesam -lnuc -lopint
+star1d_LDFLAGS		= -lester -lnuc_cesam -lnuc -lopint -lcesam
+star2d_LDFLAGS		= -lester -lnuc_cesam -lnuc -lopint -lcesam
+gen_output_LDFLAGS	= -lester -lnuc_cesam -lnuc -lopint -lcesam
+version_LDFLAGS		= -lester -lnuc_cesam -lnuc -lopint -lcesam
+star_evol_LDFLAGS	= -lester -lnuc_cesam -lnuc -lopint -lcesam
+ester_info_LDFLAGS	= -lester -lnuc_cesam -lnuc -lopint -lcesam
 
 
 star1d_SOURCES		= main/star1d.cpp main/read_config.cpp

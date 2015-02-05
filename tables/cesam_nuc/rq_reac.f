@@ -28,7 +28,7 @@
 
 	USE mod_donnees, ONLY : amu, echarg, eve, kbol, hpl, me, mitler,
 	1 nchim, nucleo, pi, t_inf, zi
-	USE mod_numerique, ONLY : bsp1dn	
+	USE mod_numerique, ONLY : bsp1dn
 	USE mod_kind
 	USE mod_variables, ONLY : sortie
 
@@ -38,7 +38,7 @@
 	REAL (kind=dp), INTENT(in) :: t, ro
 	REAL (kind=dp), INTENT(out), DIMENSION(:,:) :: drx, dqx
 	REAL (kind=dp), INTENT(out), DIMENSION(:) :: r, drt, dro, q,
-	1 dqt, dqo, dmuex	
+	1 dqt, dqo, dmuex
 	REAL (kind=dp), INTENT(out) :: mue
 
 	REAL (kind=dp), ALLOCATABLE, SAVE, DIMENSION(:,:) :: decrx, dzetax
@@ -46,7 +46,7 @@
 	1 dc1x, decro, decrt, dfx, df12x, dkx, dnex, dr, dzstarx, ecran,
 	2 lambda, mz1z2, tx, z1z2
 		
-	REAL (kind=dp), SAVE, DIMENSION(2) :: zeta, dzetat, dzetaro	
+	REAL (kind=dp), SAVE, DIMENSION(2) :: zeta, dzetat, dzetaro
 	REAL (kind=dp), SAVE :: cte1, cte2, cte3, cte4, cte5, cte6, cte7,
 	1 cte8, cte9, cte10
 	REAL (kind=dp) :: zstar, ne, c1, f12, at, k, bid, bid1, df,
@@ -70,7 +70,7 @@
 !	 PRINT*,nchim ; PAUSE'rq_reac entrée'
 
 ! tabulation des réactions nucléaires
-	 CALL tabul_nuc	 
+	 CALL tabul_nuc
 
 ! écritures diverses
 	 IF(mitler)THEN
@@ -80,7 +80,7 @@
 c	  WRITE(2,5) ; WRITE(*,5)
 5         FORMAT('écrantage faible')
 	 ENDIF
-	 	 	 
+
 !	 WRITE(*,2000)q0 ; PAUSE'les q'
 	 
 c	 WRITE(2,1)t_inf ; WRITE(*,1)t_inf
@@ -89,7 +89,7 @@ c	 WRITE(2,1)t_inf ; WRITE(*,1)t_inf
 c 	 WRITE(2,2)t_sup ; WRITE(*,2)t_sup
 2	 FORMAT('Température maximale pour les réactions nucléaires:',
 	1 es10.3,/)
-	
+
 ! quelqes constantes
 	 cte1=2.d0/3.d0*pi*echarg ; cte2=4.d0*pi*echarg**2/kbol
 	 cte3=hpl**3/4.d0/pi/SQRT(2.d0*me*kbol)**3*3.d0/2.d0
@@ -97,24 +97,24 @@ c 	 WRITE(2,2)t_sup ; WRITE(*,2)t_sup
 	 cte6=1.2204d0*(1.d-6)**(2.d0/3.d0)*eve*1.d3	!3', Lang 4-44 A en MeV
 	 cte7=5.d0/3.d0 ; cte8=0.001037d0
 	 cte9=7.d0*5.47d2/9.6d2 ; cte10=5.d0/8.d0
-	 
+
 ! quantités à conserver
 	 ALLOCATE(z1z2(nreac),lambda(nreac),mz1z2(nreac))
-	 
+
 	 DO i=1,nreac
 	  z1z2(i)=izz(i,1)*izz(i,2)
 	  mz1z2(i)=cte6*(z1z2(i)**2*ar(i))**(1.d0/3.d0)	!Lang 4-44	 
 	  lambda(i)=z1z2(i)*echarg**2		!eq. 30'
 	 ENDDO
-	 
+
 ! autres allocations 
 	 ALLOCATE(ecran(nreac),dr(nreac),decrt(nreac),
 	1 decro(nreac),dzetax(2,nchim),decrx(nreac,nchim),dzstarx(nchim),
 	2 dc1x(nchim),dnex(nchim),df12x(nchim),datx(nchim),dkx(nchim),
 	3 dbidx(nchim),dfx(nchim),tx(nchim))
-	 
+
 !	 PAUSE'sortie init'
-	 
+
 	 RETURN	!le premier appel est un appel d'initialisation
      
 	ENDIF
@@ -258,7 +258,7 @@ c 	 WRITE(2,2)t_sup ; WRITE(*,2)t_sup
 	   decrt(i)=0.d0 ; decro(i)=0.d0 ; decrx(i,:)=0.d0
 	  ENDIF   
 	 ENDDO
-	 	  
+
 	ELSE		!écran faible	
 	 zstar=0.d0 ; mue=0.d0	
 	 DO i=1,nchim

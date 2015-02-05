@@ -6,7 +6,7 @@ export HDF5_CXX=$(HDF5_BACKEND)
 
 lib_LTLIBRARIES			= libnuc_cesam.la
 
-libnuc_cesam_la_SOURCES = nuc_cesam_for.F EOS5_xtrin.F		\
+libnuc_cesam_la_SOURCES = nuc_cesam_for.F90 EOS5_xtrin.F		\
                           xztrin21.F ZFS_interp_EOS5.F 		\
                           atm_onelayer.cpp composition.cpp	\
                           eos_ideal.cpp eos_idealrad.cpp	\
