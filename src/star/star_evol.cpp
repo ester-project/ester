@@ -7,7 +7,12 @@
 
 void star_evol::update_comp() {
 
-    nuc_cesam_dcomp(comp, T, rho, nuc);
+    double *compo[10];
+    compo[0] = comp["X"].data();
+    cesam::update_comp(T.data(), rho.data(),
+            compo,
+            r.data(), th.data(),
+            nr, nth);
 
     exit(EXIT_SUCCESS);
 }
@@ -43,7 +48,7 @@ void star_evol::init_comp() {
         return;
     }
     else {
-        cesam::init();
+        // cesam::init();
         comp_inited = true;
         star2d::init_comp();
     }

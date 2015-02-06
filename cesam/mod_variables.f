@@ -208,6 +208,6 @@ c----------------------------------------------------------------------
 	
 	INCLUDE 'chim_gram.f'
 	INCLUDE 'inter.f'
-	INCLUDE 'sortie.f'	
+	INCLUDE 'sortie.f'
 	
 	END MODULE mod_variables

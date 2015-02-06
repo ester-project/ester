@@ -1,0 +1,55 @@
+	CHARACTER (len=7), PARAMETER, PUBLIC :: version='V1.1.8'
+
+!Signification du numéro de version : Va.b.c
+!a augmente si les fichiers binaires de reprise *.pms, *.rep, *.dat... changent
+!b augmente si le fichier *.don change
+!c augmente si modification d'algorithmes (bug, nouvelle implantation)
+  
+!Journal des aménagements CESAM2k.V1
+
+!23/04/05 CESAM2k.V1.1.0
+! Introduction dans resout de l'arrêt sur x_stop
+! Introduction dans resout de l'arrêt sur t_stop
+ 
+!27/04/05 CESAM2k.V1.1.1
+!  Correction de bugs engendrés par ihe4=-100 et lvent=.TRUE.avec PP1
+  
+!02/05/05 CESAM2k.V1.1.2
+! Amélioration des algorithmes gérant les arrêts sur t_stop et x_stop
+! Implantation de l'arrêt sur He_core 
+
+!05/05/05 CESAM2k.V1.1.3
+! Correction d'un bug lié au calcul de Teff si n_atm=1 ie. dans les
+! cas GONG1 et GONG2
+! Calcul ("exact") de la féquence de Brunt-Vaissala en utilisant ln ro
+! Suppression de contour
+ 
+!14/05/05 CESAM2k.V1.1.4
+!Sous directory SOURCE:
+! Correction du bug dans la formule de normalisation dans evol
+!  lire	  chim(1:nchim,i)=chim(1:nchim,i)/norm
+!  et non  chim(1:nchim,:)=chim(1:nchim,:)/norm
+!Sous directory EXPLOIT:
+! Création des programmes de dessin des2k_abonts et des2k_abontc
+! Suppression du programme des2k_abont
+! Dessin de X, Y, Z dans des2k_abon
+ 
+!20/05/05 CESAM2k.V1.1.5
+! Corrections dans lim_gong1, lim_tau1, add_ascii, opa_yveline lisse,
+! pour réimplantation des modèles de GONG
+
+!26/05/05 CESAM2k.V1.1.6
+! Restriction de l'utilisation de ln ro = bp(7,:) au cas avec diffusion
+! et ord_qs  2 à cause de la discontinuité de ro aux limites ZR/ZC
+! Introduction du numéro de version par un include dans mod_donnees
+ 
+!31/05/05 CESAM2k.V1.1.7  
+! Mise en service du programme des2k_rot du sous-directory EXPLOIT
+! SAVE et allocation des tables de données dans opa_yveline
+ 
+!03/06/05 CESAM2k.V1.1.8  
+! Rectification d'une virgule dans mod_exploit
+! Suppression de la référence à compg(ihe4,1) dans list
+! Save de cte1 dans colatm
+! Mise de version --> journal
+!Correction d'un bug dans ppcno3ac10

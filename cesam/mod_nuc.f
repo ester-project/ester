@@ -101,11 +101,11 @@ c------------------------------------------------------------------------
 	INCLUDE 'nuc.f'
 c	INCLUDE 'neutrinos.f'				!YLD
 	INCLUDE 'pp1.f'
-	INCLUDE 'pp3.f'	
-	INCLUDE 'ppcno10BeBFe.f'	
+	INCLUDE 'pp3.f'
+	INCLUDE 'ppcno10BeBFe.f'
 	INCLUDE 'ppcno10Fe.f'
 	INCLUDE 'ppcno10K.f'
-	INCLUDE 'ppcno10.f'	
+	INCLUDE 'ppcno10.f'
 	INCLUDE 'ppcno11.f'
 	INCLUDE 'ppcno12Be.f'
 	INCLUDE 'ppcno12BeBFe.f'
@@ -114,10 +114,10 @@ c	INCLUDE 'neutrinos.f'				!YLD
 	INCLUDE 'ppcno3a9.f'
 	INCLUDE 'ppcno3ac10.f'
 	INCLUDE 'ppcno9.f'
-	INCLUDE 'ppcno9Fe.f'	
+	INCLUDE 'ppcno9Fe.f'
 	INCLUDE 'rq_reac.f'
 	INCLUDE 'tabul_nuc.f'
 	INCLUDE 'taux_nuc.f'
-	INCLUDE 'vent.f'	 	 	 	 	 	
+	INCLUDE 'vent.f'
 	
 	END MODULE mod_nuc
