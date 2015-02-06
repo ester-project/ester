@@ -1,5 +1,7 @@
 export HDF5_CXX=$(HDF5_BACKEND)
 
+AM_LDFLAGS=-lgfortran
+
 lib_LTLIBRARIES	= libcesam.la
 
 EXTRA_DIST = rk_imps.f abon_ini.f

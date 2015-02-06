@@ -5,16 +5,57 @@
 
 #include <stdlib.h>
 
+class compo {
+    private:
+        double *compo_matrix;
+        int nr, nchim;
+
+    public:
+        compo(star2d *s, int nchim): nr(s->nr), nchim(nchim) {
+            compo_matrix = NULL;
+        }
+
+        double *to_cesam(composition_map &c) {
+            compo_matrix = new double[nchim*nr];
+            if (compo_matrix == NULL) {
+                ester_err("out of memory");
+                exit(EXIT_FAILURE);
+            }
+
+            const char *chims[] = {
+                "H", "He3", "He4",
+                "C12", "C13", "N14",
+                "N15", "O16", "O17"};
+            matrix remainings = ones(nr, 1);
+            int offset = 0;
+            for (int i=0; i<nchim-1; i++, offset+=nr) {
+                remainings -= c[chims[i]];
+                memcpy(compo_matrix+offset,
+                        c[chims[i]].data(),
+                        nr * sizeof(*compo_matrix));
+            }
+            memcpy(compo_matrix+offset,
+                    remainings.data(),
+                    nr * sizeof(*compo_matrix));
+
+            return compo_matrix;
+        }
+
+        ~compo() {
+            if (compo_matrix == NULL)
+                return;
+            delete[] compo_matrix;
+        }
+};
+
 void star_evol::update_comp() {
-
-    double *compo[10];
-    compo[0] = comp["X"].data();
+    int nchim = 10;
+    compo c(this, nchim);
+    double *cesam_abon = c.to_cesam(comp);
+    matrix grid = r.col(0);
     cesam::update_comp(T.data(), rho.data(),
-            compo,
-            r.data(), th.data(),
-            nr, nth);
-
-    exit(EXIT_SUCCESS);
+            cesam_abon,
+            grid.data(), nr, nchim);
 }
 
 star_evol::star_evol() {

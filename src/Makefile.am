@@ -8,9 +8,7 @@ BUILT_SOURCES	= main/read_config.cpp
 AM_CPPFLAGS = -I$(srcdir)/include -I$(top_srcdir)/cesam
 AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam_nuc
 
-noinst_LTLIBRARIES		= libnuc.la libopint.la libnuc_cesam.la libcesam.la
-libnuc_la_SOURCES		=
-libnuc_la_LIBADD		= ../tables/cesam_nuc/libnuc.la
+noinst_LTLIBRARIES		= libopint.la libnuc_cesam.la libcesam.la
 
 libopint_la_SOURCES		=
 libopint_la_LIBADD		= ../tables/houdek/v9/lib/libopint.la
@@ -23,12 +21,12 @@ libcesam_la_LIBADD	= ../cesam/libcesam.la
 
 bin_PROGRAMS		= star1d star2d gen_output version star_evol ester_info
 
-star1d_LDFLAGS		= -lester -lnuc_cesam -lnuc -lopint -lcesam
-star2d_LDFLAGS		= -lester -lnuc_cesam -lnuc -lopint -lcesam
-gen_output_LDFLAGS	= -lester -lnuc_cesam -lnuc -lopint -lcesam
-version_LDFLAGS		= -lester -lnuc_cesam -lnuc -lopint -lcesam
-star_evol_LDFLAGS	= -lester -lnuc_cesam -lnuc -lopint -lcesam
-ester_info_LDFLAGS	= -lester -lnuc_cesam -lnuc -lopint -lcesam
+star1d_LDFLAGS		= -lester -lnuc_cesam -lopint -lcesam
+star2d_LDFLAGS		= -lester -lnuc_cesam -lopint -lcesam
+gen_output_LDFLAGS	= -lester -lnuc_cesam -lopint -lcesam
+version_LDFLAGS		= -lester -lnuc_cesam -lopint -lcesam
+star_evol_LDFLAGS	= -lester -lnuc_cesam -lopint -lcesam
+ester_info_LDFLAGS	= -lester -lnuc_cesam -lopint -lcesam
 
 
 star1d_SOURCES		= main/star1d.cpp main/read_config.cpp
@@ -38,12 +36,12 @@ gen_output_SOURCES	= main/gen_output.cpp
 version_SOURCES		= main/version.cpp
 ester_info_SOURCES	= main/ester-info.cpp
 
-star1d		: libnuc.la libopint.la libester.la
-star2d		: libnuc.la libopint.la libester.la
-gen_output	: libnuc.la libopint.la libester.la
-version 	: libnuc.la libopint.la libester.la
-star_evol	: libnuc.la libopint.la libester.la
-ester_info	: libnuc.la libopint.la libester.la
+star1d		: libopint.la libester.la
+star2d		: libopint.la libester.la
+gen_output	: libopint.la libester.la
+version 	: libopint.la libester.la
+star_evol	: libopint.la libester.la
+ester_info	: libopint.la libester.la
 
 EXTRA_DIST	= $(srcdir)/main/ester.in				\
 			  $(srcdir)/include/lapack.h			\
