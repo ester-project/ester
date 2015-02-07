@@ -661,6 +661,36 @@ You can visualize these files with a variety of tools such as \texttt{hdfview}
 or \texttt{h5dump}, and you can easily read them from several languages such as
 python, Fortran or IDL.
 
+\subsubsection{File Format}
+An ESTER's model written in \texttt{HDF5} will have the following structure: 
+\begin{itemize}
+    \item a group named \texttt{star} attached to the root of the file
+    \item the parameters of the simulation are attributes attached to this group
+        \begin{itemize}
+            \item for instance \texttt{ndomains} or \texttt{npts}
+        \end{itemize}
+    \item the different fields are datasets attached to the \texttt{/star} group
+\end{itemize}
+
+Fields present in ESTER's models are: 
+\begin{itemize}
+    \item \texttt{/star/G}: the stream function $\Phi$
+    \item \texttt{/star/N2}: the squared Brunt-Väisälä frequency (in $rd^2 /s^2$).
+    \item \texttt{/star/R}: radius of domain's boundary.
+    \item \texttt{/star/T}: temperature.
+    \item \texttt{/star/X}: hydrogen abundance.
+    \item \texttt{/star/Y}: helium abundance.
+    \item \texttt{/star/Z}: metal abundance.
+    \item \texttt{/star/nuc.eps}: nuclear reaction.
+    \item \texttt{/star/p}: pressure.
+    \item \texttt{/star/phi}: gravitational potential.
+    \item \texttt{/star/phiex}: gravitational potential in the external domain.
+    \item \texttt{/star/r}: radius of collocation points.
+    \item \texttt{/star/rho}: density.
+    \item \texttt{/star/th}: colatitude.
+    \item \texttt{/star/w}: angular velocity ($\omega$).
+    \item \texttt{/star/z}: radial variable ($\zeta$).
+\end{itemize}
 
 \subsubsection{Code Examples}
 
@@ -768,3 +798,5 @@ h5d_close, did
 h5f_close, fid
 ;---------------------------------------------------------------------
 \end{minted}
+
+

@@ -26,3 +26,39 @@
 *.exe
 *.out
 *.app
+
+# doc
+doc/ester.pdf
+doc/tex/*.aux
+doc/tex/*.bbl
+doc/tex/*.blg
+doc/tex/*.dvi
+doc/tex/*.log
+doc/tex/*.toc
+doc/tex/*.fcn
+
+# Makefile.in
+Makefile.in
+
+# autoconf stuff
+autoconf/ar-lib
+autoconf/compile
+autoconf/config.guess
+autoconf/config.sub
+autoconf/depcomp
+autoconf/install-sh
+autoconf/ltmain.sh
+autoconf/missing
+autom4te.cache
+m4
+aclocal.m4
+configure
+config.h.in
+config.h.in~
+
+# tags
+tags
+TAGS
+
+# swap files
+.*.swp
