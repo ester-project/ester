@@ -9,16 +9,16 @@ void star_evol::update_comp() {
     int nchim = 10;
     cesam::compo c(this, nchim);
 
-    printf("comp[H] was: %e - %e\n", comp["H"](0), comp["H"](-1));
     for (int i=0; i<nth; ++i) {
         double *cesam_abon = c.to_cesam(comp.col(i));
-        cesam::update_comp(T.data(), rho.data(),
+        matrix t = T * Tc;
+        matrix r = rho * rhoc;
+        cesam::update_comp(t.data(), r.data(),
                 cesam_abon,
                 r.col(i).data(), nr, nchim);
         matrix_map *newcomp = c.from_cesam(cesam_abon);
         comp.setcol(i, *newcomp);
     }
-    printf("comp[H] is: %e - %e\n", comp["H"](0), comp["H"](-1));
 }
 
 star_evol::star_evol() {
