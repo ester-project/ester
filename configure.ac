@@ -34,14 +34,6 @@ AM_PATH_PYTHON
 # Checks for libraries.
 
 # Checks for header files.
-have_pgplot="no"
-AC_LANG_PUSH([C++])
-AC_CHECK_HEADERS([cpgplot.h],
-                 [AC_DEFINE([USE_PGPLOT], [1], [enable pgplot support])
-                 AC_CHECK_LIB([cpgplot], [cpgebuf],
-                              [LIBS="-lcpgplot $LIBS" have_pgplot="yes"],
-                              [AC_ERROR(cpgplot library not found)])])
-
 AC_CHECK_HEADERS([stddef.h stdlib.h string.h sys/time.h])
 AC_CHECK_HEADERS([cblas.h lapack.h])
 
@@ -116,6 +108,13 @@ AS_IF([test "x$enable_hdf5" != "xno"],
               AC_SUBST(HDF5_BACKEND)
               AC_DEFINE([USE_HDF5], [1], [Enable hdf5 support]) ])],
    [enable_hdf5="no"])
+
+have_pgplot="no"
+AC_LANG_PUSH([C++])
+AC_CHECK_LIB([cpgplot], [cpgebuf],
+             [AC_DEFINE([USE_PGPLOT], [1], [enable pgplot support])
+             LIBS="$LIBS -lcpgplot" have_pgplot="yes"])
+
 
 AM_CONDITIONAL(USE_HDF5, [test "x$enable_hdf5" == "xyes"])
 
