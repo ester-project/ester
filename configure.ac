@@ -94,7 +94,6 @@ AS_IF([test "x$enable_hdf5" != "xno"],
        AC_MSG_CHECKING([whether h5c++ works])
        AC_LINK_IFELSE(
                       [AC_LANG_SOURCE([
-                       #include <H5Cpp.h>
                        int main(void) {}
                        ])],
                        [h5cxx_works="yes"],

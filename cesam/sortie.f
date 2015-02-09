@@ -13,7 +13,7 @@ c-----------------------------------------------------------------------
 
 	CLOSE(unit=2)		!fichier .lis	
 	CLOSE(unit=53)		!fichier .HR	
-	CALL pgend
+	!CALL pgend
 	STOP
 	
 	END SUBROUTINE sortie
