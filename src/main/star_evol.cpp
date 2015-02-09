@@ -69,17 +69,17 @@ int main(int argc,char *argv[]) {
 	double Xc=A.Xc;
 	int n=0;
 	
-	while((Xc >= Xcmin && Xc <= 1) && n <= 2) {
+	while (Xc >= Xcmin && Xc <= 1) {
 		printf("Xc=%f\n",Xc);
 		int last_it=0,nit=0;
 		double err;
 		A.Xc=Xc;
-		while(!last_it) {
+		while (!last_it) {
 			nit++;
             A.converged = false;
 			err=A.solve(op);
 			last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit;
-			if(config.verbose) {
+			if (config.verbose) {
 				printf("\tit=%d err=%e\n",nit,err);
 				printf("\t\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,1-1./A.map.leg.eval_00(A.r.row(-1),PI/2)(0),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
 
@@ -102,7 +102,7 @@ int main(int argc,char *argv[]) {
 			Lzc=Lzc.concatenate(A.Lzcore()*ones(1,1));
 		}
 		
-		if(config.verbose) {
+		if (config.verbose) {
 			fig->subplot(2,2);
 			fig->colorbar();
 			A.draw(fig,A.w);
@@ -124,9 +124,7 @@ int main(int argc,char *argv[]) {
             if (ext == NULL)
                 ext = strdup("");
             if (asprintf(&filename, "%s-%04d%s",
-                        name,
-                        n,
-                        ext) != -1) {
+                        name, n, ext) != -1) {
                 A.write(filename, config.output_mode);
                 free(filename);
             }

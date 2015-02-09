@@ -10,14 +10,15 @@
 
           integer e
 
-          print *, "** nr:", nr
+          ! print *, "** nr:", nr
 
-          print *, "** r:", r(1), r(nr)
-          print *, "** T:", T(1), T(nr)
-          print *, "** rho:", rho(1), rho(nr)
+          ! print *, "** r:", r(1), r(nr)
+          ! print *, "** T:", T(1), T(nr)
+          ! print *, "** rho:", rho(1), rho(nr)
 
           do e = 1, nchim
-              print *, "** ", e, ": ", comp(1, e),  " ", comp(nr, e)
+              ! print *, "** ", e, ": ", comp(1, e),  " ", comp(nr, e)
+              comp(:,e) = comp(:,e) - comp(:,e)*T*0.01
           end do
 
       end subroutine update_comp

@@ -1,6 +1,6 @@
 export HDF5_CXX=$(HDF5_BACKEND)
 
-AM_CXXFLAGS=-I.
+AM_CXXFLAGS=-I. -I$(top_srcdir)/src/include
 AM_LDFLAGS=-lgfortran
 
 lib_LTLIBRARIES	= libcesam.la
