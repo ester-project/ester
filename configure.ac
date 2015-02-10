@@ -88,6 +88,7 @@ AC_ARG_ENABLE([hdf5],
                              [Enable HDF5 support]))
 HDF5_BACKEND="$CXX"
 extension="out"
+AC_LANG_PUSH([C++])
 AS_IF([test "x$enable_hdf5" != "xno"],
       [CXX="h5c++"
        AC_MSG_CHECKING([whether h5c++ works])
@@ -106,8 +107,9 @@ AS_IF([test "x$enable_hdf5" != "xno"],
              [enable_hdf5="yes"
               extension="h5"
               AC_SUBST(HDF5_BACKEND)
-              AC_DEFINE([USE_HDF5], [1], [Enable hdf5 support]) ])],
+              AC_DEFINE([USE_HDF5], [1], [Enable hdf5 support])])],
    [enable_hdf5="no"])
+AC_LANG_POP([C++])
 
 have_pgplot="no"
 AC_LANG_PUSH([C++])
