@@ -89,18 +89,12 @@ the following conditions:
 r(\eta_i,\theta)=R(\theta) &\longrightarrow& A_i(\xi=0)=0\\
 r(\eta_{i+1},\theta)=R_{i+1}(\theta) &\longrightarrow& A_i(\xi=1)=1
 \end{eqnarray*}
-The simplest possibility is a linear mapping
-
-\begin{equation}
-A_i(\xi)=\xi \qquad a_i=0
-\end{equation}
-that gives
-
-\begin{equation}
-\label{eq:map_linear}
-r(\zeta,\theta)=R_i(\theta)+\xi\Delta R_i(\theta)
-\end{equation}
-But \citet{BGM98} proposed a mapping that satisfies some
+The simplest possibility is a linear mapping where $A_i(\xi)=\xi$ and
+$a_i=0$ giving $ r(\zeta,\theta)=R_i(\theta)+\xi\Delta R_i(\theta)$.
+This mapping however is not equivalent to the spherical geometry near
+the center and therefore not adapted to the use of spherical harmonics
+basis for the angular dependence of the solution. This is why 
+\citet{BGM98} proposed a mapping that satisfies some
 extra conditions to make it suitable for spectral methods. For that
 reason they set $A_i'(\xi=0)=0$ and $A_i'(\xi=1)=0$. Doing this, the
 first derivative of the mapping
@@ -111,13 +105,19 @@ r_\zeta=\frac{\partial r}{\partial\zeta}=a_i+A_i'(\xi)\left(\frac{\Delta R_i(\th
 is constant over the boundaries of the domains. This facilitates the
 writing of interface conditions for the derivatives of the variables
 in the problem when they are expressed in terms of their spectral
-coefficients.  In this case, we will set
+coefficients.  In this case, we set
 
 \begin{eqnarray}
 \label{eq:map_bonazzola}
 A_i(\xi)=-2\xi^3+3\xi^2 &\qquad& \mbox{for $i=1,\ldots,n-1$}\\
 A_0(\xi)=-1.5\xi^5+2.5\xi^3&&
 \end{eqnarray}
+thus
+
+\begin{equation}
+A'_i(\xi) = 6\xi(1-\xi) \andet A'_0 = 7.5\xi^2(1-\xi^2)
+\end{equation}
+
 The constant $a_i$ deserves some special attention. We want $r_\zeta>0$,
 that is, $r$ being monotonically increasing with $\zeta$, then $a_i$
 should satisfy the condition
