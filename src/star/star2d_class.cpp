@@ -28,7 +28,7 @@ star2d::star2d() : nr(map.gl.N), nth(map.leg.npts), nex(map.ex.gl.N),
 }
 
 star2d::~star2d() {
-    if (params.npts != NULL)
+    if (params.npts != NULL && params.nnpts > 0)
         free(params.npts);
 }
 
@@ -562,7 +562,7 @@ int star2d::read(const char *input_file, int dim) {
         }
     }
     version.name = std::string(buf);
-    free(buf);
+    if (buf) free(buf);
     fp.read("ndomains", &ndom);
     map.gl.set_ndomains(ndom);
     fp.read("npts", map.gl.npts);

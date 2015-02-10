@@ -15,14 +15,14 @@ int main(int argc,char *argv[]) {
 	
 	char *arg,*val;
 	cmd.open(argc,argv);
-	while(int err_code=cmd.get(arg,val)) {
-		if(err_code==-1) exit(1);
+	while (int err_code=cmd.get(arg,val)) {
+		if (err_code==-1) exit(1);
 		err_code=0;
-		if(!strcmp(arg,"Xcmin")) {
-			if(val==NULL) err_code=2;
+		if (!strcmp(arg,"Xcmin")) {
+			if (val==NULL) err_code=2;
 			else Xcmin=atof(val);
 		} else err_code=1;
-		if(err_code==1) {
+		if (err_code==1) {
 			ester_err("Unknown parameter %s",arg);
 			exit(1);
 		}
@@ -56,7 +56,7 @@ int main(int argc,char *argv[]) {
 	figure *fig = NULL;
 	solver *op;
 	
-	if(config.verbose) {
+	if (config.verbose) {
 		fig=new figure(config.plot_device);
 		fig->subplot(2,2);
 	}
