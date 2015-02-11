@@ -157,8 +157,10 @@ suitable for iterative methods.
 The general form of the jacobian of the mapping is defined by the expression
 
 \begin{equation}
-\delta r^{i}=J_0^{(i)}(\zeta,\theta)\delta\eta_i+J_1^{(i)}(\zeta,\theta)\delta\Delta\eta_i
-+J_2^{(i)}(\zeta,\theta)\delta R_i(\theta)+J_3^{(i)}(\zeta,\theta)\delta\Delta R_i(\theta)
+\delta r^{i}=J_0^{(i)}(\zeta,\theta)\delta\eta_i+
+             J_1^{(i)}(\zeta,\theta)\delta\Delta\eta_i
+            +J_2^{(i)}(\zeta,\theta)\delta R_i(\theta)
+            +J_3^{(i)}(\zeta,\theta)\delta\Delta R_i(\theta)
 \end{equation}
 and using (\ref{eq:map}), for fixed $a_i$
 
@@ -707,19 +709,23 @@ contiguous subdomains. The main issue is that the mapping presented in
 we should be careful of using the correct expression for the continuity
 conditions.
 
+\begin{table}
 \begin{center}
 \begin{tabular}{c|c|c}
 & \multicolumn{2}{c}{Continuous between subdomains} \\
 & Bonazzola & Linear mapping \\
 \hline
 $r$ & Yes & Yes\\
-$r_\zeta$ & No (but Yes for fixed $a_i$) & No\\
+$r_\zeta$ & Yes  & No\\
 $r_{\zeta\zeta}$ & No & Yes \\
 $r_\theta$ & Yes & Yes \\
 $r_{\theta\theta}$ & Yes & Yes \\
 $r_{\zeta\theta}$ & Yes & No \\
 \end{tabular}
 \end{center}
+\caption[]{Note that if the $a_i$'s change from one domain to the next,
+$r_\zeta$ is not continuous even in the Bonazzola et al. mapping.}
+\end{table}
 
 In the case of a scalar field $\phi(r,\theta)$, if $\phi$ is continuous
 between subdomains, the condition is simply

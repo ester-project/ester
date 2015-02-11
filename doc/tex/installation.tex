@@ -36,12 +36,18 @@ use an optimized (and parallelized) version.
 \pagebreak
 
 \section{Installation}
+
 The latest version of ESTER is available from the \git repository:
 \begin{shell}
     $ git clone https://github.com/ester-project/ester.git
     !$
 \end{shell}
 or from a source tarball: \url{http://ester-project.github.io/ester/}.
+
+the tarball source is for users who need a stable version and develop
+their own applications from it. The git repository version is for users
+who want to keep up with the lastest version of the code or even want to
+contribute to its development.
 
 If you choose to get ESTER from the \git repository, you will need to have
 \texttt{libtool}, \texttt{autoconf} and \texttt{automake} installed.
@@ -67,8 +73,8 @@ source directory:
 
 The most important configure options are:
 \begin{description}
-    \item[--prefix:] selects the installation directory (default is
-        \texttt{/usr/local}, and requires root privileges for the install step).
+    \item[--prefix:] selects the installation directory for binaries,
+ester libraries, etc. (default is \texttt{\$HOME/local}.
     \item[--enable-hdf5:] to enable HDF5 support (this requires to have HDF5
         library installed on the system).
     \item[--help:] prints help and the full list of configure options.
@@ -77,13 +83,13 @@ The following variables can be used to tune the ESTER build configuration:
 \begin{description}
     \item[FC:] Fortran compiler to be used (\eg FC=ifort)
     \item[CC:] C compiler
-    \item[CXX:] C compiler
+    \item[CXX:] C++ compiler
 \end{description}
 
 For instance, is you want to compile with Intel compilers and install ESTER in
-\texttt{\$HOME/local}, you should use:
+\texttt{\$HOME/ester\_local}, you should use:
 \begin{shell}
-    ester/BUILD$ ../configure --prefix=$HOME/local CC=icc CXX=icpc FC=ifort
+    ester/BUILD$ ../configure --prefix=$HOME/ester\_local CC=icc CXX=icpc FC=ifort
 \end{shell}
 
 
@@ -121,32 +127,44 @@ and compile the new version by going to your build directory and running
 \end{shell}
 
 \section{Checking the Installation}
-To check the functionality of the program we are going to calculate the
-structure of a star using the default values for the parameters.
 
-First create and go to directory where to save models:
-\begin{shell}
-    $ mkdir /tmp/models
-    $ cd /tmp/models
-\end{shell}
+To check the installation, a series of test runs is proposed: following
+the previous example, in the directory \tt{\$HOME/ester\_local/bin},
+where binaries have been built, just run {\tt ester-check-models}. These
+tests first compute a 1D 5~\msun model both with native and hdf5 output
+and compare the results to a reference output. A 2D 5~\msun model with
+$\omega=0.5\omega_k$ is then computed and checked again for the two
+kinds of output. The same check is repeated for a 10\msun model but with
+$\omega=0.3\omega_k$.
 
-Then, we calculate the structure of the corresponding 1D non-rotating star:
-\begin{shell}
-    /tmp/models$ ester 1d
-    !$
-\end{shell}
-After this step, the directory should contain file named \texttt{star.out} this
-is the model of the 1D non-rotating star.
-We can use this model as the starting point for the calculation of the 2D
-rotation model:
-\begin{shell}
-    /tmp/models$ ester 2d -i star.out -Omega_bk 0.5
-    !$
-\end{shell}
-The \texttt{-i} option specify the input model, and \texttt{-Omega\_bk} gives
-the rotation velocity as a fraction of the break-up velocity.
-In this example the star is rotating at 50\% of the break-up velocity
-($\Omega_k=\sqrt{\frac{GM}{R_e^3}}$).
+
+
+%To check the functionality of the program we are going to calculate the
+%structure of a star using the default values for the parameters.
+%
+%First create and go to directory where to save models:
+%\begin{shell}
+%    $ mkdir /tmp/models
+%    $ cd /tmp/models
+%\end{shell}
+%
+%Then, we calculate the structure of the corresponding 1D non-rotating star:
+%\begin{shell}
+%    /tmp/models$ ester 1d
+%    !$
+%\end{shell}
+%After this step, the directory should contain file named \texttt{star.out} this
+%is the model of the 1D non-rotating star.
+%We can use this model as the starting point for the calculation of the 2D
+%rotation model:
+%\begin{shell}
+%    /tmp/models$ ester 2d -i star.out -Omega_bk 0.5
+%    !$
+%\end{shell}
+%The \texttt{-i} option specify the input model, and \texttt{-Omega\_bk} gives
+%the rotation velocity as a fraction of the break-up velocity.
+%In this example the star is rotating at 50\% of the break-up velocity
+%($\Omega_k=\sqrt{\frac{GM}{R_e^3}}$).
 
 
 % The current version of the ESTER code can be downloaded using {\tt svn} from the project server by doing

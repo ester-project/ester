@@ -785,17 +785,33 @@ end program
 \end{minted}
 
 \paragraph{IDL:}
-\begin{minted}{idl}
+\begin{minted}{fortran}
 ;---------------------------------------------------------------------
-file = 'star.hdf5'
-fid = h5f_open(file)
-did = h5d_open(fid, '/star/T')
-T = h5d_read(did)
+fid = h5f_open('star2d05.h5') ; open the file
+gid = h5g_open(fid,'/star')   ; give the group id to the object star
+T = h5d_read(h5d_open(gid, 'T')); in the group id read the field T
+r = h5d_read(h5d_open(gid, 'r'))
+th = h5d_read(h5d_open(fid, '/star/th'))
 
-print, 'Temperature at the center: ', T[0, 0]
+; in the group id read the parameters nth:
+nth = h5a_read(h5a_open_name(gid, 'nth'))
+; in the group id read the parameters nr:
+nr = h5a_read(h5a_open_name(gid, 'nr'))
 
-h5d_close, did
-h5f_close, fid
+; make a contour plot of the temperature
+x=fltarr(nr,nth) & y=fltarr(nr,nth)
+for i=0,nr-1 do begin
+ for j=0,nth-1 do begin
+  x(i,j)=r(i,j)*cos(th(j))
+  y(i,j)=r(i,j)*sin(th(j))
+ endfor
+endfor
+
+print, 'Central temperature: ', T[0, 0]
+contour,T,x,y,nlev=40,xtit='r',ytit='z'
+
+h5f_close, fid ; close the file
+end
 ;---------------------------------------------------------------------
 \end{minted}
 
