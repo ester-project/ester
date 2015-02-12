@@ -39,6 +39,7 @@ r=r(\zeta,\theta')\\
 \varphi=\varphi'
 \end{array}
 \right.
+\label{themap}
 \end{equation}
 The problem reduces to find a suitable form for the function
 $r(\zeta,\theta)$.
@@ -78,7 +79,8 @@ where we have defined:
 \eta_i&=&R_i(\theta=0)\\
 \Delta\eta_i&=&\eta_{i+1}-\eta_i\\
 \Delta R_i(\theta)&=&R_{i+1}(\theta)-R_{i}(\theta)\\
-\xi&=&\displaystyle\frac{\zeta-\eta_i}{\Delta\eta_i}
+\xi&=&\displaystyle\frac{\zeta-\eta_i}{\Delta\eta_i} \quad {\rm so\;
+that}\quad 0\leq\xi\leq 1
 \end{eqnarray*} 
 
 The function(s) $A_i(\xi)$ and the constant(s) $a_i$ determine the final
@@ -118,8 +120,15 @@ thus
 A'_i(\xi) = 6\xi(1-\xi) \andet A'_0 = 7.5\xi^2(1-\xi^2)
 \end{equation}
 
-The constant $a_i$ deserves some special attention. We want $r_\zeta>0$,
-that is, $r$ being monotonically increasing with $\zeta$, then $a_i$
+The constant $a_i$ deserves some special attention. We first note that
+the jacobian of the transformation \eq{themap} is non-singular, namely
+
+\[ J=\left|\begin{array}{cc}
+\dzeta{r} & \frac{\partial r}{\partial\theta'}\\
+\dzeta{\theta} & \frac{\partial\theta}{\partial\theta'}
+\end{array}\right| = r_\zeta\neq0\]
+Actually, we want $r_\zeta>0$,
+so that $r$ is monotonically increasing with $\zeta$. Then $a_i$
 should satisfy the condition
 
 \begin{equation}
@@ -303,8 +312,8 @@ where $|g|=\det(g_{ij})=r^4r_\zeta^2\sin^2\theta$ and
 \begin{equation}
 [i,j,k]=\left\{
 \begin{array}{ll}
-1&\quad\mbox{the arguments are an even permutation}\\
--1&\quad\mbox{the arguments are an odd permutation}\\
+1&\quad\mbox{the arguments are an even permutation of 1,2,3}\\
+-1&\quad\mbox{the arguments are an odd permutation of 1,2,3}\\
 0&\quad\mbox{two or more arguments are equal}
 \end{array}
 \right.
