@@ -22,7 +22,7 @@ P\equiv P(\rho,T)\\
 \khi_r \equiv \khi_r(\rho,T)\\
 \eps_* \equiv \eps_*(\rho,T)\\
 \egreq
-and the expressions of the viscous force, which could be
+and the expressions of the viscous force, which could be (for instance)
 
 \begin{equation} \vF_v = \mu(\Delta\vv + \frac{1}{3}\na\Div\vv)\end{equation}
 for a compressible, constant viscosity fluid, and of the heat flux
@@ -46,12 +46,20 @@ equation just reads:
 \begin{equation} -\Div\vF + \eps_* = 0\end{equation}
 in a radiative zone and
 
-\begin{equation} \na s \end{equation}
-in the convective core.
+\begin{equation} \na s ={\vec 0}\label{nas}\end{equation}
+in the convective core. This equation gives the temperature gradient as a function
+of the pressure gradient thanks to the thermodynamics relation
 
+\[ ds = \frac{c_p}{T}dT - \frac{\alpha_T}{\rho T}dP\]
+where 
+
+\[ \alpha_T = -\lp\frac{\partial \ln\rho}{\partial\ln T}\rp_{\!\!P}\]
+is the isobar expansion coefficient. Hence, \eq{nas} leads to
+
+\begin{equation} \na T = \frac{\alpha_T}{\rho c_p}\na P\end{equation}
 As for the momentum equation, we split it into its azimuthal and
-meridional components. The meridional
-components of the equation may be reduced to 
+meridional components. The meridional components of the equation may be
+reduced to
 
 \begin{equation}
 \rho s\Omega^2\es=\na p+\rho\na\phi
