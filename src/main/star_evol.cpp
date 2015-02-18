@@ -6,28 +6,32 @@
 
 #include "read_config.h"
 
+
 int main(int argc,char *argv[]) {
 
 	configuration config(argc,argv);
 	cmdline_parser cmd;
 	
-	double Xcmin = 0.05;
+	double dXc=0.05,Xcmin=0.05;
 	
 	char *arg,*val;
 	cmd.open(argc,argv);
 	while(int err_code=cmd.get(arg,val)) {
 		if(err_code==-1) exit(1);
 		err_code=0;
-		if(!strcmp(arg,"Xcmin")) {
+		if(!strcmp(arg,"dXc")) {
+			if(val==NULL) err_code=2;
+			else dXc=atof(val);
+		} else if(!strcmp(arg,"Xcmin")) {
 			if(val==NULL) err_code=2;
 			else Xcmin=atof(val);
 		} else err_code=1;
 		if(err_code==1) {
-			ester_err("Unknown parameter %s",arg);
+			fprintf(stderr,"Unknown parameter %s\n",arg);
 			exit(1);
 		}
 		if(err_code==2) {
-			ester_err("Argument to %s missing",arg);
+			fprintf(stderr,"Argument to %s missing\n",arg);
 			exit(1);
 		}
 		cmd.ack(arg,val);
@@ -35,25 +39,25 @@ int main(int argc,char *argv[]) {
 	cmd.close();
 	
 	if(*config.input_file==0) {
-		ester_err("Must specify an input file");
+		fprintf(stderr,"Must specify an input file\n");
 		exit(1);
 	}
 	if(*config.output_file==0) {
 		strcpy(config.input_file,config.output_file);
 	}
-
+	
 	star_evol A;
-
+	
 	if(A.read(config.input_file)) {
 		star1d A1d;
 		if(A1d.read(config.input_file)) {
-			ester_err("Error reading input file %s", config.input_file);
+			fprintf(stderr,"Error reading input file %s\n",config.input_file);
 			exit(1);
 		}
 		A=A1d;
 	}
-	
-	figure *fig = NULL;
+
+	figure *fig;
 	solver *op;
 	
 	if(config.verbose) {
@@ -70,14 +74,13 @@ int main(int argc,char *argv[]) {
 	int n=0;
 	char outfile[256];
 	
-	while((Xc >= Xcmin && Xc <= 1)) {
+	while(Xc>=Xcmin&&Xc<=1) {
 		printf("Xc=%f\n",Xc);
 		int last_it=0,nit=0;
 		double err;
 		A.Xc=Xc;
 		while(!last_it) {
 			nit++;
-            A.converged = false;
 			err=A.solve(op);
 			last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit;
 			if(config.verbose) {
@@ -85,8 +88,8 @@ int main(int argc,char *argv[]) {
 				printf("\t\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,1-1./A.map.leg.eval_00(A.r.row(-1),PI/2)(0),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
 
 			}
+		
 		}
-        A.converged = true;
 		
 		static matrix logL(log10(A.luminosity()/L_SUN)*ones(1,1));
 		static matrix logR(log10(A.R/R_SUN)*ones(1,1));
@@ -118,19 +121,12 @@ int main(int argc,char *argv[]) {
 			fig->label("X(core)","Lz_core/Lz","");
 		}
 		sprintf(outfile,"%s_%04d",config.output_file,n);
-        {
-            char *filename = NULL;
-            if (asprintf(&filename, "%s-%04d.hdf5",
-                        config.output_file,
-                        n) != -1) {
-                A.hdf5_write(filename);
-                free(filename);
-            }
-        }
-        A.write(outfile,config.output_mode);
-		Xc = A.comp["H"](0)/A.comp["H"](-1);
-        A.fill(); // this updated the chemical composition
+		A.write(outfile,config.output_mode);
+		Xc-=dXc;
 		n++;
 	}
 }
+
+
+
 
