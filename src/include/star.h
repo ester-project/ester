@@ -219,7 +219,7 @@ public:
 	virtual solver *init_solver(int nvar_add=0);
 	virtual void register_variables(solver *op);
 	virtual void solve_Omega(solver *);
-    void init_comp();
+    // void init_comp();
 };
 
 #endif

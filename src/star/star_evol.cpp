@@ -26,18 +26,18 @@ void star_evol::fill() {
 	Omega_bk=Omega/Omegac;
 }
 
-void star_evol::init_comp() {
-    if (!converged)
-        return;
-    if (comp_inited) {
-        comp["H"] -= T*0.01*comp["H"]; // to be fixed
-        return;
-    }
-    else {
-        comp_inited = true;
-        star2d::init_comp();
-    }
-}
+// void star_evol::init_comp() {
+//     if (!converged)
+//         return;
+//     if (comp_inited) {
+//         comp["H"] -= T*0.01*comp["H"]; // to be fixed
+//         return;
+//     }
+//     else {
+//         comp_inited = true;
+//         star2d::init_comp();
+//     }
+// }
 
 solver * star_evol::init_solver(int nvar_add) {
 	return star2d::init_solver(nvar_add+1);
