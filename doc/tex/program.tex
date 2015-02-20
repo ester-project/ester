@@ -195,6 +195,32 @@ $\Omega_c=\sqrt{\frac{GM}{R_e^3}}$.
 \item {\tt Ekman}. Ekman number (gives the amplitude of the meridional circulation).
 \end{itemize}
 
+\section{{\tt ester evol} input parameters}
+
+At the moment {\tt ester evol} is the poor man recipe for stellar
+evolution of intermediate mass stars. It assumes that the convective core
+is the only part of the star that burns hydrogen. It also assumes that
+the star evolves at constant angular momentum. This latter assumption
+is therefore inappropriate for massive stars that are known to lose a
+lot of mass. It should be fine for stars with masses less than say 8\msun.
+
+From a ZAMS model, Xc is set to 1 (same hydrogen content in the core and in
+the envelope). Usage is 
+
+\begin{minted}{bash}
+$ ester evol -dXc 0.01 -i M4_04 -o M4_04_evol
+\end{minted}
+
+\noindent where  dXc gives the variation of Xc from one step to the next. Output
+files are numbered {\tt M4\_04\_evol\_0000, M4\_04\_evol\_0001,..}
+
+Note that {\tt dXc} may also be negative so as to permit an evolution
+backward in time.
+
+
+
+
+
 \section{Some recipes}
 
 The typical workflow to calculate a model starts with the calculation of
