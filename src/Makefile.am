@@ -10,13 +10,10 @@ AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam_nuc -I$(srcdir)/physics
 
 noinst_LTLIBRARIES		= libopint.la libcesam.la
 
-libopint_la_SOURCES		=
+libopint_la_SOURCES		= dummy.cpp
 libopint_la_LIBADD		= ../tables/houdek/v9/lib/libopint.la
 
-# libester_physics_la_SOURCES	=
-# libester_physics_la_LIBADD	= physics/libester-physics.la
-
-libcesam_la_SOURCES	=
+libcesam_la_SOURCES	= dummy.cpp
 libcesam_la_LIBADD	= cesam/libcesam.la
 
 bin_PROGRAMS		= star1d star2d gen_output version star_evol ester_info
