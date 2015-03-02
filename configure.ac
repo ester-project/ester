@@ -38,9 +38,13 @@ have_pgplot="no"
 AC_LANG_PUSH([C++])
 AC_CHECK_HEADERS([cpgplot.h],
                  [AC_DEFINE([USE_PGPLOT], [1], [enable pgplot support])
-                 AC_CHECK_LIB([cpgplot], [cpgebuf],
-                              [LIBS="-lcpgplot $LIBS" have_pgplot="yes"],
-                              [AC_ERROR(cpgplot library not found)])])
+                  AC_SEARCH_LIBS([pgebuf_], [pgplot cpgplot],
+                                 [LIBS="$LIBS -lgfortran -lX11"], [],
+                                 [-lgfortran -lX11])
+                  AC_SEARCH_LIBS([cpgebuf], [cpgplot],
+                              [have_pgplot="yes"],
+                              [AC_ERROR(cpgplot library not found)],
+                              [-lpgplot -lgfortran -lX11])])
 
 AC_CHECK_HEADERS([stddef.h stdlib.h string.h sys/time.h])
 AC_CHECK_HEADERS([cblas.h lapack.h])

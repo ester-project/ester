@@ -9,13 +9,13 @@ AM_CPPFLAGS = -I$(srcdir)/include
 AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam_nuc
 
 noinst_LTLIBRARIES		= libnuc.la libopint.la libnuc_cesam.la
-libnuc_la_SOURCES		=
+libnuc_la_SOURCES		= dummy.cpp
 libnuc_la_LIBADD		= ../tables/cesam_nuc/libnuc.la
 
-libopint_la_SOURCES		=
+libopint_la_SOURCES		= dummy.cpp
 libopint_la_LIBADD		= ../tables/houdek/v9/lib/libopint.la
 
-libnuc_cesam_la_SOURCES	=
+libnuc_cesam_la_SOURCES	= dummy.cpp
 libnuc_cesam_la_LIBADD	= physics/libnuc_cesam.la
 
 
