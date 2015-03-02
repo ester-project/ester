@@ -39,6 +39,7 @@ r=r(\zeta,\theta')\\
 \varphi=\varphi'
 \end{array}
 \right.
+\label{themap}
 \end{equation}
 The problem reduces to find a suitable form for the function
 $r(\zeta,\theta)$.
@@ -78,7 +79,8 @@ where we have defined:
 \eta_i&=&R_i(\theta=0)\\
 \Delta\eta_i&=&\eta_{i+1}-\eta_i\\
 \Delta R_i(\theta)&=&R_{i+1}(\theta)-R_{i}(\theta)\\
-\xi&=&\displaystyle\frac{\zeta-\eta_i}{\Delta\eta_i}
+\xi&=&\displaystyle\frac{\zeta-\eta_i}{\Delta\eta_i} \quad {\rm so\;
+that}\quad 0\leq\xi\leq 1
 \end{eqnarray*} 
 
 The function(s) $A_i(\xi)$ and the constant(s) $a_i$ determine the final
@@ -89,18 +91,12 @@ the following conditions:
 r(\eta_i,\theta)=R(\theta) &\longrightarrow& A_i(\xi=0)=0\\
 r(\eta_{i+1},\theta)=R_{i+1}(\theta) &\longrightarrow& A_i(\xi=1)=1
 \end{eqnarray*}
-The simplest possibility is a linear mapping
-
-\begin{equation}
-A_i(\xi)=\xi \qquad a_i=0
-\end{equation}
-that gives
-
-\begin{equation}
-\label{eq:map_linear}
-r(\zeta,\theta)=R_i(\theta)+\xi\Delta R_i(\theta)
-\end{equation}
-But \citet{BGM98} proposed a mapping that satisfies some
+The simplest possibility is a linear mapping where $A_i(\xi)=\xi$ and
+$a_i=0$ giving $ r(\zeta,\theta)=R_i(\theta)+\xi\Delta R_i(\theta)$.
+This mapping however is not equivalent to the spherical geometry near
+the center and therefore not adapted to the use of spherical harmonics
+basis for the angular dependence of the solution. This is why 
+\citet{BGM98} proposed a mapping that satisfies some
 extra conditions to make it suitable for spectral methods. For that
 reason they set $A_i'(\xi=0)=0$ and $A_i'(\xi=1)=0$. Doing this, the
 first derivative of the mapping
@@ -111,15 +107,28 @@ r_\zeta=\frac{\partial r}{\partial\zeta}=a_i+A_i'(\xi)\left(\frac{\Delta R_i(\th
 is constant over the boundaries of the domains. This facilitates the
 writing of interface conditions for the derivatives of the variables
 in the problem when they are expressed in terms of their spectral
-coefficients.  In this case, we will set
+coefficients.  In this case, we set
 
 \begin{eqnarray}
 \label{eq:map_bonazzola}
 A_i(\xi)=-2\xi^3+3\xi^2 &\qquad& \mbox{for $i=1,\ldots,n-1$}\\
 A_0(\xi)=-1.5\xi^5+2.5\xi^3&&
 \end{eqnarray}
-The constant $a_i$ deserves some special attention. We want $r_\zeta>0$,
-that is, $r$ being monotonically increasing with $\zeta$, then $a_i$
+thus
+
+\begin{equation}
+A'_i(\xi) = 6\xi(1-\xi) \andet A'_0 = 7.5\xi^2(1-\xi^2)
+\end{equation}
+
+The constants $a_i$ deserve some special attention. We first note that
+the jacobian of the transformation \eq{themap} is non-singular, namely
+
+\[ J=\left|\begin{array}{cc}
+\dzeta{r} & \frac{\partial r}{\partial\theta'}\\
+\dzeta{\theta} & \frac{\partial\theta}{\partial\theta'}
+\end{array}\right| = r_\zeta\neq0\]
+Actually, we want $r_\zeta>0$,
+so that $r$ is monotonically increasing with $\zeta$. Then $a_i$
 should satisfy the condition
 
 \begin{equation}
@@ -157,8 +166,10 @@ suitable for iterative methods.
 The general form of the jacobian of the mapping is defined by the expression
 
 \begin{equation}
-\delta r^{i}=J_0^{(i)}(\zeta,\theta)\delta\eta_i+J_1^{(i)}(\zeta,\theta)\delta\Delta\eta_i
-+J_2^{(i)}(\zeta,\theta)\delta R_i(\theta)+J_3^{(i)}(\zeta,\theta)\delta\Delta R_i(\theta)
+\delta r^{i}=J_0^{(i)}(\zeta,\theta)\delta\eta_i+
+             J_1^{(i)}(\zeta,\theta)\delta\Delta\eta_i
+            +J_2^{(i)}(\zeta,\theta)\delta R_i(\theta)
+            +J_3^{(i)}(\zeta,\theta)\delta\Delta R_i(\theta)
 \end{equation}
 and using (\ref{eq:map}), for fixed $a_i$
 
@@ -301,8 +312,8 @@ where $|g|=\det(g_{ij})=r^4r_\zeta^2\sin^2\theta$ and
 \begin{equation}
 [i,j,k]=\left\{
 \begin{array}{ll}
-1&\quad\mbox{the arguments are an even permutation}\\
--1&\quad\mbox{the arguments are an odd permutation}\\
+1&\quad\mbox{the arguments are an even permutation of 1,2,3}\\
+-1&\quad\mbox{the arguments are an odd permutation of 1,2,3}\\
 0&\quad\mbox{two or more arguments are equal}
 \end{array}
 \right.
@@ -707,19 +718,23 @@ contiguous subdomains. The main issue is that the mapping presented in
 we should be careful of using the correct expression for the continuity
 conditions.
 
+\begin{table}
 \begin{center}
 \begin{tabular}{c|c|c}
 & \multicolumn{2}{c}{Continuous between subdomains} \\
 & Bonazzola & Linear mapping \\
 \hline
 $r$ & Yes & Yes\\
-$r_\zeta$ & No (but Yes for fixed $a_i$) & No\\
+$r_\zeta$ & Yes  & No\\
 $r_{\zeta\zeta}$ & No & Yes \\
 $r_\theta$ & Yes & Yes \\
 $r_{\theta\theta}$ & Yes & Yes \\
 $r_{\zeta\theta}$ & Yes & No \\
 \end{tabular}
 \end{center}
+\caption[]{Note that if the $a_i$'s change from one domain to the next,
+$r_\zeta$ is not continuous even in the Bonazzola et al. mapping.}
+\end{table}
 
 In the case of a scalar field $\phi(r,\theta)$, if $\phi$ is continuous
 between subdomains, the condition is simply
@@ -734,7 +749,7 @@ $\frac{\partial\phi}{\partial\zeta}$), namely,
 
 \begin{equation}
 \label{eq:map_cond_der}
-\vect{\hat n}\cdot\nabla^{(+)}\phi^{(+)}=\vect{\hat n}\cdot\nabla^{(+)}\phi^{(+)}
+\vect{\hat n}\cdot\nabla^{(+)}\phi^{(+)}=\vect{\hat n}\cdot\nabla^{(-)}\phi^{(-)}
 \end{equation}
 where 
 

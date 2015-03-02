@@ -22,7 +22,7 @@ P\equiv P(\rho,T)\\
 \khi_r \equiv \khi_r(\rho,T)\\
 \eps_* \equiv \eps_*(\rho,T)\\
 \egreq
-and the expressions of the viscous force, which could be
+and the expressions of the viscous force, which could be (for instance)
 
 \begin{equation} \vF_v = \mu(\Delta\vv + \frac{1}{3}\na\Div\vv)\end{equation}
 for a compressible, constant viscosity fluid, and of the heat flux
@@ -44,9 +44,22 @@ simplified in assuming an isentropic core. Hence, the energy/entropy
 equation just reads:
 
 \begin{equation} -\Div\vF + \eps_* = 0\end{equation}
+in a radiative zone and
+
+\begin{equation} \na s ={\vec 0}\label{nas}\end{equation}
+in the convective core. This equation gives the temperature gradient as a function
+of the pressure gradient thanks to the thermodynamics relation
+
+\[ ds = \frac{c_p}{T}dT - \frac{\alpha_T}{\rho T}dP\]
+where 
+
+\[ \alpha_T = -\lp\frac{\partial \ln\rho}{\partial\ln T}\rp_{\!\!P}\]
+is the isobar expansion coefficient. Hence, \eq{nas} leads to
+
+\begin{equation} \na T = \frac{\alpha_T}{\rho c_p}\na P\end{equation}
 As for the momentum equation, we split it into its azimuthal and
-meridional components. The meridional
-components of the equation may be reduced to 
+meridional components. The meridional components of the equation may be
+reduced to
 
 \begin{equation}
 \rho s\Omega^2\es=\na p+\rho\na\phi
@@ -95,12 +108,11 @@ Gravitational potential scale \dotfill  $\frac{P_c}{\rho_c}$
 
 Angular velocity scale \dotfill $\frac{1}{R}\sqrt{\frac{P_c}{\rho_c}}$
 
-%Time scale \dotfill $(R^2/\Phi_*)^{1/2}$
-
-%Entropy scale \dotfill ${\cal R}_M$
+Meridional velocity scale \dotfill $E\sqrt{\frac{P_c}{\rho_c}}$
 }
 \end{center}\bigskip
 
+where $E$ is the Ekman number defined below.
 With these scalings, the equation now read:
 
 \begin{equation} \Delta\phi = \pi_c \rho\end{equation}
@@ -195,10 +207,7 @@ s^2\vec{\hat\xi}\cdot\na\Omega+\psi\vec{\hat\tau}\cdot\na(s^2\Omega)=0
 \end{equation}
 where $\vec{\hat\xi}$ is a unit vector perpendicular to the surface
 while $\vec{\hat\tau}$ is tangent to it. $\psi$ is the stream
-function of the meridional flow. The foregoing condition is completed by
-
-\[ \vec{\hat\xi}\cdot\vu = 0\]
-at the surface.
+function of the meridional flow.
 
 \item {\bf The rotation speed} of the star must be specified. For this we
 impose the equatorial angular velocity as a fraction of the critical
@@ -247,7 +256,7 @@ monitor or to impose:
 The foregoing equations and boundary conditions should be completed by
 the definition of the mapping that maps the spheroidal star to a sphere.
 This thorny subject is described at length in a separate chapter
-(see~\ref{chap:mapping}).
+(see chap.~\ref{chap:mapping}).
 
 \section{The algorithm}
 
@@ -378,6 +387,19 @@ not reached, then the algorithm continues on step 3
 \item if $\|\delta\vx\|\leq$tol, then stop.
 \end{enumerate}
 \noindent -----------------------------------------------------------------------
+
+\section{Modifying the equations}
+
+Two kinds of modifications are conceivable: either to modify existing
+equations or to add new equations coupled to the existing ones.
+
+\subsection{Adding a new force or a heat source}
+
+{\it Under construction}
+
+\subsection{Adding a new equation and a new variable}
+
+{\it Under construction}
 
 \bigskip
 \bigskip

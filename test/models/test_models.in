@@ -141,7 +141,7 @@ def fail(cmd):
     sys.exit(1)
 
 def runCheck(check):
-    run_cmd = check['cmd'] + " " + check['args'] + " -noplot"
+    run_cmd = prefix + "/bin/" + check['cmd'] + " " + check['args'] + " -noplot"
     if check['param'] != "":
         run_cmd += " -p " + check['param']
     if check['input'] != "":

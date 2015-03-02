@@ -192,8 +192,36 @@ plus some extra specific options:
 \item {\tt nex}. Number of radial points in the external domain.
 \item {\tt Omega\_bk}. Angular velocity at the equator in units of the critical velocity
 $\Omega_c=\sqrt{\frac{GM}{R_e^3}}$.
-\item {\tt Ekman}. Ekman number.
+\item {\tt Ekman}. Ekman number (gives the amplitude of the meridional circulation).
 \end{itemize}
+
+\section{{\tt ester evol} input parameters}
+
+At the moment {\tt ester evol} is the poor man recipe for stellar
+evolution of intermediate mass stars. It assumes that the convective core
+is the only part of the star that burns hydrogen. It also assumes that
+the star evolves at constant angular momentum. This latter assumption
+is therefore inappropriate for massive stars that are known to lose a
+lot of mass. It should be fine for stars with masses less than say 8\msun.
+
+From a ZAMS model, Xc is set to 1 (same hydrogen content in the core and in
+the envelope). Usage is 
+
+\begin{minted}{bash}
+$ ester evol -dXc 0.01 -i M4_04 -o M4_04_evol
+\end{minted}
+
+\noindent where  dXc gives the variation of Xc from one step to the next. Output
+files are numbered {\tt M4\_04\_evol\_0000, M4\_04\_evol\_0001,..} Note
+that the output files give an evolution but not a time-evolution since
+the nuclear clock is not installed.
+
+Note that {\tt dXc} may also be negative so as to permit an evolution
+backward in time.
+
+
+
+
 
 \section{Some recipes}
 
@@ -787,16 +815,34 @@ end program
 \paragraph{IDL:}
 \begin{minted}{idl}
 ;---------------------------------------------------------------------
-file = 'star.hdf5'
-fid = h5f_open(file)
-did = h5d_open(fid, '/star/T')
-T = h5d_read(did)
+fid = h5f_open('star2d05.h5') ; open the file
+gid = h5g_open(fid,'/star')   ; give the group id to the object star
+T = h5d_read(h5d_open(gid, 'T')); in the group id read the field T
+r = h5d_read(h5d_open(gid, 'r'))
+th = h5d_read(h5d_open(fid, '/star/th'))
 
-print, 'Temperature at the center: ', T[0, 0]
+; in the group id read the parameters nth:
+nth = h5a_read(h5a_open_name(gid, 'nth'))
+; in the group id read the parameters nr:
+nr = h5a_read(h5a_open_name(gid, 'nr'))
 
-h5d_close, did
-h5f_close, fid
+; make a contour plot of the temperature
+x=fltarr(nr,nth) & y=fltarr(nr,nth)
+for i=0,nr-1 do begin
+ for j=0,nth-1 do begin
+  x(i,j)=r(i,j)*cos(th(j))
+  y(i,j)=r(i,j)*sin(th(j))
+ endfor
+endfor
+
+print, 'Central temperature: ', T[0, 0]
+contour,T,x,y,nlev=40,xtit='r',ytit='z'
+
+h5f_close, fid ; close the file
+end
 ;---------------------------------------------------------------------
 \end{minted}
 
+More on the use of hdf5 data by idl on {\tt
+http://www.exelisvis.fr/docs/routines-102.html}
 
