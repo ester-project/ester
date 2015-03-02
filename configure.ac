@@ -189,30 +189,40 @@ AC_DEFINE([ESTER_DATADIR], ["@datadir@"], [Path to ester data directory])
 
 AC_MSG_CHECKING([whether we can run compiled binaries])
 AC_LINK_IFELSE([AC_LANG_SOURCE([
-                void main(void) {
+                extern "C" {
+                int dgemm_(char *, char *, int *, int *, int *,
+                                  double *, double *, int *, double *,
+                                  int *, double *, double *, int *);
+                }
+                int main(void) {
                 double a = 1.0, b = 1.0, c = 1.0;
                 int one = 1;
                 dgemm_("n", "n", &one, &one, &one, &a, &a, &one, &b, &one,
                        &a, &c, &one);
                 if (c == 2.0)
-                    exit(0);
+                    return 0;
                 else
-                    exit(1);
+                    return 1;
                 }
                 ])],
                [],
                [AC_MSG_RESULT(no)
                 AC_ERROR(Could not link)])
 AC_RUN_IFELSE([AC_LANG_SOURCE([
-                void main(void) {
+                extern "C" {
+                int dgemm_(char *, char *, int *, int *, int *,
+                                  double *, double *, int *, double *,
+                                  int *, double *, double *, int *);
+                }
+                int main(void) {
                 double a = 1.0, b = 1.0, c = 1.0;
                 int one = 1;
                 dgemm_("n", "n", &one, &one, &one, &a, &a, &one, &b, &one,
                        &a, &c, &one);
                 if (c == 2.0)
-                    exit(0);
+                    return 0;
                 else
-                    exit(1);
+                    return 1;
                 }
                ])],
               [can_run="yes"],
