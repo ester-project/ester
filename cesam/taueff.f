@@ -3,7 +3,7 @@ c**********************************************************************
 
 	SUBROUTINE taueff(teff,grav,tau)
 
-c	subroutine private du module mod_tdetau
+c	subroutine private du module mod_atm
 c	on détermine la valeur de tau tel que Teff=T(tau,teff,grav)
 c	utilisation de la fonction générique tdetau
 

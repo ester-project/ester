@@ -43,7 +43,6 @@ c	df_tau,d2f_tau : fonction  g(tau) et dérivées/tau
 c	rad=.true. : loi T(tau) purement radiative
 c	rstar : rayon total
 c	deriv=.true. : calcul de toutes les dérivées
-c	wrot : vitesse angulaire
 
 c sortie : (drop : d ro /dp etc..)
 c	ro : densité cgs
@@ -93,11 +92,7 @@ c-----------------------------------------------------------------------
 	8 d_grad, taur, dgradtaur, rot, w, gradrad0, dgradrs0, 
 	9 dgradpt0, dgradp0, dgradt0, dgradr0, dgradm0, graddp,
 	1 dgraddpp, dgraddpt
-
-cYLD     ajout de tau_rac,grad_int,grad_atm,grad_trans
-	REAL (kind=dp) ::grad_int,grad_atm,grad_trans	!YLD
-	REAL (kind=dp), SAVE :: tau_rac                !YLD
-		
+	
 	LOGICAL, SAVE :: init=.true., der
 	
 c-----------------------------------------------------------------------
@@ -111,21 +106,14 @@ c	PAUSE'entrée thermo_atm'
 
 	IF(init)THEN	!initialisations
 	 init=.false.
-
-c         OPEN(unit=30,file='transition.dat',status='unknown')     !YLD  
-	 	 
+	 
 	 cte1=4.d0/3.d0*aradia*clight ; cte2=2.d0/3.d0*rsol 
 	 cte8=lsol/4.d0/pi/rsol/rsol ; cte13=g*msol/rsol/rsol
 		 
 	 WRITE(*,4) ; WRITE(2,4)
 4	 FORMAT('convection dans atmosphère: critère de SCHWARZSCHILD')
 	 
-c--------------------------------------------------------------------	 
-cYLD	 dxdt=1.d0/(tau_max-1.d0)  !pente pour le raccord du gradient
-         tau_rac=1.D0                                              !YLD
-	 dxdt=1.d0/(tau_max-tau_rac)	!pente pour le raccord du gradient     !YLD
-	 WRITE(2,*) 'tau_rac au sommet zone de transition :', tau_rac       !YLD
-c----------------------------------------------------------------------
+	 dxdt=1.d0/(tau_max-1.d0)  !pente pour le raccord du gradient
 	 der=cpturb < 0.d0
 
 	 IF(pturb)THEN
@@ -142,8 +130,7 @@ c----------------------------------------------------------------------
 	 ENDIF		 
 	ENDIF		!initialisation
 
-c	pression gazeuse (Pgas + Prad)
-	
+c pression gazeuse (Pgas + Prad)	
 c	PRINT*,deriv ; WRITE(*,2000)p,t ; WRITE(*,2000)xchim(1:nchim)	
 c	PAUSE'avant etat'
 	CALL etat(p,t,xchim,deriv,
@@ -152,50 +139,42 @@ c	PAUSE'avant etat'
 	3 gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1)
 c	CALL pause('apres etat')
 
-c	Omega
-
+c Omega
 	SELECT CASE(Krot)
 	CASE(0,1,2)
 	 w=wrot
-	CASE(3)
+	CASE(3,4,5)
 	 w=rota(1,dim_rot)	 
 	END SELECT
 
 	IF(deriv)THEN	
-
 	 CALL opa(xchim,t,ro,kap,dkapt,dkapro,dkapx)
 c	 CALL pause('apres opa')
 	 dkapp=dkapro*drop ; dkapt=dkapro*drot+dkapt
 	 
-c	 diffusivité radiative
-	
+c diffusivité radiative	
 	 krad=cte1/kap/ro*t**3 ; dkradp=krad*(-drop/ro-dkapp/kap)
 	 dkradt=krad*(-drot/ro-dkapt/kap+3.d0/t)
 
-c	 gravité effective
-
-	 gravite=cte13*m/r**2 ; dgravr=-2.*gravite/r ; dgravm= gravite/m
-	 
+c gravité effective
+	 gravite=cte13*m/r**2 ; dgravr=-2.d0*gravite/r ; dgravm= gravite/m	 
 	 rot=-cte2*w**2*r	!gravite effective avec rotation
 	 gravite=gravite+rot	!rotation, remarque de N. Audard
-	 dgravr=dgravr-3.*rot/r
+	 dgravr=dgravr-rot/r
 	
-c	 échelle de hauteur de pression
-	 
+c échelle de hauteur de pression 
 	 hp=pt/gravite/ro		!echelle de hauteur de pression
 	 dhppt=hp/pt ; dhpp=-hp*drop/ro ; dhpt=-hp*drot/ro
 	 dhpr=-hp*dgravr/gravite ; dhpm=-hp*dgravm/gravite
 	
-c	 gradient radiatif	 
-	 
+c gradient radiatif	 	 
 	 gradrad=cte8*l*hp/r**2/krad/t	!gradient radiatif
 	 dgradpt=gradrad*dhppt/hp
 	 dgradp=gradrad*(dhpp/hp-dkradp/krad)	 
 	 dgradt=gradrad*(dhpt/hp-dkradt/krad-1.d0/t)
 	 dgradm=gradrad*dhpm/hp ; dgradr=gradrad*(dhpr/hp-2.d0/r)
 	 
-c	 épaisseur optique de la bulle	 
-	 	
+c épaisseur optique de la bulle	 	 	
 	 taur=kap*ro*alpha*hp		!epaisseur optique de la bulle
 	 dtaurpt=taur*dhppt/hp
 	 dtaurp=taur*(dkapp/kap+drop/ro+dhpp/hp)	 	 
@@ -214,22 +193,18 @@ c	 épaisseur optique de la bulle
 	 taur=kap*ro*alpha*hp		!epaisseur optique de la bulle
 	ENDIF		!deriv
 	
-c	test de convection
-c	gradrad0 est la valeur du gradient dérivée de la loi T(tau)
+c test de convection
+c gradrad0 est la valeur du gradient dérivée de la loi T(tau)
 c	-- si la loi T(tau) n'est pas purement radiative, on fait un
 c		raccord avec la valeur du gradient issue de la convection, 
 c	-- si la loi T(tau) est purement radiative, on utilise gradrad0
 c		pour valeur du gradient radiatif dans le calcul de la
 c		valeur du gradient avec convection
-c	le gradient radiatif, dérivé de la loi T(tau) (gradrad0),
-c	ne suppose pas
-c	l'approximation de diffusion et tient compte, en principe,
-c	d'un transfert radiatif complet, il diffère donc, un peu,
-c	du gradient
-c	radiatif (gradrad) l*hp/r**2/krad/t de la structure interne
-c	c'est gradrad qui est, arbitrairement, utilisé pour le critère
-c	de convection
-
+c le gradient radiatif, dérivé de la loi T(tau) (gradrad0), ne suppose pas
+c l'approximation de diffusion et tient compte, en principe,
+c d'un transfert radiatif complet, il diffère donc, un peu, du gradient
+c radiatif (gradrad) l*hp/r**2/krad/t de la structure interne
+c c'est gradrad qui est, arbitrairement, utilisé pour le critère de convection
 	gradrad0=gradrad*df_tau*(r/rstar)**2
 	dgradpt0=dgradpt*df_tau*(r/rstar)**2
 	dgradp0 =dgradp *df_tau*(r/rstar)**2	
@@ -239,8 +214,7 @@ c	de convection
 	dgradm0= dgradm *df_tau*(r/rstar)**2
 	dgradtau0=gradrad*d2f_tau*(r/rstar)**2
 	
-c	différence des gradients
-	
+c différence des gradients
 	IF(rad)THEN		!loi T(tau) purement radiative	
 	 d_grad=gradrad0-gradad*dlpp	!Schwarzschild pour la convection
 	ELSE
@@ -260,8 +234,7 @@ c	WRITE(*,2000)krad,gravite,delta,cp,ro,hp,taur ; PAUSE'krad'
 	 dgradr=dgradr0 ; dgradrs=dgradrs0 ; dgradm=dgradm0
 	 dgradtau=dgradtau0 ; dgradlpp=0.d0
 	 
-c	 mise a 0 de gam et dérivées
-	
+c mises à 0 de gam et dérivées
 	 gam=0.d0 ; dgampt=0.d0 ; dgamp=0.d0 ; dgamt=0.d0 ; dgamm=0.d0
 	 dgamr=0.d0 ; dgamrs=0.d0 ; dgamtau=0.d0 ; dgamlpp=0.d0
  	 	 	 	  
@@ -280,10 +253,9 @@ c	 PAUSE'avant conv'
 	 
 	 IF(rad)THEN		!loi T(tau) purement radiative
 	 	 
-c	  dans une ZC avec une loi T(tau) purement radiative gradrad
-c	  est modifié par la correction d'atmosphère
-c	  on prend gradrad0 comme gradient radiatif pour le
-c	  calcul du gradient
+c dans une ZC avec une loi T(tau) purement radiative gradrad
+c est modifié par la correction d'atmosphère
+c on prend gradrad0 comme gradient radiatif pour le  calcul du gradient
 
 c	  WRITE(*,*)'krad,gravité,delta,cp,ro,hp,taur,gradrad0,graddp'
 c	  WRITE(*,2000)krad,gravite,delta,cp,ro,hp,taur,gradrad0,graddp
@@ -299,8 +271,7 @@ c	  CALL pause('après conv')
 	
 	  IF(deriv)THEN
 	  
-c	   dérivées du gradient	  
-	 
+c dérivées du gradient	  
 	   dgradpt=dgradhp*dhppt  +dgradtaur*dtaurpt +dgradgrad*dgradpt0
 	
 	   dgradp=dgradkra*dkradp  +dgradel*deltap+dgradcp *dcpp 
@@ -361,22 +332,19 @@ c	   PAUSE'les gam'
 	    
 	 ELSE	!loi T(tau) non purement radiative
 	 
-c	  avec une loi non purement radiative on pondère par
-c	  exp(tau-tau_max)
-c	  le gradient de la loi T(tau) ie. gradrad*df_tau=gradrad0
-c	  et le gradient de la MLT calcule avec gradrad
-
+c avec une loi non purement radiative on pondère par exp(tau-tau_max)
+c le gradient de la loi T(tau) ie. gradrad*df_tau=gradrad0
+c et le gradient de la MLT calculé avec gradrad
 	  CALL conv(r,krad,gravite,delta,cp,ro,hp,taur,gradrad,
 	1 graddp,deriv,grad,dgradkra,dgradgra,dgradel,dgradcp,dgradro,
 	2 dgradhp,dgradtaur,dgradgrad,dgradgad,
 	3 gam,dgamkra,dgamgra,dgamdel,dgamcp,dgamro,
 	4 dgamhp,dgamtaur,dgamgrad,dgamgad)
 	
-cYLD	  x=max((tau-1.d0)*dxdt,0.d0)
-	  x=max((tau-tau_rac)*dxdt,0.d0)   !YLD
+	  x=max((tau-1.d0)*dxdt,0.d0)
 	  	
 	  IF(deriv)THEN
-	   dgradpt=dgradhp*dhppt  +dgradtaur*dtaurpt +dgradgrad*dgradpt0	  
+	   dgradpt=dgradhp*dhppt  +dgradtaur*dtaurpt +dgradgrad*dgradpt0
 	   dgradpt=dgradpt0*(1.d0-x)+dgradpt*x
 	   	  
 	   dgradp=dgradkra*dkradp + dgradel*deltap+ dgradcp *dcpp 
@@ -418,13 +386,7 @@ c	   ses dérivées n'ont donc pas d'intérêt
 	  	  
 	  ENDIF		!deriv
 	  
-c---------------------------------------------------------------------------
-cYLD       quantités pour atmosphère : fichier transition.dat
-	  grad_int=grad     !YLD
-	  grad_atm=gradrad0  !YLD
 	  grad=gradrad0*(1.d0-x)+grad*x		!ne pas deplacer
-	  grad_trans=grad    !YLD
-	  write(30,2001) tau, grad_trans,grad_int,grad_atm,t,p,krad,hp  !YLD
 	    
 c	  WRITE(*,2000)x,dxdt,dgradtau0,gradrad0,grad,tau,d2f_tau,dgradtau
 c	  WRITE(*,2001)tau,gradrad0,grad ; WRITE(*,2001)tau,gradrad0,

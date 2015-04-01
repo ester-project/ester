@@ -4,12 +4,11 @@ c**************************************************************************
 	SUBROUTINE ppcno10(t,ro,comp,dcomp,jac,deriv,fait,
 	1 epsilon,et,ero,ex,hhe,be7e,b8e,n13e,o15e,f17e)
 
-c       routine private du module mod_nuc
+c routine private du module mod_nuc
 
-c	cycles PP et CNO
-c	cf. Clayton p. 380, 392 et 430,
+c cycles PP et CNO, cf. Clayton p. 380, 392 et 430,
 
-c	éléments pris en compte:
+c éléments pris en compte:
 c	H1, He3, He4, Li7, C12, C13, N14, N15, O16, O17, Ex
 c	Ex est l'élément fictif complément, il n'intéresse
 c	que la diffusion H2 et Be7 à l'équilibre
@@ -18,10 +17,9 @@ c	un premier appel à rq_reac initialise et définit le nb.
 c	d'éléments chimiques pour lesquels les reac. nuc. sont tabulées
 c	dans ppcno10 on ajoute Ex, soit nchim+1, puis
 
-c	Auteur: P.Morel, Département J.D. Cassini, O.C.A.
-c	CESAM2k
+c Auteur: P.Morel, Département J.D. Cassini, O.C.A., CESAM2k
 
-c entree :
+c entrées :
 c	t : température cgs
 c	ro : densité cgs
 c	comp : abondances
@@ -37,7 +35,7 @@ c	jac : jacobien (unité de temps : 10**6 ans)
 c	epsilon, et, ero, ex : énergie thermonucléaire (unité de temps : s)
 c			    : et dérivées /t, ro ,X
 
-c	Neutrinos
+c Neutrinos
 c	hhe, be7e, b8e, n13e, o15e, f17e : nombre de neutrinos g/s
 c	hhe réaction : H1(p,e+ nu)H2
 c	be7e réaction : Be7(e-,nu g)Li7
@@ -46,7 +44,6 @@ c	n13e réaction : N13(,e+ nu)C13
 c	o15e réaction : O15(e+,nu)N15 
 c	f17e réaction : F17(,e+ nu)O17
 
-c initialisation du COMMON/evol_chim/
 c	ab_min : abondances négligeables
 c	ab_ini : abondances initiales
 
@@ -66,7 +63,7 @@ c	r(12) : réaction N15(p,He4)C12
 c	r(13) : réaction O16(p,g)F17(,e+ nu)O17
 c	r(14) : réaction O17(p,He4)N14
 
-c	indices des éléments
+c indices des éléments
 c	H1 : 1
 c	He3 : 2
 c	He4 : 3
@@ -81,9 +78,9 @@ c	Ex  : 11
 
 c----------------------------------------------------------------------
 
-	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, ihe4,
+	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, fmin_abon, ihe4, ili7,
 	1 i_ex, langue, nchim, nom_elem, nom_xheavy,
-	2 nucleo, rot_solid, secon6, t_inf, x0, y0, zi, z0
+	2 nucleo, secon6, t_inf, x0, y0, zi, z0
 	USE mod_kind
 	USE mod_numerique, ONLY : gauss_band
 	
@@ -127,7 +124,7 @@ c	 définition de nchim: nombre d'éléments chimiques dont on
 c	 calcule l'abondance H1, He3, He4, Li7, C13, C13, N14, N15,
 c	 O16, O17, Ex
 
-	 nchim=10+1
+	 nchim=10+1 ; ili7=4
 
 c	 appel d'initialisation pour tabulation des réactions nucléaires
 c	 allocations fictives
@@ -265,7 +262,7 @@ c	 ab_min(9)=1.d-5	!O16
 c	 ab_min(10)=5.d-9	!O17
 c	 ab_min(11)=1.d-6	!Ex
 	 
-	 ab_min=ab_ini*1.d-2
+	 ab_min=ab_ini*fmin_abon
 
 c	 nombre/volume des métaux dans Z
 		
@@ -384,22 +381,19 @@ c écritures
 	3 ', N15 :',es10.3,/,'O16 :',es10.3,', O17 :',es10.3,
 	4 ', Ex :',es10.3)
 	  WRITE(2,6) ; WRITE(*,6)
-6	  FORMAT(/,'H2, Li7, Be7 à l''équilibre')
+6	  FORMAT(/,'H2, Be7 à l''équilibre')
 	  WRITE(2,7) ; WRITE(*,7)
 7	  FORMAT(/,'on utilise une table')
 	  WRITE(2,8) ; WRITE(*,8)
 8	  FORMAT(/,'évol. temporelle, test de précision sur H1 et He4')
 	 END SELECT
 	 	
-	 DO i=1,nchim
-	  ab_min(i)=ab_min(i)/nucleo(i)
-	  anuc(i)=ANINT(nucleo(i))		!nombre atomique
-	 ENDDO
+c par mole et nombre atomique
+	 ab_min=ab_min/nucleo ;  anuc=ANINT(nucleo)
 
 	 DEALLOCATE(a,b,indpc)
 
-c	réactions
-
+c réactions
 	CASE(2)
 	 dcomp=0.d0 ; jac=0.d0
 	
@@ -412,12 +406,10 @@ c	 WRITE(*,2000)comp(1:nchim)
 c	 WRITE(*,*)'réactions'
 c	 WRITE(*,2000)r(1:nreac)
 
-c	 H2
-
+c H2
 	 dh2h=r(1)/r(2) ; h2=dh2h*comp(1)
 
-c	 Be7
-
+c Be7
 	 den=(r(6)*mue+r(7)*comp(1)) ; be7=r(4)*comp(2)*comp(3)/den
 	 dbe7he3=be7/comp(2) ; dbe7he4=be7/comp(3)
 	 dbe7mue=-be7*r(6)/den ; dbe7h=-be7*r(7)/den

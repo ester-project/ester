@@ -41,7 +41,7 @@ c---------------------------------------------------------
 	1 delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
 	2 gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1
 
-	REAL (kind=dp), ALLOCATABLE, SAVE, DIMENSION(:) :: Lxchim
+	REAL (kind=dp), DIMENSION(nchim) :: Lxchim
 	
 	REAL (kind=dp), SAVE :: aradias3
 
@@ -239,7 +239,6 @@ c~~~~~~~~~~~~~~~~~~~~~~~~
 	 WRITE(2,1) ; WRITE(*,1)
 1	 FORMAT(//,5x,'equation d''etat CEFF',//)
 	 aradias3=aradia/3.d0
-	 ALLOCATE(Lxchim(nchim))
 	ENDIF
 
 	Lxchim(1:nchim)=xchim(1:nchim) ; Lp=p ; Lt=t
@@ -250,10 +249,9 @@ c	IF(t < 3000.d0 .OR. xchim(1) < 0.2d0 .OR. p < 1.d2)THEN
 	 pass=.FALSE.
 20	 FORMAT('divers appels a EFF car 3000 > t=',es10.3,
 	1 ' ou Xlim > X(1)=',es10.3, ' ou 1.d2 > P=',es10.3)
-	 CALL etat_eff(Lp,Lt,Lxchim,
-	1	ro,drop,drot,drox,u,dup,dut,dux,
-	2	delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
-	3	gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1)
+	 CALL etat_eff(Lp,Lt,Lxchim,ro,drop,drot,drox,u,dup,dut,dux,
+	1 delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
+	2 gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1)
 	 RETURN
 	ENDIF
 
@@ -280,8 +278,7 @@ c	1 1.d0-xchim(1)-xchim(ihe4)-xchim(ihe4-1)
 c         PRINT*,'on repasse ici',nit
 c         WRITE(*,2000)pl,tl,xchim(1)
         ELSE		!X uniquement
-         CALL eqstpc(pl,tl,Lxchim(1),1.d0-Lxchim(1)-Lz0,
-	1 Lz0,nosd,notd,fl,nit)
+         CALL eqstpc(pl,tl,Lxchim(1),1.d0-Lxchim(1)-Lz0,Lz0,nosd,notd,fl,nit)
         ENDIF
   	IF(ok)THEN
 c        sorties

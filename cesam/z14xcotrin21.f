@@ -453,7 +453,7 @@ c  you have already called readzexco with khighz of at least 11 or -11 (see
 c  description below), to allow CNO-interpolation in the opacities (to handle
 c  interconversions of C,N,O,Ne) and/or a user-specified opacity correction.
 c  If the CNO-interpolation opacities have not been read in (default case:
-c  abs(khighz) < 6), then this subroutine approximates the opacity effects of
+c  ABS(khighz) < 6), then this subroutine approximates the opacity effects of
 c  C,N,O,Ne interconversion by applying small negative and/or positive values
 c  of xci and xoi ("excess-C,O"), which may or may not be better than nothing.
 c
@@ -2030,7 +2030,7 @@ c
 c COMMON /a_opal_z/ : matrices for opacity storage and interpolation:
 c  indx(101) is used to get tabulation-index from excess C or O values: INDX
 c              (see data) refers to the index i of abundance grid points xc(i)
-c              or xo(i): e.g., i = indx( int( 100. * max( C , 0. ) + 1. ) )
+c              or xo(i): e.g., i = indx( int( 100. * MAX( C , 0. ) + 1. ) )
 c  t6list(nt) = stored-grid T6 values (obtained from logT values)
 c  alr(nr) = stored-grid log(R) values (at log(R)-intervals of 0.5)
 c  n(mx,mo,nz) = the number of different C-tables present at each X-tabulation,
@@ -2817,19 +2817,19 @@ c===
 c					! These initializations only done once:
       if ( itimeco .ne. 12345678 ) then
 c							! check some parameters
-         if ( nrm .ne. 19 .or. ntm .ne. 70 ) stop
+         if ( nrm .ne. 19 .OR. ntm .ne. 70 ) stop
      $        ' STOP -- OPAL: NRM .ne. 19 or NTM .ne. 70 . '
-         if ( nr .lt. 6 ) stop
+         if ( nr < 6 ) stop
      $        ' STOP -- OPAL: Too few R values; NRE-NRB < 5 . '
-         if ( nrb .le. 0 .or. nrb .gt. 12 .or. nre .gt. nrm ) stop
+         if ( nrb .le. 0 .OR. nrb > 12 .OR. nre > nrm ) stop
      $        ' STOP -- OPAL: NRB < 1 or NRB > 12 or NRE > NTM . '
-         if ( mc .ne. mo .or. mc .ne. 8 ) stop
+         if ( mc .ne. mo .OR. mc .ne. 8 ) stop
      $        ' STOP -- OPAL: MC .ne. MO or MC .ne. 8 . '
-         if ( nt .lt. 8 .or. ntb .le. 0 .or. ntb .gt. nta(nre)-3 ) stop
+         if ( nt < 8 .OR. ntb .le. 0 .OR. ntb > nta(nre)-3 ) stop
      $        ' STOP -- OPAL: NT < 8 or NTB < 1 or NTB > NTA(NRE)-3. '
-         if ( mx .le. 0 .or. mx .gt. 5 ) stop
+         if ( mx .le. 0 .OR. mx > 5 ) stop
      $        ' STOP -- OPAL: MX < 1 or MX > 5 . '
-         if ( nz .le. 0 .or. nz .gt. nzm ) stop
+         if ( nz .le. 0 .OR. nz > nzm ) stop
      $        ' STOP -- OPAL: NZ < 1 or NZ > 14 . '
 c						   ! initialize T,R values
          if ( init_trvals .le. 0 ) call get_trvals
@@ -2851,16 +2851,16 @@ c		   ! obtain the directory specification for the Gz???.x?? files
 c
       kope = lnblnk(copdir)
 c								! possibly new?
-      if ( kope .gt. 0 ) then
+      if ( kope > 0 ) then
 c						 ! check for [O/Fe]-file name
          if ( copdir(kope:kope) .ne. cb(1) .and.
      $        copdir(kope:kope) .ne. cb(2) ) then
-            do while ( kope .gt. 1 .and.
+            do while ( kope > 1 .and.
      $           copdir(kope:kope) .ne. cb(1) .and.
      $           copdir(kope:kope) .ne. cb(2) )
                kope = kope - 1
             enddo
-            if ( kope .eq. 1 .and.
+            if ( kope == 1 .and.
      $           copdir(kope:kope) .ne. cb(1) .and.
      $           copdir(kope:kope) .ne. cb(2) ) kope = 0
             cfile_opalmixes(n_zmixes) = copdir(kope+1:)
@@ -2869,7 +2869,7 @@ c						 ! check for [O/Fe]-file name
 c
       endif
 c
-      if ( kope .gt. 246 ) then
+      if ( kope > 246 ) then
          write(6,10) copdir(:kope)
  10      format(
      $        ' STOP -- READCO: OPAL directory name > 246 characters:'/
@@ -2880,7 +2880,7 @@ c
 c  NOTE that some systems return FALSE for the existence of a directory, so
 c  one cannot check for the directory's existence.
 c
-c-dir;      if ( kope .gt. 0 ) then
+c-dir;      if ( kope > 0 ) then
 c-dir;         call inqfil( copdir, lxst )
 c-dir;         if ( .not. lxst ) then
 c-dir;            write(6,20) copdir(:kope)
@@ -2899,24 +2899,24 @@ c
 c		     ! indices of X=0 and X=.03 mixes, and X-part of file names
       do i = 1, mx
 c					! loop over X-index (i, not m, here!)
-         if ( xa(i) .eq. 0.0 ) then
+         if ( xa(i) == 0.0 ) then
             mxzero = i
             cxfil(i) = 'Gx00'
             mnofz(i) = 1
-         else if ( abs(xa(i)-0.03) .lt. 1.e-6 ) then
+         else if ( ABS(xa(i)-0.03) < 1.e-6 ) then
             xa(i) = 0.03
             mx03 = i
             cxfil(i) = 'Gx03'
             mnofz(i) = 2
-         else if ( abs(xa(i)-0.1) .lt. 1.e-6 ) then
+         else if ( ABS(xa(i)-0.1) < 1.e-6 ) then
             xa(i) = 0.1
             cxfil(i) = 'Gx10'
             mnofz(i) = 3
-         else if ( abs(xa(i)-0.35) .lt. 1.e-6 ) then
+         else if ( ABS(xa(i)-0.35) < 1.e-6 ) then
             xa(i) = 0.35
             cxfil(i) = 'Gx35'
             mnofz(i) = 4
-         else if ( abs(xa(i)-0.7) .lt. 1.e-6 ) then
+         else if ( ABS(xa(i)-0.7) < 1.e-6 ) then
             xa(i) = 0.7
             cxfil(i) = 'Gx70'
             mnofz(i) = 5
@@ -2932,7 +2932,7 @@ c					! initialize xx, for X-interpolations
          endif
 c			! have not yet read any opacities for this Z-value:
 c
-         if ( kz .gt. 0 .and. kz .le. nz ) then
+         if ( kz > 0 .and. kz .le. nz ) then
             do mq = 1, nr
                do il = 1, nt
                   do k = 1, mo
@@ -2949,40 +2949,40 @@ c
       dfsx(1) = dfsx(2)
 c						! set khizat, as in READEXCO
       kzbelo = mz
-      do while( kzbelo .gt. 1 .and. z .le. zval(kzbelo)-1.e-6 )
+      do while( kzbelo > 1 .and. z .le. zval(kzbelo)-1.e-6 )
          kzbelo = kzbelo-1
       enddo
 c
-      if ( z .eq. 0. ) then
+      if ( z == 0. ) then
          khizat = 0
          klozat = 0
-      else if ( khighz .lt. 0 ) then
+      else if ( khighz < 0 ) then
          khizat = 1
-         if ( ofebrack .eq. 0. ) then
+         if ( ofebrack == 0. ) then
             klozat = 1
          else
-            klozat = min( mod( abs(khighz), 10 ) , n_zmixes )
+            klozat = MIN( mod( ABS(khighz), 10 ) , n_zmixes )
          endif
       else
          klozat = 0
-         khizat = min( mod( khighz, 10 ) , n_zmixes )
-         if ( ofebrack .eq. 0. ) khizat = min(khizat,1)
-         if ( khizat .eq. 1 .and.
-     $        ( ( z .ge. 0.01 .and. z .le. 0.02 ) .or.
-     $        ( abs(zval(kzbelo)-z) .le. 1.e-6 .and. z .ge. 1.e-5 ) ) )
+         khizat = MIN( mod( khighz, 10 ) , n_zmixes )
+         if ( ofebrack == 0. ) khizat = MIN(khizat,1)
+         if ( khizat == 1 .and.
+     $        ( ( z .ge. 0.01 .and. z .le. 0.02 ) .OR.
+     $        ( ABS(zval(kzbelo)-z) .le. 1.e-6 .and. z .ge. 1.e-5 ) ) )
      $        khizat = 0
       endif
 c				! check length of GS98 filenames to be used
-      if ( klozat .gt. 0 ) then
-         do k = 1, klozat, max( klozat - 1 , 1 )
-            if ( kope + lnblnk( cfile_opalGS98(k) ) .gt. 255 ) stop
+      if ( klozat > 0 ) then
+         do k = 1, klozat, MAX( klozat - 1 , 1 )
+            if ( kope + lnblnk( cfile_opalGS98(k) ) > 255 ) stop
      $           ' STOP -- READCO: GS98 file name too long. '
          enddo
       endif
 c					! should use the input [O/Fe] filename?
       if ( khizat .ge. n_zmixes ) then
 c								! it exists?
-         if ( cfile_opalmixes(n_zmixes) .eq. '        ' ) stop
+         if ( cfile_opalmixes(n_zmixes) == '        ' ) stop
      $        ' STOP -- READCO: no user-specified [O/Fe]-file. '
 c
 c			 ! obtain mix specifications for the input [O/Fe] file
@@ -2996,7 +2996,7 @@ c						     ! use copdir temporarily
      $        'STOP -- Error: user-specified [O/Fe]-file not found.' )
          ifound = mixfind(iulow,n_zmixes,igetzxi,i_rewind,itab_dum,
      $        line,0.0,0.0,0.0,0.0)
-         if ( ifound .eq. 0 ) stop
+         if ( ifound == 0 ) stop
      $        ' STOP -- READCO: bad user-specified [O/Fe]-file. '
          call close_chk_zip( iulow, copdir, i_gzip )
 c
@@ -3005,10 +3005,10 @@ c					  ! remove filename from directory name
 c					   ! or use GS98 input [O/Fe] filename?
       else if ( klozat .ge. n_zmixes ) then
 c								! it exists?
-         if ( cfile_opalGS98(n_zmixes) .eq. ' ' ) stop
+         if ( cfile_opalGS98(n_zmixes) == ' ' ) stop
      $        ' STOP -- READCO: no user-specified GS98 [O/Fe]-file. '
 c								      ! length?
-         if ( kope + lnblnk( cfile_opalGS98(n_zmixes) ) .gt. 255 ) stop
+         if ( kope + lnblnk( cfile_opalGS98(n_zmixes) ) > 255 ) stop
      $        ' STOP -- READCO: user GS98 [O/Fe]-file name too long. '
 c
 c			 ! obtain mix specifications for the input [O/Fe] file
@@ -3022,7 +3022,7 @@ c						       ! use copdir temporarily
      $        'STOP -- Error: user GS98 [O/Fe]-file not found.' )
          ifound = mixfind(iulow,-n_zmixes,igetzxi,i_rewind,itab_dum,
      $        line,0.0,0.0,0.0,0.0)
-         if ( ifound .eq. 0 ) stop
+         if ( ifound == 0 ) stop
      $        ' STOP -- READCO: bad user-specified GS98 [O/Fe]-file. '
          call close_chk_zip( iulow, copdir, i_gzip )
 c
@@ -3031,12 +3031,12 @@ c					  ! remove filename from directory name
 c
       endif
 c							     ! changed 'GS98hz'
-      if ( khighz .lt. 0 .and. main_alt_change .gt. 0 ) then
+      if ( khighz < 0 .and. main_alt_change > 0 ) then
 c								! it exists?
-         if ( cfile_opalGS98(1) .eq. ' ' ) stop
+         if ( cfile_opalGS98(1) == ' ' ) stop
      $        ' STOP -- READCO: no main alternate [O/Fe]=0.0 file. '
 c								      ! length?
-         if ( kope + lnblnk( cfile_opalGS98(1) ) .gt. 255 ) stop
+         if ( kope + lnblnk( cfile_opalGS98(1) ) > 255 ) stop
      $        ' STOP -- READCO: alternate [O/Fe]=0.0 name too long. '
 c
 c			 ! obtain mix specifications for input [O/Fe]=0 file
@@ -3050,7 +3050,7 @@ c						       ! use copdir temporarily
      $        'STOP -- Error: alternate [O/Fe]=0.0 file not found.' )
          ifound = mixfind(iulow,-1,igetzxi,i_rewind,itab_dum,
      $        line,0.0,0.0,0.0,0.0)
-         if ( ifound .eq. 0 ) stop
+         if ( ifound == 0 ) stop
      $        ' STOP -- READCO: bad alternate [O/Fe]=0.0 file. '
          call close_chk_zip( iulow, copdir, i_gzip )
 c							! have read it now
@@ -3064,16 +3064,16 @@ c				! get mix Z-composition specifications (these
 c				! will be recomputed for any mix read in later)
       do i = 1, n_zmixes
          xofe_opalGS98(i) = fninz_opalGS98(kel_o,i)
-     $        / max( fninz_opalGS98(kel_fe,i) , 1.e-36 )
+     $        / MAX( fninz_opalGS98(kel_fe,i) , 1.e-36 )
          bracketofe_opalGS98(i) = log10( xofe_opalGS98(i)
      $        / xofe_opalGS98(1) )
          xofe_opalmixes(i) = fninz_opalmixes(kel_o,i)
-     $        / max( fninz_opalmixes(kel_fe,i) , 1.e-36 )
+     $        / MAX( fninz_opalmixes(kel_fe,i) , 1.e-36 )
          bracketofe_opalmixes(i) = log10( xofe_opalmixes(i)
      $        / xofe_opalmixes(1) )
       enddo
 c			       ! Reset current-mix data.  If GS98 [O/Fe] shift:
-      if ( klozat .gt. 1 ) then
+      if ( klozat > 1 ) then
 c				! get interpolation factors fofe (for GS98hz) &
 c						  ! omfofe=1-fofe (other file)
          xofe = 10.**ofebrack * xofe_opalGS98(1)
@@ -3094,13 +3094,13 @@ c					! get Z-composition of interpolated mix
          enddo
          do i = 1, nel_zmix
             xiz_mix(i) = xiz_mix(i) / sum_niai
-            bracketife_mix(i) = log10( ( max( fninz_mix(i) , 1.e-36 )
+            bracketife_mix(i) = log10( ( MAX( fninz_mix(i) , 1.e-36 )
      $           * fninz_opalGS98(kel_fe,1) )
-     $           / ( max( fninz_mix(kel_fe) , 1.e-36 )
+     $           / ( MAX( fninz_mix(kel_fe) , 1.e-36 )
      $           * fninz_opalGS98(i,1) ) )
          enddo
 c				      ! Else, if use GS98 but no [O/Fe] shift:
-      else if ( khighz .lt. 0 ) then
+      else if ( khighz < 0 ) then
 c
          do i = 1,nel_zmix
             xiz_mix(i) = xiz_opalGS98(i,1)
@@ -3137,9 +3137,9 @@ c					! get Z-composition of interpolated mix
          enddo
          do i = 1, nel_zmix
             xiz_mix(i) = xiz_mix(i) / sum_niai
-            bracketife_mix(i) = log10( ( max( fninz_mix(i) , 1.e-36 )
+            bracketife_mix(i) = log10( ( MAX( fninz_mix(i) , 1.e-36 )
      $           * fninz_opalmixes(kel_fe,1) )
-     $           / ( max( fninz_mix(kel_fe) , 1.e-36 )
+     $           / ( MAX( fninz_mix(kel_fe) , 1.e-36 )
      $           * fninz_opalmixes(i,1) ) )
          enddo
       endif
@@ -3172,7 +3172,7 @@ c
 c___
       dimension z_l(nzm), idz(nzm)
 c===					   ! (if it has not already been done):
-      if ( iadd_zavail(1) .eq. 0 ) then
+      if ( iadd_zavail(1) == 0 ) then
 c
 c  Get the combined Z-array zavail() by combining zval() and zalval(); this
 c  should be the same as just adding the value Z=0.05 to the array zalval():
@@ -3182,35 +3182,35 @@ c
          k_o = 0
          k_a = 0
 c
-         do while ( k_l .le. mz .or. k_h .le. mzal )
+         do while ( k_l .le. mz .OR. k_h .le. mzal )
 c
             k_a = k_a + 1
-            if ( k_a .gt. nzm ) stop
+            if ( k_a > nzm ) stop
      $           ' STOP -- READCO: combined files have > 14 Z-values. '
-            if ( k_l .gt. mz ) then
+            if ( k_l > mz ) then
                zavail(k_a) = zalval(k_h)
-            else if ( k_h .gt. mzal ) then
+            else if ( k_h > mzal ) then
                zavail(k_a) = zval(k_l)
             else
-               zavail(k_a) = min( zval(k_l) , zalval(k_h) )
+               zavail(k_a) = MIN( zval(k_l) , zalval(k_h) )
             endif
             z_l(k_a) = log10( zavail(k_a) + zdel )
             idz(k_a) = 0
             if ( k_l .le. mz ) then
-               if ( zval(k_l) .lt. zavail(k_a) + 1.e-6 ) then
+               if ( zval(k_l) < zavail(k_a) + 1.e-6 ) then
                   idz(k_a) = k_a - k_o
                   k_o = k_a
                   k_l = k_l + 1
                endif
             endif
             if ( k_h .le. mzal ) then
-               if ( zalval(k_h) .lt. zavail(k_a) + 1.e-6 )
+               if ( zalval(k_h) < zavail(k_a) + 1.e-6 )
      $              k_h = k_h + 1
             endif
 c
          enddo
 c
-         if ( k_a .lt. nzm ) stop
+         if ( k_a < nzm ) stop
      $        ' STOP -- READCO: combined files have < 14 Z-values. '
 c
 c  Get the best order to add values from zavail() to those of zval(), in order
@@ -3219,31 +3219,31 @@ c  result in array values in iadd_zavail() of 5, 3, 13, 10, 12, 2:
 c
          k_a = 0
 c
-         do while ( k_a .lt. nadd_zavail )
+         do while ( k_a < nadd_zavail )
 c								! next step:
             k_a = k_a + 1
 c				! handle special cases where Z-range endpoints
 c					! differ (this should never occur!!!):
-            if ( idz(1) .eq. 0 ) then
+            if ( idz(1) == 0 ) then
 c					! extend range to low Z, if necessary
                iadd_zavail(k_a) = 1
                k_h = 2
-               do while ( k_h .lt. nzm .and. idz(k_h) .eq. 0 )
+               do while ( k_h < nzm .and. idz(k_h) == 0 )
                   k_h = k_h + 1
                enddo
-               if ( idz(k_h) .eq. 0 )
+               if ( idz(k_h) == 0 )
      $              stop ' STOP -- READCO: mz = 0 cannot happen. '
                idz(k_h) = k_h - 1
                idz(1) = 1
 c
-            else if ( idz(nzm) .eq. 0 ) then
+            else if ( idz(nzm) == 0 ) then
 c					     ! or extend to high Z if necessary
                iadd_zavail(k_a) = nzm
                k_h = nzm - 1
-               do while ( k_h .gt. 1 .and. idz(k_h) .eq. 0 )
+               do while ( k_h > 1 .and. idz(k_h) == 0 )
                   k_h = k_h - 1
                enddo
-               if ( idz(k_h) .eq. 0 )
+               if ( idz(k_h) == 0 )
      $              stop ' STOP -- READCO: this REALLY cannot happen. '
                idz(nzm) = nzm - k_h
 c
@@ -3252,19 +3252,19 @@ c		      ! GENERALLY: find largest remaining subdividable interval
                k_h = 0
                dz_max = 0.
                do i = 2, nzm
-                  if ( idz(i) .gt. 1 ) then
+                  if ( idz(i) > 1 ) then
                      d_z = z_l(i) - z_l(i-idz(i))
-                     if ( d_z .gt. dz_max ) then
+                     if ( d_z > dz_max ) then
                         dz_max = d_z
                         k_h = i
                      endif
                   endif
                enddo
-               if ( k_h .eq. 0 )
+               if ( k_h == 0 )
      $              stop ' STOP -- READCO: k_h = 0 cannot happen. '
 c
 c					   ! find best subdivision of interval
-               if ( idz(k_h) .eq. 2 ) then
+               if ( idz(k_h) == 2 ) then
                   k_l = k_h - 2
                   k_o = k_h - 1
                else
@@ -3274,13 +3274,13 @@ c					   ! find best subdivision of interval
                   do i = k_l + 1, k_h - 1
                      d_z = ( z_l(k_h) - z_l(i) )
      $                    / ( z_l(i) - z_l(k_l) )
-                     if ( d_z .gt. 1. ) d_z = 1. / d_z
-                     if ( d_z .gt. dz_max ) then
+                     if ( d_z > 1. ) d_z = 1. / d_z
+                     if ( d_z > dz_max ) then
                         dz_max = d_z
                         k_o = i
                      endif
                   enddo
-                  if ( k_o .eq. 0 )
+                  if ( k_o == 0 )
      $                 stop ' STOP -- READCO: k_o = 0 cannot happen. '
                endif
 c						! store this subdivision
@@ -3338,7 +3338,7 @@ c
      $     coff(100,nrm)
       save /alink_opal_z/
 c===					! only initialize once
-      if ( init_trvals .gt. 0 ) return
+      if ( init_trvals > 0 ) return
 c
       init_trvals = 1
 c				! intialize logR and 1/delta(logR) values
@@ -3355,14 +3355,14 @@ c				! intialize logT, logT6, T6, and 1/delta(logT6)
          flogtin(i) = (i-1)*0.05+flogtlo
          if ( i .ge. ntb ) dfs(i-ntdel) = 20.
       enddo
-      if ( abs(flogtin(ks60)-flogt60) .gt. 5.e-6 ) stop
+      if ( ABS(flogtin(ks60)-flogt60) > 5.e-6 ) stop
      $     ' STOP -- READCO: initialization error. '
       flogtin(ks60) = flogt60
       do i = ks61,ks81
          flogtin(i) = (i-ks60)*0.1+flogt60
          if ( i .ge. ntb ) dfs(i-ntdel) = 10.
       enddo
-      if ( abs(flogtin(ks81)-flogt81) .gt. 5.e-6 ) stop
+      if ( ABS(flogtin(ks81)-flogt81) > 5.e-6 ) stop
      $     ' STOP -- READCO: initialization error. '
       flogtin(ks81) = flogt81
       do i = ks83,ntm
@@ -3476,30 +3476,29 @@ c===
 c
 c  Perform checks on the inputs, and compute total mass Ztot of metals.
 c
-      if ( nmet .lt. 5 ) then
+      if ( nmet < 5 ) then
          write(6,10) nmet
  10      format(' '/' STOP -- OPAL_X_CNO_FU: metals array',
      $        ' Xmet(Nmet): size too small: Nmet =',i2,' < 5')
          stop ' STOP -- OPAL: bad composition (Xmet array size). '
-      else if ( level_err .gt. 2 .and.
-     $        nmet .ne. nel_zmix .and. kdo_cno .gt. 0 ) then
+      else if ( level_err > 2 .and.
+     $        nmet .ne. nel_zmix .and. kdo_cno > 0 ) then
          write(6,15) nmet, nel_zmix
  15      format(' '/' STOP -- OPAL_X_CNO_FU: metals array',
      $        ' Xmet(Nmet): Nmet =',i5,', but nel_zmix =',i3)
          stop ' STOP -- OPAL: bad composition (Xmet array size). '
       endif
 c
-      ximin = min( xh , xmet(1) , xmet(2) , xmet(3) , xmet(4) )
-      Zheavy = 0.0
+      ximin = MIN( xh , xmet(1) , xmet(2) , xmet(3) , xmet(4) )
+      Zheavy=SUM(xmet(5:nmet))
       do i = 5, nmet
-         Zheavy = Zheavy + xmet(i)
-         ximin = min( ximin , xmet(i) )
+         ximin = MIN( ximin , xmet(i) )
       enddo
-      Ztot = Zheavy + xmet(1) + xmet(2) + xmet(3) + xmet(4)
+      Ztot=MIN(1.,SUM(xmet))
 c
-      if ( xh + Ztot - 1.e-6 .gt. 1.0 .or. Zheavy .lt. -1.e-8 .or.
-     $     min( Ztot , ximin ) .lt. -1.e-6 ) then
-         write(6,20) xh, Ztot
+      if ( xh + Ztot - 1.e-6 > 1.0 .OR. Zheavy < -1.e-8 .OR.
+     $     MIN( Ztot , ximin ) < -1.e-6 ) then
+         write(6,20) xh, Ztot, Zheavy
  20      format(' '/' STOP -- OPAL_X_CNO_FU: bad X',
      $        f10.7,' Ztot',f10.7,' or Zheavy',f11.8)
          stop ' STOP -- OPAL: bad composition. '
@@ -3514,13 +3513,13 @@ c
 c					 ! first get approximate Z using the
 c					 ! 'GN93hz' relative metal abundances
          if ( Ztot .le. 1.e-6 ) then
-            z = max( Ztot , 0.0 )
+            z = MAX( Ztot , 0.0 )
          else
             xiz_heavy_u = 0.0
             do i = 5, nel_zmix
                xiz_heavy_u = xiz_heavy_u + xiz_mix(i)
             enddo
-            z = max( Zheavy / xiz_heavy_u , 1.e-6 )
+            z = MAX( Zheavy / xiz_heavy_u , 1.e-6 )
          endif
 c		       ! read opacities: use 'GN93hz', but no CNO-interpolation
 c							    ! will be possible:
@@ -3531,7 +3530,7 @@ c
 c  If there are essentially no metals (except perhaps C,N,O,Ne), there is no
 c  point in trying to do anything fancy with interpolation in the make-up of Z.
 c
-      if ( Ztot .le. 1.e-6 .or. Zheavy .le. 1.e-8 ) then
+      if ( Ztot .le. 1.e-6 .OR. Zheavy .le. 1.e-8 ) then
 c
          fuse = 0.0
          fcn = 0.0
@@ -3539,9 +3538,9 @@ c
          fcnone = 0.0
 c				      ! for very small Z, this is good enough:
          if ( Ztot .le. 1.e-6 ) then
-            z = max( Ztot , 0.0 )
+            z = MAX( Ztot , 0.0 )
          else
-            z = max( Zheavy / xiz_heavy , 1.e-6 )
+            z = MAX( Zheavy / xiz_heavy , 1.e-6 )
          endif
 c					    ! any excess C,N,O,Ne --> XCI, XOI:
          xci = xmet(1) - z * xiz_mix(1)
@@ -3559,7 +3558,7 @@ c  fractions, and the fraction of these that correspond to elements heavier
 c  than Ne; note that this reference mix can be affected by the composition
 c  of the user-specified opacity-shift file, if this is being used.
 c
-         if ( kdo_user .le. 0 .or. abs(fu) .lt. 1.e-6 ) then
+         if ( kdo_user .le. 0 .OR. ABS(fu) < 1.e-6 ) then
 c								! no fu effect:
             fuse = 0.0
             do i = 1, nel_zmix
@@ -3573,7 +3572,7 @@ c				   ! else: include fu effect, if it is non-zero
 c			! don't allow too much heavy-element reduction from fu
             fuse = fu
             fninz_heavy_u = fninz_heavy + fuse * d_fninz_u_heavy
-            if ( fninz_heavy_u .lt. 0.5 * fninz_heavy ) then
+            if ( fninz_heavy_u < 0.5 * fninz_heavy ) then
                fuse = fu * 0.5 * fninz_heavy
      $              / ( fninz_heavy - fninz_heavy_u )
                fninz_heavy_u = 0.5 * fninz_heavy
@@ -3608,7 +3607,7 @@ c					! no CNO-interpolation: factors are 0.0
             fcon = 0.0
             fcnone = 0.0
 c						  ! heavies give metallicity Z
-            z = max( Zheavy / xiz_heavy_u , 0.0 )
+            z = MAX( Zheavy / xiz_heavy_u , 0.0 )
 c						 ! excess C,N,O,Ne --> XCI, XOI
             xci = xmet(1) - z * xiz_mix(1)
      $           + 0.5 * ( xmet(2) - z * xiz_mix(2) )
@@ -3636,7 +3635,7 @@ c
 c                fninz_heavy = SUM_h{ Xmix_i / A_i } / SUM_z{ Xmix_j / A_j } .
 c
 c					    ! If user supplies OPAL-element Xi:
-            if ( nmet .eq. nel_zmix ) then
+            if ( nmet == nel_zmix ) then
 c
 c        For input-mix with same number of elements as OPAL-mix, assume that
 c                  SUM_h{ fninz(i) } = fninz_heavy  is what determines Z, i.e.,
@@ -3665,7 +3664,7 @@ c						! and use it to get CNO-mix
      $                 - fuse * d_fninz_user(i)
                enddo
 c					     ! Else: non-OPAL-Xi, but fu = 0.0:
-            else if ( fuse .eq. 0.0 ) then
+            else if ( fuse == 0.0 ) then
 c
 c       For input-mix with different number of elements from OPAL-mix, assume
 c                 SUM_h{ X_i } = SUM_h{ Xmix_i } = Zheavy .
@@ -3735,7 +3734,7 @@ c					    ! total increase in N + Ne
 c						! total excess CO (by number)
             fn_co_ex = dn_c + dn_o + deln_nne
 c						! If have negligible excess CO:
-            if ( fn_co_ex .lt. 1.e-4 ) then
+            if ( fn_co_ex < 1.e-4 ) then
 c						! just divide it equally in C,O
                fn_c_ex = 0.5 * fn_co_ex
                fn_o_ex = fn_c_ex
@@ -3744,16 +3743,16 @@ c						! just divide it equally in C,O
 c						! Else: have some excess CO:
             else
 c						 ! If negligible increase N+Ne:
-               if ( deln_nne .lt. 1.e-5 ) then
+               if ( deln_nne < 1.e-5 ) then
 c						! just divide it equally in C,O
                   deln_c = 0.5 * deln_nne
                   deln_o = deln_c
 c				       ! Else: both C,O --> N,Ne and excess CO:
                else
 c					     ! any Ne increase is partly from O
-                  if ( dn_ne .gt. 0.0 ) then
+                  if ( dn_ne > 0.0 ) then
                      deln_o = fn_o_over_cno * dn_ne
-                     if ( deln_o .gt. fninz_mix(3) )
+                     if ( deln_o > fninz_mix(3) )
      $                    deln_o = fninz_mix(3)
      $                    + 0.1 * ( deln_o - fninz_mix(3) )
                      deln_rem = deln_nne - deln_o
@@ -3770,12 +3769,12 @@ c				      ! Else if N+Ne increase is < initial C+O:
 c
                   else if ( deln_nne .le. fninz_co_mix ) then
 c								    ! divide it
-                     deln_o = max( deln_nne - fninz_mix(1) , deln_o )
+                     deln_o = MAX( deln_nne - fninz_mix(1) , deln_o )
                      deln_c = deln_nne - deln_o
 c						 ! Else if large N+Ne increase:
                   else
 c							   ! most is from C
-                     deln_o = max( fninz_mix(3) , deln_o )
+                     deln_o = MAX( fninz_mix(3) , deln_o )
                      deln_c = deln_nne - deln_o
 c
                   endif
@@ -3787,12 +3786,12 @@ c					! to the above C and O depletions
                fn_o_ex = dn_o + deln_o
 c					! but total excess CO is > 0, so do not
 c						! allow negative excess C or O
-               if ( fn_c_ex .lt. 0.0 ) then
+               if ( fn_c_ex < 0.0 ) then
                   deln_c = deln_c - fn_c_ex
                   deln_o = deln_o + fn_c_ex
                   fn_o_ex = fn_o_ex + fn_c_ex
                   fn_c_ex = 0.0
-               else if ( fn_o_ex .lt. 0.0 ) then
+               else if ( fn_o_ex < 0.0 ) then
                   deln_c = deln_c + fn_o_ex
                   deln_o = deln_o - fn_o_ex
                   fn_c_ex = fn_c_ex + fn_o_ex
@@ -3818,7 +3817,7 @@ c					  ! compute metallicity mass fraction Z
                z = z + ( fninz(i) + fuse * d_fninz_user(i) )
      $              * atwt_opalGS98(i)
             enddo
-            z = max( z * f_nz , 0.0 )
+            z = MAX( z * f_nz , 0.0 )
 c						    ! excess C,O mass fractions
             xci = fn_c_ex * atwt_opalGS98(1) * f_nz
             xoi = fn_o_ex * atwt_opalGS98(3) * f_nz
@@ -3833,8 +3832,8 @@ c							     ! for CNO-interp:
      $           + fcno_fac(2,4) * fninz(2)
      $           + fcno_fac(3,4) * fninz(3) ) * fcno_mul(4)
 c								! very small?
-            if ( max( abs(fcn) , abs(fcon) , abs(fcnone) ) .lt.
-     $           1.e-5 .or. z .lt. 1.e-6 ) then
+            if ( MAX( ABS(fcn) , ABS(fcon) , ABS(fcnone) ) <
+     $           1.e-5 .OR. z < 1.e-6 ) then
                fcn = 0.0
                fcon = 0.0
                fcnone = 0.0
@@ -3847,16 +3846,16 @@ c
 c  Check for xci, xoi too large or too negative.
 c
       del_sum = ( xh + z + xci + xoi - 1.0 ) * 0.5d0
-      if ( del_sum .gt. 0.0 ) then
+      if ( del_sum > 0.0 ) then
          xci = xci - del_sum
          xoi = xoi - del_sum
       endif
 c
-      if ( xci .lt. -0.5 * z ) then
-         xoi = max( -0.5 * z , xoi + ( xci + 0.5 * z ) )
+      if ( xci < -0.5 * z ) then
+         xoi = MAX( -0.5 * z , xoi + ( xci + 0.5 * z ) )
          xci = -0.5 * z
-      else if ( xoi .lt. -0.5 * z ) then
-         xci = max( -0.5 * z , xci + ( xoi + 0.5 * z ) )
+      else if ( xoi < -0.5 * z ) then
+         xci = MAX( -0.5 * z , xci + ( xoi + 0.5 * z ) )
          xoi = -0.5 * z
       endif
 c
@@ -3873,7 +3872,7 @@ c     after taking the log of T6 and R and setting "NO CNO/user interpolation";
 c        temperature-input  T6 = temperature in millions of degrees kelvin
 c        density-parameter-input  R = density(g/cm**3) / T6**3
 c===
-      if ( t6 .le. 0. .or. r .le. 0. ) then
+      if ( t6 .le. 0. .OR. r .le. 0. ) then
          write(6,8437) t6,r
  8437    format(' '/' STOP -- OPAC: non-positive value of T6=',
      $        1p,e11.3,' or R=',e11.3)
@@ -4082,6 +4081,8 @@ c-test-xdel]
 c___
       dimension iqx(4),ntaxat(0:nrm)
 c===					! we have not yet gotten a good opacity
+2000	FORMAT(8es10.3)
+
       opact = badlogkval
       fedge = 0.
       ftredge = 0.
@@ -4100,23 +4101,32 @@ c      if constants are used for these values in the calling program.
 c
       xxc = xci
       xxo = xoi
-      xxco = xxc + xxo
-      if ( z+xh+xxco-1.e-6 .gt. 1.0 .or. z .lt. -1.e-8 .or.
-     $     min(xh,xxc+z,xxo+z,xxco+z) .le. -1.e-6 ) then
+
+c normalisation (PMorel)     
+      somme=z+xh+xxc+xxo
+      IF(somme > 1.)THEN
+       xh=xh/somme ; xxc=xxc/somme ; xxo=xxo/somme ; z=z/somme 
+      ENDIF
+      
+      xxco = xxc + xxo      
+      if ( z+xh+xxco-1.e-6 > 1.0 .OR. z < -1.e-8 .OR.
+     $     MIN(xh,xxc+z,xxo+z,xxco+z) .le. -1.e-6 ) then
          write(6,4397) z,xh,xxc,xxo
- 4397    format(' '/' STOP -- OPAL: bad value(s) Z',f11.8,' X',f10.7,
-     $        ' C',f10.7,' O',f10.7)
+ 4397    format(' '/' STOP -- OPAL: bad value(s) Z=',f11.8,', X=',f10.7,
+     $        ', C=',f10.7,', O=',f10.7)
+         WRITE(*,2000)xci,xoi,xxco,z,xh,z+xh+xxco ; PAUSE'xci'
+     
          stop ' STOP -- OPAL: bad composition. '
       endif
 c
 c..... set X indices: if xh = a table X-value, then only use that X-table:
 c
-      if ( abs( xh - xa(1) ) .lt. 9.e-7 ) then
+      if ( ABS( xh - xa(1) ) < 9.e-7 ) then
          mf = 1
          mg = 1
          mh = 1
          mf2 = 1
-      else if ( mx .eq. 1 ) then
+      else if ( mx == 1 ) then
          write(6,4396) xh,xa(1)
  4396    format(' '/' STOP -- OPAL: mx=1, but X=',f10.7,
      $        ' differs from table value',f10.7)
@@ -4126,7 +4136,7 @@ c		    !        ihi=4 (for xh > 0.1) or ihi=3 (for xh < or = 0.1):
       else
          ilo = 2
          ihi = mx
-         do while( ihi-ilo .gt. 1 )
+         do while( ihi-ilo > 1 )
             imd = (ihi+ilo)/2
             if ( xh .le. xa(imd) ) then
                ihi = imd
@@ -4135,12 +4145,12 @@ c		    !        ihi=4 (for xh > 0.1) or ihi=3 (for xh < or = 0.1):
             endif
          enddo
 c						    ! if xh = a table X-value
-         if ( abs( xh - xa(ilo) ) .lt. 9.e-7 ) then
+         if ( ABS( xh - xa(ilo) ) < 9.e-7 ) then
             mf = ilo
             mg = ilo
             mh = ilo
             mf2 = ilo
-         else if ( abs( xh - xa(ihi) ) .lt. 9.e-7 ) then
+         else if ( ABS( xh - xa(ihi) ) < 9.e-7 ) then
             mf = ihi
             mg = ihi
             mh = ihi
@@ -4153,7 +4163,7 @@ c				! else: will need to interpolate
             if ( xh .le. xa(2) ) then
                mf2 = mh
             else
-               mf2 = min( ihi + 1 , mx )
+               mf2 = MIN( ihi + 1 , mx )
             endif
          endif
       endif
@@ -4168,30 +4178,30 @@ c  'GN93hz' can help, if use-flag is set: set f_xhi for later use.  Only used
 c  if C+O < 0.3 and ( kdo_xhi = 1 and X > .7 ) or ( kdo_xhi = 2 and X > .03 );
 c  FULL opacity shifts are only used if C+O < 0.2, partial for 0.2 < C+O < 0.3:
 c
-      if ( kdo_xhi .le. 0 .or. mf2 .lt. 4 .or. mf .gt. 3 .or.
-     $     ( kdo_xhi .eq. 1 .and. xh .le. xa(mx) ) ) then
+      if ( kdo_xhi .le. 0 .OR. mf2 < 4 .OR. mf > 3 .OR.
+     $     ( kdo_xhi == 1 .and. xh .le. xa(mx) ) ) then
          f_xhi = -1.
       else
-         f_xhi = 1. - 100. * max( xci + xoi - 0.2 , 0.0 )**2
+         f_xhi = 1. - 100. * MAX( xci + xoi - 0.2 , 0.0 )**2
       endif
 c
 c  Check whether CNO- and/or user-interpolation will be needed
 c
-      if ( z .lt. 1.e-8 ) then
+      if ( z < 1.e-8 ) then
 c
          need_cno = 0
          need_user = 0
 c
       else
 c
-         if ( kdo_cno .gt. 0 .and. max( abs(fcn) ,
-     $        abs(fcon) , abs(fcnone) ) .gt. 1.e-8 ) then
+         if ( kdo_cno > 0 .and. MAX( ABS(fcn) ,
+     $        ABS(fcon) , ABS(fcnone) ) > 1.e-8 ) then
             need_cno = 1
          else
             need_cno = 0
          endif
 c
-         if ( kdo_user .gt. 0 .and. abs(fu) .gt. 1.e-8 ) then
+         if ( kdo_user > 0 .and. ABS(fu) > 1.e-8 ) then
             need_user = 1
          else
             need_user = 0
@@ -4206,20 +4216,20 @@ c
 c
 c..... set Z indices
 c							! is Z out of range?
-      if ( z .le. zlo_ex .or. z .ge. zhi_ex ) then
+      if ( z .le. zlo_ex .OR. z .ge. zhi_ex ) then
          if ( level_err .ge. 2 ) then
             write(6,10) z, zlo_ex, zhi_ex
  10         format(' '/' OPAL: Z=',f11.8,
-     $           ' is outside max extrap range (',f11.8,',',f10.8,')')
+     $           ' is outside max extrap range (',f11.8,',',f11.8,')')
             stop ' STOP -- OPAL: bad Z value. '
          endif
          return
       endif
 c							! check Z-extrapolation
-      if ( z .lt. zlow ) then
-         fzedge = max( 0.0 , ( z - zlo_ex ) / ( zlow - zlo_ex ) )
-      else if ( z .gt. zhigh ) then
-         fzedge = max( 0.0 , ( zhi_ex - z ) / ( zhi_ex - zhigh ) )
+      if ( z < zlow ) then
+         fzedge = MAX( 0.0 , ( z - zlo_ex ) / ( zlow - zlo_ex ) )
+      else if ( z > zhigh ) then
+         fzedge = MAX( 0.0 , ( zhi_ex - z ) / ( zhi_ex - zhigh ) )
       else
          fzedge = 1.
       endif
@@ -4232,20 +4242,20 @@ c				   ! this shouldn't happen, but just in case...
          return
       endif
 c						! check for Z-table value:
-      if ( numz .eq. 1 ) then
+      if ( numz == 1 ) then
          ihi = 1
       else
          ihi = 0
          if ( numz .le. 3 ) then
             do i = 1, numz
-               if ( abs( zsto(i) - z ) .le. zacc(i) ) ihi = i
+               if ( ABS( zsto(i) - z ) .le. zacc(i) ) ihi = i
             enddo
-         else if ( abs( zsto(1) - z ) .le. zacc(1) ) then
+         else if ( ABS( zsto(1) - z ) .le. zacc(1) ) then
             ihi = 1
          endif
       endif
 c						! get Z-table indices:
-      if ( ihi .gt. 0 ) then
+      if ( ihi > 0 ) then
          kzf = ihi
          kzg = ihi
          kzh = ihi
@@ -4258,7 +4268,7 @@ c						! get Z-table indices:
       else
          ilo = 2
          ihi = numz
-         do while( ihi-ilo .gt. 1 )
+         do while( ihi-ilo > 1 )
             imd = (ihi+ilo)/2
             if ( z .le. zsto(imd) ) then
                ihi = imd
@@ -4266,12 +4276,12 @@ c						! get Z-table indices:
                ilo = imd
             endif
          enddo
-         if ( abs( zsto(ihi) - z ) .le. zacc(ihi) ) then
+         if ( ABS( zsto(ihi) - z ) .le. zacc(ihi) ) then
             kzf = ihi
             kzg = ihi
             kzh = ihi
             kzf2 = ihi
-         else if ( abs( zsto(ilo) - z ) .le. zacc(ilo) ) then
+         else if ( ABS( zsto(ilo) - z ) .le. zacc(ilo) ) then
             kzf = ilo
             kzg = ilo
             kzh = ilo
@@ -4283,18 +4293,18 @@ c						! get Z-table indices:
             if ( z .le. zsto(2) ) then
                kzf2 = kzh
             else
-               kzf2 = min( ihi + 1 , numz )
+               kzf2 = MIN( ihi + 1 , numz )
             endif
          endif
       endif
 c		! note that xxh is not used (except perhaps in calling routine)
       xxh = xh
 c							     ! check T-R edges:
-      ftredge = max( 0. , min(slr-slrlo,0.)*dlrlo_inv + 1. )
-     $     * max( 0. , min(slrhi-slr,0.)*dlrhi_inv + 1. )
-     $     * max( 0. , min(slt-sltlo,0.)*dltlo_inv + 1. )
-     $     * max( 0. , min(slthi-slt,0.)*dlthi_inv + 1. )
-      fedge = max( 0. , ftredge * fzedge )
+      ftredge = MAX( 0. , MIN(slr-slrlo,0.)*dlrlo_inv + 1. )
+     $     * MAX( 0. , MIN(slrhi-slr,0.)*dlrhi_inv + 1. )
+     $     * MAX( 0. , MIN(slt-sltlo,0.)*dltlo_inv + 1. )
+     $     * MAX( 0. , MIN(slthi-slt,0.)*dlthi_inv + 1. )
+      fedge = MAX( 0. , ftredge * fzedge )
 c						   ! if too far outside, return
       if ( fedge .le. 0. ) then
          if ( level_err .ge. 2 ) then
@@ -4313,37 +4323,37 @@ c
 c..... Determine log R and log T6 grid points to use in the interpolation.
 c      Try to avoid overestimating the extent of extrapolation into any cutout.
 c
-      if ( slt .gt. flt81m6 ) then
-         k2sat = ntdel + min( nt , k81 + max( 0 ,
+      if ( slt > flt81m6 ) then
+         k2sat = ntdel + MIN( nt , k81 + MAX( 0 ,
      $        int( ( slt - flt81m6 ) * dfs(nt) - 1.e-6 ) ) )
-      else if ( slt .gt. flt60m6 ) then
-         k2sat = ntdel + min( k80 , k60 + max( 0 ,
+      else if ( slt > flt60m6 ) then
+         k2sat = ntdel + MIN( k80 , k60 + MAX( 0 ,
      $        int( ( slt - flt60m6 ) * dfs(k81) - 1.e-6 ) ) )
       else if ( k60 .le. 0 ) then
          k2sat = ntdel + k60
       else
-         k2sat = min( ks59 , max( ntdel ,
+         k2sat = MIN( ks59 , MAX( ntdel ,
      $        int( ( slt - flt370m6 ) * dfs(k60) + 1.e-6 ) ) )
       endif
 c
-      if ( slr .gt. flrmid ) then
-         l2sat = nrdel + max( 0 , min( nr ,
+      if ( slr > flrmid ) then
+         l2sat = nrdel + MAX( 0 , MIN( nr ,
      $        int( ( slr - alr(1) ) * dfsr(nr) + 0.999999 ) ) )
       else
-         l2sat = nrdel + max( 0 , min( nr ,
+         l2sat = nrdel + MAX( 0 , MIN( nr ,
      $        int( ( slr - alr(1) ) * dfsr(nr) + 1.000001 ) ) )
       endif
 c
       k1x = -99
       l1x = -99
       k3sat = k2sat+1
-      k2 = max(k2sat-ntdel,1)
-      k3 = min(k3sat-ntdel,nt)
+      k2 = MAX(k2sat-ntdel,1)
+      k3 = MIN(k3sat-ntdel,nt)
       l3sat = l2sat+1
-      l4sat = min(l3sat,nre)+1
-      l2 = max(l2sat-nrdel,1)
-      l3 = min(l3sat-nrdel,nr)
-      if ( min(k3,l3) .le. 0 .or. k2 .gt. nt .or. l2 .gt. nr ) then
+      l4sat = MIN(l3sat,nre)+1
+      l2 = MAX(l2sat-nrdel,1)
+      l3 = MIN(l3sat-nrdel,nr)
+      if ( MIN(k3,l3) .le. 0 .OR. k2 > nt .OR. l2 > nr ) then
          ftredge = 0.
          fedge = 0.
          if ( level_err .ge. 2 ) then
@@ -4358,32 +4368,32 @@ c		! initial assumption: 3x3 grid in T,R
          iqx(i) = 2
       enddo
 c					! Check upper-right ragged cut-out:
-      if ( l2sat .gt. 0 ) then
+      if ( l2sat > 0 ) then
 c							. . .
 c						1.	. .      too far out to
 c							. .  *   extrapolate
-         if ( k2sat .gt. nta(l2sat) ) then
+         if ( k2sat > nta(l2sat) ) then
             ftredge = 0.
             fedge = 0.
 c							. . .    extrapolate
 c						2.	. . .    T and R out
 c							. .  *   from a corner
-         else if ( k2sat .eq. nta(l2sat) .and.
-     $           k2sat .gt. nta(l3sat) ) then
-            ft = max(min(alt(k2)-slt,0.)*dfs(k3)+1.000001,0.)
-            fr = max(min(alr(l2)-slr,0.)*dfsr(l3)+1.000001,0.)
-            if ( l2 .lt. nr ) ftredge = ftredge*fr
-            if ( k2 .lt. nt ) ftredge = ftredge*ft
+         else if ( k2sat == nta(l2sat) .and.
+     $           k2sat > nta(l3sat) ) then
+            ft = MAX(MIN(alt(k2)-slt,0.)*dfs(k3)+1.000001,0.)
+            fr = MAX(MIN(alr(l2)-slr,0.)*dfsr(l3)+1.000001,0.)
+            if ( l2 < nr ) ftredge = ftredge*fr
+            if ( k2 < nt ) ftredge = ftredge*ft
             k1x = k2-2
             l1x = l2-2
 c						. . .	. . .   extrapolate (in
 c					3.	. .*	. . .   either T or R)
 c						. .	. .*    in a corner
-         else if ( k2sat .lt. nta(l2sat) .and.
-     $           k2sat .eq. nta(l3sat) ) then
-            ft = max(min(alt(k2)-slt,0.)*dfs(k3)+1.000001,0.)
-            fr = max(min(alr(l2)-slr,0.)*dfsr(l3)+1.000001,0.)
-            if ( ft .gt. fr ) then
+         else if ( k2sat < nta(l2sat) .and.
+     $           k2sat == nta(l3sat) ) then
+            ft = MAX(MIN(alt(k2)-slt,0.)*dfs(k3)+1.000001,0.)
+            fr = MAX(MIN(alr(l2)-slr,0.)*dfsr(l3)+1.000001,0.)
+            if ( ft > fr ) then
                ftredge = ftredge*ft
                k1x = k2-2
                l1x = l2-1
@@ -4394,27 +4404,27 @@ c						. .	. .*    in a corner
                ftredge = ftredge*fr
                k1x = k2-1
                l1x = l2-2
-               if ( k3sat .lt. nta(l2sat) ) ipx = 3
+               if ( k3sat < nta(l2sat) ) ipx = 3
             endif
 c						. . .	. . .     extrapolate R
 c					4.	. .	. . .*    out from a
 c						. .*	. . .*    high-R edge
-         else if ( k2sat .lt. nta(l2sat) .and.
-     $           k2sat .gt. nta(l3sat) ) then
-            if ( l2 .lt. nr ) ftredge = ftredge
-     $           * max(min(alr(l2)-slr,0.)*dfsr(l3)+1.000001,0.)
-            if ( k3sat .lt. nta(l2sat) .and. k2sat .gt. ntb ) ipx = 3
-            k1x = max(k2-1,1)
+         else if ( k2sat < nta(l2sat) .and.
+     $           k2sat > nta(l3sat) ) then
+            if ( l2 < nr ) ftredge = ftredge
+     $           * MAX(MIN(alr(l2)-slr,0.)*dfsr(l3)+1.000001,0.)
+            if ( k3sat < nta(l2sat) .and. k2sat > ntb ) ipx = 3
+            k1x = MAX(k2-1,1)
             l1x = l2-2
 c						. . .	. . . .  interpolate,
 c					5.	. .*.	. .*.*.  1-space inside
 c						.*.*.	.*.*.    high-R,T edges
          else if ( k3sat .le. nta(l3sat) .and.
      $           k3sat .ge. nta(l4sat) ) then
-            if ( k3sat .lt. nta(l3sat) .and. k2sat .gt. ntb ) ipx = 3
-            k1x = max(k2-1,1)
-            l1x = max(l2-1,1)
-            if ( l2sat .gt. nrb ) then
+            if ( k3sat < nta(l3sat) .and. k2sat > ntb ) ipx = 3
+            k1x = MAX(k2-1,1)
+            l1x = MAX(l2-1,1)
+            if ( l2sat > nrb ) then
                do i = 1,3
                   if ( k1x-1+ntdel+i .le. nta(l4sat) ) iqx(i) = 3
                enddo
@@ -4422,7 +4432,7 @@ c						.*.*.	.*.*.    high-R,T edges
          endif
       endif
 c
-      fedge = max( ftredge * fzedge , 0. )
+      fedge = MAX( ftredge * fzedge , 0. )
 c
 c					! if too far out to extrapolate, return
       if ( fedge .le. 0. ) then
@@ -4436,20 +4446,20 @@ c							 . . . .   Outside or
 c							 . . . .   1-space
 c						6.	*. . .     inside max
 c							* * *      high-T edge
-      if ( k1x .lt. 0 .and. k3sat .ge. ntm ) then
+      if ( k1x < 0 .and. k3sat .ge. ntm ) then
          k1x = nt_m2
-         l1x = max(l2-1,1)
-         if ( l2sat .gt. nrb ) then
+         l1x = MAX(l2-1,1)
+         if ( l2sat > nrb ) then
             do i = 1,3
                if ( ntm_m3+i .le. nta(l4sat) ) iqx(i) = 3
             enddo
          endif
 c				   7.   Anywhere except high-T or high-R edges:
-      else if ( k1x .lt. 0 ) then
-         k1x = max(k2-1,1)
-         l1x = max(l2-1,1)
-         if ( k2sat .gt. ntb ) ipx = 3
-         if ( l2sat .gt. nrb ) then
+      else if ( k1x < 0 ) then
+         k1x = MAX(k2-1,1)
+         l1x = MAX(l2-1,1)
+         if ( k2sat > ntb ) ipx = 3
+         if ( l2sat > nrb ) then
             do i = 1,4
                iqx(i) = 3
             enddo
@@ -4457,14 +4467,14 @@ c				   7.   Anywhere except high-T or high-R edges:
       endif
 c		       ! check low-T,low-R corner for X=0; avoid it if possible
       ichgr = 1
-      if ( mf .eq. mxzero .and. k1x+ntdel .lt. ntax0(l1x+nrdel) ) then
+      if ( mf == mxzero .and. k1x+ntdel < ntax0(l1x+nrdel) ) then
 c									! avoid
-         if ( mf2 .eq. mf+3 ) then
+         if ( mf2 == mf+3 ) then
             mf = mf2-2
             mg = mf2-1
             mh = mf2
 c						   ! like region 1. too far out
-         else if ( k3sat .lt. ntax0(l3sat) ) then
+         else if ( k3sat < ntax0(l3sat) ) then
             ftredge = 0.
             fedge = 0.
             if ( level_err .ge. 2 ) then
@@ -4478,15 +4488,15 @@ c		     ! else, will need to revise T,R indices for first m (= mf)
          endif
       endif
 c						    ! check similarly for X=.03
-      if ( ( mf .eq. mx03 .or. mg .eq. mx03 ) .and.
-     $     k1x+ntdel .lt. ntax03(l1x+nrdel) ) then
+      if ( ( mf == mx03 .OR. mg == mx03 ) .and.
+     $     k1x+ntdel < ntax03(l1x+nrdel) ) then
 c									! avoid
-         if ( mf2 .eq. mf+3 .and. mf .eq. mx03 ) then
+         if ( mf2 == mf+3 .and. mf == mx03 ) then
             mf = mf2-2
             mg = mf2-1
             mh = mf2
 c						   ! like region 1. too far out
-         else if ( k3sat .lt. ntax03(l3sat) ) then
+         else if ( k3sat < ntax03(l3sat) ) then
             ftredge = 0.
             fedge = 0.
             if ( level_err .ge. 2 ) then
@@ -4495,15 +4505,15 @@ c						   ! like region 1. too far out
             endif
             return
 c					! if need to revise T,R indices for mf:
-         else if ( mf .eq. mx03 ) then
+         else if ( mf == mx03 ) then
             ichgr = 0
          endif
       endif
 c	     ! xhemxi: subtract Z to prevent out-of-range C+O values at small X
 c
-      xhemxi = max( 1. - xh - z , 0. )
+      xhemxi = MAX( 1. - xh - z , 0. )
       ftrbeg = ftredge
-      if ( kzf2 .gt. kzf ) then
+      if ( kzf2 > kzf ) then
          zlogd = log10( z + zdel )
       else
          zlogd = 0.0
@@ -4527,24 +4537,24 @@ c				  ! set (or restore) grid-indices, if necessary
          endif
 c				! check for low-T,low-R cutout at X=0 or X=.03:
          ichgr = 0
-         if ( m .eq. mxzero .and.
-     $        k1x+ntdel .lt. ntax0(l1x+nrdel) ) then
+         if ( m == mxzero .and.
+     $        k1x+ntdel < ntax0(l1x+nrdel) ) then
             ichgr = 1
-            do i = max(l2sat-2,0),min(l4sat+2,nrm)
+            do i = MAX(l2sat-2,0),MIN(l4sat+2,nrm)
                ntaxat(i) = ntax0(i)
             enddo
-         else if ( m .eq. mx03 .and.
-     $           k1x+ntdel .lt. ntax03(l1x+nrdel) ) then
+         else if ( m == mx03 .and.
+     $           k1x+ntdel < ntax03(l1x+nrdel) ) then
             ichgr = 1
-            do i = max(l2sat-2,0),min(l4sat+2,nrm)
+            do i = MAX(l2sat-2,0),MIN(l4sat+2,nrm)
                ntaxat(i) = ntax03(i)
             enddo
          endif
 c				  ! change grid indices, if in low-{R,T} cutout
          if ( ichgr .ne. 0 ) then
-            k3 = min(k3sat-ntdel,nt)
-            l3 = min(l3sat-nrdel,nr)
-            l1sat = max(l2sat-1,0)
+            k3 = MIN(k3sat-ntdel,nt)
+            l3 = MIN(l3sat-nrdel,nr)
+            l1sat = MAX(l2sat-1,0)
             ip = 2
             do i = 1,4
                iq(i) = 2
@@ -4552,93 +4562,93 @@ c				  ! change grid indices, if in low-{R,T} cutout
             ftrprev = ftredge
             ftredge = ftrbeg
 c					       ! 2. extrapolate T,R from corner
-            if ( k3sat .eq. ntaxat(l3sat) .and.
-     $           k3sat .lt. ntaxat(l2sat) ) then
+            if ( k3sat == ntaxat(l3sat) .and.
+     $           k3sat < ntaxat(l2sat) ) then
                if ( l4sat .ge. nre ) then
                   ftredge = 0.
                else
-                  ft = max(min(slt-alt(k3),0.)*dfs(k3)+1.000001,0.)
-                  fr = max(min(slr-alr(l3),0.)*dfsr(l3)+1.000001,0.)
-                  if ( l3 .gt. 1 ) ftredge = ftredge*fr
-                  if ( k3 .gt. 1 ) ftredge = ftredge*ft
+                  ft = MAX(MIN(slt-alt(k3),0.)*dfs(k3)+1.000001,0.)
+                  fr = MAX(MIN(slr-alr(l3),0.)*dfsr(l3)+1.000001,0.)
+                  if ( l3 > 1 ) ftredge = ftredge*fr
+                  if ( k3 > 1 ) ftredge = ftredge*ft
                   k1 = k3
                   l1 = l3
                endif
 c						   ! 3. extrap T or R in corner
-            else if ( k3sat .gt. ntaxat(l3sat) .and.
-     $              k3sat .eq. ntaxat(l2sat) ) then
-               ft = max(min(slt-alt(k3),0.)*dfs(k3)+1.000001,0.)
-               fr = max(min(slr-alr(l3),0.)*dfsr(l3)+1.000001,0.)
-               if ( ft .gt. fr .or. l4sat .ge. nre ) then
+            else if ( k3sat > ntaxat(l3sat) .and.
+     $              k3sat == ntaxat(l2sat) ) then
+               ft = MAX(MIN(slt-alt(k3),0.)*dfs(k3)+1.000001,0.)
+               fr = MAX(MIN(slr-alr(l3),0.)*dfsr(l3)+1.000001,0.)
+               if ( ft > fr .OR. l4sat .ge. nre ) then
                   ftredge = ftredge*ft
                   k1 = k3
                   l1 = l3-2
-                  if ( k3sat .lt. ntaxat(l1+nrdel) ) then
+                  if ( k3sat < ntaxat(l1+nrdel) ) then
                      l1 = l3-1
                      if ( l3 .ge. nr ) ftredge = 0.
-                  else if ( l3 .lt. nr ) then
+                  else if ( l3 < nr ) then
                      do i = 1,3
                         iq(i) = 3
                      enddo
                   endif
                else
                   ftredge = ftredge*fr
-                  k1 = max(ntaxat(l3sat)-ntdel,k3-2)
+                  k1 = MAX(ntaxat(l3sat)-ntdel,k3-2)
                   l1 = l3
-                  if ( k1 .eq. k3-2 ) ip = 3
+                  if ( k1 == k3-2 ) ip = 3
                endif
 c						     ! 4. extrapolate R
-            else if ( k3sat .gt. ntaxat(l3sat) .and.
-     $              k3sat .lt. ntaxat(l2sat) ) then
+            else if ( k3sat > ntaxat(l3sat) .and.
+     $              k3sat < ntaxat(l2sat) ) then
                if ( l4sat .ge. nre ) then
                   ftredge = 0.
                else
-                  k1 = max(ntaxat(l3sat)-ntdel,k3-2)
+                  k1 = MAX(ntaxat(l3sat)-ntdel,k3-2)
                   l1 = l3
-                  if ( k1 .eq. k3-2 ) ip = 3
-                  if ( l3 .gt. 1 ) ftredge = ftredge
-     $                 * max(min(slr-alr(l3),0.)*dfsr(l3)+1.000001,0.)
+                  if ( k1 == k3-2 ) ip = 3
+                  if ( l3 > 1 ) ftredge = ftredge
+     $                 * MAX(MIN(slr-alr(l3),0.)*dfsr(l3)+1.000001,0.)
                endif
 c						     ! 8. extrapolate T
-            else if ( k3sat .eq. ntaxat(l3sat) .and.
-     $              k3sat .eq. ntaxat(l2sat) ) then
+            else if ( k3sat == ntaxat(l3sat) .and.
+     $              k3sat == ntaxat(l2sat) ) then
                k1 = k3
                l1 = l3-2
-               if ( k3sat .lt. ntaxat(l1+nrdel) ) then
+               if ( k3sat < ntaxat(l1+nrdel) ) then
                   l1 = l3-1
                   if ( l3 .ge. nr ) ftredge = 0.
-               else if ( l3 .lt. nr ) then
+               else if ( l3 < nr ) then
                   do i = 1,3
                      iq(i) = 3
                   enddo
                endif
-               if ( k3 .gt. 1 ) ftredge = ftredge * max( 0. ,
-     $              min(slt-alt(k3),0.)*dfs(k3)+1.000001 )
+               if ( k3 > 1 ) ftredge = ftredge * MAX( 0. ,
+     $              MIN(slt-alt(k3),0.)*dfs(k3)+1.000001 )
 c							    ! 5. inside an edge
             else if ( k2sat .ge. ntaxat(l2sat) .and.
      $              k2sat .le. ntaxat(l1sat) ) then
-               if ( k2sat .eq. ntaxat(l2sat) .or. l3 .eq. nr ) then
+               if ( k2sat == ntaxat(l2sat) .OR. l3 == nr ) then
                   l1 = l3-2
                   k1 = k3-1
-                  if ( k2sat .lt. ntaxat(l1+nrdel) ) then
-                     if ( l3 .lt. nr ) then
+                  if ( k2sat < ntaxat(l1+nrdel) ) then
+                     if ( l3 < nr ) then
                         l1 = l3-1
-                     else if ( k3sat .lt. ntaxat(l1+nrdel) ) then
+                     else if ( k3sat < ntaxat(l1+nrdel) ) then
                         ftredge = 0.
                      else
                         k1 = k3
-                        ftredge = ftredge * max( 0. ,
-     $                       min(slt-alt(k3),0.)*dfs(k3)+1.000001 )
+                        ftredge = ftredge * MAX( 0. ,
+     $                       MIN(slt-alt(k3),0.)*dfs(k3)+1.000001 )
                      endif
-                  else if ( l3 .lt. nr ) then
+                  else if ( l3 < nr ) then
                      do i = 1,3
                         iq(i) = 3
                      enddo
                   endif
                else
-                  k1 = max(k3-2,1)
+                  k1 = MAX(k3-2,1)
                   l1 = l3-1
-                  if ( k1 .eq. k3-2 ) ip = 3
+                  if ( k1 == k3-2 ) ip = 3
                endif
             endif
 c					! if too far out to extrapolate, return
@@ -4652,8 +4662,8 @@ c					! if too far out to extrapolate, return
                return
             endif
 c					   ! use smaller of X=0 or X=.03 values
-            ftredge = min(ftredge,ftrprev)
-            fedge = max( ftredge * fzedge , 0. )
+            ftredge = MIN(ftredge,ftrprev)
+            fedge = MAX( ftredge * fzedge , 0. )
 c
 c					   ! get rest of revised grid indices
             k2 = k1+1
@@ -4670,7 +4680,7 @@ c				! xhemx: subtract Z to prevent out-of-range C+O
 c						! values at small X
             xhemx = 1. - xa(m) - zsto(kz)
 c							! If no X or Z interp
-            if ( kzf2 .eq. kzf .and. mf2 .eq. mf ) then
+            if ( kzf2 == kzf .and. mf2 == mf ) then
 c
                xxc = xci
                xxo = xoi
@@ -4683,24 +4693,24 @@ c              values are determined by tabulated X values; i.e., xa(m).
 c              Interpolation along the ray gives log(kappa(Xc,Xo)).
 c              (Advantage of method: keeps indices within table boundaries.)
 c
-               if ( xhemxi .gt. 1.e-6 ) then
+               if ( xhemxi > 1.e-6 ) then
                   cmod = xhemx / xhemxi
                else
                   cmod = 0.
                endif
-               if ( xci .gt. 0. ) then
+               if ( xci > 0. ) then
                   xxc = cmod * xci
-               else if ( xci .ge. -1.e-8 .or. z .lt. 1.e-8 ) then
+               else if ( xci .ge. -1.e-8 .OR. z < 1.e-8 ) then
                   xxc = 0.
                else
-                  xxc = max( xci / z , -1. ) * zsto(kz)
+                  xxc = MAX( xci / z , -1. ) * zsto(kz)
                endif
-               if ( xoi .gt. 0. ) then
+               if ( xoi > 0. ) then
                   xxo = cmod * xoi
-               else if ( xoi .ge. -1.e-8 .or. z .lt. 1.e-8 ) then
+               else if ( xoi .ge. -1.e-8 .OR. z < 1.e-8 ) then
                   xxo = 0.
                else
-                  xxo = max( xoi / z , -1. ) * zsto(kz)
+                  xxo = MAX( xoi / z , -1. ) * zsto(kz)
                endif
 c
             endif
@@ -4730,10 +4740,10 @@ c
                oxd(i) = oxdf(m,i,kz)
             enddo
 c
-            xodp = max(-xxc+xc(nc),0.)
-            xcdp = max(-xxo+xo(no),0.)
+            xodp = MAX(-xxc+xc(nc),0.)
+            xcdp = MAX(-xxo+xo(no),0.)
 c-debug[
-c-debug;            if ( m .eq. mf .and. kz .eq. kzf .and. ioudeb .gt. 0 )
+c-debug;            if ( m == mf .and. kz == kzf .and. ioudeb > 0 )
 c-debug;     $           write(6,9409) z,xh,xci,xoi,10.**slt,slt,slr,
 c-debug;     $           xxc,xxo,mf,mf2,kzf,kzf2,k1,ip,l1,(iq(i),i=1,ip+1)
 c-debug; 9409       format(' '/' OPAL: Z',f10.7,' X',f10.7,' C',f10.7,
@@ -4744,7 +4754,7 @@ c-debug]
 c
 c  Interpolate in C and O: COINTSMO is better, and was more thoroughly tested:
 c
-            if ( interp_CO_smo .gt. 0 ) then
+            if ( interp_CO_smo > 0 ) then
                call cointsmo(xxc,xxo,kz)
             else
                call cointerp(xxc,xxo,kz)
@@ -4769,14 +4779,14 @@ c  Completed C,O,Z,T6,R interpolation; interpolate logKappa & derivatives in X
 c
 c			! for low T with 0.0 < X < 0.1, may need to reduce xdel
       xdelat = xdel
-      if ( mf .eq. mxzero .and. mg .eq. mx03 .and. mh .eq. mf+2 ) then
+      if ( mf == mxzero .and. mg == mx03 .and. mh == mf+2 ) then
          delhi = opk(mh,1)-opk(mg,1)
          dello = opk(mg,1)-opk(mf,1)
-         if ( delhi .gt. 0.02 .and. delhi .lt. dello ) then
-            xdelat = max( xdel*(delhi/dello)**2 , xdelmin )
-            if ( delhi .lt. 0.1 )
+         if ( delhi > 0.02 .and. delhi < dello ) then
+            xdelat = MAX( xdel*(delhi/dello)**2 , xdelmin )
+            if ( delhi < 0.1 )
      $           xdelat = xdelat + (xdel-xdelat)*((0.1-delhi)*12.5)**2
-            if ( xdelat .lt. xdel ) then
+            if ( xdelat < xdel ) then
                is = 0
 c			 ! get (mf,mg,mh) interpolated values with revised xdel
                do i = 1,4
@@ -4790,7 +4800,7 @@ c			 ! get (mf,mg,mh) interpolated values with revised xdel
 c
       is = 0
 c			           ! if use only one X-table
-      if ( mf .eq. mh ) then
+      if ( mf == mh ) then
          do i = 1,4
             opvals(i) = opk(mf,i)
          enddo
@@ -4800,7 +4810,7 @@ c-test-xdel;            opdxi(i) = opact
 c-test-xdel;         enddo
 c-test-xdel]
 c			          ! 2 tables: interpolate linearly in X
-      else if ( mg .eq. mh ) then
+      else if ( mg == mh ) then
          dixr = (xx(mg)-xxx)*dfsx(mg)
          do i = 1,4
             opvals(i) = opk(mf,i)*dixr + opk(mg,i)*(1.-dixr)
@@ -4817,7 +4827,7 @@ c-test-xdel;         enddo
 c-test-xdel;         opdxuse = opact
 c-test-xdel]
 c			           ! 3 tables: interpolate in X using quadratic
-      else if ( mh .eq. mf2 ) then
+      else if ( mh == mf2 ) then
 c				      ! if revised xdel was NOT used (usually!)
          if ( xdelat .ge. xdel ) then
             do i = 1,4
@@ -4878,15 +4888,15 @@ c-test-xdel]
 c
 c  If the 'GN93hz' X-indices will be needed, obtain them:
 c
-      if ( f_xhi .gt. 0. .or. max( need_cno , need_user ) .gt. 0 ) then
+      if ( f_xhi > 0. .OR. MAX( need_cno , need_user ) > 0 ) then
 c
 c								! X < 0.1:
-         if ( mf .eq. mxzero ) then
+         if ( mf == mxzero ) then
 c					! set new mf,mg,mh,mf2 so that only the
 c					! upper X-interp quadratic is shifted
             mf = 1
             mg = 1
-            if ( mf2 .gt. 1 ) then
+            if ( mf2 > 1 ) then
                mh = 2
                mf2 = 3
             else
@@ -4894,7 +4904,7 @@ c					! upper X-interp quadratic is shifted
                mf2 = 1
             endif
 c								! X = 1-Z:
-         else if ( xh .gt. 0.999999 - z ) then
+         else if ( xh > 0.999999 - z ) then
 c								! high-X edge
             mf = mx_hi
             mg = mx_hi
@@ -4905,11 +4915,11 @@ c					    ! X > 0.9: possibly fancy Z-interp:
 c						! first: set new mf,mg,mh,mf2
             mf2 = nx_hi(kzf)
             x_4 = 1. - z
-            mg = min( mx_hi - 2 , mf2 - 1 )
+            mg = MIN( mx_hi - 2 , mf2 - 1 )
             mf = mg - 1
             mh = mg + 1
 c							! X = 0.95 case
-            if ( abs( xhi_in(mh) - xh ) .lt. 9.e-7 .and.
+            if ( ABS( xhi_in(mh) - xh ) < 9.e-7 .and.
      $           xhi_use(mf2,kzf2) .ge. xhi_in(mh) - 1.e-6 ) then
                mh = mg + 1
                mf2 = mh
@@ -4917,22 +4927,22 @@ c							! X = 0.95 case
                mf = mh
                x_3 = 0.0
 c						! 3-X-pt: Z > Zsto(kzf) > 0.05
-            else if ( mf2 .eq. mg + 1  ) then
+            else if ( mf2 == mg + 1  ) then
                mh = mf2
                x_3 = x_4
 c						  ! 4-X-pt: Zsto(kzf2) < 0.05
-            else if ( nx_hi(kzf2) .eq. mf2 ) then
+            else if ( nx_hi(kzf2) == mf2 ) then
                x_3 = xhi_use(mh,kzf2)
 c							! 3-X-pt: X > 0.95
                if ( xh .ge. x_3 - 9.e-7 ) mf = mg
 c							      ! Otherwise
             else
-               if ( z .lt. zsto(kzh) - zacc(kzh) ) then
+               if ( z < zsto(kzh) - zacc(kzh) ) then
                   k_k = kzg
                else
                   k_k = kzh
                endif
-               if ( nx_hi(k_k) .lt. mf2 ) then
+               if ( nx_hi(k_k) < mf2 ) then
 c						! kzf2 *     * *     Z |
 c						!      |     |  \      |
 c						! kzh  *     *   *     +---> X
@@ -4971,7 +4981,7 @@ c					! ELSE: general case: 0.1 < X < 0.9:
          else
             mg = 2
             mh = mx_hi - 2
-            do while ( mh - mg .gt. 1 )
+            do while ( mh - mg > 1 )
                imd = ( mg + mh ) / 2
                if ( xh .le. xhi_in(imd) ) then
                   mh = imd
@@ -4980,38 +4990,38 @@ c					! ELSE: general case: 0.1 < X < 0.9:
                endif
             enddo
 c							       ! exact X-value:
-            if ( abs( xh - xhi_in(mh) ) .lt. 9.e-7 ) then
+            if ( ABS( xh - xhi_in(mh) ) < 9.e-7 ) then
                mf = mh
                mg = mh
                mf2 = mh
-            else if ( abs( xh - xhi_in(mg) ) .lt. 9.e-7 ) then
+            else if ( ABS( xh - xhi_in(mg) ) < 9.e-7 ) then
                mf = mg
                mh = mg
                mf2 = mg
 c					     ! or general 4-pt X-interpolation:
             else
                mf = mg - 1
-               mf2 = min( mh + 1 , nx_hi(kzf) )
+               mf2 = MIN( mh + 1 , nx_hi(kzf) )
             endif
 c				      ! get the X-values for 3rd and 4th X-pts:
             x_3 = xhi_in(mh)
 c					! 3-X-pt case
-            if ( mf2 .eq. mh ) then
+            if ( mf2 == mh ) then
                x_4 = x_3
 c						! x4 = 0.9 or smaller
             else if ( mf2 .le. mx_hi - 2 ) then
                x_4 = xhi_in(mf2)
 c							! x4 = 0.95 or 1-Z
-            else if ( nx_hi(kzf2) .eq. nx_hi(kzf) ) then
-               x_4 = max( x_3 , min( xhi_use(mf2,kzf) , 1. - z ) )
+            else if ( nx_hi(kzf2) == nx_hi(kzf) ) then
+               x_4 = MAX( x_3 , MIN( xhi_use(mf2,kzf) , 1. - z ) )
 c								   ! otherwise
             else
-               if ( z .lt. zsto(kzh) - zacc(kzh) ) then
+               if ( z < zsto(kzh) - zacc(kzh) ) then
                   k_k = kzg
                else
                   k_k = kzh
                endif
-               if ( nx_hi(k_k) .lt. mf2 ) then
+               if ( nx_hi(k_k) < mf2 ) then
 c						! kzf2 *     * *     Z |
 c						!      |     |  \      |
 c						! kzh  *     *   *     +---> X
@@ -5052,8 +5062,8 @@ c  If the 'GN93hz' X-values are not available, just check for X > 0.76:
 c
       if ( f_xhi .le. 0.0 ) then
 c
-         if ( xh .gt. 0.76 .and. kdo_xhi .le. 0 ) then
-            fedge = max( 0.0 , 1. - ( xh - 0.76 ) / 0.04 )
+         if ( xh > 0.76 .and. kdo_xhi .le. 0 ) then
+            fedge = MAX( 0.0 , 1. - ( xh - 0.76 ) / 0.04 )
             if ( fedge .le. 0.0 .and. level_err .ge. 2 ) then
                write(6,30) xh
  30            format(' '/' X=',f10.6,
@@ -5071,11 +5081,11 @@ c		! m is the temporary-opacity-storage X-index
 c			  ! loop ix over 'GN93hz'-opacity-shift X-indices
          do ix = mf, mf2
 c								    ! ix valid?
-            if ( ix .le. mg .or. ix .eq. mh .or. ix .eq. mf2 ) then
+            if ( ix .le. mg .OR. ix == mh .OR. ix == mf2 ) then
 c
                m = m + 1
 c					     ! if X available from 'Gz???.x??':
-               if ( ireq_hi(ix) .eq. 0 ) then
+               if ( ireq_hi(ix) == 0 ) then
 c						! no opacity shifts at this X
                   do i = 1, 4
                      opk(m,i) = 0.0
@@ -5084,7 +5094,7 @@ c				   ! ELSE: if X not available from 'Gz???.x??':
                else
 c					! get opacity shifts: loop over Z, T, R
                   do kz = kzf, kzf2
-                     ixm = min( ix , nx_hi(kz) )
+                     ixm = MIN( ix , nx_hi(kz) )
                      if ( ixm .le. 5 ) then
                         io = mo
                      else
@@ -5114,7 +5124,7 @@ c
          is = 0
 c				    ! if 0.03 < X < 0.1 (1st quadratic absent):
 c
-         if ( mg .eq. 1 .and. mf2 .eq. 3 ) then
+         if ( mg == 1 .and. mf2 == 3 ) then
             f_xhi = f_xhi * (1.-dixr)
             do i = 1, 4
                opvals(i) = opvals(i) + f_xhi * quad(is,1,xxx,opk(1,i),
@@ -5122,13 +5132,13 @@ c
                is = 1
             enddo
 c					! if use only one X-table
-         else if ( mf .eq. mh ) then
+         else if ( mf == mh ) then
             do i = 1, 4
                opvals(i) = opvals(i) + f_xhi * opk(1,i)
             enddo
 c			           ! 3 tables: interpolate in X using quadratic
-         else if ( mh .eq. mf2 ) then
-            if ( x_3 .eq. xhi_in(mh) ) then
+         else if ( mh == mf2 ) then
+            if ( x_3 == xhi_in(mh) ) then
                xx_3 = xxx_hi(mh)
             else
                xx_3 = log10( x_3 + xdel )
@@ -5139,13 +5149,13 @@ c			           ! 3 tables: interpolate in X using quadratic
                is = 1
             enddo
 c					! 3 tables at high-X end of matrix
-         else if ( mf .eq. mg ) then
-            if ( x_3 .eq. xhi_in(mh) ) then
+         else if ( mf == mg ) then
+            if ( x_3 == xhi_in(mh) ) then
                xx_3 = xxx_hi(mh)
             else
                xx_3 = log10( x_3 + xdel )
             endif
-            if ( x_4 .eq. xhi_in(mf2) ) then
+            if ( x_4 == xhi_in(mf2) ) then
                xx_4 = xxx_hi(mf2)
             else
                xx_4 = log10( x_4 + xdel )
@@ -5157,7 +5167,7 @@ c					! 3 tables at high-X end of matrix
             enddo
 c					! 3 tables: x4 = x3 (should not happen)
          else if ( x_3 .ge. x_4 ) then
-            if ( x_4 .eq. xhi_in(mf2) ) then
+            if ( x_4 == xhi_in(mf2) ) then
                xx_4 = xxx_hi(mf2)
             else
                xx_4 = log10( x_4 + xdel )
@@ -5169,12 +5179,12 @@ c					! 3 tables: x4 = x3 (should not happen)
             enddo
 c		   ! 4 tables: interpolate X between two overlapping quadratics
          else
-            if ( x_3 .eq. xhi_in(mh) ) then
+            if ( x_3 == xhi_in(mh) ) then
                xx_3 = xxx_hi(mh)
             else
                xx_3 = log10( x_3 + xdel )
             endif
-            if ( x_4 .eq. xhi_in(mf2) ) then
+            if ( x_4 == xhi_in(mf2) ) then
                xx_4 = xxx_hi(mf2)
             else
                xx_4 = log10( x_4 + xdel )
@@ -5193,7 +5203,7 @@ c
 c
 c  If the CNO-interpolation is needed, perform it.
 c
-      if ( max( need_cno , need_user ) .gt. 0 ) then
+      if ( MAX( need_cno , need_user ) > 0 ) then
 c
          f_2 = fcn * need_cno
          f_3 = fcon * need_cno
@@ -5204,13 +5214,13 @@ c				 ! m is the temporary-opacity-storage X-index
 c			  ! loop ix over 'GN93hz'-opacity-shift X-indices
          do ix = mf, mf2
 c								    ! ix valid?
-            if ( ix .le. mg .or. ix .eq. mh .or. ix .eq. mf2 ) then
+            if ( ix .le. mg .OR. ix == mh .OR. ix == mf2 ) then
 c
                m = m + 1
 c					! get opacity shifts: loop over Z, T, R
                do kz = kzf, kzf2
 c
-                  ixm = min( ix , nx_hi(kz) )
+                  ixm = MIN( ix , nx_hi(kz) )
 c
                   call index_co_deltas( 2, ixm, ix2, ic2, io2 )
                   call index_co_deltas( 3, ixm, ix3, ic3, io3 )
@@ -5242,20 +5252,20 @@ c
          is = 0
 c				    ! if 0.0 < X < 0.1 (1st quadratic absent):
 c
-         if ( mg .eq. 1 .and. mf2 .eq. 3 ) then
+         if ( mg == 1 .and. mf2 == 3 ) then
             do i = 1, 4
                opvals(i) = opvals(i) + quad(is,1,xxx,opk(1,i),opk(2,i),
      $              opk(3,i),xxx_cno(1),xxx_cno(2),xxx_cno(3))
                is = 1
             enddo
 c					! if use only one X-table
-         else if ( mf .eq. mh ) then
+         else if ( mf == mh ) then
             do i = 1, 4
                opvals(i) = opvals(i) + opk(1,i)
             enddo
 c			           ! 3 tables: interpolate in X using quadratic
-         else if ( mh .eq. mf2 ) then
-            if ( x_3 .eq. xhi_in(mh) ) then
+         else if ( mh == mf2 ) then
+            if ( x_3 == xhi_in(mh) ) then
                xx_3 = xxx_cno(mh)
             else
                xx_3 = log10( x_3 + xdel )
@@ -5266,13 +5276,13 @@ c			           ! 3 tables: interpolate in X using quadratic
                is = 1
             enddo
 c					! 3 tables at high-X end of matrix
-         else if ( mf .eq. mg ) then
-            if ( x_3 .eq. xhi_in(mh) ) then
+         else if ( mf == mg ) then
+            if ( x_3 == xhi_in(mh) ) then
                xx_3 = xxx_cno(mh)
             else
                xx_3 = log10( x_3 + xdel )
             endif
-            if ( x_4 .eq. xhi_in(mf2) ) then
+            if ( x_4 == xhi_in(mf2) ) then
                xx_4 = xxx_cno(mf2)
             else
                xx_4 = log10( x_4 + xdel )
@@ -5284,7 +5294,7 @@ c					! 3 tables at high-X end of matrix
             enddo
 c					! 3 tables: x4 = x3 (should not happen)
          else if ( x_3 .ge. x_4 ) then
-            if ( x_4 .eq. xhi_in(mf2) ) then
+            if ( x_4 == xhi_in(mf2) ) then
                xx_4 = xxx_cno(mf2)
             else
                xx_4 = log10( x_4 + xdel )
@@ -5296,12 +5306,12 @@ c					! 3 tables: x4 = x3 (should not happen)
             enddo
 c		   ! 4 tables: interpolate X between two overlapping quadratics
          else
-            if ( x_3 .eq. xhi_in(mh) ) then
+            if ( x_3 == xhi_in(mh) ) then
                xx_3 = xxx_cno(mh)
             else
                xx_3 = log10( x_3 + xdel )
             endif
-            if ( x_4 .eq. xhi_in(mf2) ) then
+            if ( x_4 == xhi_in(mf2) ) then
                xx_4 = xxx_cno(mf2)
             else
                xx_4 = log10( x_4 + xdel )
@@ -5321,10 +5331,10 @@ c
 c-debug[
 c-debug;      ichk = 0
 c-debug;      do m = mf,mf2
-c-debug;         if ( .not. abs(opk(m,1)) .le. oudebl ) ichk = 1
+c-debug;         if ( .not. ABS(opk(m,1)) .le. oudebl ) ichk = 1
 c-debug;      enddo
-c-debug;      if ( ichk .gt. 0 .or. .not.
-c-debug;     $     abs(opact) .le. oudebl .or. ioudeb .gt. 1 ) then
+c-debug;      if ( ichk > 0 .OR. .not.
+c-debug;     $     ABS(opact) .le. oudebl .OR. ioudeb > 1 ) then
 c-debug;         koudeb = koudeb+1
 c-debug;         write(6,8415) mf,mf2,kzf,kzf2,k1,ip,l1,iq(1),iq(2),
 c-debug;     $        iq(3),iq(ip+1),z,xh,xci,xoi,slt,slr
@@ -5414,19 +5424,19 @@ c---
 c-dir;      logical lxst
 c===
       last = lnblnk( cdirin )
-      ibeg = max( 1 , non_blank_begin(cdirin) )
+      ibeg = MAX( 1 , non_blank_begin(cdirin) )
 c
       kope = last - ibeg + 1
 c
-      if ( kope .eq. 0  ) then
+      if ( kope == 0  ) then
 c
          copdir = ' '
 c
       else
 c
-         if ( level_err .gt. 0 ) then
+         if ( level_err > 0 ) then
             iblank = num_blanks_contained( cdirin )
-            if ( iblank .gt. 0 ) then
+            if ( iblank > 0 ) then
                write(6,10) iblank, cdirin(ibeg:last)
  10            format(' WARNING:',i5,' blanks contained in OPAL',
      $              ' directory name:'/' ',a)
@@ -5438,7 +5448,7 @@ c
          if ( cdirin(last:last) .ne. cb(1) .and.
      $        cdirin(last:last) .ne. cb(2) ) kope = kope + 1
 c
-         if ( kope .gt. 246 ) then
+         if ( kope > 246 ) then
             write(6,20) kope, cdirin(ibeg:last)
  20         format(' Error: length',i5,
      $           ' exceeds 246 for OPAL directory name:'/' ',a)
@@ -5447,7 +5457,7 @@ c
 c
          copdir = cdirin(ibeg:)
 c
-         if ( kope .gt. last - ibeg + 1 ) copdir(kope:kope) = cb(1)
+         if ( kope > last - ibeg + 1 ) copdir(kope:kope) = cb(1)
 c
 c  NOTE that some systems return FALSE for the existence of a directory, so
 c  one cannot check for the directory's existence.
@@ -5491,9 +5501,9 @@ c
       save /c_level_err_opal_z/
 c===
       last = lnblnk( cfileofe )
-      ibeg = max( 1 , non_blank_begin(cfileofe) )
+      ibeg = MAX( 1 , non_blank_begin(cfileofe) )
 c
-      if ( level_err .gt. 0 ) then
+      if ( level_err > 0 ) then
 c
          if ( last - ibeg .ge. 8 ) then
             write(6,10) last - ibeg + 1, cfileofe(ibeg:last)
@@ -5505,7 +5515,7 @@ c
 c
          iblank = num_blanks_contained( cfileofe )
 c
-         if ( iblank .gt. 0 ) then
+         if ( iblank > 0 ) then
             write(6,20) iblank, cfileofe(ibeg:last)
  20         format(' WARNING:',i5,' blanks contained in filename',
      $           ' for khighz = -5:'/' ',a)
@@ -5543,9 +5553,9 @@ c
 c===
       last = lnblnk( cfileofe )
 c
-      ibeg = max( 1 , non_blank_begin(cfileofe) )
+      ibeg = MAX( 1 , non_blank_begin(cfileofe) )
 c
-      if ( level_err .gt. 0 ) then
+      if ( level_err > 0 ) then
 c
          if ( last - ibeg .ge. 255 ) then
             write(6,10) last - ibeg + 1, cfileofe(ibeg:last)
@@ -5557,7 +5567,7 @@ c
 c
          iblank = num_blanks_contained( cfileofe )
 c
-         if ( iblank .gt. 0 ) then
+         if ( iblank > 0 ) then
             write(6,20) iblank, cfileofe(ibeg:last)
  20         format(' WARNING:',i5,' blanks contained in filename',
      $           ' for khighz = -5:'/' ',a)
@@ -5599,9 +5609,9 @@ c
 c===
       last = lnblnk( cfile_hz )
 c
-      ibeg = max( 1 , non_blank_begin(cfile_hz) )
+      ibeg = MAX( 1 , non_blank_begin(cfile_hz) )
 c
-      if ( level_err .gt. 0 ) then
+      if ( level_err > 0 ) then
 c
          if ( last - ibeg .ge. 255 ) then
             write(6,10) last - ibeg + 1, cfile_hz(ibeg:last)
@@ -5613,7 +5623,7 @@ c
 c
          iblank = num_blanks_contained( cfile_hz )
 c
-         if ( iblank .gt. 0 ) then
+         if ( iblank > 0 ) then
             write(6,20) iblank, cfile_hz(ibeg:last)
  20         format(' WARNING:',i5,' blanks contained in filename',
      $           ' for khighz = -5:'/' ',a)
@@ -5623,7 +5633,7 @@ c
 c
       endif
 c
-      if ( last .eq. 0 ) then
+      if ( last == 0 ) then
          cfile_opalGS98(1) = 'GS98hz'
          main_alt_change = 2
       else
@@ -5663,52 +5673,52 @@ c
       save /c_level_err_opal_z/
 c===
       l_max = 0
-      iwarn = max( 2 - level_err , 0 )
+      iwarn = MAX( 2 - level_err , 0 )
 c
       do k = n_cnobeg, n_totmix
 c
-         if ( k .eq. n_cnobeg ) then
+         if ( k == n_cnobeg ) then
             last = lnblnk( cf_hz )
-            ibeg = max( 1 , non_blank_begin(cf_hz) )
+            ibeg = MAX( 1 , non_blank_begin(cf_hz) )
             cfile_opalGS98(k) = cf_hz(ibeg:)
-         else if ( k .eq. nbegp1 ) then
+         else if ( k == nbegp1 ) then
             last = lnblnk( cf_c )
-            ibeg = max( 1 , non_blank_begin(cf_c) )
+            ibeg = MAX( 1 , non_blank_begin(cf_c) )
             cfile_opalGS98(k) = cf_c(ibeg:)
-         else if ( k .eq. nbegp2 ) then
+         else if ( k == nbegp2 ) then
             last = lnblnk( cf_o )
-            ibeg = max( 1 , non_blank_begin(cf_o) )
+            ibeg = MAX( 1 , non_blank_begin(cf_o) )
             cfile_opalGS98(k) = cf_o(ibeg:)
-         else if ( k .eq. n_totmix ) then
+         else if ( k == n_totmix ) then
             last = lnblnk( cf_user )
-            ibeg = max( 1 , non_blank_begin(cf_user) )
+            ibeg = MAX( 1 , non_blank_begin(cf_user) )
             cfile_opalGS98(k) = cf_user(ibeg:)
          else
             last = lnblnk( cf_n )
-            ibeg = max( 1 , non_blank_begin(cf_n) )
+            ibeg = MAX( 1 , non_blank_begin(cf_n) )
             cfile_opalGS98(k) = cf_n(ibeg:)
          endif
 c
-         if ( k .eq. n_cnobeg ) then
+         if ( k == n_cnobeg ) then
             l_hz = last - ibeg + 1
-         else if ( last .eq. 0 .and. l_hz .gt. 0 ) then
+         else if ( last == 0 .and. l_hz > 0 ) then
             cfile_opalGS98(k) =
-     $           cfile_opalGS98(n_cnobeg)(:min(l_hz,255)) //
+     $           cfile_opalGS98(n_cnobeg)(:MIN(l_hz,255)) //
      $           cdef_CNO_ext(k)
             last = l_hz + len_def_CNO_ext(k)
-         else if ( last .gt. 0 .and. l_hz .eq. 0 .and.
-     $           iwarn .eq. 0 ) then
+         else if ( last > 0 .and. l_hz == 0 .and.
+     $           iwarn == 0 ) then
             write(6,10)
  10         format(' WARNING: SET_CNO_FILES: blank  cfile_hz',
      $           '  but other input filename(s) non-blank')
             iwarn = iwarn + 1
          endif
 c
-         l_max = max( l_max , last - ibeg + 1 )
+         l_max = MAX( l_max , last - ibeg + 1 )
 c
       enddo
 c
-      if ( l_max .gt. 255 .and. level_err .gt. 0 ) then
+      if ( l_max > 255 .and. level_err > 0 ) then
          write(6,20) l_max
  20      format(' WARNING: SET_CNO_FILES: largest filename length',i5,
      $        ' exceeds 255')
@@ -5795,7 +5805,7 @@ c
      $     kuse_user, kdo_user
       save /xhi_opal_z/
 c						! set high-X flag value
-      kuse_xhi = max( 0 , min( 2 , kxhi ) )
+      kuse_xhi = MAX( 0 , MIN( 2 , kxhi ) )
       if ( kavail_xhi .le. 0 ) then
          kdo_xhi = 0
       else
@@ -5824,7 +5834,7 @@ c
 c						! return high-X flag value
       kxhi = kuse_xhi
 c						! return availability flag
-      kavail = max( 0 , min( 1 , kavail_xhi ) )
+      kavail = MAX( 0 , MIN( 1 , kavail_xhi ) )
 c
       return
       end
@@ -5846,8 +5856,8 @@ c
      $     kuse_user, kdo_user
       save /xhi_opal_z/
 c						! set CNO-interpolation flags
-      kuse_cno = max( min( kcno , 1 ) , 0 )
-      kuse_user = max( min( kuser , 1 ) , 0 )
+      kuse_cno = MAX( MIN( kcno , 1 ) , 0 )
+      kuse_user = MAX( MIN( kuser , 1 ) , 0 )
       kdo_cno = kuse_cno * kavail_cno
       kdo_user = kuse_user * kavail_user
 c
@@ -5887,7 +5897,7 @@ c						! set error-checking level
       common /c_level_err_opal_z/ level_err
       save /c_level_err_opal_z/
 c
-      level_err = max( 0 , min( 3 , level ) )
+      level_err = MAX( 0 , MIN( 3 , level ) )
 c
       return
       end
@@ -5934,27 +5944,27 @@ c
 c  Set the logT6 limits, according to the input values; by default, make
 c  1-grid-point extrapolation beyond the matrix edge just within the limits:
 c
-      if ( vlo .gt. -90. ) sltlo = max( alt(1) , min( alt(nt) , vlo ) )
+      if ( vlo > -90. ) sltlo = MAX( alt(1) , MIN( alt(nt) , vlo ) )
 c
-      if ( dvlo .lt. -90. ) then
-         dltlo_inv = max( dltlo_inv ,
+      if ( dvlo < -90. ) then
+         dltlo_inv = MAX( dltlo_inv ,
      $        1. / ( sltlo - alt(1) + 0.999999 / dfs(1) ) )
-      else if ( dvlo .lt. 0. ) then
+      else if ( dvlo < 0. ) then
          dltlo_inv = dfs(1) * 0.999999
       else
-         dltlo_inv = 1. / min( max( dvlo , 1.e-6 ) ,
+         dltlo_inv = 1. / MIN( MAX( dvlo , 1.e-6 ) ,
      $        sltlo - alt(1) + 0.999999 / dfs(1) )
       endif
 c
-      if ( vhi .gt. -90. ) slthi = max( alt(1) , min( alt(nt) , vhi ) )
+      if ( vhi > -90. ) slthi = MAX( alt(1) , MIN( alt(nt) , vhi ) )
 c
-      if ( dvhi .lt. -90. ) then
-         dlthi_inv = max( dlthi_inv ,
+      if ( dvhi < -90. ) then
+         dlthi_inv = MAX( dlthi_inv ,
      $        1. / ( alt(nt) - slthi + 0.999999 / dfs(nt) ) )
-      else if ( dvhi .lt. 0. ) then
+      else if ( dvhi < 0. ) then
          dlthi_inv = dfs(nt) * 0.999999
       else
-         dlthi_inv = 1. / min( max( dvhi , 1.e-6 ) ,
+         dlthi_inv = 1. / MIN( MAX( dvhi , 1.e-6 ) ,
      $        alt(nt) - slthi + 0.999999 / dfs(nt) )
       endif
 c
@@ -5990,27 +6000,27 @@ c
 c  Set the logR limits, according to the input values; by default, make
 c  1-grid-point extrapolation beyond the matrix edge just within the limits:
 c
-      if ( vlo .gt. -90. ) slrlo = max( alr(1) , min( alr(nr) , vlo ) )
+      if ( vlo > -90. ) slrlo = MAX( alr(1) , MIN( alr(nr) , vlo ) )
 c
-      if ( dvlo .lt. -90. ) then
-         dlrlo_inv = max( dlrlo_inv ,
+      if ( dvlo < -90. ) then
+         dlrlo_inv = MAX( dlrlo_inv ,
      $        1. / ( slrlo - alr(1) + 0.999999 / dfsr(1) ) )
-      else if ( dvlo .lt. 0. ) then
+      else if ( dvlo < 0. ) then
          dlrlo_inv = dfsr(1) * 0.999999
       else
-         dlrlo_inv = 1. / min( max( dvlo , 1.e-6 ) ,
+         dlrlo_inv = 1. / MIN( MAX( dvlo , 1.e-6 ) ,
      $        slrlo - alr(1) + 0.999999 / dfsr(1) )
       endif
 c
-      if ( vhi .gt. -90. ) slrhi = max( alr(1) , min( alr(nr) , vhi ) )
+      if ( vhi > -90. ) slrhi = MAX( alr(1) , MIN( alr(nr) , vhi ) )
 c
-      if ( dvhi .lt. -90. ) then
-         dlrhi_inv = max( dlrhi_inv ,
+      if ( dvhi < -90. ) then
+         dlrhi_inv = MAX( dlrhi_inv ,
      $        1. / ( alr(nr) - slrhi + 0.999999 / dfsr(nr) ) )
-      else if ( dvhi .lt. 0. ) then
+      else if ( dvhi < 0. ) then
          dlrhi_inv = dfsr(nr) * 0.999999
       else
-         dlrhi_inv = 1. / min( max( dvhi , 1.e-6 ) ,
+         dlrhi_inv = 1. / MIN( MAX( dvhi , 1.e-6 ) ,
      $        alr(nr) - slrhi + 0.999999 / dfsr(nr) )
       endif
 c
@@ -6039,31 +6049,31 @@ c				! if no opacities were read in, cannot reset!
 c
       if ( itime .ne. 12345678 ) return
 c
-      if ( min( vlo , vhi ) .gt. -1.e-6 ) then
-         zlow = max( zsto(1) , min( vlo , vhi , zsto(numz) ) )
-         zhigh = min( zsto(numz) , max( vhi , vlo , zsto(1) ) )
-      else if ( vlo .gt. -1.e-6 ) then
-         zlow = max( zsto(1) , min( vlo , zhigh , zsto(numz) ) )
-      else if ( vhi .gt. -1.e-6 ) then
-         zhigh = min( zsto(numz) , max( vhi , zlow , zsto(1) ) )
+      if ( MIN( vlo , vhi ) > -1.e-6 ) then
+         zlow = MAX( zsto(1) , MIN( vlo , vhi , zsto(numz) ) )
+         zhigh = MIN( zsto(numz) , MAX( vhi , vlo , zsto(1) ) )
+      else if ( vlo > -1.e-6 ) then
+         zlow = MAX( zsto(1) , MIN( vlo , zhigh , zsto(numz) ) )
+      else if ( vhi > -1.e-6 ) then
+         zhigh = MIN( zsto(numz) , MAX( vhi , zlow , zsto(1) ) )
       endif
 c
-      if ( dvlo .gt. -1.e-6 ) then
+      if ( dvlo > -1.e-6 ) then
          if ( zlow .le. zsto(1) + zacc(1) ) then
-            zlo_ex = zlow - max( dvlo , zacc(1) )
+            zlo_ex = zlow - MAX( dvlo , zacc(1) )
          else
-            zlo_ex = zlow - max( dvlo , zacc(numz) )
+            zlo_ex = zlow - MAX( dvlo , zacc(numz) )
          endif
       else if ( zlow .le. zsto(1) + zacc(1) ) then
-         zlo_ex = min( zlo_ex , zlow - zacc(1) )
+         zlo_ex = MIN( zlo_ex , zlow - zacc(1) )
       else
-         zlo_ex = min( zlo_ex , zlow - zacc(numz) )
+         zlo_ex = MIN( zlo_ex , zlow - zacc(numz) )
       endif
 c
-      if ( dvhi .gt. -1.e-6 ) then
-         zhi_ex = zhigh + max( dvhi , zacc(numz) )
+      if ( dvhi > -1.e-6 ) then
+         zhi_ex = zhigh + MAX( dvhi , zacc(numz) )
       else
-         zhi_ex = max( zhi_ex , zhigh + zacc(numz) )
+         zhi_ex = MAX( zhi_ex , zhigh + zacc(numz) )
       endif
 c
       return
@@ -6203,7 +6213,7 @@ c===
          nzuse = numz
       endif
 c
-      k_z = max( kzstart , 1 )
+      k_z = MAX( kzstart , 1 )
       k_a = karraystart
       do while ( k_z .le. nzuse .and. k_a .le. narray )
          zarray(k_a) = zsto(k_z)
@@ -6226,12 +6236,12 @@ c
       common/c_opal_ctrl_smooth/ init_smo, low_CO_smo, interp_CO_smo
       save /c_opal_ctrl_smooth/
 c
-      if ( initsmooth .ge. 0 ) init_smo = min( initsmooth , 2 )
+      if ( initsmooth .ge. 0 ) init_smo = MIN( initsmooth , 2 )
 c
-      if ( lowCOsmooth .ge. 0 ) low_CO_smo = min( lowCOsmooth , 1 )
+      if ( lowCOsmooth .ge. 0 ) low_CO_smo = MIN( lowCOsmooth , 1 )
 c
       if ( interpCOsmooth .ge. 0 )
-     $     interp_CO_smo = min( interpCOsmooth , 1 )
+     $     interp_CO_smo = MIN( interpCOsmooth , 1 )
 c
       return
       end
@@ -6270,7 +6280,7 @@ c iu_lo is the unit number from which the lowest Z-value files are read;
 c   units iu_lo thru iu_lo+3 may be needed.
 c
 c===
-      call readexco(z,kallrd,max(min(khighz,1),-1),iu_lo,0.0)
+      call readexco(z,kallrd,MAX(MIN(khighz,1),-1),iu_lo,0.0)
 c
       return
       end
@@ -6341,9 +6351,9 @@ c
       save /xhi_opal_z/
 c===
       numz = 1
-      if ( z .lt. -1.e-6 ) then
+      if ( z < -1.e-6 ) then
          zat = 0.02
-      else if ( z .lt. 1.e-8 ) then
+      else if ( z < 1.e-8 ) then
          zat = 0.
       else
          zat = z
@@ -6417,60 +6427,60 @@ c===
       kavail_cno = 1
       kavail_user = 1
 c
-      if ( level_err .gt. 0 .and. main_alt_change .ne. 0 .and.
-     $     khighz .lt. -1 .and. mod( abs(khighz), 10 ) .gt. 1 .and.
-     $     mod( abs(khighz), 10 ) .lt. 5 ) then
+      if ( level_err > 0 .and. main_alt_change .ne. 0 .and.
+     $     khighz < -1 .and. mod( ABS(khighz), 10 ) > 1 .and.
+     $     mod( ABS(khighz), 10 ) < 5 ) then
          write(6,5) khighz
  5       format(' WARNING: khighz=',i4,' used after',
      $        ' ''GS98hz'' file replaced: may yield bad [O/Fe].')
-         if ( level_err .gt. 1 ) stop
+         if ( level_err > 1 ) stop
      $        ' STOP -- READZEXCO: Error: non-GS98hz, khighz=-2,-3,-4 '
       endif
 c
 c  Get the number of Z-values and the "typical" value of Z
 c
-      if ( level_err .gt. 0 .and.
-     $     ( nzin .le. 0 .or. nzin .gt. nz ) ) then
+      if ( level_err > 0 .and.
+     $     ( nzin .le. 0 .OR. nzin > nz ) ) then
          write(6,10) nzin, nz
  10      format(' '/' STOP -- READZEXCO: bad Nzin =',i12,
      $        ' (should lie in range 1 to',i3,').')
          stop ' STOP -- READZEXCO: Error: bad Nzin value. '
       endif
 c
-      numz = max( 1 , min( nzin , nz , nzm ) )
+      numz = MAX( 1 , MIN( nzin , nz , nzm ) )
 c
       if ( z .ge. -1.e-6 ) then
          zat = z
-      else if ( zlo .gt. -1.e-6 .and. zhi .ge. zlo ) then
-         if ( nzin .eq. 2 ) then
-            zat = ( max( zlo , 0.0 ) + max( zhi , 0.0 ) ) * 0.5
+      else if ( zlo > -1.e-6 .and. zhi .ge. zlo ) then
+         if ( nzin == 2 ) then
+            zat = ( MAX( zlo , 0.0 ) + MAX( zhi , 0.0 ) ) * 0.5
          else
-            zat = exp( ( log( max( zlo , 0.0 ) + zdel )
-     $           + log( max( zhi , 0.0 ) + zdel ) ) * 0.5 ) - zdel
+            zat = exp( ( log( MAX( zlo , 0.0 ) + zdel )
+     $           + log( MAX( zhi , 0.0 ) + zdel ) ) * 0.5 ) - zdel
          endif
-         if ( zat .lt. 1.e-8 ) zat = 0.
-      else if ( max( zlo , zhi ) .gt. -1.e-6 ) then
-         zat = max( zlo , zhi , 0.0 )
+         if ( zat < 1.e-8 ) zat = 0.
+      else if ( MAX( zlo , zhi ) > -1.e-6 ) then
+         zat = MAX( zlo , zhi , 0.0 )
       else
          zat = 0.02
       endif
-      if ( zat .lt. 1.e-8 ) zat = 0.
+      if ( zat < 1.e-8 ) zat = 0.
 c
 c  If there is only one Z-value to store, call readexco instead, and return
 c  (note that readexco will call read_kz and finish_cno):
 c
-      if ( numz .eq. 1 ) then
+      if ( numz == 1 ) then
 c
          call readexco(zat,1,khighz,iu_lo,ofebrack)
 c
-         if ( nzin .eq. 1 ) then
+         if ( nzin == 1 ) then
             if ( zlo .ge. -1.e-6 ) then
-               zlow = min( zlow , zlo )
-               zlo_ex = min( zlo_ex , max( 2. * zlow - zmiddle , 0. ) )
+               zlow = MIN( zlow , zlo )
+               zlo_ex = MIN( zlo_ex , MAX( 2. * zlow - zmiddle , 0. ) )
             endif
-            zhigh = max( zhigh , zhi )
-            zlo_ex = min( zlo_ex , zlow - zacc(1) )
-            zhi_ex = max( zhi_ex , 2. * zhigh - zmiddle ,
+            zhigh = MAX( zhigh , zhi )
+            zlo_ex = MIN( zlo_ex , zlow - zacc(1) )
+            zhi_ex = MAX( zhi_ex , 2. * zhigh - zmiddle ,
      $           zhigh + zacc(1) )
          endif
 c
@@ -6482,52 +6492,52 @@ c  If there is more than one Z-value to store:
 c					      ! make sure of available Z-values
       call get_zavail
 c								! check Z > 0.1
-      if ( max( zlo , zat , zhi ) .gt. zavail(nzm) + 1.e-6 ) then
+      if ( MAX( zlo , zat , zhi ) > zavail(nzm) + 1.e-6 ) then
          write(6,20) nzin, zlo, zat, zhi, 'Z > 0.1 is not allowed!!!'
  20      format(' '/' STOP -- READZEXCO(Nzin=',i2,
      $        '): bad Z values',3f12.8/'   ',a,a)
          stop ' STOP -- READZEXCO: Error: Z > 0.1 is not allowed!!! '
       endif
 c					! check for Zlo, Z, Zhi out of order
-      zlo_t = max( zlo , 0.0 )
-      zhi_t = max( zhi , 0.0 )
-      if ( zlo .lt. -1.e-6 ) zlo_t = zat
-      if ( zhi .lt. -1.e-6 ) zhi_t = zat
-      if ( level_err .gt. 0 .and. ( zat .gt. zhi_t + 1.e-6 .or.
-     $     zlo_t .gt. min( zat , zhi_t ) + 1.e-6 ) ) then
+      zlo_t = MAX( zlo , 0.0 )
+      zhi_t = MAX( zhi , 0.0 )
+      if ( zlo < -1.e-6 ) zlo_t = zat
+      if ( zhi < -1.e-6 ) zhi_t = zat
+      if ( level_err > 0 .and. ( zat > zhi_t + 1.e-6 .OR.
+     $     zlo_t > MIN( zat , zhi_t ) + 1.e-6 ) ) then
          write(6,20) nzin, zlo_t, zat, zhi_t,
      $        'Zlo, Z, Zhi should be in increasing order'
          stop ' STOP -- READZEXCO: Error: bad Z values. '
       endif
 c
-      zmiddle = min( zat , zavail(nzm) )
+      zmiddle = MIN( zat , zavail(nzm) )
 c
 c  If there should be two Z-values, then handle this case and return:
 
-      if ( numz .eq. 2 ) then
+      if ( numz == 2 ) then
 c							! error checking
-         if ( level_err .gt. 0 .and.
-     $        max( zlo , zhi ) .gt. -1.e-6 ) then
-            if ( min( zlo , zhi ) .gt. -1.e-6 ) then
-               if ( zhi_t - zlo_t .lt. 1.e-5 ) then
+         if ( level_err > 0 .and.
+     $        MAX( zlo , zhi ) > -1.e-6 ) then
+            if ( MIN( zlo , zhi ) > -1.e-6 ) then
+               if ( zhi_t - zlo_t < 1.e-5 ) then
                   write(6,20) nzin, zlo_t, z, zhi_t,
      $                 'Zhi - Zlo < 1.E-5: Zlo and Zhi',
      $                 ' too close together for Nzin = 2'
                   stop ' STOP -- READZEXCO: Error: bad Z values. '
-               else if ( zlo_t * 1.01 .gt. zhi_t + 1.e-6 ) then
+               else if ( zlo_t * 1.01 > zhi_t + 1.e-6 ) then
                   write(6,20) nzin, zlo_t, z, zhi_t,
      $                 'Zhi / Zlo < 1.01: Zlo and Zhi',
      $                 ' too close together for Nzin = 2'
                   stop ' STOP -- READZEXCO: Error: bad Z values. '
                endif
             endif
-            if ( zhi_t .lt. 1.e-8 ) then
+            if ( zhi_t < 1.e-8 ) then
                rat_t = 0.
             else
                rat_t = zlo_t / zhi_t
             endif
-            if ( rat_t .lt. 0.6 .and.
-     $           zhi_t - zlo_t .gt. 0.00020001 ) then
+            if ( rat_t < 0.6 .and.
+     $           zhi_t - zlo_t > 0.00020001 ) then
                write(6,20) nzin, zlo_t, z, zhi_t,
      $              'Zlo / Zhi < 0.6 (and Zhi-Zlo>0.0002):',
      $              'Zlo and Zhi too far apart for Nzin = 2'
@@ -6538,31 +6548,31 @@ c
 c  (will be linear interpolation in log[Z+0.001]); default range is plus/minus
 c  10 percent in Z or 2.e-5, minimum range is at least 1 percent or 1.e-5
 c
-         if ( nzin .gt. 2 .or. zlo .lt. -1.e-6 .or. zlo .gt. zat ) then
-            if ( nzin .gt. 2 .or. zhi .lt. zat ) then
-               zlow = max( 0.0 , min( 0.9 * zmiddle ,
+         if ( nzin > 2 .OR. zlo < -1.e-6 .OR. zlo > zat ) then
+            if ( nzin > 2 .OR. zhi < zat ) then
+               zlow = MAX( 0.0 , MIN( 0.9 * zmiddle ,
      $              zmiddle - 1.e-5 , 0.8182 * zavail(nzm) ) )
-               zhigh = min( zavail(nzm) , max( 1.1 * zmiddle ,
+               zhigh = MIN( zavail(nzm) , MAX( 1.1 * zmiddle ,
      $              zmiddle + 1.e-5 , 1.1 * zlow / 0.9 ) )
             else
-               zhigh = max( zmiddle , 1.e-5 ,
-     $              min( zhi , zavail(nzm) ) )
-               zlow = max( 0.0 , min( zmiddle ,
+               zhigh = MAX( zmiddle , 1.e-5 ,
+     $              MIN( zhi , zavail(nzm) ) )
+               zlow = MAX( 0.0 , MIN( zmiddle ,
      $              0.9 * zhigh / 1.1 , zhigh - 2.e-5 ) )
             endif
-         else if ( zhi .lt. zat ) then
-            zlow = max( 0.0 ,
-     $           min( zlo , zmiddle , zavail(nzm) - 0.01 ) )
-            zhigh = min( zavail(nzm) , max( zmiddle ,
+         else if ( zhi < zat ) then
+            zlow = MAX( 0.0 ,
+     $           MIN( zlo , zmiddle , zavail(nzm) - 0.01 ) )
+            zhigh = MIN( zavail(nzm) , MAX( zmiddle ,
      $           1.1 * zlow / 0.9 , zlow + 2.e-5 ) )
-         else if ( zhi - zlo .lt. 1.e-5 .or. zlo * 1.01 .gt. zhi ) then
-            zlow = max( 0.0 , min( zlo , zmiddle - 5.e-6 ,
+         else if ( zhi - zlo < 1.e-5 .OR. zlo * 1.01 > zhi ) then
+            zlow = MAX( 0.0 , MIN( zlo , zmiddle - 5.e-6 ,
      $           zmiddle / 1.005 , zavail(nzm) - 0.01 ) )
-            zhigh = min( zavail(nzm) , max( zhi , zmiddle + 5.e-6 ,
+            zhigh = MIN( zavail(nzm) , MAX( zhi , zmiddle + 5.e-6 ,
      $           zmiddle * 1.005 , 1.e-5 ) )
          else
-            zlow = max( 0.0 , min( zlo , zavail(nzm) - 0.01 ) )
-            zhigh = min( zavail(nzm) , zhi )
+            zlow = MAX( 0.0 , MIN( zlo , zavail(nzm) - 0.01 ) )
+            zhigh = MIN( zavail(nzm) , zhi )
          endif
 c
          zat = zlow
@@ -6582,7 +6592,7 @@ c
 c
 c  Else if all available Z-values should be used, handle this case and return:
 c
-      else if ( numz .eq. nzm ) then
+      else if ( numz == nzm ) then
 c
          zlow = 0.0
          zmiddle = zat
@@ -6593,7 +6603,7 @@ c
          do kz = 1, nzm
             zat = zavail(kz)
             call read_kz(kz,zat,1,khighz,iu_lo,ofebrack)
-            if ( kz .gt. 1 )
+            if ( kz > 1 )
      $           dfsz(kz) = 1. / ( zvint(kz) - zvint(kz-1) )
          enddo
 c
@@ -6607,16 +6617,16 @@ c
 c
 c  If there should be at least three Z-values:
 c						     ! check if Z-range too big
-      if ( level_err .gt. 0 ) then
+      if ( level_err > 0 ) then
          j = mz
-         do while ( j .gt. 2 .and. zhi_t .lt. zval(j-1) + 1.e-6 )
+         do while ( j > 2 .and. zhi_t < zval(j-1) + 1.e-6 )
             j = j - 1
          enddo
          i = 1
-         do while ( i .lt. j - 1 .and. zlo_t .gt. zval(i+1) - 1.e-6 )
+         do while ( i < j - 1 .and. zlo_t > zval(i+1) - 1.e-6 )
             i = i + 1
          enddo
-         if ( nzin .lt. j - i ) then
+         if ( nzin < j - i ) then
             write(6,20) nzin, zlo_t, z, zhi_t,
      $           'Zlo and Zhi too far apart for given Nzin value'
             stop ' STOP -- READZEXCO: Error: bad Z values. '
@@ -6624,9 +6634,9 @@ c						     ! check if Z-range too big
       endif
 c						! check for input Z-range
       ilodel = 1
-      if ( zlo .lt. -1.e-6 .or.
-     $     ( zlo .gt. zhi .and. zhi .ge. -1.e-6 ) .or.
-     $     ( zlo .gt. z .and. z .ge. -1.e-6 ) ) then
+      if ( zlo < -1.e-6 .OR.
+     $     ( zlo > zhi .and. zhi .ge. -1.e-6 ) .OR.
+     $     ( zlo > z .and. z .ge. -1.e-6 ) ) then
          if ( z .ge. -1.e-6 ) then
             zlow = z
          else
@@ -6636,49 +6646,49 @@ c						! check for input Z-range
          zlow = zlo
          ilodel = 0
       endif
-      if ( zlow .lt. 1.e-8 ) then
+      if ( zlow < 1.e-8 ) then
          zlow = 0.
          ilo1 = 1
          ilo2 = 1
       else
-         zlow = min( zlow , zavail(nzm-2) )
+         zlow = MIN( zlow , zavail(nzm-2) )
          ilo2 = nzm - 2
-         do while ( ilo2 .gt. 2 .and.
-     $        zlow .lt. zavail(ilo2-1) + 1.e-6 )
+         do while ( ilo2 > 2 .and.
+     $        zlow < zavail(ilo2-1) + 1.e-6 )
             ilo2 = ilo2 - 1
          enddo
          ilo1 = 1
-         do while ( ilo1 .lt. ilo2 .and.
-     $        zlow .gt. zavail(ilo1+1) - 1.e-6 )
+         do while ( ilo1 < ilo2 .and.
+     $        zlow > zavail(ilo1+1) - 1.e-6 )
             ilo1 = ilo1 + 1
          enddo
       endif
 c
       ihidel = 1
-      if ( zhi .ge. max( z , zlo , -1.e-6 ) ) then
+      if ( zhi .ge. MAX( z , zlo , -1.e-6 ) ) then
          zhigh = zhi
          ihidel = 0
-      else if ( z .gt. -1.e-6 ) then
+      else if ( z > -1.e-6 ) then
          zhigh = z
       else
          zhigh = zat
       endif
-      zhigh = max( zavail(3) , min( zavail(nzm) , zhigh ) )
-      if ( ilodel .eq. 0 .and. ilo1 .ge. nzm + 1 - numz ) then
+      zhigh = MAX( zavail(3) , MIN( zavail(nzm) , zhigh ) )
+      if ( ilodel == 0 .and. ilo1 .ge. nzm + 1 - numz ) then
          ihi2 = nzm
          ilo1 = nzm + 1 - numz
       else
          ihi2 = nzm
-         do while ( ihi2 .gt. 3 .and.
-     $        zhigh .lt. zavail(ihi2-1) + 1.e-6 )
+         do while ( ihi2 > 3 .and.
+     $        zhigh < zavail(ihi2-1) + 1.e-6 )
             ihi2 = ihi2 - 1
          enddo
          ihi1 = 3
-         do while ( ihi1 .lt. ihi2 .and.
-     $        zhigh .gt. zavail(ihi1+1) - 1.e-6 )
+         do while ( ihi1 < ihi2 .and.
+     $        zhigh > zavail(ihi1+1) - 1.e-6 )
             ihi1 = ihi1 + 1
          enddo
-         if ( ihidel .eq. 0 .and. ihi2 .le. numz ) then
+         if ( ihidel == 0 .and. ihi2 .le. numz ) then
             ilo1 = 1
             ihi2 = numz
          endif
@@ -6687,34 +6697,34 @@ c
 c  If the number of Z-values to be used "numz"  is sufficent to encompass the
 c  input Z-range, then handle this case and return:
 c
-      if ( ihi2 - ilo1 .lt. numz ) then
+      if ( ihi2 - ilo1 < numz ) then
 c					! get range -> numz, alternately adding
 c							! low and high Z-values
-         if ( numz .eq. 3 .and. ihi2 - ilo1 .eq. 1 .and.
-     $        zavail(ihi2) - z .lt. z - zavail(ilo1) .and.
-     $        ( ihidel .gt. 0 .or. ilodel .eq. 0 ) )
-     $        ihi2 = min( ihi2 + 1 , nzm )
-         do while ( ihi2 - ilo1 + 1 .lt. numz .and.
-     $        ( ( ilo1 .gt. 1 .and. ilodel .gt. 0 ) .or.
-     $        ( ihi2 .lt. nzm .and. ihidel .gt. 0 ) ) )
-            ilo1 = max( ilo1 - ilodel , 1 )
-            if ( ihi2 - ilo1 + 1 .lt. numz )
-     $           ihi2 = min( ihi2 + ihidel , nzm )
+         if ( numz == 3 .and. ihi2 - ilo1 == 1 .and.
+     $        zavail(ihi2) - z < z - zavail(ilo1) .and.
+     $        ( ihidel > 0 .OR. ilodel == 0 ) )
+     $        ihi2 = MIN( ihi2 + 1 , nzm )
+         do while ( ihi2 - ilo1 + 1 < numz .and.
+     $        ( ( ilo1 > 1 .and. ilodel > 0 ) .OR.
+     $        ( ihi2 < nzm .and. ihidel > 0 ) ) )
+            ilo1 = MAX( ilo1 - ilodel , 1 )
+            if ( ihi2 - ilo1 + 1 < numz )
+     $           ihi2 = MIN( ihi2 + ihidel , nzm )
          enddo
-         do while ( ihi2 - ilo1 + 1 .lt. numz )
-            ilo1 = max( ilo1 - 1 , 1 )
-            if ( ihi2 - ilo1 + 1 .lt. numz )
-     $           ihi2 = min( ihi2 + 1 , nzm )
+         do while ( ihi2 - ilo1 + 1 < numz )
+            ilo1 = MAX( ilo1 - 1 , 1 )
+            if ( ihi2 - ilo1 + 1 < numz )
+     $           ihi2 = MIN( ihi2 + 1 , nzm )
          enddo
 c
          zlow = zavail(ilo1)
-         if ( numz .eq. 3 ) then
+         if ( numz == 3 ) then
             zmiddle = zavail(ilo1+1)
-         else if ( z .lt. -1.e-6 ) then
+         else if ( z < -1.e-6 ) then
             zmiddle = ( zhi + zlo ) * 0.5
          endif
          zhigh = zavail(ihi2)
-         if ( ilo1 .eq. 1 ) then
+         if ( ilo1 == 1 ) then
             zlo_ex = -1.e-6
          else
             zlo_ex = zavail(ilo1-1)
@@ -6724,7 +6734,7 @@ c
          do kz = 1, numz
             zat = zavail(ilo1+kz-1)
             call read_kz(kz,zat,1,khighz,iu_lo,ofebrack)
-            if ( kz .gt. 1 )
+            if ( kz > 1 )
      $           dfsz(kz) = 1. / ( zvint(kz) - zvint(kz-1) )
          enddo
 c
@@ -6740,13 +6750,13 @@ c  The input Z-range does not fit between a set of numz values from zavail();
 c  if the input value of numz was 3, then use the input Z-range even if it is
 c  VERY wide (check only for unbalanced intervals in log[Z+0.001]), and return:
 c
-      if ( numz .eq. 3 .and. nzin .eq. 3 ) then
+      if ( numz == 3 .and. nzin == 3 ) then
 c
          zl_1 = log10( zlow + zdel )
          zl_2 = log10( zmiddle + zdel )
          zl_3 = log10( zhigh + zdel )
-         if ( 2. * ( zl_3 - zl_2 ) .lt. zl_2 - zl_1 .or.
-     $        2.6 * ( zl_2 - zl_1 ) .lt. zl_3 - zl_2 ) then
+         if ( 2. * ( zl_3 - zl_2 ) < zl_2 - zl_1 .OR.
+     $        2.6 * ( zl_2 - zl_1 ) < zl_3 - zl_2 ) then
             zl_2 = ( zl_1 + zl_3 ) * 0.5
             zmiddle = 10.**zl_2 - zdel
          endif
@@ -6762,12 +6772,12 @@ c
          dfsz(2) = 1. / ( zvint(2) - zvint(1) )
          dfsz(1) = dfsz(2)
 c
-         zlo_ex = min( zlow - zacc(1) ,
-     $        10.**( zl_1 - min( zl_2 - zl_1 ,
+         zlo_ex = MIN( zlow - zacc(1) ,
+     $        10.**( zl_1 - MIN( zl_2 - zl_1 ,
      $        log10( ( zavail(ilo1+1) + zdel )
      $        / ( zavail(ilo1) + zdel ) ) ) ) - zdel )
-         if ( zlo_ex .lt. 1.e-8 .and. zlo_ex .gt. 0. ) zlo_ex = 0.
-         zhi_ex = min( 10.**( 2. * zl_3 - zl_2 ) - zdel ,
+         if ( zlo_ex < 1.e-8 .and. zlo_ex > 0. ) zlo_ex = 0.
+         zhi_ex = MIN( 10.**( 2. * zl_3 - zl_2 ) - zdel ,
      $        zhigh + zavail(ihi2) - zavail(ihi2-1) )
 c
          call finish_cno
@@ -6781,26 +6791,26 @@ c  and the input value of numz was greater than 3; find the corresponding
 c  positions in the array coarser array zval() of Z-values available from the
 c  'Gz???.x??' files, and check whether this suffices:
 c
-      if ( zlow .lt. 1.e-8 ) then
+      if ( zlow < 1.e-8 ) then
          jlo1 = 1
          jlo2 = 1
       else
          jlo2 = mz - 2
-         do while ( jlo2 .gt. 2 .and. zlow .lt. zval(jlo2-1) + 1.e-6 )
+         do while ( jlo2 > 2 .and. zlow < zval(jlo2-1) + 1.e-6 )
             jlo2 = jlo2 - 1
          enddo
          jlo1 = 1
-         do while ( jlo1 .lt. jlo2 .and.
-     $        zlow .gt. zval(jlo1+1) - 1.e-6 )
+         do while ( jlo1 < jlo2 .and.
+     $        zlow > zval(jlo1+1) - 1.e-6 )
             jlo1 = jlo1 + 1
          enddo
       endif
       jhi2 = mz
-      do while ( jhi2 .gt. 3 .and. zhigh .lt. zval(jhi2-1) + 1.e-6 )
+      do while ( jhi2 > 3 .and. zhigh < zval(jhi2-1) + 1.e-6 )
          jhi2 = jhi2 - 1
       enddo
       jhi1 = 3
-      do while ( jhi1 .lt. jhi2 .and. zhigh .gt. zval(jhi1+1) - 1.e-6 )
+      do while ( jhi1 < jhi2 .and. zhigh > zval(jhi1+1) - 1.e-6 )
          jhi1 = jhi1 + 1
       enddo
 c
@@ -6817,17 +6827,17 @@ c
          enddo
          z_use(1) = zavail(ilo1)
          z_use(nuse) = zavail(ihi2)
-         if ( ihi2 .eq. nzm .and. ilo1 .eq. nzm - 4 .and. numz .eq. 3 )
+         if ( ihi2 == nzm .and. ilo1 == nzm - 4 .and. numz == 3 )
      $        z_use(2) = zavail(nzm-2)
 c
          k_a = 0
-         do while ( nuse .lt. numz .and. k_a .lt. nadd_zavail )
+         do while ( nuse < numz .and. k_a < nadd_zavail )
             k_a = k_a + 1
             zat = zavail( iadd_zavail(k_a) )
-            if ( zat .gt. z_use(1) + 1.e-6 .and.
-     $           zat .lt. z_use(nuse) - 1.e-6 ) then
+            if ( zat > z_use(1) + 1.e-6 .and.
+     $           zat < z_use(nuse) - 1.e-6 ) then
                i = 2
-               do while ( i .lt. nuse .and. z_use(i) + 1.e-6 .lt. zat )
+               do while ( i < nuse .and. z_use(i) + 1.e-6 < zat )
                   i = i + 1
                enddo
                do j = nuse, i, -1
@@ -6862,7 +6872,7 @@ c  In either of the above cases, read in the corresponding opacities:
 c
       do kz = 1, numz
          call read_kz(kz,z_use(kz),1,khighz,iu_lo,ofebrack)
-         if ( kz .gt. 1 ) dfsz(kz) = 1. / ( zvint(kz) - zvint(kz-1) )
+         if ( kz > 1 ) dfsz(kz) = 1. / ( zvint(kz) - zvint(kz-1) )
       enddo
 c
       dfsz(1) = dfsz(2)
@@ -6870,7 +6880,7 @@ c
       zlow = z_use(1)
       zhigh = z_use(numz)
 c
-      zlo_ex = min( zlow - zacc(1) ,
+      zlo_ex = MIN( zlow - zacc(1) ,
      $     10.**( zvint(1) - log10( ( zavail(ilo1+1) + zdel )
      $     / ( zavail(ilo1) + zdel ) ) ) - zdel )
       zhi_ex = zhigh + zavail(ihi2) - zavail(ihi2-1)
@@ -6988,7 +6998,7 @@ c
       if ( last .le. 0 ) stop
      $     ' STOP -- DUMP_OPAL_OPAC: Error: blank dumpfile name. '
 c
-      if ( iu_out .gt. 0 .and. iu_out .le. 99 .and.
+      if ( iu_out > 0 .and. iu_out .le. 99 .and.
      $     iu_out .ne. 5 .and. iu_out .ne. 6 ) then
          iu = iu_out
       else
@@ -7177,7 +7187,7 @@ c
          stop ' STOP -- READ_OPAL_DUMP: Error: dumpfile not found. '
       endif
 c
-      if ( iu_in .gt. 0 .and. iu_in .le. 99 .and.
+      if ( iu_in > 0 .and. iu_in .le. 99 .and.
      $     iu_in .ne. 5 .and. iu_in .ne. 6 ) then
          iu = iu_in
       else
@@ -7457,7 +7467,7 @@ c
       dimension line(0:3)
 c
 c-debug-chk[
-c-debug-chk;      dimension chk_max(20),chk_min(20),chk_sum(20),chk_ssq(20),
+c-debug-chk;      dimension chk_MAX(20),chk_MIN(20),chk_sum(20),chk_ssq(20),
 c-debug-chk;     $     n_chk(20)
 c-debug-chk;c
 c-debug-chk;      common /readkz_opal_debug_chk/ iout_debug_chk_ofe
@@ -7473,18 +7483,18 @@ c-debug-chk;      data iout_debug_chk_ofe / 99999 /
 c-debug-chk]
 c
 c===
-      if ( kz .le. 0 .or. kz .gt. nz ) stop
+      if ( kz .le. 0 .OR. kz > nz ) stop
      $     ' STOP -- READCO: Error: Z-index out of range: cannot be! '
 c
 c Check input unit number iu_lo, and use it to set iulow.
 c
       if ( iu_lo .ge. 7 .and. iu_lo .le. 96 ) then
          iulow = iu_lo
-      else if ( iu_lo .ge. 0 .and. level_err .gt. 0 ) then
+      else if ( iu_lo .ge. 0 .and. level_err > 0 ) then
          stop ' STOP -- READCO: Error: bad iulow value. '
       endif
 c
-      if ( level_err .gt. 99 .and. kallrd .le. 0 ) write(6,
+      if ( level_err > 99 .and. kallrd .le. 0 ) write(6,
      $     '(" ***WARNING: READCO: kallrd < 1 ignored.")')
 c
 c Check some parameter values, and do some initializations.
@@ -7494,19 +7504,19 @@ c
       khighz_in = khighz
       ofebrack_in = ofebrack
 c							     ! Z out of range?
-      if ( z .ge. zval(mz) + 1.e-6 .or. z .le. -1.e-8 ) then
+      if ( z .ge. zval(mz) + 1.e-6 .OR. z .le. -1.e-8 ) then
          write(6,8703) z
  8703    format(' '/' STOP -- READCO: Z=',f10.7,
      $        ': Z > 0.1 (or < 0) not allowed!!!')
          stop
       endif
 c						      ! accuracy to match table
-      zacc(kz) = min( 1.e-6 , max( 1.e-8 , 0.01 * z ) )
+      zacc(kz) = MIN( 1.e-6 , MAX( 1.e-8 , 0.01 * z ) )
 c
 c  Find the correct Z value(s) to be read in, in the range 0.0 to 0.1
 c
       kzbelo = mz
-      do while( kzbelo .gt. 1 .and. z .le. zval(kzbelo) - 1.e-6 )
+      do while( kzbelo > 1 .and. z .le. zval(kzbelo) - 1.e-6 )
          kzbelo = kzbelo-1
       enddo
 c
@@ -7517,7 +7527,7 @@ c    nmorez = 0 if the tabulated Z-value can be used (with no Z-interpolation),
 c    nmorez = 2 if quadratic interpolation among 3 Z-values will be performed,
 c    nmorez = 3 if overlapping quadratices will be used among 4 Z-values.
 c
-      if ( abs( zval(kzbelo) - z ) .le. zacc(kz) ) then
+      if ( ABS( zval(kzbelo) - z ) .le. zacc(kz) ) then
          zat = zval(kzbelo)
          kzlow = kzbelo
          k1zfac = kzbelo
@@ -7525,19 +7535,19 @@ c
 c		     ! else: closest 3 or 4 table Z-values to interpolate among
       else
          zat = z
-         kzlow = min( max( 1 , kzbelo - 1 ) , mz_m2 )
-         k1zfac = min( kzbelo , mz_m1 )
-         nmorez = min( kzbelo + 2 , mz ) - kzlow
+         kzlow = MIN( MAX( 1 , kzbelo - 1 ) , mz_m2 )
+         k1zfac = MIN( kzbelo , mz_m1 )
+         nmorez = MIN( kzbelo + 2 , mz ) - kzlow
       endif
 c
       kzlow_m1 = kzlow - 1
-      k2zfac = min( k1zfac + 1 , kzlow + nmorez )
+      k2zfac = MIN( k1zfac + 1 , kzlow + nmorez )
 c							! find position in nofz
       do i = kzlow, kzlow + nmorez
          kzvalnof(i-kzlow_m1) = int( 100. * zval(i) + 1.01 )
       enddo
-      kznof = min( int( 100. * z + 1.0001 ) , mzhi )
-      lznof = max( int( 100. * z + 0.9999 ) , 1 )
+      kznof = MIN( int( 100. * z + 1.0001 ) , mzhi )
+      lznof = MAX( int( 100. * z + 0.9999 ) , 1 )
 c
 c  NOTE that if Z > 0 and the GS98 mix is being used (khighz < 0), then both
 c  the GN93hz and GS98hz files will always be needed; if [O/Fe] is non-zero
@@ -7547,23 +7557,23 @@ c  need to interpolate in [O/Fe] (set khizat = 1), and if there is no need to
 c  interpolate in [O/Fe], then for Z equal to a Z-table value or .01 < Z < .02
 c  the "hz" tables will yield no improvement and are not used (set khizat = 0).
 c
-      khighz_index = min( mod( abs(khighz), 10 ) , n_zmixes )
-      if ( mx .eq. 5 ) then
-         khighz_cno = min( abs(khighz) / 10 , 3 )
+      khighz_index = MIN( mod( ABS(khighz), 10 ) , n_zmixes )
+      if ( mx == 5 ) then
+         khighz_cno = MIN( ABS(khighz) / 10 , 3 )
          if ( khighz_cno .ge. 2 .and. kavail_user .le. 0 )
      $        khighz_cno = khighz_cno - 2
-         if ( mod( khighz_cno, 2 ) .eq. 1 .and. kavail_cno .le. 0 )
+         if ( mod( khighz_cno, 2 ) == 1 .and. kavail_cno .le. 0 )
      $        khighz_cno = khighz_cno - 1
       else
          khighz_cno = 0
       endif
 c
-      if ( z .lt. zacc(kz) ) then
+      if ( z < zacc(kz) ) then
          klozat = 0
          khizat = 0
-      else if ( khighz .lt. 0 ) then
+      else if ( khighz < 0 ) then
          khizat = 1
-         if ( ofebrack .eq. 0. ) then
+         if ( ofebrack == 0. ) then
             klozat = 1
          else
             klozat = khighz_index
@@ -7571,31 +7581,31 @@ c
       else
          klozat = 0
          khizat = khighz_index
-         if ( ofebrack .eq. 0. ) khizat = min(khizat,1)
-         if ( khizat .eq. 1 .and. ( ( zval(k1zfac) .ge. 0.01 .and.
-     $        zval(k2zfac) .le. 0.02 ) .or. nmorez .eq. 0 ) )
+         if ( ofebrack == 0. ) khizat = MIN(khizat,1)
+         if ( khizat == 1 .and. ( ( zval(k1zfac) .ge. 0.01 .and.
+     $        zval(k2zfac) .le. 0.02 ) .OR. nmorez == 0 ) )
      $        khizat = 0
       endif
 c
 c  If needed, get position in C+O=0.0 "hz"-tables, which have more Z values.
 c  Note that nzalmo (for GN93hz) is analogous to nmorez (for Gz???.x?? files)
 c
-      if ( khizat .gt. 0 ) then
+      if ( khizat > 0 ) then
          kzalbe = mzal
-         do while( kzalbe .gt. 1 .and. z .le. zalval(kzalbe)-1.e-6 )
+         do while( kzalbe > 1 .and. z .le. zalval(kzalbe)-1.e-6 )
             kzalbe = kzalbe-1
          enddo
-         if ( abs( zalval(kzalbe) - z ) .le. zacc(kz) ) then
+         if ( ABS( zalval(kzalbe) - z ) .le. zacc(kz) ) then
             zat = zalval(kzalbe)
             kzalow = kzalbe
             nzalmo = 0
          else
-            kzalow = max( 1 , kzalbe - 1 )
-            nzalmo = min( kzalbe + 2 , mzal ) - kzalow
+            kzalow = MAX( 1 , kzalbe - 1 )
+            nzalmo = MIN( kzalbe + 2 , mzal ) - kzalow
          endif
       endif
 c			       ! set the directory-part of the opacity filename
-      if ( kope .eq. 0 ) then
+      if ( kope == 0 ) then
          copfil = ' '
       else
          copfil = copdir(:kope)
@@ -7604,10 +7614,10 @@ c				! store present m-value (should be unnecessary)
       mstore = m
 c
       khighx(kz) = 0
-      if ( khighz_index .ne. 0 .and. mx .eq. 5 .and.
-     $     max( abs( xhi_in(1) - xa(1) ) , abs( 0.03 - xa(2) ) ,
-     $     abs( xhi_in(2) - xa(3) ) , abs( xhi_in(4) - xa(4) ) ,
-     $     abs( xhi_in(6) - xa(5) ) ) .le. 1.e-6 ) khighx(kz) = 1
+      if ( khighz_index .ne. 0 .and. mx == 5 .and.
+     $     MAX( ABS( xhi_in(1) - xa(1) ) , ABS( 0.03 - xa(2) ) ,
+     $     ABS( xhi_in(2) - xa(3) ) , ABS( xhi_in(4) - xa(4) ) ,
+     $     ABS( xhi_in(6) - xa(5) ) ) .le. 1.e-6 ) khighx(kz) = 1
 c
 c			   ! get shifted z-value Z+zdel, for log interpolation
       zzz(kz) = zat + zdel
@@ -7675,10 +7685,10 @@ c				! set and check number-of-mixes table n(m,j,kz)
             do i = 1, nc
                if ( xcd(j) .ge. xc(i) ) then
                   n(m,j,kz) = i + 1
-                  if ( xcd(j) .lt. xc(i) + 1.e-6 ) n(m,j,kz) = i
+                  if ( xcd(j) < xc(i) + 1.e-6 ) n(m,j,kz) = i
                endif
             enddo
-            if ( n(m,1,kz) .ne. nc .or.
+            if ( n(m,1,kz) .ne. nc .OR.
      $           ( n(m,j,kz) .ne. nofz(kznof,mnofz(m),j)
      $           .and. n(m,j,kz) .ne. nofz(lznof,mnofz(m),j) ) ) then
                write(6,8705) m,nc,j,n(m,j,kz),lznof,kznof,j,
@@ -7695,12 +7705,12 @@ c		      ! nc-th elements sometimes needed, though this may not be
             n(m,j,kz) = 0
          enddo
 c		   		   ! initialize boundaries at low-X,low-R,low-T
-         if ( kz .eq. 1 ) then
-            if ( m .eq. mxzero ) then
+         if ( kz == 1 ) then
+            if ( m == mxzero ) then
                do i = nrb, nre
                   ntax0(i) = ntb
                enddo
-            else if ( m .eq. mx03 ) then
+            else if ( m == mx03 ) then
                do i = nrb, nre
                   ntax03(i) = ntb
                enddo
@@ -7725,14 +7735,14 @@ c  opacity shifts for m=2 may be obtained later by interpolating opacity shifts
 c  among m=1,3,4 if this is possible.)
 c					     ! read 'GN93hz' only if necessary:
 c
-         if ( khizat .gt. 0 .and. ( m .ne. mx03 .or.
-     $        khizat .gt. 1 .or. klozat .gt. 0 ) ) then
+         if ( khizat > 0 .and. ( m .ne. mx03 .OR.
+     $        khizat > 1 .OR. klozat > 0 ) ) then
 c
 c				   ! for m = mx03 (X=.03), X-interpolation in
 c				   ! GN93hz is less accurate than the Gz???.x??
 c				   ! opacities: the GN93hz opacities are needed
 c				    ! only for [O/Fe] shifts, so set facxhz=0.
-            if ( m .eq. mx03 ) then
+            if ( m == mx03 ) then
                facxhz = 0.
                nxdo = 3
                xzalat(1) = 0.
@@ -7746,11 +7756,11 @@ c				! Else (for m not mx03): do need GN93hz shifts:
                facxhz = 1.
 c			       ! but near Z = 0.05, the Gz???.x?? opacities are
 c						        ! better: reduce facxhz
-               if ( zat .gt. 0.04 .and. zat .lt. 0.06 )
-     $              facxhz = 1. - 100. * min( zat - 0.04 , 0.06 - zat )
+               if ( zat > 0.04 .and. zat < 0.06 )
+     $              facxhz = 1. - 100. * MIN( zat - 0.04 , 0.06 - zat )
                nxdo = 1
                xzalat(1) = xa(m)
-               if ( m .eq. mxzero ) then
+               if ( m == mxzero ) then
                   do i = nrb, nre
                      nthx0(i) = ntb
                   enddo
@@ -7760,9 +7770,9 @@ c			      ! number of "excess" X-tables (for interpolation)
             nmorex = nxdo - 1
 c			      ! indices for GN93hz Z-tabulation array zalval
             j1 = kzalow
-            j2 = j1 + min( 1 , nzalmo )
-            j3 = j1 + min( 2 , nzalmo )
-            j4 = j1 + min( 3 , nzalmo )
+            j2 = j1 + MIN( 1 , nzalmo )
+            j3 = j1 + MIN( 2 , nzalmo )
+            j4 = j1 + MIN( 3 , nzalmo )
 c
             is = 0
             isx = 0
@@ -7772,7 +7782,7 @@ c
 c						! read C+O=0.0 "hz"-table(s):
             do while ( iofe .ne. 0 )
 c							! get filename
-               if ( iofe .gt. 0 ) then
+               if ( iofe > 0 ) then
                   copfil(kope+1:) = cfile_opalmixes(iofe)
                else
                   copfil(kope+1:) = cfile_opalGS98(-iofe)
@@ -7786,7 +7796,7 @@ c				     ! dummy table-number; initial cofzhi index
                itab_dum = 0
                kzsto = 0
 c					! get Z-composition(s) from "hz"-files,
-               if ( m .eq. 1 ) then
+               if ( m == 1 ) then
                   igetzxi = 1
 c			       ! or just check them if they were already gotten
                else
@@ -7805,32 +7815,32 @@ c					       ! find mix; stop if not found
                      ifound = mixfind(iu,iofe,igetzxi,i_rewind,
      $                    itab_dum,line(1),
      $                    zalval(iz),xzalat(kx),0.0,0.0)
-                     if ( ifound .eq. 0 ) then
+                     if ( ifound == 0 ) then
                         write(6,1791) zalval(iz),xzalat(kx),0.0,0.0,
      $                          copfil(:lnblnk(copfil))
  1791                   format(' '/' READCO: Error finding mix Z=',
-     $                       f6.4,' X=',f6.4,' C=',f6.4,' O=',f6.4,
+     $                       f7.4,' X=',f7.4,' C=',f7.4,' O=',f7.4,
      $                       '  from file:'/' ',a/' ')
                         stop ' STOP -- READCO: error reading hz-mix. '
                      endif
 c								! check [O/Fe]
-                     if ( kx .eq. 1 .and. iz .eq. kzalow ) then
-                        if ( iofe .eq. 1 ) then
+                     if ( kx == 1 .and. iz == kzalow ) then
+                        if ( iofe == 1 ) then
 c						! (this cannot happen)
-                           if ( abs( bracketofe_opalmixes(1) ) .gt.
+                           if ( ABS( bracketofe_opalmixes(1) ) >
      $                          3.e-7 ) write(6,1783) 'GN93hz',
      $                          bracketofe_opalmixes(1)
  1783                      format(/' READCO: Error: ',a,
      $                          ' file has [O/Fe] =',f12.7/20x,
      $                          '(its [O/Fe] should be 0.0)',5x,
      $                          'THIS SHOULD NOT HAPPEN!'/)
-                           if ( abs( bracketofe_opalmixes(1) ) .gt.
+                           if ( ABS( bracketofe_opalmixes(1) ) >
      $                          3.e-7 ) stop
      $                          ' STOP -- READCO: non-0 [O/Fe]_GN93hz '
 c						! is file [O/Fe] too small?
-                        else if ( iofe .gt. 0 ) then
-                           if ( abs(bracketofe_opalmixes(iofe)) .lt.
-     $                          max(0.1*abs(ofebrack),0.001) ) then
+                        else if ( iofe > 0 ) then
+                           if ( ABS(bracketofe_opalmixes(iofe)) <
+     $                          MAX(0.1*ABS(ofebrack),0.001) ) then
                               write(6,2631) ofebrack,
      $                             bracketofe_opalmixes(iofe),
      $                             iofe, copfil(:lnblnk(copfil))
@@ -7839,19 +7849,19 @@ c						! is file [O/Fe] too small?
      $                             f10.6,' in file',i3,':'/' ',a/' ')
                               stop ' STOP -- READCO: bad [O/Fe] file. '
                            endif
-                        else if ( iofe .eq. -1 ) then
+                        else if ( iofe == -1 ) then
 c						! (this cannot happen)
-                           if ( abs( bracketofe_opalGS98(1) ) .gt.
+                           if ( ABS( bracketofe_opalGS98(1) ) >
      $                          3.e-7 ) write(6,1783)
      $                          'alternate-solar (e.g., GS98hz)',
      $                          bracketofe_opalGS98(1)
-                           if ( abs( bracketofe_opalGS98(1) ) .gt.
+                           if ( ABS( bracketofe_opalGS98(1) ) >
      $                          3.e-7 ) stop
      $                          ' STOP -- READCO: non-0 [O/Fe]_GS98hz '
 c						! is file [O/Fe] too small?
                         else 
-                           if ( abs(bracketofe_opalGS98(-iofe)) .lt.
-     $                          max(0.1*abs(ofebrack),0.001) ) then
+                           if ( ABS(bracketofe_opalGS98(-iofe)) <
+     $                          MAX(0.1*ABS(ofebrack),0.001) ) then
                               write(6,2631) ofebrack,
      $                             bracketofe_opalGS98(-iofe),
      $                             iofe, copfil(:lnblnk(copfil))
@@ -7868,27 +7878,27 @@ c					      ! read logT,{logKappa(R) @ all R}
                         read(cin,7140) flt, (cofzhi(k,il,kat),il=1,nrm)
  7140                   format(f4.2,19f7.3)
 c								   ! bad logT ?
-                        if ( abs(flogtin(k)-flt) .gt. 1.e-5 ) then
+                        if ( ABS(flogtin(k)-flt) > 1.e-5 ) then
                            write(6,1734) flt, flogtin(k),
      $                          copfil(:lnblnk(copfil)), line(1),
-     $                          cin(:max(1,lnblnk(cin))),
+     $                          cin(:MAX(1,lnblnk(cin))),
      $                          zalval(iz),xzalat(kx),0.0,0.0
  1734                      format(/' Error reading logT value =',f10.6,
      $                          ' should be',f10.6,
      $                          ' from opacity file:'/' ',a/
      $                          ' at line',i8,', which contained:'/
      $                          ' "',a,'"'/
-     $                          ' while reading mix [Z=',f6.4,
-     $                          ' X=',f6.4,' C=',f6.4,' O=',f6.4,']'/
+     $                          ' while reading mix [Z=',f7.4,
+     $                          ' X=',f7.4,' C=',f7.4,' O=',f7.4,']'/
      $                          ' *****THIS SHOULD NOT HAPPEN.'/)
                            stop ' STOP -- READCO: bad logT value. '
                         endif
 c							      ! logKappa(R) is:
                         do il = nrm, 1, -1
 c								       ! absent
-                           if ( cin(7*il-2:7*il+4) .eq.
+                           if ( cin(7*il-2:7*il+4) ==
      $                          '       ' ) then
-                              if ( k .le. max(nta(il),nta(0)) ) stop
+                              if ( k .le. MAX(nta(il),nta(0)) ) stop
      $                             ' STOP -- READCO: bad upper edge. '
 c
 c						  ! get value, for smoothing
@@ -7896,19 +7906,19 @@ c
                               cofzhi(k,il,kat) = 2.*cofzhi(k-1,il,kat)
      $                             - cofzhi(k-2,il,kat)
 c							     ! should be absent
-                           else if ( k .gt. nta(il) .and.
+                           else if ( k > nta(il) .and.
      $                             il .ge. nrb .and. il .le. nre ) then
                               stop ' STOP -- READCO: bad upper edge. '
 c									! 9.999
-                           else if ( cofzhi(k,il,kat) .gt. 9. ) then
+                           else if ( cofzhi(k,il,kat) > 9. ) then
                               if ( ( m .ne. mxzero .and. m .ne. mx03 )
-     $                             .or. il .ge. nrm_m2 .or.
+     $                             .OR. il .ge. nrm_m2 .OR.
      $                             flt .ge. 4.2 ) then
                                  stop ' STOP -- READCO: bad low edge. '
-                              else if ( m .eq. mxzero ) then
-                                 nthx0(il) = max( nthx0(il) , k + 1 )
-                              else if ( m .eq. mx03 ) then
-                                 nthx03(il) = max( nthx03(il) , k + 1 )
+                              else if ( m == mxzero ) then
+                                 nthx0(il) = MAX( nthx0(il) , k + 1 )
+                              else if ( m == mx03 ) then
+                                 nthx03(il) = MAX( nthx03(il) , k + 1 )
                               endif
 c						  ! get value, for smoothing
 c
@@ -7922,7 +7932,7 @@ c						! end of T-loop
 c						! end of Z-loop
                   enddo
 c						! interpolate in Z, if needed
-                  if ( nzalmo .gt. 0 ) then
+                  if ( nzalmo > 0 ) then
                      kdelzhi = kzalow - kzsto
                      do k = 1, ntm
                         do il = 1, nrm
@@ -7944,7 +7954,7 @@ c
                call close_chk_zip( iu, copfil, igzip )
 c
 c						! interpolate in X if necessary
-               if ( nxdo .eq. 3 ) then
+               if ( nxdo == 3 ) then
                   do k = 1,ntm
                      do il = 1,nrm
 c-test-xdel[
@@ -7971,7 +7981,7 @@ c-test-xdel;                     do k = 1,ntm
 c-test-xdel;                        coff(k,il) = cof_tst(k,il,ij)
 c-test-xdel;                     enddo
 c-test-xdel;                  enddo
-c-test-xdel;                  if ( init_smo .gt. 0 ) then
+c-test-xdel;                  if ( init_smo > 0 ) then
 c-test-xdel;                     tmax = 10.
 c-test-xdel;                     nset = ks81
 c-test-xdel;                     NSM = 1
@@ -7995,7 +8005,7 @@ c			    ! transfer opacities from Z,X-interpolation storage
                   enddo
                enddo
 c					 ! smooth hz-opacities, if init_smo > 0
-               if ( init_smo .gt. 0 ) then
+               if ( init_smo > 0 ) then
                   tmax = 10.
                   nset = ks81
                   NSM = 1
@@ -8010,23 +8020,23 @@ c				! end of hz-opacity smoothing
                endif
 c					    ! set any missing values to 1.0E+35
                do il = nre, nrb, -1
-                  if ( nta(il) .lt. ntm ) then
+                  if ( nta(il) < ntm ) then
                      do k = nta(il) + 1, ntm
                         coff(k,il) = badlogkval
                      enddo
                   endif
-                  if ( m .eq. mxzero ) then
-                     if ( il .lt. nre )
-     $                    nthx0(il) = max( nthx0(il) , nthx0(il+1) )
-                     if ( nthx0(il) .gt. ntb ) then
+                  if ( m == mxzero ) then
+                     if ( il < nre )
+     $                    nthx0(il) = MAX( nthx0(il) , nthx0(il+1) )
+                     if ( nthx0(il) > ntb ) then
                         do k = ntb, nthx0(il) - 1
                            coff(k,il) = badlogkval
                         enddo
                      endif
-                  else if ( m .eq. mx03 ) then
-                     if ( il .lt. nre )
-     $                    nthx03(il) = max( nthx03(il) , nthx03(il+1) )
-                     if ( nthx03(il) .gt. ntb ) then
+                  else if ( m == mx03 ) then
+                     if ( il < nre )
+     $                    nthx03(il) = MAX( nthx03(il) , nthx03(il+1) )
+                     if ( nthx03(il) > ntb ) then
                         do k = ntb, nthx03(il) - 1
                            coff(k,il) = badlogkval
                         enddo
@@ -8043,12 +8053,12 @@ c				! store present hz-opacity set in free space
 c				! position to store next hz-opacity set
                moat = moat - 1
 c						! get next iofe value, if any
-               if ( iofe .eq. -klozat ) then
+               if ( iofe == -klozat ) then
                   iofe = 0
-               else if ( iofe .eq. -1 ) then
+               else if ( iofe == -1 ) then
                   iofe = -klozat
-               else if ( iofe .eq. khizat ) then
-                  iofe = max( -klozat , -1 )
+               else if ( iofe == khizat ) then
+                  iofe = MAX( -klozat , -1 )
                else
                   iofe = khizat
                endif
@@ -8075,9 +8085,9 @@ c					! get filename(s) and open file(s):
             if ( igznotgx .ge. 0 ) then
                copfil(kope+1:kope+1) = 'G'
                copfil(kope+2:kope+5) = czfil(kzlow+iu-iulow)
-               if ( copfil(kope+4:kope+4) .eq. ' ' )
+               if ( copfil(kope+4:kope+4) == ' ' )
      $              copfil(kope+4:kope+4) = '0'
-               if ( copfil(kope+5:kope+5) .eq. ' ' )
+               if ( copfil(kope+5:kope+5) == ' ' )
      $              copfil(kope+5:kope+5) = '0'
                copfil(kope+6:) = cxfil(m)
                copfil(kope+6:kope+6) = '.'
@@ -8085,7 +8095,7 @@ c					! get filename(s) and open file(s):
                copfil(kope+1:kope+4) = cxfil(m)
                copfil(kope+5:) = czfil(kzlow+iu-iulow)
             endif
-            if ( igznotgx .eq. 0 ) then
+            if ( igznotgx == 0 ) then
                call inqfil(copfil,lxst)
                if ( .not. lxst )
      $              call inqfil( copfil(1:kope+9) // '.gz' , lxst )
@@ -8100,8 +8110,8 @@ c					! get filename(s) and open file(s):
                   call inqfil(copfil,lxst)
                   if ( .not. lxst ) then
                      k_e = kope + 8
-                     if ( copfil(k_e:k_e) .eq. ' ' ) k_e = k_e - 1
-                     if ( copfil(k_e:k_e) .eq. ' ' ) k_e = k_e - 1
+                     if ( copfil(k_e:k_e) == ' ' ) k_e = k_e - 1
+                     if ( copfil(k_e:k_e) == ' ' ) k_e = k_e - 1
                      call inqfil( copfil(1:k_e) // '.gz' , lxst )
                      if ( .not. lxst )
      $                    call inqfil( copfil(1:k_e) // '.Z' , lxst )
@@ -8132,9 +8142,9 @@ c				! read in Z-composition only for 1st file
          iz_get(1) = igetzxi
 c				! Z-position indices j1 to j4, for array zval
          j1 = kzlow
-         j2 = j1 + min( 1 , nmorez )
-         j3 = j1 + min( 2 , nmorez )
-         j4 = j1 + min( 3 , nmorez )
+         j2 = j1 + MIN( 1 , nmorez )
+         j3 = j1 + MIN( 2 , nmorez )
+         j4 = j1 + MIN( 3 , nmorez )
          is = 0
 c				! loop over dXo (excess oxygen) index j
          do j = 1, no - 1
@@ -8159,21 +8169,21 @@ c					  ! missing a needed C-O table, then
 c					  ! rewinding may work (if needed table
 c					  ! duplicates an earlier C-O table)
 c
-                  if ( i .gt. nofmjz(jz) ) iz_rew(jz) = 1
+                  if ( i > nofmjz(jz) ) iz_rew(jz) = 1
                   cget = xcs(i)
-                  if ( i .eq. ihi )
-     $                 cget = min( cget , 1.-xa(m)-xos(j)-zval(iz) )
+                  if ( i == ihi )
+     $                 cget = MIN( cget , 1.-xa(m)-xos(j)-zval(iz) )
                   ifound = mixfind(iu,1,iz_get(jz),iz_rew(jz),
      $                 iz_tab(jz),line(iu-iulow),
      $                 zval(iz),xa(m),cget,xos(j))
 c							      ! if table is not
 c					      ! present in this file, it cannot
 c					      ! be used in the Z-interpolation,
-                  if ( ifound .eq. 0 ) then
+                  if ( ifound == 0 ) then
 c							     ! so reduce nmorat
-                     nmorat = min( iz - kzlow - 1 , nmorat )
+                     nmorat = MIN( iz - kzlow - 1 , nmorat )
 c							     ! (cannot happen):
-                     if ( nmorat .lt. 0 ) then
+                     if ( nmorat < 0 ) then
                         write(6,1791) zval(iz),xa(m),cget,xos(j),
      $                       cop_sto(iu
      $                       -iulow)(:lnblnk(cop_sto(iu-iulow)))
@@ -8182,7 +8192,7 @@ c-debug-chk[
 c-debug-chk;                     else
 c-debug-chk;                        write(6,1878) m,z,i,j,jz,nofmjz(jz),
 c-debug-chk;     $                       iz_rew(jz),nmorat
-c-debug-chk; 1878                   format(' m=',i1,' Z=',f9.7,
+c-debug-chk; 1878                   format(' m=',i1,' Z=',f10.7,
 c-debug-chk;     $                       ' cannot find i=',i1,' j=',i1,
 c-debug-chk;     $                       ' Z(jz=',i1,'): Nofmjz=',i1,
 c-debug-chk;     $                       ' irew=',i2,' nmorat=',i2)
@@ -8194,7 +8204,7 @@ c-debug-chk]
                enddo
 c		       ! if needed table exists at enough Z-values, read it in:
 c
-               if ( nmorat .eq. nmorez .or. nmorat .eq. 2 ) then
+               if ( nmorat == nmorez .OR. nmorat == 2 ) then
 c								 ! loop over T:
                   do k = 1, ntm
 c					        ! loop over Z values: read line
@@ -8206,11 +8216,11 @@ c					   ! read logT, & logKappa(R) for all R
                         read(iu,7300) cin
                         read(cin,7140) flt,(cofzat(jz,il),il=1,nrm)
 c								   ! bad logT ?
-                        if ( abs(flogtin(k)-flt) .gt. 1.e-5 ) then
+                        if ( ABS(flogtin(k)-flt) > 1.e-5 ) then
                            write(6,1734) flt, flogtin(k), cop_sto(iu
      $                          -iulow)(:lnblnk(cop_sto(iu-iulow))),
      $                          line(iu-iulow),
-     $                          cin(:max(1,lnblnk(cin))),
+     $                          cin(:MAX(1,lnblnk(cin))),
      $                          zval(iz),xa(m),cget,xos(j)
                            stop ' STOP -- READCO: bad logT value. '
                         endif
@@ -8220,27 +8230,27 @@ c								  ! store logT
 c							      ! logKappa(R) is:
                         do il = nrm, 1, -1
 c								       ! absent
-                           if ( cin(7*il-2:7*il+4) .eq.
+                           if ( cin(7*il-2:7*il+4) ==
      $                          '       ' ) then
-                              if ( k .le. max(nta(il),nta(0)) ) stop
+                              if ( k .le. MAX(nta(il),nta(0)) ) stop
      $                             ' STOP -- READCO: bad upper edge. '
                               cofzat(1,il) = badlogkval
 c								 ! or should be
-                           else if ( k .gt. nta(il) .and.
+                           else if ( k > nta(il) .and.
      $                             il .ge. nrb .and. il .le. nre ) then
                               stop ' STOP -- READCO: bad upper edge. '
 c								     ! or 9.999
-                           else if ( cofzat(jz,il) .gt. 9. ) then
+                           else if ( cofzat(jz,il) > 9. ) then
                               if ( ( m .ne. mxzero .and. m .ne. mx03 )
-     $                             .or. il .ge. nrm_m2 .or.
+     $                             .OR. il .ge. nrm_m2 .OR.
      $                             flt .ge. 4.2 ) then
                                  stop ' STOP -- READCO: bad low edge. '
 c
 c							    ! set lower bounds:
-                              else if ( m .eq. mxzero ) then
-                                 ntax0(il) = max( ntax0(il) , k + 1 )
-                              else if ( m .eq. mx03 ) then
-                                 ntax03(il) = max( ntax03(il) , k + 1 )
+                              else if ( m == mxzero ) then
+                                 ntax0(il) = MAX( ntax0(il) , k + 1 )
+                              else if ( m == mx03 ) then
+                                 ntax03(il) = MAX( ntax03(il) , k + 1 )
                               endif
 c							       ! for smoothing:
                               cofzat(jz,il) = 2.*cofzat(jz,il+1)
@@ -8254,11 +8264,11 @@ c				  ! interpolate logKappa(R) in Z; store in COFF
                      do il = 1, nrm
 c				    ! if opacity missing, extrapolate value for
 c								    ! smoothing
-                        if ( abs(cofzat(1,il)) .gt. badlogklim ) then
+                        if ( ABS(cofzat(1,il)) > badlogklim ) then
                            coff(k,il) = 2.*coff(k-1,il) - coff(k-2,il)
 c
 c						      ! else if table-Z is O.K.
-                        else if ( nmorez .eq. 0 ) then
+                        else if ( nmorez == 0 ) then
                            coff(k,il) = cofzat(1,il)
 c							! else, Z-interpolation
                         else
@@ -8274,7 +8284,7 @@ c							! else, Z-interpolation
 c						! end of T-loop
                   enddo
 c					    ! smooth opacities, if init_smo > 0
-                  if ( init_smo .gt. 0 ) then
+                  if ( init_smo > 0 ) then
                      tmax = 10.
                      nset = ks81
                      NSM = 1
@@ -8307,7 +8317,7 @@ c........ Read remaining diagonal tables (along line Y=0 in dXc,dXo plane)
 c
          do jz = 1, nmorez + 1
             nofmjz(jz) = nofz(kzvalnof(jz),mnofz(m),1) - 1
-            if ( nofmjz(jz) .lt. no - 1 ) iz_rew(jz) = 1
+            if ( nofmjz(jz) < no - 1 ) iz_rew(jz) = 1
          enddo
 c			! loop over dXc (excess carbon) inverted-index j; note
 c			  ! that table being read in will be stored at i=(no-j)
@@ -8324,9 +8334,9 @@ c					     ! loop over Z values: find tables
                ifound = mixfind(iu,1,iz_get(jz),iz_rew(jz),
      $              iz_tab(jz),line(iu-iulow),
      $              zval(iz),xa(m),xcs(nomj),oget)
-               if ( ifound .eq. 0 ) then
-                  nmorat = min( iz - kzlow - 1 , nmorat )
-                  if ( nmorat .lt. 0 ) then
+               if ( ifound == 0 ) then
+                  nmorat = MIN( iz - kzlow - 1 , nmorat )
+                  if ( nmorat < 0 ) then
                      write(6,1791) zval(iz),xa(m),xcs(nomj),oget,
      $                    cop_sto(iu-iulow)(:lnblnk(cop_sto(iu-iulow)))
                      stop ' STOP -- READCO: error reading mix. '
@@ -8334,7 +8344,7 @@ c-debug-chk[
 c-debug-chk;                  else
 c-debug-chk;                     write(6,2878) m,z,j,mo,jz,nofmjz(jz),
 c-debug-chk;     $                    iz_rew(jz),nmorat
-c-debug-chk; 2878                format(' m=',i1,' Z=',f9.7,
+c-debug-chk; 2878                format(' m=',i1,' Z=',f10.7,
 c-debug-chk;     $                    ' cannot find i=',i1,' j=',i1,
 c-debug-chk;     $                    ' Z(jz=',i1,'): Nofmjz=',i1,
 c-debug-chk;     $                    ' irew=',i2,' nmorat=',i2)
@@ -8346,7 +8356,7 @@ c-debug-chk]
             enddo
 c		       ! if needed table exists at enough z-values, read it in:
 c
-            if ( nmorat .eq. nmorez .or. nmorat .eq. 2 ) then
+            if ( nmorat == nmorez .OR. nmorat == 2 ) then
 c								 ! loop over T:
                do k = 1, ntm
 c					        ! loop over Z values: read line
@@ -8358,34 +8368,34 @@ c					   ! read logT, & logKappa(R) for all R
                      read(iu,7300) cin
                      read(cin,7140) flt,(cofzat(jz,il),il=1,nrm)
 c								   ! bad logT ?
-                     if ( abs(flogtin(k)-flt) .gt. 1.e-5 ) then
+                     if ( ABS(flogtin(k)-flt) > 1.e-5 ) then
                         write(6,1734) flt, flogtin(k), cop_sto(iu
      $                       -iulow)(:lnblnk(cop_sto(iu-iulow))),
-     $                       line(iu-iulow), cin(:max(1,lnblnk(cin))),
+     $                       line(iu-iulow), cin(:MAX(1,lnblnk(cin))),
      $                       zval(iz),xa(m),xcs(nomj),oget
                         stop ' STOP -- READCO: bad logT value. '
                      endif
 c							      ! logKappa(R) is:
                      do il = nrm, 1, -1
 c								       ! absent
-                        if ( cin(7*il-2:7*il+4) .eq. '       ' ) then
-                           if ( k .le. max(nta(il),nta(0)) ) stop
+                        if ( cin(7*il-2:7*il+4) == '       ' ) then
+                           if ( k .le. MAX(nta(il),nta(0)) ) stop
      $                          ' STOP -- READCO: bad upper edge. '
                            cofzat(1,il) = badlogkval
 c								 ! or should be
-                        else if ( k .gt. nta(il) .and.
+                        else if ( k > nta(il) .and.
      $                          il .ge. nrb .and. il .le. nre ) then
                            stop ' STOP -- READCO: bad upper edge. '
 c								     ! or 9.999
-                        else if ( cofzat(jz,il) .gt. 9. ) then
+                        else if ( cofzat(jz,il) > 9. ) then
                            if ( ( m .ne. mxzero .and. m .ne. mx03 )
-     $                          .or. il .ge. nrm_m2 .or.
+     $                          .OR. il .ge. nrm_m2 .OR.
      $                          flt .ge. 4.2 ) then
                               stop ' STOP -- READCO: bad low edge. '
-                           else if ( m .eq. mxzero ) then
-                              ntax0(il) = max( ntax0(il) , k + 1 )
-                           else if ( m .eq. mx03 ) then
-                              ntax03(il) = max( ntax03(il) , k + 1 )
+                           else if ( m == mxzero ) then
+                              ntax0(il) = MAX( ntax0(il) , k + 1 )
+                           else if ( m == mx03 ) then
+                              ntax03(il) = MAX( ntax03(il) , k + 1 )
                            endif
 c								! for smoothing
                            cofzat(jz,il) = 2.*cofzat(jz,il+1)
@@ -8397,9 +8407,9 @@ c					! end of Z-loop
                   enddo
 c				   ! interpolate in Z; store in COFF
                   do il = 1, nrm
-                     if ( abs(cofzat(1,il)) .gt. badlogklim ) then
+                     if ( ABS(cofzat(1,il)) > badlogklim ) then
                         coff(k,il) = 2.*coff(k-1,il) - coff(k-2,il)
-                     else if ( nmorez .eq. 0 ) then
+                     else if ( nmorez == 0 ) then
                         coff(k,il) = cofzat(1,il)
                      else
                         coff(k,il) = qzinter(is,is1,zat,nmorat,
@@ -8414,7 +8424,7 @@ c				   ! interpolate in Z; store in COFF
 c						! end of T-loop
                enddo
 c					    ! smooth opacities, if init_smo > 0
-               if ( init_smo .gt. 0 ) then
+               if ( init_smo > 0 ) then
                   tmax = 10.
                   nset = ks81
                   NSM = 1
@@ -8447,36 +8457,36 @@ c					! close 'Gz???.x??' files
          enddo
 c				    ! for X=0 or .03, ensure low-R,low-T corner
 c				    !  has no steps in the wrong direction
-         if ( m .eq. mxzero ) then
+         if ( m == mxzero ) then
             do il = nre_m1, nrb, -1
-               ntax0(il) = max( ntax0(il) , ntax0(il+1) )
+               ntax0(il) = MAX( ntax0(il) , ntax0(il+1) )
             enddo
-         else if ( m .eq. mx03 ) then
+         else if ( m == mx03 ) then
             do il = nre_m1,nrb,-1
-               ntax03(il) = max( ntax03(il) , ntax03(il+1) )
+               ntax03(il) = MAX( ntax03(il) , ntax03(il+1) )
             enddo
          endif
 c			! Set any missing opacity values (high-T,R or low-T,R,X
 c			!  corners) to badlogkval = 1.0E+35
          do il = 1, nr
             jl = il + nrdel
-            if ( m .eq. mxzero ) then
+            if ( m == mxzero ) then
                khi = ntax0(jl) - ntb
-            else if ( m .eq. mx03 ) then
+            else if ( m == mx03 ) then
                khi = ntax03(jl) - ntb
             else
                khi = 0
             endif
-            if ( khi .gt. 0 ) then
+            if ( khi > 0 ) then
                do j = 1,mo
-                  if ( j .lt. no ) then
+                  if ( j < no ) then
                      ihi = n(m,j,kz)
-                  else if ( j .eq. mo ) then
+                  else if ( j == mo ) then
                      ihi = no - 1
                   else
                      ihi = 0
                   endif
-                  if ( ihi .gt. 0 ) then
+                  if ( ihi > 0 ) then
                      do k = 1, khi
                         do i = 1, ihi
                            co(m,i,j,k,il,kz) = badlogkval
@@ -8485,16 +8495,16 @@ c			!  corners) to badlogkval = 1.0E+35
                   endif
                enddo
             endif
-            if ( nta(jl) .lt. ntm ) then
+            if ( nta(jl) < ntm ) then
                do j = 1, mo
-                  if ( j .lt. no ) then
+                  if ( j < no ) then
                      ihi = n(m,j,kz)
-                  else if ( j .eq. mo ) then
+                  else if ( j == mo ) then
                      ihi = no - 1
                   else
                      ihi = 0
                   endif
-                  if ( ihi .gt. 0 ) then
+                  if ( ihi > 0 ) then
                      do k = nta(jl) + 1 - ntdel, nt
                         do i = 1, ihi
                            co(m,i,j,k,il,kz) = badlogkval
@@ -8514,12 +8524,12 @@ c							  ! first, main tables:
             ihi = n(m,j,kz)
             do i = 1, ihi
 c					      ! if flag indicates missing table
-               if ( ico_got(i,j) .eq. 0 ) then
+               if ( ico_got(i,j) == 0 ) then
                   oat = xos(j)
-                  cat = min( xcs(i) , 1. - xa(m) - zat - oat )
+                  cat = MIN( xcs(i) , 1. - xa(m) - zat - oat )
 c-debug-chk[
 c-debug-chk;                  write(6,1973) zat,m,i,j,ihi,cat,oat
-c-debug-chk; 1973             format(' '/'     Z=',f9.7,' --- interpolate',
+c-debug-chk; 1973             format(' '/'     Z=',f10.7,' --- interpolate',
 c-debug-chk;     $                 ' mix (m=',i1,',i=',i1,',j=',i1,
 c-debug-chk;     $                 ') with ihi=',i1,' C=',f10.7,' O=',f10.7)
 c-debug-chk;                  difmax = -9.999999
@@ -8540,25 +8550,25 @@ c						       ! at ihi-1 = n(m,j,kz)-1
 c
                      if ( ico_got(ihi,j) .le. 0 .and. i .ne. ihi )
      $                    write(6,1873) zat,m,ihi,j,ihi,
-     $                    min(xcs(ihi),1.-xa(m)-zat-oat),oat
-                     if ( i .ne. ihi-1 .or. i .lt. 3 )
+     $                    MIN(xcs(ihi),1.-xa(m)-zat-oat),oat
+                     if ( i .ne. ihi-1 .OR. i < 3 )
      $                    write(6,1873) zat,m,i,j,ihi,
-     $                    min(xcs(i),1.-xa(m)-zat-oat),oat
- 1873                format(' '/'     Z=',f9.7,' ??? CANNOT miss',
+     $                    MIN(xcs(i),1.-xa(m)-zat-oat),oat
+ 1873                format(' '/'     Z=',f10.7,' ??? CANNOT miss',
      $                    ' mix (m=',i1,',i=',i1,',j=',i1,
      $                    ') with ihi=',i1,' C=',f10.7,' O=',f10.7)
-                     if ( ico_got(ihi,j) .le. 0 .or.
-     $                    i .lt. 3 .or. i .ne. ihi - 1 ) stop
+                     if ( ico_got(ihi,j) .le. 0 .OR.
+     $                    i < 3 .OR. i .ne. ihi - 1 ) stop
      $                    ' STOP -- READCO: missing mix: CANNOT be. '
 c
                      im2 = i - 2
                      im1 = i - 1
-                     cxhi = log10( zzz(kz) + min( xcs(ihi) ,
+                     cxhi = log10( zzz(kz) + MIN( xcs(ihi) ,
      $                    1. - xa(m) - zat - oat ) )
 c-debug-chk[
 c-debug-chk;                     write(6,1974) i,j,'C',xcs(i),'C',cx(i),
 c-debug-chk;     $                    im2,j,im1,j,ihi,j,'C',xcs(im2),xcs(im1),
-c-debug-chk;     $                    min(xcs(ihi),1.-xa(m)-zat-oat),
+c-debug-chk;     $                    MIN(xcs(ihi),1.-xa(m)-zat-oat),
 c-debug-chk;     $                    'C',cx(im2),cx(im1),cxhi
 c-debug-chk; 1974                format('      --- interpolate (',i1,',',i1,
 c-debug-chk;     $                    ') in ',a1,'=',f10.6,' log',a1,'=',f10.6,
@@ -8570,7 +8580,7 @@ c				! interpolate in C to get missing table:
                      is = 0
                      do il = 1, nr
                         do k = 1, nt
-                           if ( abs( co(m,im1,j,k,il,kz) ) .lt.
+                           if ( ABS( co(m,im1,j,k,il,kz) ) <
      $                          badlogklim ) then
                               co(m,i,j,k,il,kz) = quad(is,1,cx(i),
      $                             co(m,im2,j,k,il,kz),
@@ -8579,18 +8589,18 @@ c				! interpolate in C to get missing table:
      $                             cx(im2),cx(im1),cxhi)
                               is = 1
 c-debug-chk[
-c-debug-chk;                              if ( t6list(k) .gt. 0.09999 ) then
+c-debug-chk;                              if ( t6list(k) > 0.09999 ) then
 c-debug-chk;                                 dif = co(m,i,j,k,il,kz)
 c-debug-chk;     $                                -co(m,ihi,j,k,il,kz)
 c-debug-chk;                                 difl = co(m,i,j,k,il,kz)
 c-debug-chk;     $                                -co(m,im1,j,k,il,kz)
-c-debug-chk;                                 difmax = max(dif,difmax)
-c-debug-chk;                                 difmin = min(dif,difmin)
+c-debug-chk;                                 difmax = MAX(dif,difmax)
+c-debug-chk;                                 difmin = MIN(dif,difmin)
 c-debug-chk;                                 sumdif = sumdif+dif
 c-debug-chk;                                 sumsq = sumsq+dif**2
 c-debug-chk;                                 numsq = numsq+1
-c-debug-chk;                                 diflmax = max(difl,diflmax)
-c-debug-chk;                                 diflmin = min(difl,diflmin)
+c-debug-chk;                                 diflmax = MAX(difl,diflmax)
+c-debug-chk;                                 diflmin = MIN(difl,diflmin)
 c-debug-chk;                                 sumldif = sumldif+difl
 c-debug-chk;                                 sumlsq = sumlsq+difl**2
 c-debug-chk;                              endif
@@ -8601,7 +8611,7 @@ c-debug-chk]
                      ico_got(i,j) = -1
 c					! else, if C < O in missing table, but
 c					       ! it is not on the diagonal Y=0:
-                  else if ( i .lt. ihi ) then
+                  else if ( i < ihi ) then
 c					      ! then the only O-value that can
 c					      ! be missing is next-to-highest
 c						      ! one, at j = n(m,i,kz)-1
@@ -8609,16 +8619,15 @@ c
                      if ( ico_got(i,mo) .le. 0 )
      $                    write(6,2873) z,m,i,mo,n(m,1,kz)-1,
      $                    xcs(i),1.-xa(m)-zat-xcs(i)
-                     if ( j .lt. 3 .or. j .ne. n(m,i,kz)-1 )
+                     if ( j < 3 .OR. j .ne. n(m,i,kz)-1 )
      $                    write(6,2873) z,m,i,j,ihi,
-     $                    min(xcs(i),1.-xa(m)-zat-oat),oat,
+     $                    MIN(xcs(i),1.-xa(m)-zat-oat),oat,
      $                    ' n(m,i)=',n(m,i,kz)
- 2873                format(' '/'     Z=',f9.7,' ??? CANNOT miss',
+ 2873                format(' '/'     Z=',f10.7,' ??? CANNOT miss',
      $                    ' mix (m=',i1,',i=',i1,',j=',i1,
-     $                    ') with ihi=',i1,' C=',f10.7,' O=',f10.7,
-     $                    a8,i1)
-                     if ( ico_got(i,mo) .le. 0 .or.
-     $                    j .lt. 3 .or. j .ne. n(m,i,kz)-1 ) stop
+     $                    ') with ihi=',i1,' C=',f10.7,' O=',f10.7,a8,i1)
+                     if ( ico_got(i,mo) .le. 0 .OR.
+     $                    j < 3 .OR. j .ne. n(m,i,kz)-1 ) stop
      $                    ' STOP -- READCO: missing mix: CANNOT be. '
 c
                      jm2 = j - 2
@@ -8640,7 +8649,7 @@ c				! interpolate in O to get missing table:
                      is = 0
                      do il = 1, nr
                         do k = 1, nt
-                           if ( abs( co(m,i,jm1,k,il,kz) ) .lt.
+                           if ( ABS( co(m,i,jm1,k,il,kz) ) <
      $                          badlogklim ) then
                               co(m,i,j,k,il,kz) = quad(is,1,ox(j),
      $                             co(m,i,jm2,k,il,kz),
@@ -8649,18 +8658,18 @@ c				! interpolate in O to get missing table:
      $                             ox(jm2),ox(jm1),oxhi)
                               is = 1
 c-debug-chk[
-c-debug-chk;                              if ( t6list(k) .gt. 0.09999 ) then
+c-debug-chk;                              if ( t6list(k) > 0.09999 ) then
 c-debug-chk;                                 dif = co(m,i,j,k,il,kz)
 c-debug-chk;     $                                -co(m,i,mo,k,il,kz)
 c-debug-chk;                                 difl = co(m,i,j,k,il,kz)
 c-debug-chk;     $                                -co(m,i,jm1,k,il,kz)
-c-debug-chk;                                 difmax = max(dif,difmax)
-c-debug-chk;                                 difmin = min(dif,difmin)
+c-debug-chk;                                 difmax = MAX(dif,difmax)
+c-debug-chk;                                 difmin = MIN(dif,difmin)
 c-debug-chk;                                 sumdif = sumdif+dif
 c-debug-chk;                                 sumsq = sumsq+dif**2
 c-debug-chk;                                 numsq = numsq+1
-c-debug-chk;                                 diflmax = max(difl,diflmax)
-c-debug-chk;                                 diflmin = min(difl,diflmin)
+c-debug-chk;                                 diflmax = MAX(difl,diflmax)
+c-debug-chk;                                 diflmin = MIN(difl,diflmin)
 c-debug-chk;                                 sumldif = sumldif+difl
 c-debug-chk;                                 sumlsq = sumlsq+difl**2
 c-debug-chk;                              endif
@@ -8675,12 +8684,12 @@ c					!  this never actually happens):
                   else
                      nmorat = 3
                      j3 = 3
-                     do while( j3 .lt. no - 1 .and. cat .gt. xcs(j3)
-     $                    .and. ico_got(j3+1,mo) .gt. 0 )
+                     do while( j3 < no - 1 .and. cat > xcs(j3)
+     $                    .and. ico_got(j3+1,mo) > 0 )
                         j3 = j3 + 1
                      enddo
                      j4 = j3 + 1
-                     if ( j4 .ge. no .or. ico_got(j4,mo) .le. 0 ) then
+                     if ( j4 .ge. no .OR. ico_got(j4,mo) .le. 0 ) then
                         j4 = j3
                         nmorat = 2
                      endif
@@ -8693,11 +8702,11 @@ c
      $                    zat,m,j2,mo,no-1,xcs(j2),1.-xa(m)-zat-xcs(j2)
                      if ( ico_got(j3,mo) .le. 0 ) write(6,4873)
      $                    zat,m,j3,mo,no-1,xcs(j3),1.-xa(m)-zat-xcs(j3)
- 4873                format(' '/'     Z=',f9.7,' ??? CANNOT miss',
+ 4873                format(' '/'     Z=',f10.7,' ??? CANNOT miss',
      $                    ' mix (m=',i1,',i=',i1,',j=',i1,
      $                    ') with ihi=',i1,' C=',f10.7,' O=',f10.7)
-                     if ( ico_got(j1,mo) .le. 0 .or.
-     $                    ico_got(j2,mo) .le. 0 .or.
+                     if ( ico_got(j1,mo) .le. 0 .OR.
+     $                    ico_got(j2,mo) .le. 0 .OR.
      $                    ico_got(j3,mo) .le. 0 ) stop
      $                    ' STOP -- READCO: missing mix: CANNOT be. '
 c
@@ -8715,7 +8724,7 @@ c-debug-chk]
                      is = 0
                      do il = 1, nr
                         do k = 1, nt
-                           if ( abs( co(m,j1,mo,k,il,kz) ) .lt.
+                           if ( ABS( co(m,j1,mo,k,il,kz) ) <
      $                          badlogklim ) then
                               co(m,i,j,k,il,kz) = qzinter(is,1,cat,
      $                             nmorat,co(m,j1,mo,k,il,kz),
@@ -8725,18 +8734,18 @@ c-debug-chk]
      $                             xcs(j2),xcs(j3),xcs(j4),zzz(kz))
                               is = 1
 c-debug-chk[
-c-debug-chk;                              if ( t6list(k) .gt. 0.09999 ) then
+c-debug-chk;                              if ( t6list(k) > 0.09999 ) then
 c-debug-chk;                                 dif = co(m,i,j,k,il,kz)
 c-debug-chk;     $                                -co(m,j3,mo,k,il,kz)
 c-debug-chk;                                 difl = co(m,i,j,k,il,kz)
 c-debug-chk;     $                                -co(m,j2,mo,k,il,kz)
-c-debug-chk;                                 difmax = max(dif,difmax)
-c-debug-chk;                                 difmin = min(dif,difmin)
+c-debug-chk;                                 difmax = MAX(dif,difmax)
+c-debug-chk;                                 difmin = MIN(dif,difmin)
 c-debug-chk;                                 sumdif = sumdif+dif
 c-debug-chk;                                 sumsq = sumsq+dif**2
 c-debug-chk;                                 numsq = numsq+1
-c-debug-chk;                                 diflmax = max(difl,diflmax)
-c-debug-chk;                                 diflmin = min(difl,diflmin)
+c-debug-chk;                                 diflmax = MAX(difl,diflmax)
+c-debug-chk;                                 diflmin = MIN(difl,diflmin)
 c-debug-chk;                                 sumldif = sumldif+difl
 c-debug-chk;                                 sumlsq = sumlsq+difl**2
 c-debug-chk;                              endif
@@ -8747,10 +8756,10 @@ c-debug-chk]
                      ico_got(i,j) = -1
 c-debug-chk[
 c-debug-chk;                     write(6,8712) numsq,diflmin,diflmax,
-c-debug-chk;     $                    sumldif/max(numsq,1),
-c-debug-chk;     $                    sqrt(sumlsq/max(numsq,1)),
-c-debug-chk;     $                    numsq,difmin,difmax,sumdif/max(numsq,1),
-c-debug-chk;     $                    sqrt(sumsq/max(numsq,1))
+c-debug-chk;     $                    sumldif/MAX(numsq,1),
+c-debug-chk;     $                    sqrt(sumlsq/MAX(numsq,1)),
+c-debug-chk;     $                    numsq,difmin,difmax,sumdif/MAX(numsq,1),
+c-debug-chk;     $                    sqrt(sumsq/MAX(numsq,1))
 c-debug-chk; 8712                format(' '/'      ',
 c-debug-chk;     $                    ' --- result: relative DIFmid:',
 c-debug-chk;     $                    i5,'[',f10.6,' ,',f10.6,' ]ave',f10.6,
@@ -8764,22 +8773,22 @@ c-debug-chk]
 c			   ! next, remaining diagonal tables (at Y=0):
 c			   !  (only the table at no-1 can possibly be missing)
          do j = 1, no - 2
-            if ( ico_got(j,mo) .eq. 0 ) write(6,3873)
+            if ( ico_got(j,mo) == 0 ) write(6,3873)
      $           zat,m,j,mo,no-1,xcs(j),1.-xa(m)-zat-xcs(j)
- 3873       format(' '/'     Z=',f9.7,' ??? CANNOT miss',
+ 3873       format(' '/'     Z=',f10.7,' ??? CANNOT miss',
      $           ' mix (m=',i1,',i=',i1,',j=',i1,
      $           ') with ihi=',i1,' C=',f10.7,' O=',f10.7)
-            if ( ico_got(j,mo) .eq. 0 ) stop
+            if ( ico_got(j,mo) == 0 ) stop
      $           ' STOP -- READCO: missing mix: CANNOT be. '
          enddo
 c
          j = no - 1
 c						! if table at no-1 is missing:
-         if ( ico_got(j,mo) .eq. 0 ) then
+         if ( ico_got(j,mo) == 0 ) then
             oat = 1. - xa(m) - zat - xcs(j)
 c-debug-chk[
 c-debug-chk;            write(6,4973) m,zat,j,mo,no-1,xcs(j),oat
-c-debug-chk; 4973       format(' '/'     Z=',f9.7,' --- interpolate',
+c-debug-chk; 4973       format(' '/'     Z=',f10.7,' --- interpolate',
 c-debug-chk;     $           ' mix (m=',i1,',i=',i1,',j=',i1,
 c-debug-chk;     $           ') with ihi=',i1,' C=',f10.7,' O=',f10.7)
 c-debug-chk;            difmax = -9.999999
@@ -8795,21 +8804,21 @@ c-debug-chk]
 c			! may use quadratic, or two overlapping quadratics
             nmorat = 3
             j3 = 3
-            do while( j3 .lt. no - 1 .and. oat .gt. xos(j3) .and.
-     $           ico_got(max(n(m,j3+1,kz),1),j3+1) .gt. 0 )
+            do while( j3 < no - 1 .and. oat > xos(j3) .and.
+     $           ico_got(MAX(n(m,j3+1,kz),1),j3+1) > 0 )
                j3 = j3+1
             enddo
             j4 = j3+1
-            if ( j4 .ge. no .or.
-     $           ico_got(j4,max(n(m,j4,kz),1)) .le. 0 ) then
+            if ( j4 .ge. no .OR.
+     $           ico_got(j4,MAX(n(m,j4,kz),1)) .le. 0 ) then
                j4 = j3
                nmorat = 2
             endif
             j2 = j3-1
             j1 = j2-1
 c-noneed[                                                     ! (checked above)
-c-noneed;            if ( ico_got(n(m,j1,kz),j1) .le. 0 .or.
-c-noneed;     $           ico_got(n(m,j2,kz),j2) .le. 0 .or.
+c-noneed;            if ( ico_got(n(m,j1,kz),j1) .le. 0 .OR.
+c-noneed;     $           ico_got(n(m,j2,kz),j2) .le. 0 .OR.
 c-noneed;     $           ico_got(n(m,j3,kz),j3) .le. 0 ) stop
 c-noneed;     $           ' STOP -- READCO: mix CANNOT be missing. '
 c-noneed]
@@ -8829,7 +8838,7 @@ c			! interpolate along the diagonal (using O-abundance)
             is = 0
             do il = 1, nr
                do k = 1, nt
-                  if ( abs( co(m,n(m,j1,kz),j1,k,il,kz) ) .lt.
+                  if ( ABS( co(m,n(m,j1,kz),j1,k,il,kz) ) <
      $                 badlogklim ) then
                      co(m,j,mo,k,il,kz) = qzinter(is,1,oat,nmorat,
      $                    co(m,n(m,j1,kz),j1,k,il,kz),
@@ -8839,18 +8848,18 @@ c			! interpolate along the diagonal (using O-abundance)
      $                    xos(j1),xos(j2),xos(j3),xos(j4),zzz(kz))
                      is = 1
 c-debug-chk[
-c-debug-chk;                     if ( t6list(k) .gt. 0.09999 ) then
+c-debug-chk;                     if ( t6list(k) > 0.09999 ) then
 c-debug-chk;                        dif = co(m,j,mo,k,il,kz)
 c-debug-chk;     $                       - co(m,n(m,j3,kz),j3,k,il,kz)
 c-debug-chk;                        difl = co(m,j,mo,k,il,kz)
 c-debug-chk;     $                       - co(m,n(m,j2,kz),j2,k,il,kz)
-c-debug-chk;                        difmax = max(dif,difmax)
-c-debug-chk;                        difmin = min(dif,difmin)
+c-debug-chk;                        difmax = MAX(dif,difmax)
+c-debug-chk;                        difmin = MIN(dif,difmin)
 c-debug-chk;                        sumdif = sumdif+dif
 c-debug-chk;                        sumsq = sumsq+dif**2
 c-debug-chk;                        numsq = numsq+1
-c-debug-chk;                        diflmax = max(difl,diflmax)
-c-debug-chk;                        diflmin = min(difl,diflmin)
+c-debug-chk;                        diflmax = MAX(difl,diflmax)
+c-debug-chk;                        diflmin = MIN(difl,diflmin)
 c-debug-chk;                        sumldif = sumldif+difl
 c-debug-chk;                        sumlsq = sumlsq+difl**2
 c-debug-chk;                     endif
@@ -8861,10 +8870,10 @@ c-debug-chk]
             ico_got(j,mo) = -1
 c-debug-chk[
 c-debug-chk;            write(6,7712) numsq,diflmin,diflmax,
-c-debug-chk;     $           sumldif/max(numsq,1),
-c-debug-chk;     $           sqrt(sumlsq/max(numsq,1)),
-c-debug-chk;     $           numsq,difmin,difmax,sumdif/max(numsq,1),
-c-debug-chk;     $           sqrt(sumsq/max(numsq,1))
+c-debug-chk;     $           sumldif/MAX(numsq,1),
+c-debug-chk;     $           sqrt(sumlsq/MAX(numsq,1)),
+c-debug-chk;     $           numsq,difmin,difmax,sumdif/MAX(numsq,1),
+c-debug-chk;     $           sqrt(sumsq/MAX(numsq,1))
 c-debug-chk; 7712       format(' '/'      ',
 c-debug-chk;     $           ' --- result: relative DIFmid:',
 c-debug-chk;     $           i5,'[',f10.6,' ,',f10.6,' ]ave',f10.6,
@@ -8882,7 +8891,7 @@ c   interpolated as "*" , the mixes interpolated       0.00-- @ *   @     @
 c   among as "@" , and unused mixes as "+".                   | |   |     |
 c                                                            0. |  .03   .10
 c                                                              .01           O
-         if ( low_CO_smo .gt. 0 ) then
+         if ( low_CO_smo > 0 ) then
             a1 = oxf(m,1,kz)
             a2 = oxf(m,2,kz)
             a3 = oxf(m,3,kz)
@@ -8907,30 +8916,30 @@ c				! loop over the three mixes next to C=O=0.0 mix
                do il = 1, nr
                   do k = 1, nt
                      v1 = co(m,1,1,k,il,kz)
-                     if ( abs(v1) .lt. badlogklim ) then
+                     if ( ABS(v1) < badlogklim ) then
                         v2 = co(m,1+ifac,1+jfac,k,il,kz)
                         v3 = co(m,1+2*ifac,1+2*jfac,k,il,kz)
                         v4 = co(m,1+3*ifac,1+3*jfac,k,il,kz)
-                        cofmin = min( .8*v1+.2*v3 , .2*v1+.8*v3 )
-                        cofmax = max( .8*v1+.2*v3 , .2*v1+.8*v3 )
-                        if ( (v4-v3)*(v3-v1) .gt. 0. .and. 
-     $                       ( v2 .lt. cofmin .or.
-     $                       v2 .gt. cofmax ) ) then
-                           co(m,1+ifac,1+jfac,k,il,kz) = max( min(
+                        cofmin = MIN( .8*v1+.2*v3 , .2*v1+.8*v3 )
+                        cofmax = MAX( .8*v1+.2*v3 , .2*v1+.8*v3 )
+                        if ( (v4-v3)*(v3-v1) > 0. .and. 
+     $                       ( v2 < cofmin .OR.
+     $                       v2 > cofmax ) ) then
+                           co(m,1+ifac,1+jfac,k,il,kz) = MAX( MIN(
      $                          quad(is,1,a2,v1,v3,v4,a1,a3,a4) ,
      $                          cofmax ) , cofmin )
                            is = 1
 c-debug-chk[
 c-debug-chk;                           dif = co(m,1+ifac,1+jfac,k,il,kz)-v2
-c-debug-chk;                           if ( t6list(k) .gt. 0.09999 ) then
-c-debug-chk;                              difmax = max(dif,difmax)
-c-debug-chk;                              difmin = min(dif,difmin)
+c-debug-chk;                           if ( t6list(k) > 0.09999 ) then
+c-debug-chk;                              difmax = MAX(dif,difmax)
+c-debug-chk;                              difmin = MIN(dif,difmin)
 c-debug-chk;                              sumdif = sumdif+dif
 c-debug-chk;                              sumsq = sumsq+dif**2
 c-debug-chk;                              numsq = numsq+1
 c-debug-chk;                           else
-c-debug-chk;                              diflmax = max(dif,diflmax)
-c-debug-chk;                              diflmin = min(dif,diflmin)
+c-debug-chk;                              diflmax = MAX(dif,diflmax)
+c-debug-chk;                              diflmin = MIN(dif,diflmin)
 c-debug-chk;                              sumldif = sumldif+dif
 c-debug-chk;                              sumlsq = sumlsq+dif**2
 c-debug-chk;                              numlsq = numlsq+1
@@ -8943,11 +8952,11 @@ c-debug-chk]
             enddo
 c-debug-chk[
 c-debug-chk;            write(6,8733) m,zat,numlsq,diflmin,diflmax,
-c-debug-chk;     $           sumldif/max(numlsq,1),
-c-debug-chk;     $           sqrt(sumlsq/max(numlsq,1)),
-c-debug-chk;     $           numsq,difmin,difmax,sumdif/max(numsq,1),
-c-debug-chk;     $           sqrt(sumsq/max(numsq,1))
-c-debug-chk; 8733       format(' '/' m=',i1,' Z=',f9.7,
+c-debug-chk;     $           sumldif/MAX(numlsq,1),
+c-debug-chk;     $           sqrt(sumlsq/MAX(numlsq,1)),
+c-debug-chk;     $           numsq,difmin,difmax,sumdif/MAX(numsq,1),
+c-debug-chk;     $           sqrt(sumsq/MAX(numsq,1))
+c-debug-chk; 8733       format(' '/' m=',i1,' Z=',f10.7,
 c-debug-chk;     $           ' fix C,O=[1,2] T6<0.1:',
 c-debug-chk;     $           i5,'[',f10.6,' ,',f10.6,' ]ave',f10.6,
 c-debug-chk;     $           ' rms',f10.6,' T6>0.1:',i5,'[',f10.6,' ,',
@@ -8957,9 +8966,9 @@ c-debug-chk]
 c
 c  Peform any specified opacity shifts, from GN93hz and [O/Fe]
 c
-         if ( m .eq. 1 ) then
+         if ( m == 1 ) then
 c				     ! if needed, get Z-composition of GS98 mix
-            if ( klozat .eq. 1 ) then
+            if ( klozat == 1 ) then
 c
                do i = 1, nel_zmix
                   xiz_mix(i) = xiz_opalGS98(i,1)
@@ -8967,7 +8976,7 @@ c
                   bracketife_mix(i) = 0.
                enddo
 c							       ! or of GN93 mix
-            else if ( khizat .eq. 1 .and. klozat .eq. 0 ) then
+            else if ( khizat == 1 .and. klozat == 0 ) then
 c
                do i = 1, nel_zmix
                   xiz_mix(i) = xiz_opalmixes(i,1)
@@ -8979,8 +8988,8 @@ c
 c
          endif
 c						    ! If m=2 shift & no [O/Fe]:
-         if ( khizat .eq. 1 .and. m .eq. mx03 .and.
-     $        klozat .eq. 0 ) then
+         if ( khizat == 1 .and. m == mx03 .and.
+     $        klozat == 0 ) then
 c						! set all shifts to zero
 c			  ! (m=2 GN93hz shift may  be interpolated later)
             do il = 1, nr
@@ -8990,10 +8999,10 @@ c			  ! (m=2 GN93hz shift may  be interpolated later)
                enddo
             enddo
 c					       ! Else, if there are any shifts:
-         else if ( khizat .gt. 0 ) then
+         else if ( khizat > 0 ) then
 c					       ! If there is no [O/Fe] shift:
 c
-            if ( khizat .eq. 1 .and. klozat .eq. 0 ) then
+            if ( khizat == 1 .and. klozat == 0 ) then
 c							  ! then set it to zero
                do il = 1, nr
                   do k = 1, nt
@@ -9004,7 +9013,7 @@ c			! Else, if there is the [O/Fe] or the GS98-GN93 shift:
             else
 c		! get interpolation factors fofe (for GN93hz) and omfofe=1-fofe
 c					 ! & Z-composition of interpolated mix
-               if ( klozat .gt. 1 ) then
+               if ( klozat > 1 ) then
 c							  ! GS98 + [O/Fe] shift
                   xofe = 10.**ofebrack * xofe_opalGS98(1)
                   fofe = ( fninz_opalGS98(kel_o,klozat)
@@ -9017,7 +9026,7 @@ c							  ! GS98 + [O/Fe] shift
                   mofe = mo_m2
                   moat = mo_m1
 c					! get Z-composition of interpolated mix
-                  if ( m .eq. 1 ) then
+                  if ( m == 1 ) then
                      sum_niai = 0.0
                      do i = 1, nel_zmix
                         fninz_mix(i) = fofe * fninz_opalGS98(i,1)
@@ -9028,13 +9037,13 @@ c					! get Z-composition of interpolated mix
                      do i = 1, nel_zmix
                         xiz_mix(i) = xiz_mix(i) / sum_niai
                         bracketife_mix(i) = log10(
-     $                       ( max( fninz_mix(i) , 1.e-36 )
+     $                       ( MAX( fninz_mix(i) , 1.e-36 )
      $                       * fninz_opalGS98(kel_fe,1) )
-     $                       / ( max( fninz_mix(kel_fe) , 1.e-36 )
+     $                       / ( MAX( fninz_mix(kel_fe) , 1.e-36 )
      $                       * fninz_opalGS98(i,1) ) )
                      enddo
 c-debug-chk[
-c-debug-chk;                     if ( iout_debug_chk_ofe .gt. 0 ) then
+c-debug-chk;                     if ( iout_debug_chk_ofe > 0 ) then
 c-debug-chk;                        write(6,2377) ofebrack,-klozat,
 c-debug-chk;     $                       bracketofe_opalGS98(klozat),
 c-debug-chk;     $                       fofe,klozat,omfofe,klozat,klozat
@@ -9064,7 +9073,7 @@ c-debug-chk;                     endif
 c-debug-chk]
                   endif
 c
-               else if ( khizat .gt. 1 ) then
+               else if ( khizat > 1 ) then
 c							   ! [O/Fe] shift only
                   xofe = 10.**ofebrack * xofe_opalmixes(1)
                   fofe = ( fninz_opalmixes(kel_o,khizat)
@@ -9077,7 +9086,7 @@ c							   ! [O/Fe] shift only
                   mofe = mo_m1
                   moat = mo
 c					! get Z-composition of interpolated mix
-                  if ( m .eq. 1 ) then
+                  if ( m == 1 ) then
                      sum_niai = 0.0
                      do i = 1, nel_zmix
                         fninz_mix(i) = fofe * fninz_opalmixes(i,1)
@@ -9088,13 +9097,13 @@ c					! get Z-composition of interpolated mix
                      do i = 1, nel_zmix
                         xiz_mix(i) = xiz_mix(i) / sum_niai
                         bracketife_mix(i) = log10(
-     $                       ( max( fninz_mix(i) , 1.e-36 )
+     $                       ( MAX( fninz_mix(i) , 1.e-36 )
      $                       * fninz_opalmixes(kel_fe,1) )
-     $                       / ( max( fninz_mix(kel_fe) , 1.e-36 )
+     $                       / ( MAX( fninz_mix(kel_fe) , 1.e-36 )
      $                       * fninz_opalmixes(i,1) ) )
                      enddo
 c-debug-chk[
-c-debug-chk;                     if ( iout_debug_chk_ofe .gt. 0 ) then
+c-debug-chk;                     if ( iout_debug_chk_ofe > 0 ) then
 c-debug-chk;                        write(6,2377) ofebrack,khizat,
 c-debug-chk;     $                       bracketofe_opalmixes(khizat),
 c-debug-chk;     $                       fofe,khizat,omfofe,khizat,khizat
@@ -9131,27 +9140,27 @@ c-debug-chk;               numsq = 0
 c-debug-chk]
                do il = 1, nr
                   do k = nt, 1, -1
-                     if ( abs( co(m,mc,mo_m1,k,il,kz) ) .lt. badlogklim
-     $                    .and. abs( co(m,mc,mo,k,il,kz) ) .lt.
-     $                    badlogklim .and. abs( co(m,mc,mofe,k,il,kz) )
-     $                    .lt. badlogklim ) then
+                     if ( ABS( co(m,mc,mo_m1,k,il,kz) ) < badlogklim
+     $                    .and. ABS( co(m,mc,mo,k,il,kz) ) <
+     $                    badlogklim .and. ABS( co(m,mc,mofe,k,il,kz) )
+     $                    < badlogklim ) then
                         dif = ( co(m,mc,mofe,k,il,kz) * omfofe
      $                       + co(m,mc,moat,k,il,kz) * fofe )
      $                       - co(m,mc,mo,k,il,kz)
                         co(m,mc,mo_m1,k,il,kz) = dif
 c-debug-chk[
-c-debug-chk;                        if ( t6list(k) .gt. 0.009999 ) then
+c-debug-chk;                        if ( t6list(k) > 0.009999 ) then
 c-debug-chk;                           sumdif = sumdif+dif
 c-debug-chk;                           sumsq = sumsq+dif**2
-c-debug-chk;                           difmax = max(dif,difmax)
-c-debug-chk;                           difmin = min(dif,difmin)
+c-debug-chk;                           difmax = MAX(dif,difmax)
+c-debug-chk;                           difmin = MIN(dif,difmin)
 c-debug-chk;                           numsq = numsq+1
 c-debug-chk;                        endif
 c-debug-chk]
-                     else if ( k .lt. nt ) then
+                     else if ( k < nt ) then
                         co(m,mc,mo_m1,k,il,kz) =
      $                       co(m,mc,mo_m1,k+1,il,kz)
-                     else if ( il .gt. 1 ) then
+                     else if ( il > 1 ) then
                         co(m,mc,mo_m1,k,il,kz) = 
      $                       co(m,mc,mo_m1,k,il-1,kz)
                      else
@@ -9161,10 +9170,10 @@ c-debug-chk]
                enddo
 c-debug-chk[
 c-debug-chk;               write(6,2379) m,zat,numsq,difmin,difmax,
-c-debug-chk;     $              sumdif/max(numsq,1),sqrt(sumsq/max(numsq,1)),
-c-debug-chk;     $              sqrt(max(sumsq-sumdif**2/max(numsq,1),0.)
-c-debug-chk;     $              /max(numsq-1,1))
-c-debug-chk; 2379          format(' '/' m=',i1,' Z=',f9.7,
+c-debug-chk;     $              sumdif/MAX(numsq,1),sqrt(sumsq/MAX(numsq,1)),
+c-debug-chk;     $              sqrt(MAX(sumsq-sumdif**2/MAX(numsq,1),0.)
+c-debug-chk;     $              /MAX(numsq-1,1))
+c-debug-chk; 2379          format(' '/' m=',i1,' Z=',f10.7,
 c-debug-chk;     $              ' [O/Fe] deltas for T6>0.01: N=',
 c-debug-chk;     $              i4,' DEL[',f10.6,' ,',f10.6,' ] DELave=',f10.6,
 c-debug-chk;     $              ' DELrms=',f10.6,' sig',f10.6)
@@ -9189,31 +9198,31 @@ c-test-xdel]
 c				! note: facxhz=0.0 for m=2, <1.0 for .04<Z<.06
             do il = 1, nr
                do k = nt, 1, -1
-                  if ( abs( co(m,mc,mo,k,il,kz) ) .lt. badlogklim .and.
-     $                 abs( co(m,1,1,k,il,kz) ) .lt. badlogklim ) then
+                  if ( ABS( co(m,mc,mo,k,il,kz) ) < badlogklim .and.
+     $                 ABS( co(m,1,1,k,il,kz) ) < badlogklim ) then
                      dif = co(m,mc,mo,k,il,kz) - co(m,1,1,k,il,kz)
 c
 c							! (reduce GN93hz shifts
 c							! by the factor facxhz)
                      co(m,mc,mo,k,il,kz) = dif * facxhz
 c-debug-chk[
-c-debug-chk;                     if ( t6list(k) .gt. 0.009999 ) then
-c-debug-chk;                        difmax = max(dif,difmax)
-c-debug-chk;                        difmin = min(dif,difmin)
+c-debug-chk;                     if ( t6list(k) > 0.009999 ) then
+c-debug-chk;                        difmax = MAX(dif,difmax)
+c-debug-chk;                        difmin = MIN(dif,difmin)
 c-debug-chk;                        sumdif = sumdif+dif
 c-debug-chk;                        sumsq = sumsq+dif**2
 c-debug-chk;                        numsq = numsq+1
 c-debug-chk;                     endif
 c-debug-chk]
 c-test-xdel[
-c-test-xdel;                     if ( t6list(k) .gt. 0.009999 ) then
-c-test-xdel;                        if ( nxdo .eq. 3 ) then
+c-test-xdel;                     if ( t6list(k) > 0.009999 ) then
+c-test-xdel;                        if ( nxdo == 3 ) then
 c-test-xdel;                           do ij = 1,n_xdtst
 c-test-xdel;                              dtst = cof_tst(k+ntdel,il+nrdel,ij)
 c-test-xdel;     $                             -co(m,1,1,k,il,kz)
-c-test-xdel;                              dif_tst(1,ij) = max(dif_tst(1,ij),
+c-test-xdel;                              dif_tst(1,ij) = MAX(dif_tst(1,ij),
 c-test-xdel;     $                             dtst)
-c-test-xdel;                              dif_tst(2,ij) = min(dif_tst(2,ij),
+c-test-xdel;                              dif_tst(2,ij) = MIN(dif_tst(2,ij),
 c-test-xdel;     $                             dtst)
 c-test-xdel;                              dif_tst(3,ij) = dif_tst(3,ij)+dtst
 c-test-xdel;                              dif_tst(4,ij) = dif_tst(4,ij)+dtst**2
@@ -9221,9 +9230,9 @@ c-test-xdel;                           enddo
 c-test-xdel;                        endif
 c-test-xdel;                     endif
 c-test-xdel]
-                  else if ( k .lt. nt ) then
+                  else if ( k < nt ) then
                      co(m,mc,mo,k,il,kz) = co(m,mc,mo,k+1,il,kz)
-                  else if ( il .gt. 1 ) then
+                  else if ( il > 1 ) then
                      co(m,mc,mo,k,il,kz) = co(m,mc,mo,k,il-1,kz)
                   else
                      co(m,mc,mo,k,il,kz) = 0.
@@ -9232,29 +9241,29 @@ c-test-xdel]
             enddo
 c-debug-chk[
 c-debug-chk;            write(6,2378) m,zat,numsq,difmin,difmax,
-c-debug-chk;     $           sumdif/max(numsq,1),sqrt(sumsq/max(numsq,1)),
-c-debug-chk;     $           sqrt(max(sumsq-sumdif**2/max(numsq,1),0.)
-c-debug-chk;     $           /max(numsq-1,1)),facxhz
-c-debug-chk; 2378       format(' '/' m=',i1,' Z=',f9.7,
+c-debug-chk;     $           sumdif/MAX(numsq,1),sqrt(sumsq/MAX(numsq,1)),
+c-debug-chk;     $           sqrt(MAX(sumsq-sumdif**2/MAX(numsq,1),0.)
+c-debug-chk;     $           /MAX(numsq-1,1)),facxhz
+c-debug-chk; 2378       format(' '/' m=',i1,' Z=',f10.7,
 c-debug-chk;     $           ' GN93hz deltas for T6>0.01: N=',
 c-debug-chk;     $           i4,' DEL[',f10.6,' ,',f10.6,' ] DELave=',f10.6,
 c-debug-chk;     $           ' DELrms=',f10.6,' sig',f10.6,
 c-debug-chk;     $           ' reduced by facxhz=',f10.7)
 c-debug-chk]
 c-test-xdel[
-c-test-xdel;            if ( nxdo .eq. 3 ) then
+c-test-xdel;            if ( nxdo == 3 ) then
 c-test-xdel;               do ij = 1,n_xdtst
 c-test-xdel;                  write(6,5817) numsq,dif_tst(1,ij),dif_tst(2,ij),
-c-test-xdel;     $                 dif_tst(3,ij)/max(numsq,1),
-c-test-xdel;     $                 sqrt(dif_tst(4,ij)/max(numsq,1)),
-c-test-xdel;     $                 sqrt(max(dif_tst(4,ij)-dif_tst(3,ij)**2
-c-test-xdel;     $                 /max(numsq,1),0.)/max(numsq-1,1)),
+c-test-xdel;     $                 dif_tst(3,ij)/MAX(numsq,1),
+c-test-xdel;     $                 sqrt(dif_tst(4,ij)/MAX(numsq,1)),
+c-test-xdel;     $                 sqrt(MAX(dif_tst(4,ij)-dif_tst(3,ij)**2
+c-test-xdel;     $                 /MAX(numsq,1),0.)/MAX(numsq-1,1)),
 c-test-xdel;     $                 xdel_tst(ij)
 c-test-xdel; 5817             format('                ',
 c-test-xdel;     $                 ' GN93hz deltas for T6>0.01: N=',i4,
 c-test-xdel;     $                 ' DEL[',f10.6,' ,',f10.6,' ] DELave=',f10.6,
 c-test-xdel;     $                 ' DELrms=',f10.6,' sig',f10.6,
-c-test-xdel;     $                 ' for Xdel=',f6.4)
+c-test-xdel;     $                 ' for Xdel=',f7.4)
 c-test-xdel;               enddo
 c-test-xdel;            endif
 c-test-xdel]
@@ -9265,14 +9274,14 @@ c-debug-chk;            oat = 1.-xa(m)-zat-xcs(i)
 c-debug-chk;            io = -1
 c-debug-chk;            do j = 1,no-1
 c-debug-chk;               ihi = n(m,j,kz)
-c-debug-chk;               cat = min(xcs(ihi),1.-xa(m)-zat-xos(j))
-c-debug-chk;               if ( max( abs(xcs(i)-cat) , abs(oat-xos(j)) )
-c-debug-chk;     $              .lt. 0.0011 ) then
+c-debug-chk;               cat = MIN(xcs(ihi),1.-xa(m)-zat-xos(j))
+c-debug-chk;               if ( MAX( ABS(xcs(i)-cat) , ABS(oat-xos(j)) )
+c-debug-chk;     $              < 0.0011 ) then
 c-debug-chk;                  io = ihi
 c-debug-chk;                  jo = j
 c-debug-chk;               endif
 c-debug-chk;            enddo
-c-debug-chk;            if ( io .gt. 0 ) then
+c-debug-chk;            if ( io > 0 ) then
 c-debug-chk;               difmax = -9.999999
 c-debug-chk;               difmin = 9.999999
 c-debug-chk;               sumdif = 0.
@@ -9281,18 +9290,18 @@ c-debug-chk;               numsq = 0
 c-debug-chk;               do il = 1,nr
 c-debug-chk;                  do k = 6,nta(il+nrdel)-ntdel
 c-debug-chk;                     dif = co(m,io,jo,k,il,kz)-co(m,i,mo,k,il,kz)
-c-debug-chk;                     difmax = max(dif,difmax)
-c-debug-chk;                     difmin = min(dif,difmin)
+c-debug-chk;                     difmax = MAX(dif,difmax)
+c-debug-chk;                     difmin = MIN(dif,difmin)
 c-debug-chk;                     sumdif = sumdif+dif
 c-debug-chk;                     sumsq = sumsq+dif**2
 c-debug-chk;                     numsq = numsq+1
 c-debug-chk;                  enddo
 c-debug-chk;               enddo
 c-debug-chk;               write(6,1598) m,zat,io,jo,i,mo,numsq,difmin,difmax,
-c-debug-chk;     $              sumdif/max(numsq,1),sqrt(sumsq/max(numsq,1)),
-c-debug-chk;     $              min(xcs(io),1.-xa(m)-z-xos(jo)),xos(jo),
+c-debug-chk;     $              sumdif/MAX(numsq,1),sqrt(sumsq/MAX(numsq,1)),
+c-debug-chk;     $              MIN(xcs(io),1.-xa(m)-z-xos(jo)),xos(jo),
 c-debug-chk;     $              xcs(i),1.-xa(m)-z-xcs(i)
-c-debug-chk; 1598          format(' '/' m=',i1,' Z=',f9.7,' d:(',i1,',',i1,
+c-debug-chk; 1598          format(' '/' m=',i1,' Z=',f10.7,' d:(',i1,',',i1,
 c-debug-chk;     $              ')-(',i1,',',i1,') for T6>0.01: N=',i4,' DIF[',
 c-debug-chk;     $              f10.6,' ,',f10.6,' ] DIFave=',f10.6,' DIFrms=',
 c-debug-chk;     $              f10.6,' CO',2f10.7,' &',2f10.7)
@@ -9312,8 +9321,8 @@ c		! interpolate GN93hz opacity shifts for m=2, if possible; note
 c		! that other shifts being interpolated among already contain
 c		! the factor of facxhz. No need to revise any m=2 [O/Fe] shift.
 c
-      if ( khizat .gt. 0 .and. mx .ge. 4 .and.
-     $     mxzero .eq. 1 .and. mx03 .eq. 2 ) then
+      if ( khizat > 0 .and. mx .ge. 4 .and.
+     $     mxzero == 1 .and. mx03 == 2 ) then
 c
 c-debug-chk[
 c-debug-chk;         sumsq = 0.
@@ -9328,8 +9337,8 @@ c			! for all densities and temperatures
             do k = nt, 1, -1
 c					! if it is possible to interpolate
 c
-               if ( abs( co(1,1,1,k,il,kz) ) .lt. badlogklim .and.
-     $              abs( co(2,1,1,k,il,kz) ) .lt. badlogklim ) then
+               if ( ABS( co(1,1,1,k,il,kz) ) < badlogklim .and.
+     $              ABS( co(2,1,1,k,il,kz) ) < badlogklim ) then
 c
 c							     ! new GN93hz shift
                   dif = quad(is,1,xx(2),co(1,mc,mo,k,il,kz),
@@ -9337,18 +9346,18 @@ c							     ! new GN93hz shift
      $                 xx(1),xx(3),xx(4))
                   is = 1
 c-debug-chk[
-c-debug-chk;                  if ( t6list(k) .gt. 0.009999 ) then
+c-debug-chk;                  if ( t6list(k) > 0.009999 ) then
 c-debug-chk;                     sumdif = sumdif+dif
 c-debug-chk;                     sumsq = sumsq+dif**2
-c-debug-chk;                     difmax = max(dif,difmax)
-c-debug-chk;                     difmin = min(dif,difmin)
+c-debug-chk;                     difmax = MAX(dif,difmax)
+c-debug-chk;                     difmin = MIN(dif,difmin)
 c-debug-chk;                     numsq = numsq+1
 c-debug-chk;                  endif
 c-debug-chk]
                   co(2,mc,mo,k,il,kz) = dif
-               else if ( k .lt. nt ) then
+               else if ( k < nt ) then
                   co(2,mc,mo,k,il,kz) = co(2,mc,mo,k+1,il,kz)
-               else if ( il .gt. 1 ) then
+               else if ( il > 1 ) then
                   co(2,mc,mo,k,il,kz) = co(2,mc,mo,k,il-1,kz)
                else
                   co(2,mc,mo,k,il,kz) = 0.
@@ -9357,7 +9366,7 @@ c
             enddo
          enddo
 c-debug-chk[
-c-debug-chk;         if ( facxhz .gt. 0. .and. facxhz .lt. 1.  ) then
+c-debug-chk;         if ( facxhz > 0. .and. facxhz < 1.  ) then
 c-debug-chk;            difmin = difmin/facxhz
 c-debug-chk;            difmax = difmax/facxhz
 c-debug-chk;            sumdif = sumdif/facxhz
@@ -9366,8 +9375,8 @@ c-debug-chk;         else
 c-debug-chk;            facxhz = 1.
 c-debug-chk;         endif
 c-debug-chk;         write(6,2371) z,numsq,difmin,difmax,
-c-debug-chk;     $        sumdif/max(numsq,1),sqrt(sumsq/max(numsq,1)),facxhz
-c-debug-chk; 2371    format(' '/' m=2 Z=',f9.7,
+c-debug-chk;     $        sumdif/MAX(numsq,1),sqrt(sumsq/MAX(numsq,1)),facxhz
+c-debug-chk; 2371    format(' '/' m=2 Z=',f10.7,
 c-debug-chk;     $        ' GN93hz alt-deltas T6>0.01: N=',
 c-debug-chk;     $        i4,' DIF[',f10.6,' ,',f10.6,' ] DIFave=',f10.6,
 c-debug-chk;     $        ' DIFrms=',f10.6,' reduced by facxhz=',f10.7)
@@ -9375,7 +9384,7 @@ c-debug-chk]
 c		 ! end of interpolation of GN93hz opacity shifts for m=2
       endif
 c				! apply all opacity shifts calculated above
-      if ( khizat .gt. 0 ) then
+      if ( khizat > 0 ) then
 c					! Begin loop over m values:
          do m = 1, mx
 c
@@ -9410,25 +9419,25 @@ c				! perform the opacity shifts computed above
 c
                   dif = co(m,mc,mo,k,il,kz) + co(m,mc,mo_m1,k,il,kz)
 c-debug-chk[
-c-debug-chk;                  if ( t6list(k) .gt. 0.009999 ) then
-c-debug-chk;                     difcmax = max(dif,difcmax)
-c-debug-chk;                     difcmin = min(dif,difcmin)
+c-debug-chk;                  if ( t6list(k) > 0.009999 ) then
+c-debug-chk;                     difcmax = MAX(dif,difcmax)
+c-debug-chk;                     difcmin = MIN(dif,difcmin)
 c-debug-chk;                     sumcdif = sumcdif+dif
 c-debug-chk;                     sumcsq = sumcsq+dif**2
 c-debug-chk;                     numcsq = numcsq+1
-c-debug-chk;                     if ( dif .eq. 0. ) then
+c-debug-chk;                     if ( dif == 0. ) then
 c-debug-chk;                        numsq = numsq+numlsq
 c-debug-chk;                        num1 = num1+numlsq
-c-debug-chk;                        diflmax = max(0.,diflmax)
-c-debug-chk;                        diflmin = min(0.,diflmin)
-c-debug-chk;                        difmax = max(0.,difmax)
-c-debug-chk;                        difmin = min(0.,difmin)
+c-debug-chk;                        diflmax = MAX(0.,diflmax)
+c-debug-chk;                        diflmin = MIN(0.,diflmin)
+c-debug-chk;                        difmax = MAX(0.,difmax)
+c-debug-chk;                        difmin = MIN(0.,difmin)
 c-debug-chk;                     endif
 c-debug-chk;                  endif
 c-debug-chk]
                   if ( dif .ne. 0. ) then
 c
-                     if ( abs(dif) .gt. 0.01 ) then
+                     if ( ABS(dif) > 0.01 ) then
                         diffac = 10.**dif - 1.
                      else
 c						! (more accurate for small dif)
@@ -9438,14 +9447,14 @@ c						! (more accurate for small dif)
 c				! first, do shifts for all except C=O=0.0 mix:
                      ilo = 2
                      do j = 1, mo
-                        if ( j .lt. n(m,1,kz) ) then
+                        if ( j < n(m,1,kz) ) then
                            ihi = n(m,j,kz)
-                        else if ( j .eq. mo ) then
+                        else if ( j == mo ) then
                            ihi = n(m,1,kz) - 1
                         else
                            ihi = 0
                         endif
-                        if ( ihi .gt. 0 ) then
+                        if ( ihi > 0 ) then
                            do i = ilo, ihi
 c					   ! If Kappa(COrich) does not exceed
 c					   ! Kappa(C=O=0): then apply shift as
@@ -9467,36 +9476,36 @@ c					   ! shift delta'{log(Kappa)}
      $                                - co(m,i,j,k,il,kz) ) * diffac
      $                                + 1. )
 c-debug-chk[
-c-debug-chk;                                 if ( abs(difl) .gt.
-c-debug-chk;     $                                abs(dif) ) then
-c-debug-chk;                                    difdmax = max(
-c-debug-chk;     $                                   abs(difl)-abs(dif),
+c-debug-chk;                                 if ( ABS(difl) >
+c-debug-chk;     $                                ABS(dif) ) then
+c-debug-chk;                                    difdmax = MAX(
+c-debug-chk;     $                                   ABS(difl)-ABS(dif),
 c-debug-chk;     $                                   difdmax)
-c-debug-chk;                                    difomax = max(difomax,dif)
-c-debug-chk;                                    difomin = min(difomin,dif)
+c-debug-chk;                                    difomax = MAX(difomax,dif)
+c-debug-chk;                                    difomin = MIN(difomin,dif)
 c-debug-chk;                                    numosq = numosq+1
 c-debug-chk;                                 endif
 c-debug-chk]
 c					! this can only happen to the extent of
 c							       ! roundoff error
-                                 if ( abs(difl) .gt. abs(dif) )
+                                 if ( ABS(difl) > ABS(dif) )
      $                                difl = dif
                               endif
 c								 ! apply shift
                               co(m,i,j,k,il,kz) =
      $                             co(m,i,j,k,il,kz) + difl
 c-debug-chk[
-c-debug-chk;                              if ( t6list(k) .gt. 0.009999 ) then
-c-debug-chk;                                 difmax = max(difl,difmax)
-c-debug-chk;                                 difmin = min(difl,difmin)
+c-debug-chk;                              if ( t6list(k) > 0.009999 ) then
+c-debug-chk;                                 difmax = MAX(difl,difmax)
+c-debug-chk;                                 difmin = MIN(difl,difmin)
 c-debug-chk;                                 sumdif = sumdif+difl
 c-debug-chk;                                 sumsq = sumsq+difl**2
 c-debug-chk;                                 numsq = numsq+1
-c-debug-chk;                                 if ( difl .eq. dif )
+c-debug-chk;                                 if ( difl == dif )
 c-debug-chk;     $                                num1 = num1+1
 c-debug-chk;                                 difl = (difl-dif)/dif
-c-debug-chk;                                 diflmax = max(difl,diflmax)
-c-debug-chk;                                 diflmin = min(difl,diflmin)
+c-debug-chk;                                 diflmax = MAX(difl,diflmax)
+c-debug-chk;                                 diflmin = MIN(difl,diflmin)
 c-debug-chk;                                 sumldif = sumldif+difl
 c-debug-chk;                                 sumlsq = sumlsq+difl**2
 c-debug-chk;                              endif
@@ -9515,22 +9524,22 @@ c
             enddo
 c-debug-chk[
 c-debug-chk;            write(6,9782) m,numcsq,difcmin,difcmax,sumcdif
-c-debug-chk;     $           /max(numcsq,1),sqrt(sumcsq/max(numcsq,1)),
-c-debug-chk;     $           sqrt(max(sumcsq-sumcdif**2/max(numcsq,1),0.)
-c-debug-chk;     $           /max(numcsq-1,1)),z
+c-debug-chk;     $           /MAX(numcsq,1),sqrt(sumcsq/MAX(numcsq,1)),
+c-debug-chk;     $           sqrt(MAX(sumcsq-sumcdif**2/MAX(numcsq,1),0.)
+c-debug-chk;     $           /MAX(numcsq-1,1)),z
 c-debug-chk; 9782       format(' '/' m=',i1,' total deltas C+O=0, T6>0.01:',
 c-debug-chk;     $           i6,' [',f10.6,' ,',f10.6,' ]ave',f10.6,
 c-debug-chk;     $           ' rms',f10.6,' sig',f10.6,'  for Z=',f10.7)
 c-debug-chk;            write(6,8782) m,numsq,difmin,difmax,
-c-debug-chk;     $           sumdif/max(numsq,1),sqrt(sumsq/max(numsq,1)),
+c-debug-chk;     $           sumdif/MAX(numsq,1),sqrt(sumsq/MAX(numsq,1)),
 c-debug-chk;     $           diflmin+1.,num1,diflmax+1.,
-c-debug-chk;     $           sumldif/max(numsq,1)+1.,sqrt(max(sumlsq
-c-debug-chk;     $           -sumldif**2/max(numsq,1),0.)/max(numsq-1,1))
+c-debug-chk;     $           sumldif/MAX(numsq,1)+1.,sqrt(MAX(sumlsq
+c-debug-chk;     $           -sumldif**2/MAX(numsq,1),0.)/MAX(numsq-1,1))
 c-debug-chk; 8782       format(' '/' m=',i1,' total deltas C+O>0, T6>0.01:',
 c-debug-chk;     $           i6,' [',f10.6,' ,',f10.6,' ]ave',f10.6,
 c-debug-chk;     $           ' rms',f10.6,'  freduce[',f10.6,' ,',i6,':',
 c-debug-chk;     $           f10.6,' ]ave',f10.6,' sig',f10.6)
-c-debug-chk;            if ( numosq .gt. 0 ) write(6,8783) numosq,difdmax,
+c-debug-chk;            if ( numosq > 0 ) write(6,8783) numosq,difdmax,
 c-debug-chk;     $           difomin,difomax
 c-debug-chk; 8783       format(' '/i23,
 c-debug-chk;     $           ' Kco > K0 cases where log(linear delta)',
@@ -9543,7 +9552,7 @@ c					! end of opacity shifts
       endif
 c			! how many GN93hz X-values for the present value of Z
       mx_use = mx_hi
-      do while ( xhi_in(mx_use-1) .gt. 0.999999 - zat )
+      do while ( xhi_in(mx_use-1) > 0.999999 - zat )
          mx_use = mx_use - 1
       enddo
       nx_hi(kz) = mx_use
@@ -9560,7 +9569,7 @@ c
 c				! set flags showing whether high-X is available
          kavail_xhi = 1
          do i = 1, kz
-            kavail_xhi = min( khighx(i) , kavail_xhi )
+            kavail_xhi = MIN( khighx(i) , kavail_xhi )
          enddo
          if ( kavail_xhi .le. 0 ) then
             kdo_xhi = 0
@@ -9569,8 +9578,8 @@ c				! set flags showing whether high-X is available
          endif
 c-debug-chk[
 c-debug-chk;         do i = 1, 20
-c-debug-chk;            chk_max(i) = -9.
-c-debug-chk;            chk_min(i) = 9.
+c-debug-chk;            chk_MAX(i) = -9.
+c-debug-chk;            chk_MIN(i) = 9.
 c-debug-chk;            chk_sum(i) = 0.
 c-debug-chk;            chk_ssq(i) = 0.
 c-debug-chk;            n_chk(i) = 0
@@ -9579,20 +9588,20 @@ c-debug-chk]
 c		 ! get the 'GN93hz' Z-indices (may not have been done above)
          zat = z
          kzalbe = mzal
-         do while( kzalbe .gt. 1 .and. z .le. zalval(kzalbe)-1.e-6 )
+         do while( kzalbe > 1 .and. z .le. zalval(kzalbe)-1.e-6 )
             kzalbe = kzalbe-1
          enddo
-         if ( abs( zalval(kzalbe) - z ) .le. zacc(kz) ) then
+         if ( ABS( zalval(kzalbe) - z ) .le. zacc(kz) ) then
             zat = zalval(kzalbe)
             kzalow = kzalbe
             nzalmo = 0
          else
-            kzalow = max( 1 , kzalbe - 1 )
-            nzalmo = min( kzalbe + 2 , mzal ) - kzalow
+            kzalow = MAX( 1 , kzalbe - 1 )
+            nzalmo = MIN( kzalbe + 2 , mzal ) - kzalow
          endif
          int_hi_z = 0
 c			       ! set the directory-part of the opacity filename
-         if ( kope .eq. 0 ) then
+         if ( kope == 0 ) then
             cop_sto(1) = ' '
             cop_sto(2) = ' '
          else
@@ -9600,7 +9609,7 @@ c			       ! set the directory-part of the opacity filename
             cop_sto(2) = copdir(:kope)
          endif
 c								! get filename
-         if ( klozat .eq. 0 ) then
+         if ( klozat == 0 ) then
             cop_sto(1)(kope+1:) = cfile_opalmixes(1)
          else
             cop_sto(1)(kope+1:) = cfile_opalGS98(1)
@@ -9616,9 +9625,9 @@ c
          khighx(kz) = 1
 c							! Z > 0 & [O/Fe] > 0 ?
 c
-         if ( khighz_index .gt. 1 .and. kzalow + nzalmo .gt. 1 ) then
+         if ( khighz_index > 1 .and. kzalow + nzalmo > 1 ) then
             khighx(kz) = 2
-            if ( khighz .gt. 0 ) then
+            if ( khighz > 0 ) then
                cop_sto(2)(kope+1:) = cfile_opalmixes(khighz_index)
             else
                cop_sto(2)(kope+1:) = cfile_opalGS98(khighz_index)
@@ -9636,17 +9645,17 @@ c
          iz_hi = nzalmo
 c						! loop over 'GN93hz' X-values:
 c
-         do while ( ix .lt. mx_use .and. iz_hi .lt. 5 )
+         do while ( ix < mx_use .and. iz_hi < 5 )
 c							! get position in co()
             ix = ix + 1
             m = m + 1
-            if ( m .gt. mx ) then
+            if ( m > mx ) then
                io = io - 1
                m = 1
             endif
 c				! get Z and X values to look for in 'GN93hz'
             iz_hi = nzalmo
-            if ( ix .eq. mx_use ) then
+            if ( ix == mx_use ) then
                do iz = 0, nzalmo
                   zhi_look(iz+1) = zalval(kzalow+iz)
                   xhi_look(iz+1) = 1. - zhi_look(iz+1)
@@ -9654,16 +9663,16 @@ c				! get Z and X values to look for in 'GN93hz'
             else
                do iz = 0, nzalmo
                   zhi_look(iz+1) = zalval(kzalow+iz)
-                  xhi_look(iz+1) = min( xhi_in(ix) ,
+                  xhi_look(iz+1) = MIN( xhi_in(ix) ,
      $                 1. - zhi_look(iz+1) )
                enddo
 c			! check for X-column bifurcation at Z = 0.05, X = 0.95
 c
-               if ( ix .eq. mx_hi - 1 .and. nzalmo .eq. 3 ) then
-                  if ( zat .gt. 0.03 .and. zat .lt. 0.04 ) then
+               if ( ix == mx_hi - 1 .and. nzalmo == 3 ) then
+                  if ( zat > 0.03 .and. zat < 0.04 ) then
                      iz_hi = 2
                      int_hi_z = 0
-                  else if ( zat .gt. 0.04 .and. zat .lt. 0.05 ) then
+                  else if ( zat > 0.04 .and. zat < 0.05 ) then
                      iz_hi = 5
                      int_hi_z = 0
                      zhi_look(5) = zhi_look(3)
@@ -9686,30 +9695,30 @@ c					       ! find mix; stop if not found
                igetzxi = 0
                ifound = mixfind(iu,1,igetzxi,i_rewind,itab_dum,
      $              line(1),zhi_look(kat),xhi_look(kat),0.0,0.0)
-               if ( ifound .eq. 0 ) then
+               if ( ifound == 0 ) then
                   i_rewind = 1
                   igetzxi = 0
                   ifound = mixfind(iu,1,igetzxi,i_rewind,itab_dum,
      $                 line(1),zhi_look(kat),xhi_look(kat),0.0,0.0)
-                  if ( ifound .eq. 0 ) then
+                  if ( ifound == 0 ) then
                      write(6,1791) zhi_look(kat),xhi_look(kat),
      $                    0.0,0.0,cop_sto(1)(:lnblnk(cop_sto(1)))
                      stop ' STOP -- READCO: error reading hz-mix. '
                   endif
                endif
-               if ( khighx(kz) .gt. 1 ) then
+               if ( khighx(kz) > 1 ) then
                   i_rewind = 0
                   igetzxi = 0
                   ifound = mixfind(iu_ofe,1,igetzxi,i_rewind,
      $                 itab_dum_ofe,line(2),
      $                 zhi_look(kat),xhi_look(kat),0.0,0.0)
-                  if ( ifound .eq. 0 ) then
+                  if ( ifound == 0 ) then
                      i_rewind = 1
                      igetzxi = 0
                      ifound = mixfind(iu_ofe,1,igetzxi,i_rewind,
      $                    itab_dum_ofe,line(2),
      $                    zhi_look(kat),xhi_look(kat),0.0,0.0)
-                     if ( ifound .eq. 0 ) then
+                     if ( ifound == 0 ) then
                         write(6,1791) zhi_look(kat),xhi_look(kat),
      $                       0.0,0.0,cop_sto(2)(:lnblnk(cop_sto(2)))
                         stop ' STOP -- READCO: error reading hz-mix. '
@@ -9725,10 +9734,10 @@ c					   ! read logT, & logKappa(R) for all R
                   read(cin,8140) flt, (cofzhi(k,il,kat),il=1,nrm)
  8140             format(f4.2,19f7.3)
 c								   ! bad logT ?
-                  if ( abs(flogtin(k)-flt) .gt. 1.e-5 ) then
+                  if ( ABS(flogtin(k)-flt) > 1.e-5 ) then
                      write(6,1734) flt, flogtin(k),
      $                    cop_sto(1)(:lnblnk(cop_sto(1))),
-     $                    line(1), cin(:max(1,lnblnk(cin))),
+     $                    line(1), cin(:MAX(1,lnblnk(cin))),
      $                    zhi_look(kat),xhi_look(kat),0.0,0.0
                      stop ' STOP -- READCO: bad logT value. '
                   endif
@@ -9738,45 +9747,45 @@ c
 c							      ! logKappa(R) is:
                   do il = nrm, 1, -1
 c								       ! absent
-                     if ( cin(7*il-2:7*il+4) .eq. '       ' ) then
-                        if ( k .le. max(nta(il),nta(0)) ) stop
+                     if ( cin(7*il-2:7*il+4) == '       ' ) then
+                        if ( k .le. MAX(nta(il),nta(0)) ) stop
      $                       ' STOP -- READCO: bad upper edge. '
-                        il_hi = min( il_hi , il - 1 )
+                        il_hi = MIN( il_hi , il - 1 )
 c							     ! should be absent
-                     else if ( k .gt. nta(il) .and.
+                     else if ( k > nta(il) .and.
      $                       il .ge. nrb .and. il .le. nre ) then
                         stop ' STOP -- READCO: bad upper edge. '
 c									! 9.999
-                     else if ( cofzhi(k,il,kat) .gt. 9. ) then
+                     else if ( cofzhi(k,il,kat) > 9. ) then
                         if ( ix .ne. 1 ) stop
      $                       ' STOP -- READCO: bad low edge [O/Fe]=0. '
-                        il_lo = max( il_lo , il + 1 )
+                        il_lo = MAX( il_lo , il + 1 )
                      endif
                   enddo
 c					      ! also read [O/Fe] > 0, if needed
-                  if ( khighx(kz) .gt. 1 ) then
+                  if ( khighx(kz) > 1 ) then
                      line(2) = line(2) + 1
                      read(iu_ofe,8300) cin
                      read(cin,8140) flt, (coff(k,il),il=1,nrm)
-                     if ( abs(flogtin(k)-flt) .gt. 1.e-5 ) then
+                     if ( ABS(flogtin(k)-flt) > 1.e-5 ) then
                         write(6,1734) flt, flogtin(k),
      $                       cop_sto(2)(:lnblnk(cop_sto(2))),
-     $                       line(2), cin(:max(1,lnblnk(cin))),
+     $                       line(2), cin(:MAX(1,lnblnk(cin))),
      $                       zhi_look(kat),xhi_look(kat),0.0,0.0
                         stop ' STOP -- READCO: bad logT value. '
                      endif
                      do il = nrm, 1, -1
-                        if ( cin(7*il-2:7*il+4) .eq. '       ' ) then
-                           if ( k .le. max(nta(il),nta(0)) ) stop
+                        if ( cin(7*il-2:7*il+4) == '       ' ) then
+                           if ( k .le. MAX(nta(il),nta(0)) ) stop
      $                          ' STOP -- READCO: bad upper edge. '
-                           il_hi = min( il_hi , il - 1 )
-                        else if ( k .gt. nta(il) .and.
+                           il_hi = MIN( il_hi , il - 1 )
+                        else if ( k > nta(il) .and.
      $                          il .ge. nrb .and. il .le. nre ) then
                            stop ' STOP -- READCO: bad upper edge. '
-                        else if ( coff(k,il) .gt. 9. ) then
+                        else if ( coff(k,il) > 9. ) then
                            if ( ix .ne. 1 ) stop
      $                          ' STOP -- READCO: bad low edge. '
-                           il_lo = max( il_lo , il + 1 )
+                           il_lo = MAX( il_lo , il + 1 )
                         endif
                      enddo
                      do il = 1, nrm
@@ -9785,12 +9794,12 @@ c					      ! also read [O/Fe] > 0, if needed
                      enddo
                   endif
 c								! for smoothing
-                  if ( il_lo .gt. 1 .or. il_hi .lt. nrm ) then
+                  if ( il_lo > 1 .OR. il_hi < nrm ) then
                      do il = nrm, 1, -1
-                        if ( il .gt. il_hi ) then
+                        if ( il > il_hi ) then
                            cofzhi(k,il,kat) = 2. * cofzhi(k-1,il,kat)
      $                          - cofzhi(k-2,il,kat)
-                        else if ( il .lt. il_lo ) then
+                        else if ( il < il_lo ) then
                            cofzhi(k,il,kat) = 2. * cofzhi(k,il+1,kat)
      $                          - cofzhi(k,il+2,kat)
                         endif
@@ -9801,7 +9810,7 @@ c			! (end of loop to read opacities at all T-values):
 c			! (end of loop over required Z-values for this X):
             enddo
 c							 ! actual X at Zsto(kz)
-            xhi_use(ix,kz) = min( xhi_in(ix) , 1. - zat )
+            xhi_use(ix,kz) = MIN( xhi_in(ix) , 1. - zat )
 c							     ! Z-interpolation:
             if ( iz_hi .le. 3 ) then
 c					! standard case: for all T,R:
@@ -9844,7 +9853,7 @@ c							      ! Zsto(kz),X=0.95
                   enddo
                enddo
 c					 ! smooth hz-opacities, if init_smo > 0
-               if ( init_smo .gt. 0 ) then
+               if ( init_smo > 0 ) then
                   tmax = 10.
                   nset = ks81
                   RLS = alrf(1)
@@ -9869,7 +9878,7 @@ c			     ! prepare to smooth present X=0.95 hz-opacity set
 c
             endif
 c					 ! smooth hz-opacities, if init_smo > 0
-            if ( init_smo .gt. 0 ) then
+            if ( init_smo > 0 ) then
                tmax = 10.
                nset = ks81
                RLS = alrf(1)
@@ -9888,7 +9897,7 @@ c					     ! store present hz-opacity set
 c			! (end of loop over 'GN93hz' X-values):
          enddo
 c						! close 'GN93hz' file(s)
-         if ( khighx(kz) .gt. 1 ) then
+         if ( khighx(kz) > 1 ) then
             call close_chk_zip( iu_ofe, cop_sto(2), igzip_ofe )
          endif
          call close_chk_zip( iu, cop_sto(1), igzip )
@@ -9898,7 +9907,7 @@ c							! some needed values
          f_3 = ( xx(4) - xxx_hi(3) ) * dfsx(4)
          omf_3 = 1. - f_3
 c					! for convenience, define ALL xhi_use
-         if ( mx_use .lt. mx_hi ) then
+         if ( mx_use < mx_hi ) then
             do ix = mx_use + 1, mx_hi
                xhi_use(ix,kz) = xhi_use(mx_use,kz)
             enddo
@@ -9913,7 +9922,7 @@ c		       ! loop over all densities and temperatures
             jl = il + nrdel
             do k = 1, nt
 c					     ! if in high-T,R cutout: no shift:
-               if ( k .gt. nta(jl) ) then
+               if ( k > nta(jl) ) then
                   do ix = 1, mx
                      co(ix,mc,mo,k,il,kz) = 0.0
                      co(ix,mc,mo_m1,k,il,kz) = 0.0
@@ -9921,37 +9930,37 @@ c					     ! if in high-T,R cutout: no shift:
 c				       ! else: compute shifts for all X-values:
                else
 c								   ! bad logK ?
-                  if ( max( co(3,1,1,k,il,kz) , co(4,1,1,k,il,kz) ,
-     $                 co(5,1,1,k,il,kz) ) .gt. 9. ) stop
+                  if ( MAX( co(3,1,1,k,il,kz) , co(4,1,1,k,il,kz) ,
+     $                 co(5,1,1,k,il,kz) ) > 9. ) stop
      $                 ' STOP -- Error: bad co(3:5,1,1,*,*) cannot be '
 c-debug-chk[
-c-debug-chk;                  if ( k+ntdel .gt. 5 ) then
+c-debug-chk;                  if ( k+ntdel > 5 ) then
 c-debug-chk;                     cof_del = co(2,mc,mo,k,il,kz)
 c-debug-chk;     $                       - co(3,1,1,k,il,kz)
 c-debug-chk;                     n_chk(12) = n_chk(12) + 1
-c-debug-chk;                     chk_max(12) = max( chk_max(12) , cof_del )
-c-debug-chk;                     chk_min(12) = min( chk_min(12) , cof_del )
+c-debug-chk;                     chk_MAX(12) = MAX( chk_MAX(12) , cof_del )
+c-debug-chk;                     chk_MIN(12) = MIN( chk_MIN(12) , cof_del )
 c-debug-chk;                     chk_sum(12) = chk_sum(12) + cof_del
 c-debug-chk;                     chk_ssq(12) = chk_ssq(12) + cof_del**2
 c-debug-chk;                     cof_del = co(4,mc,mo,k,il,kz)
 c-debug-chk;     $                       - co(4,1,1,k,il,kz)
 c-debug-chk;                     n_chk(14) = n_chk(14) + 1
-c-debug-chk;                     chk_max(14) = max( chk_max(14) , cof_del )
-c-debug-chk;                     chk_min(14) = min( chk_min(14) , cof_del )
+c-debug-chk;                     chk_MAX(14) = MAX( chk_MAX(14) , cof_del )
+c-debug-chk;                     chk_MIN(14) = MIN( chk_MIN(14) , cof_del )
 c-debug-chk;                     chk_sum(14) = chk_sum(14) + cof_del
 c-debug-chk;                     chk_ssq(14) = chk_ssq(14) + cof_del**2
 c-debug-chk;                     cof_del = co(1,mc,mo_m1,k,il,kz)
 c-debug-chk;     $                    - co(5,1,1,k,il,kz)
 c-debug-chk;                     n_chk(16) = n_chk(16) + 1
-c-debug-chk;                     chk_max(16) = max( chk_max(16) , cof_del )
-c-debug-chk;                     chk_min(16) = min( chk_min(16) , cof_del )
+c-debug-chk;                     chk_MAX(16) = MAX( chk_MAX(16) , cof_del )
+c-debug-chk;                     chk_MIN(16) = MIN( chk_MIN(16) , cof_del )
 c-debug-chk;                     chk_sum(16) = chk_sum(16) + cof_del
 c-debug-chk;                     chk_ssq(16) = chk_ssq(16) + cof_del**2
 c-debug-chk;                  endif
 c-debug-chk]
 c							! if no logK at X=0.03:
-                  if ( co(2,1,1,k,il,kz) .gt. 9. .or.
-     $                 k+ntdel .lt. ntax03(nr+nrdel) ) then
+                  if ( co(2,1,1,k,il,kz) > 9. .OR.
+     $                 k+ntdel < ntax03(nr+nrdel) ) then
 c							    ! 3-X-pt at X=0.2
                      cof_tmp = quad(int_hi_1,1,xxx_hi(3),
      $                    co(2,mc,mo,k,il,kz),co(4,mc,mo,k,il,kz),
@@ -9969,14 +9978,14 @@ c-debug-chk]
 c					   ! else: if logK available at X=0.03:
                   else
 c-debug-chk[
-c-debug-chk;                     if ( k+ntdel .gt. 5 .and.
-c-debug-chk;     $                    k+ntdel .lt. ntax0(nr+nrdel) .and.
-c-debug-chk;     $                    co(1,1,1,k,il,kz) .lt. 9. ) then
+c-debug-chk;                     if ( k+ntdel > 5 .and.
+c-debug-chk;     $                    k+ntdel < ntax0(nr+nrdel) .and.
+c-debug-chk;     $                    co(1,1,1,k,il,kz) < 9. ) then
 c-debug-chk;                        cof_del = co(1,mc,mo,k,il,kz)
 c-debug-chk;     $                       - co(1,1,1,k,il,kz)
 c-debug-chk;                        n_chk(11) = n_chk(11) + 1
-c-debug-chk;                        chk_max(11) = max( chk_max(11) , cof_del )
-c-debug-chk;                        chk_min(11) = min( chk_min(11) , cof_del )
+c-debug-chk;                        chk_MAX(11) = MAX( chk_MAX(11) , cof_del )
+c-debug-chk;                        chk_MIN(11) = MIN( chk_MIN(11) , cof_del )
 c-debug-chk;                        chk_sum(11) = chk_sum(11) + cof_del
 c-debug-chk;                        chk_ssq(11) = chk_ssq(11) + cof_del**2
 c-debug-chk;                     endif
@@ -10006,10 +10015,10 @@ c-debug-chk;                     cof_del = cof_tmp - cof_o
 c-debug-chk]
                   endif
 c-debug-chk[
-c-debug-chk;                  if ( k+ntdel .gt. 5 ) then
+c-debug-chk;                  if ( k+ntdel > 5 ) then
 c-debug-chk;                     n_chk(13) = n_chk(13) + 1
-c-debug-chk;                     chk_max(13) = max( chk_max(13) , cof_del )
-c-debug-chk;                     chk_min(13) = min( chk_min(13) , cof_del )
+c-debug-chk;                     chk_MAX(13) = MAX( chk_MAX(13) , cof_del )
+c-debug-chk;                     chk_MIN(13) = MIN( chk_MIN(13) , cof_del )
 c-debug-chk;                     chk_sum(13) = chk_sum(13) + cof_del
 c-debug-chk;                     chk_ssq(13) = chk_ssq(13) + cof_del**2
 c-debug-chk;                  endif
@@ -10021,22 +10030,22 @@ c							! 3-X-pt dlogK at X=0.5
      $                 xxx_hi(2),xxx_hi(4),xxx_hi(6))
                   co(5,mc,mo,k,il,kz) = co(5,mc,mo,k,il,kz) - cof_tmp
 c-debug-chk[
-c-debug-chk;                  if ( k+ntdel .gt. 5 ) then
+c-debug-chk;                  if ( k+ntdel > 5 ) then
 c-debug-chk;                     cof_o = quad(1,4,xxx_hi(5),
 c-debug-chk;     $                    co(3,1,1,k,il,kz),co(4,1,1,k,il,kz),
 c-debug-chk;     $                    co(5,1,1,k,il,kz),
 c-debug-chk;     $                    xxx_hi(2),xxx_hi(4),xxx_hi(6))
 c-debug-chk;                     cof_del = cof_tmp - cof_o
 c-debug-chk;                     n_chk(15) = n_chk(15) + 1
-c-debug-chk;                     chk_max(15) = max( chk_max(15) , cof_del )
-c-debug-chk;                     chk_min(15) = min( chk_min(15) , cof_del )
+c-debug-chk;                     chk_MAX(15) = MAX( chk_MAX(15) , cof_del )
+c-debug-chk;                     chk_MIN(15) = MIN( chk_MIN(15) , cof_del )
 c-debug-chk;                     chk_sum(15) = chk_sum(15) + cof_del
 c-debug-chk;                     chk_ssq(15) = chk_ssq(15) + cof_del**2
 c-debug-chk;                  endif
 c-debug-chk]
 c				     ! 3-X-pt dlogK at X = 0.8, 0.9, 0.95, 1-Z:
                   do ix = 7, mx_use
-                     if ( xhi_in(ix) .lt. 1.000001 - zat ) then
+                     if ( xhi_in(ix) < 1.000001 - zat ) then
                         xxx_at = xxx_hi(ix)
                      else
                         xxx_at = log10( 1. - zat + xdel )
@@ -10048,16 +10057,16 @@ c				     ! 3-X-pt dlogK at X = 0.8, 0.9, 0.95, 1-Z:
                      co(ix-5,mc,mo_m1,k,il,kz) =
      $                    co(ix-5,mc,mo_m1,k,il,kz) - cof_tmp
 c-debug-chk[
-c-debug-chk;                     if ( k+ntdel .gt. 5 ) then
+c-debug-chk;                     if ( k+ntdel > 5 ) then
 c-debug-chk;                        cof_o = quad(1,ix,xxx_at,
 c-debug-chk;     $                       co(3,1,1,k,il,kz),co(4,1,1,k,il,kz),
 c-debug-chk;     $                       co(5,1,1,k,il,kz),
 c-debug-chk;     $                       xxx_hi(2),xxx_hi(4),xxx_hi(6))
 c-debug-chk;                        cof_del = cof_tmp - cof_o
 c-debug-chk;                        n_chk(ix+10) = n_chk(ix+10) + 1
-c-debug-chk;                        chk_max(ix+10) = max( chk_max(ix+10) ,
+c-debug-chk;                        chk_MAX(ix+10) = MAX( chk_MAX(ix+10) ,
 c-debug-chk;     $                       cof_del )
-c-debug-chk;                        chk_min(ix+10) = min( chk_min(ix+10) ,
+c-debug-chk;                        chk_MIN(ix+10) = MIN( chk_MIN(ix+10) ,
 c-debug-chk;     $                       cof_del )
 c-debug-chk;                        chk_sum(ix+10) = chk_sum(ix+10) + cof_del
 c-debug-chk;                        chk_ssq(ix+10) = chk_ssq(ix+10)
@@ -10073,19 +10082,19 @@ c					   ! are available in 'Gz???.x??' files
                   co(4,mc,mo,k,il,kz) = 0.0
                   co(1,mc,mo_m1,k,il,kz) = 0.0
 c-debug-chk[
-c-debug-chk;                  if ( k+ntdel .gt. 5 ) then
+c-debug-chk;                  if ( k+ntdel > 5 ) then
 c-debug-chk;                     m = 0
 c-debug-chk;                     io = mo
 c-debug-chk;                     do ix = 1, mx_use
 c-debug-chk;                        m = m + 1
-c-debug-chk;                        if ( m .gt. 5 ) then
+c-debug-chk;                        if ( m > 5 ) then
 c-debug-chk;                           m = 1
 c-debug-chk;                           io = io - 1
 c-debug-chk;                        endif
 c-debug-chk;                        cof_del = co(m,mc,io,k,il,kz)
 c-debug-chk;                        n_chk(ix) = n_chk(ix) + 1
-c-debug-chk;                        chk_max(ix) = max( chk_max(ix) , cof_del )
-c-debug-chk;                        chk_min(ix) = min( chk_min(ix) , cof_del )
+c-debug-chk;                        chk_MAX(ix) = MAX( chk_MAX(ix) , cof_del )
+c-debug-chk;                        chk_MIN(ix) = MIN( chk_MIN(ix) , cof_del )
 c-debug-chk;                        chk_sum(ix) = chk_sum(ix) + cof_del
 c-debug-chk;                        chk_ssq(ix) = chk_ssq(ix) + cof_del**2
 c-debug-chk;                     enddo
@@ -10097,9 +10106,9 @@ c-debug-chk]
 c-debug-chk[
 c-debug-chk;         write(6,6273) kz, zat, ofebrack, mx_use, iz_hi, kzalow,
 c-debug-chk;     $        (n_chk(ix),ix=1,20),
-c-debug-chk;     $        (chk_min(ix),ix=1,20), (chk_max(ix),ix=1,20),
-c-debug-chk;     $        (chk_sum(ix)/max(n_chk(ix),1),ix=1,20),
-c-debug-chk;     $        (sqrt(chk_ssq(ix)/max(n_chk(ix),1)),ix=1,20)
+c-debug-chk;     $        (chk_MIN(ix),ix=1,20), (chk_MAX(ix),ix=1,20),
+c-debug-chk;     $        (chk_sum(ix)/MAX(n_chk(ix),1),ix=1,20),
+c-debug-chk;     $        (sqrt(chk_ssq(ix)/MAX(n_chk(ix),1)),ix=1,20)
 c-debug-chk; 6273    format(' '/' kz =',i3,'  Z =',f10.6,'  [O/Fe] =',f6.3,
 c-debug-chk;     $        '  mx_use =',i3,'  iz_hi =',i2,'  kzalow =',i3,
 c-debug-chk;     $        ' : X_hi deltas:'/' '/' N',20i10/' min',20f10.6/
@@ -10112,7 +10121,7 @@ c
 c
 c  If required, read in CNO- and/or user-interpolation opacity tables
 c
-      if ( khighz_cno .eq. 0 ) then
+      if ( khighz_cno == 0 ) then
 c
          kavail_cno = 0
          kavail_user = 0
@@ -10122,7 +10131,7 @@ c
          kdel = 1
          if ( khighz_cno .ge. 2 ) then
             khi = n_totmix
-            if ( khighz_cno .eq. 2 ) then
+            if ( khighz_cno == 2 ) then
                kdel = khi - n_cnobeg
                kavail_cno = 0
             endif
@@ -10133,20 +10142,20 @@ c
 c		 ! get the 'GN93hz' Z-indices (may not have been done above)
          zat = z
          kzalbe = mzal
-         do while( kzalbe .gt. 1 .and. z .le. zalval(kzalbe)-1.e-6 )
+         do while( kzalbe > 1 .and. z .le. zalval(kzalbe)-1.e-6 )
             kzalbe = kzalbe-1
          enddo
-         if ( abs( zalval(kzalbe) - z ) .le. zacc(kz) ) then
+         if ( ABS( zalval(kzalbe) - z ) .le. zacc(kz) ) then
             zat = zalval(kzalbe)
             kzalow = kzalbe
             nzalmo = 0
          else
-            kzalow = max( 1 , kzalbe - 1 )
-            nzalmo = min( kzalbe + 2 , mzal ) - kzalow
+            kzalow = MAX( 1 , kzalbe - 1 )
+            nzalmo = MIN( kzalbe + 2 , mzal ) - kzalow
          endif
          int_hi_z = 0
 c			       ! set the directory-part of the opacity filename
-         if ( kope .eq. 0 ) then
+         if ( kope == 0 ) then
             cop_sto(1) = ' '
             cop_sto(2) = ' '
          else
@@ -10156,7 +10165,7 @@ c			       ! set the directory-part of the opacity filename
 c								! get filename
          if ( cfile_opalGS98(n_cnobeg) .ne. ' ' ) then
             cop_sto(1)(kope+1:) = cfile_opalGS98(n_cnobeg)
-         else if ( khighz .gt. 0 ) then
+         else if ( khighz > 0 ) then
             cop_sto(1)(kope+1:) = cfile_opalmixes(1)
          else
             cop_sto(1)(kope+1:) = cfile_opalGS98(1)
@@ -10170,7 +10179,7 @@ c							 ! loop over CNO-files
          do kfil = n_cnobeg, khi, kdel
 c
             iset = kfil - n_zmixes
-            if ( iset .eq. 1 ) iset = 5
+            if ( iset == 1 ) iset = 5
 c
             if ( cfile_opalGS98(kfil) .ne. ' ' ) then
                cop_sto(2)(kope+1:) = cfile_opalGS98(kfil)
@@ -10191,7 +10200,7 @@ c								! X=1-Z indices
 c
 c						! loop over 'GN93hz' X-values:
 c
-            do while ( ix .lt. mx_use .and. iz_hi .lt. 5 )
+            do while ( ix < mx_use .and. iz_hi < 5 )
 c							  ! get indices in co()
                ix = ix + 1
                call index_co_deltas( iset, ix, jx, jc, jo )
@@ -10200,7 +10209,7 @@ c							    ! & stored 'GN93hz'
 c
 c				! get Z and X values to look for in CNO-file
                iz_hi = nzalmo
-               if ( ix .eq. mx_use ) then
+               if ( ix == mx_use ) then
                   do iz = 0, nzalmo
                      zhi_look(iz+1) = zalval(kzalow+iz)
                      xhi_look(iz+1) = 1. - zhi_look(iz+1)
@@ -10208,16 +10217,16 @@ c				! get Z and X values to look for in CNO-file
                else
                   do iz = 0, nzalmo
                      zhi_look(iz+1) = zalval(kzalow+iz)
-                     xhi_look(iz+1) = min( xhi_in(ix) ,
+                     xhi_look(iz+1) = MIN( xhi_in(ix) ,
      $                    1. - zhi_look(iz+1) )
                   enddo
 c			! check for X-column bifurcation at Z = 0.05, X = 0.95
 c
-                  if ( ix .eq. mx_hi - 1 .and. nzalmo .eq. 3 ) then
-                     if ( zat .gt. 0.03 .and. zat .lt. 0.04 ) then
+                  if ( ix == mx_hi - 1 .and. nzalmo == 3 ) then
+                     if ( zat > 0.03 .and. zat < 0.04 ) then
                         iz_hi = 2
                         int_hi_z = 0
-                     else if ( zat .gt. 0.04 .and. zat .lt. 0.05 ) then
+                     else if ( zat > 0.04 .and. zat < 0.05 ) then
                         iz_hi = 5
                         int_hi_z = 0
                         zhi_look(5) = zhi_look(3)
@@ -10241,13 +10250,13 @@ c					       ! find mix; stop if not found
      $                 itab_dum,line(2),
      $                 zhi_look(kat),xhi_look(kat),0.0,0.0)
                   igetzxi = 0
-                  if ( ifound .eq. 0 ) then
+                  if ( ifound == 0 ) then
                      i_rewind = 1
                      ifound = mixfind(iu,-kfil,igetzxi,i_rewind,
      $                    itab_dum,line(2),
      $                    zhi_look(kat),xhi_look(kat),0.0,0.0)
                      igetzxi = 0
-                     if ( ifound .eq. 0 ) then
+                     if ( ifound == 0 ) then
                         write(6,1791) zhi_look(kat),xhi_look(kat),
      $                       0.0,0.0,cop_sto(2)(:last)
                         stop ' STOP -- READCO: error reading CNO-mix. '
@@ -10261,10 +10270,10 @@ c					   ! read logT, & logKappa(R) for all R
                      read(cin,'(f4.2,19f7.3)') flt,
      $                    (cofzhi(k,il,kat),il=1,nrm)
 c								   ! bad logT ?
-                     if ( abs(flogtin(k)-flt) .gt. 1.e-5 ) then
+                     if ( ABS(flogtin(k)-flt) > 1.e-5 ) then
                         write(6,1734) flt, flogtin(k),
      $                       cop_sto(2)(:lnblnk(cop_sto(2))),
-     $                       line(2), cin(:max(1,lnblnk(cin))),
+     $                       line(2), cin(:MAX(1,lnblnk(cin))),
      $                       zhi_look(kat),xhi_look(kat),0.0,0.0
                         stop ' STOP -- READCO: bad logT value. '
                      endif
@@ -10274,20 +10283,20 @@ c
 c							      ! logKappa(R) is:
                      do il = nrm, 1, -1
 c								       ! absent
-                        if ( cin(7*il-2:7*il+4) .eq. '       ' ) then
-                           il_hi = min( il_hi , il - 1 )
+                        if ( cin(7*il-2:7*il+4) == '       ' ) then
+                           il_hi = MIN( il_hi , il - 1 )
 c									! 9.999
-                        else if ( cofzhi(k,il,kat) .gt. 9. ) then
-                           il_lo = max( il_lo , il + 1 )
+                        else if ( cofzhi(k,il,kat) > 9. ) then
+                           il_lo = MAX( il_lo , il + 1 )
                         endif
                      enddo
 c								  ! for deltas
-                     if ( il_lo .gt. 1 .or. il_hi .lt. nrm ) then
+                     if ( il_lo > 1 .OR. il_hi < nrm ) then
                         do il = nrm, 1, -1
-                           if ( il .gt. il_hi ) then
+                           if ( il > il_hi ) then
                               cofzhi(k,il,kat) = 2. * cofzhi(k-1,il,kat)
      $                             - cofzhi(k-2,il,kat)
-                           else if ( il .lt. il_lo ) then
+                           else if ( il < il_lo ) then
                               cofzhi(k,il,kat) = 2. * cofzhi(k,il+1,kat)
      $                             - cofzhi(k,il+2,kat)
                            endif
@@ -10298,7 +10307,7 @@ c			   ! (end of loop to read opacities at all T-values):
 c			! (end of loop over required Z-values for this X):
                enddo
 c							      ! actual X at Zat
-               xcno_use(ix,kz) = min( xhi_in(ix) , 1. - zat )
+               xcno_use(ix,kz) = MIN( xhi_in(ix) , 1. - zat )
 c							     ! Z-interpolation:
                if ( iz_hi .le. 3 ) then
 c					! standard case: for all T,R:
@@ -10351,7 +10360,7 @@ c					     ! smooth CNO-opac, if init_smo > 1
                      call opaltab
                   endif
 c						 ! store X=1-Z hz-opacity set
-                  if ( kfil .eq. n_cnobeg ) then
+                  if ( kfil == n_cnobeg ) then
                      do il = 1, nr
                         jl = il + nrdel
                         do k = 1, nt
@@ -10386,12 +10395,12 @@ c					   ! smooth CNO-opac, if init_smo > 1
                   call opaltab
                endif
 c					      ! store present hz-opacity set
-               if ( kfil .eq. n_cnobeg ) then
+               if ( kfil == n_cnobeg ) then
                   do il = 1, nr
                      jl = il + nrdel
                      do k = 1, nt
 c-debug[
-c-debug;                        if ( co(jx,jc,jo,k,il,kz) .lt. badlogklim )
+c-debug;                        if ( co(jx,jc,jo,k,il,kz) < badlogklim )
 c-debug;     $                       stop ' STOP -- Error: CNO overwrite. '
 c-debug]
                         co(jx,jc,jo,k,il,kz) = coff(k+ntdel,jl)
@@ -10402,8 +10411,8 @@ c-debug]
                      jl = il + nrdel
                      do k = 1, nt
 c-debug[
-c-debug;                        if ( kfil .lt. n_totmix .and.
-c-debug;     $                       co(jx,jc,jo,k,il,kz) .lt. badlogklim )
+c-debug;                        if ( kfil < n_totmix .and.
+c-debug;     $                       co(jx,jc,jo,k,il,kz) < badlogklim )
 c-debug;     $                       stop ' STOP -- Error: CNO overwrite. '
 c-debug]
                         co(jx,jc,jo,k,il,kz) = coff(k+ntdel,jl)
@@ -10470,7 +10479,7 @@ c___
 c===
       is = 0
 c							 ! IF C+O = 0: trivial:
-      if ( max( abs(xxc) , abs(xxo) ) .lt. 1.e-6 ) then
+      if ( MAX( ABS(xxc) , ABS(xxo) ) < 1.e-6 ) then
          do it = k1,k1+ip
             do ir = l1,l1+iq(it-k1+1)
                opl(it,ir,kz) = co(m,1,1,it,ir,kz)
@@ -10479,13 +10488,13 @@ c							 ! IF C+O = 0: trivial:
          return
       endif
 c							 ! ELSE: if C,O not 0:
-      i3 = min( indx(int(100.*max(xxc,0.))+1) + 1 , nc )
-      i4 = min( i3+1 , nc )
-      i1 = max( i3-2 , 1 )
+      i3 = MIN( indx(int(100.*MAX(xxc,0.))+1) + 1 , nc )
+      i4 = MIN( i3+1 , nc )
+      i1 = MAX( i3-2 , 1 )
       i2 = i3-1
-      j3 = min( indx(int(100.*max(xxo,0.))+1) + 1 , no )
-      j4 = min( j3+1 , no )
-      j1 = max( j3-2 , 1 )
+      j3 = MIN( indx(int(100.*MAX(xxo,0.))+1) + 1 , no )
+      j4 = MIN( j3+1 , no )
+      j1 = MAX( j3-2 , 1 )
       j2 = j3-1
 c
       n2 = i1+1
@@ -10494,23 +10503,23 @@ c
       m3 = j1+2
 c			      ! if C > or = O: then j3 < no unless m=5, C=O=0.1
       if ( xxc .ge. xxo ) then
-         if ( i4 .gt. n3 ) cfac = (cxx-cx(i2))/(cx(i3)-cx(i2))
+         if ( i4 > n3 ) cfac = (cxx-cx(i2))/(cx(i3)-cx(i2))
 c							       ! if O = 0.0:
-         if ( abs(xxo) .lt. 1.e-6 ) then
+         if ( ABS(xxo) < 1.e-6 ) then
             if ( i4 .le. n3 ) then
                do it = k1,k1+ip
                   do ir = l1,l1+iq(it-k1+1)
                      opl(it,ir,kz) = qchk(is,1,cxx,co(m,i1,1,it,ir,kz),
      $                    co(m,n2,1,it,ir,kz),co(m,n3,1,it,ir,kz),
-     $                    cx(i1),cx(n2),min(cx(n3),cxd(1)))
+     $                    cx(i1),cx(n2),MIN(cx(n3),cxd(1)))
                      is = 1
 c-debug[
-c-debug;                     if ( ioudeb .gt. 5 .or. .not.
-c-debug;     $                    abs(opl(it,ir,kz)) .le. oudebl ) then
-c-debug;                        if ( ioudeb .le. 5 .or. ( it .eq. k1 .and.
-c-debug;     $                       ir .eq. l1 ) ) write(6,*) ' '
+c-debug;                     if ( ioudeb > 5 .OR. .not.
+c-debug;     $                    ABS(opl(it,ir,kz)) .le. oudebl ) then
+c-debug;                        if ( ioudeb .le. 5 .OR. ( it == k1 .and.
+c-debug;     $                       ir == l1 ) ) write(6,*) ' '
 c-debug;                        write(6,9414) m,it,ir,kz,'O=0','C',cxx,'K',
-c-debug;     $                       opl(it,ir,kz),0.,(j,1,min(cx(j),cxd(1)),
+c-debug;     $                       opl(it,ir,kz),0.,(j,1,MIN(cx(j),cxd(1)),
 c-debug;     $                       co(m,j,1,it,ir,kz),j=i1,n3)
 c-debug; 9414                   format(' COINTSMO(x',i1,',t',i2.2,',r',i2.2,
 c-debug;     $                       ',z',i2.2,')',a3,' ',a1,f11.7,' : ',a1,
@@ -10528,15 +10537,15 @@ c-debug]
      $                    co(m,i3,1,it,ir,kz),cx(i1),cx(i2),cx(i3))
      $                    + cfac * qchk(is,2,cxx,co(m,i2,1,it,ir,kz),
      $                    co(m,i3,1,it,ir,kz),co(m,i4,1,it,ir,kz),
-     $                    cx(i2),cx(i3),min(cx(i4),cxd(1)))
+     $                    cx(i2),cx(i3),MIN(cx(i4),cxd(1)))
                      is = 1
 c-debug[
-c-debug;                     if ( ioudeb .gt. 5 .or. .not.
-c-debug;     $                    abs(opl(it,ir,kz)) .le. oudebl ) then
-c-debug;                        if ( ioudeb .le. 5 .or. ( it .eq. k1 .and.
-c-debug;     $                       ir .eq. l1 ) ) write(6,*) ' '
+c-debug;                     if ( ioudeb > 5 .OR. .not.
+c-debug;     $                    ABS(opl(it,ir,kz)) .le. oudebl ) then
+c-debug;                        if ( ioudeb .le. 5 .OR. ( it == k1 .and.
+c-debug;     $                       ir == l1 ) ) write(6,*) ' '
 c-debug;                        write(6,9414) m,it,ir,kz,'O=0','C',cxx,'K',
-c-debug;     $                       opl(it,ir,kz),cfac,(j,1,min(cx(j),cxd(1)),
+c-debug;     $                       opl(it,ir,kz),cfac,(j,1,MIN(cx(j),cxd(1)),
 c-debug;     $                       co(m,j,1,it,ir,kz),j=i1,i4)
 c-debug;                     endif
 c-debug]
@@ -10547,10 +10556,10 @@ c-debug]
          endif
 c						! else if C > O, and O not 0.0
          icomax = -1
-         if ( xxco .gt. xcd(1) - 1.e-6 ) icomax = 1
-         if ( j1 .lt. j2 ) ofac = (oxx-ox(j2))/(ox(j3)-ox(j2))
-         if ( icomax .lt. 0 ) then
-            i4 = min( i4 , n(m,j2,kz) )
+         if ( xxco > xcd(1) - 1.e-6 ) icomax = 1
+         if ( j1 < j2 ) ofac = (oxx-ox(j2))/(ox(j3)-ox(j2))
+         if ( icomax < 0 ) then
+            i4 = MIN( i4 , n(m,j2,kz) )
             cof(i1,1) = cx(i1)
             cof(i2,1) = cx(i2)
             cof(i3,1) = cx(i3)
@@ -10575,34 +10584,34 @@ c						! else if C > O, and O not 0.0
          ihi = i4
          if ( icomax .ge. 0 ) then
             ihi = i4-1
-            if ( j4 .lt. no ) then
+            if ( j4 < no ) then
                j2m(i4) = n(m,j4,kz)
                j4m(i4) = j4
                cof(4,4) = ox(j4)
             else
-               j2m(i4) = max( n(m,j4-1,kz) - 2 , 1 )
+               j2m(i4) = MAX( n(m,j4-1,kz) - 2 , 1 )
                j4m(i4) = mo
                cof(4,4) = oxd(j2m(i4))
             endif
             j4n = 0
-            if ( xxo .gt. xod(nc-1) + 1.e-6 ) then
-               if ( icomax .gt. 0 ) cof(i4,1) = log10(zzz(kz)+xcdp)
-               bfac = min( 0.5 , ( xxo - xod(nc-1) )
-     $              / max( xod(1)-2.*xod(nc-1) , 1.e-6 ) )
-               ib3 = min( indx(int(100.*max(xcdp,0.))+1) + 1 , nc )
-               ib4 = min( ib3 + 1 , nc )
-               ib1 = max( ib3 - 2 , 1 )
+            if ( xxo > xod(nc-1) + 1.e-6 ) then
+               if ( icomax > 0 ) cof(i4,1) = log10(zzz(kz)+xcdp)
+               bfac = MIN( 0.5 , ( xxo - xod(nc-1) )
+     $              / MAX( xod(1)-2.*xod(nc-1) , 1.e-6 ) )
+               ib3 = MIN( indx(int(100.*MAX(xcdp,0.))+1) + 1 , nc )
+               ib4 = MIN( ib3 + 1 , nc )
+               ib1 = MAX( ib3 - 2 , 1 )
                ib2 = ib3-1
                nb2 = ib1+1
                nb3 = ib1+2
-               if ( ib4 .gt. nb3 )
+               if ( ib4 > nb3 )
      $              afac = (cof(i4,1)-cx(ib2))/(cx(ib3)-cx(ib2))
-               if ( ib4 .lt. nc ) then
+               if ( ib4 < nc ) then
                   j2n = ib4
                   j4n = mo
                   cof(5,5) = cx(ib4)
                else
-                  j4n = max( n(m,ib4-1,kz) - 2 , 1 )
+                  j4n = MAX( n(m,ib4-1,kz) - 2 , 1 )
                   j2n = n(m,j4n,kz)
                   cof(5,5) = cxd(j4n)
                endif
@@ -10630,7 +10639,7 @@ c
      $                    co(m,j2m(i4),j4m(i4),it,ir,kz),
      $                    ox(j2),ox(j3),cof(4,4))
                   endif
-                  if ( j4n .gt. 0 ) then
+                  if ( j4n > 0 ) then
                      if ( ib4 .le. nb3 ) then
                         cof(i4,2) = (1.-bfac) * cof(i4,2)
      $                       + bfac * qchk(is,11,cof(i4,1),
@@ -10652,7 +10661,7 @@ c
                      endif
                   endif
                endif
-               if ( icomax .gt. 0 ) then
+               if ( icomax > 0 ) then
                   opl(it,ir,kz) = cof(i4,2)
                else
                   iw = 0
@@ -10662,7 +10671,7 @@ c
                         cof(i,2) = qchk(is,iw,oxx,co(m,i,j1,it,ir,kz),
      $                       co(m,i,j2m(i),it,ir,kz),
      $                       co(m,i,j3m(i),it,ir,kz),ox(j1),
-     $                       min(ox(m2),oxd(i)),min(ox(m3),oxd(i)))
+     $                       MIN(ox(m2),oxd(i)),MIN(ox(m3),oxd(i)))
                      else
                         cof(i,2) = (1.-ofac) * qchk(is,iw,oxx,
      $                       co(m,i,j1,it,ir,kz),co(m,i,j2,it,ir,kz),
@@ -10671,7 +10680,7 @@ c
      $                       co(m,i,j2,it,ir,kz),
      $                       co(m,i,j3,it,ir,kz),
      $                       co(m,i,j4m(i),it,ir,kz),
-     $                       ox(j2),ox(j3),min(ox(j4),oxd(i)))
+     $                       ox(j2),ox(j3),MIN(ox(j4),oxd(i)))
                      endif
                   enddo
                   if ( i4 .le. n3 ) then
@@ -10687,13 +10696,13 @@ c
                endif
                is = 1
 c-debug[
-c-debug;               if ( ioudeb .gt. 5 .or.
-c-debug;     $              .not. abs(opl(it,ir,kz)) .le. oudebl .or.
-c-debug;     $              .not. abs(cof(i4,2)) .le. oudebl .or.
+c-debug;               if ( ioudeb > 5 .OR.
+c-debug;     $              .not. ABS(opl(it,ir,kz)) .le. oudebl .OR.
+c-debug;     $              .not. ABS(cof(i4,2)) .le. oudebl .OR.
 c-debug;     $              ( icomax .le. 0 .and.
-c-debug;     $              ( .not. abs(cof(i1,2)) .le. oudebl .or.
-c-debug;     $              .not. abs(cof(i2,2)) .le. oudebl .or.
-c-debug;     $              .not. abs(cof(i3,2)) .le. oudebl ) ) ) then
+c-debug;     $              ( .not. ABS(cof(i1,2)) .le. oudebl .OR.
+c-debug;     $              .not. ABS(cof(i2,2)) .le. oudebl .OR.
+c-debug;     $              .not. ABS(cof(i3,2)) .le. oudebl ) ) ) then
 c-debug;                  write(6,*) ' '
 c-debug;                  if ( icomax .le. 0 ) then
 c-debug;                     do i = i1,ihi
@@ -10701,15 +10710,15 @@ c-debug;                        if ( j4m(i) .le. j3m(i) ) then
 c-debug;                           write(6,9414) m,it,ir,kz,'C>O','O',oxx,
 c-debug;     $                          'K',cof(i,2),0.,i,j1,ox(j1),
 c-debug;     $                          co(m,i,j1,it,ir,kz),
-c-debug;     $                          i,j2m(i),min(ox(m2),oxd(i)),
+c-debug;     $                          i,j2m(i),MIN(ox(m2),oxd(i)),
 c-debug;     $                          co(m,i,j2m(i),it,ir,kz),
-c-debug;     $                          i,j3m(i),min(ox(m3),oxd(i)),
+c-debug;     $                          i,j3m(i),MIN(ox(m3),oxd(i)),
 c-debug;     $                          co(m,i,j3m(i),it,ir,kz)
 c-debug;                        else
 c-debug;                           write(6,9414) m,it,ir,kz,'C>O','O',oxx,
 c-debug;     $                          'K',cof(i,2),ofac,(i,j,ox(j),
 c-debug;     $                          co(m,i,j,it,ir,kz),j=j1,j3),
-c-debug;     $                          i,j4m(i),min(ox(j4),oxd(i)),
+c-debug;     $                          i,j4m(i),MIN(ox(j4),oxd(i)),
 c-debug;     $                          co(m,i,j4m(i),it,ir,kz)
 c-debug;                        endif
 c-debug;                     enddo
@@ -10720,7 +10729,7 @@ c-debug;     $                 'o',oxx,'K',cof(i4,2),ofac,(n(m,j,kz),j,ox(j),
 c-debug;     $                 co(m,n(m,j,kz),j,it,ir,kz),j=j1,j4-1),j2m(i4),
 c-debug;     $                 j4m(i4),cof(4,4),co(m,j2m(i4),j4m(i4),it,ir,kz)
 c-debug;                  if ( ib4 .le. nb3 ) afac = 0.
-c-debug;                  if ( icomax .ge. 0 .and. j4n .gt. 0 ) write(6,9414)
+c-debug;                  if ( icomax .ge. 0 .and. j4n > 0 ) write(6,9414)
 c-debug;     $                 m,it,ir,kz,'C>O','c',cof(i4,1),'b',bfac,afac,
 c-debug;     $                 (j,mo,cx(j),co(m,j,mo,it,ir,kz),j=ib1,ib4-1),
 c-debug;     $                 j2n,j4n,cof(5,5),co(m,j2n,j4n,it,ir,kz)
@@ -10738,9 +10747,9 @@ c-debug]
          enddo
 c					! else if C < O: then i3 < nc
       else
-         if ( j4 .gt. m3 ) ofac = (oxx-ox(j2))/(ox(j3)-ox(j2))
+         if ( j4 > m3 ) ofac = (oxx-ox(j2))/(ox(j3)-ox(j2))
 c							       ! if C = 0.0:
-         if ( abs(xxc) .lt. 1.e-6 ) then
+         if ( ABS(xxc) < 1.e-6 ) then
             if ( j4 .le. m3 ) then
                j3m(1) = m3
                if ( m3 .ge. no ) j3m(1) = mo
@@ -10748,17 +10757,17 @@ c							       ! if C = 0.0:
                   do ir = l1,l1+iq(it-k1+1)
                      opl(it,ir,kz) = qchk(is,1,oxx,co(m,1,j1,it,ir,kz),
      $                    co(m,1,m2,it,ir,kz),co(m,1,j3m(1),it,ir,kz),
-     $                    ox(j1),ox(m2),min(ox(m3),oxd(1)))
+     $                    ox(j1),ox(m2),MIN(ox(m3),oxd(1)))
                      is = 1
 c-debug[
-c-debug;                     if ( ioudeb .gt. 5 .or. .not.
-c-debug;     $                    abs(opl(it,ir,kz)) .le. oudebl ) then
-c-debug;                        if ( ioudeb .le. 5 .or. ( it .eq. k1 .and.
-c-debug;     $                       ir .eq. l1 ) ) write(6,*) ' '
+c-debug;                     if ( ioudeb > 5 .OR. .not.
+c-debug;     $                    ABS(opl(it,ir,kz)) .le. oudebl ) then
+c-debug;                        if ( ioudeb .le. 5 .OR. ( it == k1 .and.
+c-debug;     $                       ir == l1 ) ) write(6,*) ' '
 c-debug;                        write(6,9414) m,it,ir,kz,'C=0','O',oxx,'K',
 c-debug;     $                       opl(it,ir,kz),0.,(1,j,ox(j),
 c-debug;     $                       co(m,1,j,it,ir,kz),j=j1,m2),1,j3m(1),
-c-debug;     $                       co(m,1,j3m(1),it,ir,kz),min(ox(j3),oxd(1))
+c-debug;     $                       co(m,1,j3m(1),it,ir,kz),MIN(ox(j3),oxd(1))
 c-debug;                     endif
 c-debug]
                   enddo
@@ -10773,18 +10782,18 @@ c-debug]
      $                    co(m,1,j3,it,ir,kz),ox(j1),ox(j2),ox(j3))
      $                    + ofac * qchk(is,2,oxx,co(m,1,j2,it,ir,kz),
      $                    co(m,1,j3,it,ir,kz),co(m,1,j4m(1),it,ir,kz),
-     $                    ox(j2),ox(j3),min(ox(j4),oxd(1)))
+     $                    ox(j2),ox(j3),MIN(ox(j4),oxd(1)))
                      is = 1
 c-debug[
-c-debug;                     if ( ioudeb .gt. 5 .or. .not.
-c-debug;     $                    abs(opl(it,ir,kz)) .le. oudebl ) then
-c-debug;                        if ( ioudeb .le. 5 .or. ( it .eq. k1 .and.
-c-debug;     $                       ir .eq. l1 ) ) write(6,*) ' '
+c-debug;                     if ( ioudeb > 5 .OR. .not.
+c-debug;     $                    ABS(opl(it,ir,kz)) .le. oudebl ) then
+c-debug;                        if ( ioudeb .le. 5 .OR. ( it == k1 .and.
+c-debug;     $                       ir == l1 ) ) write(6,*) ' '
 c-debug;                        write(6,9414) m,it,ir,kz,'C=0','O',oxx,'K',
 c-debug;     $                       opl(it,ir,kz),ofac,(1,j,ox(j),
 c-debug;     $                       co(m,1,j,it,ir,kz),j=j1,j3),
 c-debug;     $                       1,j4m(1),co(m,1,j4m(1),it,ir,kz),
-c-debug;     $                       min(ox(j4),oxd(1))
+c-debug;     $                       MIN(ox(j4),oxd(1))
 c-debug;                     endif
 c-debug]
                   enddo
@@ -10794,10 +10803,10 @@ c-debug]
          endif
 c						! else if O > C, and C not 0.0:
          icomax = -1
-         if ( xxco .gt. xcd(1)-1.e-6 ) icomax = 1
-         if ( i1 .lt. i2 ) cfac = (cxx-cx(i2))/(cx(i3)-cx(i2))
-         if ( icomax .lt. 0 ) then
-            j4 = min( j4 , n(m,i2,kz) )
+         if ( xxco > xcd(1)-1.e-6 ) icomax = 1
+         if ( i1 < i2 ) cfac = (cxx-cx(i2))/(cx(i3)-cx(i2))
+         if ( icomax < 0 ) then
+            j4 = MIN( j4 , n(m,i2,kz) )
             cof(j1,1) = ox(j1)
             cof(j2,1) = ox(j2)
             cof(j3,1) = ox(j3)
@@ -10814,34 +10823,34 @@ c						! else if O > C, and C not 0.0:
          ihi = j4
          if ( icomax .ge. 0 ) then
             ihi = j4-1
-            if ( i4 .lt. nc ) then
+            if ( i4 < nc ) then
                j2m(4) = i4
                j4m(4) = mo
                cof(4,4) = cx(i4)
             else
-               j4m(4) = max( n(m,i4-1,kz) - 2 , 1 )
+               j4m(4) = MAX( n(m,i4-1,kz) - 2 , 1 )
                j2m(4) = n(m,j4m(4),kz)
                cof(4,4) = cxd(j4m(4))
             endif
             j4n = 0
-            if ( xxc .gt. xcd(no-1) + 1.e-6 ) then
-               if ( icomax .gt. 0 ) cof(j4,1) = log10(zzz(kz)+xodp)
-               bfac = min((xxc-xcd(no-1))/max(xcd(1)-2.*xcd(no-1),
+            if ( xxc > xcd(no-1) + 1.e-6 ) then
+               if ( icomax > 0 ) cof(j4,1) = log10(zzz(kz)+xodp)
+               bfac = MIN((xxc-xcd(no-1))/MAX(xcd(1)-2.*xcd(no-1),
      $              1.e-6),0.5)
-               jb3 = min( indx(int(100.*max(xodp,0.))+1) + 1 , no )
-               jb4 = min( jb3+1 , no )
-               jb1 = max( jb3-2 , 1 )
+               jb3 = MIN( indx(int(100.*MAX(xodp,0.))+1) + 1 , no )
+               jb4 = MIN( jb3+1 , no )
+               jb1 = MAX( jb3-2 , 1 )
                jb2 = jb3-1
                mb2 = jb1+1
                mb3 = jb1+2
-               if ( jb4 .gt. mb3 )
+               if ( jb4 > mb3 )
      $              afac = (cof(j4,1)-ox(jb2))/(ox(jb3)-ox(jb2))
-               if ( jb4 .lt. no ) then
+               if ( jb4 < no ) then
                   j2n = n(m,jb4,kz)
                   j4n = jb4
                   cof(5,5) = ox(jb4)
                else
-                  j2n = max( n(m,jb4-1,kz) - 2 , 1 )
+                  j2n = MAX( n(m,jb4-1,kz) - 2 , 1 )
                   j4n = mo
                   cof(5,5) = oxd(j2n)
                endif
@@ -10865,7 +10874,7 @@ c
      $                    co(m,j2m(4),j4m(4),it,ir,kz),
      $                    cx(i2),cx(i3),cof(4,4))
                   endif
-                  if ( j4n .gt. 0 ) then
+                  if ( j4n > 0 ) then
                      if ( jb4 .le. mb3 ) then
                         cof(j4,2) = (1.-bfac) * cof(j4,2)
      $                       + bfac * qchk(is,11,cof(j4,1),
@@ -10888,18 +10897,18 @@ c
                      endif
                   endif
                endif
-               if ( icomax .gt. 0 ) then
+               if ( icomax > 0 ) then
                   opl(it,ir,kz) = cof(j4,2)
                else
                   iw = 0
                   do i = j1,ihi
                      iw = iw+1
-                     if ( i4 .le. n3 .or. i4 .gt. n(m,i,kz) ) then
+                     if ( i4 .le. n3 .OR. i4 > n(m,i,kz) ) then
                         cof(i,2) = qchk(is,iw,cxx,co(m,i1,i,it,ir,kz),
      $                       co(m,n2,i,it,ir,kz),
-     $                       co(m,min(n3,n(m,i,kz)),i,it,ir,kz),
-     $                       cx(i1),min(cx(n2),cxd(i)),
-     $                       min(cx(n3),cxd(i)))
+     $                       co(m,MIN(n3,n(m,i,kz)),i,it,ir,kz),
+     $                       cx(i1),MIN(cx(n2),cxd(i)),
+     $                       MIN(cx(n3),cxd(i)))
                      else
                         cof(i,2) = (1.-cfac) * qchk(is,iw,cxx,
      $                       co(m,i1,i,it,ir,kz),co(m,i2,i,it,ir,kz),
@@ -10907,7 +10916,7 @@ c
      $                       + cfac * qchk(is,iw+4,cxx,
      $                       co(m,i2,i,it,ir,kz),co(m,i3,i,it,ir,kz),
      $                       co(m,i4,i,it,ir,kz),
-     $                       cx(i2),cx(i3),min(cx(i4),cxd(i)))
+     $                       cx(i2),cx(i3),MIN(cx(i4),cxd(i)))
                      endif
                   enddo
                   if ( j4 .le. m3 ) then
@@ -10923,26 +10932,26 @@ c
                endif
                is = 1
 c-debug[
-c-debug;               if ( ioudeb .gt. 5 .or.
-c-debug;     $              .not. abs(opl(it,ir,kz)) .le. oudebl .or.
-c-debug;     $              .not. abs(cof(j4,2)) .le. oudebl .or.
+c-debug;               if ( ioudeb > 5 .OR.
+c-debug;     $              .not. ABS(opl(it,ir,kz)) .le. oudebl .OR.
+c-debug;     $              .not. ABS(cof(j4,2)) .le. oudebl .OR.
 c-debug;     $              ( icomax .le. 0 .and.
-c-debug;     $              ( .not. abs(cof(j1,2)) .le. oudebl .or.
-c-debug;     $              .not. abs(cof(j2,2)) .le. oudebl .or.
-c-debug;     $              .not. abs(cof(j3,2)) .le. oudebl ) ) ) then
+c-debug;     $              ( .not. ABS(cof(j1,2)) .le. oudebl .OR.
+c-debug;     $              .not. ABS(cof(j2,2)) .le. oudebl .OR.
+c-debug;     $              .not. ABS(cof(j3,2)) .le. oudebl ) ) ) then
 c-debug;                  write(6,*) ' '
 c-debug;                  if ( icomax .le. 0 ) then
 c-debug;                     do i = j1,ihi
-c-debug;                        if ( i4 .le. n3 .or. i4 .gt. n(m,i,kz) ) then
+c-debug;                        if ( i4 .le. n3 .OR. i4 > n(m,i,kz) ) then
 c-debug;                           write(6,9414) m,it,ir,kz,'C<O','C',cxx,'K',
 c-debug;     $                          cof(i,2),0.,i1,i,cx(i1),
 c-debug;     $                          co(m,i1,i,it,ir,kz),n2,i,
-c-debug;     $                          min(cx(n2),cxd(i)),co(m,n2,i,it,ir,kz),
-c-debug;     $                          min(n3,n(m,i,kz)),i,min(cx(n3),cxd(i)),
-c-debug;     $                          co(m,min(n3,n(m,i,kz)),i,it,ir,kz)
+c-debug;     $                          MIN(cx(n2),cxd(i)),co(m,n2,i,it,ir,kz),
+c-debug;     $                          MIN(n3,n(m,i,kz)),i,MIN(cx(n3),cxd(i)),
+c-debug;     $                          co(m,MIN(n3,n(m,i,kz)),i,it,ir,kz)
 c-debug;                        else
 c-debug;                           write(6,9414) m,it,ir,kz,'C<O','C',cxx,'K',
-c-debug;     $                          cof(i,2),cfac,(j,i,min(cx(j),cxd(i)),
+c-debug;     $                          cof(i,2),cfac,(j,i,MIN(cx(j),cxd(i)),
 c-debug;     $                          co(m,j,i,it,ir,kz),j=i1,i4)
 c-debug;                        endif
 c-debug;                     enddo
@@ -10953,7 +10962,7 @@ c-debug;     $                 'C<O','c',cxx,'K',cof(j4,2),cfac,(j,mo,cx(j),
 c-debug;     $                 co(m,j,mo,it,ir,kz),j=i1,i4-1),j2m(4),
 c-debug;     $                 j4m(4),cof(4,4),co(m,j2m(4),j4m(4),it,ir,kz)
 c-debug;                  if ( jb4 .le. mb3 ) afac = 0.
-c-debug;                  if ( icomax .ge. 0 .and. j4n .gt. 0 ) write(6,9414)
+c-debug;                  if ( icomax .ge. 0 .and. j4n > 0 ) write(6,9414)
 c-debug;     $                 m,it,ir,kz,'C<O','o',cof(j4,1),'b',bfac,afac,
 c-debug;     $                 (n(m,j,kz),j,ox(j),co(m,n(m,j,kz),j,it,ir,kz),
 c-debug;     $                 j=jb1,jb4-1),j2n,j4n,cof(5,5),
@@ -11019,7 +11028,7 @@ c-debug]
 c
       is = 0
 c							! if C+O = 0:
-      if ( max( abs(xxc) , abs(xxo) ) .lt. 1.e-6 ) then
+      if ( MAX( ABS(xxc) , ABS(xxo) ) < 1.e-6 ) then
          do it = k1,k1+ip
             do ir = l1,l1+iq(it-k1+1)
                opl(it,ir,kz) = co(m,1,1,it,ir,kz)
@@ -11029,16 +11038,16 @@ c
          return
 c         ! include boundaries (later, fix any possible division by 0)
 c
-      else if ( xxc .gt. xcd(3)-1.e-6 ) then
+      else if ( xxc > xcd(3)-1.e-6 ) then
 c__________
          oxdp = log10(zzz(kz)+xodp)
 c					  ! interpolation in region c1:
 c
 c     ! include boundaries (qchk & fac fix any possible division by 0)
 c
-         if ( xxc .gt. xcd(2)-1.e-6 ) then
+         if ( xxc > xcd(2)-1.e-6 ) then
 c				     ! handle possibility that xodp = 0
-            fac = max(min((oxx-ox(1))/max(oxdp-ox(1),1.e-6),1.),0.)
+            fac = MAX(MIN((oxx-ox(1))/MAX(oxdp-ox(1),1.e-6),1.),0.)
 c
             do it = k1,k1+ip
                do ir = l1,l1+iq(it-k1+1)
@@ -11053,10 +11062,10 @@ c				     ! handle possibility that xodp = 0
                   opl(it,ir,kz) = b(1)+(b(2)-b(1))*fac
                   is = 1
 c-debug[
-c-debug;                  if ( .not. abs(opl(it,ir,kz)) .le. oudebl .or.
-c-debug;     $                 .not. abs(b(1)) .le. oudebl .or.
-c-debug;     $                 .not. abs(b(2)) .le. oudebl .or.
-c-debug;     $                 ioudeb .gt. 5 ) then
+c-debug;                  if ( .not. ABS(opl(it,ir,kz)) .le. oudebl .OR.
+c-debug;     $                 .not. ABS(b(1)) .le. oudebl .OR.
+c-debug;     $                 .not. ABS(b(2)) .le. oudebl .OR.
+c-debug;     $                 ioudeb > 5 ) then
 c-debug;                     write(6,9413) m,kz,xxc,xxo,xxc+xxo,xxco,
 c-debug;     $                    xc(nc),nc,(n(m,j,kz),j=1,nc)
 c-debug;                     koudeb = koudeb+1
@@ -11107,11 +11116,11 @@ c					  ! interpolation in region c2:
      $                 ox(1),ox(2),oxdp)
                   is = 1
 c-debug[
-c-debug;                  if ( .not. abs(opl(it,ir,kz)) .le. oudebl .or.
-c-debug;     $                 .not. abs(b(1)) .le. oudebl .or.
-c-debug;     $                 .not. abs(b(2)) .le. oudebl .or.
-c-debug;     $                 .not. abs(b(3)) .le. oudebl .or.
-c-debug;     $                 ioudeb .gt. 5 ) then
+c-debug;                  if ( .not. ABS(opl(it,ir,kz)) .le. oudebl .OR.
+c-debug;     $                 .not. ABS(b(1)) .le. oudebl .OR.
+c-debug;     $                 .not. ABS(b(2)) .le. oudebl .OR.
+c-debug;     $                 .not. ABS(b(3)) .le. oudebl .OR.
+c-debug;     $                 ioudeb > 5 ) then
 c-debug;                     write(6,9413) m,kz,xxc,xxo,xxc+xxo,xxco,
 c-debug;     $                    xc(nc),nc,(n(m,j,kz),j=1,nc)
 c-debug;                     koudeb = koudeb+1
@@ -11158,8 +11167,8 @@ c
 c	   ! do not go beyond middle (where c3-c6 overlaps o3-o6), and
 c	   ! include boundaries (qchk fixes any possible division by 0)
 c
-            if ( xxc .gt. xcd(i)-1.e-6 .and. xxo .gt. xo(i-1)-1.e-6
-     $           .and. xcd(i-1) .gt. xc(i-1) ) then
+            if ( xxc > xcd(i)-1.e-6 .and. xxo > xo(i-1)-1.e-6
+     $           .and. xcd(i-1) > xc(i-1) ) then
 c
                oxdp = log10(zzz(kz)+xodp)
                m1 = i-1
@@ -11186,11 +11195,11 @@ c
      $                    ox(m2),ox(m1),oxdp)
                      is = 1
 c-debug[
-c-debug;                     if ( .not. abs(opl(it,ir,kz)) .le. oudebl .or.
-c-debug;     $                    .not. abs(b(1)) .le. oudebl .or.
-c-debug;     $                    .not. abs(b(2)) .le. oudebl .or.
-c-debug;     $                    .not. abs(b(3)) .le. oudebl .or.
-c-debug;     $                    ioudeb .gt. 5 ) then
+c-debug;                     if ( .not. ABS(opl(it,ir,kz)) .le. oudebl .OR.
+c-debug;     $                    .not. ABS(b(1)) .le. oudebl .OR.
+c-debug;     $                    .not. ABS(b(2)) .le. oudebl .OR.
+c-debug;     $                    .not. ABS(b(3)) .le. oudebl .OR.
+c-debug;     $                    ioudeb > 5 ) then
 c-debug;                        write(6,9413) m,kz,xxc,xxo,xxc+xxo,xxco,
 c-debug;     $                       xc(nc),nc,(n(m,j,kz),j=1,nc)
 c-debug;                        koudeb = koudeb+1
@@ -11242,16 +11251,16 @@ c
 c
 c	   ! include boundaries (later, fix any possible division by 0)
 c
-      if ( xxo .gt. xod(3)-1.e-6 ) then
+      if ( xxo > xod(3)-1.e-6 ) then
 c__________
          cxdp = log10(zzz(kz)+xcdp)
 c					  ! interpolation in region o1:
 c
 c     ! include boundaries (qchk & fac fix any possible division by 0)
 c
-         if ( xxo .gt. xod(2)-1.e-6 ) then
+         if ( xxo > xod(2)-1.e-6 ) then
 c				     ! handle possibility that xcdp = 0
-            fac = max(min((cxx-cx(1))/max(cxdp-cx(1),1.e-6),1.),0.)
+            fac = MAX(MIN((cxx-cx(1))/MAX(cxdp-cx(1),1.e-6),1.),0.)
 c
             do it = k1,k1+ip
                do ir = l1,l1+iq(it-k1+1)
@@ -11265,10 +11274,10 @@ c				     ! handle possibility that xcdp = 0
                   opl(it,ir,kz) = b(1)+(b(2)-b(1))*fac
                   is = 1
 c-debug[
-c-debug;                  if ( .not. abs(opl(it,ir,kz)) .le. oudebl .or.
-c-debug;     $                 .not. abs(b(1)) .le. oudebl .or.
-c-debug;     $                 .not. abs(b(2)) .le. oudebl .or.
-c-debug;     $                 ioudeb .gt. 5 ) then
+c-debug;                  if ( .not. ABS(opl(it,ir,kz)) .le. oudebl .OR.
+c-debug;     $                 .not. ABS(b(1)) .le. oudebl .OR.
+c-debug;     $                 .not. ABS(b(2)) .le. oudebl .OR.
+c-debug;     $                 ioudeb > 5 ) then
 c-debug;                     write(6,9413) m,kz,xxc,xxo,xxc+xxo,xxco,
 c-debug;     $                    xc(nc),nc,(n(m,j,kz),j=1,nc)
 c-debug;                     koudeb = koudeb+1
@@ -11310,11 +11319,11 @@ c					  ! interpolation in region o2:
      $                 cx(1),cx(2),cxdp)
                   is = 1
 c-debug[
-c-debug;                  if ( .not. abs(opl(it,ir,kz)) .le. oudebl .or.
-c-debug;     $                 .not. abs(b(1)) .le. oudebl .or.
-c-debug;     $                 .not. abs(b(2)) .le. oudebl .or.
-c-debug;     $                 .not. abs(b(3)) .le. oudebl .or.
-c-debug;     $                 ioudeb .gt. 5 ) then
+c-debug;                  if ( .not. ABS(opl(it,ir,kz)) .le. oudebl .OR.
+c-debug;     $                 .not. ABS(b(1)) .le. oudebl .OR.
+c-debug;     $                 .not. ABS(b(2)) .le. oudebl .OR.
+c-debug;     $                 .not. ABS(b(3)) .le. oudebl .OR.
+c-debug;     $                 ioudeb > 5 ) then
 c-debug;                     write(6,9413) m,kz,xxc,xxo,xxc+xxo,xxco,
 c-debug;     $                    xc(nc),nc,(n(m,j,kz),j=1,nc)
 c-debug;                     koudeb = koudeb+1
@@ -11359,8 +11368,8 @@ c
 c	   ! do not go beyond middle (where o3-o6 overlaps c3-c6), and
 c	   ! include boundaries (qchk fixes any possible division by 0)
 c
-            if ( xxo .gt. xod(i)-1.e-6 .and. xxc .ge. xc(i-1)-1.e-6
-     $           .and. xod(i-1) .gt. xo(i-1)-1.e-6 ) then
+            if ( xxo > xod(i)-1.e-6 .and. xxc .ge. xc(i-1)-1.e-6
+     $           .and. xod(i-1) > xo(i-1)-1.e-6 ) then
 c
                cxdp = log10(zzz(kz)+xcdp)
                m2 = i-2
@@ -11385,11 +11394,11 @@ c
      $                    cx(m2),cx(m1),cxdp)
                      is = 1
 c-debug[
-c-debug;                     if ( .not. abs(opl(it,ir,kz)) .le. oudebl .or.
-c-debug;     $                    .not. abs(b(1)) .le. oudebl .or.
-c-debug;     $                    .not. abs(b(2)) .le. oudebl .or.
-c-debug;     $                    .not. abs(b(3)) .le. oudebl .or.
-c-debug;     $                    ioudeb .gt. 5 ) then
+c-debug;                     if ( .not. ABS(opl(it,ir,kz)) .le. oudebl .OR.
+c-debug;     $                    .not. ABS(b(1)) .le. oudebl .OR.
+c-debug;     $                    .not. ABS(b(2)) .le. oudebl .OR.
+c-debug;     $                    .not. ABS(b(3)) .le. oudebl .OR.
+c-debug;     $                    ioudeb > 5 ) then
 c-debug;                        write(6,9413) m,kz,xxc,xxo,xxc+xxo,xxco,
 c-debug;     $                       xc(nc),nc,(n(m,j,kz),j=1,nc)
 c-debug;                        koudeb = koudeb+1
@@ -11444,22 +11453,22 @@ c
 c.....find index of C grid
 c                 (must also allow index = nc, to avoid extrapolation)
 c
-      ie = 100 * max( xxc , 0. ) + 1
-      i3 = max( min( indx(ie) + 1 , nc ) , 3 )
+      ie = 100 * MAX( xxc , 0. ) + 1
+      i3 = MAX( MIN( indx(ie) + 1 , nc ) , 3 )
       i1 = i3-2
       i2 = i3-1
 c
 c.....find index of O grid:
 c                   must also allow index = no, to avoid extrapolation
 c
-      ie = 100 * max( xxo , 0. ) + 1
-      j3 = max( min( indx(ie) + 1 , no ) , 3 )
+      ie = 100 * MAX( xxo , 0. ) + 1
+      j3 = MAX( MIN( indx(ie) + 1 , no ) , 3 )
       j1 = j3-2
       j2 = j3-1
 c			! lower-O part of grid: interpolate C before O:
 c
-      if ( j3 .lt. no .and. i3 .le. n(m,j3,kz) .and. 
-     $     ( xxc .lt. xcd(j3)+1.e-6 .or. xxc .ge. xxo ) ) then
+      if ( j3 < no .and. i3 .le. n(m,j3,kz) .and. 
+     $     ( xxc < xcd(j3)+1.e-6 .OR. xxc .ge. xxo ) ) then
 c
          do it = k1,k1+ip
             do ir = l1,l1+iq(it-k1+1)
@@ -11469,18 +11478,18 @@ c
 c		 ! if i3 = n(m,jx,kz), must replace cx(i3) with cxd(jx)
                   b(iw) = qchk(is,iw,cxx,co(m,i1,jx,it,ir,kz),
      $                 co(m,i2,jx,it,ir,kz),co(m,i3,jx,it,ir,kz),
-     $                 cx(i1),cx(i2),min(cx(i3),cxd(jx)))
+     $                 cx(i1),cx(i2),MIN(cx(i3),cxd(jx)))
                enddo
                iw = iw+1
                opl(it,ir,kz) = qchk(is,iw,oxx,b(1),b(2),b(3),
      $              ox(j1),ox(j2),ox(j3))
                is = 1
 c-debug[
-c-debug;               if ( .not. abs(opl(it,ir,kz)) .le. oudebl .or.
-c-debug;     $              .not. abs(b(1)) .le. oudebl .or.
-c-debug;     $              .not. abs(b(2)) .le. oudebl .or.
-c-debug;     $              .not. abs(b(3)) .le. oudebl .or.
-c-debug;     $              ioudeb .gt. 5 ) then
+c-debug;               if ( .not. ABS(opl(it,ir,kz)) .le. oudebl .OR.
+c-debug;     $              .not. ABS(b(1)) .le. oudebl .OR.
+c-debug;     $              .not. ABS(b(2)) .le. oudebl .OR.
+c-debug;     $              .not. ABS(b(3)) .le. oudebl .OR.
+c-debug;     $              ioudeb > 5 ) then
 c-debug;                  write(6,9413) m,kz,xxc,xxo,xxc+xxo,xxco,
 c-debug;     $                 xc(nc),nc,(n(m,j,kz),j=1,nc)
 c-debug;                  koudeb = koudeb+1
@@ -11520,7 +11529,7 @@ c	      ! else: high-O part of grid: must interpolate O before C:
                iw = 0
                do ix = i1,i1+2
                   iw = iw+1
-                  if ( j3 .lt. n(m,ix,kz) ) then
+                  if ( j3 < n(m,ix,kz) ) then
                      b(iw) = qchk(is,iw,oxx,co(m,ix,j1,it,ir,kz),
      $                    co(m,ix,j2,it,ir,kz),co(m,ix,j3,it,ir,kz),
      $                    ox(j1),ox(j2),ox(j3))
@@ -11535,18 +11544,18 @@ c	      ! else: high-O part of grid: must interpolate O before C:
      $              cx(i1),cx(i2),cx(i3))
                is = 1
 c-debug[
-c-debug;               if ( .not. abs(opl(it,ir,kz)) .le. oudebl .or.
-c-debug;     $              .not. abs(b(1)) .le. oudebl .or.
-c-debug;     $              .not. abs(b(2)) .le. oudebl .or.
-c-debug;     $              .not. abs(b(3)) .le. oudebl .or.
-c-debug;     $              ioudeb .gt. 5 ) then
+c-debug;               if ( .not. ABS(opl(it,ir,kz)) .le. oudebl .OR.
+c-debug;     $              .not. ABS(b(1)) .le. oudebl .OR.
+c-debug;     $              .not. ABS(b(2)) .le. oudebl .OR.
+c-debug;     $              .not. ABS(b(3)) .le. oudebl .OR.
+c-debug;     $              ioudeb > 5 ) then
 c-debug;                  write(6,9413) m,kz,xxc,xxo,xxc+xxo,
 c-debug;     $                 xxco,xc(nc),nc,(n(m,j,kz),j=1,nc)
 c-debug;                  koudeb = koudeb+1
 c-debug;                  iw = 0
 c-debug;                  do ix = i1,i1+2
 c-debug;                     iw = iw+1
-c-debug;                     if ( j3 .lt. n(m,ix,kz) ) then
+c-debug;                     if ( j3 < n(m,ix,kz) ) then
 c-debug;                        write(6,9414) iw,'co(m,',ix,j1,it,ir,
 c-debug;     $                       co(m,ix,j1,it,ir,kz),'co(m,',ix,
 c-debug;     $                       j2,it,ir,co(m,ix,j2,it,ir,kz),
@@ -11615,7 +11624,7 @@ c-debug;      common/outdeb/ ioudeb,oudebl,koudeb
 c-debug]
 c
 c===
-      dix2 = max(min((alr(l3)-slr)*dfsr(l3),1.),0.)
+      dix2 = MAX(MIN((alr(l3)-slr)*dfsr(l3),1.),0.)
       is = 0
       iu = 0
 c			   ! for each of the 3 or 4 T values, interpolate in R:
@@ -11626,16 +11635,16 @@ c			! interpolate quadratically among (first) 3 R-values
      $        alr(l1),alr(l2),alr(l3))
          q(iu) = dkap
 c				  ! if are 4 R-values at this T: mix quadratics
-         if ( iq(iu) .eq. 3 ) then
+         if ( iq(iu) == 3 ) then
             h(iu) = dix2*h(iu)+(1.-dix2)*qder(is,2,slr,opl(kx,l2,1),
      $           opl(kx,l3,1),opl(kx,l4,1),alr(l2),alr(l3),alr(l4))
             q(iu) = dix2*q(iu)+(1.-dix2)*dkap
          endif
          is = 1
 c-debug[
-c-debug;         if ( ioudeb .gt. 3 .or. .not. abs(h(iu)) .le. oudebl .or.
-c-debug;     $        .not. abs(q(iu)) .le. oudebl ) then
-c-debug;            if ( ioudeb .le. 3 .or. iu .eq. 1 ) write(6,*) ' '
+c-debug;         if ( ioudeb > 3 .OR. .not. ABS(h(iu)) .le. oudebl .OR.
+c-debug;     $        .not. ABS(q(iu)) .le. oudebl ) then
+c-debug;            if ( ioudeb .le. 3 .OR. iu == 1 ) write(6,*) ' '
 c-debug;            write(6,8912) m,kx,slr,h(iu),q(iu),
 c-debug;     $           (kx,j,alr(j),opl(kx,j,1),j=l1,l1+iq(iu))
 c-debug; 8912       format(' T6RINTERP(x',i1,',t',i2.2') R',f10.6,
@@ -11655,8 +11664,8 @@ c
       opk(m,3) = quad(1,3,slt,q(1),q(2),q(3),alt(k1),alt(k2),alt(k3))
 c
 c				    ! if there are 4 T-values: mix quadratics
-      if ( ip .eq. 3 ) then
-         dix = max(min((alt(k3)-slt)*dfs(k3),1.),0.)
+      if ( ip == 3 ) then
+         dix = MAX(MIN((alt(k3)-slt)*dfs(k3),1.),0.)
          opk(m,1) = opk(m,1)*dix+(1.-dix)
      $        *qder(0,4,slt,h(2),h(3),h(4),alt(k2),alt(k3),alt(k4))
          opk(m,2) = opk(m,2)*dix+dkap*(1.-dix)
@@ -11665,7 +11674,7 @@ c				    ! if there are 4 T-values: mix quadratics
       endif
       opk(m,4) = opk(m,2)-3.*opk(m,3)
 c-debug[
-c-debug;      if ( .not. abs(opk(m,1)) .le. oudebl .or. ioudeb .gt. 2 ) then
+c-debug;      if ( .not. ABS(opk(m,1)) .le. oudebl .OR. ioudeb > 2 ) then
 c-debug;         write(6,8913) m, (1.-dix)*(ip-2), (1.-dix2)*(iq(1)-2),
 c-debug;     $        slt,k1,ip,slr,l1,iq(1),iq(2),iq(3),iq(ip+1),
 c-debug;     $        opk(m,1),opk(m,2),opk(m,3),opk(m,4),
@@ -11678,7 +11687,7 @@ c-debug;     $        '             <-- it,T,K,dKdR',4(i4,f10.6,2f11.7))
 c-debug;         koudeb = koudeb+1
 c-debug;      endif
 c-debug]
-      if ( opk(m,1) .gt. 1.e+5 ) then
+      if ( opk(m,1) > 1.e+5 ) then
          write(6,10) m,10.**slt,k1,ip,slr,l1,iq(1),iq(2),iq(3),
      $        iq(ip+1),opk(m,1)
  10      format(' '/' T6RINTERP(m=',i1,') T6=',f15.9,':',i2,'+',i1,
@@ -11739,7 +11748,7 @@ c-debug;      common/outdeb/ ioudeb,oudebl,koudeb
 c-debug]
 c===
 c						! bi-quadratic interpolation:
-      if ( kzf2 .gt. kzh ) then
+      if ( kzf2 > kzh ) then
 c
          v1 = zvint(kzf)
          v2 = zvint(kzg)
@@ -11753,15 +11762,15 @@ c
             do ir = l1, l1 + iq(it-k1+1)
                vkl = opl(it,ir,kzg)
                vkh = opl(it,ir,kzh)
-               v0 = max( min(vkl,vkh) , min( max(vkl,vkh) ,
+               v0 = MAX( MIN(vkl,vkh) , MIN( MAX(vkl,vkh) ,
      $              f * quad(is,15,zlogd,opl(it,ir,kzf),vkl,vkh,
      $              v1,v2,v3) + omf * quad(is,30,zlogd,
      $              vkl,vkh,opl(it,ir,kzf2),v2,v3,v4) ) )
                is = 1
 c-debug[
-c-debug;               if ( ioudeb .gt. 4 .or. .not. abs(v0) .le. oudebl ) then
-c-debug;                  if ( ioudeb .le. 4 .or. ( it .eq. k1 .and.
-c-debug;     $                 ir .eq. l1 ) ) write(6,*) ' '
+c-debug;               if ( ioudeb > 4 .OR. .not. ABS(v0) .le. oudebl ) then
+c-debug;                  if ( ioudeb .le. 4 .OR. ( it == k1 .and.
+c-debug;     $                 ir == l1 ) ) write(6,*) ' '
 c-debug;                  write(6,8912) m,it,ir,zlogd,v0,
 c-debug;     $                 (j,zvint(j),opl(it,ir,j),j=kzf,kzf2)
 c-debug; 8912             format(' QZLOG4INT(x',i1,',t',i2.2,',r',i2.2,') Z',
@@ -11774,7 +11783,7 @@ c-debug]
             enddo
          enddo
 c						! quadratic interpolation:
-      else if ( kzh .gt. kzg ) then
+      else if ( kzh > kzg ) then
 c
          v1 = zvint(kzf)
          v2 = zvint(kzg)
@@ -11785,15 +11794,15 @@ c
                do ir = l1, l1 + iq(it-k1+1)
                   vkl = opl(it,ir,kzf)
                   vkh = opl(it,ir,kzg)
-                  v0 = max( min(vkl,vkh) , min( max(vkl,vkh) ,
+                  v0 = MAX( MIN(vkl,vkh) , MIN( MAX(vkl,vkh) ,
      $                 quad(is,30,zlogd,
      $                 vkl,vkh,opl(it,ir,kzh),v1,v2,v3) ) )
                   is = 1
 c-debug[
-c-debug;                  if ( ioudeb .gt. 4 .or.
-c-debug;     $                 .not. abs(v0) .le. oudebl ) then
-c-debug;                     if ( ioudeb .le. 4 .or. ( it .eq. k1 .and.
-c-debug;     $                    ir .eq. l1 ) ) write(6,*) ' '
+c-debug;                  if ( ioudeb > 4 .OR.
+c-debug;     $                 .not. ABS(v0) .le. oudebl ) then
+c-debug;                     if ( ioudeb .le. 4 .OR. ( it == k1 .and.
+c-debug;     $                    ir == l1 ) ) write(6,*) ' '
 c-debug;                     write(6,8912) m,it,ir,zlogd,v0,
 c-debug;     $                    (j,zvint(j),opl(it,ir,j),j=kzf,kzh)
 c-debug;                     koudeb = koudeb+1
@@ -11807,15 +11816,15 @@ c-debug]
                do ir = l1, l1 + iq(it-k1+1)
                   vkl = opl(it,ir,kzg)
                   vkh = opl(it,ir,kzh)
-                  v0 = max( min(vkl,vkh) , min( max(vkl,vkh) ,
+                  v0 = MAX( MIN(vkl,vkh) , MIN( MAX(vkl,vkh) ,
      $                 quad(is,30,zlogd,
      $                 opl(it,ir,kzf),vkl,vkh,v1,v2,v3) ) )
                   is = 1
 c-debug[
-c-debug;                  if ( ioudeb .gt. 4 .or.
-c-debug;     $                 .not. abs(v0) .le. oudebl ) then
-c-debug;                     if ( ioudeb .le. 4 .or. ( it .eq. k1 .and.
-c-debug;     $                    ir .eq. l1 ) ) write(6,*) ' '
+c-debug;                  if ( ioudeb > 4 .OR.
+c-debug;     $                 .not. ABS(v0) .le. oudebl ) then
+c-debug;                     if ( ioudeb .le. 4 .OR. ( it == k1 .and.
+c-debug;     $                    ir == l1 ) ) write(6,*) ' '
 c-debug;                     write(6,8912) m,it,ir,zlogd,v0,
 c-debug;     $                    (j,zvint(j),opl(it,ir,j),j=kzf,kzh)
 c-debug;                     koudeb = koudeb+1
@@ -11830,10 +11839,10 @@ c-debug]
                   v0 = quad(is,30,zlogd,opl(it,ir,kzf),
      $                 opl(it,ir,kzg),opl(it,ir,kzh),v1,v2,v3)
 c-debug[
-c-debug;                  if ( ioudeb .gt. 4 .or.
-c-debug;     $                 .not. abs(v0) .le. oudebl ) then
-c-debug;                     if ( ioudeb .le. 4 .or. ( it .eq. k1 .and.
-c-debug;     $                    ir .eq. l1 ) ) write(6,*) ' '
+c-debug;                  if ( ioudeb > 4 .OR.
+c-debug;     $                 .not. ABS(v0) .le. oudebl ) then
+c-debug;                     if ( ioudeb .le. 4 .OR. ( it == k1 .and.
+c-debug;     $                    ir == l1 ) ) write(6,*) ' '
 c-debug;                     write(6,8912) m,it,ir,zlogd,v0,
 c-debug;     $                    (j,zvint(j),opl(it,ir,j),j=kzf,kzh)
 c-debug;                     koudeb = koudeb+1
@@ -11845,7 +11854,7 @@ c-debug]
             enddo
          endif
 c						! linear interpolation:
-      else if ( kzg .gt. kzf ) then
+      else if ( kzg > kzf ) then
 c
          f = ( zvint(kzg) - zlogd )
      $        / ( zvint(kzg) - zvint(kzf) )
@@ -11854,9 +11863,9 @@ c
             do ir = l1, l1 + iq(it-k1+1)
                v0 = f * opl(it,ir,kzf) + omf * opl(it,ir,kzg)
 c-debug[
-c-debug;               if ( ioudeb .gt. 4 .or. .not. abs(v0) .le. oudebl ) then
-c-debug;                  if ( ioudeb .le. 4 .or. ( it .eq. k1 .and.
-c-debug;     $                 ir .eq. l1 ) ) write(6,*) ' '
+c-debug;               if ( ioudeb > 4 .OR. .not. ABS(v0) .le. oudebl ) then
+c-debug;                  if ( ioudeb .le. 4 .OR. ( it == k1 .and.
+c-debug;     $                 ir == l1 ) ) write(6,*) ' '
 c-debug;                  write(6,8912) m,it,ir,zlogd,v0,
 c-debug;     $                 (j,zvint(j),opl(it,ir,j),j=kzf,kzg)
 c-debug;                  koudeb = koudeb+1
@@ -11900,7 +11909,7 @@ c===
       yy(3) = y3
 c			    ! quad may be called many times with same x1,x2,x3;
 c			    ! compute & store X-deltas only if flag ic says so:
-      if ( ic .eq. 0 ) then
+      if ( ic == 0 ) then
          xx(2) = x2
          xx(3) = x3
          xx12(i) = 1./(xx(1)-xx(2))
@@ -11944,7 +11953,7 @@ c===
       yy(3) = y3
 c			    ! qder may be called many times with same x1,x2,x3;
 c			    ! compute & store X-deltas only if flag ic says so:
-      if ( ic .eq. 0 ) then
+      if ( ic == 0 ) then
          xx(2) = x2
          xx(3) = x3
          xx12(i) = 1./(xx(1)-xx(2))
@@ -12018,29 +12027,29 @@ c___
 c===
 c			    ! qchk may be called many times with same x1,x2,x3;
 c			    ! compute & store X-deltas only if flag ic says so:
-      if ( ic .eq. 0 ) then
+      if ( ic == 0 ) then
          xx(1) = x1
          xx(2) = x2
          xx(3) = x3
-         r(1) = abs(xx(3)-xx(2))
-         r(2) = abs(xx(3)-xx(1))
-         r(3) = abs(xx(2)-xx(1))
-         if ( xx(3) - xx(1) .gt. 1.e-6 ) then
+         r(1) = ABS(xx(3)-xx(2))
+         r(2) = ABS(xx(3)-xx(1))
+         r(3) = ABS(xx(2)-xx(1))
+         if ( xx(3) - xx(1) > 1.e-6 ) then
             lin(i) = 1
-            omf = max( 0. , min( 1. ,
-     $           ( xx(3) - xx(1) ) / max( xx(2) - xx(1) , 1.e-6 ) ) )
+            omf = MAX( 0. , MIN( 1. ,
+     $           ( xx(3) - xx(1) ) / MAX( xx(2) - xx(1) , 1.e-6 ) ) )
             flin3(i) = omf / ( xx(3) - xx(1) )
-            flin2(i) = ( 1. - omf ) / max( xx(2) - xx(1) , 1.e-6 )
+            flin2(i) = ( 1. - omf ) / MAX( xx(2) - xx(1) , 1.e-6 )
          else
             lin(i) = 0
          endif
-         dxrat = min(r(1),r(2),r(3))/max(r(1),r(2),r(3))
+         dxrat = MIN(r(1),r(2),r(3))/MAX(r(1),r(2),r(3))
          if ( dxrat .ge. ratbeg ) then
             iokq(i) = 1
          else
-            if ( r(3) .lt. min(r(1),r(2)) ) then
+            if ( r(3) < MIN(r(1),r(2)) ) then
                iloq(i) = 3
-            else if ( r(2) .lt. r(1) ) then
+            else if ( r(2) < r(1) ) then
                iloq(i) = 2
             else
                iloq(i) = 1
@@ -12049,7 +12058,7 @@ c			    ! compute & store X-deltas only if flag ic says so:
             i2q(i) = 6-i1q(i)-iloq(i)
             xloq(i) = xx(iloq(i))
             dxinvq(i) = 1./((xx(i1q(i))+xx(i2q(i)))*.5-xloq(i))
-            if ( dxrat .gt. ratful ) then
+            if ( dxrat > ratful ) then
                iokq(i) = 0
                facq(i) = (dxrat-ratful)*ratdel
             else
@@ -12059,21 +12068,21 @@ c			    ! compute & store X-deltas only if flag ic says so:
          endif
       endif
 c
-      if ( x .lt. x1 ) then
-         if ( lin(i) .gt. 0 ) then
+      if ( x < x1 ) then
+         if ( lin(i) > 0 ) then
             qchk = ( ( y2 - y1 ) * flin2(i) + ( y3 - y1 ) * flin3(i) )
      $           * ( x - x1 ) + y1
             return
          endif
       endif
 c
-      if ( iokq(i) .gt. 0 ) then
+      if ( iokq(i) > 0 ) then
          qchk = quad(ic,i,x,y1,y2,y3,x1,x2,x3)
       else
          yy(1) = y1
          yy(2) = y2
          yy(3) = y3
-         if ( iokq(i) .lt. 0 ) then
+         if ( iokq(i) < 0 ) then
             qchk = ((yy(i1q(i))+yy(i2q(i)))*.5-yy(iloq(i)))
      $           *(x-xloq(i))*dxinvq(i)+yy(iloq(i))
          else
@@ -12103,14 +12112,14 @@ c
       common/qzint_opal_z/ v(15,5),f(15),omf(15)
       save /qzint_opal_z/
 c===
-      if ( ic .eq. 0 ) then
-         if ( nmorez .gt. 0 ) then
-            if ( zdel .lt. 1.e-5 .or. zdel .gt. 0.1011 ) stop
+      if ( ic == 0 ) then
+         if ( nmorez > 0 ) then
+            if ( zdel < 1.e-5 .OR. zdel > 0.1011 ) stop
      $           ' STOP -- QZINTER: bad Zdel value. '
             v(i,1) = log10(z1+zdel)
             v(i,2) = log10(z2+zdel)
             v(i,5) = log10(z+zdel)
-            if ( nmorez .eq. 1 ) then
+            if ( nmorez == 1 ) then
                f(i) = (v(i,2)-v(i,5))/(v(i,2)-v(i,1))
                omf(i) = 1.-f(i)
             else
@@ -12123,22 +12132,22 @@ c===
             endif
          endif
 c-debug[
-c-debug;      else if ( nmorez .gt. 0 ) then
-c-debug;         if ( max( abs( v(i,1) - log10(z1+zdel) ) ,
-c-debug;     $        abs( v(i,2) - log10(z2+zdel) ) ,
-c-debug;     $        abs( v(i,5) - log10(z+zdel) ) ) .gt. 1.e-5 ) stop
+c-debug;      else if ( nmorez > 0 ) then
+c-debug;         if ( MAX( ABS( v(i,1) - log10(z1+zdel) ) ,
+c-debug;     $        ABS( v(i,2) - log10(z2+zdel) ) ,
+c-debug;     $        ABS( v(i,5) - log10(z+zdel) ) ) > 1.e-5 ) stop
 c-debug;     $        ' STOP -- QZINTER: Error: expected same X-values. '
-c-debug;         if ( nmorez .eq. 1 ) then
-c-debug;            if ( abs( f(i) - (v(i,2)-v(i,5))/(v(i,2)-v(i,1)) ) .gt.
+c-debug;         if ( nmorez == 1 ) then
+c-debug;            if ( ABS( f(i) - (v(i,2)-v(i,5))/(v(i,2)-v(i,1)) ) >
 c-debug;     $           1.e-5 ) stop
 c-debug;     $           ' STOP -- QZINTER: Error: expected same X-values. '
 c-debug;         else
-c-debug;            if ( abs( v(i,3) - log10(z3+zdel) ) .gt. 1.e-5 ) stop
+c-debug;            if ( ABS( v(i,3) - log10(z3+zdel) ) > 1.e-5 ) stop
 c-debug;     $           ' STOP -- QZINTER: Error: expected same X-values. '
 c-debug;            if ( nmorez .ge. 3 ) then
-c-debug;               if ( max( abs( v(i,4) - log10(z4+zdel) ) ,
-c-debug;     $              abs( f(i) - (v(i,3)-v(i,5))/(v(i,3)-v(i,2)) ) )
-c-debug;     $              .gt. 1.e-5 ) stop
+c-debug;               if ( MAX( ABS( v(i,4) - log10(z4+zdel) ) ,
+c-debug;     $              ABS( f(i) - (v(i,3)-v(i,5))/(v(i,3)-v(i,2)) ) )
+c-debug;     $              > 1.e-5 ) stop
 c-debug;     $              ' STOP -- QZINTER: Error: expected same X-values. '
 c-debug;            endif
 c-debug;         endif
@@ -12147,24 +12156,24 @@ c-debug]
 c
       if ( nmorez .le. 0 ) then
          qzinter = f1
-      else if ( nmorez .eq. 1 ) then
-         qzinter = max( min( f(i)*f1 + omf(i)*f2 , max(f1,f2) ) ,
-     $        min(f1,f2) )
-      else if ( nmorez .eq. 2 ) then
-         if ( v(i,5) .lt. v(i,2) ) then
-            vlo = min(f1,f2)
-            vhi = max(f1,f2)
+      else if ( nmorez == 1 ) then
+         qzinter = MAX( MIN( f(i)*f1 + omf(i)*f2 , MAX(f1,f2) ) ,
+     $        MIN(f1,f2) )
+      else if ( nmorez == 2 ) then
+         if ( v(i,5) < v(i,2) ) then
+            vlo = MIN(f1,f2)
+            vhi = MAX(f1,f2)
          else
-            vlo = min(f2,f3)
-            vhi = max(f2,f3)
+            vlo = MIN(f2,f3)
+            vhi = MAX(f2,f3)
          endif
-         qzinter = max( min ( quad(ic,i,v(i,5),f1,f2,f3,
+         qzinter = MAX( min ( quad(ic,i,v(i,5),f1,f2,f3,
      $        v(i,1),v(i,2),v(i,3)) , vhi ) , vlo )
       else
-         qzinter = max( min ( f(i)*quad(ic,i,v(i,5),f1,f2,f3,
+         qzinter = MAX( min ( f(i)*quad(ic,i,v(i,5),f1,f2,f3,
      $        v(i,1),v(i,2),v(i,3)) + omf(i)*quad(ic,i+15,
      $        v(i,5),f2,f3,f4,v(i,2),v(i,3),v(i,4)) ,
-     $        max(f2,f3) ) , min(f2,f3) )
+     $        MAX(f2,f3) ) , MIN(f2,f3) )
       endif
 c
       return
@@ -12242,43 +12251,43 @@ c					! begin loop to get Xi/Z values
          do while( kel .le. nel_zmix )
             l = l + 1
             read(iu,'(a255)',end=900) cin
-            if ( cin(1:16) .eq. ' Table Summaries' ) goto 50
+            if ( cin(1:16) == ' Table Summaries' ) goto 50
             ke = 255
-            do while( ke .gt. 1 .and. ch(ke) .eq. ' ' )
+            do while( ke > 1 .and. ch(ke) == ' ' )
                ke = ke-1
             enddo
             kb = 1
-            do while( kb .le. ke .and. ch(kb) .eq. ' ' )
+            do while( kb .le. ke .and. ch(kb) == ' ' )
                kb = kb+1
             enddo
-            if ( cin(kb:kb+1) .eq. cel_opalmixes(kel) ) then
+            if ( cin(kb:kb+1) == cel_opalmixes(kel) ) then
 c								! get Ni
-               if ( ke .lt. kb+20 ) goto 50
+               if ( ke < kb+20 ) goto 50
                read(cin(ke-8:ke),'(f9.6)',err=50) vx
 c							! last may be atomic wt
-               if ( vx .gt. 1.000001 ) then
+               if ( vx > 1.000001 ) then
                   ke = ke-9
-                  do while( ke .gt. 1 .and. ch(ke) .eq. ' ' )
+                  do while( ke > 1 .and. ch(ke) == ' ' )
                      ke = ke-1
                   enddo
-                  if ( ke .lt. kb+20 ) goto 50
+                  if ( ke < kb+20 ) goto 50
                   read(cin(ke-8:ke),'(f9.6)',err=50) vx
                endif
                sum_X = sum_X + vx
                sum_XoverA = sum_XoverA + vx / atwt_opalGS98(kel)
 c								   ! get Xi
                ke = ke-9
-               do while( ke .gt. 1 .and. ch(ke) .eq. ' ' )
+               do while( ke > 1 .and. ch(ke) == ' ' )
                   ke = ke-1
                enddo
-               if ( ke .lt. kb+11 ) goto 50
+               if ( ke < kb+11 ) goto 50
                read(cin(ke-7:ke),'(f8.6)',err=50) vn
 c
-               if ( iofe .lt. 0 ) then
-                  if ( igetzxi .gt. 0 ) then
+               if ( iofe < 0 ) then
+                  if ( igetzxi > 0 ) then
 c-debug-chk[
-c-debug-chk;                     if ( iout_debug_chk(iofe) .gt. 0 ) then
-c-debug-chk;                        if ( kel .eq. 1 ) write(6,3813) iofe,
+c-debug-chk;                     if ( iout_debug_chk(iofe) > 0 ) then
+c-debug-chk;                        if ( kel == 1 ) write(6,3813) iofe,
 c-debug-chk;     $                       cfile_opalGS98(-iofe)
 c-debug-chk; 3813                   format(' '/' Mix in GS98hz and in file',i3,
 c-debug-chk;     $                       ' = ',a40/
@@ -12294,18 +12303,18 @@ c-debug-chk;     $                       xiz_opalGS98(kel,1),
 c-debug-chk;     $                       fninz_opalGS98(kel,-iofe),
 c-debug-chk;     $                       xiz_opalGS98(kel,-iofe), vn, vx,
 c-debug-chk;     $                       log10( (
-c-debug-chk;     $                       max(fninz_opalGS98(kel,-iofe),1.e-36)
+c-debug-chk;     $                       MAX(fninz_opalGS98(kel,-iofe),1.e-36)
 c-debug-chk;     $                       * fninz_opalGS98(kel_fe,1) )
-c-debug-chk;     $                       / ( max(fninz_opalGS98(kel_fe,-iofe),
+c-debug-chk;     $                       / ( MAX(fninz_opalGS98(kel_fe,-iofe),
 c-debug-chk;     $                       1.e-36) * fninz_opalGS98(kel,1) ) )
 c-debug-chk; 3814                   format(i3,': ',a2,' --',6f10.7,f9.5)
 c-debug-chk;                     endif
 c-debug-chk]
                      xiz_opalGS98(kel,-iofe) = vx
                      fninz_opalGS98(kel,-iofe) = vn
-                  else if ( max( abs( fninz_opalGS98(kel,-iofe) - vn )
-     $                    , abs( xiz_opalGS98(kel,-iofe) - vx ) )
-     $                    .gt. 1.5e-5 ) then
+                  else if ( MAX( ABS( fninz_opalGS98(kel,-iofe) - vn )
+     $                    , ABS( xiz_opalGS98(kel,-iofe) - vx ) )
+     $                    > 1.5e-5 ) then
                      write(6,35) cel_opalmixes(kel),
      $                    cfile_opalGS98(-iofe)(1:
      $                    lnblnk(cfile_opalGS98(-iofe))),
@@ -12317,12 +12326,12 @@ c-debug-chk]
      $                    '          new Xi/Z',f9.6,' vs.',f9.6,
      $                    ' ,  new Ni/Nz',f9.6,' vs.',f9.6/' ')
                   endif
-               else if ( igetzxi .gt. 0 ) then
+               else if ( igetzxi > 0 ) then
                   xiz_opalmixes(kel,iofe) = vx
                   fninz_opalmixes(kel,iofe) = vn
 c-debug-chk[
-c-debug-chk;                  if ( iout_debug_chk(iofe) .gt. 0 ) then
-c-debug-chk;                     if ( kel .eq. 1 ) write(6,3813) iofe,
+c-debug-chk;                  if ( iout_debug_chk(iofe) > 0 ) then
+c-debug-chk;                     if ( kel == 1 ) write(6,3813) iofe,
 c-debug-chk;     $                    cfile_opalmixes(iofe)
 c-debug-chk;                     write(6,3814) kel, cel_opalmixes(kel),
 c-debug-chk;     $                    fninz_opalmixes(kel,1),
@@ -12330,15 +12339,15 @@ c-debug-chk;     $                    xiz_opalmixes(kel,1),
 c-debug-chk;     $                    fninz_opalmixes(kel,iofe),
 c-debug-chk;     $                    xiz_opalmixes(kel,iofe), vn, vx,
 c-debug-chk;     $                    log10(
-c-debug-chk;     $                    ( max(fninz_opalmixes(kel,iofe),1.e-36)
+c-debug-chk;     $                    ( MAX(fninz_opalmixes(kel,iofe),1.e-36)
 c-debug-chk;     $                    * fninz_opalmixes(kel_fe,1) )
-c-debug-chk;     $                    / ( max(fninz_opalmixes(kel_fe,iofe),
+c-debug-chk;     $                    / ( MAX(fninz_opalmixes(kel_fe,iofe),
 c-debug-chk;     $                    1.e-36) * fninz_opalmixes(kel,1) ) )
 c-debug-chk;                  endif
 c-debug-chk]
-               else if ( max( abs( fninz_opalmixes(kel,iofe) - vn ) ,
-     $                 abs( xiz_opalmixes(kel,iofe) - vx ) )
-     $                 .gt. 1.5e-5 ) then
+               else if ( MAX( ABS( fninz_opalmixes(kel,iofe) - vn ) ,
+     $                 ABS( xiz_opalmixes(kel,iofe) - vx ) )
+     $                 > 1.5e-5 ) then
                   write(6,40) cel_opalmixes(kel),cfile_opalmixes(iofe),
      $                 vx,xiz_opalmixes(kel,iofe),
      $                 vn,fninz_opalmixes(kel,iofe)
@@ -12354,13 +12363,13 @@ c-dont;                  goto 60
 c					! end of loop to get Xi/Z values
          enddo
 c					! check Xi vs Ni; get xO/xFe and [O/Fe]
-         if ( igetzxi .gt. 0 ) then
+         if ( igetzxi > 0 ) then
             kel_err = 0
-            if ( iofe .lt. 0 ) then
+            if ( iofe < 0 ) then
                do kel = 1, nel_zmix
-                  if ( abs( xiz_opalGS98(kel,-iofe)
+                  if ( ABS( xiz_opalGS98(kel,-iofe)
      $                 / ( atwt_opalGS98(kel) * sum_XoverA )
-     $                 - fninz_opalGS98(kel,-iofe) ) .gt. 0.00001 ) then
+     $                 - fninz_opalGS98(kel,-iofe) ) > 0.00001 ) then
                      kel_err = kel_err + 1
                      write(6,4613) kel, cel_opalmixes(kel), iofe,
      $                    fninz_opalGS98(kel,-iofe),
@@ -12377,29 +12386,29 @@ c					! check Xi vs Ni; get xO/xFe and [O/Fe]
      $                 / ( atwt_opalGS98(kel) * sum_XoverA )
                enddo
 c-debug-chk[
-c-debug-chk;               if ( iout_debug_chk(iofe) .gt. 0 ) then
+c-debug-chk;               if ( iout_debug_chk(iofe) > 0 ) then
 c-debug-chk;                  write(6,3815) xofe_opalGS98(1),
 c-debug-chk;     $                 bracketofe_opalGS98(1),
 c-debug-chk;     $                 xofe_opalGS98(-iofe),
 c-debug-chk;     $                 bracketofe_opalGS98(-iofe),
 c-debug-chk;     $                 fninz_opalGS98(kel_o,-iofe)
-c-debug-chk;     $                 / max(fninz_opalGS98(kel_fe,-iofe),1.e-36),
+c-debug-chk;     $                 / MAX(fninz_opalGS98(kel_fe,-iofe),1.e-36),
 c-debug-chk;     $                 log10( ( fninz_opalGS98(kel_o,-iofe)
-c-debug-chk;     $                 / max(fninz_opalGS98(kel_fe,-iofe),1.e-36) )
+c-debug-chk;     $                 / MAX(fninz_opalGS98(kel_fe,-iofe),1.e-36) )
 c-debug-chk;     $                 / xofe_opalGS98(1) )
 c-debug-chk; 3815             format('O/Fe,[O/Fe]',6f10.6/' ')
 c-debug-chk;                  iout_debug_chk(iofe) = iout_debug_chk(iofe) - 1
 c-debug-chk;               endif
 c-debug-chk]
                xofe_opalGS98(-iofe) = fninz_opalGS98(kel_o,-iofe)
-     $              / max( fninz_opalGS98(kel_fe,-iofe) , 1.e-36 )
-               bracketofe_opalGS98(-iofe) = log10( max( 1.e-36 ,
+     $              / MAX( fninz_opalGS98(kel_fe,-iofe) , 1.e-36 )
+               bracketofe_opalGS98(-iofe) = log10( MAX( 1.e-36 ,
      $              xofe_opalGS98(-iofe) / xofe_opalGS98(1) ) )
             else
                do kel = 1, nel_zmix
-                  if ( abs( xiz_opalmixes(kel,iofe)
+                  if ( ABS( xiz_opalmixes(kel,iofe)
      $                 / ( atwt_opalGS98(kel) * sum_XoverA )
-     $                 - fninz_opalmixes(kel,iofe) ) .gt. 0.00001 ) then
+     $                 - fninz_opalmixes(kel,iofe) ) > 0.00001 ) then
                      kel_err = kel_err + 1
                      write(6,4613) kel, cel_opalmixes(kel), iofe,
      $                    fninz_opalmixes(kel,iofe),
@@ -12412,22 +12421,22 @@ c-debug-chk]
      $                 / ( atwt_opalGS98(kel) * sum_XoverA )
                enddo
 c-debug-chk[
-c-debug-chk;               if ( iout_debug_chk(iofe) .gt. 0 ) then
+c-debug-chk;               if ( iout_debug_chk(iofe) > 0 ) then
 c-debug-chk;                  write(6,3815) xofe_opalmixes(1),
 c-debug-chk;     $                 bracketofe_opalmixes(1),
 c-debug-chk;     $                 xofe_opalmixes(iofe),
 c-debug-chk;     $                 bracketofe_opalmixes(iofe),
 c-debug-chk;     $                 fninz_opalmixes(kel_o,iofe)
-c-debug-chk;     $                 / max(fninz_opalmixes(kel_fe,iofe),1.e-36),
+c-debug-chk;     $                 / MAX(fninz_opalmixes(kel_fe,iofe),1.e-36),
 c-debug-chk;     $                 log10( ( fninz_opalmixes(kel_o,iofe)
-c-debug-chk;     $                 / max(fninz_opalmixes(kel_fe,iofe),1.e-36) )
+c-debug-chk;     $                 / MAX(fninz_opalmixes(kel_fe,iofe),1.e-36) )
 c-debug-chk;     $                 / xofe_opalmixes(1) )
 c-debug-chk;                  iout_debug_chk(iofe) = iout_debug_chk(iofe) - 1
 c-debug-chk;               endif
 c-debug-chk]
                xofe_opalmixes(iofe) = fninz_opalmixes(kel_o,iofe)
-     $              / max( fninz_opalmixes(kel_fe,iofe) , 1.e-36 )
-               bracketofe_opalmixes(iofe) = log10( max( 1.e-36 ,
+     $              / MAX( fninz_opalmixes(kel_fe,iofe) , 1.e-36 )
+               bracketofe_opalmixes(iofe) = log10( MAX( 1.e-36 ,
      $              xofe_opalmixes(iofe) / xofe_opalmixes(1) ) )
             endif
             if ( kel_err .ne. 0 ) stop
@@ -12447,7 +12456,7 @@ c								! continuation
 c				! end of reading Xi/Z values in file header
       endif
 c							! find start of tables
-      if ( irew .ne. 0 .or. igetzxi .ne. 0 ) then
+      if ( irew .ne. 0 .OR. igetzxi .ne. 0 ) then
          do while( cin(1:30) .ne. '******************************' )
             l = l + 1
             read(iu,'(a255)',end=900) cin
@@ -12455,19 +12464,19 @@ c							! find start of tables
          igetzxi = 0
       endif
 c				  ! look for mix with required composition:
-      do while ( ifound .eq. 0 )
+      do while ( ifound == 0 )
          l = l + 1
          read(iu,'(a255)',end=900) cin
-         if ( cin(1:7) .eq. 'TABLE #' ) then
+         if ( cin(1:7) == 'TABLE #' ) then
             ke = 90
-            do while( ke .gt. 1 .and. ch(ke) .eq. ' ' )
+            do while( ke > 1 .and. ch(ke) == ' ' )
                ke = ke-1
             enddo
-            if ( ke .lt. 60 ) goto 900
+            if ( ke < 60 ) goto 900
             read(cin(ke-48:ke),100) xat,yat,zat,cat,oat
- 100        format(3(3x,f6.4),2(5x,f6.4))
-            if ( max(abs(zat-zget),abs(xat-xget),
-     $           abs(cat-cget),abs(oat-oget)) .lt. 1.e-6 ) ifound = -1
+ 100        format(3(3x,f7.4),2(5x,f7.4))
+            if ( MAX(ABS(zat-zget),ABS(xat-xget),
+     $           ABS(cat-cget),ABS(oat-oget)) < 1.e-6 ) ifound = -1
          endif
       enddo
 c				  ! found required mix: read its table number
@@ -12487,28 +12496,28 @@ c					! check log R values in table head
       read(iu,110,err=900,end=900) cin(1:4),(alrf(i),i=1,nrm)
  110  format(a4,f6.1,18f7.1)
 c					! this may or may not be useful/correct
-      if ( cin(1:4) .ne. 'logT' .or.
-     $     abs(alrf(1)-alrlo) .gt. 1.e-5 ) goto 900
+      if ( cin(1:4) .ne. 'logT' .OR.
+     $     ABS(alrf(1)-alrlo) > 1.e-5 ) goto 900
 c
       do k = 2,nrm
-         if ( abs(alrf(k)-alrf(k-1)-0.5) .gt. 1.e-5 ) stop
+         if ( ABS(alrf(k)-alrf(k-1)-0.5) > 1.e-5 ) stop
      $        ' STOP -- READCO: bad  log R  value in table read in. '
       enddo
 c				     ! read blank line before first table line
       l = l + 1
       read(iu,'(a255)',end=900) cin
 c				     ! table header lines appear correct:
-      ifound = iabs( ifound )
+      ifound = iABS( ifound )
 c					! return
  900  mixfind = ifound
 c-debug-chk[
-c-debug-chk;      if ( ifound .eq. 0 )
+c-debug-chk;      if ( ifound == 0 )
 c-debug-chk;     $     write(6,1739) iu,itab,irew,zget,xget,cget,oget
 c-debug-chk; 1739 format(' '/' MIXFIND: unit',i3,' after TABLE',i3,
 c-debug-chk;     $     ', irew=',i2,': could not find mix Z=',f10.7,
 c-debug-chk;     $     ' X=',f10.7,' C=',f10.7,' O=',f10.7)
 c-debug-chk]
-      if ( ifound .eq. 0 ) irew = 1
+      if ( ifound == 0 ) irew = 1
       return
       end
 c
@@ -12524,11 +12533,11 @@ c
      $     mo_m10=mo-mx_hi, mo_p1=mo+1, mc_m1=mc-1, mc_m2=mc-2,
      $     mc_p7=mc+mx+2 )
 c
-      if ( iset .le. 0 .or. iset .gt. 5 .or. kxhz .le. 0 .or.
-     $     kxhz .gt. mx_hi .or. mx .ne. 5 ) stop
+      if ( iset .le. 0 .OR. iset > 5 .OR. kxhz .le. 0 .OR.
+     $     kxhz > mx_hi .OR. mx .ne. 5 ) stop
      $     ' INDEX_DELTAS: Error: bad inputs: cannot happen. '
 c
-      if ( iset .eq. 2 ) then
+      if ( iset == 2 ) then
          if ( kxhz .le. 5 ) then
             jx = kxhz
             jc = mc
@@ -12538,7 +12547,7 @@ c
             jc = mc_m1
             jo = mo_m1
          endif
-      else if ( iset .eq. 3 ) then
+      else if ( iset == 3 ) then
          jx = mx
          if ( kxhz .le. 5 ) then
             jc = mc
@@ -12547,7 +12556,7 @@ c
             jc = mc_m1
             jo = kxhz - 5
          endif
-      else if ( iset .eq. 4 ) then
+      else if ( iset == 4 ) then
          jx = mx
          if ( kxhz .le. 5 ) then
             jc = kxhz
@@ -12556,15 +12565,15 @@ c
             jc = kxhz - 5
             jo = mo_m2
          endif
-      else if ( iset .eq. 5 ) then
+      else if ( iset == 5 ) then
          if ( kxhz .le. 5 ) then
             jx = mx
             jc = mc_m2
             jo = mo_p1 - kxhz
          else
             jx = mx_m1
-            jc = min( mc_p7 - kxhz , mc )
-            jo = min( mo_m10 + kxhz , mo_m1 )
+            jc = MIN( mc_p7 - kxhz , mc )
+            jo = MIN( mo_m10 + kxhz , mo_m1 )
          endif
       else
          jc = mc
@@ -12646,7 +12655,7 @@ c
 c  If user-specified opacity shifts were read in and the error-check level = 2,
 c  then check the composition difference relative to the standard opacity file:
 c
-      if ( kavail_user .gt. 0 ) then
+      if ( kavail_user > 0 ) then
 c
          del_max = 0.0
          do i = 1, nel_zmix
@@ -12654,16 +12663,16 @@ c
             xiz_cno(i,5) = xiz_opalGS98(i,n_totmix)
             d_fninz_user(i) = fninz_opalGS98(i,n_totmix)
      $           - fninz_opalGS98(i,n_cnobeg)
-            del_max = max( del_max , abs( d_fninz_user(i) ) )
+            del_max = MAX( del_max , ABS( d_fninz_user(i) ) )
          enddo
 c
-         if ( del_max .lt. 1.5e-5 .and. level_err .gt. 0 ) then
+         if ( del_max < 1.5e-5 .and. level_err > 0 ) then
             write(6,10)
  10         format(' '/' WARNING: user-specified OPAL opacity',
      $           ' interpolation file has a'/
      $           '          composition identical to that',
      $           ' of the standard opacity file.'/' ')
-         else if ( del_max .lt. 1.e-3 .and. level_err .ge. 2 ) then
+         else if ( del_max < 1.e-3 .and. level_err .ge. 2 ) then
             write(6,20) del_max
  20         format(' '/' WARNING: user-specified OPAL opacity',
      $           ' interpolation file has a composition'/
@@ -12676,7 +12685,7 @@ c
 c  If CNO-interpolation opacity shifts were read in, check them and compute
 c  some useful multiplicative factors:
 c
-      if ( kavail_cno .gt. 0 ) then
+      if ( kavail_cno > 0 ) then
 c				     ! check for similar C,N,O,Ne compositions:
          del_12 = 0.0
          del_13 = 0.0
@@ -12696,66 +12705,66 @@ c							! for linear-dep check
 c
 c				! check for very similar pairs of compositions
 c
-            del_12 = max( del_12 , abs( cno_del_chk(2,i) ) )
-            del_13 = max( del_13 , abs( cno_del_chk(3,i) ) )
-            del_14 = max( del_14 , abs( cno_del_chk(4,i) ) )
-            del_23 = max( del_23 , abs( fninz_opalGS98(i,ncno3)
+            del_12 = MAX( del_12 , ABS( cno_del_chk(2,i) ) )
+            del_13 = MAX( del_13 , ABS( cno_del_chk(3,i) ) )
+            del_14 = MAX( del_14 , ABS( cno_del_chk(4,i) ) )
+            del_23 = MAX( del_23 , ABS( fninz_opalGS98(i,ncno3)
      $           - fninz_opalGS98(i,ncno2) ) )
-            del_34 = max( del_34 , abs( fninz_opalGS98(i,ncno4)
+            del_34 = MAX( del_34 , ABS( fninz_opalGS98(i,ncno4)
      $           - fninz_opalGS98(i,ncno3) ) )
-            del_24 = max( del_24 , abs( fninz_opalGS98(i,ncno2)
+            del_24 = MAX( del_24 , ABS( fninz_opalGS98(i,ncno2)
      $           - fninz_opalGS98(i,ncno4) ) )
 c						! are all of C,N,O,Ne varied?
-            if ( max( abs( cno_del_chk(2,i) ) ,
-     $           abs( cno_del_chk(3,i) ) ,
-     $           abs( cno_del_chk(4,i) ) ) .lt. 0.05 ) kavail_cno = 0
+            if ( MAX( ABS( cno_del_chk(2,i) ) ,
+     $           ABS( cno_del_chk(3,i) ) ,
+     $           ABS( cno_del_chk(4,i) ) ) < 0.05 ) kavail_cno = 0
 c
          enddo
 c
-         if ( min( del_12 , del_13 , del_14 ,
-     $        del_23 , del_34 , del_24 ) .lt. 0.05 ) kavail_cno = 0
+         if ( MIN( del_12 , del_13 , del_14 ,
+     $        del_23 , del_34 , del_24 ) < 0.05 ) kavail_cno = 0
 c
 c				! check for linear dependence among CNO-mixes
          lindep = 0
 c
-         if ( kavail_cno .gt. 0 ) then
+         if ( kavail_cno > 0 ) then
 c
             do k = 3, 4
                i = 1
-               do while ( i .lt. kel_o .and.
-     $              abs( cno_del_chk(2,i) ) .lt. 0.009 )
+               do while ( i < kel_o .and.
+     $              ABS( cno_del_chk(2,i) ) < 0.009 )
                   i = i + 1
                enddo
                f = cno_del_chk(k,i) / cno_del_chk(2,i)
-               if ( max(
-     $              abs( f * cno_del_chk(2,1) - cno_del_chk(k,1) ) ,
-     $              abs( f * cno_del_chk(2,2) - cno_del_chk(k,2) ) ,
-     $              abs( f * cno_del_chk(2,kel_o)
-     $              - cno_del_chk(k,kel_o) ) ) .lt. 0.005 ) lindep = 1
+               if ( MAX(
+     $              ABS( f * cno_del_chk(2,1) - cno_del_chk(k,1) ) ,
+     $              ABS( f * cno_del_chk(2,2) - cno_del_chk(k,2) ) ,
+     $              ABS( f * cno_del_chk(2,kel_o)
+     $              - cno_del_chk(k,kel_o) ) ) < 0.005 ) lindep = 1
             enddo
 c
-            if ( lindep .eq. 0 ) then
+            if ( lindep == 0 ) then
 c
                g = cno_del_chk(2,1) * cno_del_chk(3,2)
      $              - cno_del_chk(3,1) * cno_del_chk(2,2)
-               if ( abs( g ) .lt. 2.5d-5 ) then
+               if ( ABS( g ) < 2.5d-5 ) then
                   lindep = 1
                else
                   f = ( cno_del_chk(3,2) * cno_del_chk(4,1)
      $                 - cno_del_chk(4,2) * cno_del_chk(3,1) ) / g
                   g = ( cno_del_chk(2,1) * cno_del_chk(4,2)
      $                 - cno_del_chk(4,1) * cno_del_chk(2,2) ) / g
-                  if ( abs( f * cno_del_chk(2,3) + g * cno_del_chk(3,3)
-     $                 - cno_del_chk(4,3) ) .lt. 0.005 ) lindep = 1
+                  if ( ABS( f * cno_del_chk(2,3) + g * cno_del_chk(3,3)
+     $                 - cno_del_chk(4,3) ) < 0.005 ) lindep = 1
                endif
 c
             endif
 c
          endif
 c								    ! Bad CNO?
-         if ( kavail_cno .eq. 0 ) then
+         if ( kavail_cno == 0 ) then
 c
-            if ( level_err .gt. 0 ) write(6,30)
+            if ( level_err > 0 ) write(6,30)
  30         format(' WARNING: CNO-interpolation in OPAL',
      $           ' opacities is NOT POSSIBLE: the C,N,O,Ne'/
      $           ' abundances are too similar in the',
@@ -12764,12 +12773,12 @@ c
      $           ' STOP -- READCO Error: bad CNO-interpolation files. '
 c
 c							     ! or low main CNO?
-         else if ( fninz_opalGS98(1,n_cnobeg) .lt. 0.05 .or.
-     $           fninz_opalGS98(2,n_cnobeg) .lt. 0.01 .or.
-     $           fninz_opalGS98(kel_o,n_cnobeg) .lt. 0.2 ) then
+         else if ( fninz_opalGS98(1,n_cnobeg) < 0.05 .OR.
+     $           fninz_opalGS98(2,n_cnobeg) < 0.01 .OR.
+     $           fninz_opalGS98(kel_o,n_cnobeg) < 0.2 ) then
 c
             kavail_cno = 0
-            if ( level_err .gt. 0 ) write(6,40)
+            if ( level_err > 0 ) write(6,40)
  40         format(' WARNING: CNO-interpolation in OPAL',
      $           ' opacities is NOT POSSIBLE: the "standard"'/
      $           ' CNO-opacity-file has low abundance(s) of C,N,O =',
@@ -12779,19 +12788,19 @@ c
 c
 c							      ! enhanced C,O or
 c								 ! depleted Ne?
-         else if ( fninz_opalGS98(1,n_cnobeg) .lt. 0.999 * max(
+         else if ( fninz_opalGS98(1,n_cnobeg) < 0.999 * MAX(
      $           fninz_opalGS98(1,ncno2) , fninz_opalGS98(1,ncno3) ,
-     $           fninz_opalGS98(1,ncno4) ) .or.
-     $           fninz_opalGS98(kel_o,n_cnobeg) .lt. 0.999 * max(
+     $           fninz_opalGS98(1,ncno4) ) .OR.
+     $           fninz_opalGS98(kel_o,n_cnobeg) < 0.999 * MAX(
      $           fninz_opalGS98(kel_o,ncno2) ,
      $           fninz_opalGS98(kel_o,ncno3) ,
-     $           fninz_opalGS98(kel_o,ncno4) ) .or.
-     $           fninz_opalGS98(4,n_cnobeg) .gt. 1.001 * min(
+     $           fninz_opalGS98(kel_o,ncno4) ) .OR.
+     $           fninz_opalGS98(4,n_cnobeg) > 1.001 * MIN(
      $           fninz_opalGS98(4,ncno2) , fninz_opalGS98(4,ncno3) ,
      $           fninz_opalGS98(4,ncno4) ) ) then
 c
             kavail_cno = 0
-            if ( level_err .gt. 0 ) write(6,50)
+            if ( level_err > 0 ) write(6,50)
  50         format(' WARNING: CNO-interpolation in OPAL',
      $           ' opacities is NOT POSSIBLE: these CNO-'/
      $           ' interpolation files should NOT have',
@@ -12799,10 +12808,10 @@ c
             if ( level_err .ge. 2 ) stop
      $           ' STOP -- READCO Error: bad CNO-interpolation files. '
 c
-         else if ( lindep .gt. 0 ) then
+         else if ( lindep > 0 ) then
 c
             kavail_cno = 0
-            if ( level_err .gt. 0 ) write(6,60)
+            if ( level_err > 0 ) write(6,60)
  60         format(' WARNING: CNO-interpolation in OPAL',
      $           ' opacities is NOT POSSIBLE: compositions of'/
      $           '            the CNO-interpolation files',
@@ -12835,22 +12844,22 @@ c								! sums of diffs
                del_24 = del_24 + fninz_opalGS98(i,ncno2)
      $              - fninz_opalGS98(i,ncno4)
 c								! max diff
-               del_max = max( abs( fninz_opalGS98(i,n_cnobeg)
+               del_max = MAX( ABS( fninz_opalGS98(i,n_cnobeg)
      $              - fninz_opalGS98(i,ncno2) ) ,
-     $              abs( fninz_opalGS98(i,n_cnobeg)
+     $              ABS( fninz_opalGS98(i,n_cnobeg)
      $              - fninz_opalGS98(i,ncno3) ) ,
-     $              abs( fninz_opalGS98(i,n_cnobeg)
+     $              ABS( fninz_opalGS98(i,n_cnobeg)
      $              - fninz_opalGS98(i,ncno4) ) , del_max )
 c
             enddo
 c
-            del_sum = max( abs(del_12) , abs(del_13) , abs(del_14) ,
-     $           abs(del_23) , abs(del_34) , abs(del_24) )
+            del_sum = MAX( ABS(del_12) , ABS(del_13) , ABS(del_14) ,
+     $           ABS(del_23) , ABS(del_34) , ABS(del_24) )
 c								 ! Bad heavies?
-            if ( del_sum .gt. 0.001 .or. del_max .gt. 0.05 ) then
+            if ( del_sum > 0.001 .OR. del_max > 0.05 ) then
 c
                kavail_cno = 0
-               if ( level_err .gt. 0 ) write(6,70) del_sum, del_max
+               if ( level_err > 0 ) write(6,70) del_sum, del_max
  70            format(' WARNING: CNO-interpolation in OPAL',
      $              ' opacities is NOT POSSIBLE: C+N+O+Ne sums'/
      $              ' differ by',1p,e9.2,
@@ -12861,13 +12870,13 @@ c
 c								   ! Else: O.K.
             else
 c			  ! composition of main-CNO file same as OPAL mix used?
-               if ( max(
-     $              abs( fninz_opalGS98(1,n_cnobeg) - fninz_mix(1) ) ,
-     $              abs( fninz_opalGS98(2,n_cnobeg) - fninz_mix(2) ) ,
-     $              abs( fninz_opalGS98(kel_o,n_cnobeg)
+               if ( MAX(
+     $              ABS( fninz_opalGS98(1,n_cnobeg) - fninz_mix(1) ) ,
+     $              ABS( fninz_opalGS98(2,n_cnobeg) - fninz_mix(2) ) ,
+     $              ABS( fninz_opalGS98(kel_o,n_cnobeg)
      $              - fninz_mix(kel_o) ) ,
-     $              abs( fninz_opalGS98(4,n_cnobeg) - fninz_mix(4) ) )
-     $              .lt. 0.001 ) then
+     $              ABS( fninz_opalGS98(4,n_cnobeg) - fninz_mix(4) ) )
+     $              < 0.001 ) then
 c					! no CNO-modifications necessary
                   do k = 1, 4
 c
@@ -12895,17 +12904,17 @@ c					! and CNO-modification factors
 c
                      j = k + n_zmixes
 c
-                     f_c = min( 1.0 , fninz_opalGS98(1,j)
+                     f_c = MIN( 1.0 , fninz_opalGS98(1,j)
      $                    / fninz_opalGS98(1,n_cnobeg) )
-                     f_n = min( 1.0 , fninz_opalGS98(2,j)
+                     f_n = MIN( 1.0 , fninz_opalGS98(2,j)
      $                    / fninz_opalGS98(2,n_cnobeg) )
-                     f_o = min( 1.0 , fninz_opalGS98(kel_o,j)
+                     f_o = MIN( 1.0 , fninz_opalGS98(kel_o,j)
      $                    / fninz_opalGS98(kel_o,n_cnobeg) )
 c
                      fninz_cno(1,k) = f_c * fninz_mix(1)
                      fninz_cno(kel_o,k) = f_o * fninz_mix(kel_o)
 c
-                     if ( f_n .lt. 1.0 ) then
+                     if ( f_n < 1.0 ) then
 c
                         fninz_cno(2,k) = f_n * fninz_mix(2)
                         fninz_cno(4,k) = fninz_mix(4)
@@ -12927,7 +12936,7 @@ c
      $                       ( 1. - f_c ) * fninz_opalGS98(1,n_cnobeg)
      $                       + ( 1. - f_o )
      $                       * fninz_opalGS98(kel_o,n_cnobeg)
-                        fad_ne = max( 0.0 , min( 1.0 ,
+                        fad_ne = MAX( 0.0 , MIN( 1.0 ,
      $                       ( fninz_opalGS98(4,j)
      $                       - fninz_opalGS98(4,n_cnobeg) )
      $                       / del_co_orig ) )
@@ -12976,7 +12985,7 @@ c
      $              + ( x4 - x1 ) * ( ( y2 - y1 ) * ( z3 - z1 )
      $                             - ( y3 - y1 ) * ( z2 - z1 ) )
 c
-               if ( d .eq. 0.0 ) stop
+               if ( d == 0.0 ) stop
      $              ' STOP -- READCO Error: CNO-interp: D = 0. '
 c
                fcno_fac(0,1) = ( x2 * ( y3 * z4 - y4 * z3 )
@@ -13100,16 +13109,16 @@ c___
 C===
       KLO = 1
       KHI = N
-      do while( KHI-KLO .GT. 1 )
+      do while( KHI-KLO > 1 )
          K = (KHI+KLO)/2
-         IF ( XA(K) .GT. X ) THEN
+         IF ( XA(K) > X ) THEN
             KHI = K
          ELSE
             KLO = K
          ENDIF
       enddo
       H = XA(KHI)-XA(KLO)
-      IF ( H .EQ. 0. ) STOP ' STOP -- SPLINT: Bad XA input. '
+      IF ( H == 0. ) STOP ' STOP -- SPLINT: Bad XA input. '
       A = (XA(KHI)-X)/H
       B = (X-XA(KLO))/H
       Y = A*YA(KLO)+B*YA(KHI)+
@@ -13282,14 +13291,14 @@ C
       FLR = FLRHO+18.-3.*FLT
       Y = 2.*( FLR - RLS )+1.
 C
-      IF ( X .LT. 2. ) THEN
-         IF ( X .LT. 0.75 ) THEN
+      IF ( X < 2. ) THEN
+         IF ( X < 0.75 ) THEN
             IERR = .TRUE.
          ELSE
             I = 1
          ENDIF
-      ELSE IF ( X .GT. 84. ) THEN
-         IF ( X .GT. 85.25 ) THEN
+      ELSE IF ( X > 84. ) THEN
+         IF ( X > 85.25 ) THEN
             IERR = .TRUE.
          ELSE
             I = 84
@@ -13299,14 +13308,14 @@ C
       ENDIF
       U = X-I
 C
-      IF ( Y .LT. 2. ) THEN
-         IF ( Y .LT. 0.75 ) THEN
+      IF ( Y < 2. ) THEN
+         IF ( Y < 0.75 ) THEN
             IERR = .TRUE.
          ELSE
             J = 1
          ENDIF
-      ELSE IF ( Y .GT. NRL-1 ) THEN
-         IF ( Y .GT. NRL+.25 ) THEN
+      ELSE IF ( Y > NRL-1 ) THEN
+         IF ( Y > NRL+.25 ) THEN
             IERR = .TRUE.
          ELSE
             J = NRL-1
@@ -13514,7 +13523,7 @@ C     WHICH GIVES LOG(ROSS) AND TWO FIRST DERIVATIVES FOR ANY
 C     VALUES OF LOG(T) AND LOG(RHO). SEE BELOW FOR FURTHER
 C     EXPLANATION.
 C
-C  OUTPUT FOR THE CASE OF NSM .GT. 0.
+C  OUTPUT FOR THE CASE OF NSM > 0.
 C     INTERP IS USED TO OBTAIN SMOOTHED DATA INTERPOLATED
 C     BACK TO THE ORIGINAL OPAL MESH.
 C
@@ -13559,7 +13568,7 @@ c
 C     SET ROSSL UP TO T6=t6arr(nset)
 c
       NTEMP = 1
-      do while( T6 .LT. Tmax )
+      do while( T6 < Tmax )
          NTEMP = NTEMP+1
          do j = 1,NRL
             ROSSL(NTEMP,j) = coff(NTEMP,j)
@@ -13568,7 +13577,7 @@ c
          U(NTEMP) = 6.+LOG10(T6)
       enddo
 c
-      IF ( NTEMP .GT. IP ) THEN
+      IF ( NTEMP > IP ) THEN
          PRINT*,' OPALTAB: REQUIRE PARAMETER IP OF AT LEAST ',NTEMP
          STOP ' STOP -- OPALTAB: NTEMP > IP . '
       ENDIF
@@ -13614,7 +13623,7 @@ C
 C
 C  OPTION FOR SMOOTHING
 C
-      IF ( NSM .GT. 0 ) THEN
+      IF ( NSM > 0 ) THEN
          DO NS = 1,NSM
             CALL SMOOTH
          ENDDO
@@ -13638,7 +13647,7 @@ C                          ELSE IERR=.FALSE.
 C
 C INTERPOLATE BACK TO OPAL POINTS
 C
-      IF ( NSM .GT. 0 ) THEN
+      IF ( NSM > 0 ) THEN
 c
          do il = 1,NRL
             coff(1,il) = ROSSL(1,il)
@@ -13686,7 +13695,7 @@ c
 c
       if ( lxst ) then
          igzip = 0
-      else if ( last .gt. 508 ) then
+      else if ( last > 508 ) then
          stop ' STOP -- OPEN_CHK_ZIP Error: file name too long. '
       else
          ctmp = fname(1:last) // '.gz'
@@ -13726,12 +13735,12 @@ c
 c
       close(iu)
 c
-      if ( igzip .gt. 0 ) then
+      if ( igzip > 0 ) then
 c
          ctmp = 'gzip ' // fname
          call system( ctmp )
 c
-      else if ( igzip .lt. 0 ) then
+      else if ( igzip < 0 ) then
 c
          ctmp = 'compress ' // fname
          call system( ctmp )
@@ -13756,10 +13765,10 @@ c
 c
       iblank = 0
 c
-      if ( lnblnk(fname) .gt. 0 ) then
+      if ( lnblnk(fname) > 0 ) then
 c
          do i = non_blank_begin(fname), lnblnk(fname)
-            if ( fname(i:i) .eq. ' ' .or. fname(i:i) .eq. ctab )
+            if ( fname(i:i) == ' ' .OR. fname(i:i) == ctab )
      $           iblank = iblank + 1
          enddo
 c
@@ -13789,8 +13798,8 @@ c
          i = last
       else
          i = 1
-         do while ( i .lt. last .and.
-     $        ( fname(i:i) .eq. ' ' .or. fname(i:i) .eq. ctab ) )
+         do while ( i < last .and.
+     $        ( fname(i:i) == ' ' .OR. fname(i:i) == ctab ) )
             i = i + 1
          enddo
       endif
@@ -13828,7 +13837,7 @@ c  environment variable HOME is correctly defined as the home directory):
 c-linux[
       call linux_get_home_dir(fname,fnalt,ialt)
 c
-      if ( ialt .gt. 0 ) then
+      if ( ialt > 0 ) then
          open(iu,file=fnalt,form='FORMATTED',status='OLD',
      $        iostat=ioperr,err=900)
       else
@@ -13874,7 +13883,7 @@ c-linux[
 c
       call linux_get_home_dir(fname,fnalt,ialt)
 c
-      if ( ialt .gt. 0 ) then
+      if ( ialt > 0 ) then
          open(iu,file=fnalt,form='UNFORMATTED',status='OLD',
      $        iostat=ioperr,err=900)
       else
@@ -13920,7 +13929,7 @@ c-linux[
 c
       call linux_get_home_dir(fname,fnalt,ialt)
 c
-      if ( ialt .gt. 0 ) then
+      if ( ialt > 0 ) then
          open(iu,file=fnalt,form='UNFORMATTED',status='UNKNOWN',
      $        iostat=ioperr,err=900)
       else
@@ -13966,7 +13975,7 @@ c-linux[
 c
       call linux_get_home_dir(fname,fnalt,ialt)
 c
-      if ( ialt .gt. 0 ) then
+      if ( ialt > 0 ) then
          inquire( file = fnalt, exist = lxst )
       else
          inquire( file = fname, exist = lxst )
@@ -13995,12 +14004,12 @@ c
       character*(*) fname
       character*(*) fnalt
 c
-      if ( len(fname) .ge. 2 .and. fname(1:2) .eq. '~/' ) then
+      if ( len(fname) .ge. 2 .and. fname(1:2) == '~/' ) then
 c
          ialt = 1
          call getenv( 'HOME' , fnalt )
          i = lnblnk(fnalt)
-         if ( lnblnk(fname) + i - 1 .gt. len(fnalt) ) then
+         if ( lnblnk(fname) + i - 1 > len(fnalt) ) then
             write(6,900) lnblnk(fname) + i - 1, len(fnalt),
      $           fnalt(1:i), fname(2:lnblnk(fname))
  900        format(' '/' Error: filename has',i6,
@@ -14035,11 +14044,11 @@ c
 c
       i = len(fname)
 c
-      do while( i .gt. 1 .and.
-     $     ( fname(i:i) .eq. ' ' .or. fname(i:i) .eq. ctab ) )
+      do while( i > 1 .and.
+     $     ( fname(i:i) == ' ' .OR. fname(i:i) == ctab ) )
          i = i - 1
       enddo
-      if ( fname(i:i) .eq. ' ' .or. fname(i:i) .eq. ctab ) i = i - 1
+      if ( fname(i:i) == ' ' .OR. fname(i:i) == ctab ) i = i - 1
 c
       lnblnk = i
 c

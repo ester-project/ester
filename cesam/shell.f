@@ -3,9 +3,8 @@ c******************************************************************
 
 	SUBROUTINE shell(n,x)
 
-c	routine public du module mod_numerique
-	
-c	tri d'un tableau
+c routine public du module mod_numerique	
+c tri d'un tableau
 
 c entrée
 c	n : nombre de points

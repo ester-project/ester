@@ -1,44 +1,43 @@
 
 c**************************************************************************
 
-      SUBROUTINE rk_imps(t_t,ro_t,compx,t,ro,compy,dt,esti,ok,n_pt,
-     1 z_vent,dm)
+	SUBROUTINE rk_imps(t_t,ro_t,compx,t,ro,compy,dt,esti,ok,n_pt,dm,l_nzc)
 
-c     routine private du module mod_evol
+c routine private du module mod_evol
 
-c     intégration de la composition chimique par divers schémas RKi
-c     implémentation selon Hairer et Wanner p.128
-c     contrairement a rk_imp, il n'y a pas de test de précision
-c     par comparaison avec un second schéma
-c     on interpole linéairement T et ro pour les points intermédiaires
+c intégration de la composition chimique par divers schémas RKi
+c implémentation selon Hairer et Wanner p.128
+c contrairement a rk_imp, il n y a pas de test de précision
+c par comparaison avec un second schéma
+c on interpole linéairement T et ro pour les points intermédiaires
 
-c     Auteur: P.Morel, Département J.D. Cassini, O.C.A.,
-c     CESAM2k
+c Auteur: P.Morel, Département J.D. Cassini, O.C.A., CESAM2k
 
-c     on a noté z les zi de Hairer et Wanner (zi, charges des élem. chim.
-c     est variable publique du module mod_donnees)
+c on a noté z les zi de Hairer et Wanner (zi, charges des élem. chim.
+c est variable publique du module mod_donnees)
 
-c entrees
-c     t_t(k), t(k) : températures aux temps t et t+dt, couche k
-c     ro_t(k), ro(k) : densités aux temps t et t+dt, couche k
-c     compx(nchim,k) : composition chimique au temps t couche k
-c     dt: pas temporel
-c     dm : épaisseur en masse des couches des ZC
-c     n_pt : nombre de couches à mélanger
+c entrées
+c	t_t(k), t(k) : températures aux temps t et t+dt, couche k
+c	ro_t(k), ro(k) : densités aux temps t et t+dt, couche k
+c	compx(nchim,k) : composition chimique au temps t couche k
+c	dt: pas temporel
+c	dm : épaisseur en masse des couches des ZC
+c	n_pt : nombre de couches à mélanger
+c	l_nzc=.TRUE. : il y a vent ou chute de planétoïdes
 
-c entrees / sorties
-c     compy : composition chimique au temps t+dt
-c     ok = .TRUE. : nouveau modèle / la précision est atteinte
+c entrées / sorties
+c	compy : composition chimique au temps t+dt
+c	ok = .TRUE. : nouveau modèle / la précision est atteinte
 
 c sorties
-c     esti : précision estimée par élément
+c	estim : variation maximale par élément
 
 c----------------------------------------------------------------
 
-	USE mod_donnees, ONLY : ab_min, dtmin, ihe4, langue,
-	1 nchim, nom_elem, ordre, precix
+	USE mod_donnees, ONLY : ab_ini, ab_min, dtmin, ihe4, langue,
+	1 nchim, nom_elem, nucleo, ordre
 	USE mod_kind
-	USE mod_nuc, ONLY : nuc, vent
+	USE mod_nuc, ONLY : l_planet, l_vent, nuc, planetoides, vent
 	USE mod_numerique, ONLY : gauss_band, neville
       
 	IMPLICIT NONE
@@ -47,22 +46,22 @@ c----------------------------------------------------------------
 	REAL (kind=dp), INTENT(in), DIMENSION(:) :: dm, ro, ro_t, t, t_t
 	REAL (kind=dp), INTENT(in) :: dt
 	INTEGER, INTENT(in) :: n_pt
-	LOGICAL, INTENT(in) :: z_vent     
-	REAL (kind=dp), INTENT(out), DIMENSION(:) :: compy
-	REAL (kind=dp), INTENT(out), DIMENSION(:) :: esti
+	LOGICAL, INTENT(in) :: l_nzc 
+	REAL (kind=dp), INTENT(out), DIMENSION(:) :: compy, esti	!estim
 	LOGICAL, INTENT(out) :: ok
 
 	REAL (kind=dp), ALLOCATABLE, SAVE, DIMENSION(:,:) :: a, corr, corr1,
 	1 jacob, z
 	REAL (kind=dp), ALLOCATABLE, DIMENSION(:,:) :: roi, ti
 	REAL (kind=dp), PARAMETER, DIMENSION(0:1) :: x=(/ 0.d0, 1.d0 /)
-	REAL (kind=dp), ALLOCATABLE, SAVE, DIMENSION(:) :: c   
-     
-	REAL (kind=dp), DIMENSION(nchim,nchim) :: jac, jacs 
-	REAL (kind=dp), DIMENSION(nchim) :: compx0, dcomp, dcomps, ex, scale 	
+	REAL (kind=dp), ALLOCATABLE, SAVE, DIMENSION(:) :: c,  scale0    
+	REAL (kind=dp), DIMENSION(nchim,nchim) :: jac, jacs
+	REAL (kind=dp), DIMENSION(nchim) :: compx0, dcomp, dcomps, !esti,
+	1 ex, scale	
 	REAL (kind=dp), DIMENSION(0:1) :: f    
 	REAL (kind=dp), DIMENSION(5) :: e 
-     
+
+	REAL (kind=dp), PARAMETER :: preci=1.d-4   
 	REAL (kind=dp) :: be7, bid, b8, corr_max, ero, f17, et, hh, n13, o15
 
 	INTEGER, ALLOCATABLE, SAVE, DIMENSION(:) :: indpc
@@ -79,156 +78,147 @@ c---------------------------------------------------------------------
 2002	FORMAT(12es8.1)
 2003	FORMAT(12es8.1)
 
-      IF(init)THEN
-       init=.FALSE. ; PRINT*
+	IF(init)THEN
+	 init=.FALSE. ; PRINT*
+	 SELECT CASE(ordre)
+	 CASE(1)
+	  SELECT CASE(langue)
+	  CASE('english')
+	   PRINT*,'integration using IRK1 of order 1'	
+	  CASE DEFAULT
+	   PRINT*,'intégration par IRK1  d''ordre 1'
+	  END SELECT	
+	  s=1 !p pour précision
+	  ALLOCATE(a(s,s),c(s))
+	  a(1,1)=1.d0 ; c(1)=1.d0
 
-       SELECT CASE(ordre)
-       CASE(1)
-        SELECT CASE(langue)
-	CASE('english')
-         PRINT*,'integration using IRK1 of order 1'	
-	CASE DEFAULT
-         PRINT*,'intégration par IRK1  d''ordre 1'
-	END SELECT	
-        s=1       !p pour précision
-        ALLOCATE(a(s,s),c(s))
-        a(1,1)=1.d0 ; c(1)=1.d0
+	 CASE(2)
+	  SELECT CASE(langue)
+	  CASE('english')
+	   PRINT*,'integration using Lobatto IIIc of order 2'	
+	  CASE DEFAULT 
+	   PRINT*,'intégration par Lobatto IIIc d''ordre 2'
+	  END SELECT	
+	  s=2     
+	  ALLOCATE(a(s,s),c(s))
+	  a(1,1)=0.5d0 ; a(1,2)=-0.5d0
+	  a(2,1)=0.5d0 ; a(2,2)=0.5d0
+	  c(1)=0.d0 ; c(2)=1.d0
 
-       CASE(2)
-        SELECT CASE(langue)
-	CASE('english')
-         PRINT*,'integration using Lobatto IIIc of order 2'	
-	CASE DEFAULT       
-         PRINT*,'intégration par Lobatto IIIc d''ordre 2'
-        END SELECT	
-        s=2     
-        ALLOCATE(a(s,s),c(s))
-        a(1,1)=0.5d0 ; a(1,2)=-0.5d0
-        a(2,1)=0.5d0 ; a(2,2)=0.5d0
-        c(1)=0.d0 ; c(2)=1.d0
+	 CASE(3)
+	  SELECT CASE(langue)
+	  CASE('english')
+	   PRINT*,'integration using Radau IIa of order 3'	
+	  CASE DEFAULT       
+           PRINT*,'intégration par Radau IIa d''ordre 3'
+         END SELECT	
+         s=2
+         ALLOCATE(a(s,s),c(s))
+         a(1,1)=5.d0/12.d0 ; a(1,2)=-1.d0/12.d0
+         a(2,1)=0.75d0     ; a(2,2)=0.25d0
+         c(1)=1.d0/3.d0 ; c(2)=1.d0
 
-       CASE(3)
-        SELECT CASE(langue)
-	CASE('english')
-         PRINT*,'integration using Radau IIa of order 3'	
-	CASE DEFAULT       
-        PRINT*,'intégration par Radau IIa d''ordre 3'
-       END SELECT	
-        s=2
-        ALLOCATE(a(s,s),c(s))
-        a(1,1)=5.d0/12.d0 ; a(1,2)=-1.d0/12.d0
-        a(2,1)=0.75d0     ; a(2,2)=0.25d0
-        c(1)=1.d0/3.d0 ; c(2)=1.d0
+	 CASE(4)
+	  SELECT CASE(langue)
+	  CASE('english')
+	   PRINT*,'integration using Lobatto IIIc of order 4'	
+	  CASE DEFAULT      
+	   PRINT*,'intégration par Lobatto IIIc d''ordre 4'
+	  END SELECT	
+	  s=3
+	  ALLOCATE(a(s,s),c(s))
+	  a(1,1)=1.d0/6.d0 ; a(1,2)=-1.d0/3.d0 ; a(1,3)=1.d0/6.d0
+	  a(2,1)=1.d0/6.d0 ; a(2,2)=5.d0/12.d0 ; a(2,3)=-1.d0/12.d0
+	  a(3,1)=1.d0/6.d0 ; a(3,2)=2.d0/3.d0  ; a(3,3)=1.d0/6.d0     
+	  c(1)=0.d0 ; c(2)=0.5d0 ; c(3)=1.d0
 
-       CASE(4)
-        SELECT CASE(langue)
-	CASE('english')
-         PRINT*,'integration using Lobatto IIIc of order 4'	
-	CASE DEFAULT      
-         PRINT*,'intégration par Lobatto IIIc d''ordre 4'
-        END SELECT	
-        s=3
-        ALLOCATE(a(s,s),c(s))
-        a(1,1)=1.d0/6.d0 ; a(1,2)=-1.d0/3.d0 ; a(1,3)=1.d0/6.d0
-        a(2,1)=1.d0/6.d0 ; a(2,2)=5.d0/12.d0 ; a(2,3)=-1.d0/12.d0
-        a(3,1)=1.d0/6.d0 ; a(3,2)=2.d0/3.d0  ; a(3,3)=1.d0/6.d0     
-        c(1)=0.d0 ; c(2)=0.5d0 ; c(3)=1.d0
+	 CASE(5)
+	  SELECT CASE(langue)
+	  CASE('english')
+	   PRINT*,'integration using Radau IIa of order 5'		
+	  CASE DEFAULT   
+	   PRINT*,'intégration par Radau IIa d''ordre 5'
+	  END SELECT	
+	  s=3
+	  ALLOCATE(a(s,s),c(s))
+	  a(1,1)=(88.d0-7.d0*SQRT(6.d0))/360.d0
+	  a(2,1)=(296.d0+169.d0*SQRT(6.d0))/1800.d0
+	  a(3,1)=(16.d0-SQRT(6.d0))/36.d0
+	  a(1,2)=(296.d0-169.d0*SQRT(6.d0))/1800.d0
+	  a(2,2)=(88.d0+7.d0*SQRT(6.d0))/360.d0
+	  a(3,2)=(16.d0+SQRT(6.d0))/36.d0
+	  a(1,3)=(-2.d0+3.d0*SQRT(6.d0))/225.d0
+	  a(2,3)=(-2.d0-3.d0*SQRT(6.d0))/225.d0
+	  a(3,3)=1.d0/9.d0
+	  c(1)=(4.d0-SQRT(6.d0))/10.d0
+	  c(2)=(4.d0+SQRT(6.d0))/10.d0
+	  c(3)=1.d0
 
-       CASE(5)
-        SELECT CASE(langue)
-	CASE('english')
-         PRINT*,'integration using Radau IIa of order 5'		
-	CASE DEFAULT   
-         PRINT*,'intégration par Radau IIa d''ordre 5'
-        END SELECT	
-        s=3
-        ALLOCATE(a(s,s),c(s))
-        a(1,1)=(88.d0-7.d0*SQRT(6.d0))/360.d0
-        a(2,1)=(296.d0+169.d0*SQRT(6.d0))/1800.d0
-        a(3,1)=(16.d0-SQRT(6.d0))/36.d0
-        a(1,2)=(296.d0-169.d0*SQRT(6.d0))/1800.d0
-        a(2,2)=(88.d0+7.d0*SQRT(6.d0))/360.d0
-        a(3,2)=(16.d0+SQRT(6.d0))/36.d0
-        a(1,3)=(-2.d0+3.d0*SQRT(6.d0))/225.d0
-        a(2,3)=(-2.d0-3.d0*SQRT(6.d0))/225.d0
-        a(3,3)=1.d0/9.d0
-        c(1)=(4.d0-SQRT(6.d0))/10.d0
-        c(2)=(4.d0+SQRT(6.d0))/10.d0
-        c(3)=1.d0
+	 CASE(6)
+	  SELECT CASE(langue)
+	  CASE('english')
+	   PRINT*,'integration using Lobatto IIIc of order 6'		
+	  CASE DEFAULT       
+	   PRINT*,'intégration par Lobatto IIIc d''ordre 6'
+	  END SELECT	
+	  s=4
+	  ALLOCATE(a(s,s),c(s))
+	  a(1,1)=1.d0/12.d0
+	  a(2,1)=1.d0/12.d0
+	  a(3,1)=1.d0/12.d0
+	  a(4,1)=1.d0/12.d0
+	  a(1,2)=-SQRT(5.d0)/12.d0
+	  a(2,2)=1.d0/4.d0
+	  a(3,2)=(10.d0+7.d0*SQRT(5.d0))/60.d0
+	  a(4,2)=5.d0/12.d0
+	  a(1,3)=SQRT(5.d0)/12.d0
+	  a(2,3)=(10.d0-7.d0*SQRT(5.d0))/60.d0
+	  a(3,3)=1.d0/4.d0
+	  a(4,3)=5.d0/12.d0
+	  a(1,4)=-1.d0/12.d0
+	  a(2,4)=SQRT(5.d0)/60.d0
+	  a(3,4)=-SQRT(5.d0)/60.d0
+	  a(4,4)=1.d0/12.d0
+	  c(1)=0.d0
+	  c(2)=(5.d0-SQRT(5.d0))/10.d0
+	  c(3)=(5.d0+SQRT(5.d0))/10.d0
+	  c(4)=1.d0
+	 CASE DEFAULT
+	  SELECT CASE(langue)
+	  CASE('english')
+	   PRINT*,'STOP, there is no formulae for order=',ordre	
+	  CASE DEFAULT      
+	   PRINT*,'ARRET, il n''y a pas de formule pour ordre=',ordre
+	  END SELECT
+	  STOP
+	 END SELECT
 
-       CASE(6)
-        SELECT CASE(langue)
-	CASE('english')
-         PRINT*,'integration using Lobatto IIIc of order 6'		
-	CASE DEFAULT       
-         PRINT*,'intégration par Lobatto IIIc d''ordre 6'
-        END SELECT	
-        s=4
-        ALLOCATE(a(s,s),c(s))
-        a(1,1)=1.d0/12.d0
-        a(2,1)=1.d0/12.d0
-        a(3,1)=1.d0/12.d0
-        a(4,1)=1.d0/12.d0
-        a(1,2)=-SQRT(5.d0)/12.d0
-        a(2,2)=1.d0/4.d0
-        a(3,2)=(10.d0+7.d0*SQRT(5.d0))/60.d0
-        a(4,2)=5.d0/12.d0
-        a(1,3)=SQRT(5.d0)/12.d0
-        a(2,3)=(10.d0-7.d0*SQRT(5.d0))/60.d0
-        a(3,3)=1.d0/4.d0
-        a(4,3)=5.d0/12.d0
-        a(1,4)=-1.d0/12.d0
-        a(2,4)=SQRT(5.d0)/60.d0
-        a(3,4)=-SQRT(5.d0)/60.d0
-        a(4,4)=1.d0/12.d0
-        c(1)=0.d0
-        c(2)=(5.d0-SQRT(5.d0))/10.d0
-        c(3)=(5.d0+SQRT(5.d0))/10.d0
-        c(4)=1.d0
-       CASE DEFAULT
-        SELECT CASE(langue)
-	CASE('english')
-         PRINT*,'STOP, there is no formulae for order=',ordre	
-	CASE DEFAULT      
-         PRINT*,'ARRET, il n''y a pas de formule pour ordre=',ordre
-        END SELECT
-        STOP
-       END SELECT
+c allocations, ns: dimension du vecteur Z, du système N-R
+	 ns=nchim*s
 
-c      allocations, ns: dimension du vecteur Z, du système N-R
-
-       ns=nchim*s
-
-c      définitions, initialisations
-
-       ord_intp=1     !ordre d'interpolation : linéaire
-       tourmax=30 !nombre de tours max pour N-R
-c      scale=ab_min(1:nchim)*100.d0  !abondances de référence
+c définitions, initialisations
+	 ord_intp=1     !ordre d'interpolation : linéaire
+	 tourmax=30 !nombre de tours max pour N-R
  
-       ALLOCATE(corr(nchim,s),corr1(1,ns),indpc(ns),jacob(ns,ns),z(nchim,s)) 
-       indpc=1
-
-c      WRITE(*,2000)ab_min ; WRITE(*,2000)scale
-c      CALL pause('ab_min, scale')
-
-      ENDIF
+	 ALLOCATE(corr(nchim,s),corr1(1,ns),indpc(ns),jacob(ns,ns),
+	1 scale0(nchim),z(nchim,s)) 
+	 indpc=1 ; scale0=ab_ini/nucleo
+	ENDIF
+	
+c--------------------fin des initialisations-----------------------
       
-c     les valeurs moyennes dépendent du nombre de couches
-      
+c les valeurs moyennes dépendent du nombre de couches  
 	ALLOCATE(ti(n_pt,s),roi(n_pt,s))
 
-c     calcul des valeurs moyennes des abondances au temps t   
-c     l'ordre des arguments de compx(nchim,n_pt) permet le produit de
-c     matrice avec dm sur 1,n_pt
+c calcul des valeurs moyennes des abondances au temps t   
+c l ordre des arguments de compx(nchim,n_pt) permet le produit de
+c matrice avec dm sur 1,n_pt
+c dans une ZC compx est l intégrale de la comp_chim, scale en tient compte
+	compx0(:)=MATMUL(compx,dm(1:n_pt)) ; scale=MAX(ABS(compx0),scale0)
 
-      compx0(:)=MATMUL(compx,dm(1:n_pt)) ; scale=abs(compx0)
-c     PRINT*,'n_pt,dm',n_pt ; WRITE(*,2000)dm(1:n_pt)
-c     WRITE(*,2000)compx0(1:nchim) ; CALL pause('matmul')    
-
-c     interpolation des températures et densités  
-c     les valeurs de T et de ro aux points intermédiaires par interp.
-c     ti(n_pt,s)=ti(point de ZM,etape RK), idem pour roi
-
+c interpolation des températures et densités  
+c les valeurs de T et de ro aux points intermédiaires par interp.
+c ti(n_pt,s)=ti(point de ZM,etape RK), idem pour roi
 	DO i=1,s
 	 DO k=1,n_pt
 	  f(0)=t(k) ; f(1)=t_t(k) ; ti(k,i)=neville(c(i),x,f,ord_intp)
@@ -245,9 +235,9 @@ c	 PRINT*,'roi',i ; WRITE(*,2000)roi(:,i)
 	ENDDO
 	
 c initialisations
-c       vecteur Z: z(ns)=z(nchim,s), z(variable,etape RK)
-c       Z=T(Z1,..,Znchim), Zi=T(z_i1, z_i2, z_is), i=1,nchim
-c       pour la variable=k, etape=l, i=nchim*(l-1)+k ==> z(i)
+c vecteur Z: z(ns)=z(nchim,s), z(variable,etape RK)
+c Z=T(Z1,..,Znchim), Zi=T(z_i1, z_i2, z_is), i=1,nchim
+c pour la variable=k, etape=l, i=nchim*(l-1)+k ==> z(i)
 
 	z=0.d0
 
@@ -255,29 +245,26 @@ c iterations NR
 	tour=0 ; corr_max=1.d5
 	B2: DO
 
-c        jacob(ns,ns)=jacob(nchim,s,nchim,s)
+c jacob(ns,ns)=jacob(nchim,s,nchim,s)
 c             =jacob(variable,etape,variable,etape)
-c        pour la variable=k, etape=l, i=ns*(l-1)+k
-c        derivée/variable=m, etape=q, j=ns*(q-1)+m ==> jacob(i,j)
- 
+c pour la variable=k, etape=l, i=ns*(l-1)+k
+c dérivée/variable=m, etape=q, j=ns*(q-1)+m ==> jacob(i,j) 
 	 jacob=0.d0  
 	 DO i=1,ns          !initialisations
 	  jacob(i,i)=1.d0       !1 dans la diagonale du jacobien
 	 ENDDO
 
-c        on met Z dans corr= Z - A*fi*h
+c on met Z dans corr= Z - A*fi*h
 	 corr=z
 
-c        formation du sytème
-c        a la 1-ière itération Z=0, ensuite Z=Z_s de l'itération précédente
-c        ce qui permet d'updater compy, utilise dans l'appel à nuc
-
+c formation du sytème
+c a la 1-ière itération Z=0, ensuite Z=Z_s de l itération précédente
+c ce qui permet d updater compy, utilise dans l appel à nuc
 	 DO j=1,s           	!pour chaque étape R-K      
 c	  PRINT*,'compx0' ; WRITE(*,2000)compx0
 c	  PRINT*,'z(:,j)',j ; WRITE(*,2000)z(:,j)
        
-	  compy=compx0+z(:,j)     !Vt: compy(l) = X0(l)+z_lj
-	
+	  compy=compx0+z(:,j)     !Vt: compy(l) = X0(l)+z_lj	
 c	  PRINT*,'compy' ; WRITE(*,2000)compy
 c         PRINT*,'j,z',j,(z(1:nblem,j)
 
@@ -285,27 +272,30 @@ c         PRINT*,'j,z',j,(z(1:nblem,j)
 
 	  DO k=1,n_pt   !pour chaque couche de la ZC
 
-c	   F ( x+Ci h,y0+z )	 
+c F ( x+Ci h,y0+z )	 
 	   CALL nuc(ti(k,j),roi(k,j),compy,dcomp,jac,.TRUE.,2,
 	1  e,et,ero,ex,hh,be7,b8,n13,o15,f17) 
        
-c s'il y a perte/gain de masse
-c	   IF(z_vent)CALL vent(compy,dcomp,jac) 
+c s il y a vent ou chute de planétoïdes
+	   IF(l_nzc)THEN
+	    IF(l_vent)CALL vent(compy,dcomp,jac)
+	    IF(l_planet)CALL planetoides(compy,dcomp,jac) 
+	   ENDIF	    
 	   
 	   dcomps=dcomps+dcomp*dm(k)*dt !somme du second membre sur la ZC
 	   jacs=jacs+jac*dm(k)*dt   !somme sur la ZC du jacobien   
 	  ENDDO     !k
 
-c         contribution au jacobien et au second membre : Z - A*fi*h
+c contribution au jacobien et au second membre : Z - A*fi*h
 	  DO l=1,nchim     !chaque element
 	   DO i=1,s     !chaque etape R_K
 
-c           second membre corr=Z-A*fi*h, Z est deja dans corr
+c second membre corr=Z-A*fi*h, Z est deja dans corr
 	    corr(l,i)=corr(l,i)-a(i,j)*dcomps(l) 
 
 c           PRINT*,'l,i,j,corr',l,i,j,corr(l,i)
 
-c           contribution au jacobien il y a déjà 1 dans la diag de jacob
+c  contribution au jacobien il y a déjà 1 dans la diag de jacob
 	    DO m=1,nchim
 c	     indice=nchim*(s*(nchim*(j-1)+m-1)+i-1)+l
 	     ii=nchim*(i-1)+l ; jj=nchim*(j-1)+m       
@@ -320,24 +310,14 @@ c	  WRITE(*,2000)jacob(i,:)
 c	 ENDDO
 c	 CALL pause('avant inversion')
 
-c	 pour la solution on met tout à la queue leu-leu
-c	 il y a peut être moyen de faire plus élégant 
-       
-	 DO i=1,s
-	  DO l=1,nchim
-	   corr1(1,nchim*(i-1)+l)=corr(l,i)
-	  ENDDO
-	 ENDDO
-
+c pour la solution on met tout à la queue leu-leu
+	 corr1=RESHAPE(corr,SHAPE(corr1))
+	 
+c résolution du système linéaire
 	 CALL gauss_band(jacob,corr1,indpc,ns,ns,ns,1,ok)
-	 DO i=1,s
-	  DO l=1,nchim
-	   corr(l,i)=corr1(1,nchim*(i-1)+l)
-	  ENDDO
-	 ENDDO
-
 	 IF(.NOT.ok)THEN
 	  PRINT*,'dans rk_imps, jacobien non inversible'
+	  PRINT*,'compx0' ; WRITE(*,2000)compx0
 	  PRINT*,'t_t' ; WRITE(*,2000)t_t(1:n_pt) ; PRINT*,'ro_t' 
 	  WRITE(*,2000)ro_t(1:n_pt) ; PRINT*,'dt' ; WRITE(*,2000)dt
 	  PRINT*,'n_pt,tour,ns',n_pt,tour,ns ; PRINT*,'dm'
@@ -345,9 +325,10 @@ c	 il y a peut être moyen de faire plus élégant
 	  PRINT*,'ro' ; WRITE(*,2000)ro(1:n_pt) ; EXIT B2
 	 ENDIF
 
-c	 PRINT*,'correction',tour ; WRITE(*,2000)corr(1,1:s)
-c	 CALL pause('iteration')
+c rétablissement des 2 dimensions	 
+	 corr=RESHAPE(corr1,SHAPE(corr))
 
+c correction maximale normalisée	 
 	 corr_max=0.d0
 	 B1: DO l=1,nchim
 	  IF(ABS(compx0(l)) < ab_min(l))CYCLE B1 
@@ -356,20 +337,16 @@ c	 CALL pause('iteration')
 	   corr_max=MAX(corr_max,bid) ; IF(corr_max == bid)imax=l
 	  ENDDO
 	 ENDDO B1
-
-c	 correction sur Z
-
-c	 DO i=1,s
-c	  WRITE(*,2002)z(:,i)
+	 
+c correction sur Z
+	 z=z-corr
+	 	 
+c	 PRINT*,'correction',tour,imax ; WRITE(*,2000)corr_max
+c	 DO l=1,ordre
+c	  WRITE(*,2000)corr(:,l)/scale(l)
 c	 ENDDO
 
-	 z=z-corr
-
-c	 DO i=1,s
-c	  WRITE(*,2002)corr(:,i)
-c	 ENDDO   
-c        PRINT*,'corr_max',corr_max! ; CALL pause('corr_max')
-
+c test de convergence
 	 tour=tour+1
 	 IF(tour > tourmax)THEN
 	  IF(corr_max <= 1.d-2 .AND. imax /= ihe4)THEN
@@ -379,42 +356,34 @@ c        PRINT*,'corr_max',corr_max! ; CALL pause('corr_max')
 	   WRITE(*,118)ordre,nom_elem(imax),t(1),ro(1),dt,corr_max
 	   WRITE(2,118)ordre,nom_elem(imax),t(1),ro(1),dt,corr_max
 118	   FORMAT('pas de conv. de NR dans rk_imps, ordre:',i3,
-	1  ', element: ',a,/,'t=',es10.3,', ro=',es10.3,', dt=',
+	1  ', élément: ',a,/,'t=',es10.3,', ro=',es10.3,', dt=',
 	2  es10.3,', corr_max=',es10.3)
 	   WRITE(*,116) ; WRITE(2,116)
-	   WRITE(*,117)compx(1:MIN(12,nchim),1)
-	   WRITE(*,117)compx(13:nchim,1) 
-	   WRITE(*,117)compy(1:MIN(12,nchim)); WRITE(*,117)compy(13:nchim)
-	   WRITE(*,117)esti(1:MIN(12,nchim)); WRITE(*,117)esti(13:nchim)
-	   WRITE(2,117)compx(1:MIN(12,nchim),1)
-	   WRITE(2,117)compx(13:nchim,1) 
-	   WRITE(2,117)compy(1:MIN(12,nchim)); WRITE(2,117)compy(13:nchim)
-	   WRITE(2,117)esti(1:MIN(12,nchim)); WRITE(2,117)esti(13:nchim)
+	   WRITE(*,117)compx(1:MIN(8,nchim),1)
+	   WRITE(*,117)compx(9:nchim,1) 
+	   WRITE(*,117)compy(1:MIN(8,nchim)); WRITE(*,117)compy(9:nchim)
+	   WRITE(*,117)esti(1:MIN(8,nchim)); WRITE(*,117)esti(9:nchim)
+	   WRITE(2,117)compx(1:MIN(8,nchim),1)
+	   WRITE(2,117)compx(9:nchim,1) 
+	   WRITE(2,117)compy(1:MIN(8,nchim)); WRITE(2,117)compy(9:nchim)
+	   WRITE(2,117)esti(1:MIN(8,nchim)); WRITE(2,117)esti(9:nchim)
 	   ok=.FALSE.
 c	   CALL pause('non convergence dans rk_imps')
 	   IF(dt/2.d0 > dtmin)EXIT B2
 	   PRINT*,'le dt < dtmin, abandon' ; STOP
 	  ENDIF
 	  EXIT B2
-	 ELSEIF(corr_max < precix)THEN
+	 ELSEIF(corr_max < preci)THEN
 	  ok=.TRUE. ; force= .FALSE.; EXIT B2
 	 ENDIF
 	ENDDO B2    !boucle infinie NR
 
-c     PRINT*,'tour',tour,ordre,ordre ; WRITE(*,2000),t(1),ro(1)
-c     CALL pause('tour')
+c	PRINT*,'tour',tour,ordre,ordre ; WRITE(*,2000),t(1),ro(1) ; PAUSE'tour'
 
-c     solution et estimation des variations relatives
-c     la solution est en Z_s
-
+c solution et estimation des variations relatives, la solution est en Z_s
       IF(ok)THEN
-
        compy=compx0+z(:,s) ; esti=ABS(z(:,s))/scale
 
-c	IF(z_vent)THEN
-c	 WRITE(*,2000)compx(1:nchim,1) ; WRITE(*,2000)compy(1:nchim)
-c	 PAUSE'solution'
-c	ENDIF
 c      PRINT*,'tour,ordre,s',tour,ordre,s
 c      PRINT*,'sortie rk_imps, n_pt, ok/compx/compy',n_pt,ok
 c      WRITE(*,2001)compx0 ; WRITE(*,2001)compy
@@ -425,23 +394,32 @@ c      WRITE(*,2003)compx0 ; WRITE(*,2003)compy ; WRITE(*,2003)esti
 c      CALL pause('solution')
 
        IF(force)THEN
-        WRITE(*,115)ordre,nom_elem(imax),t(1),ro(1),dt,corr_max
+        WRITE(*,115)ordre,nom_elem(imax),t(1),ro(1),dt,corr_max,tour
 115     FORMAT(/,'on force la  conv. de NR dans rk_imps, ordre:',i3,
-     1  ', element: ',a3,/,'t=',es10.3,', ro=',es10.3,', dt=',
-     2  es10.3,', corr_max=',es10.3)
+     1  ', element: ',a4,/,'t=',es10.3,', ro=',es10.3,', dt=',
+     2  es10.3,', corr_max=',es10.3,', tour=',i3)
         WRITE(*,116)
 116     FORMAT('x / y / esti')
-        WRITE(*,117)compx(1:MIN(12,nchim),1)
-	WRITE(*,117)compx(13:nchim,1)
-        WRITE(*,117)compy(1:MIN(12,nchim)) ; WRITE(*,117)compy(13:nchim)
-        WRITE(*,117)esti(1:MIN(12,nchim)); WRITE(*,117)esti(13:nchim)
-117     FORMAT(12es10.3)
+        WRITE(*,117)compx(1:MIN(8,nchim),1)
+	WRITE(*,117)compx(9:nchim,1)
+        WRITE(*,117)compy(1:MIN(8,nchim)) ; WRITE(*,117)compy(9:nchim)
+        WRITE(*,117)esti(1:MIN(8,nchim)); WRITE(*,117)esti(9:nchim)
+117     FORMAT(8es10.3)
        ENDIF
       ENDIF
-
-      DEALLOCATE(roi,ti)
       
-      RETURN
+c détermination de la variation maximale par élément sur le pas temporel
+c	DO i=1,nchim
+c	 IF(compx0(i)+compy(i) > scale0(i))THEN
+c	  estim(i)=ABS((compx0(i)-compy(i))/(compx0(i)+compy(i)))
+c	 ELSE
+c	  estim(i)=0.d0
+c	 ENDIF
+c	ENDDO
+ 
+	DEALLOCATE(roi,ti)
+      
+	RETURN
 
       END SUBROUTINE rk_imps
  

@@ -83,8 +83,6 @@ c----------------------------------------------------------------------
       IF(init)THEN    !initialisations
        init=.false.
 
-c      Z proportion d'elements lourds doit avoir ete
-c      initialise par appel (fictif) a opa
        ahmu=ah*amu ; ahemu=ahe4*amu ; kihk=kih*eve/kbol
        kihek=kihe*eve/kbol ; kihe1k=kihe1*eve/kbol
        kihah=kih*eve/ah/amu ; kihehe=kihe*eve/ahe4/amu
@@ -97,7 +95,7 @@ c      initialise par appel (fictif) a opa
        zihz=zih*z0
        cte2=SQRT(hpl/me*hpl/kbol/2.d0/pi)**3/EXP(1.d0)**2/2.d0 !f/4=cte2*nel/T p.8
        WRITE(2,1) ; WRITE(*,1)
-1      FORMAT(1x,'équation d''état de GONG2:',/,
+1      FORMAT('équation d''état de GONG2:',/,
      1 'équation de Saha évitant la recombinaison,',/,
      2 'pas de pression de radiation, pas de dégénérescence')
       ENDIF
@@ -170,20 +168,19 @@ c      PRINT*'kder / ro,nel',kder ; WRITE(*,2000)ro,nel
       aa(2,1)=ro*dmuem1ne-1.d0        !d 2 /dne
       aa(2,2)=muem1                   !d 2 /dro
 
-c      solution
-
+c solution
       indpc=1 ; CALL gauss_band(aa,bb,indpc,2,2,2,1,inversible)
       IF(.not.inversible)THEN
        PRINT*,'dans etat_gong2, matrice non inversible, ARRET' ; STOP
       ENDIF
 
       corr=1.d0
-27    IF(corr*bb(1,1) > 0.6d0*nel .or. corr*bb(1,2) > 0.6d0*ro)THEN
+27    IF(corr*bb(1,1) > 0.6d0*nel .OR. corr*bb(1,2) > 0.6d0*ro)THEN
        corr=corr/2.d0 ; GOTO 27
       ENDIF
       nel=nel-bb(1,1)*corr
       ro=ro-bb(1,2)*corr
-      corr=max(ABS(bb(1,1))/nel,ABS(bb(1,2)/ro))
+      corr=MAX(ABS(bb(1,1))/nel,ABS(bb(1,2)/ro))
 
 c      PRINT*'ntour kder/ ro,nel,bb(1,1),bb(1,2),corr',ntour,kder
 c      WRITE(*,2000)ro,nel,bb(1,1),bb(1,2),corr
@@ -192,8 +189,7 @@ c      WRITE(*,2000)ro,nel,bb(1,1),bb(1,2),corr
 c      PRINT*  'nel,ne0,ne0-nel,ro,nh1,nhe1,nhe2'
 c      WRITE(*,2000)nel,ne0,ne0-nel,ro,nh1,nhe1,nhe2
 
-c      calcul de delta, cp, gradad
-
+c calcul de delta, cp, gradad
       dmux=3.d0*dmu/zbar-cte24*nel/kt ; dgne=dmuem1ne*ro  ; dgro=muem1
       dphi1t=-phi1*(cte21*nel/kt+1.5d0+kihkt)/t
       dphi2t=-phi2*(cte21*nel/kt+1.5d0+kihekt)/t

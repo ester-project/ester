@@ -6,15 +6,12 @@ c************************************************************************
 	2 delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
 	3 gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1)
 
-c	routine private du module mod_etat
+c routine private du module mod_etat
 	
-c	interface de l'équation d'état OPAL 2001 avec CESAM2k
-c	cas avec Z=0 et X dans [0,1]	
-c	autre cas : etat_opalZ avec une tabulation pour Z fixé
-c	package OPAL_EOS
-c	appel à EFF en cas de difficultés
-	
-c	CESAM2k
+c interface de l'équation d'état OPAL 2001 avec CESAM2k
+c cas avec Z=0 et X dans [0,1]	
+c autre cas : etat_opalZ avec une tabulation pour Z fixé
+c package OPAL_EOS, appel à EFF en cas de difficultés
 
 c entrées :
 c	p : pression
@@ -26,7 +23,7 @@ c sortie :
 c	ro : densité et dérivées
 c	u : énergie interne et dérivées
 
-c	Auteur : P.Morel, Département J.D. Cassini, O.C.A.
+c	Auteur : P.Morel, Département J.D. Cassini, O.C.A., CESAM2k
 
 c------------------------------------------------------------------------
 
@@ -100,7 +97,7 @@ c	5 26,25,23,22,20,19,18,17,16 /)
 
  	LOGICAL, SAVE :: init=.TRUE.	
 	LOGICAL :: ok
-    
+   
 c---------------------------------------------------------------------
 
 	p=pp ; t=tt
@@ -124,7 +121,7 @@ c---------------------------------------------------------------------
 	  drot=-ro/t*eos(6)/eos(5)	!- dp/dT / dp/dro	
 	  u=eos(2)*1.d12 ; duro=-p*(eos(6)-1.d0)/(ro**2)
 	  dup=duro*drop			!du/dT dro/dp
-	  dut=duro*drot+eos(8)*1.e6	!du/dro  dro/dT + du/dt	
+	  dut=duro*drot+eos(4)*1.e6	!du/dro  dro/dT + du/dt	
 	  delta=eos(6)/eos(5) !Ki T/Ki ro
 	  gradad=1.d0/eos(8) ; cp=p/ro/t*eos(6)*(1.d0/eos(9)+delta)	
 	  alfa=1.d0/eos(5)		!1/Ki ro
@@ -518,6 +515,8 @@ c	INTEGER, PARAMETER  :: mx=5,mv=10,nr=169,nt=191
 	INTEGER	:: iu,is,kx,iw
 	
 	REAL (kind=dp) :: slr,slt,dix,dix2,esact2,esactq,esactq2
+	
+	SAVE
      
 c---------------------------------------------------------------------	
 
@@ -589,6 +588,8 @@ c	Nécessairement : eos_opalX.bin
 	INTEGER	:: i
 	CHARACTER (len=80) :: chain
 	LOGICAL :: ok
+	
+	SAVE
 
 c-------------------------------------------------------------------
 	
@@ -656,6 +657,8 @@ c..... 	this function performs a quadratic interpolation.
 	REAL (kind=dp), DIMENSION(30) :: xx12, xx13, xx23, xx1sq, xx1pxx2
 	REAL (kind=dp), DIMENSION(3) ::	xx, yy     
 	REAL (kind=dp) :: x, y1, y2, y3, x1, x2, x3, c1, c2, c3
+	
+	SAVE
 
 	xx(1)=x1 ; xx(2)=x2 ; xx(3)=x3
 	yy(1)=y1 ; yy(2)=y2 ; yy(3)=y3
@@ -696,6 +699,8 @@ c******************************************************************
 	1 xc2,xn2,xo2,xh,xtot,xhe,xne2
 	
 	INTEGER	:: i
+	
+	SAVE
 		
 c------------------------------------------------------------------------
 
@@ -726,7 +731,9 @@ c***********************************************************************
 	
  	REAL (kind=dp) :: t6,density,moles,tmass,molenak,rat,pr,er,sr,
 	1 st,chir,chitt,pt,et,cvtt,gam3pt,gam1t,gam2pt,
-	2 gam3pt_norad,gam1t_norad,gam2pt_norad	
+	2 gam3pt_norad,gam1t_norad,gam2pt_norad
+	
+	SAVE
 
 c----------------------------------------------------------------
 

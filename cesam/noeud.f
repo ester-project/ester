@@ -45,15 +45,16 @@ c------------------------------------------------------------------
 c-------------------------------------------------------------------------
 
 2000	FORMAT(8es10.3)
+2001	FORMAT(3es22.15)
 
 c	vérification de la stricte croissance de la suite des x
 
 	DO i=1,n-1
 	 IF(x(i) >= x(i+1))THEN
 	  PRINT*,'dans noeud la suite des abscisses n''est pas',
-	1  ' strictement croissante en i=',i
+	1 ' strictement croissante en i=',i
 	  PRINT*,'nombre de points: ',n ; PRINT*,'abscisse x=',x(i)
-	  PRINT*,x(1:i) ; PRINT*,x(i+1:n)
+	  WRITE(*,2001)x(1:i-1) ; WRITE(*,2001)x(i:i+1) ; WRITE(*,2001)x(i+2:n) 
 	  no_croiss=.TRUE. ; RETURN
 	 ENDIF
 	ENDDO

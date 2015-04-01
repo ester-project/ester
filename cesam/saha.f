@@ -3,23 +3,22 @@ c*********************************************************
 
 	SUBROUTINE saha(xchim,t,ro,ioni,z_bar,nel,eta)	
 
-c	routine public du module mod_etat
+c routine public du module mod_etat
 	
-c	calcul des taux d'ionisation et charges moyennes
-c	potentiels d'ionisation du Handbook of Chemistry and Physics
-c	75-ieme edition 1995 p. 10-205 
+c calcul des taux d'ionisation et charges moyennes
+c potentiels d'ionisation du Handbook of Chemistry and Physics
+c 75-ieme edition 1995 p. 10-205 
 
-c	on écrit la formule de saha sous la forme de Mihalas stellar
-c	atmosphere, formule 5-17, on résout par Newton-Raphson 
-c	ro/amu \sum Z_bar(ne) xchim - ne = 0
+c on écrit la formule de saha sous la forme de Mihalas stellar
+c atmosphere, formule 5-17, on résout par Newton-Raphson 
+c ro/amu \sum Z_bar(ne) xchim - ne = 0
 
-c	on utilise une adaptation de la correction de Clayton (2-254)
-c	pour éviter la recombinaison  des ions à haute température
-c	(voir notice de CESAM)
+c on utilise une adaptation de la correction de Clayton (2-254)
+c pour éviter la recombinaison  des ions à haute température
+c (voir notice de CESAM)
 
-c	on regroupe les isotopes d'une même espèce
-c	Auteur: P. Morel, Departement J.D. Cassini, O.C.A.
-c	CESAM2k
+c on regroupe les isotopes d'une même espèce
+c Auteur: P. Morel, Departement J.D. Cassini, O.C.A., CESAM2k
 
 c entrées:
 c	xchim: composition chimique par mole
@@ -50,8 +49,7 @@ c-------------------------------------------------------------------------
 	INTEGER, PARAMETER :: pf12=101,	!nb. de points de tabulation de F12
 	1 mdg=4	!ordre des splines
 	
-	REAL (kind=dp), SAVE, ALLOCATABLE, DIMENSION(:,:) :: ki, u, phi,
-	1 gsg
+	REAL (kind=dp), SAVE, ALLOCATABLE, DIMENSION(:,:) :: ki, u, phi, gsg
 	REAL (kind=dp), ALLOCATABLE, DIMENSION(:,:) :: dphi, ioni_esp,
 	1 dioni_esp
 	REAL (kind=dp), SAVE, ALLOCATABLE, DIMENSION(:) :: zi_esp
@@ -59,6 +57,7 @@ c-------------------------------------------------------------------------
 	REAL (kind=dp), SAVE, DIMENSION(1,pf12) :: dgce
 	REAL (kind=dp), SAVE, DIMENSION(pf12+mdg) :: f12t	
 	REAL (kind=dp), SAVE, DIMENSION(pf12) :: f12
+	REAL (kind=dp), SAVE, DIMENSION(0:26) :: p_stat
 	REAL (kind=dp), DIMENSION(5) :: degen
 	REAL (kind=dp), SAVE, DIMENSION(1) :: bid, dbid
 	REAL (kind=dp), PARAMETER :: epsi=1.d-3, den_max=1.d15, p=4.d0
@@ -79,39 +78,37 @@ c------------------------------------------------------------------------
 	
 2000	FORMAT(8es10.3)
 
-c	cubique pour lissage de la correction des poids statistiques
-c	entre x=0 et x=q
-c	zeta(0,q)=0, zeta'(0,q)=0, zeta(q,q)=1, zeta'(q,q)=0,
-c	zeta(x<0,q)=0, zeta(x>q,q)=1
-	
+c cubique pour lissage de la correction des poids statistiques
+c entre x=0 et x=q
+c zeta(0,q)=0, zeta'(0,q)=0, zeta(q,q)=1, zeta'(q,q)=0,
+c zeta(x<0,q)=0, zeta(x>q,q)=1	
 	zeta(x,q)=(x/q)**2*(-2.d0*x/q+3.d0)
 
+c--------------------initialisations début-----------------------------
+
 	IF(init)THEN
-	 init=.FALSE. ; nzi=NINT(maxval(zi))
+	 init=.FALSE. ; nzi=NINT(MAXVAL(zi))
 	 ALLOCATE(no_iden(nchim),niso(nchim),iso(nchim,nchim),zi_esp(nzi))
 	
 	 no_iden=.TRUE. ; niso=0
 	 
-c	 constantes diverses	   		 
-c	 epsi : précision sur nel
-c	 tourmax : limitation du nombre d'itérations sur tour
-c	 den_max : max pour le dénominateur
-c	 p : correction de recombinaison des ions
-
+c constantes diverses	   		 
+c epsi : précision sur nel
+c tourmax : limitation du nombre d'itérations sur tour
+c den_max : max pour le dénominateur
+c p : correction de recombinaison des ions
 	 cte1=SQRT(hpl/2.d0/me/kbol*hpl)**3/4.d0/pi	!pour calcul F1/2
 	 cte2=echarg**3*SQRT(4.d0*pi/kbol/amu)/kbol	 
 	 phi_max=LOG(den_max)	!max pour ki(j,i)/t+ksi
 	 	 
-c	 identification des espèces
-c	 on recherche les d'espèces chimiques distinctes à partir
-c	 des charges, pour les espèces reconnues on construit les
-c	 tableaux des potentiels
-c	 d'ionisation et des poids statistiques
+c identification des espèces
+c on recherche les d'espèces chimiques distinctes à partir
+c des charges, pour les espèces reconnues on construit les
+c tableaux des potentiels
+c d'ionisation et des poids statistiques
 
-c	 pour ajouter une espèce chimique il suffit d'insérer les tables
-c	 des potentiels d'ionisation et des poids statistiques de cette
-c	 espèce chimique
-
+c pour ajouter une espèce chimique il suffit d'insérer les tables
+c des potentiels d'ionisation et des poids statistiques de cette espèce chimique
 	 nesp=0		!nombre d'espèces distinctes	 
 	 DO i=1,nchim	
 	  IF(no_iden(i))THEN	!l'espèce n'est pas encore identifiée
@@ -137,44 +134,44 @@ c	  PRINT*,(iso(k,l),l=1,niso(k))
 c	 ENDDO
 c	 WRITE(*,2000)(zi_esp(k),k=1,nesp)
 c	 PAUSE'iso'
+
+c tableau des poids statistiques du fer
+	 p_stat=(/ 25.d0, 30.d0, 25.d0, 6.d0, 25.d0, 12.d0, 21.d0, 10.d0,
+	1 1.d0, 6.d0, 9.d0, 4.d0, 9.d0, 6.d0, 1.d0, 2.d0, 1.d0, 6.d0,
+	2 9.d0, 4.d0, 9.d0, 6.d0, 1.d0, 2.d0, 1.d0, 2.d0, 1.d0 /)
 	
 	 DEALLOCATE(no_iden)
 	 ALLOCATE(ki(nzi,nesp),u(0:nzi,nesp),phi(nzi,nesp),gsg(nzi,nesp))
-	
-c	 formation des tableaux des potentiels d'ionisation, poids statistiques
 
+c formation des tableaux des poids statistiques jusqu'au fer inclus
+	 u=0.d0
 	 DO i=1,nesp
+	  k=27
+	  DO j=NINT(zi_esp(i)),0,-1
+	   k=k-1 ; u(j,i)=p_stat(k)
+	  ENDDO	  
+	 ENDDO
+c	 l=NINT(zi_esp(nesp)) ; WRITE(*,2000)u(0:l,nesp) ; PAUSE 'saha'
+	
+c formation des tableaux des potentiels d'ionisation, poids statistiques
+	 DO i=1,nesp	 
 	  IF(NINT(zi_esp(i)) == 1)THEN 			!H
 	   ki(1,i)=13.595d0	!potentiel d'ionisation 1
-	   u(0,i)=2.d0	!poids statistique du fondamental
-	   u(1,i)=1.d0	!poids statistique du niveau 1
 	   
 	  ELSEIF(NINT(zi_esp(i)) == 2)THEN		!He
 	   ki(1,i)=24.580d0 !potentiel d'ionisation 1
 	   ki(2,i)=54.403d0 !potentiel d'ionisation 2	   
-	   u(0,i)=1.d0	!poids statistique du fondamental
-	   u(1,i)=2.d0	!poids statistique du niveau 1
-	   u(2,i)=1.d0	!poids statistique du niveau 2
 	   
 	  ELSEIF(NINT(zi_esp(i)) == 3)THEN		!Li
 	   ki(1,i)=5.39172d0 !potentiel d'ionisation 1
 	   ki(2,i)=75.64018d0 !potentiel d'ionisation 2
 	   ki(3,i)=122.45429d0 !potentiel d'ionisation 3	   
-	   u(0,i)=2.d0	!poids statistique du fondamental
-	   u(1,i)=1.d0	!poids statistique du niveau 1
-	   u(2,i)=2.d0	!poids statistique du niveau 2
-	   u(3,i)=2.d0	!poids statistique du niveau 3
 	   
 	  ELSEIF(NINT(zi_esp(i)) == 4)THEN		!Be
 	   ki(1,i)=9.32263d0 !potentiel d'ionisation 1
 	   ki(2,i)=18.21116d0 !potentiel d'ionisation 2
 	   ki(3,i)=153.89661d0 !potentiel d'ionisation 3
 	   ki(4,i)=217.71865d0 !potentiel d'ionisation 4
-	   u(0,i)=1.d0	!poids statistique du fondamental
-	   u(1,i)=2.d0	!poids statistique du niveau 1
-	   u(2,i)=1.d0	!poids statistique du niveau 2
-	   u(3,i)=2.d0	!poids statistique du niveau 3
-	   u(4,i)=2.d0	!poids statistique du niveau 4
 
 	  ELSEIF(NINT(zi_esp(i)) == 5)THEN		!B	
 	   ki(1,i)=8.29803d0 !potentiel d'ionisation 1
@@ -182,12 +179,6 @@ c	 formation des tableaux des potentiels d'ionisation, poids statistiques
 	   ki(3,i)=37.93064d0 !potentiel d'ionisation 3
 	   ki(4,i)=259.37521d0 !potentiel d'ionisation 4
 	   ki(5,i)=340.22580d0 !potentiel d'ionisation 5
-	   u(0,i)=6.d0	!poids statistique du fondamental
-	   u(1,i)=1.d0	!poids statistique du niveau 1 
-	   u(2,i)=2.d0	!poids statistique du niveau 2
-	   u(3,i)=1.d0	!poids statistique du niveau 3
-	   u(4,i)=2.d0	!poids statistique du niveau 4
-	   u(5,i)=2.d0	!poids statistique du niveau 5
 
 	  ELSEIF(NINT(zi_esp(i)) == 6)THEN		!C	
 	   ki(1,i)=11.26030d0 !potentiel d'ionisation 1
@@ -196,13 +187,6 @@ c	 formation des tableaux des potentiels d'ionisation, poids statistiques
 	   ki(4,i)=64.4939d0 !potentiel d'ionisation 4
 	   ki(5,i)=391.087d0 !potentiel d'ionisation 5
 	   ki(6,i)=489.99334d0 !potentiel d'ionisation 6
-	   u(0,i)=9.d0	!poids statistique du fondamental
-	   u(1,i)=6.d0	!poids statistique du niveau 1 
-	   u(2,i)=1.d0	!poids statistique du niveau 2
-	   u(3,i)=2.d0	!poids statistique du niveau 3
-	   u(4,i)=1.d0	!poids statistique du niveau 4
-	   u(5,i)=2.d0	!poids statistique du niveau 5
-	   u(6,i)=2.d0	!poids statistique du niveau 6
 
 	  ELSEIF(NINT(zi_esp(i)) == 7)THEN		!N
 	   ki(1,i)=14.53414d0 !potentiel d'ionisation 1
@@ -212,14 +196,6 @@ c	 formation des tableaux des potentiels d'ionisation, poids statistiques
 	   ki(5,i)=97.8902d0 !potentiel d'ionisation 5
 	   ki(6,i)=552.0718d0 !potentiel d'ionisation 6
 	   ki(7,i)=667.046d0 !potentiel d'ionisation 7
-	   u(0,i)=4.d0	!poids statistique du fondamental
-	   u(1,i)=9.d0	!poids statistique du niveau 1
-	   u(2,i)=6.d0	!poids statistique du niveau 2
-	   u(3,i)=1.d0	!poids statistique du niveau 3
-	   u(4,i)=2.d0	!poids statistique du niveau 4
-	   u(5,i)=1.d0	!poids statistique du niveau 5
-	   u(6,i)=2.d0	!poids statistique du niveau 6
-	   u(7,i)=2.d0	!poids statistique du niveau  7  	   
 	   	   	   	   
 	  ELSEIF(NINT(zi_esp(i)) == 8)THEN		!O
 	   ki(1,i)=13.61806d0 !potentiel d'ionisation 1
@@ -230,15 +206,6 @@ c	 formation des tableaux des potentiels d'ionisation, poids statistiques
 	   ki(6,i)=138.1197d0 !potentiel d'ionisation 6
 	   ki(7,i)=739.29d0 !potentiel d'ionisation 7
 	   ki(8,i)=871.4101d0 !potentiel d'ionisation 8
-	   u(0,i)=9.d0	!poids statistique du fondamental
-	   u(1,i)=4.d0	!poids statistique du niveau 1
-	   u(2,i)=9.d0	!poids statistique du niveau 2
-	   u(3,i)=6.d0	!poids statistique du niveau 3  
-	   u(4,i)=1.d0	!poids statistique du niveau 4	   
-	   u(5,i)=2.d0	!poids statistique du niveau 5	   
-	   u(6,i)=1.d0	!poids statistique du niveau 6
-	   u(7,i)=2.d0	!poids statistique du niveau 7	   
-	   u(8,i)=2.d0	!poids statistique du niveau 8
 
 	  ELSEIF(NINT(zi_esp(i)) == 10)THEN	!Ne
 	   ki(1,i)=21.56454d0 !potentiel d'ionisation 1
@@ -251,17 +218,6 @@ c	 formation des tableaux des potentiels d'ionisation, poids statistiques
 	   ki(8,i)=239.0989d0 !potentiel d'ionisation 8
 	   ki(9,i)=1195.8286d0 !potentiel d'ionisation 9
 	   ki(10,i)=1362.1995d0 !potentiel d'ionisation 10
-	   u(0,i)=1.d0	!poids statistique du fondamental 10 électrons
-	   u(1,i)=6.d0	!poids statistique du niveau 1 9 électrons
-	   u(2,i)=9.d0	!poids statistique du niveau 2 8 électrons
-	   u(3,i)=4.d0	!poids statistique du niveau 3 7 électrons
-	   u(4,i)=9.d0	!poids statistique du niveau 4 6 électrons
-	   u(5,i)=6.d0	!poids statistique du niveau 5 5 électrons
-	   u(6,i)=1.d0	!poids statistique du niveau 6 4 électrons
-	   u(7,i)=2.d0	!poids statistique du niveau 7 3 électrons
-	   u(8,i)=1.d0	!poids statistique du niveau 8 2 électrons
-	   u(9,i)=3.d0	!poids statistique du niveau 9 1 électrons
-	   u(10,i)=3.d0	!poids statistique du niveau 10 0 électrons
 	   
 	  ELSEIF(NINT(zi_esp(i)) == 11)THEN		!Na
 	   ki(1,i)=5.13908d0	!potentiel d'ionisation 1
@@ -275,18 +231,6 @@ c	 formation des tableaux des potentiels d'ionisation, poids statistiques
 	   ki(9,i)=299.864d0	!potentiel d'ionisation 9
 	   ki(10,i)=1465.121d0	!potentiel d'ionisation 10
 	   ki(11,i)=1648.702d0	!potentiel d'ionisation 11
-	   u(0,i)=2.d0	!poids statistique du fondamental
-	   u(1,i)=1.d0	!poids statistique du niveau 1
-	   u(2,i)=6.d0	!poids statistique du niveau 2
-	   u(3,i)=9.d0	!poids statistique du niveau 3
-	   u(4,i)=4.d0	!poids statistique du niveau 4
-	   u(5,i)=9.d0	!poids statistique du niveau 5
-	   u(6,i)=6.d0	!poids statistique du niveau 6
-	   u(7,i)=1.d0	!poids statistique du niveau 7
-	   u(8,i)=2.d0	!poids statistique du niveau 8
-	   u(9,i)=1.d0	!poids statistique du niveau 9
-	   u(10,i)=2.d0	!poids statistique du niveau 10
-	   u(11,i)=2.d0	!poids statistique du niveau 11
 
 	  ELSEIF(NINT(zi_esp(i)) == 12)THEN		!Mg
 	   ki(1,i)=7.64624d0	!potentiel d'ionisation 1
@@ -301,19 +245,6 @@ c	 formation des tableaux des potentiels d'ionisation, poids statistiques
 	   ki(10,i)=367.50d0	!potentiel d'ionisation 10
 	   ki(11,i)=1761.805d0	!potentiel d'ionisation 11
 	   ki(12,i)=1962.6650d0	!potentiel d'ionisation 12
-	   u(0,i)=1.d0	!poids statistique du fondamental
-	   u(1,i)=2.d0	!poids statistique du niveau 1
-	   u(2,i)=1.d0	!poids statistique du niveau 2
-	   u(3,i)=6.d0	!poids statistique du niveau 3
-	   u(4,i)=9.d0	!poids statistique du niveau 4
-	   u(5,i)=4.d0	!poids statistique du niveau 5
-	   u(6,i)=9.d0	!poids statistique du niveau 6
-	   u(7,i)=6.d0	!poids statistique du niveau 7
-	   u(8,i)=1.d0	!poids statistique du niveau 8
-	   u(9,i)=2.d0	!poids statistique du niveau 9
-	   u(10,i)=1.d0	!poids statistique du niveau 10
-	   u(11,i)=2.d0	!poids statistique du niveau 11
-	   u(12,i)=2.d0	!poids statistique du niveau 12
    
 	  ELSEIF(NINT(zi_esp(i)) == 13)THEN		!Al
 	   ki(1,i)=5.98577d0	!potentiel d'ionisation 1
@@ -329,20 +260,6 @@ c	 formation des tableaux des potentiels d'ionisation, poids statistiques
 	   ki(11,i)=442.00d0	!potentiel d'ionisation 11
 	   ki(12,i)=2085.98d0	!potentiel d'ionisation 12
 	   ki(13,i)=2304.1410d0	!potentiel d'ionisation 13	   
-	   u(0,i)=6.d0	!poids statistique du fondamental
-	   u(1,i)=1.d0	!poids statistique du niveau 1
-	   u(2,i)=2.d0	!poids statistique du niveau 2
-	   u(3,i)=1.d0	!poids statistique du niveau 3
-	   u(4,i)=6.d0	!poids statistique du niveau 4
-	   u(5,i)=9.d0	!poids statistique du niveau 5
-	   u(6,i)=4.d0	!poids statistique du niveau 6
-	   u(7,i)=9.d0	!poids statistique du niveau 7
-	   u(8,i)=6.d0	!poids statistique du niveau 8
-	   u(9,i)=1.d0	!poids statistique du niveau 9
-	   u(10,i)=2.d0	!poids statistique du niveau 10
-	   u(11,i)=1.d0	!poids statistique du niveau 11
-	   u(12,i)=2.d0	!poids statistique du niveau 12
-	   u(13,i)=2.d0	!poids statistique du niveau 13
 	   
 	  ELSEIF(NINT(zi_esp(i)) == 14)THEN		!Si
 	   ki(1,i)=8.15169d0	!potentiel d'ionisation 1
@@ -358,33 +275,53 @@ c	 formation des tableaux des potentiels d'ionisation, poids statistiques
 	   ki(11,i)=476.36d0	!potentiel d'ionisation 11
 	   ki(12,i)=523.42d0	!potentiel d'ionisation 12
 	   ki(13,i)=2437.63d0	!potentiel d'ionisation 13
-	   ki(14,i)=2673.182d0	!potentiel d'ionisation 14	   	   
-	   u(0,i)=9.d0	!poids statistique du fondamental
-	   u(1,i)=6.d0	!poids statistique du niveau 1
-	   u(2,i)=1.d0	!poids statistique du niveau 2
-	   u(3,i)=2.d0	!poids statistique du niveau 3
-	   u(4,i)=1.d0	!poids statistique du niveau 4
-	   u(5,i)=6.d0	!poids statistique du niveau 5
-	   u(6,i)=9.d0	!poids statistique du niveau 6
-	   u(7,i)=4.d0	!poids statistique du niveau 7
-	   u(8,i)=9.d0	!poids statistique du niveau 8
-	   u(9,i)=6.d0	!poids statistique du niveau 9
-	   u(10,i)=1.d0	!poids statistique du niveau 10
-	   u(11,i)=2.d0	!poids statistique du niveau 11
-	   u(12,i)=1.d0	!poids statistique du niveau 12
-	   u(13,i)=2.d0	!poids statistique du niveau 13
-	   u(14,i)=2.d0	!poids statistique du niveau 14	
-	      
+	   ki(14,i)=2673.182d0	!potentiel d'ionisation 14
+	   
+	  ELSEIF(NINT(zi_esp(i)) == 15)THEN		!P
+	   ki(1,i)=10.486d0	 !potentiel d'ionisation 1
+	   ki(2,i)=19.725d0	 !potentiel d'ionisation 2
+	   ki(3,i)=30.18d0	 !potentiel d'ionisation 3
+	   ki(4,i)=51.37d0	 !potentiel d'ionisation 4
+	   ki(5,i)=65.023d0	 !potentiel d'ionisation 5
+	   ki(6,i)=220.43d0	 !potentiel d'ionisation 6
+	   ki(7,i)=263.22d0	 !potentiel d'ionisation 7
+	   ki(8,i)=309.41d0	 !potentiel d'ionisation 8
+	   ki(9,i)=371.73d0	 !potentiel d'ionisation 9
+	   ki(10,i)=424.50d0	 !potentiel d'ionisation 10
+	   ki(11,i)=479.57d0	 !potentiel d'ionisation 11
+	   ki(12,i)=560.41d0	 !potentiel d'ionisation 12
+	   ki(13,i)=611.85d0	 !potentiel d'ionisation 13
+	   ki(14,i)=2816.943d0	 !potentiel d'ionisation 14
+	   ki(15,i)=3069.762d0	 !potentiel d'ionisation 15	   
+	   
+	  ELSEIF(NINT(zi_esp(i)) == 16)THEN		!S
+	   ki(1,i)=10.36001d0	 !potentiel d'ionisation 1
+	   ki(2,i)=23.3379d0	 !potentiel d'ionisation 2
+	   ki(3,i)=34.79d0	 !potentiel d'ionisation 3
+	   ki(4,i)=47.222d0	 !potentiel d'ionisation 4
+	   ki(5,i)=75.5445d0	 !potentiel d'ionisation 5
+	   ki(6,i)=88.053d0	 !potentiel d'ionisation 6
+	   ki(7,i)=280.948d0	 !potentiel d'ionisation 7
+	   ki(8,i)=328.75d0	 !potentiel d'ionisation 8
+	   ki(9,i)=379.55d0	 !potentiel d'ionisation 9
+	   ki(10,i)=447.5d0	 !potentiel d'ionisation 10
+	   ki(11,i)=504.8d0	 !potentiel d'ionisation 11
+	   ki(12,i)=564.44d0	 !potentiel d'ionisation 12
+	   ki(13,i)=652.2d0	 !potentiel d'ionisation 13
+	   ki(14,i)=707.01d0	 !potentiel d'ionisation 14
+	   ki(15,i)=3223.78d0	 !potentiel d'ionisation 15
+	   ki(16,i)=3494.1892d0	 !potentiel d'ionisation 16
+
 	  ELSEIF(NINT(zi_esp(i)) == 17)THEN		!Cl
 	   ki(1,i)=12.96764	 !potentiel d'ionisation 1
-	   ki(2,i)=23.814	 !potentiel d'ionisation 2
-	   ki(3,i)=39.61	 !potentiel d'ionisation 3
-	   ki(4,i)=53.4652	 !potentiel d'ionisation 4
+	   ki(2,i)=23.814	 	!potentiel d'ionisation 2
+	   ki(3,i)=39.61	 	!potentiel d'ionisation 3
+	   ki(4,i)=53.4652	!potentiel d'ionisation 4
 	   ki(5,i)=67.8		 !potentiel d'ionisation 5
-	   ki(6,i)=97.03	 !potentiel d'ionisation 6
+	   ki(6,i)=97.03		!potentiel d'ionisation 6
 	   ki(7,i)=114.1958	 !potentiel d'ionisation 7
-	   ki(8,i)=348.28	 !potentiel d'ionisation 8
-	   ki(9,i)=400.06	 !potentiel d'ionisation 9
+	   ki(8,i)=348.28	 	!potentiel d'ionisation 8
+	   ki(9,i)=400.06	 	!potentiel d'ionisation 9
 	   ki(10,i)=455.63	 !potentiel d'ionisation 10
 	   ki(11,i)=529.28	 !potentiel d'ionisation 11
 	   ki(12,i)=591.99	 !potentiel d'ionisation 12
@@ -393,25 +330,29 @@ c	 formation des tableaux des potentiels d'ionisation, poids statistiques
 	   ki(15,i)=809.40	 !potentiel d'ionisation 15
 	   ki(16,i)=3658.521	 !potentiel d'ionisation 16
 	   ki(17,i)=3946.2960	 !potentiel d'ionisation 17
-	   u(0,i)=6	!poids statistique du fondamental
-	   u(1,i)=9	!poids statistique du niveau 1
-	   u(2,i)=4	!poids statistique du niveau 2
-	   u(3,i)=9	!poids statistique du niveau 3
-	   u(4,i)=6	!poids statistique du niveau 4
-	   u(5,i)=1	!poids statistique du niveau 5
-	   u(6,i)=2	!poids statistique du niveau 6
-	   u(7,i)=1	!poids statistique du niveau 7
-	   u(8,i)=6	!poids statistique du niveau 8
-	   u(9,i)=9	!poids statistique du niveau 9
-	   u(10,i)=4	!poids statistique du niveau 10
-	   u(11,i)=9	!poids statistique du niveau 11
-	   u(12,i)=6	!poids statistique du niveau 12
-	   u(13,i)=1	!poids statistique du niveau 13
-	   u(14,i)=2	!poids statistique du niveau 14
-	   u(15,i)=1	!poids statistique du niveau 15
-	   u(16,i)=2	!poids statistique du niveau 16
-	   u(17,i)=2	!poids statistique du niveau 17
 
+c Reprendre les poids statistiques du potassium	   
+	  ELSEIF(NINT(zi_esp(i)) == 19)THEN	!K
+	   ki(1,i)=4.34066d0 !potentiel d'ionisation 1
+	   ki(2,i)=31.63d0 !potentiel d'ionisation 2
+	   ki(3,i)=45.806d0 !potentiel d'ionisation 3
+	   ki(4,i)=60.91d0 !potentiel d'ionisation 4
+	   ki(5,i)=82.66d0 !potentiel d'ionisation 5
+	   ki(6,i)=99.4d0 !potentiel d'ionisation 6
+	   ki(7,i)=117.56d0 !potentiel d'ionisation 7
+	   ki(8,i)=154.88d0 !potentiel d'ionisation 8
+	   ki(9,i)=175.8174d0 !potentiel d'ionisation 9
+	   ki(10,i)=503.8d0 !potentiel d'ionisation 10
+	   ki(11,i)=564.7d0 !potentiel d'ionisation 11
+	   ki(12,i)=629.4d0 !potentiel d'ionisation 12
+	   ki(13,i)=714.6d0 !potentiel d'ionisation 13
+	   ki(14,i)=786.6d0 !potentiel d'ionisation 14
+	   ki(15,i)=861.1d0 !potentiel d'ionisation 15
+	   ki(16,i)=968.d0 !potentiel d'ionisation 16
+	   ki(17,i)=1033.4d0 !potentiel d'ionisation 17
+	   ki(18,i)=4610.8d0 !potentiel d'ionisation 18
+	   ki(19,i)=4934.046d0 !potentiel d'ionisation 19
+	   
 	  ELSEIF(NINT(zi_esp(i)) == 20)THEN	!Ca
 	   ki(1,i)=6.11316d0 !potentiel d'ionisation 1
 	   ki(2,i)=11.87172d0 !potentiel d'ionisation 2
@@ -433,27 +374,58 @@ c	 formation des tableaux des potentiels d'ionisation, poids statistiques
 	   ki(18,i)=1157.8d0 !potentiel d'ionisation 18
 	   ki(19,i)=5128.8d0 !potentiel d'ionisation 19
 	   ki(20,i)=5469.864d0!potentiel d'ionisation 20	    
-	   u(0,i)=1.d0	!poids statistique du fondamental 20 électrons
-	   u(1,i)=2.d0	!poids statistique du niveau 1 19 électrons
-	   u(2,i)=1.d0	!poids statistique du niveau 2 18 électrons
-	   u(3,i)=6.d0	!poids statistique du niveau 3 17 électrons
-	   u(4,i)=9.d0	!poids statistique du niveau 4 16 électrons
-	   u(5,i)=4.d0	!poids statistique du niveau 5 15 électrons
-	   u(6,i)=9.d0	!poids statistique du niveau 6 14 électrons
-	   u(7,i)=6.d0	!poids statistique du niveau 7 13 électrons
-	   u(8,i)=1.d0	!poids statistique du niveau 8 12 électrons
-	   u(9,i)=2.d0	!poids statistique du niveau 9 11 électrons
-	   u(10,i)=1.d0	!poids statistique du niveau 10 10 électrons
-	   u(11,i)=6.d0	!poids statistique du niveau 11 9 électrons
-	   u(12,i)=9.d0	!poids statistique du niveau 12 8 électrons
-	   u(13,i)=4.d0	!poids statistique du niveau 13 7 électrons
-	   u(14,i)=9.d0	!poids statistique du niveau 14 6 électrons
-	   u(15,i)=6.d0	!poids statistique du niveau 15 5 électrons
-	   u(16,i)=1.d0	!poids statistique du niveau 16 4 électrons
-	   u(17,i)=2.d0	!poids statistique du niveau 17 3 électrons
-	   u(18,i)=1.d0	!poids statistique du niveau 18 2 électrons
-	   u(19,i)=2.d0	!poids statistique du niveau 19 1 électrons
-	   u(20,i)=2.d0	!poids statistique du niveau 20 0 électrons
+	   
+	  ELSEIF(NINT(zi_esp(i)) == 22)THEN	!Ti
+	   ki(1,i)=6.8282d0 !potentiel d'ionisation 1
+	   ki(2,i)=13.5755d0 !potentiel d'ionisation 2
+	   ki(3,i)=27.4917d0 !potentiel d'ionisation 3
+	   ki(4,i)=43.2672d0 !potentiel d'ionisation 4
+	   ki(5,i)=99.30d0 !potentiel d'ionisation 5
+	   ki(6,i)=119.53d0 !potentiel d'ionisation 6
+	   ki(7,i)=140.8d0 !potentiel d'ionisation 7
+	   ki(8,i)=170.4d0 !potentiel d'ionisation 8
+	   ki(9,i)=192.1d0 !potentiel d'ionisation 9
+	   ki(10,i)=215.92d0 !potentiel d'ionisation 10
+	   ki(11,i)=265.07d0 !potentiel d'ionisation 11
+	   ki(12,i)=291.5d0 !potentiel d'ionisation 12
+	   ki(13,i)=787.84d0 !potentiel d'ionisation 13
+	   ki(14,i)=863.1d0 !potentiel d'ionisation 14
+	   ki(15,i)=941.9d0 !potentiel d'ionisation 15
+	   ki(16,i)=1044.d0 !potentiel d'ionisation 16
+	   ki(17,i)=1131.d0 !potentiel d'ionisation 17
+	   ki(18,i)=1221.d0 !potentiel d'ionisation 18
+	   ki(19,i)=1346.d0 !potentiel d'ionisation 19
+	   ki(20,i)=1425.4d0!potentiel d'ionisation 20
+	   ki(21,i)=6249.d0!potentiel d'ionisation 21
+	   ki(22,i)=6625.82d0!potentiel d'ionisation 22
+	   
+	  ELSEIF(NINT(zi_esp(i)) == 25)THEN		!Mn
+	   ki(1,i)=7.43402d0 !potentiel d'ionisation 1
+	   ki(2,i)=15.63999d0 !potentiel d'ionisation 2
+	   ki(3,i)=33.668d0 !potentiel d'ionisation 3
+	   ki(4,i)=51.2d0 !potentiel d'ionisation 4
+	   ki(5,i)=72.4d0 !potentiel d'ionisation 5
+	   ki(6,i)=95.6d0 !potentiel d'ionisation 6
+	   ki(7,i)=119.203d0 !potentiel d'ionisation 7
+	   ki(8,i)=194.5d0 !potentiel d'ionisation 8
+	   ki(9,i)=221.8d0 !potentiel d'ionisation 9
+	   ki(10,i)=248.3d0 !potentiel d'ionisation 10
+	   ki(11,i)=286.0d0 !potentiel d'ionisation 11
+	   ki(12,i)=314.4d0 !potentiel d'ionisation 12
+	   ki(13,i)=343.6d0 !potentiel d'ionisation 13
+	   ki(14,i)=403.0d0 !potentiel d'ionisation 14
+	   ki(15,i)=435.163d0 !potentiel d'ionisation 15
+	   ki(16,i)=1134.7d0 !potentiel d'ionisation 16   
+	   ki(17,i)=1224.d0 !potentiel d'ionisation 17
+	   ki(18,i)=1317.d0 !potentiel d'ionisation 18
+	   ki(19,i)=1437.d0 !potentiel d'ionisation 19
+	   ki(20,i)=1539.d0 !potentiel d'ionisation 20
+	   ki(21,i)=1644.d0 !potentiel d'ionisation 21
+	   ki(22,i)=1788.d0 !potentiel d'ionisation 22
+	   ki(23,i)=1879.9d0 !potentiel d'ionisation 23
+	   ki(24,i)=8140.6d0 !potentiel d'ionisation 24
+	   ki(25,i)=8571.94d0 !potentiel d'ionisation 25
+c-----------------------------------------
 	    
 	  ELSEIF(NINT(zi_esp(i)) == 26)THEN		!Fe
 	   ki(1,i)=7.9024d0	!potentiel d'ionisation 1
@@ -482,40 +454,10 @@ c	 formation des tableaux des potentiels d'ionisation, poids statistiques
 	   ki(24,i)=2023.d0	!potentiel d'ionisation 24
 	   ki(25,i)=8828.d0	!potentiel d'ionisation 25
 	   ki(26,i)=9277.69d0	!potentiel d'ionisation 26	    
-	   u(0,i)=25.d0	!poids statistique du fondamental 26 électrons
-	   u(1,i)=30.d0	!poids statistique du niveau 1 25 électrons
-	   u(2,i)=25.d0	!poids statistique du niveau 2 24 électrons
-	   u(3,i)=6.d0	!poids statistique du niveau 3 23 électrons
-	   u(4,i)=25.d0	!poids statistique du niveau 4 22 électrons
-	   u(5,i)=12.d0	!poids statistique du niveau 5 21 électrons
-	   u(6,i)=21.d0	!poids statistique du niveau 6 20 électrons
-	   u(7,i)=10.d0	!poids statistique du niveau 7 19 électrons
-	   u(8,i)=1.d0	!poids statistique du niveau 8 18 électrons
-	   u(9,i)=6.d0	!poids statistique du niveau 9  17 électrons
-	   u(10,i)=9.d0	!poids statistique du niveau 10 16 électrons
-	   u(11,i)=4.d0	!poids statistique du niveau 11 15 électrons
-	   u(12,i)=9.d0	!poids statistique du niveau 12 14 électrons
-	   u(13,i)=6.d0	!poids statistique du niveau 13 13 électrons
-	   u(14,i)=1.d0	!poids statistique du niveau 14 12 électrons
-	   u(15,i)=2.d0	!poids statistique du niveau 15 11 électrons
-	   u(16,i)=1.d0	!poids statistique du niveau 16 10 électrons 
-	   u(17,i)=6.d0	!poids statistique du niveau 17 9 électrons
-	   u(18,i)=9.d0	!poids statistique du niveau 18 8 électrons 
-	   u(19,i)=4.d0	!poids statistique du niveau 19 7 électrons
-	   u(20,i)=9.d0	!poids statistique du niveau 20 6 électrons
-	   u(21,i)=6.d0	!poids statistique du niveau 21 5 électrons
-	   u(22,i)=1.d0	!poids statistique du niveau 22 4 électrons
-	   u(23,i)=2.d0	!poids statistique du niveau 23 3 électrons
-	   u(24,i)=1.d0	!poids statistique du niveau 24 2 électrons
-	   u(25,i)=2.d0	!poids statistique du niveau 25 1 electron
-	   u(26,i)=1.d0	!poids statistique du niveau 26 0 electron
 	   	    
-c	  ELSEIF(NINT(zi_esp(i)) == )THEN		!isotopes de
+c	  ELSEIF(NINT(zi_esp(i)) == )THEN
 c	   ki(,i)= !potentiel d'ionisation 
 c	   ki(,i)= !potentiel d'ionisation 
-c	   u(0,i)=	!poids statistique du fondamental
-c	   u(,i)=	!poids statistique du niveau 
-c	   u(,i)=	!poids statistique du niveau 
 
 	  ELSE
 	   PRINT*,'dans saha, erreur élément non prévu nom_elem=',
@@ -524,8 +466,7 @@ c	   u(,i)=	!poids statistique du niveau
 	  ENDIF
 	 ENDDO
 	
-c	 les ki/k en cgs
-
+c les ki/k en cgs
 	 DO i=1,nesp
 	  DO j=1,NINT(zi_esp(i))
 	   ki(j,i)=ki(j,i)*eve/kbol
@@ -535,9 +476,8 @@ c	 les ki/k en cgs
  
 	 DEALLOCATE(u)
 	 
-c	 tabulation des fonctions F12 de Fermi-Dirac de dep à fin
-c	 signe opposé de celui de Clayton 
-
+c tabulation des fonctions F12 de Fermi-Dirac de dep à fin
+c signe opposé de celui de Clayton 
 	 dep=-30.d0 ; fin=25.d0 ; a=(fin-dep)/DBLE(pf12-1)
 	 DO i=1,pf12
 	  dgce(1,i)=dep+a*(i-1) ; CALL ferdir(dgce(1,i),degen)
@@ -556,12 +496,13 @@ c	 CALL bsp1dn(1,dgce,f12,f12t,pf12,mdg,knot,.TRUE.,f12l,l,bid,dbid)
 c	 WRITE(*,2000)f12l,bid(1) ; PAUSE'f12l'	
 	 	
 	ENDIF
+	
+c--------------------initialisations fin-----------------------------
 
 	ALLOCATE(x_esp(nesp),z_esp(nesp),dz_esp(nesp),
 	1 ioni_esp(0:nzi,nesp),dioni_esp(0:nzi,nesp),dphi(nzi,nesp))
 		
-c	determination des abondances/mole de chaque espèce
-
+c détermination des abondances/mole de chaque espèce
 	DO k=1,nesp	!pour chaque espèce
 	 x_esp(k)=0.d0
 	 DO l=1,niso(k)	!pour chaque isotope d'espèce k
@@ -571,8 +512,7 @@ c	determination des abondances/mole de chaque espèce
 c	PRINT*,'abondances' ; WRITE(*,2000)xchim
 c	PRINT*,'abondance par espèce' ; WRITE(*,2000)x_esp ; PAUSE'x_esp'
 	
-c	initialisation du nombre d'électrons libres
-
+c initialisation du nombre d'électrons libres
 	IF(t < 5.d3)THEN	!x_esp(1) est H, x_esp(2) est He
 	 nel=x_esp(1)*1.d-10	!H est neutre
 	 z_esp=zi_esp(1:nesp)*1.d-5	!init. à 1.d-5 ionisation tot.
@@ -583,11 +523,11 @@ c	initialisation du nombre d'électrons libres
 	 nel=x_esp(1)/10.d0	!H est 1/10 ionisé
 	 z_esp=zi_esp(1:nesp)*3.d-1	!init. à 30% ionisation totale
 	ELSEIF(t < 1.d5)THEN
-	 nel=x_esp(1)	!H est ionisé
+	 nel=x_esp(1)		!H est ionisé
 	 IF(nesp > 1)nel=nel+x_esp(2) !He est ionisé 1 fois
 	 z_esp=zi_esp(1:nesp)*6.d-1	!init. à 60% ionisation totale
 	ELSE
-	 nel=x_esp(1)!H est ionisé
+	 nel=x_esp(1)		!H est ionisé
 	 IF(nesp > 1)nel=nel+2.d0*x_esp(2)	!He est ionisé 2 fois
 	 z_esp=zi_esp(1:nesp)	!initialisation à 100% ionisation totale
 	ENDIF
@@ -600,8 +540,7 @@ c	PRINT*,'t,ro' ; WRITE(*,2000)t,ro ; PAUSE't,ro'
 	DO WHILE(dnel > epsi .AND. tour < tourmax)
 	 tour=tour+1
 	 
-c	 dégénérescence
-
+c dégénérescence
 	 df12l=cte1/SQRT(t)**3 ; f12l=nel*df12l
 	 IF(f12l < f12(1))THEN
 	  eta=dgce(1,1) ; deta=0.d0
@@ -612,12 +551,11 @@ c	 dégénérescence
 	  eta=bid(1) ; deta=dbid(1)*df12l
 	 ENDIF
 	 
-c	 calcul des ki/Rd (Clayton 2-237, 2-254)
+c calcul des ki/Rd (Clayton 2-237, 2-254)
 	 kisrd=sum(z_esp*(z_esp+1.d0)*x_esp) ; kisrd=cte2*SQRT(ro*kisrd/t)
 c	 PRINT*,kisrd
 
-c	 calcul des phi
-
+c calcul des phi
 	 DO i=1,nesp
 c	  PRINT*,nom_elem(i)
 	  DO j=1,NINT(zi_esp(i))	    
@@ -640,8 +578,7 @@ c	  PRINT*,nom_elem(i)
 	  ENDDO
 	 ENDDO
 
-c	 le dénominateur ne doit pas depasser den_max (1.d15)
-
+c le dénominateur ne doit pas depasser den_max (1.d15)
 	 ioni_esp=0.d0 ; dioni_esp=0.d0	
 	 DO i=1,nesp
 	  den=0.d0 ; dden=0.d0
@@ -652,9 +589,8 @@ c	 le dénominateur ne doit pas depasser den_max (1.d15)
 	  ENDDO
 	  den=den+1.d0
 
-c	  le dernier niveau j atteint assure un den < den_max
-c	  on met tous les ioni des autres niveaux a 0
-	  
+c le dernier niveau j atteint assure un den < den_max
+c on met tous les ioni des autres niveaux a 0  
 	  ioni_esp(j,i)=1.d0/den		!le niveau j
 	  dioni_esp(j,i)=-ioni_esp(j,i)/den*dden
 	  DO k=j-1,0,-1
@@ -662,8 +598,7 @@ c	  on met tous les ioni des autres niveaux a 0
 	  ENDDO	  
 	 ENDDO
 	 
-c	 calcul des charges moyennes
-
+c calcul des charges moyennes
 	 z_esp=0.d0 ; dz_esp=0.d0
 	 DO i=1,nesp
 	  DO j=1,NINT(zi_esp(i))
@@ -672,9 +607,8 @@ c	 calcul des charges moyennes
 	  ENDDO
 	 ENDDO
 	 
-c	 nombre d'électrons libres
-	 
-	 nel=sum(z_esp*x_esp)*ro/amu ; dnel=sum(dz_esp*x_esp)*ro/amu-1.d0
+c nombre d'électrons libres 
+	 nel=SUM(z_esp*x_esp)*ro/amu ; dnel=sum(dz_esp*x_esp)*ro/amu-1.d0
 	 dnel=(nel-nelp)/dnel		!second terme de Newton-Raphson
 	 nel=nelp-dnel			!nouveau nel
 	 dnel=ABS(dnel/nel)		!précision relative
@@ -690,8 +624,7 @@ c	 ENDIF
 	 WRITE(*,1)t,ro,dnel ; 	WRITE(2,1)t,ro,dnel ; no_conv=.FALSE.
 	ENDIF
 	
-c	rétablissement des taux pour chaque isotope
-
+c rétablissement des taux pour chaque isotope
 	DO k=1,nesp	!pour chaque espèce
 	 DO l=1,niso(k)	!pour chaque isotope d'espèce k
 	  i=iso(k,l)	!indice de l'isotope l d'espèce k

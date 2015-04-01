@@ -37,7 +37,7 @@ c     alpha, beta, gamma1 : notations thermodynamiques evidentes
 
 c----------------------------------------------------------------
 
-      USE mod_donnees, ONLY : aradia, f_eos, ln10
+      USE mod_donnees, ONLY : aradia, f_eos, ln10, nom_chemin
       USE mod_kind
 
       IMPLICIT NONE
@@ -65,7 +65,7 @@ c----------------------------------------------------------------
       COMMON/mhdout/varmhd
 
       CHARACTER (len=80), DIMENSION(8) :: eostb
-      CHARACTER (len=80) :: nom_chemin = "/data1/sdeheuve/local/src/cesam2k_v1.1.8_ESTA/SUN_STAR_DATA/"
+
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 ccccccccccccccccccccc CALLs mhd tables ccccccccccccccccccccccccccccc
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc

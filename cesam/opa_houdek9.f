@@ -3,7 +3,7 @@ c*************************************************************************
 
       SUBROUTINE opa_houdek9(xh,t,ro,kappa,dkapdt,dkapdr,dkapdx)
 
-c     routine public du module mod_opacite
+c     routine private du module mod_opacite
 
 c     opacités OPAL 95
 c     interpolation from Guenter Houdek: bi-rational splines version9
@@ -22,15 +22,15 @@ c sur DUPARC  /users/user2/morel/v9/lib/libopint.a
 c     tabnam='/users/user2/v9/OPINTPATH_AX'
 
 c ATTENTION
-c     en cas de sortie de table on appelle opa_yveline_lisse
+c     en cas de sortie de table on appelle opa_opal2_co
 c     le nom et le chemin de la table d'opacité OPINTPATH_AX doit
 c         NECESSAIREMENT être
 c     indiqué dans f_opa(2) de la NAMELIST nk_opa, du fichier de données
 c     mon_modele.don
 c     f_opa(2)='/users/user2/morel/v9/OPINTPATH_AX'
-c     le nom et le chemin de la table d'opacité opa_yveline_etendu.dat
+c     le nom et le chemin de la table d'opacité opa_opal2_co_etendu.dat
 c     doit être indique dans f_opa(1)
-c     f_opa(1) ='/users/user2/morel/STAR_DATA/opa_yveline_etendu.dat'
+c     f_opa(1) ='/users/user2/morel/STAR_DATA/opa_opal2_co_etendu.dat'
 
 c     il y a d'autres possibilités, en particulier supprimer
 c     les opacités conductives, voir la notice de Guenter
@@ -52,7 +52,7 @@ c     Z est obtenu par 1-X-Y, Y=He4+He3 ou encore Z=Z0
 
 c-------------------------------------------------------------------------
 
-      USE mod_donnees, ONLY : f_opa, ihe4, nchim, z0
+      USE mod_donnees, ONLY : f_opa, ihe4, nchim, nom_chemin, z0
       USE mod_kind
 
       IMPLICIT NONE
@@ -73,7 +73,6 @@ c-------------------------------------------------------------------------
       LOGICAL :: hou, ok
 
       CHARACTER (len=80) :: tabnam
-      CHARACTER (len=80) :: nom_chemin = "/data1/sdeheuve/local/src/cesam2k_v1.1.8_ESTA/SUN_STAR_DATA/"
 
 c-----------------------------------------------------------------
 
@@ -87,13 +86,12 @@ c-----------------------------------------------------------------
 	1 'interpolation par splines birationnelles de G. Houdek',/,
 	2 'version 9 adaptation à CESAM2k de P.Morel, données de ',a)
 
-c      lecture et initialisation des tables
-
+c lecture et initialisation des tables
        tabnam=TRIM(nom_chemin)//TRIM(f_opa(2))
        INQUIRE(file=TRIM(tabnam),exist=ok)
-       IF(.not.ok)THEN
+       IF(.NOT.ok)THEN
         WRITE(*,2)TRIM(f_opa(2)) ; WRITE(2,2)TRIM(f_opa(2))
-2	FORMAT('ARRET, le nom de la table d''opacité Houdek9 est inconnu',a)
+2	FORMAT('ARRET, le nom de la table d''opacité Houdek9 est inconnu : ',a)
 	STOP
        ENDIF
 
@@ -108,28 +106,25 @@ c      PRINT*,tabnam ; CALL pause('tabnam')
        PRINT*
        ALLOCATE(Lxh(nchim))
       ENDIF
-
-c     transformation of the inputs of OPA  to those of OPINTF:
-
+ 
+c transformation of the inputs of OPA  to those of OPINTF:
       x=abs(xh(1))
       IF(nchim > 1)THEN
        z=abs(1.d0-xh(1)-xh(ihe4)-xh(ihe4-1))
       ELSE
        z=z0
       ENDIF
+      
+c variables de OPAL en LOG10
+      tlg=LOG10(t) ; rlg=LOG10(ro/(t*1.d-06)**3) ; hou=.TRUE.      
 
-c     variables de OPAL en LOG10
-
-      tlg=LOG10(t) ; rlg=LOG10(ro/(t*1.d-06)**3) ; hou=.TRUE.
-
-c     encadrement des inputs
-
+c encadrement des inputs
       IF(x > 0.8d0)THEN
        IF(x > 0.81d0)THEN
         IF(hxp)THEN
          WRITE(2,11) ; WRITE(*,11)
 11       FORMAT(/,'opa_houdek9, on rencontre au moins une fois:',/,
-     1    'X > 0.81, appel à opa_yveline_lisse')
+     1   'X > 0.81, appel à opa_opal2_co')
          hxp=.FALSE.
         ENDIF
         hou=.FALSE.
@@ -138,16 +133,13 @@ c     encadrement des inputs
       ENDIF
 
       IF(z > 0.1d0)THEN
-       IF(z > 0.15d0)THEN
-        IF(hzp)THEN
-         WRITE(2,12) ; WRITE(*,12)
-12       FORMAT(/,'opa_houdek9, on rencontre au moins une fois:',/,
-     1    'Z > 0.15, appel à opa_yveline_lisse')
-         hxp=.FALSE.
-        ENDIF
-        hou=.FALSE.
+       IF(hzp)THEN
+        WRITE(2,12) ; WRITE(*,12)
+12      FORMAT(/,'opa_houdek9, on rencontre au moins une fois:',/,
+     1  'Z > 0.10, appel à opa_opal2_co')
+        hzp=.FALSE.
        ENDIF
-       z=0.1d0
+       hou=.FALSE.
       ENDIF
 
       IF(tlg < 3.d0)THEN
@@ -155,7 +147,7 @@ c     encadrement des inputs
         IF(htm)THEN
          WRITE(2,13) ; WRITE(*,13)    
 13       FORMAT(/,'opa_houdek9, on rencontre au moins une fois:',/,
-     1    'T < 1000, appel à opa_yveline_lisse')
+     1   'T < 1000, appel à opa_opal2_co')
          htm=.FALSE.
         ENDIF
         hou=.FALSE.
@@ -166,7 +158,7 @@ c     encadrement des inputs
         IF(htp)THEN
          WRITE(2,14) ; WRITE(*,14)    
 14       FORMAT(/,'opa_houdek9, on rencontre au moins une fois:',/,
-     1    'T > 6.4d8, appel à opa_yveline_lisse')
+     1   'T > 6.4d8, appel à opa_opal2_co')
          htp=.FALSE.
         ENDIF
         hou=.FALSE.
@@ -178,8 +170,8 @@ c     encadrement des inputs
        IF(rlg < -8.05d0)THEN
         IF(hrp)THEN
          WRITE(2,15) ; WRITE(*,15)    
-15      FORMAT(/,'opa_houdek9, on rencontre au moins une fois:',/,
-     1   'rlg <  -8, appel à opa_yveline_lisse')
+15       FORMAT(/,'opa_houdek9, on rencontre au moins une fois:',/,
+     1   'rlg <  -8, appel à opa_opal2_co')
          hrp=.FALSE.
         ENDIF
         hou=.FALSE.
@@ -190,7 +182,7 @@ c     encadrement des inputs
         IF(hrm)THEN
          WRITE(2,16) ; WRITE(*,16)
 16       FORMAT(/,'opa_houdek9, on rencontre au moins une fois:',/,
-     1   'rlg > 1, appel à opa_yveline_lisse')
+     1   'rlg > 1, appel à opa_opal2_co')
          hrm=.FALSE.
         ENDIF
         hou=.FALSE.
@@ -198,12 +190,11 @@ c     encadrement des inputs
        rlg=1.d0
       ENDIF
  
-c     CALL OF THE SUBROUTINE OF G. Houdek:
-
+c CALL OF THE SUBROUTINE OF G. Houdek:
       IF(hou)THEN
        CALL opints(x,z,tlg,rlg,opalg,opr,opt,opx,opz,iexp,ier)
        IF(ier == 1)THEN
-        WRITE(*,*)'sortie de table et extrapolation'
+        WRITE(*,*)'opa_houdek9, sortie de table et extrapolation'
        ENDIF
 
        kappa =10.d0**opalg            ! opacity
@@ -220,9 +211,8 @@ c      WRITE(*,2000)kappa,dkapdr,dkapdt,dkapdx
 c      CALL pause5('les kappa'
 
       ELSE
-       PRINT*,'Error in Houdek' ; STOP
-c       Lxh(1:nchim)=xh(1:nchim) ; Lt=t ; Lro=ro
-c       CALL opa_yveline_lisse(Lxh,Lt,Lro,kappa,dkapdt,dkapdr,dkapdx)   
+       Lxh(1:nchim)=xh(1:nchim) ; Lt=t ; Lro=ro
+       CALL opa_opal2(Lxh,Lt,Lro,kappa,dkapdt,dkapdr,dkapdx,.FALSE.)   
       ENDIF
 
       RETURN

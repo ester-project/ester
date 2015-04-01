@@ -3,47 +3,47 @@ c*************************************************************************
 
       SUBROUTINE diffm_mp(p,t,r,m,ro,drox,w,gradrad,dgradradx,xi,d,dd,v,dv)
 
-c     routine private du module mod_evol
+c routine private du module mod_evol
 
-c     calcul des coefficients de diffusion microscopique
-c     d'après Michaud-Proffit, Vienne, Inside the stars IAU 137, p.250
-c     on tient compte de Z: Vy=-xVx/(1-x-z)
+c calcul des coefficients de diffusion microscopique
+c d'après Michaud-Proffit, Vienne, Inside the stars IAU 137, p.250
+c on tient compte de Z: Vy=-xVx/(1-x-z)
 
-c     dérivée de diff_z16, diff_der, diff_mipr
+c dérivée de diff_z16, diff_der, diff_mipr
 
-c     les coefficients de la matrice de diffusion ne sont non nuls que sur la
-c     diagonale et la première colonne.
+c les coefficients de la matrice de diffusion ne sont non nuls que sur la
+c diagonale et la première colonne.
 
-c     Dimensions dans le programme appelant
-c     d(nchim,nchim), dd(nchim,nchim,nchim), v(nchim), dv(nchim,nchim)
+c Dimensions dans le programme appelant
+c d(nchim,nchim), dd(nchim,nchim,nchim), v(nchim), dv(nchim,nchim)
 
-c     convention de notation :
-c     équation de diffusion dXi/dt=dFi/dm + nuclear, i=1,nchim
-c     Fi=4 pi r**2 ro (4 pi r**2 ro D.dX/dm - Vi Xi)
+c convention de notation :
+c équation de diffusion dXi/dt=dFi/dm + nuclear, i=1,nchim
+c Fi=4 pi r**2 ro (4 pi r**2 ro D.dX/dm - Vi Xi)
 
-c     d=D=(di1, di2,... din) avec Dij coefficient de d Xj / dm
-c     dans le produit scalaire D.dX/dm=sum d_ij d Xj / dm
+c d=D=(di1, di2,... din) avec Dij coefficient de d Xj / dm
+c dans le produit scalaire D.dX/dm=sum d_ij d Xj / dm
 
-c     pour ligne d'indice i
-c     v(i) coefficient de x_i,
-c     dv(i,k)=dérivée v_i / x_k
-c     seule la premiere colonne de dv
-c     est non nulle (pas de dérivées / Xi, i /= 1)
-c     d(i,j)=coefficient d_ij de d x_j / dm
-c     dd(i,j,k)= dérivée de d_ij / x_k
+c pour ligne d'indice i
+c v(i) coefficient de x_i,
+c dv(i,k)=dérivée v_i / x_k
+c seule la premiere colonne de dv
+c est non nulle (pas de dérivées / Xi, i /= 1)
+c d(i,j)=coefficient d_ij de d x_j / dm
+c dd(i,j,k)= dérivée de d_ij / x_k
 
-c     Auteur: P.Morel
-c     Conseils: J. Matias, DASGAL, G. Alécian, Evry
-c     adaptation à CESAM: P. Morel, Département J.D. Cassini, O.C.A.
+c Auteur: P.Morel
+c Conseils: J. Matias, DASGAL, G. Alécian, Evry
+c adaptation à CESAM: P. Morel, Département J.D. Cassini, O.C.A.
 
-c     CESAM2k
+c CESAM2k
 
-c    19 08 96 : remplacement ln lambda par Cij (c.a.d. cs)
-c    11 12 98 : cohérence avec le cas général, modification de v, dv, d, dd
-c    18 12 98 : abondances par mole en entrée
-c    05 01 99 : yVy=-xVx au lieu de (1-x-z)Vy=xVx
+c 19 08 96 : remplacement ln lambda par Cij (c.a.d. cs)
+c 11 12 98 : cohérence avec le cas général, modification de v, dv, d, dd
+c 18 12 98 : abondances par mole en entrée
+c 05 01 99 : yVy=-xVx au lieu de (1-x-z)Vy=xVx
 
-c entrees
+c entrées
 c     p, t, r, l, m, ro: données au point de calcul
 c     xi: composition chimique, par mole
 c     kap: opacité
@@ -53,40 +53,40 @@ c sorties
 c     d0, dd : coefficients d_ij de d x_j / d m et dérivées / x_k
 c     v0, dv : coefficients v_i de x_i et dérivées / x_k
 
-c     ces quantités doivent etre initialisées à 0 dans le programme appellant
+c ces quantités doivent etre initialisées à 0 dans le programme appelant
 
 c----------------------------------------------------------------
 
-      USE mod_donnees, ONLY : ah, amu, echarg, g, ihe4, kbol, langue, msol,
-     1 nchim, nucleo, pi, rsol, zi
-      USE mod_kind
+	USE mod_donnees, ONLY : ah, amu, echarg, g, ihe4, kbol, langue, msol,
+	1 nchim, nucleo, pi, rsol, zi
+	USE mod_kind
 
-      IMPLICIT NONE
+	IMPLICIT NONE
 
-      REAL (kind=dp), INTENT(in), DIMENSION(:) :: xi
-      REAL (kind=dp), INTENT(in) :: gradrad, dgradradx, drox, m, p, r,
-     1 ro, t, w
-      REAL (kind=dp), INTENT(inout), DIMENSION(:,:,:) :: dd   
-      REAL (kind=dp), INTENT(inout), DIMENSION(:,:) :: d, dv
-      REAL (kind=dp), INTENT(inout), DIMENSION(:) :: v    
+	REAL (kind=dp), INTENT(in), DIMENSION(:) :: xi
+	REAL (kind=dp), INTENT(in) :: gradrad, dgradradx, drox, m, p, r,
+	1 ro, t, w
+	REAL (kind=dp), INTENT(inout), DIMENSION(:,:,:) :: dd   
+	REAL (kind=dp), INTENT(inout), DIMENSION(:,:) :: d, dv
+	REAL (kind=dp), INTENT(inout), DIMENSION(:) :: v    
       
-      REAL (kind=dp), SAVE, ALLOCATABLE, DIMENSION(:,:) :: as, sa
-      REAL (kind=dp), DIMENSION(nchim,2) :: cs, csr, csx, lnlamb,
-     1   lnlambr, lnlambx
-      REAL (kind=dp), DIMENSION(nchim) :: xchim
-      REAL (kind=dp), PARAMETER :: thetae=1.d0
-      REAL (kind=dp), SAVE :: b, cte1 
-      REAL (kind=dp) :: c, cx, c1, c1x, c2, c2x, den, denx, dxsyx, dxsyy,
-     1   grav, gravx, num, numx, q, qx, vth, vthx, xsy
+	REAL (kind=dp), SAVE, ALLOCATABLE, DIMENSION(:,:) :: as, sa
+	REAL (kind=dp), DIMENSION(nchim,2) :: cs, csr, csx, lnlamb,
+	1 lnlambr, lnlambx
+	REAL (kind=dp), DIMENSION(nchim) :: xchim
+	REAL (kind=dp), PARAMETER :: thetae=1.d0
+	REAL (kind=dp), SAVE :: b, cte1, cte2 
+	REAL (kind=dp) :: c, cx, c1, c1x, c2, c2x, den, denx, dxsyx, dxsyy,
+	1 grav, gravx, num, numx, q, qx, vth, vthx, xsy
 
-      INTEGER :: i, k
+	INTEGER :: i, k
       
-      LOGICAL, SAVE :: init=.TRUE.
+	LOGICAL, SAVE :: init=.TRUE.
 
 c--------------------------------------------------------------------------
 
-2000  FORMAT(8es10.3)
-2001  FORMAT(10es8.1)
+2000	FORMAT(8es10.3)
+2001	FORMAT(10es8.1)
 
       IF(init)THEN
        init=.FALSE.
@@ -103,13 +103,12 @@ c--------------------------------------------------------------------------
      2  'pour He4: X Vx = - Y Vy ==> Vy = - X / (1 - X - Z) Vx',/)
        END SELECT
        
-c      Case mixture of H et He & thetae=1.   :   zi=1  zj=2
-
+c Case mixture of H et He & thetae=1.   :   zi=1  zj=2
        cte1=g*msol/rsol**2
+       cte2=2.d0/3.d0*rsol
        b=15.d0/16.d0*SQRT(2.d0*amu/5.d0/pi)*SQRT(kbol)**5/echarg**4
            
-c      masses reduites
-
+c masses reduites
        ALLOCATE(as(nchim,2), sa(nchim,2))
        DO i=1,nchim
         as(i,1)=nucleo(i)*nucleo(1)/(nucleo(i)+nucleo(1))
@@ -118,7 +117,7 @@ c      masses reduites
         sa(i,2)=SQRT(as(i,2))
        ENDDO
        
-c      convention de signe:
+c convention de signe:
 c      équation de diffusion dX/dt=dF/dm + nuclear
 c      F=4 pi r**2 ro (4 pi r**2 ro D.dX/dm - v X)
 c      le terme en gravité vient de dlnP/dr, il entre dans v (eq.17)
@@ -129,23 +128,20 @@ c      - Pour vth, comme grav > 0, et qu'il y a - dans v (eq.17)
 c      il faut alors mettre - vth pour rétablir le signe
 c      en - v dans eq_diff_chim
            
-      ENDIF       !initialisation
+      ENDIF
+c--------------fin des initialisations----------------------------------
       
-c     les équations et les dérivées analytiques en xi
-
-c     les formules de Michaud-Proffit utilisent les abondances par gramme
-c     on transforme les xi par mole en xchim par gramme
-c     à l'issue du calcul les dérivées sont prises / xi par mole
-
+c les équations et les dérivées analytiques en xi
+c les formules de Michaud-Proffit utilisent les abondances par gramme
+c on transforme les xi par mole en xchim par gramme
+c à l'issue du calcul les dérivées sont prises / xi par mole
       xchim=xi*nucleo ; xsy=xchim(1)/xchim(ihe4) ; dxsyx=xsy/xchim(1)
       dxsyy=-xsy/xchim(ihe4)
 
-c     logarithme de Coulomb et intégrale cij pour H=X et He4=Y
-
+c logarithme de Coulomb et intégrale cij pour H=X et He4=Y
       DO i=1,nchim    
        CALL coulomb(zi(i),zi(1),thetae,ro,xchim(1),
-     1  t,lnlamb(i,1),lnlambr(i,1),lnlambx(i,1),
-     2  cs(i,1),csr(i,1),csx(i,1))
+     1 t,lnlamb(i,1),lnlambr(i,1),lnlambx(i,1),cs(i,1),csr(i,1),csx(i,1))
        lnlambx(i,1)=lnlambx(i,1)+lnlambr(i,1)*drox    !dérivée/X
        csx(i,1)=csx(i,1)+csr(i,1)*drox
          
@@ -156,25 +152,23 @@ c     logarithme de Coulomb et intégrale cij pour H=X et He4=Y
        csx(i,2)=csx(i,2)+csr(i,2)*drox
       ENDDO
        
-c     lnlambdaij est remplacé par cij, remarque sous la formule 17     
-       
+c lnlambdaij est remplacé par cij, remarque sous la formule 17          
       c=b*SQRT(t)**5/ro/cs(1,2)/(0.7d0+0.3d0*xchim(1))
       cx=-c*(0.3d0/(0.7d0+0.3d0*xchim(1))+
      1 drox/ro+csx(1,2)/cs(1,2))   !dérivée /X
       q=2.d0/SQRT(5.d0)/ro*b*SQRT(t)**5
       qx=-q*drox/ro               !dérivée /X
       IF(r*m > 0.d0)THEN
-       grav=cte1*ro*m/p/r**2+2.d0/3.d0*r*w**2
+       grav=(cte1*m/r**2-cte2*r*w**2)*ro/p
       ELSE
        v=0.d0 ; dv=0.d0 ; d=0.d0 ; dd=0.d0 ; RETURN
       ENDIF      
       gravx=grav*drox/ro  !dérivée/X
 
       vth=0.54d0*b/ro*(4.75d0*xchim(1)+2.25d0)*SQRT(t)**5/(5.d0+cs(1,2))*
-     1   gradrad*grav        !formule 19
+     1 gradrad*grav        !formule 19
       vthx=0.54d0*b/ro*4.75d0*SQRT(t)**5/(5.d0+cs(1,2))*gradrad*grav
-     1 +vth*(-drox/ro+dgradradx/gradrad
-     2 +gravx/grav-csx(1,2)/(5.d0+cs(1,2)))
+     1 +vth*(-drox/ro+dgradradx/gradrad+gravx/grav-csx(1,2)/(5.d0+cs(1,2)))
 
       DO i=1,nchim
        IF(i == 1)THEN !pour l'hydrogène 
@@ -225,8 +219,7 @@ c     lnlambdaij est remplacé par cij, remarque sous la formule 17
        ENDIF
       ENDDO
  
-c     dérivées par rapport aux abondances par gramme
-
+c dérivées par rapport aux abondances par gramme
       DO k=1,nchim
        dv(:,k)=dv(:,k)*nucleo(k) ; dd(:,:,k)=dd(:,:,k)*nucleo(k)
       ENDDO

@@ -3,17 +3,15 @@ c***********************************************************************
 
 	SUBROUTINE opa_opalCO(xh,t,ro,kappa,dkapdt,dkapdr,dkapdx)
 
-c	Routine de calcul de l'opacité basée sur les tables d'opacité
-c	de type 2 de Livermore.
-c	Adaptation à CESAM2k de la routine d'interpolation xcotrin21
-c	Appel à opa_yveline en cas de sortie de table
+c routine private du module mod_opa
 
-c	il n'y a pas interpolation en Z, mais correction pour C et O par
-c	rapport au Z de la table OPAL utilisée
+c Routine de calcul de l'opacité basée sur les tables d'opacité
+c de type 1 de Livermore.
+c il n'y a pas interpolation en Z, mais correction pour C et O par
+c rapport au Z de la table OPAL utilisée
 
-c	Auteurs : initialisation en F77 de L.Piau Univ. Bruxelles
-c	P.Morel, Département J.D. Cassini, O.C.A.
-c	CESAM2k	
+c Auteurs : initialisation en F77 de L.Piau Univ. Bruxelles
+c P.Morel, Département J.D. Cassini, O.C.A., CESAM2k	
 
 c entrées :
 c	xchim: comp. chim. en H + C & O
@@ -68,8 +66,7 @@ c-----------------------------------------------------------------------
 	REAL (kind=dp), PARAMETER :: dx=1.d-05, unpdx=1.d+00+dx
 	REAL (kind=dp), SAVE :: cxx, dkap, oxx, rle, rls, tmax, xcdp,
 	1 xodp, xxc0, xxco, xxo0, z_table, zzz
-	REAL (kind=dp) :: dopacr, dopact, opact, r, t6, xhh, xxc,
-	1 xxo
+	REAL (kind=dp) :: dopacr, dopact, opact, r, t6, xhh, xxc, xxo
 
 	INTEGER, SAVE, DIMENSION(mx,mc) :: n=0
 	INTEGER, SAVE, DIMENSION(mx,ntabs) :: itab
@@ -92,16 +89,21 @@ c-----------------------------------------------------------------------
 	
 	CHARACTER (len=9), PARAMETER, DIMENSION(5) :: fich_opalCO =
 	1 (/ 'COX00.tab','COX03.tab','COX10.tab','COX35.tab','COX70.tab'/)
-	CHARACTER (len=80) :: nom_chemin = "/data1/sdeheuve/local/src/cesam2k_v1.1.8_ESTA/SUN_STAR_DATA/"		     
+	     
 c-----------------------------------------------------------------
 
 2000	FORMAT(8es10.3)
 
+c appel à opa_yveline pour la zone externe et l'atmosphère T < 1eV	 
+	IF(t < 1.5d4)THEN
+	 CALL opa_yveline(xh,t,ro,kappa,dkapdt,dkapdr,dkapdx) ; RETURN	 	 
+	ENDIF	 
+
+c--------------initialisations---------------------------------
 	IF(init)THEN
 	 init=.FALSE.
 	 
 c identification des indices de H, He, C, O
-
 	 DO i=1,nchim
 	  IF(nom_elem(i)(1:2) == ' H')THEN
 	   nisoh=nisoh+1 ; isoh(nisoh)=i
@@ -117,25 +119,22 @@ c	 PRINT*,isoh ; PRINT*,isoc ; PRINT*,isoo
 c	 PAUSE'iso'	 
 
 c définitions de z_table, C/Z, O/Z suivant les groupes de fichiers
-c	 d'opacité utilisés (donné dans l'entête des tables)
-
+c d'opacité utilisés (donnés dans l'entête des tables)
 c	 avec COX.. Z=0.02	 
 	 z_table=0.02d0 ; xxc0=z_table*0.173285d0 ; xxo0=z_table*0.482272d0
 	 
-	ENDIF
+	ENDIF	
+c--------------initialisations (fin)---------------------------------	
 
         t6=t*1.d-06 ; r=ro/t6**3
 
-c	abondances de H, He, C et O
-
+c abondances de H, He, C et O
         xhh=SUM(xh(isoh(1):isoh(nisoh))) 	!fraction totale de H
         xxc=SUM(xh(isoc(1):isoc(nisoc)))	!fraction totale de C 
         xxo=SUM(xh(isoo(1):isoo(nisoo))) 	!fraction totale de O
 
-c xxc, xxO : excès de C et O dans Z par rapport aux C et O des tables
-	
+c xxc, xxO : excès de C et O dans Z par rapport aux C et O des tables	
 	xxc=xxc-xxc0 ; xxo=xxo-xxo0
-
 	CALL opac(z_table,xhh,xxc,xxo,t6,r) ; IF(sortie)STOP
 	kappa=10.d0**opact ; dkapdt=kappa*dopact/t
 	dkapdr=kappa*dopacr/ro ; dkapdx=0.d0	
@@ -151,26 +150,31 @@ c xxc, xxO : excès de C et O dans Z par rapport aux C et O des tables
 	
 c**********************************************************************
 
-	SUBROUTINE opac(z,xh,xxc_i,xxo_i,t6,r)	
+	SUBROUTINE opac(z_i,xh_i,xxc_i,xxo_i,t6,r)	
 	
 	USE mod_kind
 	
 	IMPLICIT NONE
 	
-	REAL (kind=dp), INTENT(in) :: z, xh, xxc_i, xxo_i, t6, r
+	REAL (kind=dp), INTENT(in) :: z_i, xh_i, xxc_i, xxo_i, t6, r
 	
-	REAL (kind=dp) :: cmod, dixr, slr, slt, xhe, xxc, xxci,
-	1 xxo, xxoi, xxx
+	REAL (kind=dp) :: cmod, dixr, slr, slt, somme, xh, xhe, xxc, xxci,
+	1 xxo, xxoi, xxx, z
 	
 	INTEGER :: i, iadvance, ihi, ilo, imd, ir, is, istep1, it, iw, kmin,
 	1 k1in, k3s, l3s, mfin, mf2, mg, mh, mi, ntd, ntlimit
 	
 c----------------------------------------------------------------
 
-	xxc=xxc_i ; xxo=xxo_i
+	xh=xh_i ; xxc=xxc_i ; xxo=xxo_i ; z=z_i
+	
+c normalisation
+	somme=z+xh+xxc+xxo
+	IF(somme > 1.d0)THEN
+	 xxc=xxc/somme ; xxo=xxo/somme ; z=z/somme
+	ENDIF
 
 c refers to goto to compute opacity composition derivative
-
 	IF(nr < 6)THEN
 	 WRITE(*,65)nre,nrb ; WRITE(2,65)nre,nrb ; STOP
 65	 FORMAT('opa_opalCO: Too few R values; nre+1-nrb < 6, nre=',i3,
@@ -186,9 +190,10 @@ c refers to goto to compute opacity composition derivative
 c..... set-up C/O axis points
 	xxco=xxc+xxo
 	IF(z+xh+xxco-1.d-6 > 1.d0 )THEN
-	 WRITE(*,61)z,xh,xxc,xxo ; WRITE(2,61)z,xh,xxc,xxo ; STOP	
+	 WRITE(*,61)z,xh,xxc,xxo,z+xh+xxco ; WRITE(2,61)z,xh,xxc,xxo,z+xh+xxco
+	 STOP	
 61	 FORMAT('opa_opalCO: Mass fractions exceed unity',/,'z=',es10.3,
-	1 ', xh=',es10.3,', xxc=',es10.3,', xxo=',es10.3)
+	1 ', xh=',es10.3,', xxc=',es10.3,', xxo=',es10.3,', z+xh+xxco=',es10.3)
 	ENDIF	
 	
 	zzz=z+0.001d0 ; xxci=xxc ; xxoi=xxo
@@ -455,8 +460,7 @@ c************************************************************************
 
 	SUBROUTINE cointerp(xxc,xxo)
       
-c	The purpose of this SUBROUTINE is to interpolate in C and O abund-
-c	ances.
+c The purpose of this SUBROUTINE is to interpolate in C and O abundances.
 
 	USE mod_kind
 	
@@ -524,7 +528,6 @@ c          interpolation in region c2
 	ENDIF
 
 c interpolation in region c3 to c6
-
 	is=0
 	IF(nc >= 5)THEN
 	 DO i=4,nc-1

@@ -23,11 +23,8 @@ c-----------------------------------------------------------------------
 	REAL (kind=dp), INTENT(inout), DIMENSION(:) :: dxchim, xchim	
 
 c--------------------------------------------------------------
-	
-2000	FORMAT(8es10.3)
 
-	xchim(1:nchim)=xchim(1:nchim)*nucleo(1:nchim)
-	dxchim(1:nchim)=dxchim(1:nchim)*nucleo(1:nchim)
+	xchim=xchim*nucleo ; dxchim=dxchim*nucleo
 
 	RETURN
 	

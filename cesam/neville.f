@@ -12,10 +12,10 @@ c	inspire de Stoer & Burlirsh 2.1.2 p. 42
 c	18 12 00: version F95
 
 c entrees:
-c	x: point d'interpolation
+c	x: point d interpolation
 c	xi: abscisses
 c	fi: fonction
-c	n: degre du polynome
+c	n: degré du polynome
 
 c----------------------------------------------------------
 

@@ -3,20 +3,17 @@ c*****************************************************************
 
 	 FUNCTION colpnt(i,l,m,x)
 
-c	 fonction private du module mod_numerique
+c fonction PRIVATE du module mod_numerique
 	
-c	 calcul de l'abscisses du i-ieme point de collocation
-c	 dans l'intervalle ]x(l),x(l+1)[
-c	 pour la résolution d'une équation différentielle d'ordre r 
-c	 avec m=ordre des splines il y a m points de collocation
-c	 ces points sont les abscisses des formules d'intégration de Gauss
-c	 d'ordre m sur l'ouvert ]x(l) , xt(l)[
-c	 d'après de Boor p.293
+c calcul de l'abscisses du i-ieme point de collocation
+c dans l'intervalle ]x(l),x(l+1)[
+c pour la résolution d'une équation différentielle d'ordre r 
+c avec m=ordre des splines il y a m points de collocation
+c ces points sont les abscisses des formules d'intégration de Gauss
+c d'ordre m sur l'ouvert ]x(l) , xt(l)[
+c d'après de Boor p.293
 
-c	 dérive de colpnt.f
-
-c	 Auteur: P.Morel, Département J.D. Cassini, O.C.A
-c	cesam2k
+c Auteur: P.Morel, Département J.D. Cassini, O.C.A, CESAM2k
 
 c---------------------------------------------------------------------
 

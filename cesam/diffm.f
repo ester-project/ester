@@ -9,6 +9,17 @@ c	subroutine private du module mod_evol
 c	subroutine générique de calcul des coefficients de
 c	diffusion microscopique
 
+c entrées
+c     p,t,r,lum,ltot,m : pression, temperature, lum. locale et totale, masse
+c     ro,drox,kap,dkapx : densite, dérivée/ X, opacite, dérivée / X 
+c     gradrad,dgradradx : gradient rad. et dérivées / X
+c     xi : comp. chim. par mole
+c     les dérivées / X, issues de thermo, sont par gramme 
+
+c sorties
+c     d, dd : coefficients d_ij de d x_j / d m et dérivées / x_k
+c     v, dv : coefficients v_i de x_i et dérivées / x_k
+
 c	Auteur: P.Morel, Département J.D. Cassini, O.C.A.
 c	CESAM2k
 
@@ -28,9 +39,12 @@ c---------------------------------------------------------------------
 
 c---------------------------------------------------------------------
 
+2000 	FORMAT(8es10.3)
+c	WRITE(*,2000)r,w
+
 	SELECT CASE(nom_diffm)
 	CASE('diffm_br')
-	 CALL diffm_br(t,r,l,m,ro,drox,kap,dkapx,gradrad,dgradradx,w,
+	 CALL diffm_br(t,r,l,m,ro,drox,kap,dkapx,w,gradrad,dgradradx,
 	1 xi,d,dd,v,dv)
 	CASE('diffm_mp')
 	 CALL diffm_mp(p,t,r,m,ro,drox,w,gradrad,dgradradx,xi,d,dd,v,dv)

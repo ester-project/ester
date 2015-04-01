@@ -11,7 +11,7 @@ c	cf. Clayton p. 380, 392 et 430,
 
 c	éléments pris en compte:
 c	H1, H2, He3, He4, Li7, Be7, C12, C13, N14, N15, O16, O17, Ex
-c	Ex est l'élément fictif complément, il n'intéresse que la diffusion
+c	Ex est l'élément fictif complément
 c	aucun élément à l'équilibre
 
 c	un premier appel à rq_reac initialise les
@@ -82,8 +82,8 @@ c	Ex : 13
 
 c--------------------------------------------------------------------
 
-	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, ihe4,
-	1 langue, nchim, nom_elem, nom_xheavy, nucleo, rot_solid,
+	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, fmin_abon, ihe4,
+	1 ili7, i_ex, langue, nchim, nom_elem, nom_xheavy, nucleo,
 	2 secon6, t_inf, x0, y0, zi, z0
 	USE mod_kind
 	USE mod_numerique, ONLY : gauss_band	
@@ -127,7 +127,7 @@ c	 définition de nchim: nombre d'éléments chimiques dont on
 c	 calcule l'abondance H1, H2, He3, He4, Li7, Be7, C13, C13, N14,
 c	 N15, O16, O17, Ex
 
-	 nchim=12+1
+	 nchim=12+1 ; ili7=5
 
 c	 appel d'initialisation pour tabulation des réactions nucléaires
 c	 allocations fictives
@@ -146,8 +146,7 @@ c	 He3+He4=Y0
 c	 Z0 = somme des éléments plus lourds que hélium
 c	 dans Z rapports en nombre
  
-c	 Ex : élément fictif moyenne des éléments # Li + Be + CNO
-
+c Ex : élément fictif moyenne des éléments # Li + Be + CNO
 	 CALL abon_ini
 	 
 	 charge_ex=0.d0 ; mass_ex=0.d0 ; sum_a=0.d0
@@ -164,6 +163,7 @@ c	 Ex : élément fictif moyenne des éléments # Li + Be + CNO
 10	 FORMAT(i2)
 
 c élément fictif
+	 i_ex=nchim		!indice de l'élément chimique reliquat
 	 nucleo(nchim)=mass_ex	!nucleo de l'élément chimique reliquat
 	 zi(nchim)=charge_ex	!charge de l'élément chimique reliquat
        i = nint(charge_ex)
@@ -262,7 +262,7 @@ c	 ab_min(2)=1.d-20	!H2
 c	 ab_min(3)=5.d-7	!He3
 c	 ab_min(4)=1.d-3	!He4
 c	 ab_min(5)=1.d-14	!Li7
-c	 ab_min(6)=1.d-17	!Be7
+c	 ab_min(6)=1.d-14	!Be7
 c	 ab_min(7)=5.d-6	!C12
 c	 ab_min(8)=1.d-7	!C13
 c	 ab_min(9)=1.d-6	!N14
@@ -271,7 +271,7 @@ c	 ab_min(11)=1.d-5	!O16
 c	 ab_min(12)=5.d-9	!O17
 c	 ab_min(13)=1.d-6	!Ex
 	 
-	 ab_min=ab_ini*1.d-2
+	 ab_min=ab_ini*fmin_abon ; ab_min(6)=1.d-14
 	 
 c	 nombre/volume des métaux dans Z
 		
@@ -375,26 +375,25 @@ c	 équations d'evolution
 	 dcomp(11)=(r(11)*comp(10)-r(13)*comp(11))*comp(1)	!O16
 	 dcomp(12)=(r(13)*comp(11)-r(14)*comp(12))*comp(1)	!O17
 
-c	   Pour vérifications SUM dcomp*nucleo=0
-
+c Pour vérifications SUM dcomp*nucleo=0
 c	 PRINT*,'ppcno12, vérifications SUM dcomp*nucleo=0'
 c	 WRITE(*,2000)DOT_PRODUCT(dcomp,anuc) ; PAUSE'vérif' 
 
 	 dcomp(13)=-DOT_PRODUCT(dcomp,anuc)/anuc(13) 	!cons. des baryons	
 
-c	 calcul du jacobien
-
+c calcul du jacobien
 	 IF(deriv)THEN	!jac(i,j) : équation, i : élément j
 	
-c	  équation
-c	  dcomp(1)=-(2.d0*r(1)*comp(1)+r(2)*comp(2)+r(5)*comp(5)
+c équation
+c dcomp(1)=-(2.d0*r(1)*comp(1)+r(2)*comp(2)+r(5)*comp(5)
 c	1 +r(7)*comp(6)+r(8)*comp(7)+r(9)*comp(8)+r(10)*comp(9)
 c	2 +(r(11)+r(12))*comp(10)+r(13)*comp(11)
 c	3 +r(14)*comp(12))*comp(1)+2.d0*r(3)*comp(3)**2		!H1
 
 	  jac(1,1)=-4.d0*r(1)*comp(1)-r(2)*comp(2)-r(5)*comp(5)
 	1 -r(7)*comp(6)-r(8)*comp(7)-r(9)*comp(8)-r(10)*comp(9)
-	2 -(r(11)+r(12))*comp(10)-r(13)*comp(11)-r(14)*comp(12)  !d /H1
+	2 -(r(11)+r(12))*comp(10)-r(13)*comp(11)
+	3 -r(14)*comp(12)  				!d /H1
 	  jac(1,2)=-r(2)*comp(1)			!d /H2
 	  jac(1,3)=4.d0*r(3)*comp(3)			!d /He3
 	  jac(1,5)=-r(5)*comp(1)			!d /Li7
@@ -416,9 +415,8 @@ c	3 +r(14)*comp(12))*comp(1)+2.d0*r(3)*comp(3)**2		!H1
 	6  +drx(14,i)*comp(12)+2.d0*drx(3,i)*comp(3)**2		!H1
 	  ENDDO
 	   	 
-c	  équation dcomp(2)
-c	  dcomp(2)=(r(1)*comp(1)-r(2)*comp(2))*comp(1)	!H2
-
+c équation dcomp(2)
+c dcomp(2)=(r(1)*comp(1)-r(2)*comp(2))*comp(1)	!H2
 	  jac(2,1)=2.*r(1)*comp(1)-r(2)*comp(2)		!d /H1
 	  jac(2,2)=-r(2)*comp(1)			    !d /H2
 	 
@@ -426,13 +424,11 @@ c	  dcomp(2)=(r(1)*comp(1)-r(2)*comp(2))*comp(1)	!H2
 	   jac(2,i)=jac(2,i)+(drx(1,i)*comp(1)-drx(2,i)*comp(2))*comp(1)
 	  ENDDO
 	 	 	 
-c	  équation dcomp(3)
-c	  dcomp(3)=r(2)*comp(1)*comp(2)-(2.*r(3)*comp(3)
-c	1 +r(4)*comp(4))*comp(3)			!He3
-
+c équation dcomp(3)
+c dcomp(3)=r(2)*comp(1)*comp(2)-(2.*r(3)*comp(3)+r(4)*comp(4))*comp(3)				!He3
 	  jac(3,1)=r(2)*comp(2)				        !d /H1
 	  jac(3,2)=r(2)*comp(1)				        !d /H2
-	  jac(3,3)=-2.*r(3)*comp(3)-r(4)*comp(4)	!d /He3
+	  jac(3,3)=-4.d0*r(3)*comp(3)-r(4)*comp(4)		!d /He3
 	  jac(3,4)=-r(4)*comp(3)			        !d /He4
 	 
 	  DO i=1,nchim		!dependances dues à l'effet d'écran
@@ -440,11 +436,10 @@ c	1 +r(4)*comp(4))*comp(3)			!He3
 	1  -(2.d0*drx(3,i)*comp(3)+drx(4,i)*comp(4))*comp(3)
 	  ENDDO
 
-c	  équation dcomp(4)
-c	  dcomp(4)=(r(3)*comp(3)-r(4)*comp(4))*comp(3)
+c équation dcomp(4)
+c dcomp(4)=(r(3)*comp(3)-r(4)*comp(4))*comp(3)
 c	1 +(2.*(r(5)*comp(5)+r(7)*comp(6))+r(12)*comp(10)
 c	2 +r(14)*comp(12))*comp(1)			!He4
-
 	  jac(4,1)=2.d0*(r(5)*comp(5)+r(7)*comp(6))
 	1 +r(12)*comp(10)+r(14)*comp(12)		!d /H1
 	  jac(4,3)=2.*r(3)*comp(3)-r(4)*comp(4)		!d /He3
@@ -461,9 +456,8 @@ c	2 +r(14)*comp(12))*comp(1)			!He4
 	3  +drx(12,i)*comp(10)+drx(14,i)*comp(12))*comp(1)
 	  ENDDO
 	 	 
-c	  équation dcomp(5)
-c	  dcomp(5)=-r(5)*comp(1)*comp(5)+r(6)*comp(6)*mue	!Li7
-
+c équation dcomp(5)
+c dcomp(5)=-r(5)*comp(1)*comp(5)+r(6)*comp(6)*mue	!Li7
 	  jac(5,1)=-r(5)*comp(5)			!d /H1
 	  jac(5,5)=-r(5)*comp(1)			!d /Li7
 	  jac(5,6)=r(6)*mue				!d /Be7
@@ -474,9 +468,8 @@ c	  dcomp(5)=-r(5)*comp(1)*comp(5)+r(6)*comp(6)*mue	!Li7
 	2  +r(6)*comp(6)*dmuex(i)
 	  ENDDO
 	 	 
-c	  équation dcomp(6)	!Be7
-c	  dcomp(6)=r(4)*comp(3)*comp(4)-(r(6)*mue+r(7)*comp(1))*comp(6)
-
+c équation dcomp(6)	!Be7
+c dcomp(6)=r(4)*comp(3)*comp(4)-(r(6)*mue+r(7)*comp(1))*comp(6)
 	  jac(6,1)=-r(7)*comp(6)			!d /H1
 	  jac(6,3)=r(4)*comp(4)				!d /He3
 	  jac(6,4)=r(4)*comp(3)				!d /He4
@@ -488,9 +481,8 @@ c	  dcomp(6)=r(4)*comp(3)*comp(4)-(r(6)*mue+r(7)*comp(1))*comp(6)
 	2  +r(6)*dmuex(i)+drx(7,i)*comp(1))*comp(6)
 	  ENDDO
 	 
-c	  équation dcomp(7)	 
-c	  dcomp(7)=(-r(8)*comp(7)+r(12)*comp(10))*comp(1)	!C12
-
+c équation dcomp(7)	 
+c dcomp(7)=(-r(8)*comp(7)+r(12)*comp(10))*comp(1)	!C12
 	  jac(7,1)=-r(8)*comp(7)+r(12)*comp(10)			!d /H1
 	  jac(7,7)=-r(8)*comp(1)				!d /C12
 	  jac(7,10)=r(12)*comp(1)				!d /N15
@@ -500,9 +492,8 @@ c	  dcomp(7)=(-r(8)*comp(7)+r(12)*comp(10))*comp(1)	!C12
 	1  +(-drx(8,i)*comp(7)+drx(12,i)*comp(10))*comp(1)
 	  ENDDO	 
 	 	 
-c	  équation dcomp(8)
-c	  dcomp(8)=(r(8)*comp(7)-r(9)*comp(8))*comp(1)	!C13
-
+c équation dcomp(8)
+c dcomp(8)=(r(8)*comp(7)-r(9)*comp(8))*comp(1)	!C13
 	  jac(8,1)=r(8)*comp(7)-r(9)*comp(8)		!d /H1
 	  jac(8,7)=r(8)*comp(1)				!d /C12
 	  jac(8,8)=-r(9)*comp(1)			!d /C13
@@ -512,9 +503,8 @@ c	  dcomp(8)=(r(8)*comp(7)-r(9)*comp(8))*comp(1)	!C13
 	1  +(drx(8,i)*comp(7)-drx(9,i)*comp(8))*comp(1)
 	  ENDDO
 	 
-c	  équation dcomp(9)	!N14	 
-c	  dcomp(9)=(r(9)*comp(8)-r(10)*comp(9)+r(14)*comp(12))*comp(1)
-
+c équation dcomp(9)	!N14	 
+c dcomp(9)=(r(9)*comp(8)-r(10)*comp(9)+r(14)*comp(12))*comp(1)
 	  jac(9,1)=r(9)*comp(8)-r(10)*comp(9)+r(14)*comp(12)	!d /H1
 	  jac(9,8)=r(9)*comp(1)					!d /C13
 	  jac(9,9)=-r(10)*comp(1)				!d /N14
@@ -526,9 +516,8 @@ c	  dcomp(9)=(r(9)*comp(8)-r(10)*comp(9)+r(14)*comp(12))*comp(1)
 	2  +drx(14,i)*comp(12))*comp(1)	  
 	  ENDDO
 	 
-c	  équation dcomp(10)	 
-c	  dcomp(10)=(r(10)*comp(9)-(r(11)+r(12))*comp(10))*comp(1) !N15
-
+c équation dcomp(10)	 
+c dcomp(10)=(r(10)*comp(9)-(r(11)+r(12))*comp(10))*comp(1) !N15
 	  jac(10,1)=r(10)*comp(9)-(r(11)+r(12))*comp(10)	!d /H1
 	  jac(10,9)=r(10)*comp(1)				!d /N14
 	  jac(10,10)=-(r(11)+r(12))*comp(1)			!d /N15
@@ -538,9 +527,8 @@ c	  dcomp(10)=(r(10)*comp(9)-(r(11)+r(12))*comp(10))*comp(1) !N15
 	1  +(drx(10,i)*comp(9)-(drx(11,i)+drx(12,i))*comp(10))*comp(1)
 	  ENDDO	  
 	 
-c	  équation dcomp(11)	 
-c	  dcomp(11)=(r(11)*comp(10)-r(13)*comp(11))*comp(1)	!O16
-
+c équation dcomp(11)	 
+c dcomp(11)=(r(11)*comp(10)-r(13)*comp(11))*comp(1)	!O16
 	  jac(11,1)=r(11)*comp(10)-r(13)*comp(11)		!d /H1
 	  jac(11,10)=r(11)*comp(1)				!d /N15
 	  jac(11,11)=-r(13)*comp(1)				!d /O16
@@ -550,9 +538,8 @@ c	  dcomp(11)=(r(11)*comp(10)-r(13)*comp(11))*comp(1)	!O16
 	1  +(drx(11,i)*comp(10)-drx(13,i)*comp(11))*comp(1)
 	  ENDDO
 	 	 
-c	  équation dcomp(12)
-c	  dcomp(12)=(r(13)*comp(11)-r(14)*comp(12))*comp(1)	!O17
-
+c équation dcomp(12)
+c dcomp(12)=(r(13)*comp(11)-r(14)*comp(12))*comp(1)	!O17
 	  jac(12,1)=r(13)*comp(11)-r(14)*comp(12)		!d /H1
 	  jac(12,11)=r(13)*comp(1)				!d /O16
 	  jac(12,12)=-r(14)*comp(1)				!d /O17
@@ -574,16 +561,14 @@ c	  dcomp(13)=-dcomp(13)/anuc(13) 	!conservation des baryons
 	  jac(13,j)=-jac(13,j)/anuc(13)
 	  ENDDO
 
-c	  unites de temps pour integration temporelle
-
+c unités de temps pour integration temporelle
 	  jac=jac*secon6
 
 	 ENDIF
 
 	 dcomp=dcomp*secon6
 
-c	 calcul de la production d'énergie nucléaire et dérivées
-
+c calcul de la production d'énergie nucléaire et dérivées
 	CASE(3)
 	
 	 epsilon(1:4)=0.d0 ; et=0.d0 ; ero=0.d0 ; ex=0.d0	 
@@ -591,8 +576,7 @@ c	 calcul de la production d'énergie nucléaire et dérivées
 	
 	 CALL rq_reac(comp,t,ro,r,drt,dro,drx,q,dqt,dqo,dqx,mue,dmuex)
 	 
-c	 mue : nombre d'electrons / mole /g = 1/poids mol. moy. par e-
-
+c mue : nombre d'electrons / mole /g = 1/poids mol. moy. par e-
 	 epsilon(2)=(q(1)*comp(1)+q(2)*comp(2)+q(5)*comp(5)+q(7)*comp(6))
 	1 *comp(1)+(q(3)*comp(3)+q(4)*comp(4))*comp(3)+q(6)*mue*comp(6)
 	 epsilon(3)=(q(8)*comp(7)+q(9)*comp(8)+q(10)*comp(9)+
@@ -643,8 +627,7 @@ c	 mue : nombre d'electrons / mole /g = 1/poids mol. moy. par e-
 	 
 	 ENDIF	!deriv
 
-c	 production de neutrinos
-
+c production de neutrinos
 	 CASE(4)
 	 IF(t >= t_inf)THEN
 	  CALL rq_reac(comp,t,ro,r,drt,dro,drx,q,dqt,dqo,dqx,mue,dmuex)

@@ -5,31 +5,26 @@ c****************************************************************
 	1 pt_rac,dptsdl,dptsdr,t_rac,dtsdl,dtsdr,
 	2 m_rac,dmsdl,dmsdr,p_rac,dpsdl,dpsdr,t_eff)
 
-c	routine public du module mod_atm
-c	restitution de l'atmosphère
+c routine public du module mod_atm
+c restitution de l'atmosphère
 
-c	modifs :
-c	04 07 01 : mise en place de rotation uniforme avec conservation
-c	du moment angulaire
-c	16 08 01 : F95
+c modifs :
+c 04 07 01 : mise en place de rotation uniforme avec conservation du moment
+c angulaire
+c 16 08 01 : F95
 
-c	pour la restitution de l'atmosphère on utilise des splines
-c	du même ordre que pour le modèle quasi statique m=m_qs et
-c	pour les équa. dfiff. r_atm=1
+c pour la restitution de l'atmosphère on utilise des splines
+c du même ordre que pour le modèle quasi statique m=m_qs et
+c pour les équa. dfiff. r_atm=1
 
-c	Auteur: P. Morel, Département J.D. Cassini, O.C.A.
-c	CESAM2k
-
-cYLD     YLD : Modifiée pour faire varier le tau_max dans le cas d'une loi
-c	T(tau) non radiative : septembre 2003
+c Auteur: P. Morel, Département J.D. Cassini, O.C.A., CESAM2k
 
 c entrées :
 c	list=.TRUE. : calcul réduit pour une liste
 c	r_rac : rayon au raccord
 c	l_rac : luminosité
 c	xchim composition chimique par gramme
-c	mstar: masse avec perte de masse
-c	wrot : vitesse angulaire solide
+c	list=.TRUE. : création des données pour une liste
 
 c sorties :
 c	pt_rac : Ptot au raccord avec l'enveloppe
@@ -39,7 +34,7 @@ c	p_rac : Pgaz au raccord avec l'enveloppe
 c	d*r, d*l : dérivées /r /l
 c	t_eff : température effective
 c	rstar : rayon de l'étoile
-c	pt_atm, t_atm, r_atm, m_atm, p_atm, dlpp_atm : Ptot, temperature,
+c	pt_atm, t_atm, r_atm, m_atm, p_atm, dlpp_atm : Ptot, témpérature,
 c	rayon, masse, Pgaz, dln Pgaz/dln Ptot 
 c	tau : profondeur optique	
 c	avec pression turbulente 8 inconnues 
@@ -89,25 +84,24 @@ c	WRITE(*,2000)l_rac,r_rac ; PAUSE'l_rac'
 	 ini=.FALSE.
 	 SELECT CASE(langue)
 	 CASE('english')
-	  WRITE(*,1006) ; WRITE(2,1006)
+	  WRITE(usl_atm,1006) ; WRITE(2,1006)
 1006	  FORMAT(/,'------------ATMOSPHERE (initialisation)-----------',/)	 
 	 CASE DEFAULT	 
-	  WRITE(*,6) ; WRITE(2,6)
+	  WRITE(usl_atm,6) ; WRITE(2,6)
 6	  FORMAT(/,'------------ATMOSPHERE (initialisation)-----------',/)
 	 END SELECT
 	 
 c les constantes ``splines'' pour l'intégration
-c	 par souci de cohérence ordre des splines est le même que celui de
-c	 l'équilibre quasi-statique
+c par souci de cohérence ordre des splines est le même que celui de
+c l'équilibre quasi-statique
 
-c	 ne_atm: nombre de variables
-c	 ms_atm: ordre des splines
-c	 r_qs: ordre des équa. diff.
-c	 ord_atm: ordre de l'interpolation
-c	 ncoll_atm: nombre de points de collocation
-c	 dim_atm: dimension de l'espace des splines
-c	 n23_atm: indice pour lequel T=Teff
-
+c ne_atm: nombre de variables
+c ms_atm: ordre des splines
+c r_qs: ordre des équa. diff.
+c ord_atm: ordre de l'interpolation
+c ncoll_atm: nombre de points de collocation
+c dim_atm: dimension de l'espace des splines
+c n23_atm: indice pour lequel T=Teff
 	 cte1=g*msol/rsol**2 ; cte2=lsol/pi/rsol**2/aradia/clight
 	 teff=(cte2*l_rac/r_rac**2)**0.25d0 ; grav=cte1*mstar/r_rac**2
 	 
@@ -119,9 +113,8 @@ c	 n23_atm: indice pour lequel T=Teff
 	 ms_atm=m_qs ; ord_atm=ms_atm+r_qs
 	 dim_atm=(n_atm-1)*ms_atm+r_qs ; n23_atm=NINT(3.d0/4.d0*n_atm)
 	 
-c	 reprise d'une atmosphère, test de cohérence
-c	 si incohérence on utilise un modèle interne
-
+c reprise d'une atmosphère, test de cohérence
+c si incohérence on utilise un modèle interne
 c	 PRINT*,rep_atm ; PAUSE'rep_atm1'
 
 	 IF(rep_atm)THEN 	 
@@ -168,19 +161,16 @@ c	  PRINT*,ok ; PAUSE'ici'
 	 ENDIF
 	  
 c reprise de l'atmosphère ou initialisation avec un modèle interne
-
 c 	 PRINT*,rep_atm ; PAUSE'rep_atm2'
 	 IF(rep_atm)THEN
 
-c	  appel fictif à T(tau) pour init. des delfim, delfip, etc.. 
-
+c appel fictif à T(tau) pour init. des delfim, delfip, etc.. 
 	  CALL tdetau(1.d0,6.d3,5.d4,bid,dtsdtau,dtsdteff,dtsdg,
 	1  ro_ext,dro_grav,dro_teff,f_tau,df_tau,d2f_tau)
 
-c	  avec une loi T(tau) non purement radiative tau_max est imposé
-
+c avec une loi T(tau) non purement radiative tau_max est imposé
 	  IF(.NOT.rad)THEN
-cYLD	   tau_max=MAX(tau_max,20.d0)
+	   tau_max=20.d0
 	   WRITE(2,1)tau_max,tau_min,n_atm,n23_atm
 	   WRITE(*,1)tau_max,tau_min,n_atm,n23_atm    
 	  ELSE
@@ -194,13 +184,11 @@ cYLD	   tau_max=MAX(tau_max,20.d0)
 	  ENDIF
 
 c recherche de tau23 où T=Teff
-
 	  teff=(cte2*l_rac/r_rac**2)**0.25d0 ; grav=cte1*mstar/r_rac**2
 	  CALL taueff(teff,grav,tau23)
 
-c	  changement de variable tau --> psi linéaire par morceaux 
-
-	  ltauf=log(tau_max) ; ltaue=log(tau_min) ; ltau23=log(tau23)
+c changement de variable tau --> psi linéaire par morceaux 
+	  ltauf=LOG(tau_max) ; ltaue=LOG(tau_min) ; ltau23=LOG(tau23)
 	  delfim=1.d0/(n23_atm-1) ; delfip=1.d0/(n23_atm-n_atm)
 
 	  ALLOCATE(fx(ne_atm),dfxdx(ne_atm))
@@ -215,10 +203,23 @@ c	  changement de variable tau --> psi linéaire par morceaux
 8	   FORMAT('init. atm. avec modèle interne pour Teff=',es10.3)
 	  END SELECT
 
-c	  valeurs initiales des pressions et profondeurs optiques
-
+c valeurs initiales des pressions et profondeurs optiques
 	  npt=60 ; ALLOCATE(bd(2,npt),to(npt))
 
+c profondeurs optiques	  
+	  to=(/
+	1  1.000D+02,8.917D+01,7.951D+01,7.090D+01,6.323D+01,5.638D+01,
+	1  5.027D+01,4.483D+01,3.998D+01,3.565D+01,3.179D+01,2.834D+01,
+	2  2.527D+01,2.254D+01,2.010D+01,1.792D+01,1.598D+01,1.425D+01,
+	3  1.271D+01,1.133D+01,1.010D+01,9.009D+00,8.034D+00,7.164D+00,
+	4  6.388D+00,5.696D+00,5.079D+00,4.529D+00,4.039D+00,3.602D+00,
+ 	5  3.212D+00,2.864D+00,2.554D+00,2.277D+00,2.031D+00,1.811D+00,
+ 	6  1.615D+00,1.440D+00,1.284D+00,1.145D+00,1.021D+00,9.103D-01,
+	7  8.117D-01,7.238D-01,6.454D-01,3.596D-01,2.004D-01,1.117D-01,
+	8  6.221D-02,3.467D-02,1.932D-02,1.076D-02,5.997D-03,3.341D-03,
+	9  1.862D-03,1.037D-03,5.781D-04,3.221D-04,1.795D-04,1.000D-04/)
+	
+c modèles internes
 	  IF(teff < 7000.d0 ) THEN
 	   bd(1,:)=(/
 	1  3.501D+05,3.426D+05,3.353D+05,3.284D+05,3.218D+05,3.154D+05,
@@ -230,19 +231,9 @@ c	  valeurs initiales des pressions et profondeurs optiques
 	6  1.746D+05,1.687D+05,1.624D+05,1.560D+05,1.493D+05,1.424D+05,
 	7  1.354D+05,1.285D+05,1.218D+05,9.094D+04,6.713D+04,4.924D+04,
 	8  3.597D+04,2.616D+04,1.895D+04,1.370D+04,9.919D+03,7.187D+03,
-	9  5.195D+03,3.739D+03,2.671D+03,1.877D+03,1.269D+03,7.785D+02/)      
-	   to=(/
-	1  1.000D+02,8.917D+01,7.951D+01,7.090D+01,6.323D+01,5.638D+01,
-	1  5.027D+01,4.483D+01,3.998D+01,3.565D+01,3.179D+01,2.834D+01,
-	2  2.527D+01,2.254D+01,2.010D+01,1.792D+01,1.598D+01,1.425D+01,
-	3  1.271D+01,1.133D+01,1.010D+01,9.009D+00,8.034D+00,7.164D+00,
-	4  6.388D+00,5.696D+00,5.079D+00,4.529D+00,4.039D+00,3.602D+00,
-	5  3.212D+00,2.864D+00,2.554D+00,2.277D+00,2.031D+00,1.811D+00,
-	6  1.615D+00,1.440D+00,1.284D+00,1.145D+00,1.021D+00,9.103D-01,
-	7  8.117D-01,7.238D-01,6.454D-01,3.596D-01,2.004D-01,1.117D-01,
-	8  6.221D-02,3.467D-02,1.932D-02,1.076D-02,5.997D-03,3.341D-03,
-	9  1.862D-03,1.037D-03,5.781D-04,3.221D-04,1.795D-04,1.000D-04/)
-          ELSE     
+	9  5.195D+03,3.739D+03,2.671D+03,1.877D+03,1.269D+03,7.785D+02/)
+
+          ELSEIF(teff < 12000.d0)THEN    
 	   bd(1,:)=(/
 	1  7.512D+04,6.740D+04,6.037D+04,5.397D+04,4.817D+04,4.295D+04,
 	1  3.828D+04,3.411D+04,3.039D+04,2.706D+04,2.408D+04,2.141D+04,
@@ -254,17 +245,20 @@ c	  valeurs initiales des pressions et profondeurs optiques
 	7  3.840D+03,3.785D+03,3.728D+03,3.401D+03,3.039D+03,2.692D+03,
 	8  2.407D+03,2.198D+03,2.059D+03,1.972D+03,1.920D+03,1.889D+03,
 	9  1.872D+03,1.862D+03,1.856D+03,1.853D+03,1.852D+03,1.851D+03/)
-	   to=(/
-	1  1.000D+02,8.917D+01,7.951D+01,7.090D+01,6.323D+01,5.638D+01,
-	1  5.027D+01,4.483D+01,3.998D+01,3.565D+01,3.179D+01,2.834D+01,
-	2  2.527D+01,2.254D+01,2.010D+01,1.792D+01,1.598D+01,1.425D+01,
-	3  1.271D+01,1.133D+01,1.010D+01,9.009D+00,8.034D+00,7.164D+00,
-	4  6.388D+00,5.696D+00,5.079D+00,4.529D+00,4.039D+00,3.602D+00,
- 	5  3.212D+00,2.864D+00,2.554D+00,2.277D+00,2.031D+00,1.811D+00,
- 	6  1.615D+00,1.440D+00,1.284D+00,1.145D+00,1.021D+00,9.103D-01,
-	7  8.117D-01,7.238D-01,6.454D-01,3.596D-01,2.004D-01,1.117D-01,
-	8  6.221D-02,3.467D-02,1.932D-02,1.076D-02,5.997D-03,3.341D-03,
-	9  1.862D-03,1.037D-03,5.781D-04,3.221D-04,1.795D-04,1.000D-04/)
+
+	   ELSE
+	    bd(1,:)=(/	
+	1   4.287D+05,3.792D+05,3.353D+05,2.964D+05,2.619D+05,2.313D+05,
+	2   2.043D+05,1.805D+05,1.596D+05,1.411D+05,1.249D+05,1.107D+05,
+	3   9.817D+04,8.725D+04,7.768D+04,6.934D+04,6.209D+04,5.581D+04,
+	4   5.037D+04,4.564D+04,4.155D+04,3.802D+04,3.495D+04,3.227D+04,
+	5   2.993D+04,2.786D+04,2.603D+04,2.440D+04,2.294D+04,2.162D+04,
+	6   2.043D+04,1.935D+04,1.838D+04,1.749D+04,1.669D+04,1.596D+04,
+	7   1.532D+04,1.474D+04,1.423D+04,1.379D+04,1.340D+04,1.306D+04,
+	8   1.276D+04,1.250D+04,1.228D+04,1.152D+04,1.115D+04,1.096D+04,
+	9   1.087D+04,1.082D+04,1.080D+04,1.078D+04,1.078D+04,1.077D+04,
+	1   1.077D+04,1.077D+04,1.077D+04,1.077D+04,1.077D+04,1.077D+04/)
+	
 	  ENDIF
 c	  bd(2,:) températures aux points tau=to
 
@@ -275,15 +269,13 @@ c	  bd(2,:) températures aux points tau=to
 c	  PRINT*,'teff, grav, températures initiales'
 c	  WRITE(*,2000)teff,grav ; WRITE(*,2000)bd(2,:) ; PAUSE'teff'
 
-c	  retournement et en ln
-
+c retournement et en ln
 	  bd(:,1:npt:+1)=bd(:,npt:1:-1) ; to(1:npt:+1)=to(npt:1:-1)
-	  bd=log(bd) ; to=log(to)
+	  bd=LOG(bd) ; to=LOG(to)
 
-c	  avec une loi T(tau) non purement radiative tau_max est imposé
-
-	  IF(.not.rad)THEN
-cYLD	   tau_max=MAX(tau_max,20.d0)
+c avec une loi T(tau) non purement radiative tau_max est imposé
+	  IF(.NOT.rad)THEN
+	   tau_max=20.d0
 	   SELECT CASE(langue)
 	   CASE('english')
 	    WRITE(2,1001)tau_max,tau_min,n_atm,n23_atm
@@ -344,17 +336,15 @@ cYLD	   tau_max=MAX(tau_max,20.d0)
 	   END SELECT
 	  ENDIF
 
-c	  recherche de tau23 ou T=Teff
-
+c recherche de tau23 ou T=Teff
 	  teff=(cte2*l_rac/r_rac**2)**0.25d0 ; grav=cte1*mstar/r_rac**2
 	  CALL taueff(teff,grav,tau23)
 	 
 c	  WRITE(*,2000)teff,grav,tau23,l_rac,r_rac
 c	  PRINT*,'initialisation lim_atm'
 
-c	  changement de variable tau --> psi linéaire par morceaux 
-
-	  ltauf=log(tau_max) ; ltaue=log(tau_min) ; ltau23=log(tau23)
+c changement de variable tau --> psi linéaire par morceaux 
+	  ltauf=LOG(tau_max) ; ltaue=LOG(tau_min) ; ltau23=LOG(tau23)
 	  delfim=1.d0/(n23_atm-1) ; delfip=1.d0/(n23_atm-n_atm)
 
 	  ALLOCATE(ltau(n_atm))
@@ -371,16 +361,14 @@ c	  PRINT*,'tau_max,tau23,tau_min' ; WRITE(*,2000)tau_max,tau23,tau_min
 c	  PRINT*,'ln tau' ; WRITE(*,2000)ltau ; PRINT*,'tau'
 c	  WRITE(*,2000)EXP(ltau) ; PRINT*,'les tau lim_atm'
 
-c	  projection des pressions et temperatures sur une base de
-c	  B-splines d'ordre 2 en ln to
-
+c projection des pressions et temperatures sur une base de
+c B-splines d'ordre 2 en ln to
 	  ALLOCATE(tot(npt+2),fx(ne_atm),dfxdx(ne_atm))
 	  CALL bsp1dn(2,bd,to,tot,npt,2,knot0,.FALSE.,to(1),ll,fx,dfxdx)
  	  
 c	  PRINT*,'projection de bd'
 
-c	  formation du vecteur solution initiale sur les ln to
-
+c formation du vecteur solution initiale sur les ln to
 	  ALLOCATE(b(ne_atm,n_atm))
 	  DO i=1,n_atm
 	   CALL bsp1dn(2,bd,to,tot,npt,2,knot0,.TRUE.,ltau(i),ll,fx,dfxdx)
@@ -391,44 +379,39 @@ c	  formation du vecteur solution initiale sur les ln to
 	  ENDDO
 c	  PRINT*,'les B'
 
-c	  projection du vecteur solution initiale sur une base de
-c	  B-splines d'ordre 2 en ltau
-c	  ltau étant décroissant on utilise mltau=-ltau
-
+c projection du vecteur solution initiale sur une base de
+c B-splines d'ordre 2 en ltau
+c ltau étant décroissant on utilise mltau=-ltau
 	  ALLOCATE(mltau(n_atm),mltaut(n_atm+2)) ; mltau=-ltau
 
 	  CALL bsp1dn(ne_atm,b,mltau,mltaut,n_atm,2,knot0,.FALSE.,mltau(1),
-	1  ll,fx,dfxdx)
+	1 ll,fx,dfxdx)
 	
 	  DO i=1,ne_atm
 	   CALL bsp1dn(ne_atm,b,mltau,mltaut,n_atm,2,knot0,.FALSE.,mltau(i),
-	1    ll,fx,dfxdx)
-c	     WRITE(*,2000)mltau(i),fx
+	1  ll,fx,dfxdx)
+c	   WRITE(*,2000)mltau(i),fx
 	  ENDDO
 c	  PRINT*,'b sur ltau'
 
-c	  abscisses d'intégration
-	 
+c abscisses d'intégration 
 	  ALLOCATE(x_atm(n_atm),x_atm_t(n_atm),xt_atm(dim_atm+ord_atm),
-	1   xt_atm_t(dim_atm+ord_atm))
+	1 xt_atm_t(dim_atm+ord_atm))
 	  x_atm=(/ (i, i=1,n_atm) /)
 
-c	  projection du vecteur solution initiale sur une base de
-c	  B-splines d'ordre 2 en x_atm (mltaut:VT)
-
+c projection du vecteur solution initiale sur une base de
+c B-splines d'ordre 2 en x_atm (mltaut:VT)
 	  CALL bsp1dn(ne_atm,b,x_atm,mltaut,n_atm,2,knot0,.FALSE.,x_atm(1),
-	1   ll,fx,dfxdx)
+	1 ll,fx,dfxdx)
 c	  PRINT*,'b sur x_atm'
 
-c	  vecteur nodal en ltau pour l'intégration
-
+c vecteur nodal en ltau pour l'intégration
 	  CALL noedif(x_atm,n_atm,ms_atm,r_qs,xt_atm,knot_atm)
           IF(no_croiss)THEN
            PRINT*,'Arrêt 5 dans lim_atm' ; STOP
 	  ENDIF
 
-c	  on place la solution initiale dans la base de x_atm, b-->bp_atm
-
+c on place la solution initiale dans la base de x_atm, b-->bp_atm
 	  ALLOCATE(bp_atm(ne_atm,dim_atm),bp_atm_t(ne_atm,dim_atm))
 	  CALL newspl(ne_atm,mltau,mltaut,knot0,2,xt_atm,knot_atm,ord_atm,
 	1  b,bp_atm)
@@ -439,30 +422,27 @@ c	   WRITE(*,2000)x_atm(i),fx
 c	  ENDDO
 c	  PAUSE'bp_atm'
 
-c	  suppression des tableaux de travail
-
+c suppression des tableaux de travail
 	  DEALLOCATE(bd,b,to,tot,ltau,mltau,mltaut)
 	 
 	 ENDIF
 
-c	 allocations à n_atm des tableaux pt_atm etc..
-
+c allocations à n_atm des tableaux pt_atm etc..
 	 ALLOCATE(pt_atm(n_atm),t_atm(n_atm),m_atm(n_atm),tau(n_atm),
 	1 p_atm(n_atm),r_atm(n_atm),dlpp_atm(n_atm))
 
 	ENDIF
 
-c	intégration
-
+c intégration
 	IF(.NOT.ini)THEN
 	 PRINT*
 	 SELECT CASE(langue)
 	 CASE('english')
-	  WRITE(*,1011)l_rac,r_rac,teff   	   
+	  WRITE(usl_atm,1011)l_rac,r_rac,teff   	   
 1011	  FORMAT('-----Restauration of the atmosphère (begin)-----------'
 	1 ,/,'Lrac=',es10.3,', Rrac=',es10.3,', Teff='es10.3)	 
 	 CASE DEFAULT
-	  WRITE(*,11)l_rac,r_rac,teff   	   
+	  WRITE(usl_atm,11)l_rac,r_rac,teff   	   
 11	  FORMAT('-----Restitution de l''atmosphère (début)-----------',
 	1 /,'Lrac=',es10.3,', Rrac=',es10.3,', Teff='es10.3)
 	 END SELECT
@@ -508,9 +488,9 @@ c	 PAUSE'lim_atm'
 	ELSE        !dérivées / r et l
 	 SELECT CASE(langue)
 	 CASE('english')
-	  PRINT*,'numerical partial derivatives / r et l'	 
+	  WRITE(usl_atm,*)'numerical partial derivatives / r and l'	 
 	 CASE DEFAULT	   
-	  PRINT*,'dérivées partielles numériques / r et l'
+	  WRITE(usl_atm,*)'dérivées partielles numériques / r et l'
 	 END SELECT	 
 	 rd=r_rac*unpdx ;  dr=rd-r_rac
 	 CALL coll_atm(rd,l_rac,xchim,ord_atm,knot_atm,dim_atm,ms_atm)     
@@ -546,10 +526,10 @@ c	IF(.TRUE.)THEN
 	ENDIF
 	SELECT CASE(langue)
 	CASE('english')
-	 WRITE(*,1005)
+	 WRITE(usl_atm,1005)
 1005	 FORMAT('------- Restauration of the atmosphere (end) ------')	
 	CASE DEFAULT
-	 WRITE(*,5)
+	 WRITE(usl_atm,5)
 5	 FORMAT('------- Restitution de l''atmosphère (fin) ------')
  	END SELECT
 		

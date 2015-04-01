@@ -7,7 +7,6 @@ c******************************************************************
 c	routine private du module mod_nuc
 
 c	réactions thermonucléaires selon GONG
-c	avec vecteur de comp. chim. généralisée
 
 c	Auteur: P. Morel, Département J.D. Cassini, O.C.A.
 c	CESAM2k
@@ -32,11 +31,10 @@ c	pour les réactions designees par le symbole (e pour electron +)
 
 c----------------------------------------------------------------
 
-	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, ihe4, lvent,
-	1 nchim, nom_elem, nucleo, rot_solid, secon6, t_inf, t_sup,
+	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, fmin_abon, ihe4, i_ex,
+	1 nchim, nom_elem, nucleo, secon6, t_inf, t_sup,
 	2 x0, zi
 	USE mod_kind
-	USE mod_variables, ONLY : wrot
 
 	IMPLICIT NONE
 	
@@ -64,16 +62,15 @@ c-----------------------------------------------------------------
 
 	IF(init)THEN
 	 init=.FALSE. ; cte1=-re*a11*secon6/2.d0*ah
-	 cte6=qe*a11/2.d0/amu*ah**2 ; lvent=.FALSE.
+	 cte6=qe*a11/2.d0/amu*ah**2 ; l_vent=.FALSE. ; l_planet=.FALSE.
 	ENDIF
 
 	SELECT CASE(fait)
 	CASE(0)		!initialisation, nombre d'éléments
 	
-c	 définition de nchim: nombre d'éléments chimiques dont on
-c	 calcule l'abondance: H1
-
-	 nchim=1 ; nreac=1 ; t_inf=1.d6 ; t_sup=20.d6 ; ihe4=-100
+c définition de nchim: nombre d'éléments chimiques dont on
+c calcule l'abondance: H1
+	 nchim=1 ; nreac=1 ; t_inf=1.d6 ; t_sup=20.d6 ; ihe4=-100 ; i_ex=-100
 
 	 ALLOCATE(ab_ini(nchim),ab_min(nchim),nom_elem(nchim),
 	1 nucleo(nchim),zi(nchim))
@@ -81,7 +78,7 @@ c	 calcule l'abondance: H1
 	 nom_elem(1)=' H1 ' ; nucleo(1)=ah ; zi(1)=1.d0	 
 
 	CASE(1)		!initialisation des abondances initiales
-	 ab_ini(1)=x0 ; ab_min=ab_ini*1.d-2 ; comp(1)=x0/nucleo(1)
+	 ab_ini(1)=x0 ; ab_min=ab_ini*fmin_abon ; comp(1)=x0/nucleo(1)
 	
 	 WRITE(2,*)'Réaction thermonucléaire du cycle PP simplifie (GONG)'
 	 WRITE(2,*)' ' ; WRITE(2,*)'nombre de réactions: ',nreac
@@ -101,6 +98,9 @@ c	 calcule l'abondance: H1
 	 WRITE(*,2)ab_min(1:nchim) ; WRITE(*,*)' '
 	 WRITE(*,*)'pour l''évolution temporelle, test de précision sur H'
 	 WRITE(*,*)' '
+	 
+c par mole	 
+	 ab_min=ab_min/nucleo
 	 	 
 	CASE(2)
 	 IF(t < t_inf)THEN		!si t<t_inf

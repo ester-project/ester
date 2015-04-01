@@ -3,26 +3,25 @@ c************************************************************************
 
 	SUBROUTINE eq_atm(fait,li,xchim,cx,y,be,ae,r_rac,l_rac,xcoll_atm)
 
-c	routine private	du module mod_atm
+c routine private	du module mod_atm
 
-c	équations de l'atmosphère pour la méthode de collocation
-c	le rayon, la masse sont mesures en tau23 fixe au point n23_atm
-c	correction pour assurer la continuite du gradient au point
-c	de raccord avec l'enveloppe
+c équations de l'atmosphère pour la méthode de collocation
+c le rayon, la masse sont mesures en tau23 fixe au point n23_atm
+c correction pour assurer la continuite du gradient au point
+c de raccord avec l'enveloppe
 	 
-c	avec pression turbulente 8 inconnues 
-c	sans pression turbulente 7 inconnues, Ptot=Pgaz
+c avec pression turbulente 8 inconnues 
+c sans pression turbulente 7 inconnues, Ptot=Pgaz
 
-c	modifs :
-c	19 11 99 : suppression de nh1, nhe1, nhe2, lamb
-c	04 07 01 : mise en place de rotation uniforme avec conservation
-c		   du moment angulaire
-c	16 08 01 : F95
+c modifs :
+c 19 11 99 : suppression de nh1, nhe1, nhe2, lamb
+c 04 07 01 : mise en place de rotation uniforme avec conservation du moment
+c angulaire
+c 16 08 01 : F95
 
-c	Auteur: P. Morel, Département J.D. Cassini, O.C.A.
-c	CESAM2k
+c Auteur: P. Morel, Département J.D. Cassini, O.C.A., CESAM2k
 
-c entree:
+c entrées:
 c	fait=1 : point courant	
 c	     2 : limite
 c	mstar: masse totale, temps t+dt, avec perte de masse
@@ -34,7 +33,7 @@ c	r_rac :rayon au fond de l'atmosphère
 c	l_rac : luminosité=cte
 c	y(ne_atm,0), y(ne_atm,1) : variables, dérivées
 
-c sortie
+c sorties
 c	be, ae : équations et dérivées
 
 c-----------------------------------------------------------------------
@@ -43,7 +42,6 @@ c-----------------------------------------------------------------------
 	1 lim_ro, lsol, msol, pi, pturb, rsol
 	USE mod_etat, ONLY : etat	
 	USE mod_kind
-	USE mod_numerique, ONLY : pause
 	USE mod_opa, ONLY : opa
 	USE mod_variables, ONLY: dim_rot, mstar, rota, wrot
 	
@@ -145,27 +143,25 @@ c vitesse angulaire
 	 SELECT CASE(Krot)
 	 CASE(0,1,2)
 	  w=wrot
-	 CASE(3)
+	 CASE(3,4,5)
 	  w=rota(1,dim_rot)
 	 END SELECT
 	 w=w**2
 	 
 c accélération centrifuge	 
-	 acc_c=rsol*y(4,0)*w
+	 acc_c=cte4*y(4,0)*w
 	 
 c gravité effective	 
 	 grav=grav-acc_c
 
 c la fonction g(tau) et dérivées		
 	 CALL tdetau(tau,teff,grav,tb,dtsdtau,dtsdteff,dtsdg,
-	1  ro_ext,dro_grav,dro_teff,f_tau,df_tau,d2f_tau)	
+	1 ro_ext,dro_grav,dro_teff,f_tau,df_tau,d2f_tau)	
 
 c	 WRITE(*,2000)tau,l_rac,y(4,0),teff,tb,f_tau,df_tau,d2f_tau
 c	 PAUSE'après t(tau)'
 
-c	 les gradients
-c	 der permet d'éliminer dln Pgaz/dln Ptot
-
+c les gradients, der permet d'éliminer dln Pgaz/dln Ptot
 	 IF(pturb .and. der)THEN
 	  dlpp=y(Ipgt,1)/y(1,1)		!dlpp=dln Pgaz/dln Ptot
 	  dlppdpt=-dlpp/y(1,1)		!der dlpp /dln Ptot
@@ -218,8 +214,7 @@ c	 der permet d'éliminer dln Pgaz/dln Ptot
 	 deltap=deltap*pgn/delta	!der delta /ln Pgas à delta près
 	 deltat=deltat*trn/delta	!der delta /ln T à delta près
 
-c	 Definition de la fonction fi
-
+c Definition de la fonction fi
          IF(xcoll_atm(cx) <= n23_atm) THEN
           delfi=(y(6,0)-ltauf)*delfim  
           ddelfi=delfim   !dérivée fi /y(6,0)
@@ -419,7 +414,7 @@ c	   Omega
 	   SELECT CASE(Krot)
 	   CASE(0,1,2)
 	    w=wrot
-	   CASE(3)
+	   CASE(3,4,5)
 	    w=rota(1,dim_rot)	 
 	   END SELECT
 	   w=w**2 
@@ -448,7 +443,7 @@ c	   la fonction f(tau)
 	
 c	   WRITE(*,2000)dgradpt,dgradp,dgradt,dgradr,dgradrs,dgradm,dgradtau,dgradlpp
 c	   WRITE(*,2000)dgampt,dgamp,dgamt,dgamr,dgamrs,dgamm,dgamtau,dgamlpp
-c	   CALL  pause('après les grad')
+c	   PAUSE'après les grad'
 
 c	   Définition de la fonction fi
 
@@ -499,7 +494,7 @@ c	   dy2=yb(1,1)*grad ; dy2=dy1*grad ; bes(2)=yb(2,1)-dy2
 	   PRINT*
 	   i=i+1
 	  ENDDO	!i
-c	  PAUSE('limite 1')
+c	  PAUSE'limite 1'
 	  deriv=.FALSE.
 	  DEALLOCATE(bes,dern,yb)
 	 ENDIF
@@ -543,7 +538,7 @@ c	  deriv=.TRUE.
 	    vt=yb(2,0)-log(tb) ; yb(i,0)=stor0
 	    PRINT*,'dérivée',i ; WRITE(*,2000)(vt-be(1))/dstor,ae(1,i,0)
 	   ENDDO
-	   CALL pause('limite 2') ; DEALLOCATE(yb)
+	   PAUSE'limite 2' ; DEALLOCATE(yb)
 	  ENDIF
 
 	 CASE(3) 	!tau=tau*, q=n23_atm, T=Teff
@@ -567,7 +562,7 @@ c	  deriv=.TRUE.
 	    yb(i,0)=stor0 ; PRINT*,'dérivée',i
 	    WRITE(*,2000)(vt-be(1))/dstor,ae(1,i,0)
 	   ENDDO
-	   CALL pause('limite 3')
+	   PAUSE'limite 3'
 	   DEALLOCATE(yb)
 	  ENDIF
 
@@ -636,15 +631,15 @@ c	   deriv=.TRUE.
 	     ENDIF
              trn=EXP(yb(2,0))
              CALL etat(pgn,trn,Lxchim,.FALSE.,
-	1      ro,drop,drot,drox,u,dup,dut,dux,
-	2      delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
-	3      gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1)
+	1    ro,drop,drot,drox,u,dup,dut,dux,
+	2    delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
+	3    gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1)
 	     vt=ro-ro_ext                         !ro(n)=ro_ext
 
              yb(i,0)=stor0
 	     PRINT*,'dérivée',i ; WRITE(*,2000)(vt-be(1))/dstor,ae(1,i,0)
 	    ENDDO
-c	    CALL pause('limite 7-1')
+c	    PAUSE'limite 7-1'
 	    DEALLOCATE(yb)
 	   ENDIF
 	  
@@ -658,9 +653,9 @@ c	    CALL pause('limite 7-1')
 	    pgn=prn
 	   ENDIF
 	   CALL etat(pgn,trn,Lxchim,.FALSE.,
-	1    ro,drop,drot,drox,u,dup,dut,dux,
-	2    delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
-	3    gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1)
+	1  ro,drop,drot,drox,u,dup,dut,dux,
+	2  delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
+	3  gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1)
 	   CALL opa(Lxchim,trn,ro,kap,dkapt,dkapro,dkapx)
 	   dkapp=drop*dkapro*pgn/kap	!d kap/d ln p à kap près
 	   dkapt=(drot*dkapro+dkapt)*trn/kap	!d kap/d ln t à kap près
@@ -693,14 +688,14 @@ c	   deriv=.TRUE.
 	      pgn=prn
 	     ENDIF
              CALL etat(pgn,trn,Lxchim,.FALSE.,
-	1      ro,drop,drot,drox,u,dup,dut,dux,
-	2      delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
-	3      gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1)
+	1    ro,drop,drot,drox,u,dup,dut,dux,
+	2    delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
+	3    gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1)
 	     CALL opa(Lxchim,trn,ro,kap,dkapt,dkapro,dkapx)
 	     dy1=grav/kap*tau_min ; vt=prn-dy1 ; yb(i,0)=stor0
 	     PRINT*,'dérivée',i ; WRITE(*,2000)(vt-be(1))/dstor,ae(1,i,0)
 	    ENDDO
-	    CALL pause('limite 7-2')
+	    PAUSE'limite 7-2'
 	    DEALLOCATE(yb)
 	   ENDIF
 	  ENDIF		!lim_ro	  

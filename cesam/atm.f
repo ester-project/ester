@@ -35,7 +35,7 @@ c	CESAM2k
 
 c--------------------------------------------------------------------
 
-	USE mod_donnees, only : nom_atm
+	USE mod_donnees, ONLY : baratine, nom_atm, nom_fich2
 	USE mod_kind
 
 	IMPLICIT NONE
@@ -46,7 +46,23 @@ c--------------------------------------------------------------------
 	REAL (kind=dp), INTENT(out) :: pt_rac, dptsdl, dptsdr, t_rac,
 	1 dtsdl, dtsdr, m_rac, dmsdl, dmsdr, p_rac, dpsdl, dpsdr, t_eff
 
+	LOGICAL, SAVE :: init=.TRUE.
+
 c-------------------------------------------------------------
+
+	IF(init)THEN
+	 init=.FALSE.
+	 
+c baratine=.FALSE. permet de dérouter sur le fichier mon_modèle_102 les
+c informations concernant le déroulement des calculs pour l'atmosphère	
+	 IF(baratine)THEN
+	  usl_atm=6
+	 ELSE	  	 
+	  usl_atm=102
+	  OPEN(unit=102,form='formatted',status='unknown',!access='append',
+	1 file=TRIM(nom_fich2)//'_atm')
+	 ENDIF
+	ENDIF
 
 	SELECT CASE(nom_atm)
 	CASE('lim_gong1')

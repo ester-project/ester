@@ -7,13 +7,12 @@ c****************************************************************
 	3 gam,dgamk,dgamgr,dgamdel,dgamcp,dgamro,
 	4 dgamhp,dgamtaur,dgamrad,dgamad)
 
-c	routine private du module mod_conv
+c routine private du module mod_conv
 
-c	calcul du gradient convectif selon Canuto Mazitelli ApJ 370, 295, 1991
-c	la longueur de mélange est égale à la distance au sommet de la ZC
+c calcul du gradient convectif selon Canuto Mazitelli ApJ 370, 295, 1991
+c la longueur de mélange est égale à la distance au sommet de la ZC
 
-c	Auteur: P.Morel, Département J.D. Cassini, O.C.A.
-c	CESAM2k
+c Auteur: P.Morel, Département J.D. Cassini, O.C.A., CESAM2k
 
 c entrées :
 c	krad : conductivité radiative 4 ac T**3 / 3 kap ro
@@ -76,10 +75,9 @@ c--------------------------------------------------------------------
 	2 'égale à la distance au sommet de la ZC')
 	ENDIF
 	
-c	le point de calcul est au delà de R*
-c	ce cas se présente pour le point courant ZC d'atmosphère lors de
-c	l'initialisation car R* = Rrac = cte, on utilise alors conv_cm
-	
+c le point de calcul est au delà de R*
+c ce cas se présente pour le point courant ZC d'atmosphère lors de
+c l'initialisation car R* = Rrac = cte, on utilise alors conv_cm	
 	IF(r > r_zc_conv(if_conv))THEN
 	 grad=gradrad ; dgradrad=1.d0 ; gam=0.d0
 	 dgradk=0.d0 ; dgradgr=0.d0 ; dgradel=0.d0 ; dgradcp=0.d0
@@ -90,12 +88,10 @@ c	l'initialisation car R* = Rrac = cte, on utilise alors conv_cm
 	 RETURN
 	ENDIF
 		
-c	détermination de la longueur de mélange : distance au sommet de
-c	la ZC.
-c	r_zc_conv(ifin_conv) est parfois la limite externe de l'enveloppe
-c	et non pas R*, rayon bolomètrique de l'étoile qui se trouve dans
-c	l'atmosphère
-
+c détermination de la longueur de mélange : distance au sommet de la ZC.
+c r_zc_conv(ifin_conv) est parfois la limite externe de l'enveloppe
+c et non pas R*, rayon bolomètrique de l'étoile qui se trouve dans
+c l'atmosphère
 	B1: DO i=id_conv,if_conv,2
 	 IF(r >= r_zc_conv(i) .AND. r <= r_zc_conv(i+1))THEN
 	  l0=r_zc_conv(i+1)-r
@@ -111,13 +107,11 @@ c	  WRITE(*,2000)r_zc_conv(i),r,r_zc_conv(i+1)
 	a=b**2          !c'est le 4a**2 de (5CM)
 c	WRITE(*,2000)l0,l,hp,ki,b,a ; PAUSE'l0, l, Hp, ki, b ,a'
 
-c	initialisations
-
+c initialisations
 	grad=gradad*1.1d0 ; iter=0
 
-c	Newton-Raphson "d" signifie dérivée/ grad 
-c	si phi=0, grad=grad_rad cf. eq. 63 de CM. (cas où l est petit) 
-
+c Newton-Raphson "d" signifie dérivée/ grad 
+c si phi=0, grad=grad_rad cf. eq. 63 de CM. (cas où l est petit) 
 	B2: DO
 	 iter=iter+1
 	 IF(iter > iter_max)THEN
@@ -138,7 +132,7 @@ c	si phi=0, grad=grad_rad cf. eq. 63 de CM. (cas où l est petit)
 	 da2s=a2*dsig ; a2s1=1.d0+a2s ; a2sn=a2s1**n
 	 da2sn=n*a2sn/a2s1*da2s ; phi=a1*sig**m*(a2sn-1.d0)**p
 
-c	si phi=0, grad=grad_rad cf. eq. 63 de CM. (cas où l est petit) 
+c si phi=0, grad=grad_rad cf. eq. 63 de CM. (cas où l est petit) 
 	 IF(phi <= 0.d0)THEN
 c	  PRINT*,'cas phi=0' ; WRITE(*,2000)phi
 	  grad=gradrad ; dgradrad=1.d0 ; gam=0.d0

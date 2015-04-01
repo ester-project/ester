@@ -94,9 +94,9 @@ c	Li6 : 17
 
 c----------------------------------------------------------------
 
-	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, ife56, ihe4,
-	1 langue, nchim, nom_elem, nom_xheavy, nucleo,
-	2 rot_solid, secon6, t_inf, x0, y0, zi, z0
+	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, fmin_abon, ife56,
+	1 ihe4, ili7, i_ex, langue, nchim, nom_elem, nom_xheavy, nucleo,
+	2 secon6, t_inf, x0, y0, zi, z0
 	USE mod_kind
 	USE mod_numerique, ONLY : gauss_band
 	
@@ -139,7 +139,7 @@ c	 définition de nchim: nombre d'éléments chimiques dont on
 c	 calcule l'abondance H1, H2, He3, He4, Li7, Be7, C12, C13,
 c	 N14, N15, O16, O17, Be9, Ex, B11, Fe56, Li6
 
-	 nchim=17
+	 nchim=17 ; ili7=5
 
 c	 appel d'initialisation pour tabulation des réactions nucléaires
 c	 allocations fictives
@@ -160,8 +160,7 @@ c	 dans Z rapports en nombre
 
 	 CALL abon_ini	 
 	 
-c	 Ex : élément fictif moyenne des éléments # Li + Be + CNO + B + Fe
-	 
+c Ex : élément fictif moyenne des éléments # Li + Be + CNO + B + Fe 
 	 charge_ex=0.d0 ; mass_ex=0.d0 ; sum_a=0.d0
 	 b1: DO i=3,nelem_ini		!à partir de Li
 	  IF(elem(i) == 'Li')CYCLE B1
@@ -179,9 +178,10 @@ c	 Ex : élément fictif moyenne des éléments # Li + Be + CNO + B + Fe
 10	 FORMAT(i2)
 
 c élément fictif
+	 i_ex=14		!indice de l'élément chimique reliquat
 	 nucleo(14)=mass_ex	!nucleo de l'élément chimique reliquat
 	 zi(14)=charge_ex	!charge de l'élément chimique reliquat
-       i = nint(charge_ex)
+	 i=nint(charge_ex)
 	 nom_elem(14)=elem(i)//text !nom elem. chim. rel
  	 SELECT CASE(langue)	  
 	 CASE('english')	
@@ -289,19 +289,17 @@ c abondances initiales et abondances négligeables
 		 
 	 comp(1:nchim)=max(1.d-29,b(1,1:nchim))
 	 ab_ini=comp*nucleo		 
-	 ab_min=ab_ini*1.d-2	 
+	 ab_min=ab_ini*fmin_abon ; ab_min(6)=1.d-14	!Be7 
 
 c nombre/volume des métaux dans Z, indice de Fe56
 		
 	 nbz=SUM(comp(ihe4+1:nchim)) ; ife56=16
 	 
 c abondances en DeX, H=12
-
 	 ALLOCATE(comp_dex(nchim))
 	 comp_dex=12.d0+LOG10(comp/comp(1))
 	 	
-c écritures
-		
+c écritures		
 	 WRITE(2,2) ; WRITE(*,2) 
 2	 FORMAT(/,'Réactions thermonucléaires des cycles PP, CNO',/)
 	 WRITE(2,3)nreac ; WRITE(*,3)nreac 
@@ -514,7 +512,7 @@ c	1 +r(4)*comp(4))*comp(3)+r(16)*comp(17)*comp(1)		!He3
 
 	  jac(3,1)=r(2)*comp(2)+r(16)*comp(17)			!d /H1
 	  jac(3,2)=r(2)*comp(1)					!d /H2
-	  jac(3,3)=-2.d0*r(3)*comp(3)-r(4)*comp(4)		!d /He3
+	  jac(3,3)=-4.d0*r(3)*comp(3)-r(4)*comp(4)		!d /He3
 	  jac(3,4)=-r(4)*comp(3)				!d /He4
 	  jac(3,17)=r(16)*comp(1)				!d /Li6	  
 	 

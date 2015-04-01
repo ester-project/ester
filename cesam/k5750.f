@@ -4,7 +4,7 @@ c****************************************************************
 	SUBROUTINE k5750(tau,teff,t,dtsdtau,dtsdteff,dtsdg,
 	1 ro_ext,dro_grav,dro_teff,f_tau,df_tau,d2f_tau)
 
-c	routine private du module mod_tdetau
+c	routine private du module mod_atm
 
 c	loi t(tau) de C van Veer issue du modèle Kurucz 5750, 4.47, X=.7, Z=.02
 c	mis sous la forme t=Teff(3/4(tau+q(tau)))**1/4, l/Hp=1.78
@@ -14,7 +14,6 @@ c	Auteur: P. Morel, Département J.D. Cassini, O.C.A.
 c entrées :
 c	tau : profondeur optique Rosseland
 c	teff : température effective
-c	grav : gravité
 
 c sorties :
 c	t : température
@@ -115,7 +114,7 @@ c---------------------------------------------------------------------
          ENDIF
 	 rad=.FALSE. ; tau_min=1.d-4
 	 WRITE(*,1)tau_min,ro_ext0 ; WRITE(2,1)tau_min,ro_ext0
-1	 FORMAT(/,'loi t(tau,teff,grav), k5750, non purement radiative',/,
+1	 FORMAT(/,'loi t(tau,teff), k5750, non purement radiative',/,
 	1 'tau_min=',es10.3,' ro_ext=',es10.3,/)
 	ENDIF
 

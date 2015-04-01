@@ -36,7 +36,8 @@ c     dg_rad(i,j) : dérivée de g_rad(i) / ion j
 c--------------------------------------------------------------
 
       USE mod_donnees, ONLY : amu, ap, aradia, clight, echarg,
-     1 hpl, kbol, lsol, me, nchim, nom_elem, nucleo, pi, rsol, zi
+     1 hpl, kbol, lsol, me, nchim, nom_chemin, nom_elem, nucleo,
+     2 pi, rsol, zi
       USE mod_kind
       USE mod_numerique, ONLY : bsp1dn, no_croiss
       USE mod_variables, ONLY : mstar
@@ -70,7 +71,6 @@ c--------------------------------------------------------------
 
       CHARACTER (len=4), DIMENSION(:,:), ALLOCATABLE :: listis
       CHARACTER (len=4), DIMENSION(:), ALLOCATABLE :: tampon
-      CHARACTER (len=80) :: nom_chemin = "/data1/sdeheuve/local/src/cesam2k_v1.1.8_ESTA/SUN_STAR_DATA/"
       CHARACTER (len=80), DIMENSION(:), ALLOCATABLE :: list
 
 c-------------------------------------------------------------------- 
@@ -110,7 +110,7 @@ c      nombre MAX. d'ions
        ENDDO
        mz=mz+1 ; nbf=2*nchim*mz !nombre de fonctions phi, psi2
 
-c      Tableau des isotopes de cESAM, matrice (isotops) du genre:
+c      Tableau des isotopes de CESAM, matrice (isotops) du genre:
 
 c             H1   He3  He4  c12  c13  N14  N15  O16  O17  Ex
 c      H1     1    0    0    0    0    0    0    0    0    0

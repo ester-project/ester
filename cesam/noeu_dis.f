@@ -3,24 +3,23 @@ c**********************************************************************
 
 	SUBROUTINE noeu_dis(eps,id,knot,m,nd,nx,x,xt)	
 	
-c	subroutine private du module mod_numerique
+c subroutine private du module mod_numerique
 
-c	détermine la séquence de noeuds de raccord xt(knot)
-c	pour une interpolation "optimale"
-c	en tenant compte de discontinuités
-c	identique à noein s'il n'y a pas de discontinuité i.e. nd=0
+c détermine la séquence de noeuds de raccord xt(knot)
+c pour une interpolation "optimale"
+c en tenant compte de discontinuités
+c identique à noein s'il n'y a pas de discontinuité i.e. nd=0
 
-c	par B-splines d'ordre m sur la suite strictement
-c	croissante x de n points de données, cf. de Boor p.219 formule (10)
-c	aux limites le polynome d'interpolation s'appuie sur m points
-c	de table
+c par B-splines d'ordre m sur la suite strictement
+c croissante x de n points de données, cf. de Boor p.219 formule (10)
+c aux limites le polynome d'interpolation s'appuie sur m points de table
 
-c	Auteur: P.Morel, Département J.D. Cassini, O.C.A.,
-c	version: 06 06 03
-c	CESAM2k
+c Auteur: P.Morel, Département J.D. Cassini, O.C.A., version: 06 06 03
+c CESAM2k
 
 c entrees :
-c	eps : écart à droite, parameter définit avant l'appel à bsp_dis
+c	eps : pour petits écarts, parameter définit avant l'appel à bsp_dis
+c	eps=0.0001, défini dans mod_evol
 c	x : abscisses strictement croissantes
 c	nx : nombre de points
 c	id(0:nd+1) : indice des discon. avec, en sortie id(0)=1, id(nd+1)=n
@@ -40,7 +39,7 @@ c-------------------------------------------------------------------
 	REAL (kind=dp), INTENT(in), DIMENSION(:) :: x
 	REAL (kind=dp), INTENT(in) :: eps
 	INTEGER, INTENT(in) :: m, nd, nx
-	INTEGER, INTENT(inout), DIMENSION(0:) :: id	
+	INTEGER, INTENT(inout), DIMENSION(0:nd+1) :: id	
 	REAL (kind=dp), INTENT(inout), DIMENSION(:) :: xt
 		
 	INTEGER, INTENT(out) :: knot	
@@ -53,22 +52,19 @@ c-----------------------------------------------------------------------
 
 2000	FORMAT(8es10.3)
 
-c	PRINT*,'NOEU_DIS nx,nd,m,id/x',nx,nd,m,id(0:nd+1)
+c	PRINT*,'nx,nd,m,id/x',nx,nd,m,id(0:nd+1) ; PAUSE'noeu_dis'
 c	WRITE(*,2000)x(1:nx) ; WRITE(*,2000)eps ; PAUSE
 
-c	cas nd <= 0, on construit le vecteur nodal de noein
-
+c cas nd <= 0, on construit le vecteur nodal de noein
 	IF(nd <= 0)THEN
 	 PRINT*,'dans noeu_dis le nombre de discontinuités nd =',nd
 	 PRINT*,'nd <= 0, on ne tient pas compte de discontinuité'
 	 CALL noein(x,xt,nx,m,knot)
 
-c	 cas nd > 0, on construit le vecteur nodal avec discontinuités
-	 
+c cas nd > 0, on construit le vecteur nodal avec discontinuités	 
 	ELSE
 	
-c	 vérification de la stricte croissance de la suite des x
-
+c vérification de la stricte croissance de la suite des x
 	 DO i=1,nx-1
 c	  PRINT*,i,nx ; WRITE(*,2000)x(i) ; WRITE(*,2000)x(i+1)
 	  IF(x(i) >= x(i+1))THEN
@@ -80,8 +76,7 @@ c	  PRINT*,i,nx ; WRITE(*,2000)x(i) ; WRITE(*,2000)x(i+1)
 	  ENDIF
 	 ENDDO
 
-c	 pour l'interpolation spline il faut n >= m
-
+c pour l'interpolation spline il faut n >= m
 	 IF(nx < m)THEN
 	  WRITE(*,11)nx,m ; STOP
 11	  FORMAT('dans noeu_dis nx=',i3,' < ',i3,'=m')
@@ -95,14 +90,12 @@ c	 pour l'interpolation spline il faut n >= m
 	  ENDIF
 	 ENDDO
 	 
-c	 initialisations 
-
+c initialisations 
 	 mm1=m-1 ; id(0)=1 ; id(nd+1)=nx ; knot=0
 	 
-c	 petit écart normalisé à gauche, pour cohérence
-c	 eps est un parameter global définit dans bsp_dis	 
-c	 m points de table en x(1)
-
+c petit écart normalisé à gauche, pour cohérence
+c eps est un parameter global défini dans bsp_dis	 
+c m points de table en x(1)
 	 DO i=1,m
 	  knot=knot+1 ; xt(knot)=x(1)-eps*(x(2)-x(1))
 	 ENDDO
@@ -117,11 +110,10 @@ c	 m points de table en x(1)
 	  ENDDO		!i
 c	  PRINT*,ij,id(ij),id(ij)+1 ; PAUSE'ij'
 
-c	  à chaque discontinuité petit écart normalisé à droite	  
-	  
+c à chaque discontinuité  
 	  IF(ij /= nd+1)THEN
-	   DO j=1,m			!à chaque discontinuité
-	    knot=knot+1 ; xt(knot)=x(id(ij))+eps*(x(id(ij)+1)-x(id(ij)))
+	   DO j=1,m
+	    knot=knot+1 ; xt(knot)=x(id(ij))
 	   ENDDO	!j
 	  ELSE
 	   DO j=1,m	!à l'extémité
@@ -132,7 +124,7 @@ c	  à chaque discontinuité petit écart normalisé à droite
 	 ENDDO		!ij
 	ENDIF
 
-c	la dernière couche a été traitée comme discontinuité en id(nd+1)
+c la dernière couche est traitée comme discontinuité en id(nd+1)
 
 c	PRINT*,knot,nx+nd+m,nx,m,nd ; WRITE(*,2000)xt
 	

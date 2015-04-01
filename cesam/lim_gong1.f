@@ -4,16 +4,15 @@ c****************************************************************
 	SUBROUTINE lim_gong1(l,r,xchim,pt,dptl,dptr,t,dtl,dtr,m,dml,
 	1 dmr,p,dpl,dpr,teff)
 
-c	routine public du module mod_atm
+c routine public du module mod_atm
 
-c	calcul de la condition limite pour gong cas 1
-c	relations Pext(l,r), Text(l,r), Mext(l,r) et derivees
+c calcul de la condition limite pour gong cas 1
+c relations Pext(l,r), Text(l,r), Mext(l,r) et derivees
 
-c	modifs :
-c	19 11 99 : suppression de nh1, nhe1, nhe2, lamb
+c modifs :
+c 19 11 99 : suppression de nh1, nhe1, nhe2, lamb
 
-c	Auteur: P.Morel, Département J.D. Cassini, O.C.A.
-c	CESAM2k
+c Auteur: P.Morel, Département J.D. Cassini, O.C.A., CESAM2k
 
 c entree
 c	list=.true. : on calcule p_atm,t_atm,r_atm,tau,m_atm	
@@ -76,8 +75,7 @@ c	 WRITE(*,*)'entrer beta' ; read(5,*)beta
 	 cte20=beta*g*msol/rsol/rsol ; cte3=2.d0/3.d0*rsol*beta	 
 	 pprec=1.d7	!valeur provisoire de pext
 	 
-c allocations des tableaux pt_atm etc..
-	 
+c allocations des tableaux pt_atm etc..	 
 	 n_atm=0
 	 ALLOCATE(bp_atm(0,0),bp_atm_t(0,0),pt_atm(0),t_atm(0),
 	1 m_atm(0),tau(0),p_atm(0),r_atm(0),dlpp_atm(0),x_atm(0),x_atm_t(0),
@@ -90,7 +88,6 @@ c	PRINT*,'lim_gong1',mstar
 	ENDIF
 
 c résolution de kap p r**2 = G m beta par iteration newton-raphson
-
 	t=(cte1*l/r**2)**0.25d0
 
 c	WRITE(*,*)'dans lim_gong1 pprec,r,l,xchim(1)'
@@ -98,7 +95,6 @@ c	WRITE(*,2000)pprec,r,l,xchim(1)
 c	WRITE(*,*)'dans lim_gong1 p,corr,t,r,l,mtot,xchim(1),kap,dkapp'
  	 
 c Omega
-
 	SELECT CASE(Krot)
 	CASE(0,1,2)
 	 w=wrot
@@ -107,8 +103,7 @@ c Omega
 	END SELECT
 	w=w**2 
 
-c initialisations
-		
+c initialisations	
 	p=pprec	; ntour=0
 	B1: DO
 	 ntour=ntour+1

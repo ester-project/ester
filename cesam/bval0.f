@@ -11,7 +11,7 @@ c	si x est l'extremite droite : y(l) .lt. x .eq. y(l+1) on obtient
 c	la limite a droite
 c	les valeurs des m b-splines non nulles : l-m+1, ..., l sont 
 c	dans q(1), ..., q(m)
-c	!! ATTENTION : q doit etre DIMENSIONne au moins a m+1 !!
+c	!! ATTENTION : q doit etre dimensionné au moins a m+1 !!
 
 c	d'apres l'algorithme 5-5 p.192 de schumaker
 

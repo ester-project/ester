@@ -6,23 +6,20 @@ C***********************************************************************
 	2 delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
 	3 gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1)
 
-c	routine public du module mod_etat
+c routine public du module mod_etat
 	
-c	interface de l'équation d'état OPAL avec CESAM2k	
-c	package OPAL_EOS
-c	la recherche de ro par un newton, remplace la routine rhoofp 
-c	du package OPAL_EOS qui ne converge pas dans certains cas
-c	appel a EFF en cas de difficultés
+c interface de l'équation d'état OPAL avec CESAM2k	
+c package OPAL_EOS
+c la recherche de ro par un newton, remplace la routine rhoofp 
+c du package OPAL_EOS qui ne converge pas dans certains cas
+c appel a EFF en cas de difficultés
 
-c	Auteur: P.Morel, Département J.D. Cassini, O.C.A.
-
-c	modifs :
+c Auteur: P.Morel, Département J.D. Cassini, O.C.A., CESAM2k
+c modifs :
 c	15 10 97 : variables en double précision
 c	19 11 99 : suppression de nh1, nhe1, nhe2, lamb
 c	14 03 01 : F95 (P. Morel)
 c	suppression du blockdata blk_eos pour les initialisations
-
-c	CESAM2k
 
 c entrées :
 c	p : pression
@@ -40,6 +37,14 @@ c----------------------------------------------------------------
 	USE mod_kind
 	
 	IMPLICIT NONE
+	
+	REAL (kind=dp), INTENT(in), DIMENSION(nchim) :: xchim
+	REAL (kind=dp), INTENT(in) :: pp, tt	
+	LOGICAL, INTENT(in) :: deriv
+		
+	REAL (kind=dp), INTENT(out) :: ro,drop,drot,drox,u,dup,dut,dux,
+	1 delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
+	2 gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1
 	
 c~~~~~initialisations du bloc data blk_eos~~~~~~~~   
 	
@@ -81,53 +86,43 @@ c	on devrait appeler esac avec iorder=7, mais ca ne fonctionne pas ?????
 	REAL (kind=dp), DIMENSION(mx,mv,nt,nr) :: xz
         REAL (kind=dp), DIMENSION(nr,nt) :: t6list
         REAL (kind=dp), DIMENSION(nt,nr) :: esk, esk2
-	
 	REAL (kind=dp), PARAMETER, DIMENSION(mx) :: xa=(/ 0.d0, 0.2d0,
 	1 0.4d0, 0.6d0, 0.8d0 /)	
 	REAL (kind=dp), DIMENSION(mx) :: dfsx, zz 
 	REAL (kind=dp), DIMENSION(nr) :: dfsr, rho
 	REAL (kind=dp), DIMENSION(nt) :: dfs, t6a
 	REAL (kind=dp), DIMENSION(mv) :: eos	
-	REAL (kind=dp) :: esact	
+	REAL (kind=dp) :: esact
+		
 	INTEGER	:: m, mf	
-c	INTEGER, PARAMETER, DIMENSION(nr) :: nta=(/ (167, i=1,73),
-c	1 (159, i=74,87), (99,i=88,89), 91, 87, 79, 75, 67, 67, 63, 59,
-c	2 55, 53, 51, 51, 49, 47, 45, 45, 41 ,41, 39, 37, 35, 33, 31,
-c	3 29, 29, 25, 25, 21, 21, 17, 17, 13 /)
 	INTEGER, PARAMETER, DIMENSION(10) :: index =(/ 1, 4, 10, 9, 8,
 	1 2, 3, 7, 5, 6 /)
-	INTEGER, SAVE, DIMENSION(10) :: iri		
-c	COMMON/a/xz,t6list,rho,t6a,esk,esk2,dfsx,dfs,dfsr,m,mf,xa
-c	COMMON/b/zz,iri,index,nta
-c	COMMON/e/esact,eos
+	INTEGER, SAVE, DIMENSION(10) :: iri
+			
+c~~~~~initialisations du bloc data blk_eos~~~~~~~~   
 	
-c~~~~~~~~fin desinitialisations du bloc data blk_eos~~~~~~~~
-
-	REAL (kind=dp), INTENT(in), DIMENSION(:) :: xchim
-	REAL (kind=dp), INTENT(in) :: pp, tt	
-	LOGICAL, INTENT(in) :: deriv
+	REAL (kind=dp), DIMENSION(nchim) :: Lxchim
+	REAL (kind=dp), DIMENSION(mx,nt,nr) :: epl
+	REAL (kind=dp), DIMENSION(mx) :: xx	
+	REAL (kind=dp), DIMENSION(4) :: h, q
 		
-	REAL (kind=dp), INTENT(out) :: ro,drop,drot,drox,u,dup,dut,dux,
-	1 delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
-	2 gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1
-	
-	REAL (kind=dp), ALLOCATABLE, SAVE, DIMENSION(:) :: Lxchim	
 	REAL (kind=dp), PARAMETER :: dx=1.d-3, unpdx=1.d0+dx
-	REAL (kind=dp), SAVE :: aradias3
-	REAL (kind=dp) :: stor, stor0, dstor, x, ztab, t6, r, p12, p, t,
-	1 text, tlim, plim, a_lim, b_lim, c_lim, d_lim, ga_lim, g1_lim
-
-	LOGICAL, SAVE :: init=.TRUE.
+	REAL (kind=dp), SAVE:: aradias3, a_lim, b_lim, c_lim, d_lim,
+	1 ga_lim, g1_lim, text, tlim, ztab
+	REAL (kind=dp) :: stor, stor0, dstor, x, t6, r, p12, p, t, plim
+	
+	INTEGER :: l1, l2, l3, l4, k1, k2, k3, k4, ip, iq
+	   
+	LOGICAL :: init=.TRUE.
 	LOGICAL :: ok
 	
 c----------------------------------------------------------------------
 	
 2000	FORMAT(8es10.3)
 
-c       T6 is the temperature in units of 10**6 K 
-c       rho is the density in grams/cc
-c       R=Rho/T6**3
-
+c T6 is the temperature in units of 10**6 K 
+c rho is the density in grams/cc
+c R=Rho/T6**3
 	p=pp ; t=tt 
 
 	IF(init)THEN
@@ -137,12 +132,13 @@ c       R=Rho/T6**3
 	1 'Equation d''etat OPAL si dans [ 5010 , 1.e8 ], MHD ou EFF sinon',/,
 	2 'der. num.; (p,T)-->(ro,T) calcule par ro_new et non rhoofp',/) 
 	 
-c	 appel pour l'interpolation de delta, cp, gradad, alfa, gamma1
-c	 entre OPAL et EFF dans l'atmosphere hors des tables OPAL
-
-	 aradias3=aradia/3.d0 ; plim=4.d4 ; tlim=5.d3 ; p12=plim*1.d-12
-	 x=xchim(1) ; ztab=z0	!EOS OPAL n'utilise qu'une table en Z
-	 t6=tlim*1.d-6
+c appel pour l'interpolation de delta, cp, gradad, alfa, gamma1
+c entre OPAL et EFF dans l'atmosphere hors des tables OPAL
+	 aradias3=aradia/3.d0
+	 tlim=5.d3
+	 ztab=z0	!EOS OPAL n'utilise qu'une table en Z
+	 t6=tlim*1.d-6 ; x=xchim(1)
+	 plim=4.d4 ; p12=plim*1.d-12
 	 CALL ro_new(p12,t6,x,ztab,ro,ok)
 	 d_lim=eos(3)/eos(2) 				!delta= Ki T/Ki ro
 	 ga_lim=1.d0/eos(5)				!gradad	 
@@ -151,31 +147,22 @@ c	 entre OPAL et EFF dans l'atmosphere hors des tables OPAL
 	 a_lim=1.d0/eos(2)				!alfa=1/Ki ro
 	 b_lim=1.d0-aradias3*t**4/p			!beta
 	 g1_lim=eos(7)					!gamma1
-	 text=4200
-
-	 ALLOCATE(Lxchim(nchim))
-	 
+	 text=4200.d0	 
 	ENDIF
 	
-c	WRITE(*,2000)p,t
+c	WRITE(*,2000)p,t,z0
 
-	p12=p*1.d-12 ; x=xchim(1)
-	ztab=z0	!EOS OPAL n'utilise qu'une table en Z
-	t6=t*1.d-6
-	
-c	WRITE(*,2000)z0
-	
+c appel à l'équation d'état
+	p12=p*1.d-12 ; x=xchim(1) ; t6=t*1.d-6	
 	CALL ro_new(p12,t6,x,ztab,ro,ok)
 	IF(ok)THEN
 	
-c	 WRITE(*,2000)ro,eos ; CALLpause('appel a esac 7')
+c	 WRITE(*,2000)ro,eos ; CALL pause('appel a esac 7')
 
-c	 apres l'appel a ro_new, on utilise les valeurs des eos du COMMON /e/
-c	 pour les grandeurs thermodynamiques
-
+c après l'appel a ro_new, on utilise les valeurs des eos du COMMON /e/
+c pour les grandeurs thermodynamiques
 	 drop=ro/p/eos(2)		!1 / dp/dro
-	 drot=-ro/t*eos(3)/eos(2)	!- dp/dT / dp/dro
-	
+	 drot=-ro/t*eos(3)/eos(2)	!- dp/dT / dp/dro	
 	 u=eos(4)*1.d12 ; eos(9)=eos(9)*1.e12
 	 dup=eos(9)*drop			!du/dT dro/dp
 	 dut=eos(9)*drot+eos(8)*1.e6	!du/dro  dro/dT + du/dt	
@@ -183,11 +170,11 @@ c	 pour les grandeurs thermodynamiques
 	 gradad=1.d0/eos(5) ; cp=p/ro/t*eos(3)*(1.d0/eos(6)+delta)	
 	 alfa=1.d0/eos(2)		!1/Ki ro
 	 beta=1.d0-aradias3*t**4/p ; gamma1=eos(7)
-	
+
+c dérivées	
 	 IF(.NOT.deriv)RETURN
 	
-c	 dérivées / P
-
+c dérivées / P
 	 stor0=p ; stor=stor0*unpdx
 	 IF(stor < dx)stor=dx
 	 dstor=stor-stor0 ; p=stor ; p12=p*1.d-12	
@@ -199,8 +186,7 @@ c	 dérivées / P
           dcpp=(p/r/t*eos(3)*(1.d0/eos(6)+eos(3)/eos(2))-cp)/dstor
           p=stor0 ; p12=p*1.d-12
         
-c	  dérivées / T	
-
+c dérivées / T
 	  stor0=t ; stor=stor0*unpdx
 	  IF(stor < dx)stor=dx
 	  dstor=stor-stor0 ; t=stor ; t6=t*1.d-6	
@@ -212,8 +198,7 @@ c	  dérivées / T
            dcpt=(p/r/t*eos(3)*(1.d0/eos(6)+eos(3)/eos(2))-cp)/dstor
            t=stor0 ; t6=t*1.d-6        
         
-c	   dérivées / X	
-
+c dérivées / X
 	   stor0=xchim(1) ; stor=stor0*unpdx
 	   IF(stor < dx)stor=dx
 	   dstor=stor-stor0 ; x=stor
@@ -230,16 +215,13 @@ c	   dérivées / X
 	 ENDIF
 	ENDIF
 	
-c	en cas de Pb avec opal appel a EFF	
-	
-	Lxchim(1:nchim)=xchim(1:nchim)
-	CALL etat_eff(p,t,Lxchim,
-	1 ro,drop,drot,drox,u,dup,dut,dux,
-	2 delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
-	3 gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1)
+c en cas de Pb avec opal appel a EFF	
+	Lxchim=xchim
+	CALL etat_eff(p,t,Lxchim,ro,drop,drot,drox,u,dup,dut,dux,
+	1 delta,deltap,deltat,deltax,cp,dcpp,dcpt,dcpx,
+	2 gradad,dgradadp,dgradadt,dgradadx,alfa,beta,gamma1)
 
-c	raccord par interpolation lineaire en T entre Tlim et Text
-
+c raccord par interpolation lineaire en T entre Tlim et Text
 	IF(.FALSE.)THEN
 c	IF(t < tlim .AND. t > text)THEN
 	 x=(t-text)/(tlim-text)		!x : vt 
@@ -257,9 +239,8 @@ C***********************************************************************
 
 	SUBROUTINE esac(xh,ztab,t6,r,iorder,irad,ok)
       
-c	adaptation a CESAM de la routine esac du package OPAL_EOS
-c	Auteur: P.Morel, Département J.D. Cassini, O.C.A. 
-c	CESAM2k
+c adaptation a CESAM de la routine esac du package OPAL_EOS
+c Auteur: P.Morel, Département J.D. Cassini, O.C.A., CESAM2k
 
 c	16 10 97 : lecture des tables en binaire
 
@@ -322,48 +303,22 @@ c------------------------------------------------------------------------
 	REAL (kind=dp) :: moles, xh, ztab, t6, r, slt, dixr, p0,
 	1 slr, z, sum1, sum2, sum23, sum33, tmass, eground, fracz
 
-	INTEGER	iorder,irad,i,j,ilo,ihi,imd,mg,mh,mi,mf2,ms,
-	1 kf2,ir,it,is,iw,iv
+	INTEGER	iorder,irad,i,j,ilo,ihi,imd,mg,mh,mi,mf2,ms,kf2,ir,it,is,iw,iv
 	
-	LOGICAL ok,logic1,logic2,init
-	data logic1,logic2/2*.true./,init/.true./
-           
-	REAL (kind=dp) :: epl(mx,nt,nr),xx(mx)     
-	COMMON/ee/epl,xx
-
-	REAL (kind=dp) :: q(4),h(4),xxh      
-	COMMON/aa/q,h,xxh
-
-c	INTEGER	m,mf
-c	REAL (kind=dp) :: xz(mx,mv,nt,nr),t6list(nr,nt),rho(nr),t6a(nt),esk(nt,nr),
-c	1	esk2(nt,nr),dfsx(mx),dfs(nt),dfsr(nr),xa(mx)   
-c	COMMON/a/xz,t6list,rho,t6a,esk,esk2,dfsx,dfs,dfsr,m,mf,xa
-
-c	INTEGER iri(10),index(10),nta(nr)
-c	REAL (kind=dp) :: zz(mx)   
-c	COMMON/b/zz,iri,index,nta
-
-	INTEGER l1,l2,l3,l4,k1,k2,k3,k4,ip,iq      
-	COMMON/bb/l1,l2,l3,l4,k1,k2,k3,k4,ip,iq
-
-c	REAL (kind=dp) :: esact,eos(mv)	
-c	COMMON/e/esact,eos
+	LOGICAL :: ok, logic1=.TRUE., logic2=.TRUE., init=.TRUE.
 	      
 	SAVE
 
 c-------------------------------------------------------------------------
 
 	IF(iorder > 10 )THEN
-         WRITE (*,'(" esac : Iorder cannot exceed 10")')
-         STOP
+         WRITE (*,'(" esac : Iorder cannot exceed 10")') ; STOP
 	ENDIF
-	IF((irad .ne. 0) .AND. (irad .ne. 1))THEN
+	IF((irad /= 0) .AND. (irad /= 1))THEN
 	 WRITE (*,'(" esac : Irad must be 0 or 1")')
 	 STOP
 	ENDIF
-
-	slt=t6
-	slr=r
+	slt=t6 ; slr=r
 
 	IF(init)THEN
 	 init=.FALSE.
@@ -376,15 +331,14 @@ c-------------------------------------------------------------------------
 	  xx(i)=xa(i)
 	 ENDDO
 
-c	 READ the data files
-
+c READ the data files
 c	 CALL readco		!en ASCII
-	 CALL r_opal_bin		!en binaire
+	 CALL r_opal_bin	!en binaire
          z=zz(1)
          IF(abs(ztab-z) > 0.03)THEN
           WRITE(*,10)ztab,z ; WRITE(2,10)ztab,z
 10	  FORMAT(/,'!!ATTENTION, Z=',es10.3,
-	1 ' est tres different du Z de la table d''equation d''etat, Z=',
+	1 ' est très different du Z de la table d''equation d''etat, Z=',
 	2 es10.3,/,'!!ATTENTION',/)
 	 ENDIF
 	ENDIF               
@@ -395,27 +349,25 @@ c	 CALL readco		!en ASCII
 	 STOP
 	ENDIF
 
-c	Determine T6,rho grid points to use in the interpolation.
-
+c Determine T6,rho grid points to use in the interpolation.
 c	PRINT*,t6a(1),t6a(nt)
 c	PRINT*,rho(1),rho(nr)
 c	PAUSE'limites'	
 
-	slt=t6
-	slr=r
+	slt=t6 ; slr=r
 	
-	IF(	(slt > t6a(1)) .OR. (slt < t6a(nt)) .OR. 
-	1	(slr < rho(1)) .OR. (slr > rho(nr)))THEN 
+	IF((slt > t6a(1)) .OR. (slt < t6a(nt)) .OR. 
+	1  (slr < rho(1)) .OR. (slr > rho(nr)))THEN 
 	 IF(logic1)THEN
 	  WRITE(*,21)slt,slr
 	  WRITE(2,21)slt,slr
-21	  FORMAT(1x,/,1x,'!!!!!ATTENTION!!!!!!!!!!',/
-	1	1x,'on a recontre au moins 1 fois le Pb. suivant dans la',/,
-	2	1x,'routine "esac" de livermore, on utilise MHD  ou EFF',/, 
-	3	1x,'T6 ou LogR outside of table range, T6=',es10.3,
-	4	' LogR=',es10.3,/,
-c	5	1x,'raccord par interp. lin. en T dans atmosphere',/,
-	6	1x,'!!!!!ATTENTION!!!!!!!!!!',/)		
+21	  FORMAT(/'!!!!!ATTENTION!!!!!!!!!!',/
+	1 'on a recontre au moins 1 fois le Pb. suivant dans la',/,
+	2 'routine "esac" de livermore, on utilise MHD  ou EFF',/, 
+	3 'T6 ou LogR outside of table range, T6=',es10.3,
+	4 ' LogR=',es10.3,/,
+c	5 'raccord par interp. lin. en T dans atmosphere',/,
+	6 '!!!!!ATTENTION!!!!!!!!!!',/)		
 	  logic1=.FALSE.
 	 ENDIF
 	 ok=.FALSE.
@@ -447,7 +399,7 @@ c	IF(izi == 0)THEN  ! freeze table indices if not 0
 	 mi=2
 	 mf2=1
 	ENDIF
-        IF((xh <= xa(2)+1.e-7) .OR. (xh .ge. xa(mx-2)-1.e-7))mf2=mh
+        IF((xh <= xa(2)+1.e-7) .OR. (xh >= xa(mx-2)-1.e-7))mf2=mh
 
 	ilo=2
 	ihi=nr
@@ -497,9 +449,8 @@ c	IF(izi == 0)THEN  ! freeze table indices if not 0
 	ENDIF
 c	ENDIF		!izi
 
-c	check to determine if interpolation indices fall within
-c	table boundaries.  choose largest allowed size.
-
+c check to determine if interpolation indices fall within
+c table boundaries. choose largest allowed size.
 	sum1=0.0
 	sum2=0.0
 	sum23=0.0
@@ -541,12 +492,12 @@ c	table boundaries.  choose largest allowed size.
 	  IF(logic2)THEN
 	   WRITE(*,22)xh,t6*1.d6,r
 	   WRITE(2,22)xh,t6*1.d6,r	 
-22	   FORMAT(1x,/,1x,'!!!!!ATTENTION!!!!!!!!!!',/
-	1	1x,'on a recontre au moins 1 fois le Pb. suivant dans la',/,
-	2	1x,'routine "esac" de livermore, on utilise MHD ou EFF',/, 
-	3	1x,'T6/log rho in empty region od table (65)',/,
-	4	1x,'X=',es10.3,' T=',es10.3,' ro=',es10.3,/,
-	5	1x,'!!!!!ATTENTION!!!!!!!!!!',/)
+22	   FORMAT(/'!!!!!ATTENTION!!!!!!!!!!',/
+	1  'on a recontre au moins 1 fois le Pb. suivant dans la',/,
+	2  'routine "esac" de livermore, on utilise MHD ou EFF',/, 
+	3  'T6/log rho in empty region od table (65)',/,
+	4  'X=',es10.3,' T=',es10.3,' ro=',es10.3,/,
+	5  '!!!!!ATTENTION!!!!!!!!!!',/)
 	   logic2=.FALSE.
 	  ENDIF
 	  ok=.FALSE.
@@ -556,7 +507,7 @@ c	table boundaries.  choose largest allowed size.
 	
 	IF(sum23 < 1.e+30) ip=3
 	IF(sum33 < 1.e+30) iq=3
-	IF(t6 .ge. t6list(1,2)+1.e-7) ip=2
+	IF(t6 >= t6list(1,2)+1.e-7) ip=2
 	IF(slr <= rho(2)+1.e-15) iq=2
 	IF(l3 == nr) iq=2
 	
@@ -585,7 +536,7 @@ c	table boundaries.  choose largest allowed size.
 	    esk(it,ir)=epl(mf,it,ir)
 	   ELSE
 	    esk(it,ir)=quad(is,iw,xh,epl(mf,it,ir),epl(mg,it,ir),
-	1	epl(mh,it,ir),xx(mf),xx(mg),xx(mh))
+	1   epl(mh,it,ir),xx(mf),xx(mg),xx(mh))
 	    IF(esk(it,ir) > 1.e+20)THEN
 	     WRITE(*,'(" problem it ir,l3,k3,iq,ip=", 6i5)') it,ir,l3,k3,iq,ip
 	     WRITE(*,'(3e12.4)')  (epl(ms,it,ir),ms=mf,mf+2)
@@ -601,7 +552,7 @@ c	table boundaries.  choose largest allowed size.
 	  DO ir=l1,l1+iq
 	   DO it=k1,k1+ip
 	    esk2(it,ir)=quad(is,iw,xh,epl(mg,it,ir),epl(mh,it,ir),
-	1	epl(mi,it,ir),xx(mg),xx(mh),xx(mi))
+	1   epl(mi,it,ir),xx(mg),xx(mh),xx(mi))
 	    IF(esk(it,ir) > 1.e+20)THEN
 	     WRITE(*,'(" problem it ir,l3,k3,iq,ip=", 6i5)') it,ir,l3,k3,iq,ip
 	     WRITE(*,'(3e12.4)')  (epl(ms,it,ir),ms=mg,mg+2)
@@ -662,53 +613,55 @@ c----------------------------------------------------------------------
 	IMPLICIT NONE
 	
 	REAL (kind=dp), PARAMETER, DIMENSION(7) ::
-	1	amas=(/ 0.00054858d0, 20.179d0, 15.9994d0, 14.0067d0,
-	2	12.011d0, 4.0026d0, 1.0079d0 /)		
+	1 amas=(/ 0.00054858d0, 20.179d0, 15.9994d0, 14.0067d0,
+	2 12.011d0, 4.0026d0, 1.0079d0 /)		
 	REAL (kind=dp), PARAMETER, DIMENSION(6) ::
-	1	anum=(/ 10.d0, 8.d0, 7.d0, 6.d0, 2.d0, 1.d0/),
-	2	eion=(/ -3388.637d0,-1970.918d0,-1431.717d0,
-	3	-993.2303d0,-76.2315d0,-15.29409d0 /)
+	1 anum=(/ 10.d0, 8.d0, 7.d0, 6.d0, 2.d0, 1.d0/),
+	2 eion=(/ -3388.637d0,-1970.918d0,-1431.717d0,
+	3 -993.2303d0,-76.2315d0,-15.29409d0 /)
 	REAL (kind=dp), PARAMETER :: xc=0.247137766d0, xn=0.0620782d0,
-	1	xo=0.52837118d0, xne=0.1624188d0,
-	2	f=xc*amas(5)+xn*amas(4)+xo*amas(3)+xne*amas(2) 	
+	1 xo=0.52837118d0, xne=0.1624188d0,
+	2 f=xc*amas(5)+xn*amas(4)+xo*amas(3)+xne*amas(2) 	
 	REAL (kind=dp), DIMENSION(7) :: frac
 	REAL (kind=dp) :: x,z,amoles,eground,fracz,
-	1	xc2,xn2,xo2,xh,xtot,anume,xhe,xne2
+	1 xc2,xn2,xo2,xh,xtot,anume,xhe,xne2
 	
 	INTEGER	:: i
 		
 c------------------------------------------------------------------------
 
-      fracz=z/f     
-      xc2=fracz*xc
-      xn2=fracz*xn
-      xo2=fracz*xo
-      xne2=fracz*xne 
-      xh=x/amas(7)
-      xhe=(1.-x -z)/amas(6)
-      xtot=xh+xhe+xc2+xn2+xo2+xne2
-      frac(6)=xh/xtot
-      frac(5)=xhe/xtot
-      frac(4)=xc2/xtot
-      frac(3)=xn2/xtot
-      frac(2)=xo2/xtot
-      frac(1)=xne2/xtot
-      eground=0.0d0
-      amoles=0.0d0
-      DO i=1,6
-       eground=eground+eion(i)*frac(i)
-       amoles=amoles+(1.+anum(i))*frac(i)
-      ENDDO
-      anume=amoles-1.d0
-      gmass=anume*amas(1)
-      DO i=2,7
-       gmass=gmass+amas(i)*frac(i-1)
-      ENDDO
-C
-      END FUNCTION gmass	
-C
+	fracz=z/f     
+	xc2=fracz*xc
+	xn2=fracz*xn
+	xo2=fracz*xo
+	xne2=fracz*xne 
+	xh=x/amas(7)
+	xhe=(1.d0-x -z)/amas(6)
+	xtot=xh+xhe+xc2+xn2+xo2+xne2
+	frac(6)=xh/xtot
+	frac(5)=xhe/xtot
+	frac(4)=xc2/xtot
+	frac(3)=xn2/xtot
+	frac(2)=xo2/xtot
+	frac(1)=xne2/xtot
+	eground=0.0d0
+	amoles=0.0d0
+	DO i=1,6
+	 eground=eground+eion(i)*frac(i)
+	 amoles=amoles+(1.d0+anum(i))*frac(i)
+	ENDDO
+	anume=amoles-1.d0
+	gmass=anume*amas(1)
+	DO i=2,7
+	 gmass=gmass+amas(i)*frac(i-1)
+	ENDDO
+      
+	RETURN
+
+	END FUNCTION gmass	
+
 C***********************************************************************
-C
+
 	REAL (kind=dp) FUNCTION quad(ic,i,x,y1,y2,y3,x1,x2,x3)
 	
 c	adaptation a CESAM de la routine quad du package OPAL_EOS
@@ -735,36 +688,32 @@ c-------------------------------------------------------------------------
 	
 c-----------------------------------------------------------------------    
      
-      xx(1)=x1
-      xx(2)=x2
-      xx(3)=x3
-      yy(1)=y1
-      yy(2)=y2
-      yy(3)=y3
-      IF(ic == 0)THEN
-       xx12(i)=1./(xx(1)-xx(2))
-       xx13(i)=1./(xx(1)-xx(3))
-       xx23(i)=1./(xx(2)-xx(3))
-       xx1sq(i)=xx(1)*xx(1)
-       xx1pxx2(i)=xx(1)+xx(2)
-      ENDIF
-      c3=(yy(1)-yy(2))*xx12(i)
-      c3=c3-(yy(2)-yy(3))*xx23(i)
-      c3=c3*xx13(i)
-      c2=(yy(1)-yy(2))*xx12(i)-(xx1pxx2(i))*c3
-      c1=yy(1)-xx(1)*c2-xx1sq(i)*c3
-      quad=c1+x*(c2+x*c3)
-C      
-      END FUNCTION quad
-C
+	xx(1)=x1 ; xx(2)=x2 ; xx(3)=x3
+	yy(1)=y1 ; yy(2)=y2 ; yy(3)=y3
+	IF(ic == 0)THEN
+	 xx12(i)=1./(xx(1)-xx(2))
+	 xx13(i)=1./(xx(1)-xx(3))
+	 xx23(i)=1./(xx(2)-xx(3))
+	 xx1sq(i)=xx(1)*xx(1)
+	 xx1pxx2(i)=xx(1)+xx(2)
+	ENDIF
+	c3=(yy(1)-yy(2))*xx12(i)
+	c3=c3-(yy(2)-yy(3))*xx23(i)
+	c3=c3*xx13(i)
+	c2=(yy(1)-yy(2))*xx12(i)-(xx1pxx2(i))*c3
+	c1=yy(1)-xx(1)*c2-xx1sq(i)*c3
+	quad=c1+x*(c2+x*c3)
+	
+	RETURN
+      
+	END FUNCTION quad
+
 C***********************************************************************
-C
+
 	SUBROUTINE r_opal_bin
 	
-c	adaptation a CESAM de la routine readco du package OPAL_EOS
- 
-c	Auteur: P.Morel, Département J.D. Cassini, O.C.A.
-c	CESAM2k
+c adaptation a CESAM de la routine readco du package OPAL_EOS
+c Auteur: P.Morel, Département J.D. Cassini, O.C.A., CESAM2k
 
 c	15 10 97 : variables en double precision 
     
@@ -776,41 +725,36 @@ c-------------------------------------------------------------------
 
 	IMPLICIT NONE
 	
-	INTEGER	i
-      
-c	INTEGER	m,mf
-c	REAL (kind=dp) :: xz(mx,mv,nt,nr),t6list(nr,nt),rho(nr),t6a(nt),esk(nt,nr),
-c	1	esk2(nt,nr),dfsx(mx),dfs(nt),dfsr(nr),xa(mx)   
-c	COMMON/a/xz,t6list,rho,t6a,esk,esk2,dfsx,dfs,dfsr,m,mf,xa
-	
-c	INTEGER iri(10),index(10),nta(nr)
-c	REAL (kind=dp) :: zz(mx)   
-c	COMMON/b/zz,iri,index,nta
+	REAL (kind=dp), DIMENSION(mx,nr) :: rhogr	
+	REAL (kind=dp), DIMENSION(nr,nt) :: alogr	
+	REAL (kind=dp), DIMENSION(mx,6) :: frac		
+	REAL (kind=dp), DIMENSION(mx) :: moles, tmass, xin	
 
-	REAL (kind=dp) :: epl(mx,nt,nr),xx(mx)     
-	COMMON/ee/epl,xx
+	INTEGER, DIMENSION(mx,nr) :: icycuse
+	INTEGER	:: i
 
-	INTEGER	icycuse(mx,nr)
-	REAL (kind=dp) :: moles(mx),xin(mx),tmass(mx),rhogr(mx,nr),frac(mx,6),
-	1 alogr(nr,nt)		
-	COMMON/eee/rhogr,frac,alogr,moles,xin,tmass,icycuse
+	LOGICAL :: ok
+	CHARACTER(len=80) :: chain
      
 	SAVE
  	
 c------------------------------------------------------------------
  	
 2000	FORMAT(8es10.3)
-	
-	WRITE(2,1)TRIM(nom_chemin)//f_eos(1)
-	WRITE(*,1)TRIM(nom_chemin)//f_eos(1)
-1	FORMAT('donnees prises dans le fichier binaire:',/,a80)	
-	CLOSE(unit=60)	
-	OPEN(unit=60,file=TRIM(nom_chemin)//f_eos(1),form='unformatted')
-	PRINT*,'lecture, des donnees EOS opal, et c''est long'
+
+	chain=TRIM(nom_chemin)//f_eos(1)
+	INQUIRE(file=TRIM(chain)//'.gz',exist=ok)
+	IF(ok)CALL SYSTEM('gunzip '//TRIM(chain)//'.gz')			
+	WRITE(*,1)chain ; WRITE(2,1)chain
+1	FORMAT('données prises dans le fichier binaire:',/,a80)	
+	OPEN(unit=60,file=TRIM(chain),form='unformatted')
+	PRINT*,'lecture, des données EOS opal, et c''est long'
+	PRINT*,SIZE(xz),mx,mv,nt,nr,mx*mv*nt*nr
 	READ(60)xz,t6list,alogr,rhogr,xin,zz,moles,tmass,frac,icycuse
 	CLOSE(unit=60)
-c	PRINT*,'recompression du fichier binaire EOS'
-c	CALL system('compress 'TRIM(nom_chemin)//f_eos(1))
+	WRITE(*,2)TRIM(chain)
+2	FORMAT('recompression du fichier binaire : ',a)	
+	CALL system('gzip '//TRIM(chain))
 c	WRITE(*,2000)(zz(i),i=1,mx)
 c	PAUSE'lecture du binaire'
 			
@@ -834,6 +778,8 @@ c	PAUSE'lecture du binaire'
 	ENDDO
 	
 	PRINT*,'fin de lecture des donnees EOS opal en binaire'
+	
+	RETURN
 
 	END SUBROUTINE r_opal_bin
 C
@@ -858,16 +804,6 @@ c	15 10 97 : variables en double precision
 	REAL (kind=dp) :: rat,pr,er,sr,revise,fixerror,st,chir,chitt,pt,et,
 	1 cvtt,gam3pt,gam1t,gam2pt,dedrhoat
 	 	   
-c	INTEGER mx,mv,nr,nt
-c	PARAMETER (mx=5,mv=10,nr=121,nt=167)
-      
-c	REAL (kind=dp) :: esact,eos(mv)	
-c	COMMON/e/esact,eos
-      
-c	INTEGER iri(10),index(10),nta(nr)
-c	REAL (kind=dp) :: zz(mx)   
-c	COMMON/b/zz,iri,index,nta
-
 	SAVE 
 	     
 c------------------------------------------------------------------------
@@ -933,6 +869,8 @@ c    x  /molenak
       eos(iri(9))=gam2pt
       eos(iri(10))=gam3pt
       
+      RETURN
+      
       END SUBROUTINE radsub
 C
 C***********************************************************************
@@ -970,9 +908,9 @@ c	INTEGER, PARAMETER :: mv=10
 		
 	REAL (kind=dp), PARAMETER :: epsi=1.d-5
 
-	REAL (kind=dp), SAVE :: granrtp
+	REAL (kind=dp) :: granrtp
 	REAL (kind=dp) :: p, t6, x, ro, lr, lp, mum1, ztab, rop,
-	1	 pp=-1.d0, tp=-1.d0, xp=-1.d0
+	1 pp=-1.d0, tp=-1.d0, xp=-1.d0
 	
 	INTEGER, PARAMETER :: nmax=20
 	INTEGER :: n
@@ -1039,6 +977,8 @@ c	 PAUSE
 	
 c	WRITE(*,2000)lr
 
+	RETURN
+
 	END SUBROUTINE ro_new
 C
 C***********************************************************************
@@ -1060,24 +1000,7 @@ c---------------------------------------------------------------------
 
 	INTEGER	iu,is,kx,iw
 	
-	REAL (kind=dp) ::slr,slt,dix,dix2,esact2,esactq,esactq2
-      
-	REAL (kind=dp) :: epl(mx,nt,nr),xx(mx)     
-	COMMON/ee/epl,xx
-	
-	REAL (kind=dp) :: q(4),h(4),xxh      
-	COMMON/aa/q,h,xxh
-      
-c	INTEGER	m,mf
-c	REAL (kind=dp) :: xz(mx,mv,nt,nr),t6list(nr,nt),rho(nr),t6a(nt),
-c	1	esk(nt,nr),esk2(nt,nr),dfsx(mx),dfs(nt),dfsr(nr),xa(mx)   
-c	COMMON/a/xz,t6list,rho,t6a,esk,esk2,dfsx,dfs,dfsr,m,mf,xa
-
-	INTEGER l1,l2,l3,l4,k1,k2,k3,k4,ip,iq      
-	COMMON/bb/l1,l2,l3,l4,k1,k2,k3,k4,ip,iq
-      
-c	REAL (kind=dp) :: esact,eos(mv)	
-c	COMMON/e/esact,eos
+	REAL (kind=dp) :: slr, slt, dix, dix2, esact2, esactq, esactq2
       
 	SAVE
 	

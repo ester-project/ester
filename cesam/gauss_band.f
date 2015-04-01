@@ -3,32 +3,32 @@ c**************************************************************
 
 	SUBROUTINE gauss_band(a,b,indpc,nl,n,nemr,ns,inversible)
 
-c	subroutine public du module mod_numerique
+c subroutine public du module mod_numerique
 
-c	resolution par la methode du pivot d'un systeme lineaire bande
-c	en ne gardant que les coefficients non identiquement nuls,
-c	avec un nombre d'equations superieur au rang comme dans la methode de 
-c	Galerkin (convient egalement et sans surcout, si nl=n)
-c	il y a ns seconds membres
+c résolution par la methode du pivot d'un système linéaire bande
+c en ne gardant que les coefficients non identiquement nuls,
+c avec un nombre d'équations supérieur au rang comme dans la méthode de 
+c Galerkin (convient également, et sans surcoût, si nl=n)
+c il y a ns seconds membres
 
-c	methode: pivot partiel avec equilibrage
+c méthode: pivot partiel avec equilibrage
 
-c	Les indpc ne sont pas necessairement croissants.
+c Les indpc (indices de première colonne) ne sont pas nécessairement croissants.
 
-c	A l'issue du pivotage, le rang étant n, les nl-n dérnières
-c	équations sont 0=0 aux arrondis près
+c A l'issue du pivotage, le rang étant n, les nl-n dernières
+c équations sont 0=0 aux arrondis près
 
-c	Auteur: P.Morel, Departement J.D. Cassini, O.C.A.
+c Auteur: P.Morel, Departement J.D. Cassini, O.C.A.
 
-c entree
+c entrées
 c	n: nombre de colonnes = rang
 c	nl : nombre de lignes >= au rang = n
 c	nemr : longueur max. d'une ligne
 c	ns: nombre de seconds membres
 
-c entree/sortie
+c entrées/sorties
 c	a(nl,nemr) : matrice des coefficients non identiquement nuls
-c	indpc(nl) : indice de la premiere colonne de chaque ligne
+c	indpc(nl) : indice de la première colonne de chaque ligne
 c	b(ns,nl) : seconds membres de 1 à nl / solution de 1 à n
 
 c sortie
@@ -53,13 +53,12 @@ c----------------------------------------------------------------------
 
 2000	FORMAT(8es10.3)
 
-c	PRINT*,'entree gaus_band' ; PRINT*,indpc
+c	PRINT*,'entrée gaus_band' ; PRINT*,indpc
 c	DO i=1,nl
 c	 WRITE(*,2000)(a(i,j),j=1,nemr),(b(j,i),j=1,ns)
 c	ENDDO
 	 
-c	equilibrage de la matrice
-
+c équilibrage de la matrice
 	DO ligne=1,nl
 	 sto=MAXVAL(ABS(a(ligne,:)))
 	 IF(sto /= 0.d0)THEN
@@ -67,8 +66,7 @@ c	equilibrage de la matrice
 	 ENDIF
 	ENDDO	!ligne
 
-c	mise en ordre des lignes pour que indpc soit croissant
-
+c mise en ordre des lignes pour que indpc soit croissant
 	DO ligne=1,nl-1
 	 IF(indpc(ligne) > indpc(ligne+1))THEN
 	  i=ligne
@@ -87,8 +85,7 @@ c	mise en ordre des lignes pour que indpc soit croissant
 	 ENDIF
 	ENDDO		!ligne
 	   
-c	elimination de gauss avec pivots
-
+c élimination de gauss avec pivots
 	B1: DO ligne=1,n		!élimination jusqu'à ligne n=rang
 c	 PRINT* ; PRINT*,ligne ; PRINT*
 	 pivot=0.d0
@@ -102,13 +99,19 @@ c	   PRINT*,'pivot',pivot,ipivot
 	 ENDDO B2
 	 inversible=pivot > 0.d0
 	 IF(.NOT. inversible)THEN
-	  PRINT*,'pivot nul dans gauss_band, ligne',ligne,' pivot',pivot
+	  PRINT*,'pivot nul dans gauss_band, ligne',ligne,', pivot',pivot,
+	1 ', indpc',indpc(ligne)
+	
+	DO i=MAX(1,ligne-8),MIN(nl,ligne+8)
+	 PRINT*,i, indpc(i)
+	 WRITE(*,2000)a(i,:),b(1,i)
+	ENDDO
+	
 	  RETURN
 	 ENDIF
 c	 PRINT*,'pivot pour ligne',ligne,pivot,ipivot
 
-c	 permutation de ligne et de ipivot, division par pivot
-
+c permutation de ligne et de ipivot, division par pivot
 	 DO j=1,ns
 	  sto=b(j,ligne) ; b(j,ligne)=b(j,ipivot)/a(ipivot,1)
 	  IF(ligne /= ipivot)b(j,ipivot)=sto
@@ -118,8 +121,7 @@ c	 permutation de ligne et de ipivot, division par pivot
 	  IF(ligne /= ipivot)a(ipivot,j)=sto
 	 ENDDO	!j
 
-c	 decalage pour avoir la diagonale en colonne 1
-
+c décalage pour avoir la diagonale en colonne 1
 	 DO i=ligne+1,nl
 	  IF(indpc(i) > ligne)CYCLE B1
 c	  PRINT*,'i de perm',i
@@ -140,8 +142,7 @@ c	 ENDDO	!i
 
 	ENDDO B1
 
-c	on remonte de n (seulement) a 1, pour les ns seconds membres
-
+c on remonte de n (seulement) a 1, pour les ns seconds membres
 	DO k=1,ns
 	 DO i=n-1,1,-1
 	  DO j=2,nemr

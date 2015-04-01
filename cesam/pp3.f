@@ -64,9 +64,9 @@ c	Ex : 4
 
 c----------------------------------------------------------------------
 
-	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, ihe4,
+	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, fmin_abon, ihe4,
 	1 i_ex, langue, nchim, nom_elem, nom_xheavy,
-	2 nucleo, rot_solid, secon6, t_inf, x0, y0, zi, z0
+	2 nucleo, secon6, t_inf, x0, y0, zi, z0
 	USE mod_kind
 		
 	IMPLICIT NONE
@@ -171,7 +171,7 @@ c allocations diverses
 c abondances initiales et abondances négligeables
 	 
 	 ab_ini(1:nchim)=comp(1:nchim)*nucleo(1:nchim)
-	 ab_min=ab_ini*0.01d0	 
+	 ab_min=ab_ini*fmin_abon	 
 	 
 c nombre/volume des métaux dans Z
 		

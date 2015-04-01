@@ -10,7 +10,6 @@ c     inversion des équations de Burgers avec accélérations radiatives
 
 c     P est recalculée à partir de ro, T, mu
 c     on tient compte approximativement des ionisations
-
              
 c     Auteur: P.Morel, Département J.D. Cassini, O.C.A.
 c     CESAM2k
@@ -18,16 +17,13 @@ c     CESAM2k
 c entrées
 c     p,t,r,lum,ltot,m : pression, temperature, lum. locale et totale, masse
 c     ro,drox,kap,dkapx : densite, dérivée/ X, opacite, dérivée / X 
-c     gradrad,dgradradx,gradad,dgradadx : gradient rad., ad. et dérivées / X
+c     gradrad,dgradradx : gradient rad. et dérivées / X
 c     xchim : comp. chim. par mole
-c     les dérivées / X, issues de thermo, sont par gramme 
+c     les dérivées / X, issues de thermo, sont par MOLE
 
 c sorties
 c     d, dd : coefficients d_ij de d x_j / d m et dérivées / x_k
 c     v, dv : coefficients v_i de x_i et dérivées / x_k
-
-c variables non utilisees pour cette routine de dIFfusion
-c     gradad,dgradadx
 
 c     Dimensions dans le programme appelant
 c     d(nchim,nchim), dd(nchim,nchim,nchim), v(nchim), dv(nchim,nchim)
@@ -76,9 +72,9 @@ c-------------------------------------------------------------------
       REAL (kind=dp), ALLOCATABLE, SAVE, DIMENSION(:) :: dgt, dgtsro,
      1 diag, dmu, dmu_gtsro_grad, gamma, g_rad, mi, mu_nuir_gtsro, nui,
      2 nuir, unpzb, vt, xi, zb      
-      REAL (kind=dp), SAVE :: cgrav, dro_n0_ex, n0, n02k, ro_n0_e
+      REAL (kind=dp), SAVE :: cgrav, cte2, dro_n0_ex, n0, n02k, ro_n0_e
       REAL (kind=dp) :: bid, dgrad_x, dmu_px, drox1, eta, gt, gtsro,
-     1 grav, mu, mu_gtsro_grad, mu_p, nel
+     1 grav=0.d0, grot=0.d0, mu, mu_gtsro_grad, mu_p, nel
 
       INTEGER, SAVE :: nb, nl
       INTEGER :: i, j, k, l
@@ -99,8 +95,7 @@ c----------------------------------------------------------------------
 2000  FORMAT(8es10.3)
 2001  FORMAT(10es8.1)
 
-c     initialisations
-
+c initialisations
       IF(init)THEN
        init=.FALSE.
        SELECT CASE(langue)
@@ -114,6 +109,7 @@ c     initialisations
        END SELECT
        
        cgrav=-msol*g/rsol**2  !pour le calcul de la gravite
+       cte2=2.d0/3.d0*rsol
        n0=1.d0/amu        !n0 Avogadro     
        n02k=16.d0/3.d0*n0**2  !pour les K_ij
        nb=nchim+1 !nombre d'elements pour Burgers, nchim+1 (électron)
@@ -126,8 +122,7 @@ c     initialisations
        mi(1:nchim)=nui(1:nchim)*amu   !masses
        nui(nb)=me/amu ; mi(nb)=me !pour l'électron
               
-c      masses reduites
-
+c  masses reduites
        DO j=1,nb
         mi1(:,j)=mi(:)/(mi(:)+mi(j)) ; mij(:,j)=mi(:)*mi(j)/(mi(:)+mi(j))
         mismj(:,j)=-mi(:)/mi(j)   !- pour \bar q
@@ -137,8 +132,7 @@ c      masses reduites
        ENDDO         
        mi2=mi1**2 ; mijk=mij*n02k !coefficient des k_ij
 
-c      appel fictif à f_rad, avec grav=+100, pour init. et écritures
-
+c appel fictif à f_rad, avec grav=+100, pour init. et écritures
 c	PRINT*,nint(maxval(zi)),nchim
 
        ALLOCATE(g_rad(nb),dg_rad(nb,nb),ioni(0:NINT(MAXVAL(zi)),nchim)) 
@@ -160,14 +154,12 @@ c	PRINT*,nint(maxval(zi)),nchim
      2 zb(nb), unpzb(nb), dmu_gtsro_grad(nb))
       ENDIF   !fin des initialisations
 
-c     transfert des abondances, xi = X_i / A_i, xi(nb)=0 pour X_e,    
-
+c transfert des abondances, xi = X_i / A_i, xi(nb)=0 pour X_e,
       xi(1:nchim)=xchim(1:nchim)
 
-c     appel à Saha, calcul des taux d'ionisation, des charges
-
+c appel à Saha, calcul des taux d'ionisation, des charges
       CALL saha(xi,t,ro,ioni,zb,nel,eta)
-c      WRITE(*,2000)(zb(i),i=1,nchim),nel  
+c      WRITE(*,2000)(zb(i),i=1,nchim),nel 
 c      CALL pause('après saha')
 
 c*******************pour tests de dérivation*******************
@@ -181,8 +173,7 @@ c      xi(der)=stor
 c     ENDIF
 c*******************pour tests de dérivation*******************   
 
-c     transformation xi(nb): nombre d'e par volume ==> par mole
-
+c transformation xi(nb): nombre d'e par volume ==> par mole
       unpzb(1:nchim)=1.d0+zb(1:nchim) !1+Zi
       xi(nb)=0.d0
       DO i=1,nchim        !xi(nb) : nombre d'électrons par mole
@@ -190,9 +181,7 @@ c     transformation xi(nb): nombre d'e par volume ==> par mole
       ENDDO
       zb(nb)=-1.d0 ; unpzb(nb)=0.d0   !pour les électrons
 
-c     quantites qui dependent des x_i
-c     il y a incohérence entre mu, ro et P
-
+c quantités qui dépendent des x_i, il y a incohérence entre mu, ro et P
       mu=sum(xi*unpzb)    !poids moleculaire moyen  on a unpzb(nb)=0
       mu=1.d0/mu ; dmu=-mu**2*unpzb
       mu_p=granr*t/ro         !R T / ro
@@ -200,17 +189,15 @@ c     il y a incohérence entre mu, ro et P
       dmu_px=-drox1           !a mu_p pres
       dgrad_x=dgradradx/gradrad*nui(1)
 
-c     la gravite
-
+c la gravité
       IF(r*m > 0.d0)THEN
        grav=cgrav*ABS(m)/r**2         !gravite
-      ELSE
-       grav=0.d0
-      ENDIF		!ADAPTER
-      grav=grav+2.d0/3.d0*r*w**2    !acc. centrifuge    
+       grot=cte2*r*w**2    !acc. centrifuge
+c      WRITE(*,2000)grav,grot,r,w
+       grav=grav+grot
+      ENDIF		!ADAPTER   
 
-c     accelerations radiatives
-
+c accélérations radiatives
       CALL f_rad(lum,r,t,kap,dkapx/kap,nel,xi,ioni,grav,
      1 g_rad,dg_rad)
 c     WRITE(*,2001)g_rad
@@ -219,9 +206,8 @@ c      WRITE(*,2001)dg_rad(i,:)
 c     ENDDO
 c     PAUSE'acc rad'      
 
-c     gt=grav + somme ponderee des accelerations radiatives
-c     g_rad(nb)=dg_rad(nb,k)=0 pour les ``électrons'' 
-
+c gt=grav + somme pondérée des accélérations radiatives
+c g_rad(nb)=dg_rad(nb,k)=0 pour les ``électrons'' 
       gt=grav+sum(xi*nui*g_rad)
       dgt=nui*g_rad
       DO j=1,nb
@@ -256,8 +242,7 @@ c      WRITE(*,2000)(dmu_nuir_gtsro(i,j),j=1,nb)
 c     ENDDO 
 c     PAUSE'dérivées'
 
-c     quantites diverses
-
+c quantités diverses
       ro_n0_e=echarg*n0/ro
       dro_n0_ex=-ro_n0_e*drox1
 
@@ -302,8 +287,7 @@ c      pour un vecteur --------fin-------------------
 
 c-------------fin du test local de dérivation----------------------------------   
 
-c     integrales de collision
-
+c intégrales de collision
       CALL collision(nb,zb,mij,xi,ro,drox1,t,om11,zij,zpij,zsij,
      1 dom11,dzij,dzpij,dzsij)
 
@@ -323,8 +307,7 @@ c     integrales de collision
        ENDDO
       ENDDO
        
-c     kij, dérivées
-
+c kij, dérivées
       DO i=1,nb
        DO j=i,nb
         kij(i,j)=mijk(i,j)*om11(i,j)    
@@ -372,21 +355,18 @@ c     kij, dérivées
        ENDDO
       ENDDO
       
-c     FORMATion du systeme
+c formation du système linéaire
 
-c     mise à 0
-
+c mises à 0
       a=0.d0 ; da=0.d0
 
-c     la sous matrice Ae
-
+c la sous matrice Ae
       DO i=1,nchim
        a(i,nl)=ro_n0_e*zb(i)      !derniere colonne : matrice Ae
        da(i,nl,1)=dro_n0_ex*zb(i) !dérivée k=1, ie /X  
       ENDDO
           
-c     la sous matrice Ac
-
+c la sous matrice Ac
       DO j=1,nchim
        a(nl-1,j)=nui(j)*xi(j) !avant derniere ligne : matrice Ac
        da(nl-1,j,j)=nui(j)    !dérivée k=j
@@ -396,9 +376,8 @@ c     la sous matrice Ac
        da(nl,j,j)=zb(j)   !dérivée k=j         
       ENDDO
       
-c     la sous matrice Aw
-
-      DO i=1,nchim    !partie superieure
+c la sous matrice Aw
+      DO i=1,nchim    !partie supérieure
        DO j=1,nb
         IF(j == i)THEN        !on est sur la diagonale
          DO l=1,nb    !somme pour les indices l non "diagonaux"
@@ -437,9 +416,8 @@ c     la sous matrice Aw
        ENDDO  !j
       ENDDO   !i
 
-c     la sous matrice Ar
-
-      DO i=1,nchim    !partie superieure
+c la sous matrice Ar
+      DO i=1,nchim    !partie supérieure
        DO j=1,nb
         IF(j == i)THEN        !la "diagonale"
          a(i,nb+j)=-a(i+nchim,j)  !anti symetrie
@@ -476,8 +454,7 @@ c      WRITE(*,2000)(a(i,j),j=1,nl)
 c     ENDDO
 c     PAUSE'fin A avant inversion'
 
-c     inverse A**(-1)
-
+c inverse A**(-1)
       CALL matinv(a,nl,inversible)
       IF(.not.inversible)PAUSE'matrice non inversible'
 
@@ -491,8 +468,7 @@ c      WRITE(*,2000)a(i,:)
 c     ENDDO
 c     CALL pause('A apres inversion')
            
-c     vecteur gamma
-
+c vecteur gamma
       gamma=0.d0 ; dgamma=0.d0
       gamma(1:nchim)=mu_nuir_gtsro(1:nchim)
       DO i=1,nchim        !pour les nchim premières lignes
@@ -503,16 +479,13 @@ c     vecteur gamma
        dgamma(i,1:nb)=-dmu_gtsro_grad(1:nb)
       ENDDO
 
-c     on extrait vt = A^(-1) gamma
-
+c on extrait vt = A^(-1) gamma
       vt=matmul(a,gamma)
 
-c     pour V on prend les nchim premières composantes
-
+c pour V on prend les nchim premières composantes
       v(1:nchim)=vt(1:nchim)
 
-c     dérivées des nchim composantes de V
-
+c dérivées des nchim composantes de V
       DO k=1,nb
        DO i=1,nl          !d gamma / dx_k - dA/dx_k  V
         DO j=1,nl
@@ -553,8 +526,7 @@ c      ENDDO  !boucle sur les xi
 
 c-------------fin du test local de dérivation----------------------------------   
 
-c     matrice B :  R T / ro ( Diag (1/x_i) - mu M )
-
+c matrice B :  R T / ro ( Diag (1/x_i) - mu M )
       b=0.d0 ; mt=0.d0 ; db=0.d0
 
       DO i=1,nchim
@@ -599,8 +571,7 @@ c     ENDDO
 
 c--------------fin test local de dérivation sur B-----------------------
 
-c     calcul de mt = A^(-1) B
-
+c calcul de mt = A^(-1) B
       DO i=1,nl
        DO j=1,nchim           !nchim colonnes suffisent
         mt(i,j)=0.d0
@@ -610,13 +581,11 @@ c     calcul de mt = A^(-1) B
        ENDDO
       ENDDO
 
-c     on extrait G, nchim premières lignes et colonnes de G = mt =  A^(-1) B
-c     mis dans D
-
+c on extrait G, nchim premières lignes et colonnes de G = mt =  A^(-1) B
+c mis dans D
       d(1:nchim,1:nchim)=mt(1:nchim,1:nchim)
 
-c     dérivées des nchim X nchim premières composantes de G 
-
+c dérivées des nchim X nchim premières composantes de G 
       DO k=1,nb
        DO i=1,nl          !d B / dx_k - dA/dx_k  G
         DO j=1,nchim          !nchim colonnes suffisent
@@ -646,9 +615,7 @@ c     dérivées des nchim X nchim premières composantes de G
        ENDDO
       ENDDO
 
-c     d*xi(i) : notation de CESAM
-c     pour d, dd nchim X nchim  d, dd
-
+c d*xi(i) : notation de CESAM, pour d, dd nchim X nchim  d, dd
       DO i=1,nchim
        DO j=1,nchim
         d(i,j)=-d(i,j)*xi(i)

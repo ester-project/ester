@@ -3,23 +3,22 @@ c***********************************************************************
 
       SUBROUTINE opa_yveline(xchim,t,ro,kappa,dkapdt,dkapdr,dkapdx)
 
-c     routine public du module mod_opa
+c routine private du module mod_opa
 
-c     calcul de l'opacité repris du code de Genève
-c     polynômes de Lagrange pour LOG T6 et LOG R
-c     quadratique pour X et Z
-c     Yveline (aout 1991-code de Genève--> 10/95 CESAM)   
+c calcul de l'opacité repris du code de Genève
+c polynômes de Lagrange pour LOG T6 et LOG R
+c quadratique pour X et Z
+c Yveline (aout 1991-code de Genève--> 10/95 CESAM)   
 
-c     Daniel (octobre 1996-version pour CESAM 2.x --> CESAM 3.1)
+c Daniel (octobre 1996-version pour CESAM 2.x --> CESAM 3.1)
 
-c     P. Morel (2 avril 97) suppression des j1,j2,j3,j4 (risque de
-c     difficultés avec j2=0), modif de la logique, réécriture de zr
+c P. Morel (2 avril 97) suppression des j1,j2,j3,j4 (risque de
+c difficultés avec j2=0), modif de la logique, réécriture de zr
 
-c     Yveline (décembre 99- calcul de l'indice dans pos_table_op)
-c     P.Morel 25 04 00 : évite des sorties de table
+c Yveline (décembre 99- calcul de l'indice dans pos_table_op)
+c P.Morel 25 04 00 : évite des sorties de table
 
-c     Adaptation: P.Morel, Département J.D. Cassini, O.C.A.
-c     CESAM2k
+c Adaptation: P.Morel, Département J.D. Cassini, O.C.A., CESAM2k
 
 c-------------------------------------------------------------------
 
@@ -38,7 +37,7 @@ c      Z est obtenu par 1-X-Y
 
 c-------------------------------------------------------------------
 
-	USE mod_donnees, ONLY : f_opa, ihe4, langue, ln10, nchim, z0
+	USE mod_donnees, ONLY : f_opa, ihe4, langue, ln10, nchim, nom_chemin, z0
 	USE mod_kind
 	USE mod_variables, ONLY : sortie
       
@@ -55,8 +54,7 @@ c-------------------------------------------------------------------
 	
 	INTEGER, SAVE :: nz, nx, nt, nr
 
-	LOGICAL, SAVE :: init=.TRUE., pass=.TRUE.
-	CHARACTER (len=80) :: nom_chemin = "/data1/sdeheuve/local/src/cesam2k_v1.1.8_ESTA/SUN_STAR_DATA/"
+	LOGICAL, SAVE :: init=.TRUE.
 
 c------------------------------------------------------------------------
   
@@ -77,42 +75,37 @@ c------------------------------------------------------------------------
 	 ENDIF
 	ENDIF
 
-c	si Z > 0.1 appel à opa_opal2
-
+c si Z > 0.1 arrêt
 	IF(nchim > 1)THEN
 	 z=1.d0-SUM(xchim(1:ihe4))
 	ELSE
 	 z=z0
 	ENDIF
 	IF(z > 0.098d0)THEN
-	 IF(xchim(1) > 9.d-2)THEN
-	  SELECT CASE(langue)
-	  CASE('english')
-	   WRITE(*,1003)z,xchim(1) ; WRITE(2,1003)z,xchim(1)
-1003	   FORMAT('STOP, in opa_yveline overtaking of the limit',
-	1   '0.1 > Z = ',es10.3,' with 0.09 < X =',es10.3)	   
-	  CASE DEFAULT
-	   WRITE(*,3)z,xchim(1) ; WRITE(2,3)z,xchim(1)
-3	   FORMAT('ARRET, dans opa_yveline dépassement de la limite',
-	1   ' 0.1 > Z =',es10.3,' avec 0.09 < X =',es10.3)
-	  END SELECT
-	  CALL sortie 	 
-	 ENDIF	
-	 IF(pass)THEN
-	  pass=.FALSE.
-	  SELECT CASE(langue)
-	  CASE('english')
-           WRITE(*,1002)z,t,ro ; WRITE(2,1002)z,t,ro
-1002	   FORMAT('call to opa_opal2, in opa_yveline because Z=',es10.3,/,
-	1  'T='es10.3,', ro=',es10.3)	  	  
-	  CASE DEFAULT	
-           WRITE(*,2)z,t,ro ; WRITE(2,2)z,t,ro
-2	   FORMAT('appel à opa_opal2, dans opa_yveline car Z=',es10.3,/,
-	1  'T='es10.3,', ro=',es10.3)
-	  END SELECT
+
+c tentative pour éviter la sortie
+	 IF(t >= 4.d7)THEN
+c	  CALL opa_compton(xchi,t,ro,kap,dkapt,dkapro,dkapx)
+	  CALL opa_compton(xchim,t,ro,kappa,dkapdt,dkapdr,dkapdx)
+	  RETURN
 	 ENDIF
-	 CALL opa_opal2(xchim,t,ro,kappa,dkapdt,dkapdr,dkapdx,.FALSE.)
-	 RETURN
+	
+c sortie
+	 SELECT CASE(langue)
+	 CASE('english')
+	  WRITE(*,1003)z,xchim(1),t,ro ; WRITE(2,1003)z,xchim(1),t,ro
+1003	  FORMAT('STOP, in opa_yveline overtaking of the limit 0.1 > Z = ',
+	1 es10.3,/,'X =',es10.3,', T=',es10.3,', ro=',es10.3,/,
+	2 'use opa_opal2_co or opa_opal2_cno')	   
+	 CASE DEFAULT
+	  WRITE(*,3)z,xchim(1),t,ro ; WRITE(2,3)z,xchim(1),t,ro
+3	  FORMAT('ARRET, dans opa_yveline dépassement de la limite 0.1 > Z =',
+	1 es10.3,/,'X =',es10.3,', T=',es10.3,', ro=',es10.3,/,
+	2 'utiliser opa_opal2_co ou opa_opal2_cno')
+	 END SELECT
+	 CALL sortie
+	 
+c interpolation	 	 
 	ELSE
 	 t6=t*1.d-6 ; lr=LOG10(ro/t6**3) ; x=xchim(1)   
 	 CALL kappa_opal(lr,t6,ro,x,z,kappa,dkapdr,dkapdt,dkapdx)	
@@ -177,11 +170,10 @@ c appel fictif à kappa_cond pour écritures (pas de calcul)
 	 CALL kappa_cond(bidon,1.d0,1.d-6,kappa,dkapdt,dkapdr,dkapdx)
 	ENDIF
 
-c	localisation dans les tables du point pour lequel on cherche
-c	l'opacité. Sortie éventuelle des tables.
+c localisation dans les tables du point pour lequel on cherche
+c l'opacité. Sortie éventuelle des tables.
 
-c	en composition chimique
-
+c en composition chimique
 	x_use=MAX(vx(1),MIN(x,vx(nx)))	
 	IF(.NOT.x_sort)THEN
 	 x_sort=x_use /= x
@@ -213,8 +205,7 @@ c	en composition chimique
 
 c     ---------- en densité et température ----------------------------
 
-c	Pour éviter les sorties de table (PM mars 2003)
-
+c Pour éviter les sorties de table (PM mars 2003)
 	lt6=LOG10(t6)
 	lt6_use=MAX(vlt6(1),MIN(lt6,vlt6(nt)))
 	IF(.NOT.t_sort)THEN
@@ -394,6 +385,8 @@ c------------------------------------------------------------------------
       REAL (kind=dp) ,INTENT(out) :: opac, opacr, opact6  
 
       REAL (kind=dp) :: dr, dt, x, y, dr1, dr2, dt1, ct1, ct2
+      
+      SAVE
 
       dr=R2-R1 ; dt=T2-T1 ; x=lr-R1 ; y=T6-T1 ; dr1=(vk12-vk11)/dr 
       dr2=(vk22-vk21)/dr ; ct1=vk11+x*dr1 ; ct2=vk21+x*dr2
@@ -425,6 +418,8 @@ c      COMMON/val_opal/vz, vx, vlt6, vlr, vt6, vlk, nt, nr, nz, nx
       REAL (kind=dp), DIMENSION(4):: xr, xt, s1, s2, pr, ppr, pt, ppt
 
       INTEGER i, k
+      
+      SAVE
 
       DO i=1,4
        xr(i)=vlr(ir-3+i) ; xt(i)=vlt6(it-3+i)
@@ -461,6 +456,8 @@ c     interpolation quadratique
       REAL (kind=dp), INTENT(out) :: k, dk
 
       REAL (kind=dp) :: x1, x2, x3, y1, y2, y3, denom, aa, bb, cc
+      
+      SAVE
 
       x1=qx(1) ; x2=qx(2) ; x3=qx(3) ; y1=qk(1) ; y2=qk(2) ;  y3=qk(3)
       denom=(x2-x1)*(x3-x1)*(x2-x3) ; aa=(y2-y1)*(x3-x1)-(y3-y1)*(x2-x1)
@@ -494,9 +491,10 @@ c	COMMON/val_opal/vz,vx,vlt6,vlr,vt6,vlk,nt,nr,nz,nx
 	LOGICAL :: ok
 
 	CHARACTER (len=120) :: nom_table
-
-c	ouverture des fichiers d'opacité
-
+	
+	SAVE
+	
+c ouverture des fichiers d'opacité
 	nom_table=TRIM(nom_chemin)//f_opa(1)
 	INQUIRE(file=nom_table,exist=ok)
 	IF(ok)THEN
@@ -555,6 +553,8 @@ c     pp=valeur des derivees de ces polynomes en x0
           REAL (kind=dp), DIMENSION(4) :: s
 
       INTEGER :: i, j, k, l
+      
+      SAVE
 
       DO j=1,n
        p(j)=1.d0 ; pp(j)=0.d0 ; s(j)=1.d0
@@ -598,6 +598,8 @@ c     repérage dans une table
       REAL (kind=dp) :: t12
 
       INTEGER :: i
+      
+      SAVE
 
       ilin=0 ; ilag=0 ; iquad=0
       IF((tab_val(2)) > val)THEN

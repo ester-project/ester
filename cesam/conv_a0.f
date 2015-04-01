@@ -7,19 +7,18 @@ c****************************************************************
 	3 gam,dgamkra,dgamgra,dgamdel,dgamcp,dgamro,
 	4 dgamhp,dgamtaur,dgamgrad,dgamgad)
 
-c	routine private du module mod_conv
+c routine private du module mod_conv
 	
-c	calcul du gradient de température dans le milieu convectif
-c	formalisme MLT avec pour longueur de mélange
-c	alpha(1-gradad/gradrad) ie, nulle aux limites ZR/ZC
+c calcul du gradient de température dans le milieu convectif
+c formalisme MLT avec pour longueur de mélange
+c alpha(1-gradad/gradrad) ie, nulle aux limites ZR/ZC
 
-c	formulation de:
-c	J. Provost, Département J.D. Cassini, O.C.A., Observatoire de Nice 
-c	M. J. Goupil DASGAL Observatoire de Meudon
-c	Correction erreur sur b S. Brun 30 08 96
+c formulation de:
+c J. Provost, Département J.D. Cassini, O.C.A., Observatoire de Nice 
+c M. J. Goupil DASGAL Observatoire de Meudon
+c Correction erreur sur b S. Brun 30 08 96
 
-c	Adaptation P.Morel, Département J.D. Cassini, O.C.A.
-c	CESAM2k
+c Adaptation P.Morel, Département J.D. Cassini, O.C.A., CESAM2k
 
 c entrées :
 c	krad : conductivité radiative 4 ac T**3 / 3 kap ro
@@ -32,7 +31,6 @@ c	gradrad : gradient radiatif
 c	gradad : gradient adiabatique
 c	taur : ép. opt. de la bulle
 c	der=.true. : calcul des derivees
-
 c	alpha : longueur de mélange
 
 c sortie :
@@ -86,8 +84,7 @@ c--------------------------------------------------------------------
 	ksi=ksi0*vsal32 ; alp=alpha*(1.d0-gradad/gradrad)
 	alpha4=ksi*alp**4 ; b=alpha4*gravite/krad**2*hp**3*delta*(ro*cp)**2
 
-c	racine réelle de la cubique par newton raphson
-
+c racine réelle de la cubique par newton raphson
 c	WRITE(*,*)'ksi,gravite,delta,ro,cp,krad,hp,b,gradrad,gradad'
 c	WRITE(*,2000)ksi,gravite,delta,ro,cp,krad,hp,b,gradrad,gradad
 	 
@@ -95,8 +92,7 @@ c	WRITE(*,2000)ksi,gravite,delta,ro,cp,krad,hp,b,gradrad,gradad
 
 	gam=ABS(a0/phi)**(1.d0/3.d0)	!initialisation de la racine
 	
-c	B1 : boucle infinie de convergence, Infinite loop for convergency 	
-
+c B1 : boucle infinie de convergence, Infinite loop for convergency
 	iter=0
 	B1: DO
 	 iter=iter+1
@@ -104,15 +100,13 @@ c	B1 : boucle infinie de convergence, Infinite loop for convergency
 	  WRITE(*,*)'pas de convergence dans conv_a0' ; STOP
 	 ELSE 
 	  	 
-c	  correction de Newton Raphson, Newton Raphson correction
-
+c correction de Newton Raphson, Newton Raphson correction
 	  corr=(((phi*gam+1.d0)*gam+1.d0)*gam-a0)/
 	1 ((3.d0*phi*gam+2.d0)*gam+1.d0)	
 
 c	  WRITE(*,*)'gam,corr,b' ; WRITE(*,2000)gam,corr,b
 
-c	  algorithme de Newton Raphson,  Newton Raphson algorithm
-	  
+c algorithme de Newton Raphson,  Newton Raphson algorithm	  
 	  gam=gam-corr
 	 
 	  IF(gam == 0.d0)THEN	 
@@ -128,7 +122,8 @@ c	  algorithme de Newton Raphson,  Newton Raphson algorithm
 	  ELSEIF(ABS(corr/gam) < 1.d-10)THEN	!test arret, is it conv.?
 	 
 	   gam1=gam*(gam+1.d0)/b ; gradconv=gradad+gam1
-	
+
+c dérivées	
 	   IF(der)THEN	!on a besoin des dérivées, derivatives needed
 	    dvstaur=-2.d0*(dvst-1.d0)/taur ; dphitaur=-phi/dvst*dvstaur	
 	    dvsltaur=2.d0*dvst*dvstaur ; dksitaur=ksi0*dvsltaur

@@ -4,19 +4,13 @@ c***********************************************************************
 	SUBROUTINE coll_atm(r_rac,l_rac,xchim,ord_atm,knot_atm,dim_atm,
 	1 ms_atm)
 
-c	routine PRIVATE du module mod_atm
+c routine PRIVATE du module mod_atm
 
-c	résolution du système d'équations différentielles non linéaires
-c	de l'atmosphère par développement sur B-splines
-c	par itération Newton avec dérivées analytiques
+c résolution du système d'équations différentielles non linéaires
+c de l'atmosphère par développement sur B-splines
+c par itération Newton avec dérivées analytiques
 
-c	modifs :
-c	04 07 01 : mise en place de rotation uniforme avec conservation
-c		   du moment angulaire
-c	16 08 01 : F95
-
-c	Auteur: P.Morel, Département J.D. Cassini, O.C.A.
-c	CESAM2k
+c	Auteur: P.Morel, Département J.D. Cassini, O.C.A., CESAM2k
 
 c entrées
 c	ray : rayon		!au point tau_f
@@ -27,15 +21,11 @@ c	wrot : vitesse angulaire solide
 c sorties
 c	bp_atm, x_atm, xt_atm, knot_atm: solution spline
 
-c	le réseau de points de raccord x, possède p points
-c	la solution, les coefficients des splines d'ordre m+r sur le
-c	réseau de points de table xt, sont dans b
+c le réseau de points de raccord x, possède p points
+c la solution, les coefficients des splines d'ordre m+r sur le
+c réseau de points de table xt, sont dans b
 
-c	les initialisations, les résidus et les dérivées sont 
-c	calculés dans eqatm
-
-c	avec pression turbulente 8 inconnues 
-c	sans pression turbulente 7 inconnues, Ptot=Pgaz
+c les initialisations, les résidus et les dérivées sont	calculés dans eq_atm
 
 c---------------------------------------------------------------------
 
@@ -59,7 +49,7 @@ c---------------------------------------------------------------------
 	REAL (kind=dp), ALLOCATABLE, SAVE, DIMENSION(:) :: be, dfxdx, fx,
 	1 xcoll_atm, xl_atm
 	
-	REAL (kind=dp), SAVE :: cte1, preci_atm, to_max, to_min, rdx
+	REAL (kind=dp), SAVE :: cte1, cte2, preci_atm, to_max, to_min, rdx
 	REAL (kind=dp) :: acc_c, corr, er, err, gravs2, w	
 
 	INTEGER, ALLOCATABLE, SAVE, DIMENSION(:) :: indpc
@@ -79,35 +69,29 @@ c	PAUSE'coll_atm'
 
 	IF(init)THEN
 	 init=.FALSE.
-	 cte1=g*msol/rsol**2
+	 cte1=g*msol/rsol**2 ; cte2=2.d0/3.d0*rsol
 	 to_min=0.2d0 ; to_max=0.7d0		!bornes pour tau*
 	 to_min=log(to_min) ; to_max=log(to_max)
 	 
-c	 création de la table des points de collocation
-c	 ncoll_atm: nombre de points de collocation
-
+c création de la table des points de collocation
+c ncoll_atm: nombre de points de collocation
 	 ncoll_atm=(n_atm-1)*ms_atm
 	 ALLOCATE(xcoll_atm(ncoll_atm))
 	 CALL coll(x_atm,n_atm,ms_atm,xcoll_atm)
 c	 PRINT*,'xcoll_atm' ; WRITE(*,2000)xcoll_atm
-	 
-c	 allocations diverses
-c	 nc_atm : longueur du bloc du jacobien
-c	 nl_atm : nombre de ligne du jacobein
 
-	 nc_atm=ne_atm*ord_atm ; nl_atm=ne_atm*(ncoll_atm+r_qs)
-	 
+c allocations et définitions diverses
+c nc_atm : longueur du bloc du jacobien
+c nl_atm : nombre de ligne du jacobein
+	 nc_atm=ne_atm*ord_atm ; nl_atm=ne_atm*(ncoll_atm+r_qs)	 
 c	 PRINT*,ne_atm,r_qs,nl_atm,nc_atm,ord_atm ; PAUSE
-
-c	 allocations et définitions diverses
 	
 	 ALLOCATE(ae(ne_atm,ne_atm,0:r_qs),be(ne_atm),a(nl_atm,nc_atm),
 	1 b(1,nl_atm),indpc(nl_atm),y(ne_atm,0:r_qs),xl_atm(ne_atm),
 	2 d(0:r_qs,ord_atm),ds(ord_atm,0:r_qs,ord_atm),
 	3 dl(ne_atm,0:r_qs,ord_atm),fx(ne_atm),dfxdx(ne_atm))
 
-c	 limites
-
+c limites
 	 xl_atm(1)=1	     !en tau=tau_max, q=1 R/Rsol=y(3)=Rb/Rsol
 	 xl_atm(2)=n23_atm   !en tau=tau*, q=n23 ln T =y(2)=ln T(tau,Teff)
 	 xl_atm(3)=n23_atm   !en tau=tau*, q=n23 ln T =y(2)=ln Teff
@@ -117,13 +101,11 @@ c	 limites
 	 xl_atm(7)=n_atm     !en tau=tau_min, q=N P = g / kappa tau_min
 	 IF(pturb)xl_atm(Ipgt)=n_atm      !en tau=tau_min  ln Ptot=ln Pgaz
 
-c	 les points de raccord x_atm sont les entiers 1, 2,..n_atm,
-c	 entre deux points de raccord les abscisses des ord_atm
-c	 points de collocation ne diffèrent que par un nombre entier 	
-c	 les valeurs des ord_atm B-splines non id. nulles aux ms_atm
-c	 points de collocation sur [i,i+1] peuvent être tabulées
-c	 une fois pour toutes
-	
+c les points de raccord x_atm sont les entiers 1, 2,..n_atm,
+c entre deux points de raccord les abscisses des ord_atm
+c points de collocation, xcoll_atm, ne diffèrent que par un nombre
+c entier les valeurs des ord_atm B-splines non id. nulles aux ms_atm
+c points de collocation sur [i,i+1] peuvent être tabulées une fois pour toutes	
 	 DO cx=1,ms_atm
 	  CALL linf(xcoll_atm(cx),xt_atm,knot_atm,l)
 	  CALL bvald(xcoll_atm(cx),xt_atm,ord_atm,l,r_qs,d)
@@ -131,15 +113,13 @@ c	 une fois pour toutes
 c	  PRINT*,cx ; WRITE(*,2000)ds(cx,:,:)
 	 ENDDO
 	 
-c	 idem pour les limites
-
+c idem pour les limites
 	 DO i=1,ne_atm
 	  CALL linf(xl_atm(i),xt_atm,knot_atm,l)
 	  CALL bvald(xl_atm(i),xt_atm,ord_atm,l,r_qs-1,d) ; dl(i,:,:)=d
 	 ENDDO
 
-c	 d est désormais inutile
-	 
+c d est désormais inutile 
 	 DEALLOCATE(d) 
 	 
 	 preci_atm=1.d-7
@@ -158,24 +138,22 @@ c vitesse angulaire
 	SELECT CASE(Krot)
 	CASE(0,1,2)
 	 w=wrot
-	CASE(3)
+	CASE(3,4,5)
 	 w=rota(1,dim_rot)	 
 	END SELECT
 	 
 c accélération centrifuge	 
-	acc_c=rsol*rstar*w**2
+	acc_c=cte2*rstar*w**2
 	IF(acc_c > gravs2)THEN
 	 SELECT CASE(langue)
 	 CASE('english')
 	   WRITE(*,1004)acc_c,gravs2,w ; WRITE(2,1004)acc_c,gravs2,w
 1004	   FORMAT('STOP, in the atmophere, the centrifugal acceleration =',
-	1    es10.3,' > 90% gravity = ',es10.3,', angular velicity =',
-	2    es10.3)	   
+	1  es10.3,' > 90% gravity = ',es10.3,', angular velicity =',es10.3)
 	  CASE DEFAULT
 	   WRITE(*,4)acc_c,gravs2,w ; WRITE(2,4)acc_c,gravs2,w
 4	   FORMAT('ARRET, dans atmosphère, accélération centrifuge =',
-	1    es10.3,' >  90% gravité = ',es10.3,', vitesse angulaire =',
-	2    es10.3)	  
+	1  es10.3,' >  90% gravité = ',es10.3,', vitesse angulaire =',es10.3)
 	  END SELECT
 	  CALL sortie
 	 ENDIF
@@ -189,18 +167,15 @@ c	WRITE(*,2000)xchim(1:8)
 c	WRITE(*,2000)rota(1,dim_rot)
 c	PAUSE'entrée coll_atm'	
 	
-c	intégration, boucle infinie de NR
-
+c intégration, boucle infinie de NR
 	compt=0
 	B1: DO
 
-c	on place la limite de la ZC externe au rayon bolométrique R*
-c	R* = bp(4,i),tous i	
+c on place la limite de la ZC externe au rayon bolométrique R* = bp(4,i), tous i
 	 rstar=bp_atm(4,1)
 	 r_zc_conv(if_conv)=rstar
-	 
-c	 pour les points de collocation
 
+c pour les points de collocation
 	 ligne=0 ; l=ord_atm ; a=0.d0 ; b=0.d0
 	 DO i=1,ncoll_atm,ms_atm 	 
 	  DO j=1,ms_atm
@@ -229,8 +204,7 @@ c	   PAUSE'y dans coll_atm'
 	 ENDDO		!i
 c	 PAUSE'avant lim'
 	  
-c	 pour les limites, comme r_qs=1, il y a ne_atm limites
-	   
+c pour les limites, comme r_qs=1, il y a ne_atm limites   
 	 DO i=1,ne_atm
 	  CALL bsp1dn(ne_atm,bp_atm,x_atm,xt_atm,n_atm,ord_atm,knot_atm,
 	1 .TRUE.,xl_atm(i),l,fx,dfxdx)	
@@ -261,31 +235,28 @@ c	 WRITE(*,2000)b(1,:) ; PAUSE'b après'
 	 
 c	 PAUSE'après gauss_band'	 
 	 
-c	 limitation des corrections
-
+c limitation des corrections
 	 corr=1.d0
 	 DO spl=1,dim_atm
 	  DO var=1,ne_atm
 	   indice=ne_atm*(spl-1)+var
 c	   PRINT*,indice,corr
-	   DO WHILE(abs(bp_atm(var,spl)) > preci_atm .and.
-	1   corr*abs(b(1,indice)) > rdx*abs(bp_atm(var,spl)))
+	   DO WHILE(ABS(bp_atm(var,spl)) > preci_atm .and.
+	1   corr*ABS(b(1,indice)) > rdx*ABS(bp_atm(var,spl)))
 	    corr=corr/2.d0
 	   ENDDO	!while
 	  ENDDO	!var
 	 ENDDO	!spl
 
-c	 corrections et b --> bp
-
+c corrections et b --> bp
 	 err=0.d0
 	 DO spl=1,dim_atm
 	  DO var=1,ne_atm
 	   er=0.d0 ; indice=ne_atm*(spl-1)+var
-	   IF(abs(bp_atm(var,spl)) > preci_atm)er=abs(b(1,indice)/
-	1    bp_atm(var,spl))
+	   IF(ABS(bp_atm(var,spl)) > preci_atm)er=ABS(b(1,indice)/
+	1   bp_atm(var,spl))
 	   bp_atm(var,spl)=bp_atm(var,spl)-b(1,indice)*corr
-	   IF(var == 6)bp_atm(var,spl)=MAX(to_min,MIN(to_max,
-	1    bp_atm(var,spl)))
+	   IF(var == 6)bp_atm(var,spl)=MAX(to_min,MIN(to_max,bp_atm(var,spl)))
 	   err=max(er,err)
 	   IF(er == err)THEN
 	    vare=var ; couche=spl/ms_atm+1
@@ -301,12 +272,11 @@ c	 ENDDO
 c	 PAUSE'solution colatm1'
 
 	 compt=compt+1
-	 WRITE(*,1)compt,err,nom_atm(vare),couche,corr
+	 WRITE(usl_atm,1)compt,err,nom_atm(vare),couche,corr
 1	 FORMAT('atmosphère iter.',i3,' err. max.',es8.1,
 	1 ', var:',a,', couche',i3,', corr',es8.1)
 	 
-c	 test de sortie
-
+c test de sortie
 	 IF(err < preci_atm)THEN
 	  EXIT B1
 	 ELSEIF(compt < compt_max)THEN

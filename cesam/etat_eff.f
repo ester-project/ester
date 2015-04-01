@@ -26,7 +26,7 @@ c	CESAM2k
 c entree :
 c	p : pression
 c	tt : température
-c	xchim : composition chimique
+c	xchim : composition chimique par gramme
 
 c sortie :
 c	ro : densité et dérivées
@@ -34,8 +34,7 @@ c	u : énergie interne et dérivées
 
 c----------------------------------------------------------------
 
-	USE mod_donnees, ONLY : aradia, ah, amu, ahe4, ihe4, nchim,
-	1 Lz0 => z0
+	USE mod_donnees, ONLY : aradia, ah, amu, ahe4, ihe4, nchim, Lz0 => z0
 	USE mod_kind
 
 	IMPLICIT NONE

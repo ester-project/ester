@@ -5,8 +5,8 @@ c************************************************************************
 	
 c	subroutine public du module mod_numerique
 
-c	calcul, au point x, des dérivées jusqu'a l'ordre der du polynôme
-c	a0 + a1 x + ... +an x**n algorithme de horner
+c	calcul, au point x, des dérivées jusqu'à l'ordre der du polynôme
+c	a_0 + a_1 x + ... +a_n x**n algorithme de horner
 
 c	le tableau a est conservé
 

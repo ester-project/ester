@@ -1,32 +1,30 @@
 
 c*************************************************************************
 
-	SUBROUTINE tabul_nuc(ar,i3al,knot_temp,m_temp,
-	1 nom_reac,n_temp,q0,taux_reac,temp,ttemp)
+	SUBROUTINE tabul_nuc
 	
-c	routine private du module mod_nuc
+c routine private du module mod_nuc
 
-c	tabulation des rï¿½actions thermonuclï¿½aires (dï¿½rivï¿½ du programme
-c	tab_reac) le nom de la routine de rï¿½actions nuclï¿½aires
-c	(par Ex. pour ppcno9) dï¿½termine les rï¿½actions, les ï¿½lï¿½ments ï¿½
-c	utiliser l'intervalle de tempï¿½ratures pour la tabulation
+c tabulation des réactions thermonucléaires (dérivé du programme tab_reac)
+c le nom de la routine de réactions nucléaires
+c (par Ex. pour ppcno9) détermine les réactions, les éléments à
+c utiliser l'intervalle de températures pour la tabulation
 
-c	dans un premier appel ï¿½ taux_nuc on initialise les ï¿½nergies,
-c	les masses rï¿½duites etc... de toutes les nreac_tot rï¿½ac. nuclï¿½aires
-c	considï¿½rï¿½es, puis on ne garde que celles ï¿½ utiliser
+c dans un premier appel à taux_nuc on initialise les énergies,
+c les masses réduites etc... de toutes les nreac_tot réac. nucléaires
+c considérées, puis on ne garde que celles à utiliser
 
-c	des appels ï¿½ taux_reac_nuc calculent les taux, on tabule en f(ln T)
+c des appels à taux_reac_nuc calculent les taux, on tabule en f(ln T)
 
-c	les variables avec terminaison `t' telles que nucleot, zit etc..
-c	sont dimensionnï¿½es ï¿½ nreac_tot >= nreac car toutes les rï¿½actions
-c	ne sont pas toujours toutes utilisï¿½es, idem pour les ï¿½lï¿½ments
-c	chimiques
+c les variables avec terminaison `t' telles que nucleot, zit etc..
+c sont dimensionnées à nreac_tot >= nreac car toutes les réactions
+c ne sont pas toujours toutes utilisées, idem pour les éléments chimiques
 
-c	voir dans taux_reac la procï¿½dure pour ajouter des ï¿½lï¿½ments, des
-c	isotopes, des rï¿½actions
+c voir dans taux_nuc la procédure pour ajouter des éléments, des
+c isotopes, des réactions
 
-c	Auteur: P.Morel, Dï¿½partement J.D. Cassini, O.C.A.
-c	CESAM2k
+c Auteur: P.Morel, Département J.D. Cassini, O.C.A.
+c CESAM2k
 
 c--------------------------------------------------------------------
 
@@ -36,25 +34,19 @@ c--------------------------------------------------------------------
 	USE mod_numerique, ONLY : bsp1dn
 	
 	IMPLICIT NONE
-
-	REAL (kind=dp), INTENT(out), ALLOCATABLE, DIMENSION(:,:) ::
-	1 taux_reac
-	REAL (kind=dp), INTENT(out), ALLOCATABLE, DIMENSION(:) :: ar,
-	1 q0, temp, ttemp
-	INTEGER, INTENT(out) :: i3al, knot_temp, m_temp, n_temp
-	CHARACTER (len=20), INTENT(out), ALLOCATABLE, DIMENSION(:) ::
-	1 nom_reac
 	
 	REAL (kind=dp), DIMENSION(nreac_tot) :: rt, qt, at
 	REAL (kind=dp), DIMENSION(-1:niso_tot) :: nucleot, zit	
-	REAL (kind=dp) :: ti, t0, t1, pas
+	REAL (kind=dp) :: ti, pas
 
 	INTEGER, DIMENSION(nreac_tot,2) :: izzt
 	INTEGER, DIMENSION(nreac_tot) :: nb
 	INTEGER, DIMENSION(-1:niso_tot) :: ind
-	INTEGER :: total, i, j, nchim_reac
+	INTEGER :: i, j, nchim_reac, total
+	
+	LOGICAL :: lisse
 					
-	CHARACTER (len=4), DIMENSION(-1:niso_tot) :: nom_elemt 
+	CHARACTER (len=4), DIMENSION(-1:niso_tot) :: nom_elemt
 	CHARACTER (len=20), DIMENSION(nreac_tot) ::  nom_react
 
 c-----------------------------------------------------------------	 
@@ -62,10 +54,13 @@ c-----------------------------------------------------------------
 2000	FORMAT(8es10.3)
 2002	FORMAT(20i4)
 
-c	nchim_reac est le nombre d'isotopes utilisï¿½s dans les rï¿½actions
-c	nchim=nchim_reac + Ex, nchim est dï¿½fini dans la routine de
-c	rï¿½actions nuclï¿½aires, Ex: ppcno9
-c	PRINT*,nchim ; PAUSE'entrï¿½e tabul'
+c nchim_reac est le nombre d'isotopes utilisés dans les réactions
+c nchim=nchim_reac + Ex, nchim est défini dans la routine de
+c réactions nucléaires, Ex: ppcno9
+c pour éviter de reclasser les isotopes et de mettre Ex comme dernier
+c élément on a aussi nchim_reac=nchim, auquel cas l'indice de Ex est -1
+c exemple : ppcno10BeBFe
+c PRINT*,nchim ; PAUSE'entrée tabul'
 
 	SELECT CASE (langue)
 	CASE('english')
@@ -73,7 +68,7 @@ c	PRINT*,nchim ; PAUSE'entrï¿½e tabul'
 1001	 FORMAT('Thermonuclear reactions tabulated for : ',a20)	
 	CASE DEFAULT
 	 WRITE(2,1)nom_nuc ; WRITE(*,1)nom_nuc
-1	 FORMAT('Rï¿½actions nuclï¿½aires tabulï¿½es pour: ',a20)
+1	 FORMAT('Réactions nucléaires tabulées pour: ',a20)
 	END SELECT 
 	 
 	SELECT CASE(nom_nuc)
@@ -84,7 +79,7 @@ c	PRINT*,nchim ; PAUSE'entrï¿½e tabul'
 1002	  FORMAT('No tabulation for the thermonuclear reaction PP1',/)
 	 CASE DEFAULT		
 	  WRITE(2,2) ; WRITE(*,2) 	
-2	  FORMAT('Pas de tabulation de la rï¿½action PP1 simplifiï¿½',/)
+2	  FORMAT('Pas de tabulation de la réaction PP1 simplifié',/)
 	 END SELECT
 	 
 	CASE ('ppcno9','ppcno9Fe')
@@ -94,16 +89,15 @@ c	PRINT*,nchim ; PAUSE'entrï¿½e tabul'
 1003	  FORMAT('PP+CNO, 9 species, H2, Li7, Be7 at equilibrium',/)
 	 CASE DEFAULT	
 	  WRITE(2,3) ; WRITE(*,3) 
-3	  FORMAT('PP+CNO, 9 ï¿½lï¿½ments, H2, Li7, Be7 ï¿½ l''ï¿½quilibre',/)
+3	  FORMAT('PP+CNO, 9 éléments, H2, Li7, Be7 à l''équilibre',/)
 	 END SELECT
 	 	  
-c nombre de rï¿½actions et correspondance des indices
-	 nreac=14	!nombre de rï¿½actions	 
+c nombre de réactions et correspondance des indices
+	 nreac=14	!nombre de réactions	 
 	 nchim_reac=9
 	 ihe4=3	!indice de He4
-	 i3al=0	!indice de la rï¿½action 3 alpha
 
-c indices des isotopes utilisï¿½s dans les rï¿½actions 
+c indices, dans taux_nuc, des isotopes utilisés dans les réactions 
 	 ind(1)=1		!H1
 	 ind(2)=3		!He3	 
 	 ind(3)=4		!He4	 
@@ -114,11 +108,11 @@ c indices des isotopes utilisï¿½s dans les rï¿½actions
 	 ind(8)=12		!O16	 
  	 ind(9)=13		!O17
  	 
-c ordre des rï¿½actions: on garde l'ordre de reac_c 
+c ordre des réactions: on garde l'ordre de reac_c 
  	 nb(1:nreac)=(/ (i, i=1,nreac) /)
  	 
-c tempï¿½ratures max/min de tabulation
-	 t_inf=0.5d6 ; t_sup=100.d6 ; n_temp=201
+c températures max/min de tabulation
+	 t_inf=1.d6 ; t_sup=80.d6 ; lisse=.FALSE.
 	 
 	CASE ('pp3')
 	 SELECT CASE (langue)
@@ -127,25 +121,24 @@ c tempï¿½ratures max/min de tabulation
 1021	  FORMAT('PP, 3 species, H2, Li7, Be7 at equilibrium',/)
 	 CASE DEFAULT	
 	  WRITE(2,21) ; WRITE(*,21) 
-21	  FORMAT('PP, 3 ï¿½lï¿½ments, H2, Li7, Be7 ï¿½ l''ï¿½quilibre',/)
+21	  FORMAT('PP, 3 éléments, H2, Li7, Be7 à l''équilibre',/)
 	 END SELECT
 	 	  
-c nombre de rï¿½actions et correspondance des indices
-	 nreac=7	!nombre de rï¿½actions	 
+c nombre de réactions et correspondance des indices
+	 nreac=7	!nombre de réactions	 
 	 nchim_reac=3
 	 ihe4=3	!indice de He4
-	 i3al=0	!indice de la rï¿½action 3 alpha
 
-c indices des isotopes utilisï¿½s dans les rï¿½actions 
+c indices, dans taux_nuc, des isotopes utilisés dans les réactions 
 	 ind(1)=1		!H1
 	 ind(2)=3		!He3	 
 	 ind(3)=4		!He4	 
  	 
-c ordre des rï¿½actions: on garde l'ordre de reac_c 
+c ordre des réactions: on garde l'ordre de reac_c 
  	 nb(1:nreac)=(/ (i, i=1,nreac) /)
  	 
-c tempï¿½ratures max/min de tabulation
-	 t_inf=0.5d6 ; t_sup=80.d6 ; n_temp=201
+c températures max/min de tabulation
+	 t_inf=1.0d6 ; t_sup=40.d6 ; lisse=.FALSE.
 	  
 	CASE('ppcno10','ppcno10Fe','ppcno10K')
 	 SELECT CASE (langue)
@@ -154,16 +147,15 @@ c tempï¿½ratures max/min de tabulation
 1004	  FORMAT('PP+CNO, 10 species, H2, Be7 at equilibrium',/)
 	 CASE DEFAULT		
 	  WRITE(2,4) ; WRITE(*,4) 	
-4	  FORMAT('PP+CNO, 10 ï¿½lï¿½ments, H2, Be7 ï¿½ l''ï¿½quilibre',/)
+4	  FORMAT('PP+CNO, 10 éléments, H2, Be7 à l''équilibre',/)
 	 END SELECT
 	 	 
-c nombre de rï¿½actions et correspondance des indices 
-	 nreac=14	!nombre de rï¿½actions
+c nombre de réactions et correspondance des indices 
+	 nreac=14	!nombre de réactions
 	 nchim_reac=10	 
 	 ihe4=3		!indice de He4
-	 i3al=0		!indice de la rï¿½action 3 alpha
 	 	 
-c indices des isotopes utilisï¿½s dans les rï¿½actions
+c indices, dans taux_nuc, des isotopes utilisés dans les réactions
 	 ind(1)=1	!H1
 	 ind(2)=3	!He3 
  	 ind(3)=4	!He4
@@ -175,11 +167,11 @@ c indices des isotopes utilisï¿½s dans les rï¿½actions
  	 ind(9)=12	!O16
  	 ind(10)=13	!O17
 
-c ordre des rï¿½actions: on garde l'ordre de reac_c
+c ordre des réactions: on garde l'ordre de reac_c
 	 nb(1:nreac)=(/ (i, i=1,nreac) /)	 
  	 
-c tempï¿½ratures max/min de tabulation
-	 t_inf=0.5d6 ; t_sup=100.d6 ; n_temp=201
+c températures max/min de tabulation
+	 t_inf=0.5d6 ; t_sup=80.d6 ; lisse=.FALSE.
 	 
 	CASE('ppcno10BeBFe')
 	 SELECT CASE (langue)
@@ -188,16 +180,15 @@ c tempï¿½ratures max/min de tabulation
 1016	  FORMAT('PP + CNO + Be + B + Fe with H2 and Be7 at equilibrium',/)
 	 CASE DEFAULT	
 	  WRITE(2,16) ; WRITE(*,16) 	
-16	  FORMAT('PP + CNO + Be + B + Fe avec H2, Be7 ï¿½ l''ï¿½quilibre',/)
+16	  FORMAT('PP + CNO + Be + B + Fe avec H2, Be7 à l''équilibre',/)
 	 END SELECT
 	 
-c nombre de rï¿½actions et correspondance des indices 
-	 nreac=20	!nombre de rï¿½actions
+c nombre de réactions et correspondance des indices 
+	 nreac=20	!nombre de réactions
 	 nchim_reac=15	 
 	 ihe4=3		!indice de He4
-	 i3al=0		!indice de la rï¿½action 3 alpha
 	 
-c indices des isotopes utilisï¿½s dans les rï¿½actions
+c indices, dans taux_nuc, des isotopes utilisés dans les réactions
 	 ind(1)=1	!H1
 	 ind(2)=3	!He3 
  	 ind(3)=4	!He4
@@ -214,7 +205,7 @@ c indices des isotopes utilisï¿½s dans les rï¿½actions
  	 ind(14)=25	!Be9	 
  	 ind(15)=28	!B11
 	  
-c ordre des rï¿½actions
+c ordre des réactions
 	 nb(1:14)=(/ (i, i=1,14) /)	 
 	 nb(15)=39	!Be9(p,d)2He4
 	 nb(16)=41	!Li6(p,He3)He4
@@ -223,8 +214,8 @@ c ordre des rï¿½actions
  	 nb(19)=44	!B11(p,a)2He4
 	 nb(20)=45	!B11(p,g)C12
   	 
-c tempï¿½ratures max/min de tabulation
-	 t_inf=0.5d6 ; t_sup=100.d6 ; n_temp=201
+c températures max/min de tabulation
+	 t_inf=0.5d6 ; t_sup=80.d6 ; lisse=.FALSE.
 
 	CASE('ppcno11')
 	 SELECT CASE (langue)
@@ -233,16 +224,15 @@ c tempï¿½ratures max/min de tabulation
 1005	  FORMAT('PP+CNO, 11 species, Be7 at equilibrium',/)	
 	 CASE DEFAULT	
 	  WRITE(2,5) ; WRITE(*,5) 	
-5	  FORMAT('PP+CNO, 11 ï¿½lï¿½ments, Be7 ï¿½ l''ï¿½quilibre',/)	
+5	  FORMAT('PP+CNO, 11 éléments, Be7 à l''équilibre',/)	
 	 END SELECT
 	 
-c nombre de rï¿½actions et correspondance des indices 
-	 nreac=14	!nombre de rï¿½actions
+c nombre de réactions et correspondance des indices 
+	 nreac=14	!nombre de réactions
 	 nchim_reac=11	 
 	 ihe4=4		!indice de He4
-	 i3al=0		!indice de la rï¿½action 3 alpha
 	 	 
-c indices des isotopes utilisï¿½s dans les rï¿½actions
+c indices, dans taux_nuc, des isotopes utilisés dans les réactions
 	 ind(1)=1	!H1
 	 ind(2)=2	!H2
 	 ind(3)=3	!He3 
@@ -255,11 +245,11 @@ c indices des isotopes utilisï¿½s dans les rï¿½actions
  	 ind(10)=12	!O16
  	 ind(11)=13	!O17
  
-c ordre des rï¿½actions: on garde l'ordre de reac_c
+c ordre des réactions: on garde l'ordre de reac_c
 	 nb(1:nreac)=(/ (i, i=1,nreac) /)	 
  	 
-c tempï¿½ratures max/min de tabulation
-	 t_inf=0.5d6 ; t_sup=100.d6 ; n_temp=201	 
+c températures max/min de tabulation
+	 t_inf=0.5d6 ; t_sup=80.d6 ; lisse=.FALSE.	 
 		  
 	CASE('ppcno12')
 	 SELECT CASE (langue)
@@ -268,16 +258,15 @@ c tempï¿½ratures max/min de tabulation
 1006	  FORMAT('PP+CNO, 12 species',/)	
 	 CASE DEFAULT	
 	  WRITE(2,6) ; WRITE(*,6) 	
-6	  FORMAT('PP+CNO, 12 ï¿½lï¿½ments',/)
+6	  FORMAT('PP+CNO, 12 éléments',/)
 	 END SELECT
 	 
-c nombre de rï¿½actions et correspondance des indices 
-	 nreac=14	!nombre de rï¿½actions
+c nombre de réactions et correspondance des indices 
+	 nreac=14	!nombre de réactions
 	 nchim_reac=12	 
 	 ihe4=4		!indice de He4
-	 i3al=0		!indice de la rï¿½action 3 alpha
 	 	 
-c indices des isotopes utilisï¿½s dans les rï¿½actions
+c indices, dans taux_nuc, des isotopes utilisés dans les réactions
 	 ind(1)=1	!H1
 	 ind(2)=2	!H2
 	 ind(3)=3	!He3 
@@ -291,11 +280,11 @@ c indices des isotopes utilisï¿½s dans les rï¿½actions
  	 ind(11)=12	!O16
  	 ind(12)=13  	!O17
  
-c ordre des rï¿½actions: on garde l'ordre de reac_c
+c ordre des réactions: on garde l'ordre de reac_c
 	 nb(1:nreac)=(/ (i, i=1,nreac) /)	 
  	 
-c tempï¿½ratures max/min de tabulation
-	 t_inf=0.5d6 ; t_sup=100.d6 ; n_temp=201	 
+c températures max/min de tabulation
+	 t_inf=0.5d6 ; t_sup=80.d6 ; lisse=.FALSE.	 
 	
 	CASE('ppcno12Be')
 	 SELECT CASE (langue)
@@ -304,16 +293,15 @@ c tempï¿½ratures max/min de tabulation
 1007	  FORMAT('PP+CNO+Be9, 12 species+Be9',/)
 	 CASE DEFAULT	
 	  WRITE(2,7) ; WRITE(*,7) 	
-7	  FORMAT('PP+CNO+Be9, 12 ï¿½lï¿½ments+Be9',/)
+7	  FORMAT('PP+CNO+Be9, 12 éléments+Be9',/)
 	 END SELECT
 	 
-c nombre de rï¿½actions et correspondance des indices 
-	 nreac=16	!nombre de rï¿½actions
+c nombre de réactions et correspondance des indices 
+	 nreac=16	!nombre de réactions
 	 nchim_reac=13	 
 	 ihe4=4		!indice de He4
-	 i3al=0		!indice de la rï¿½action 3 alpha
  	 
-c indices des isotopes utilisï¿½s dans les rï¿½actions
+c indices, dans taux_nuc, des isotopes utilisés dans les réactions
 	 ind(1)=1	!H1
 	 ind(2)=2	!H2
 	 ind(3)=3	!He3 
@@ -328,13 +316,13 @@ c indices des isotopes utilisï¿½s dans les rï¿½actions
  	 ind(12)=13  	!O17
  	 ind(13)=25	!Be9
  
-c ordre des rï¿½actions: on garde l'ordre de reac_c
+c ordre des réactions: on garde l'ordre de reac_c
 	 nb(1:14)=(/ (i, i=1,14) /)	 
 	 nb(15)=39
 	 nb(16)=40
  	 
-c tempï¿½ratures max/min de tabulation
-	 t_inf=0.5d6 ; t_sup=100.d6 ; n_temp=201
+c températures max/min de tabulation
+	 t_inf=0.5d6 ; t_sup=80.d6 ; lisse=.FALSE.
 	 
 	CASE('ppcno12Li')
 	 SELECT CASE (langue)
@@ -343,16 +331,15 @@ c tempï¿½ratures max/min de tabulation
 1008	  FORMAT('PP+CNO+Li6, 12 species',/)	
 	 CASE DEFAULT	
 	  WRITE(2,8) ; WRITE(*,8) 	
-8	  FORMAT('PP+CNO+Li6, 12 ï¿½lï¿½ments',/)
+8	  FORMAT('PP+CNO+Li6, 12 éléments',/)
 	 END SELECT
 	 
-c nombre de rï¿½actions et correspondance des indices
-	 nreac=15	!nombre de rï¿½actions
+c nombre de réactions et correspondance des indices
+	 nreac=15	!nombre de réactions
 	 nchim_reac=13	 
 	 ihe4=4		!indice de He4
-	 i3al=0		!indice de la rï¿½action 3 alpha
 	 	 
-c indices des isotopes utilisï¿½s dans les rï¿½actions
+c indices, dans taux_nuc, des isotopes utilisés dans les réactions
 	 ind(1)=1	!H1
 	 ind(2)=2	!H2
 	 ind(3)=3	!He3 
@@ -367,12 +354,12 @@ c indices des isotopes utilisï¿½s dans les rï¿½actions
  	 ind(12)=13  	!O17
  	 ind(13)=26	!Li6
  
-c ordre des rï¿½actions: on garde l'ordre de reac_c
+c ordre des réactions: on garde l'ordre de reac_c
 	 nb(1:14)=(/ (i, i=1,14) /)	 
-	 nb(15)=41	!rï¿½action 41 Li6(p,He3)He4
+	 nb(15)=41	!réaction 41 Li6(p,He3)He4
  	 
-c tempï¿½ratures max/min de tabulation
-	 t_inf=0.5d6 ; t_sup=100.d6 ; n_temp=201	 
+c températures max/min de tabulation
+	 t_inf=0.5d6 ; t_sup=80.d6 ; lisse=.FALSE.	 
 
 	CASE('ppcno12BeBFe')
 	 SELECT CASE (langue)
@@ -381,16 +368,15 @@ c tempï¿½ratures max/min de tabulation
 1013	 FORMAT('PP + CNO + Be + B + Fe, none species at equilibrium',/)	
 	 CASE DEFAULT	
 	  WRITE(2,13) ; WRITE(*,13) 	
-13	  FORMAT('PP + CNO + Be + B + Fe, aucun ï¿½lï¿½ment ï¿½ l''ï¿½quilibre',/)
+13	  FORMAT('PP + CNO + Be + B + Fe, aucun élément à l''équilibre',/)
 	 END SELECT
 	 
-c nombre de rï¿½actions et correspondance des indices 
-	 nreac=20	!nombre de rï¿½actions
+c nombre de réactions et correspondance des indices 
+	 nreac=20	!nombre de réactions
 	 nchim_reac=17	 
 	 ihe4=4		!indice de He4
-	 i3al=0		!indice de la rï¿½action 3 alpha
 	 	 
-c indices des isotopes utilisï¿½s dans les rï¿½actions
+c indices, dans taux_nuc, des isotopes utilisés dans les réactions
 	 ind(1)=1	!H1
 	 ind(2)=2	!H2
 	 ind(3)=3	!He3 
@@ -409,7 +395,7 @@ c indices des isotopes utilisï¿½s dans les rï¿½actions
  	 ind(16)=27	!Fe56	 
  	 ind(17)=26	!Li6
 	 
-c ordre des rï¿½actions
+c ordre des réactions
 	 nb(1:14)=(/ (i, i=1,14) /)	 
 	 nb(15)=39	!Be9(p,d)2He4
 	 nb(16)=41	!Li6(p,He3)He4
@@ -418,9 +404,9 @@ c ordre des rï¿½actions
  	 nb(19)=44	!B11(p,a)2He4
 	 nb(20)=45	!B11(p,g)C12
   	 
-c tempï¿½ratures max/min de tabulation
-
-	 t_inf=0.5d6 ; t_sup=100.d6 ; n_temp=201
+c températures max/min de tabulation
+	 t_inf=0.5d6 ; t_sup=80.d6 ; lisse=.FALSE.
+	 
 	CASE('ppcno3a9')
 	 SELECT CASE (langue)
 	 CASE('english')
@@ -428,16 +414,16 @@ c tempï¿½ratures max/min de tabulation
 1009	  FORMAT('PP+CNO+3alpha, 9 species, H2, Li7, Be7 at quilibrium',/)
 	 CASE DEFAULT	
 	  WRITE(2,9) ; WRITE(*,9) 	
-9	  FORMAT('PP+CNO+3al, 9 ï¿½lï¿½ments, H2, Li7, Be7 ï¿½ l''ï¿½quilibre',/)
+9	  FORMAT('PP+CNO+3al, 9 éléments, H2, Li7, Be7 à l''équilibre',/)
 	 END SELECT
 	 
-c nombre de rï¿½actions et correspondance des indices
-	 nreac=17	!nombre de rï¿½actions
+c nombre de réactions et correspondance des indices
+	 nreac=17	!nombre de réactions
 	 nchim_reac=9	 
 	 ihe4=3		!indice de He4
-	 i3al=15	!indice de la rï¿½action 3 alpha
+	 i3al=15	!indice de la réaction 3 alpha
 
-c indices des isotopes utilisï¿½s dans les rï¿½actions
+c indices, dans taux_nuc, des isotopes utilisés dans les réactions
 	 ind(1)=1		!H1
 	 ind(2)=3		!He3	 
 	 ind(3)=4		!He4	 
@@ -448,31 +434,29 @@ c indices des isotopes utilisï¿½s dans les rï¿½actions
 	 ind(8)=12		!O16	 
  	 ind(9)=13		!O17
  	 
-c ordre des rï¿½actions: on garde l'ordre de reac_c 
+c ordre des réactions: on garde l'ordre de reac_c 
  	 nb(1:nreac)=(/ (i, i=1,nreac) /)	 
  	 
-c tempï¿½ratures max/min de tabulation
-	 t_inf=0.5d6 ; t_sup=200.d6 ; n_temp=301	 
-	  
-	CASE('ppcno3ac10')
+c températures max/min de tabulation
+	 t_inf=1.0d6 ; t_sup=500.d6 ; lisse=.TRUE.	 
+	  	 
+	CASE('ppcno3a12Ne') 
 	 SELECT CASE (langue)
 	 CASE('english')
-	  WRITE(2,1010) ; WRITE(*,1010) 	
-1010	  FORMAT('PP+CNO+3al+C, 10 species, H2, Li7, Be7 at equilibrium',
-	1 /,'CAUTION : C12(C12,a)O16 ignored')	
+	  WRITE(2,1022) ; WRITE(*,1022) 	
+1022	  FORMAT('PP+CNO+3al+C, 12 species, H2, Li7, Be7 at equilibrium')
 	 CASE DEFAULT	
-	  WRITE(2,10) ; WRITE(*,10) 	
-10	  FORMAT('PP+CNO+3al+C, 10 ï¿½lï¿½ments, H2, Li7, Be7 en ï¿½quilibre',
-	1 /,'ATTENTION : C12(C12,a)O16 pas prise en compte dans taux_nuc')
+	  WRITE(2,22) ; WRITE(*,22) 	
+22	  FORMAT('PP+CNO+3al+C, 12 éléments, H2, Li7, Be7 en équilibre')
 	 END SELECT
 	 
-c nombre de rï¿½actions et correspondance des indices
-	 nreac=23	!nombre de rï¿½actions
-	 nchim_reac=10	 
+c nombre de réactions et correspondance des indices
+	 nreac=25	!nombre de réactions
+	 nchim_reac=12	 
 	 ihe4=3		!indice de He4
-	 i3al=15	!indice de la rï¿½action 3 alpha
+	 i3al=15	!indice de la réaction 3 alpha
 
-c indices des isotopes utilisï¿½s dans les rï¿½actions 
+c indices, dans taux_nuc, des isotopes utilisés dans les réactions 
 	 ind(1)=1		!H1
 	 ind(2)=3		!He3	 
 	 ind(3)=4		!He4	 
@@ -483,14 +467,62 @@ c indices des isotopes utilisï¿½s dans les rï¿½actions
 	 ind(8)=12		!O16	 
  	 ind(9)=13		!O17
  	 ind(10)=16		!Ne20
+	 ind(11)=-1		!Ex
+	 ind(12)=14		!O18
+	 
+c ordre des réactions: on garde l'ordre de reac_c
+ 	 nb(1:17)=(/ (i, i=1,17) /)
+	 nb(18)=32 ; nb(19)=33 ; nb(20)=24 ; nb(21)=28 ; nb(22)=29
+	 nb(23)=18 ; nb(24)=20 ; nb(25)=21
  	 
-c ordre des rï¿½actions: on garde l'ordre de reac_c
- 	 nb(1:22)=(/ (i, i=1,22) /)	 
-	 nb(23)=29
- 	 
-c tempï¿½ratures max/min de tabulation
-	 t_inf=0.5d6 ; t_sup=300.d6 ; n_temp=401	 
-	  
+c températures max/min de tabulation
+	 t_inf=1.0d6 ; t_sup=0.8d9 ; lisse=.TRUE.
+	 	 
+	CASE('ppcno3aco') 
+	 SELECT CASE (langue)
+	 CASE('english')
+	  WRITE(2,1027) ; WRITE(*,1027) 	
+1027	  FORMAT('PP+CNO+3al+C+0, 17 species, H2, Li7, Be7 at equilibrium')
+	 CASE DEFAULT	
+	  WRITE(2,27) ; WRITE(*,27) 	
+27	  FORMAT('PP+CNO+3al+C+O, 17 éléments, H2, Li7, Be7 en équilibre')
+	 END SELECT
+
+c nombre de réactions et correspondance des indices
+	 nreac=33	!nombre de réactions
+	 nchim_reac=17	 
+	 ihe4=3		!indice de He4
+	 i3al=15	!indice de la réaction 3alpha
+
+c indices, dans taux_nuc, des isotopes utilisés dans les réactions 
+	 ind(1)=1		!H1
+	 ind(2)=3		!He3	 
+	 ind(3)=4		!He4	 
+ 	 ind(4)=7		!C12
+	 ind(5)=8		!C13	 
+	 ind(6)=10		!N14
+	 ind(7)=11		!N15	 
+	 ind(8)=12		!O16	 
+ 	 ind(9)=13		!O17
+	 ind(10)=-1		!Ex	 
+ 	 ind(11)=16		!Ne20
+	 ind(12)=23		!Na23
+	 ind(13)=18		!Mg24
+	 ind(14)=30		!Al27	 	 
+	 ind(15)=29		!Si28
+	 ind(16)=32		!P31	 
+	 ind(17)=31		!S32
+	 	 
+c correspondance de l'ordre des réactions ppcno3acos <---> taux_nuc
+ 	 nb(1:17)=(/ (i, i=1,17) /)
+	 nb(18)=29 ; nb(19)=18 ; nb(20)=20 ; nb(21)=21 ; nb(22)=56
+	 nb(23)=57 ; nb(24)=48 ; nb(25)=50 ; nb(26)=51 ; nb(27)=52
+	 nb(28)=54 ; nb(29)=55 ; nb(30)=58 ; nb(31)=22 ; nb(32)=47
+ 	 nb(33)=64 
+	 
+c températures max/min de tabulation
+	 t_inf=1.0d6 ; t_sup=3.0d9 ; lisse=.TRUE.
+	 	 	 	  
 	CASE DEFAULT
 	 SELECT CASE (langue)
 	 CASE('english')
@@ -499,27 +531,40 @@ c tempï¿½ratures max/min de tabulation
 	1 'known routines :')
 	 CASE DEFAULT
 	  WRITE(2,17)nom_nuc ; WRITE(*,17)nom_nuc
-17	  FORMAT('ARRET, routine de rï¿½actions nuclï¿½aires inconnue : ',a,/,
+17	  FORMAT('ARRET, routine de réactions nucléaires inconnue : ',a,/,
 	1 'routines connues :')
 	 END SELECT
 	 WRITE(2,18) ; WRITE(*,18) ; STOP	
 18	 FORMAT('pp1, pp3, ppcno9, ppcno10, ppcno10Fe, ppcno10K, ppcno11',/,
-	1 'ppcno12, ppcno12Be, ppcno12Li, ppcno3a9, ppcno3ac10')
+	1 'ppcno12, ppcno12Be, ppcno12Li, ppcno3a9, ppcno3a12Ne, ppcno3aco')
 	END SELECT
 	
-c on limite t_stop ï¿½ 0.95 t_sup pour ï¿½viter des dï¿½passements de tabulation
+c 200 points de tabulation par 100d6 K, sauf pour PP1
+	IF(TRIM(nom_nuc) /= 'pp1')THEN	
+	 n_temp=NINT(t_sup*1.d-6)*2
+	 SELECT CASE (langue)
+	 CASE('english')
+	  WRITE(2,1024)n_temp,t_inf,t_sup ; WRITE(*,1024)n_temp,t_inf,t_sup
+1024	  FORMAT('Number of tabulated  points : ',i5,' from',es10.3,'K to',
+	1 es10.3,'K')
+	 CASE DEFAULT
+	  WRITE(2,24)n_temp,t_inf,t_sup ; WRITE(*,24)n_temp,t_inf,t_sup
+24	  FORMAT('Nombre de points de tabulation : ',i5,' de',es10.3,'K à',
+	1 es10.3,'K')
+	 END SELECT
+	ENDIF
+	
+c on limite t_stop à 0.95 t_sup pour éviter des dépassements de tabulation
+c t_stop est lu dans mon_modele.don
 	t_stop=MIN(0.95d0*t_sup,t_stop)
 
-
-c sï¿½lection du type de compilation ï¿½ utiliser	
+c sélection du type de compilation à utiliser	
 	SELECT CASE(nom_nuc_cpl)
 	CASE('Cau-Fow')
 	 total=0
 	CASE('Adelb')
 	 total=1	
 	CASE('NACRE')
-	 total=2	
-	CASE('NACRE_LUNA')
 	 total=2	
 	CASE DEFAULT
 	 SELECT CASE (langue)
@@ -529,29 +574,27 @@ c sï¿½lection du type de compilation ï¿½ utiliser
 	1 a,/,'known compilations :')
 	 CASE DEFAULT	
 	  WRITE(2,19)nom_nuc_cpl ; WRITE(*,19)nom_nuc_cpl	
-19	  FORMAT('ARRET, compilation de rï¿½actions nuclï¿½aires inconnue : ',
+19	  FORMAT('ARRET, compilation de réactions nucléaires inconnue : ',
 	1 a,/,'compilations connues :')
 	END SELECT	 
 	WRITE(2,20) ; WRITE(*,20) ; STOP
 20	FORMAT('Cau-Fow, Adelb, NACRE')	
 	END SELECT
 
-c	initiations (ti=20.d6) des ï¿½nergies: q0, masses rï¿½duites: ar,
-c	masses des noyaux: nucleo, charges des noyaux: zi
-c	charges des noyaux Z1, Z2 des noyaux de la rï¿½action : izz
-c	noms des rï¿½action: nom_reac 	
-c	appel pour remplir le common/reac_nuc/
-c	identification des q, nom_reac, z1, z2
-
-	ALLOCATE(q0(nreac),ar(nreac),nom_reac(nreac),izz(nreac,2),
+c initialisations (ti=20.d6) des énergies: q0, masses réduites: ar,
+c masses des noyaux: nucleo, charges des noyaux: zi
+c charges des noyaux Z1, Z2 des noyaux de la réaction : izz
+c noms des réactions: nom_react 	
+c appel pour remplir le common/reac_nuc/
+c identification des q, nom_react, z1, z2
+	ALLOCATE(q0(nreac),ar(nreac),izz(nreac,2),
 	1 nom_elem(nchim),nucleo(nchim),zi(nchim))
 	
-	ti=20.d6 ; CALL taux_nuc(ti,total,rt,zit,izzt,qt,nom_react,
-	1 nucleot,at,nom_elemt)	
+	ti=20.d6 ; CALL taux_nuc(ti,total,rt,zit,izzt,qt,nom_react,nucleot,
+	1 at,nom_elemt)	
 	DO i=1,nreac
-	 q0(i)=qt(nb(i))*eve*1.d6/amu	!ï¿½nergie des rï¿½ac. en erg/rï¿½action
-	 ar(i)=at(nb(i)) ; nom_reac(i)=nom_react(nb(i))
-	 izz(i,:)=izzt(nb(i),:)
+	 q0(i)=qt(nb(i))*eve*1.d6/amu	!énergie des réac. en erg/réaction
+	 ar(i)=at(nb(i)) ; izz(i,:)=izzt(nb(i),:)
 	ENDDO
 	
 	DO i=1,nchim_reac	 
@@ -559,22 +602,18 @@ c	identification des q, nom_reac, z1, z2
 	 zi(i)=zit(ind(i))
 	ENDDO
 
-c tabulation des points en ln(tempï¿½rature)
-
-	t0=LOG(t_inf) ; t1=LOG(t_sup)
-	
+c tabulation des points en ln(température)	
 	ALLOCATE(temp(n_temp))
-	pas=(t1-t0)/DFLOAT(n_temp-1)
+	pas=(t_sup-t_inf)/REAL(n_temp-1,dp)
 	DO i=1,n_temp
-	 temp(i)=t0+pas*REAL(i-1)	 
+	 temp(i)=t_inf+pas*REAL(i-1,dp)	 
 c	 WRITE(*,2000)temp(i),EXP(t(i))
 	ENDDO
 
-c tabulation des rï¿½actions
-
+c tabulation des réactions
 	ALLOCATE(taux_reac(nreac,n_temp))
 	DO i=1,n_temp
-	 CALL taux_nuc(EXP(temp(i)),total,rt,zit,izzt,qt,nom_react,
+	 CALL taux_nuc(temp(i),total,rt,zit,izzt,qt,nom_react,
 	1 nucleot,at,nom_elemt)
 	 DO j=1,nreac
 	  taux_reac(j,i)=rt(nb(j))
@@ -583,33 +622,36 @@ c	 WRITE(*,2000)temp(i),EXP(temp(i)),rt(1) ; WRITE(*,2000)rt(2:9)
 c	 WRITE(*,2000)rt(10:17)
 	ENDDO	!i
 	
-	m_temp=4 ; ALLOCATE(ttemp(n_temp+m_temp))
+	ALLOCATE(ttemp(n_temp+m_temp))
+	temp=LOG(temp)
 	CALL bsp1dn(nreac,taux_reac,temp,ttemp,n_temp,m_temp,knot_temp,
-	1 .FALSE.,temp(1),j,rt,qt)		!rt, qt: Vt
+	1 .FALSE.,temp(1),j,rt,qt,lisse)		!rt, qt: Vt
 	
-c ï¿½critures diverses	 
+c écritures diverses	 
 	SELECT CASE (langue)
 	CASE('english')
 	 WRITE(2,1011) ; WRITE(*,1011)
-1011	 FORMAT(/,'isotopes employed :')	
-	 WRITE(2,14)nom_elem(1:nchim_reac)
-	 WRITE(*,14)nom_elem(1:nchim_reac)
-14	 FORMAT(a4)  
-	 WRITE(2,1012) ; WRITE(*,1012)
-1012	 FORMAT(/,'thermonuclear reactions at work :')
+1011	 FORMAT(/,'isotopes employed :')
 	CASE DEFAULT
 	 WRITE(2,11) ; WRITE(*,11)
-11	 FORMAT(/,'isotopes utilisï¿½s dans les rï¿½actions :')	
-	 WRITE(2,14)nom_elem(1:nchim_reac)
-	 WRITE(*,14)nom_elem(1:nchim_reac) 
+11	 FORMAT(/,'isotopes utilisés dans les réactions :')
+	END SELECT	
+	DO i=1,nchim_reac
+	 WRITE(*,15)i,nom_elem(i) ; WRITE(2,15)i,nom_elem(i)
+15	 FORMAT(i3,' : ',a)
+	ENDDO
+
+	SELECT CASE (langue)
+	CASE('english')	
+	 WRITE(2,1012) ; WRITE(*,1012)
+1012	 FORMAT(/,'thermonuclear reactions at work :')
+	CASE DEFAULT	  
 	 WRITE(2,12) ; WRITE(*,12)
-12	 FORMAT(/,'rï¿½actions nuclï¿½aires utilisï¿½es :')
+12	 FORMAT(/,'réactions nucléaires utilisées :')
 	END SELECT	
 	DO i=1,nreac
-	 WRITE(2,15)nom_reac(i) ; WRITE(*,15)nom_reac(i)
-15	 FORMAT(a20)	  	  
-	ENDDO
-	WRITE(2,*) ; WRITE(*,*)
+	 WRITE(*,15)i,nom_react(nb(i)) ; WRITE(2,15)i,nom_react(nb(i))
+	ENDDO	
 		
 	RETURN
 	 

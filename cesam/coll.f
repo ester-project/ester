@@ -1,14 +1,12 @@
 
 	SUBROUTINE coll(x,n,m,xcoll)
 
-c	routine public du module mod_numerique
+c routine public du module mod_numerique
 	
-c	détermination des abscisses des points de collocation
-c	de de Boor pour l'intégration des équations différentielles
-
-c	il y a (n-1)*m points de collocation
-
-c	dérivée de colloc.f
+c détermination des abscisses des points de collocation
+c de de Boor pour l'intégration des équations différentielles
+c il y a (n-1)*m points de collocation
+c dérivée de colloc.f
 
 c entrées:
 c	m: ordre des splines
@@ -18,8 +16,8 @@ c	x: abscisses des points de raccord
 c sorties
 c	xcoll: table des points de collocation
 
-c	Auteur: P.Morel, Département J.D. Cassini, O.C.A.
-c	cesam2D
+c Auteur: P.Morel, Département J.D. Cassini, O.C.A.
+c cesam2k
 
 c------------------------------------------------------------------
 
@@ -47,8 +45,7 @@ c	WRITE(*,2000)x
 c	PRINT*,ncoll,n,m ; WRITE(*,2000)xcoll
 	CALL shell(ncoll,xcoll)
 	
-c	verification de la stricte croissance de la suite des xcoll
-
+c vérification de la stricte croissance de la suite des xcoll
 	DO i=1,ncoll-1
 	 IF(xcoll(i) >= xcoll(i+1))THEN
 	  PRINT*,'dans coll la suite des points de collocation n''est pas',

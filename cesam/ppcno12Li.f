@@ -86,8 +86,8 @@ c	Ex : 14
 
 c----------------------------------------------------------------
 
-	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, ihe4,
-	1 langue, nchim, nom_elem, nom_xheavy, nucleo, rot_solid,
+	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, fmin_abon, ihe4, ili7,
+	1 i_ex, langue, nchim, nom_elem, nom_xheavy, nucleo,
 	2 secon6, t_inf, x0, y0, zi, z0
 	USE mod_kind
 	USE mod_numerique, ONLY : gauss_band
@@ -127,11 +127,10 @@ c	initialisations
 	SELECT CASE(fait)
 	CASE(0)
 
-c	 définition de nchim: nombre d'éléments chimiques dont on
-c	 calcule l'abondance H1, H2, He3, He4, Li7, Be7, C13, C13,
-c	 N14, N15, O16, O17, Li6, Ex
-
-	 nchim=13+1
+c définition de nchim: nombre d'éléments chimiques dont on
+c calcule l'abondance H1, H2, He3, He4, Li7, Be7, C13, C13,
+c N14, N15, O16, O17, Li6, Ex
+	 nchim=13+1 ; ili7=5
 
 c	 appel d'initialisation pour tabulation des réactions nucléaires
 c	 allocations fictives
@@ -167,6 +166,7 @@ c	 Ex : élément fictif moyenne des éléments # Li + CNO
 10	 FORMAT(i2)
 
 c élément fictif
+	 i_ex=nchim		!indice de l'élément chimique reliquat
 	 nucleo(nchim)=mass_ex	!nucleo de l'élément chimique reliquat
 	 zi(nchim)=charge_ex	!charge de l'élément chimique reliquat
        i = nint(charge_ex)
@@ -271,7 +271,7 @@ c	 ab_min(2)=1.d-20	!H2
 c	 ab_min(3)=5.d-7	!He3
 c	 ab_min(4)=1.d-3	!He4
 c	 ab_min(5)=1.d-14	!Li7
-c	 ab_min(6)=1.d-17	!Be7
+c	 ab_min(6)=1.d-14	!Be7
 c	 ab_min(7)=5.d-6	!C12
 c	 ab_min(8)=1.d-7	!C13
 c	 ab_min(9)=1.d-6	!N14
@@ -281,7 +281,7 @@ c	 ab_min(12)=5.d-9	!O17
 c	 ab_min(13)=5.d-15	!Li6
 c	 ab_min(14)=1.d-6	!Ex
 	 
-	 ab_min=ab_ini*1.d-2
+	 ab_min=ab_ini*1.d-2	; ab_min(6)=1.d-14
 	 
 c	 nombre/volume des métaux dans Z
 		
@@ -452,7 +452,7 @@ c	1 +r(4)*comp(4))*comp(3)+r(15)*comp(1)*comp(13)		!He3
 
 	  jac(3,1)=r(2)*comp(2)+r(15)*comp(13)		!d /H1
 	  jac(3,2)=r(2)*comp(1)				!d /H2
-	  jac(3,3)=-2.d0*r(3)*comp(3)-r(4)*comp(4)	!d /He3
+	  jac(3,3)=-4.d0*r(3)*comp(3)-r(4)*comp(4)	!d /He3
 	  jac(3,4)=-r(4)*comp(3)			!d /He4
 	  jac(3,13)=r(15)*comp(1)			!d /Li6	 
 	 

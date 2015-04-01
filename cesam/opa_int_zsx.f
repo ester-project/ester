@@ -3,16 +3,15 @@ c*************************************************************************
 
       SUBROUTINE opa_int_zsx(xh,t,ro,kappa,dkapdt,dkapdr,dkapdx)
 
-c     routine public du module mod_opacite
+c routine private du module mod_opacite
 
-c     approximation 4D de l'opacité et dérivées
-c     données d'Yveleine Lebreton et Joao Fernandez DASGAL
-c     tables OPAL raccordées Kurucz
+c approximation 4D de l'opacité et dérivées
+c données d'Yveleine Lebreton et Joao Fernandez DASGAL
+c tables OPAL raccordées Kurucz
 
-c     Auteur: P. Morel, Département J.D. Cassini, O.C.A.
-c     CESAM2k
+c Auteur: P. Morel, Département J.D. Cassini, O.C.A., CESAM2k
 
-c     correction du dkapdx , (signalé par, S. Brun) 26 10 96
+c correction du dkapdx , (signalé par, S. Brun) 26 10 96
 
 c entrées :
 c     xh(1)=X : comp. chim. en H
@@ -25,11 +24,11 @@ c     dkapdt : kappa / d t
 c     dkapdr : kappa / d densité              
 c     dkapdx : kappa / d xh(1)
 
-c     Z est obtenu par 1-X-Y
+c Z est obtenu par 1-X-Y
 
-c     Abondances consistantes avec le Z de Grevesse 91:
-c     He3=4.2d-5, C12=3.2962d-3, C13=6.0474d-5
-c     N14=9.7897d-4, N15=3.4939d-6, O16=9.5225d-3, O17=6.3402d-06
+c Abondances consistantes avec le Z de Grevesse 91:
+c He3=4.2d-5, C12=3.2962d-3, C13=6.0474d-5
+c N14=9.7897d-4, N15=3.4939d-6, O16=9.5225d-3, O17=6.3402d-06
 
 c----------------------------------------------------------------
 
@@ -2408,20 +2407,16 @@ c     table: DATA/klgx70z030.dat
       IF(init)THEN
        init=.FALSE.
 
-c      on passe les log en ln
-
+c on passe les log en ln
        lrt=lrt*ln10 ; kap=kap*ln10
 
-c      nombre de T, R, X, Z
-
+c nombre de T, R, X, Z
        nt=72 ; nr=19 ; nx=3 ; nz=3
 
-c      on admet un petit dépassement en Z
-	 
+c on admet un petit dépassement en Z 
        z_tab_lim=zt(pnz)*1.1d0
 
-c      extrapolation en X=.8 par la formule de Neville
-
+c extrapolation en X=.8 par la formule de Neville
        xx=0.8d0 ; x(0)=xt(2) ; x(1)=xt(3) ; ni=1  !degre du polynome
        DO ir=1,nr
         DO it=1,nt

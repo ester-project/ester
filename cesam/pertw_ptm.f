@@ -1,26 +1,25 @@
 	
 c************************************************************************
 
-         SUBROUTINE pertw_ptm(nu,r,mw_dot)
+         SUBROUTINE pertw_ptm(r,mw_dot)
 
-c	routine du calcul de la perte/gain de moment cinétique lié à la
-c	perte de masse
+c calcul de la perte de moment cinétique due à la perte de masse
+c ne concerne que la ZC ext
 
-c	routine private du module mod_evol
+c routine private du module mod_evol
 
-c	Auteur: P.Morel, Département Cassiopée, O.C.A.
-c	CESAM2k
+c Auteur: P.Morel, Département Cassiopée, O.C.A., CESAM2k
 
 c----------------------------------------------------------------
 
-	USE mod_donnees, ONLY : langue, mdot, pw_extend, p_pertw,
-	1 rsol, secon6
+	USE mod_donnees, ONLY : langue, mdot, p_pertw, rsol, secon6
 	USE mod_kind
-	USE mod_variables, ONLY : mstar
+	USE mod_nuc, ONLY : mzc_ext
+	USE mod_variables, ONLY : dim_rot, mstar, rota
 	
 	IMPLICIT NONE
 	
-	REAL (kind=dp), INTENT(in) :: nu, r	
+	REAL (kind=dp), INTENT(in) :: r	
 	REAL (kind=dp), INTENT(out) :: mw_dot
 	
 	REAL (kind=dp),	SAVE :: coef
@@ -29,35 +28,30 @@ c----------------------------------------------------------------
 		
 c---------------------------------------------------------------- 
 
-c	il ne peut y avoir que des apports de moment cinétique
-
-	IF(mdot <= 0.d0)THEN
-	 mw_dot=0.d0 ; RETURN
-	ENDIF
-
 	IF(init)THEN
-	 init=.FALSE.	 
+	 init=.FALSE.
+	 
+c il ne peut y avoir que des pertes de moment cinétique
+	 lw_perte = mdot <= 0.d0
+	 IF(.NOT.lw_perte)RETURN
+	 	 
 	 SELECT CASE(langue)
 	 CASE('english')
-	  WRITE(*,1000)p_pertw,pw_extend ; WRITE(2,1000)
+	  WRITE(*,1000)p_pertw ; WRITE(2,1000)p_pertw
 1000	  FORMAT('The ang. momentum change due to the mass loss',/,
-	1   'input of ang. momentum=',es10.3,', in m/Mtot :',es10.3)
+	1 'loss of ang. momentum=',es10.3,', in the external ZC.')
 	 CASE DEFAULT	 
-	  WRITE(*,1)p_pertw,pw_extend ; WRITE(2,1)p_pertw,pw_extend
+	  WRITE(*,1)p_pertw ; WRITE(2,1)p_pertw
 1	  FORMAT('Variation de moment cinétique dû à la perte de masse',/,
-	1   'input de moment cinétique :',es10.3,', répartit sur m/Mtot :',
-	2   es10.3)
+	1 'perte de moment cinétique :',es10.3,', dans la ZC externe')
 	 END SELECT
-	 mlim_w=(mstar*(1.d0-pw_extend))**(2.d0/3.d0)
-	 coef=p_pertw*mdot/secon6/mlim_w
+	 
+c 1.d6/secon6 nombre de sec/an	 
+	 coef=mdot*1.d6/secon6*rsol**2
 	ENDIF
 
-c	en deça de mlim_w il n'y a pas d'apport de moment cinétique
-	IF(nu < mlim_w)THEN
-	 mw_dot=0.d0
-	ELSE
-	 mw_dot=coef*(r*rsol)**2
-	ENDIF
+c perte de moment cinétique Msol/Myr
+	mw_dot=coef/mzc_ext*r**2*rota(1,dim_rot)
 	
 	RETURN
 	

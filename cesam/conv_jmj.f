@@ -94,9 +94,8 @@ c----------------------------------------------------------------------------
 	alpha4=ksi*alpha**4
 	b=alpha4*gravite/krad**2*hp**3*delta*(ro*cp)**2
 
-c	racine réelle de la cubique par newton raphson
-c	search of the real root of the cubic by newton raphson algorithm
-
+c racine réelle de la cubique par newton raphson
+c search of the real root of the cubic using newton raphson algorithm
 c	WRITE(*,*)'ksi,gravité,delta,ro,cp,krad,hp,b,gradrad,gradad'
 c	WRITE(*,2000)ksi,gravite,delta,ro,cp,krad,hp,b,
 c	1 gradrad,gradad
@@ -104,7 +103,7 @@ c	1 gradrad,gradad
 	gradmd=gradrad-gradad
 	a0=b*gradmd			!B*gradrad-gradad
 
-	gam=abs(a0/phi)**(1.d0/3.d0)	!initialisation de la racine
+	gam=ABS(a0/phi)**(1.d0/3.d0)	!initialisation de la racine
 	iter=0
 	
 	B1: DO
@@ -144,7 +143,7 @@ c	 WRITE(*,*)'gam,corr,b' ; WRITE(*,2000)gam,corr,b
 
 	 gam=gam-corr	 	!algorithme de Newton Raphson
 	 IF(gam == 0.d0)EXIT B1
-	 IF(abs(corr/gam) < epsi)EXIT B1		!test arret	  
+	 IF(ABS(corr/gam) < epsi)EXIT B1		!test arret	  
 	ENDDO B1
 	  
 	IF(gam /= 0.d0)THEN

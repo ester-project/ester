@@ -1,7 +1,7 @@
 	
 c******************************************************************      
       
-	SUBROUTINE static (fait,cx,li,y,be,ae,compt,dt,reprend,ip)
+	SUBROUTINE static(fait,cx,li,y,be,ae,compt,dt,reprend,ip)
 
 c	subroutine générique du calcul des coefficients de l'équilibre
 c	quasi-statique

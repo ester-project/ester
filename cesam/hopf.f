@@ -4,7 +4,7 @@ c****************************************************************
 	SUBROUTINE hopf(tau,teff,t,dtsdtau,dtsdteff,dtsdg,
 	1 ro_ext,dro_grav,dro_teff,f_tau,df_tau,d2f_tau)
 
-c	routine private du module mod_tdetau
+c	routine private du module mod_atm
 
 c	loi t(tau) de hopf Mihalas stellar atmospheres (3.16) p. 55 et 72
 
@@ -49,7 +49,6 @@ c----------------------------------------------------------------------
 	REAL (kind=dp), SAVE, DIMENSION(1,pm) :: qs
 	REAL (kind=dp), DIMENSION(mx,0:mx-1) :: fx
 	REAL (kind=dp), PARAMETER :: ro_ext0=3.55d-9
-c$$$	REAL (kind=dp), PARAMETER :: ro_ext0=9.99d-12
 	REAL (kind=dp), SAVE :: cte1
 
 	INTEGER, SAVE :: l=1, knot

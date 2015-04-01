@@ -25,13 +25,15 @@ c     x: abscisses
 c     n: nombre  de points
 c     m: ordre des splines
 c     xx: point d'interpolation
-c     contour(présent) et .TRUE. création du vecteur nodal pour lissage par contour
+c     init=.TRUE. : les coefficients sont connus
+c     contour(présent) et .TRUE. création du vecteur nodal pour lissage
+c     par contour
 
 c entrées/sorties
 c     f(nf,n): fonctions a interpoler / coefficients des splines
-c     xt(2m+n-2): points de raccord
+c     xt(m+n): points de raccord
 c     l: localisation
-c     knot: nb de noeuds
+c     knot=m+n: nb de noeuds
 
 c sorties
 c     fx, dfdx: fonctions, dérivées 1-ières
@@ -66,17 +68,15 @@ c----------------------------------------------------------------
 
 2000	FORMAT(8es10.3)
 
-c	si contour est présent et est .TRUE. lissage par contour
-c	il n'y a que création du vecteur nodal	
-
+c si contour est présent et est .TRUE. lissage par contour
+c il n'y a que la création du vecteur nodal	
 	IF(PRESENT(contour))THEN
 	 cont=contour
 	ELSE
 	 cont=.FALSE.
 	ENDIF
 
-c     initialisation des B-splines
-
+c initialisation des B-splines
 	IF(.NOT.init)THEN
 	 CALL noein(x,xt,n,m,knot) ; IF(no_croiss .OR. cont)RETURN
 	 ALLOCATE(a(n,m),indpc(n))       
@@ -97,7 +97,7 @@ c     initialisation des B-splines
 	 DEALLOCATE(a,indpc)
 	ENDIF   !initialisation des B-splines
 
-c     localisation de xx
+c localisation de xx
 	xx1=xx
 	no_croiss=xx1 < xt(1) .OR. xx1 > xt(knot)
 	IF(no_croiss)THEN
@@ -107,9 +107,11 @@ c     localisation de xx
 	 xx1=MIN(xt(knot),MAX(xx1,xt(1)))
 	ENDIF
 	CALL linf(xx1,xt,knot,l)
+	
+c dans linf no_croiss sera .FALSE.	
+	no_croiss=xx1 /= xx
 
-c     interpolation par B-splines
-
+c interpolation par B-splines
 	CALL bval1(xx1,xt,m,l,q,d)
 	fx=0.d0 ; dfxdx=0.d0
 	DO j=1,nf

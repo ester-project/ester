@@ -8,6 +8,19 @@ c	subroutine private du module mod_evol
 	
 c	subroutine générique de calcul des accélérations radiatives
 
+c entrées :
+c	lum : luminosité
+c	ray : rayon
+c	t : température
+c	kap : opacité
+c	dkapx : dérivée/X (mole)
+c entrées / sorties :
+c	g_rad : vecteur des accélérations radiatives,
+c		la gravité est grav+g\_rad sur l'élément d'indice i 
+
+c	dg_rad(i,j) : matrice des dérivées des accélérations radiatives
+c	sur l'élément i / abondance par mole de l'élément j.
+
 c	Auteur: P.Morel, Département J.D. Cassini, O.C.A.
 c	CESAM2k
 
@@ -81,7 +94,7 @@ c---------------------------------------------------------------------
 	CASE DEFAULT
 	 PRINT*,'routine de calcul des forces radiatives inconnue: ',
 	1  nom_frad
-	 PRINT*,'routines connues: alecian1, no_frad' 
+	 PRINT*,'routines connues: alecian1, alecian2, no_frad' 
 	 PRINT*,'arrêt' ; STOP
 	END SELECT
  

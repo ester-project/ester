@@ -82,9 +82,9 @@ c	Ex  : 12
 
 c----------------------------------------------------------------------
 	
-	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, ife56, ihe4,
-	1 i_ex, langue, nchim, nom_elem, nom_xheavy,
-	2 nucleo, rot_solid, secon6, t_inf, x0, y0, zi, z0
+	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, fmin_abon, ife56,
+	1 ihe4, ili7, i_ex, langue, nchim, nom_elem, nom_xheavy,
+	2 nucleo, secon6, t_inf, x0, y0, zi, z0
 	USE mod_kind
 	USE mod_numerique, ONLY : gauss_band
 	
@@ -128,7 +128,7 @@ c définition de nchim: nombre d'éléments chimiques dont on
 c	 calcule l'abondance H1, He3, He4, Li7, C13, C13, N14, N15, O16,
 c	 O17, Fe, Ex
 
-	 nchim=10+2
+	 nchim=10+2 ; ili7=4
 
 c appel d'initialisation pour tabulation des réactions nucléaires
 c	 allocations fictives
@@ -261,7 +261,7 @@ c abondances initiales et abondances négligeables
 
 	 comp(1:nchim)=MAX(1.d-29,b(1,1:nchim))
 	 ab_ini(1:nchim)=comp(1:nchim)*nucleo(1:nchim)	 
-	 ab_min=ab_ini*1.d-2
+	 ab_min=ab_ini*fmin_abon
 	
 c nombre/volume des métaux dans Z, indice de Fe56
 

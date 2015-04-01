@@ -14,7 +14,6 @@ c     Auteur: P. Morel, Département J.D. Cassini, O.C.A.
 c entrées :
 c     tau : profondeur optique Rosseland
 c     teff : température effective
-c     grav : gravité
 
 c sorties :
 c     t : température
@@ -115,8 +114,8 @@ c---------------------------------------------------------------------
        ENDIF
        rad=.FALSE. ; tau_min=1.d-4
        WRITE(*,1)tau_min,ro_ext0 ; WRITE(2,1)tau_min,ro_ext0
-1      FORMAT(/,1x,'loi t(tau,teff,grav), k5777, non purement radiative',/,
-     1  'tau_min=',1pd10.3,' ro_ext=',1pd10.3,/)       
+1      FORMAT(/,'loi t(tau,teff), k5777, non purement radiative',/,
+     1 'tau_min=',1pd10.3,' ro_ext=',1pd10.3,/)       
       ENDIF
 
       CALL bsp1ddn(1,ts,taus,taut,nx,mx,knot,.TRUE.,tau,l,fx)

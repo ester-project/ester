@@ -8,23 +8,23 @@ C******************************************************************
 
 c	routine public du module mod_etat
 
-c	ï¿½quation d'ï¿½tat pour GONG ï¿½tape 1
+c	équation d'état pour GONG étape 1
 
 c	modifs:
 c	19 11 99 : suppression de nh1, nhe1, nhe2, lamb
 
-c	Auteur: P.Morel, Dï¿½partement J.D. Cassini, O.C.A.
+c	Auteur: P.Morel, Département J.D. Cassini, O.C.A.
 c	CESAM2k
 
 c entree :
 c	p : pression
-c	t : tempï¿½rature
+c	t : température
 c	xchim : composition chimique
-c	deriv=.false. : ï¿½vite le calcul de certaines dï¿½rivï¿½es
+c	deriv=.false. : évite le calcul de certaines dérivées
 
 c sortie :
-c	ro : densitï¿½ et dï¿½rivï¿½es
-c	u : ï¿½nergie interne et dï¿½rivï¿½es
+c	ro : densité et dérivées
+c	u : énergie interne et dérivées
 
 c----------------------------------------------------------------
 
@@ -53,7 +53,7 @@ c----------------------------------------------------------------------
 
 2000	FORMAT(8es10.3)
 
-c	WRITE(*,*)'entrï¿½e etat_gong1 p,t,xchim(1),ah,ahe4,zai'
+c	WRITE(*,*)'entrée etat_gong1 p,t,xchim(1),ah,ahe4,zai'
 c	WRITE(*,2000)p,t,xchim(1),ah,ahe4,zai
 
 	IF(init)THEN	!initialisations
@@ -69,7 +69,7 @@ c	WRITE(*,2000)p,t,xchim(1),ah,ahe4,zai
 
 	 WRITE(2,1)
 	 WRITE(*,1)
-1	 FORMAT(/,' EOS GONG1: tot. ioni., no Prad, no dï¿½gï¿½nï¿½.',//)
+1	 FORMAT(/,' EOS GONG1: tot. ioni., no Prad, no dégéné.',//)
 	ENDIF
 
 	x=xchim(1)
@@ -80,7 +80,7 @@ c	WRITE(*,2000)p,t,xchim(1),ah,ahe4,zai
 	ro=p/granr/mum1/t	!2.1
 	drop= ro/p
 	drot=-ro/t
-	u=cte1*mum1*t		!ï¿½nergie interne par gramme 2.3
+	u=cte1*mum1*t		!énergie interne par gramme 2.3
 	dup=0.d0
 	dut=u/t
 	delta=-t/ro*drot

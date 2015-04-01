@@ -7,11 +7,28 @@ c************************************************************************
 	3 gam,dgamkra,dgamgra,dgamdel,dgamcp,dgamro,
 	4 dgamhp,dgamtaur,dgamgrad,dgamgad)
 
-c	routine gï¿½nï¿½rique de calcul de la convection
+c routine générique de calcul de la convection
 
-c	routine public du module mod_conv
+c routine public du module mod_conv
 
-c	Auteur: P. Morel, Dï¿½partement J.D. Cassini, O.C.A.
+c entrées
+c	r : rayon
+c	krad : conductivité radiative
+c	gravite : gravité
+c	delta : delta
+c	cp : c_ p
+c	ro : densité
+c	hp : échelle de hauteur de pression
+c	taur :épaisseur optique de la bulle convective
+c	gradrad : gradient radiatif 
+c	gradad : gradient adiabatique
+c	der=.TRUE. : calcul des dérivées
+
+c sorties 
+c 	gradconv, dgrad*~: gradient de température et dérivées
+c	gam, dgam*~: efficacité de la convection et dérivées.
+
+c	Auteur: P. Morel, Département J.D. Cassini, O.C.A.
 c	CESAM2k
 
 c---------------------------------------------------------------------
@@ -62,14 +79,6 @@ c---------------------------------------------------------------------
 	2  dgradhp,dgradtaur,dgradgrad,dgradgad,
 	3  gam,dgamkra,dgamgra,dgamdel,dgamcp,dgamro,
 	4  dgamhp,dgamtaur,dgamgrad,dgamgad)
-c ----------------------------------------------------------------------------
-	CASE ('conv_cgm_reza_r')
-	 CALL conv_cgm_reza_r(r,krad,gravite,delta,cp,ro,hp,gradrad,gradad,der,
-	1  gradconv,dgradkra,dgradgra,dgradel,dgradcp,dgradro,
-	2  dgradhp,dgradtaur,dgradgrad,dgradgad,
-	3  gam,dgamkra,dgamgra,dgamdel,dgamcp,dgamro,
-	4  dgamhp,dgamtaur,dgamgrad,dgamgad)
-c ----------------------------------------------------------------------------
 	CASE ('conv_jmj')
 	 CALL conv_jmj(krad,gravite,delta,cp,ro,hp,taur,gradrad,gradad,der,
 	1  gradconv,dgradkra,dgradgra,dgradel,dgradcp,dgradro,
@@ -80,7 +89,7 @@ c ----------------------------------------------------------------------------
 	 PRINT*,'routine de convection inconnue: ',nom_conv
 	 PRINT*,'routines connues: conv_a0, conv_cm, conv_cml,'
 	 PRINT*,'conv_cm_reza,conv_cgm_reza, conv_jmj'
-	 PRINT*,'arrï¿½t' ; STOP
+	 PRINT*,'arrêt' ; STOP
 	END SELECT
        
 	RETURN

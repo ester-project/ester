@@ -49,7 +49,7 @@ C
 C===================================================================
       SUBROUTINE alecian2 (lum,ray,t,nel,grav,ychim,ioni,g_rad,dg_rad)
 
-c     routine private du module mod_evol
+c     routine private du module mod_bp_for_alecian
 c     Version 0.0 (2004/09/22)
 c     cette subroutine calcule l'accélération radiative et ses dérivées
 c     par rapport aux l'abondances. Elle doit être appelée pour chaque

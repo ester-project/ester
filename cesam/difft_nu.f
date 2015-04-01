@@ -1,59 +1,42 @@
 
 c---------------------------------------------------------------
 
-	SUBROUTINE difft_nu(melange,t,ro,drox,kap,dkapx,deff,d,dd)
+	SUBROUTINE difft_nu(melange,t,ro,drox,kap,dkapr,dkapx,deff,d,dd)
 
-c	routine private du module mod_evol
+c routine private du module mod_evol
 
-c	calcul du coefficient de diffusion turbulente, d_turb + nu_rad
-c	et du Moment Angulaire, sauf dans les ZC mélangées
+c formation du coefficient de diffusion turbulente, d_turb + nu_rad + Deff
+c nu_rad, suivant Morel & Thévenin évite la sédimentation de l'hélium
+c sauf dans les ZC mélangées
 
-c	Dimensions et initialisations dans le programme appelant
-c	d(nchim,nchim), dd(nchim,nchim,nchim), v(nchim),
-c	dv(nchim,nchim)
+c Dimensions et initialisations dans le programme appelant
+c d(nchim,nchim), dd(nchim,nchim,nchim), v(nchim),dv(nchim,nchim)
 
-c	convention de notation :
-c	équation de diffusion dXi/dt=dFi/dm + nuclear, i=1,nchim
-c	Fi=4 pi r**2 ro (4 pi r**2 ro D.dX/dm - Vi Xi)
-
-c	d=D=(di1, di2,... din) avec Dij coefficient de d Xj / dm
-c	dans le produit scalaire D.dX/dm=sum d_ij d Xj / dm
-
-c	pour ligne d'indice i
-c	v(i) coefficient de x_i,
-c	dv(i,k)=dv(nchim*(k-1)+i)=dérivée v_i / x_k
-c	seule la première colonne de dv
-c	est non nulle (pas de dérivées / Xi, i .ne. 1)
-c	d(i,j)=coefficient d_ij de d x_j / dm
-c	dd(i,j,k)= dérivée de d_ij / x_k
-
-c	Auteur: P.Morel, OCA
-c	CESAM2k
+c convention de notation :
+c équation de diffusion dXi/dt=dFi/dm + nuclear, i=1,nchim
+c Fi=4 pi r**2 ro (4 pi r**2 ro D.dX/dm - Vi Xi)
 
 c entrées
 c	melange=.TRUE.: on est dans une ZC
-c	p, t, r, l, m, ro: données au point de calcul
-c	xi: composition chimique, par mole
-c	kap: opacité 
-c	gradad, gradrad: gradients
-c	terminaisons x : dérivées/ X1 (ie H) par gramme
-c	mstar: masse avec perte de masse
-c	m_zc, r_zc, lim : masses, rayons, nombre de limites ZR/ZC
-c	age, gamma1, cp, delta: notations evidentes
+c	t : température
+c	ro, drox : densité et dérivée / X
+c	kap, dkapx: opacité et dérivée / X
+c	deff : diffusivité turbulente due à la rotation
 
 c sorties
-c	d0, dd : coefficients d_ij de d x_j / d m et dérivées / x_k
-c	v0, dv : coefficients v_i de x_i et dérivées / x_k
+c	d, dd : coefficients d_ij de d x_j / d m et dérivées / x_k
+
+c Auteur: P.Morel, OCA, CESAM2k
 
 c-------------------------------------------------------------------------
 
-	USE mod_donnees, ONLY : aradia, clight, d_conv, d_turb, Krot,
-	1 langue, nchim, re_nu
+	USE mod_donnees, ONLY : aradia, clight, d_conv, d_turb,
+	1 langue, nchim, nucleo, re_nu
 	USE mod_kind
 
 	IMPLICIT NONE
       
-	REAL (kind=dp), INTENT(in) :: deff, dkapx, drox, kap, ro, t
+	REAL (kind=dp), INTENT(in) :: deff, dkapr, dkapx, drox, kap, ro, t
 	LOGICAL, INTENT(in) :: melange	
 	REAL (kind=dp), INTENT(inout), DIMENSION(:,:,:) :: dd
 	REAL (kind=dp), INTENT(inout), DIMENSION(:,:) :: d
@@ -76,31 +59,31 @@ c--------------------------------------------------------------------------
 	 CASE('english')
 	  WRITE(*,1010)d_conv,d_turb,re_nu
 	  WRITE(2,1010)d_conv,d_turb,re_nu
-1010	  FORMAT('Turbulent diffusion : Dturb + Dradiative',/,
-	1  'In CZ, Dconv=',es10.3,'. In RZ, Dturb=',es10.3,
-	2  ', Re_nu=',es10.3)	 
+1010	  FORMAT('Turbulent diffusion : in CZ, Dconv=',es10.3,
+	1 ', in RZ, Dturb=',es10.3,/,'Re_nu=',es10.3,' + Deff with rotation')	 
 	 CASE DEFAULT	 
 	  WRITE(*,10)d_conv,d_turb,re_nu ; WRITE(2,10)d_conv,d_turb,re_nu
-10	  FORMAT('Diffusion turbulente: Dturb + Dradiative',/,
-	1  'Dans ZC, Dconv=',es10.3,'. Dans ZR, Dturb=',es10.3,
-	2  ', Re_nu=',es10.3,' + Deff')
+10	  FORMAT('Diffusion turbulente dans ZC, Dconv=',es10.3,
+	1 ', dans ZR, Dturb=',es10.3,/,'Re_nu=',es10.3,' + Deff avec rotation')
 	 END SELECT
 	ENDIF
-	
+
+c dans une zone de mélange	
 	IF(melange)THEN
 	 DO i=1,nchim
 	  d(i,i)=d_conv
 	 ENDDO
 	ELSE
 	
-c	 coefficient de diffusivité radiative
-	 nu_rad=cte2*t**4/kap/ro**2
-	 dnu_radx=-nu_rad*(dkapx/kap+2.d0*drox/ro)
+c coefficient de diffusivité radiative et dérivée / MOLE
+	 nu_rad=cte2*t**4/kap/ro**2+ABS(deff)
+	 dnu_radx=-nu_rad*((dkapx+dkapr*drox)/kap+2.d0*drox/ro)*nucleo(1)
 	 
-c	 contributions des diverses diffusivités turbulentes
+c contributions des diverses diffusivités turbulentes / mole
 	 DO i=1,nchim
-	  d(i,i)=d(i,i)+d_turb+nu_rad+deff ; dd(i,i,1)=dd(i,i,1)+dnu_radx
+	  d(i,i)=d(i,i)+d_turb+nu_rad ; dd(i,i,1)=dd(i,i,1)+dnu_radx	  
 	 ENDDO
+
 	ENDIF
 	
 	RETURN

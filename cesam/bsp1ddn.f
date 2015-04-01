@@ -19,7 +19,7 @@ c     !!le tableau des données f est donc modifié!!
 c     Auteur: P. Morel, Departement J.D. Cassini, O.C.A.
 c     version: 07 12 92 (F77), adaptée F95, nov.2002
 
-c entrees
+c entrées
 c     nf: nombre de fonctions
 c     f(nf,n): fonctions a interpoler
 c     x: abscisses
@@ -28,14 +28,14 @@ c     m: ordre des splines
 c     knot: nb de noeuds
 c     xx: point d'interpolation
 
-c entrees/sorties
+c entrées/sorties
 c     f(nf,n): fonctions à interpoler/coefficients des splines
 c     xt: points de raccord
 c     l: localisation
 
 c sorties
 c     fx(i,der) : dérivée ordre der de la i-ieme fonction 
-c     fx(3,1) : dérivée 1-iere de la 3-ieme fonction
+c     fx(3,1) : dérivée 1-ière de la 3-ieme fonction
 
 c-----------------------------------------------------------------------
 
@@ -67,8 +67,7 @@ c-----------------------------------------------------------------------
 
 2000  FORMAT(8es10.3)
 
-c     initialisations
-
+c initialisations
       IF(.NOT.init)THEN       !les coefficient sont à calculer
 
        CALL noein(x,xt,n,m,knot) ; IF(no_croiss)RETURN      
@@ -92,8 +91,7 @@ c       WRITE(*,2000)(a(i,j)
        DEALLOCATE(a,indpc,q)
       ENDIF
 
-c     localisation de xx
-
+c localisation de xx
       IF(xx < xt(1) .OR. xx > xt(knot))THEN
        PRINT*,'dans bsp1ddn le point sort de la grille'
        PRINT*,'xt(1)=',xt(1),' xx=',xx,' xt(knot)=',xt(knot)
@@ -101,14 +99,12 @@ c     localisation de xx
       ENDIF
       xx1=MIN(xt(knot),MAX(xx,xt(1))) ; CALL linf(xx,xt,knot,l)
 
-c     d(r,j):= dérivée d'ordre r,  0 <= r < m-1, de
-c     la l-m+j-ieme B-splines, 1 <= j <= m, d'ordre m non nulle
-c     au point x, xt(l) <=  x <  xt(l+1). 
-
+c d(r,j):= dérivée d'ordre r,  0 <= r < m-1, de
+c la l-m+j-ieme B-splines, 1 <= j <= m, d'ordre m non nulle
+c au point x, xt(l) <=  x <  xt(l+1). 
       CALL bvald(xx1,xt,m,l,m-1,d) 
 
-c     interpolation par B-splines
-
+c interpolation par B-splines et dérivées
       fx=0.d0
       DO j=1,nf       !fonction
        DO i=0,m-1     !dérivée

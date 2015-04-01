@@ -1,27 +1,28 @@
 
 c*******************************************************************
 
-	SUBROUTINE newspl(n,x,x1t,kno1,m1,x2t,kno2,m2,s1,s2)
+	SUBROUTINE newspl(n,x,x1t,kno1,m1,x2t,kno2,m2,s1,s2,duale)
 
-c	subroutine public du module mod_splines95
+c subroutine public du module mod_numerique
 
-c	pour n fonctions
-c	transforme la spline s1 d'ordre m1 sur le réseau x1t \ kno1,
-c	en la spline s2 d'ordre m2 sur le réseau x2t \ kno2
-c	on n'utilise pas la base duale
+c pour n fonctions
+c transforme la spline s1 d'ordre m1 sur le réseau x1t \ kno1,
+c en la spline s2 d'ordre m2 sur le réseau x2t \ kno2
+c on n'utilise pas la base duale
 
-c	le cas ou la spline s2 a des discontinuités est envisagé:
-c	la diccontinuité ne peut être localisée avec la précision
-c	machine, on se déplace légèrement à gauche et à droite
+c le cas ou la spline s2 a des discontinuités est envisagé:
+c la discontinuité ne peut être localisée avec la précision
+c machine, on se déplace légèrement à gauche et à droite
 
-c	Auteur: P. Morel, Département J.D. Cassini, O.C.A.
-c	CESAM2k (version f95 de newspl1.f)
+c Auteur: P. Morel, Département J.D. Cassini, O.C.A.
+c CESAM2k (version f95 de newspl1.f)
 
 c entrées
 c	n: nombre de fonctions
 c	x, x1t, x2t, kno1, kno2: abcisses et vecteurs nodaux
 c	m1, m2: ordres des splines
 c	s1: première spline
+c	duale=.TRUE. : on utilise la base duale
 
 c sorties:
 c	s2: nouvelle spline
@@ -34,6 +35,7 @@ c--------------------------------------------------------------------------
 
 	REAL (kind=dp), INTENT(in), DIMENSION (:) :: x, x2t
 	INTEGER, INTENT(in) :: kno2, m1, m2, n
+	LOGICAL, INTENT(in), OPTIONAL :: duale
 	REAL (kind=dp), INTENT(inout), DIMENSION (:,:) :: s1
 	REAL (kind=dp), INTENT(inout), DIMENSION (:) :: x1t
 	INTEGER, INTENT(inout) :: kno1
@@ -93,7 +95,7 @@ c sans discontinuité
 	 ELSE	  
 c	  PRINT*,i,p,x1t(1),x2t(1)
 	  CALL bsp1dn(n,s1,x,x1t,n1,m1,kno1,.TRUE.,
-	1   MAX(x1t(1),MIN(p,x1t(kno1))),l,fx,dfxdx)
+	1 MAX(x1t(1),MIN(p,x1t(kno1))),l,fx,dfxdx)
 	  IF(no_croiss)PRINT*,'Pb. en 3 dans newspl'
 	  s2(:,i)=fx
 	  CALL linf(p,x2t,kno2,l) ; CALL bval0(p,x2t,m2,l,q)
@@ -101,10 +103,23 @@ c	  PRINT*,i,p,x1t(1),x2t(1)
 	 ENDIF 
 	ENDDO	B1
 
-c coefficients de s2
+c utilisation de la base duale	
+	IF(PRESENT(duale))THEN
+	 IF(duale)RETURN
+	ENDIF
 
+c coefficients de s2
 	CALL gauss_band(a,s2,indpc,n2,n2,m2,n,inversible)
-	IF(.NOT.inversible)PRINT*,'matrice non inversible dans newspl'
+	
+c si s2 est pas inversible on utilise la base duale	
+	IF(.NOT.inversible)THEN
+	 PRINT*,'matrice non inversible dans newspl'
+	 PRINT*,'tentative d''utilisation de la base duale'	
+	 DO i=1,n2
+	  CALL bsp1dn(n,s1,x,x1t,n1,m1,kno1,.TRUE.,x2t(i),l,fx,dfxdx)
+	  s2(:,i)=fx	 
+	 ENDDO	 
+	ENDIF
 		
 	RETURN
 

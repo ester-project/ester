@@ -93,9 +93,9 @@ c	B11 : 15
 
 c----------------------------------------------------------------------
 	
-	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, ife56, ihe4,
-	1 langue, nchim, nom_elem, nom_xheavy, nucleo,
-	2 rot_solid, secon6, t_inf, x0, y0, zi, z0
+	USE mod_donnees, ONLY : ab_ini, ab_min, ah, amu, fmin_abon,
+	1 ife56, ihe4, ili7, i_ex, langue, nchim, nom_elem, nom_xheavy, nucleo,
+	2 secon6, t_inf, x0, y0, zi, z0
 	USE mod_kind
 	USE mod_numerique, ONLY : gauss_band	
 	
@@ -138,7 +138,7 @@ c	initialisations
 c définition de nchim : nombre d'isotopes chimiques dont on
 c	 calcule l'abondance
 
-	 nchim=15
+	 nchim=15 ; ili7=4
 	 
 c ordre des isotopes :	 
 c	 H1(1), He3(2), He4,(3) Li7(4), C12(5), C13(6), N14(7), N15(8),
@@ -180,9 +180,12 @@ c	 Ex : élément fictif moyenne des éléments # Li, Be, B, CNO, Fe
 	 WRITE(text,10)nint(mass_ex)
 10	 FORMAT(i2)
 
+
+c élément chimique reliquat
+	 i_ex=12		!indice de l'élément chimique reliquat
 	 nucleo(12)=mass_ex	!nucleo de l'élément chimique reliquat
 	 zi(12)=charge_ex	!charge de l'élément chimique reliquat
-       i = nint(charge_ex)
+	 i=NINT(charge_ex)
 	 nom_elem(12)=elem(i)//text !nom elem. chim. rel.
 	 nom_xheavy=nom_elem(12)
  	 SELECT CASE(langue)	  
@@ -277,7 +280,7 @@ c abondances initiales et abondances négligeables
 
 	 comp(1:nchim)=max(1.d-29,b(1,1:nchim))
 	 ab_ini(1:nchim)=comp(1:nchim)*nucleo(1:nchim)		 
-	 ab_min=ab_ini*1.d-2
+	 ab_min=ab_ini*fmin_abon
 	
 c nombre/volume des métaux dans Z, indice de Fe56
 
