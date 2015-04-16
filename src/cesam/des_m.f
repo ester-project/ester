@@ -233,7 +233,7 @@ c troisième cadre: diagramme HR
 	 text='HR --- Log\d10\u L/L\d\(2281)\u'
 	 CALL pgmtext(side,disp,coord,fjust,text)
 	
-	 IF(des_boite)CALL box(teff_des,dteff_des,l_des,dl_des)
+	 ! IF(des_boite)CALL box(teff_des,dteff_des,l_des,dl_des)
 	 
 c quatrième cadre: ZC
 	 xmin4=-3. ; xmax4=MAX(nb_max_modeles+10,50)

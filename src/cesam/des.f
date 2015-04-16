@@ -59,9 +59,9 @@ c------------------------------------------------------------
 	 ENDIF	!pass 	
 	 SELECT CASE(nom_des)	!select 2
 	 CASE ('des_r')		!select 2
-	  CALL des_r(fin,dt,teff)
+	  ! CALL des_r(fin,dt,teff)
 	 CASE ('des_m') 	!select 2
-	  CALL des_m(fin,dt,teff)
+	  ! CALL des_m(fin,dt,teff)
 	 CASE('zoom')		!select 2
 	  IF(pass)THEN
 	   chain=TRIM(nom_fich2)//'.zoom'	 
@@ -114,7 +114,7 @@ c------------------------------------------------------------
 	    ENDIF	!ok2	   
 	   ENDIF 	!ok1
 	  ENDIF 	!pass
-	  CALL des_m(fin,dt,teff)
+	  ! CALL des_m(fin,dt,teff)
 	 END SELECT		!select 2
 	CASE ('no_des')		!select 1
 	 IF(pass)THEN

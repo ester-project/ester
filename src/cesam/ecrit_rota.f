@@ -144,7 +144,7 @@ c écriture dans mon_modele_coeff_rota.dat
 
 c s'il n'y a pas de dessin en ligne, dessin des variables de la rotation
 c sur mon_modele.ps ou en ligne en adaptant le device dans plot_rota
-	IF(nom_des == 'no_des')CALL plot_rota
+	! IF(nom_des == 'no_des')CALL plot_rota
 	
 	DEALLOCATE(ecrit)
 
