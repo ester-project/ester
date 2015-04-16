@@ -149,5 +149,7 @@ int main(int argc,char *argv[]) {
         A0 = A;
         n++;
     }
+    printf("Last temporal iter (%d):\n", n);
+    printf("\tXc=%f\n",Xc);
 }
 

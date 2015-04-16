@@ -31,6 +31,16 @@ void star_evol::update_comp(star_evol &prev, double dt) {
         matrix_map *newcomp = c.from_cesam(cesam_abon);
         comp.setblock(0, npts-1, i, i, *newcomp);
     }
+    // cesam mix elements in the convective zone; but we still have to mix them
+    // over theta
+    composition_map avg = comp.block(0, npts-1, 0, 0);
+    for (int i=1; i<nth; ++i) {
+        avg += comp.block(0, npts-1, i, i);
+    }
+    avg = avg * (1.0/(double)nth);
+    for (int i=0; i<nth; ++i) {
+        comp.setblock(0, npts-1, i, i, avg);
+    }
 
     // Radiative envelope
     for (int n=npts; n<nr; n++) {
