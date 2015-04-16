@@ -17,12 +17,12 @@ c Auteur: P.Morel, Département J.D. Cassini, O.C.A., CESAM2k
 c--------------------------------------------------------------------
 
 	USE mod_kind
-	
+
 	IMPLICIT NONE
-	
+
 	INTEGER, PUBLIC, PARAMETER :: m_temp=4, niso_tot=32, nreac_tot=64
 	INTEGER, PRIVATE, PARAMETER :: nelem_ini=28	
-	
+
 	REAL (kind=dp), SAVE, PUBLIC, ALLOCATABLE, DIMENSION(:,:) :: taux_reac
 	REAL (kind=dp),SAVE, PUBLIC , ALLOCATABLE, DIMENSION(:) :: ar, q0, temp,
 	1 ttemp	
@@ -33,18 +33,18 @@ c--------------------------------------------------------------------
 	2 n15sn14, o17so16, o18so16
 	REAL (kind=dp), SAVE, PUBLIC :: age_deb, age_fin, dt_planet, t_sup
 	REAL (kind=dp), PUBLIC :: mzc_ext, nuzc_ext
-		
+
 	INTEGER, SAVE, PRIVATE, ALLOCATABLE, DIMENSION(:,:) :: izz
-	
+
 c i3al : indice de la réaction 3alpha			
 	INTEGER, SAVE, PRIVATE :: i3al=0
-	INTEGER, SAVE, PUBLIC ::  knot_temp, nreac, n_temp	
-	
-	
+	INTEGER, SAVE, PUBLIC ::  knot_temp, nreac, n_temp
+
+
 	LOGICAL, SAVE, PUBLIC :: l_planet, l_vent
-	
+
 	CHARACTER (len=2), SAVE, PRIVATE, DIMENSION(nelem_ini) :: elem
-					
+
 	PRIVATE
 	PUBLIC :: abon_ini, nuc, planetoides, taux_nuc, vent
 
@@ -55,7 +55,7 @@ c------------------------------------------------------------------------
 	INCLUDE 'abon_ini.f'
 	INCLUDE 'iben.f'
 	INCLUDE 'nuc.f'
-	INCLUDE 'planetoides.f'	
+	INCLUDE 'planetoides.f'
 	INCLUDE 'pp1.f'
 	INCLUDE 'pp3.f'
 	INCLUDE 'ppcno10BeBFe.f'
@@ -75,6 +75,6 @@ c------------------------------------------------------------------------
 	INCLUDE 'rq_reac.f'
 	INCLUDE 'tabul_nuc.f'
 	INCLUDE 'taux_nuc.f'
-	INCLUDE 'vent.f' 	
-	
+	INCLUDE 'vent.f'
+
 	END MODULE mod_nuc

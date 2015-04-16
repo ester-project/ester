@@ -1,16 +1,20 @@
 AM_CPPFLAGS  = -I$(top_srcdir)/src/include
-AM_CPPFLAGS += -I../../cesam
-AM_CXXFLAGS=-Wall
+AM_CPPFLAGS += -I../cesam
+AM_CXXFLAGS  = -Wall
 
 export HDF5_CXX=$(HDF5_BACKEND)
 
-lib_LTLIBRARIES			= libnuc_cesam.la
+noinst_LTLIBRARIES	= libester-physics.la
 
-libnuc_cesam_la_SOURCES = nuc_cesam_for.F90 EOS5_xtrin.F \
-                          xztrin21.F ZFS_interp_EOS5.F \
-                          atm_onelayer.cpp composition.cpp \
-                          eos_ideal.cpp eos_idealrad.cpp \
-                          eos_opal.cpp nuc_cesam.cpp \
-                          nuc_simple.cpp opa_houdek.cpp \
-                          opa_kramer.cpp opa_opal.cpp \
-                          physics.cpp
+library_includedir  	= $(includedir)
+library_include_HEADERS = cesam.h
+
+libester_physics_la_SOURCES = nuc_cesam_for.F90 EOS5_xtrin.F \
+							  xztrin21.F ZFS_interp_EOS5.F \
+							  atm_onelayer.cpp composition.cpp \
+							  eos_ideal.cpp eos_idealrad.cpp \
+							  eos_opal.cpp nuc_cesam.cpp \
+							  nuc_simple.cpp opa_houdek.cpp \
+							  opa_kramer.cpp opa_opal.cpp \
+							  physics.cpp cesam_interface.cpp \
+							  evol_cesam.F90

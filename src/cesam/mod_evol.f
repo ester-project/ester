@@ -37,20 +37,20 @@ c-------------------------------------------------------------------------
 	REAL (kind=dp), PRIVATE, SAVE, DIMENSION(2*pnzc) :: x_mix=-100.d0
 	REAL (kind=dp), PRIVATE, DIMENSION(pnzc,2) :: omega_tau=-100.d0
 	
-	INTEGER, PRIVATE, PARAMETER :: ncoeff=30	
-			
+	INTEGER, PRIVATE, PARAMETER :: ncoeff=30
+
 	INTEGER, PRIVATE, SAVE, DIMENSION(0:2*pnzc) :: idis
 	INTEGER, PRIVATE, SAVE, DIMENSION(pnzc+1) :: convd
-	INTEGER, PRIVATE, SAVE, DIMENSION(0:pnzc) :: convf		
+	INTEGER, PRIVATE, SAVE, DIMENSION(0:pnzc) :: convf
 	INTEGER, PRIVATE, SAVE :: ndis, nzc, ncoll_rot, n_mix=0, usl_evol
-	
+
 	LOGICAL, PRIVATE, SAVE, DIMENSION(2*pnzc) :: mix=.TRUE.
 	LOGICAL, PRIVATE, SAVE :: lw_perte=.TRUE.
 
 	PRIVATE
 	PUBLIC :: coeff_rota, coeff_vth, ecrit_rota, evol, initialise_rota,
 	1 rk_imps, tab_vth
-	
+
 	CONTAINS
 
 c********************************************************************
@@ -64,23 +64,23 @@ c********************************************************************
 	INCLUDE 'coulomb.f'
 	INCLUDE 'diffm.f'
 	INCLUDE 'diffm_br.f'
-	INCLUDE 'diffm_mp.f'	
+	INCLUDE 'diffm_mp.f'
 	INCLUDE 'difft.f'
 	INCLUDE 'difft_gab.f'
 	INCLUDE 'difft_nu.f'
-	INCLUDE 'difft_smc.f'	
+	INCLUDE 'difft_smc.f'
 	INCLUDE 'difft_sun.f'
-	INCLUDE 'diffus.f'	
+	INCLUDE 'diffus.f'
 	INCLUDE 'diffw.f'
 	INCLUDE 'diffw_cte.f'
 	INCLUDE 'diffw_mpz.f'
 	INCLUDE 'diffw_p03.f'
-	INCLUDE 'diffw_toul.f'	
-	INCLUDE 'ecrit_rota.f'		
+	INCLUDE 'diffw_toul.f'
+	INCLUDE 'ecrit_rota.f'
 	INCLUDE 'eq_diff_chim.f'
-	INCLUDE 'eq_diff_rota3.f'			
+	INCLUDE 'eq_diff_rota3.f'
 	INCLUDE 'eq_diff_rota4.f'
-	INCLUDE 'eq_ini_rota4.f'				
+	INCLUDE 'eq_ini_rota4.f'
 	INCLUDE 'evol.f'
 	INCLUDE 'f_rad.f'
 	INCLUDE 'initialise_rota.f'
@@ -89,10 +89,10 @@ c********************************************************************
 	INCLUDE 'pertw.f'
 	INCLUDE 'pertw_loc.f'
 	INCLUDE 'pertw_ptm.f'
-	INCLUDE 'pertw_sch.f'	
+	INCLUDE 'pertw_sch.f'
 	INCLUDE 'resout_chim.f'
-	INCLUDE 'resout_rota.f'	
+	INCLUDE 'resout_rota.f'
 	INCLUDE 'rk_imps.f'
 	INCLUDE 'tab_vth.f'
-	
+
 	END MODULE mod_evol

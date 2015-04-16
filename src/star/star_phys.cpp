@@ -22,7 +22,7 @@ void star2d::nuclear() {
 	int error;
 
 	error=nuc_calc(comp,T*Tc,rho*rhoc,nuc);
-	
+
 	if(error) exit(1);
 
 }

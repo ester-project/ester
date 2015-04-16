@@ -3,6 +3,8 @@
 
 #include "star.h"
 
+extern int nuc_cesam_init();
+
 namespace cesam {
 
 class compo {
@@ -18,8 +20,9 @@ class compo {
         matrix_map *from_cesam(double *c);
 };
 
-int update_comp(double *T, double *rho, double *comp, double *r,
-        int nr, int nchim);
+int update_comp(double *t0, double *t1, double *rho0, double *rho1,
+        double *comp, double *r, int nchim, int nconv, double dt);
+void init_evol(int order);
 }
 
 #endif //_CESAM_H_

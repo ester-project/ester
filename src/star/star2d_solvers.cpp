@@ -37,15 +37,15 @@ void star2d::fill() {
 
 void star2d::init_comp() {
 
-	comp=initial_composition(X0,Z0)*ones(nr,nth);
+    comp=initial_composition(X0,Z0)*ones(nr,nth);
 
-	if(!conv) return;
+    if(!conv) return;
 
     int n = 0;
     for (int i=0; i<conv; i++) {
         n += map.gl.npts[i];
     }
-	
+
     if(stratified_comp == 0) {
         comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
     }

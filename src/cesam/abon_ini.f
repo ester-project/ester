@@ -29,7 +29,7 @@ c-----------------------------------------------------------------------
 
 	IMPLICIT NONE
 	
-	REAL(kind=dp), DIMENSION(28) :: abon_relam, add, nisnh	
+	REAL(kind=dp), DIMENSION(28) :: abon_relam, add, nisnh
 	REAL(kind=dp) :: add_Li, add_Be, add_B, add_C,
 	1 add_N, add_O, add_F, add_Ne, add_Na, add_Mg, add_Al, add_Si,
 	2 add_P, add_S, add_Cl, add_Ar, add_K, add_Ca, add_Sc, add_Ti,
@@ -40,7 +40,7 @@ c-----------------------------------------------------------------------
 	
 	LOGICAL :: ok
 	
-	CHARACTER (len=50) :: chain
+	CHARACTER (len=255) :: chain
 	
 	NAMELIST/nl_mixture/ab
 	NAMELIST/nl_rap_iso/be7sbe9, be7sz, c13sc12, h2sh1,
@@ -98,7 +98,7 @@ c abondances initiales
 	 SELECT CASE(langue)
 	 CASE('english')	
 	  WRITE(*,1001) ; WRITE(2,1001)
-1001	  FORMAT('Meteoritic mixture of Anders & Grevesse 89')	
+1001	  FORMAT('Meteoritic mixture of Anders & Grevesse 89')
 	 CASE DEFAULT
 	  WRITE(*,1) ; WRITE(2,1)
 1	  FORMAT('Mixture des météorites de Anders & Grevesse 89')
@@ -114,7 +114,7 @@ c abondances initiales
 	 SELECT CASE(langue)
 	 CASE('english')	
 	  WRITE(*,1026) ; WRITE(2,1026)
-1026	  FORMAT('Meteoritic mixture of Grevesse & Sauval 98')	
+1026	  FORMAT('Meteoritic mixture of Grevesse & Sauval 98')
 	 CASE DEFAULT
 	  WRITE(*,26) ; WRITE(2,26)
 26	  FORMAT('Mixture des météorites de Grevesse & Sauval 98')
@@ -131,8 +131,8 @@ c abondances initiales
 	 SELECT CASE(langue)		!X= 2.095E-02, Y= 9.125E-09
 	 CASE('english')	
 	  WRITE(*,1030) ; WRITE(2,1030)	!table d'Yveline Lebreton
-1030	  FORMAT('Meteoritic mixture of Asplund Grevesse & Sauval 05')	
-	 CASE DEFAULT			
+1030	  FORMAT('Meteoritic mixture of Asplund Grevesse & Sauval 05')
+	 CASE DEFAULT
 	  WRITE(*,30) ; WRITE(2,30)
 30	  FORMAT('Mixture des météorites de Asplund Grevesse & Sauval 05')
 	 END SELECT
@@ -147,9 +147,9 @@ c abondances initiales
 	 
 	CASE('solaire_gn')	!Z/X=2.440E-02, [Fe/H]= 7.5-12, Z= 1.727E-02	
 	 SELECT CASE(langue)
-	 CASE('english')	
+	 CASE('english')
 	  WRITE(*,1002) ; WRITE(2,1002)
-1002	  FORMAT('Solar mixture of Grevesse & Noels 93')	
+1002	  FORMAT('Solar mixture of Grevesse & Noels 93')
 	 CASE DEFAULT
 	  WRITE(*,2) ; WRITE(2,2)
 2	  FORMAT('Mixture solaire de Grevesse & Noels 93')
@@ -166,8 +166,8 @@ c abondances initiales
 	 SELECT CASE(langue)
 	 CASE('english')	
 	  WRITE(*,1017) ; WRITE(2,1017)
-1017	  FORMAT('Solar mixture of Grevesse & Sauval 98')	
-	 CASE DEFAULT			
+1017	  FORMAT('Solar mixture of Grevesse & Sauval 98')
+	 CASE DEFAULT
 	  WRITE(*,17) ; WRITE(2,17)
 17	  FORMAT('Mixture solaire de Grevesse & Sauval 98')
 	 END SELECT
@@ -288,48 +288,48 @@ c abondances initiales
 	    WRITE(*,9)TRIM(chain) ; WRITE(2,9)TRIM(chain)
 9	    FORMAT('ARRET, le fichier : ',a,/,'non trouvé')
 	   END SELECT
-	   STOP 	   
+	   STOP
 	  ENDIF
 	 ENDIF
 	 OPEN(unit=3,form='formatted',status='old',delim='apostrophe',
 	1 file=TRIM(chain))
-	 SELECT CASE(langue)	  
-	 CASE('english')	
-	  WRITE(*,1007)TRIM(chain) ; WRITE(2,1007)TRIM(chain)	 
+	 SELECT CASE(langue)
+	 CASE('english')
+	  WRITE(*,1007)TRIM(chain) ; WRITE(2,1007)TRIM(chain)
 1007	  FORMAT('Initial mixture in DeX read on the file : ',a)
-	 CASE DEFAULT	 
+	 CASE DEFAULT
 	  WRITE(*,7)TRIM(chain) ; WRITE(2,7)TRIM(chain)
 7	  FORMAT('Mixture initiale en DeX du fichier : ',a)
 	 END SELECT
 	 READ(3,nl_mixture) ; WRITE(*,nl_mixture) ; WRITE(2,nl_mixture)
 	 CLOSE(unit=3)
 	 IF(ab(1) /= 12.d0)THEN
-	  SELECT CASE(langue)	  
-	  CASE('english')	
+	  SELECT CASE(langue)
+	  CASE('english')
 	   WRITE(*,1013) ; WRITE(2,1013)
 1013	   FORMAT('STOP, the initial mixture is not normalized to H=12') 
-	  CASE DEFAULT	  
+	  CASE DEFAULT
 	   WRITE(*,13) ; WRITE(2,13)
 13	   FORMAT('ARRET, la mixture initiale doit être normalisée à H=12')
 	 END SELECT
-	 STOP 	   
-	 ENDIF	 
+	 STOP
+	 ENDIF
 	 ab=10.d0**ab	!car données en LOG10
 	CASE DEFAULT
 	 chain=nom_abon
-	 SELECT CASE(langue)	  
-	 CASE('english')	
+	 SELECT CASE(langue)
+	 CASE('english')
 	  WRITE(*,1011)TRIM(chain) ; WRITE(2,1011)TRIM(chain)
 1011	  FORMAT('STOP, the initial mixture : ',a,/,'is unknown',/,
 	1 'known initial mixtures : meteorites_ag, meteorites_gs',/,
-	2 'solaire_gn, enhan_cha, enhan_w, enhan_al, mixture')	  
-	 CASE DEFAULT	  
+	2 'solaire_gn, enhan_cha, enhan_w, enhan_al, mixture')
+	 CASE DEFAULT
 	  WRITE(*,11)TRIM(chain) ; WRITE(2,11)TRIM(chain)
 11	  FORMAT('ARRET, nom de mixture initiale inconnue: ',a,/,
 	1 'mixtures connues : meteorites_ag, meteorites_gs',/,
 	2 'solaire_gn, enhan_cha, enhan_w, enhan_al, mixture') 
 	 END SELECT
-	 STOP 	   
+	 STOP
 	END SELECT
 	
 c faut-il adapter la mixture initiale suivant un fichier type modif_mix?
@@ -344,11 +344,11 @@ c pour sécurité, on ne recherche ce fichier que si modif_chim
 	 OPEN(unit=3,form='formatted',status='old',delim='apostrophe',
 	1 file=TRIM(chain))
 	 SELECT CASE(langue)
-	 CASE('english')	
+	 CASE('english')
 	  WRITE(*,1012)TRIM(nom_abon),TRIM(chain)
 	  WRITE(2,1012)TRIM(nom_abon),TRIM(chain)
 1012	  FORMAT(/,'The initial mixture : ',a,/,
-	1 'is modified according to the data of the file : ',a) 	 
+	1 'is modified according to the data of the file : ',a)
 	 CASE DEFAULT
 	  WRITE(*,12)TRIM(nom_abon),TRIM(chain)
 	  WRITE(2,12)TRIM(nom_abon),TRIM(chain)
@@ -490,7 +490,7 @@ c écritures
 	1 file=TRIM(chain))
 	 PRINT* ; WRITE(2,*)	!rapports isotopiques du fichier rap_iso
 	 SELECT CASE(langue)
-	 CASE('english')	
+	 CASE('english')
 	  WRITE(*,1016)TRIM(chain)
 	  WRITE(2,1016)TRIM(chain)
 1016	  FORMAT('Isotopic ratios from the file : ',a)
@@ -506,7 +506,7 @@ c mesure de sécurité : le fichier rap_iso ne peut être pris en compte que si
 c modif_chim = .TRUE.
 	 IF(.NOT.modif_chim)THEN
 	  SELECT CASE(langue)
-	  CASE('english')	
+	  CASE('english')
 	   WRITE(*,1027) ; WRITE(2,1027)
 1027	   FORMAT('STOP, with a file modif_mix, modif_chim = .TRUE. is needed',/,
 	1  'erase the file vent, or modify the input file')

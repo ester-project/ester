@@ -173,7 +173,7 @@ c---------------------------------------------------------------------
 	1 ali7, abe7, abe9, ab11, ac12, ac13, an13, an14, an15, ao16, ao17,
 	2 ao18, af18, af19, ane20, ane21, ane22, ana23, amg23, amg24, amg25,
 	3 amg26, ap31, asi28, as32, langue
-	USE mod_kind	
+	USE mod_kind
 	USE mod_numerique, ONLY : polyder
 
 	IMPLICIT NONE
@@ -274,7 +274,7 @@ c initialisation des nucleot : masses atomiques
 	 nucleot(6)=abe7
 	 nucleot(7)=ac12
 	 nucleot(8)=ac13
-	 nucleot(9)=an13	 
+	 nucleot(9)=an13
 	 nucleot(10)=an14
 	 nucleot(11)=an15
 	 nucleot(12)=ao16

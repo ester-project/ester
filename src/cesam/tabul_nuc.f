@@ -591,13 +591,13 @@ c identification des q, nom_react, z1, z2
 	1 nom_elem(nchim),nucleo(nchim),zi(nchim))
 	
 	ti=20.d6 ; CALL taux_nuc(ti,total,rt,zit,izzt,qt,nom_react,nucleot,
-	1 at,nom_elemt)	
+	1 at,nom_elemt)
 	DO i=1,nreac
 	 q0(i)=qt(nb(i))*eve*1.d6/amu	!énergie des réac. en erg/réaction
 	 ar(i)=at(nb(i)) ; izz(i,:)=izzt(nb(i),:)
 	ENDDO
 	
-	DO i=1,nchim_reac	 
+	DO i=1,nchim_reac
 	 nom_elem(i)=nom_elemt(ind(i)) ; nucleo(i)=nucleot(ind(i))
 	 zi(i)=zit(ind(i))
 	ENDDO
@@ -606,7 +606,7 @@ c tabulation des points en ln(température)
 	ALLOCATE(temp(n_temp))
 	pas=(t_sup-t_inf)/REAL(n_temp-1,dp)
 	DO i=1,n_temp
-	 temp(i)=t_inf+pas*REAL(i-1,dp)	 
+	 temp(i)=t_inf+pas*REAL(i-1,dp)
 c	 WRITE(*,2000)temp(i),EXP(t(i))
 	ENDDO
 

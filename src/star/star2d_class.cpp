@@ -502,7 +502,7 @@ int star2d::read(const char *input_file, int dim) {
     int ndom;
     INFILE fp;
 
-    // if input file ends with '.hdf5': read in hdf5 format
+    // if input file ends with '.hdf5' of '.h5': read in hdf5 format
     if (isHDF5Name(input_file)) {
         return hdf5_read(input_file, dim);
     }

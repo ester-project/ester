@@ -3,9 +3,9 @@ c***********************************************************************
 
 	SUBROUTINE nuc(t,ro,comp,dcomp,jac,deriv,fait,
 	1 epsilon,et,ero,ex,hhe,be7e,b8e,n13e,o15e,f17e)
-	
+
 c routine public du module mod_nuc
-	
+
 c subroutine générique de calcul des taux des réactions thermonucléaires
 
 c Auteur: P.Morel, Département J.D. Cassini, O.C.A., CESAM2k
@@ -14,12 +14,12 @@ c-------------------------------------------------------------------
 
 	USE mod_donnees, ONLY : nom_nuc	
 	USE mod_kind
-	
+
 	IMPLICIT NONE
-	  
-	REAL (kind=dp), INTENT(in):: ro, t		
+
+	REAL (kind=dp), INTENT(in):: ro, t
 	INTEGER, INTENT(in) :: fait
-	LOGICAL, INTENT(in) :: deriv	  
+	LOGICAL, INTENT(in) :: deriv
 	REAL (kind=dp), INTENT(inout), DIMENSION(:) :: comp
 	REAL (kind=dp), INTENT(out), DIMENSION(:,:) :: jac
 	REAL (kind=dp), INTENT(out), DIMENSION(:) :: dcomp, epsilon, ex

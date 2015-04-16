@@ -46,5 +46,7 @@
 
 bool isHDF5Name(const char *fileName);
 char *getFileNameWoExt(const char *fileName);
+void redirect_stdout(const char*);
+void restore_stdout();
 
 #endif // ESTER_UTILS_H

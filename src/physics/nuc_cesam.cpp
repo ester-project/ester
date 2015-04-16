@@ -5,7 +5,6 @@ static bool init = false;
 
 extern "C" {
     void nuc_cesam_init_();
-    void nuc_cesam_set_time_step_(int *nyears);
     void nuc_cesam_init_abon_(double *X, double *Z, double *comp);
     void nuc_cesam_eps_(double *t, double *ro, double *comp,
             double *epsilon, double *et, double *ero, double *ex);
@@ -14,13 +13,11 @@ extern "C" {
 }
 
 void nuc_cesam_init() {
-    int ny = 1000;  // time step: 1000 years
     nuc_cesam_init_();
     double XX = 0.7, ZZ = 0.02;
     matrix ab(10);
     nuc_cesam_init_abon_(&XX, &ZZ, ab.data());
     init = true;
-    nuc_cesam_set_time_step_(&ny);
 }
 
 matrix nuc_cesam_abon(double_map comp) {
@@ -83,6 +80,8 @@ void nuc_cesam_jac(composition_map &comp, const matrix &J, int i, int j) {
 
 int nuc_cesam(const composition_map &comp, const matrix &T, const matrix &rho,
         nuc_struct &nuc) {
+
+    printf("nuc_cesam\n");
 
     if (!init)
         nuc_cesam_init();

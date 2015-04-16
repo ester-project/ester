@@ -5,7 +5,10 @@
 extern "C" {
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 }
+
+static int stdout_dup;
 
 int OUTFILE::open(const char *name,char mode_set) {
 
@@ -297,3 +300,22 @@ char *getFileNameWoExt(const char *fileName) {
     name[len] = '\0';
     return name;
 }
+
+
+void redirect_stdout(const char *filename) {
+    FILE *log;
+
+    stdout_dup = dup(1);
+    log = fopen(filename, "a");
+    if (log)
+        dup2(fileno(log), 1);
+    else
+        ester_warn("could not redirect stdout to `%s'\n",
+                filename);
+}
+
+void restore_stdout() {
+    fflush(stdout);
+    dup2(stdout_dup, 1);
+}
+

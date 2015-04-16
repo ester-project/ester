@@ -1,14 +1,4 @@
 #include "ester-config.h"
-    subroutine nuc_cesam_set_time_step(years)
-
-        use mod_donnees, only: secon6
-
-        implicit none
-
-        integer :: years
-
-        secon6 = years * 365.25d0 * 86400.d0
-    end
 
     subroutine nuc_cesam_init
 

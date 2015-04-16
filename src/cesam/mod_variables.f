@@ -14,9 +14,9 @@ c-------------------------------------------------------------------------
 
 	USE mod_donnees, ONLY: nrot, pnzc
 	USE mod_kind
-	
+
 	IMPLICIT NONE
-		
+
 c variables public:	
 	REAL (kind=dp), SAVE, PUBLIC, ALLOCATABLE, DIMENSION(:,:) :: bp,
 	1 bp_t, chim, chim_t, old_ptm, rota, rota_t, tds, tds_t, vth, vth_t
@@ -27,7 +27,7 @@ c variables public:
      	REAL (kind=dp), SAVE, PUBLIC, DIMENSION(0:2*pnzc+1) :: r_zc_conv
 	REAL (kind=dp), SAVE, PUBLIC, DIMENSION(2*pnzc) :: m_zc, m_zc_t,
 	1 r_zc, r_zc_t, r_ov, r_ov_t
-			
+
 	REAL (kind=dp), SAVE, PUBLIC :: age, c_iben, mstar, mstar_t,
 	1 mw_tot=0.d0, mw_tot_t, psi0, rstar, wrot, wrot_t
 
@@ -42,11 +42,11 @@ c variables public:
 	1 lconv_t=.FALSE.
 	LOGICAL, SAVE, PUBLIC :: lhe_stop=.FALSE., lt_stop=.FALSE.,
 	1 lx_stop=.FALSE., tot_conv, tot_rad
-	
+
 c fonctions PUBLIC: 
 c chim_gram : transformation des abondances /mole ==> /gramme 
 c inter : recherche des variables à m^23 ou r^2 (m ou r) cte
-								
+
 	PRIVATE
 	PUBLIC :: chim_gram, inter, sortie
 
@@ -56,6 +56,6 @@ c----------------------------------------------------------------------
 	
 	INCLUDE 'chim_gram.f'
 	INCLUDE 'inter.f'
-	INCLUDE 'sortie.f'	
+	INCLUDE 'sortie.f'
 	
 	END MODULE mod_variables

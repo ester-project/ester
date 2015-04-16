@@ -92,7 +92,7 @@ c----------------------------------------------------------------------
 	LOGICAL, INTENT(in) :: deriv
 	REAL (kind=dp), INTENT(in):: t, ro
 	REAL (kind=dp), INTENT(inout), DIMENSION(:) :: comp
-	REAL (kind=dp), INTENT(out), DIMENSION(:,:) :: jac	
+	REAL (kind=dp), INTENT(out), DIMENSION(:,:) :: jac
 	REAL (kind=dp), INTENT(out), DIMENSION(:) :: dcomp, ex, epsilon
 	REAL (kind=dp), INTENT(out) :: et, ero, hhe, be7e, b8e, n13e,
 	1 o15e, f17e
@@ -100,7 +100,7 @@ c----------------------------------------------------------------------
 	REAL (kind=dp), ALLOCATABLE, SAVE, DIMENSION(:,:) :: drx, dqx
 	REAL (kind=dp), ALLOCATABLE, DIMENSION(:,:) :: a, b
 	REAL (kind=dp), ALLOCATABLE, SAVE, DIMENSION(:) :: anuc, comp_dex,
-	1 dmuex, dh2x, denx, dbe7x, dli7x, drt, dro, r, q, dqt, dqo		
+	1 dmuex, dh2x, denx, dbe7x, dli7x, drt, dro, r, q, dqt, dqo
 	REAL (kind=dp) :: mue, nbz, den, be7, h2, li7, dh2t, dh2ro,
 	1 dent, denro, dbe7t, dbe7ro, dli7t, dli7ro,
 	2 mass_ex, charge_ex, sum_a
@@ -644,7 +644,7 @@ c	  PAUSE'apres case3 deriv'
 	CASE(4)		!taux de production des neutrinos
 
 	 IF(t >= t_inf)THEN
-	  CALL rq_reac(comp,t,ro,r,drt,dro,drx,q,dqt,dqo,dqx,mue,dmuex)	 
+	  CALL rq_reac(comp,t,ro,r,drt,dro,drx,q,dqt,dqo,dqx,mue,dmuex)
 	  be7=r(4)*comp(2)*comp(3)/(r(6)*mue+r(7)*comp(1))
 	  hhe=r(1)*comp(1)**2/amu ; be7e=r(6)*mue*be7/amu
 	  b8e=r(7)*comp(1)*be7/amu ; n13e=r(8)*comp(1)*comp(4)/amu

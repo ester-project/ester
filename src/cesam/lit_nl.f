@@ -78,7 +78,7 @@ c---------------------------------------------------------------------
 	LOGICAL :: ok
 
 	CHARACTER (len=20) :: nom_des_rot
-	CHARACTER (len=50) :: chain
+	CHARACTER (len=255) :: chain
 
 c NAMELISTs de CESAM2k avec diffusion du moment cinétique
 	NAMELIST/nl_cesam/nom_chemin,nom_ctes,nom_des,nom_output,
@@ -115,6 +115,7 @@ c---------------------------------------------------------------------
 	 CASE DEFAULT
 	  WRITE(*,10)TRIM(chain) ; WRITE(2,10)TRIM(chain)
 10	  FORMAT('ARRET, fichier de données inconnu dans lit_nl : ',a)
+	  print*, "(", nom_fich2, ")"
 	 END SELECT
 	 STOP
 	ENDIF

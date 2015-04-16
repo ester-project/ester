@@ -141,8 +141,8 @@ AC_CONFIG_FILES([Makefile
                  tables/Makefile
                  tables/houdek/v9/lib/Makefile
                  tables/opal/Makefile
-                 cesam/Makefile
                  src/Makefile
+                 src/cesam/Makefile
                  src/physics/Makefile
                  test/models/Makefile])
 

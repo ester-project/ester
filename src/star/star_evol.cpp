@@ -5,29 +5,55 @@
 
 #include <stdlib.h>
 
-void star_evol::update_comp() {
+void star_evol::update_comp(star_evol &prev, double dt) {
     int nchim = 10;
     cesam::compo c(this, nchim);
+    int npts = 0;
+    matrix t0 = prev.T * prev.Tc;
+    matrix t1 = T * Tc;
+    matrix rho0 = prev.rho * prev.rhoc;
+    matrix rho1 = rho * rhoc;
 
+    for (int n=0; n<this->conv; n++) {
+        npts += map.gl.npts[n];
+    }
+
+    // Central convective zone
     for (int i=0; i<nth; ++i) {
-        double *cesam_abon = c.to_cesam(comp.col(i));
-        matrix t = T * Tc;
-        matrix r = rho * rhoc;
-        cesam::update_comp(t.data(), r.data(),
+        double *cesam_abon = c.to_cesam(comp.block(0, npts-1, i, i));
+
+        redirect_stdout("cesam.log");
+        cesam::update_comp(t0.block(0, npts-1, i, i).data(), t1.block(0, npts-1, i, i).data(),
+                rho0.block(0, npts-1, i, i).data(), rho1.block(0, npts-1, i, i).data(),
                 cesam_abon,
-                r.col(i).data(), nr, nchim);
+                r.block(0, npts-1, i, i).data(), nchim, npts, dt);
+        restore_stdout();
         matrix_map *newcomp = c.from_cesam(cesam_abon);
-        comp.setcol(i, *newcomp);
+        comp.setblock(0, npts-1, i, i, *newcomp);
+    }
+
+    // Radiative envelope
+    for (int n=npts; n<nr; n++) {
+        for (int i=0; i<nth; ++i) {
+            double *cesam_abon = c.to_cesam(comp.block(n, n, i, i));
+
+            redirect_stdout("cesam.log");
+            cesam::update_comp(t0.block(n, n, i, i).data(), t1.block(n, n, i, i).data(),
+                    rho0.block(n, n, i, i).data(), rho1.block(n, n, i, i).data(),
+                    cesam_abon,
+                    r.block(n, n, i, i).data(), nchim, 1, dt);
+            matrix_map *newcomp = c.from_cesam(cesam_abon);
+            restore_stdout();
+            comp.setblock(n, n, i, i, *newcomp);
+        }
     }
 }
 
 star_evol::star_evol() {
-    comp_inited = false;
 	Lz_obj=0;
 }
 
 star_evol::star_evol(const star2d &A) : star2d(A) {
-    comp_inited = false;
 	Lz_obj=A.Lz();
 }
 
@@ -35,25 +61,18 @@ int star_evol::read(const char *input_file, int dim) {
 	int out;
 	out=star2d::read(input_file, dim);
 	Lz_obj=Lz();
-    comp_inited = true;
 	return out;
 }
 
 void star_evol::fill() {
-	star2d::fill();
+    star2d::fill();
 	Omega_bk=Omega/Omegac;
 }
 
 void star_evol::init_comp() {
-    if (!converged)
-        return;
-    if (comp_inited) {
-        update_comp();
-        return;
-    }
-    else {
-        // cesam::init();
-        comp_inited = true;
+    // only set initial compo if composition is not initialized
+    // this prevents overriding composition during evolution
+    if (comp.size() == 1) {
         star2d::init_comp();
     }
 }

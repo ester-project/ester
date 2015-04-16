@@ -40,11 +40,11 @@ c------------------------------------------------------------------
 	
 	IMPLICIT NONE
 	
-	INTEGER, INTENT(in) :: n, nemr, nl, ns	
-	REAL (kind=dp), INTENT(inout), DIMENSION (:,:) :: a, b	
+	INTEGER, INTENT(in) :: n, nemr, nl, ns
+	REAL (kind=dp), INTENT(inout), DIMENSION (:,:) :: a, b
 	INTEGER, INTENT(inout), DIMENSION(:) :: indpc
 		
-	LOGICAL, INTENT(out) :: inversible	
+	LOGICAL, INTENT(out) :: inversible
 	
 	REAL (kind=dp) :: ai, pivot, sto
 	INTEGER :: i, ipivot, isto, j, k, ligne
@@ -104,7 +104,9 @@ c	   PRINT*,'pivot',pivot,ipivot
 	
 	DO i=MAX(1,ligne-8),MIN(nl,ligne+8)
 	 PRINT*,i, indpc(i)
+         print*, ""
 	 WRITE(*,2000)a(i,:),b(1,i)
+         print*, ""
 	ENDDO
 	
 	  RETURN

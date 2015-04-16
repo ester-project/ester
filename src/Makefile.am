@@ -1,4 +1,4 @@
-SUBDIRS	= physics
+SUBDIRS	= cesam physics
 AM_CXXFLAGS=-Wall
 
 export HDF5_CXX=$(HDF5_BACKEND)
@@ -6,28 +6,27 @@ export HDF5_CXX=$(HDF5_BACKEND)
 BUILT_SOURCES	= main/read_config.cpp
 
 AM_CPPFLAGS = -I$(srcdir)/include -I$(top_srcdir)/cesam
-AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam_nuc
+AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam_nuc -I$(srcdir)/physics
 
-noinst_LTLIBRARIES		= libopint.la libnuc_cesam.la libcesam.la
+noinst_LTLIBRARIES		= libopint.la libcesam.la
 
 libopint_la_SOURCES		=
 libopint_la_LIBADD		= ../tables/houdek/v9/lib/libopint.la
 
-libnuc_cesam_la_SOURCES	=
-libnuc_cesam_la_LIBADD	= physics/libnuc_cesam.la
+# libester_physics_la_SOURCES	=
+# libester_physics_la_LIBADD	= physics/libester-physics.la
 
 libcesam_la_SOURCES	=
-libcesam_la_LIBADD	= ../cesam/libcesam.la
+libcesam_la_LIBADD	= cesam/libcesam.la
 
 bin_PROGRAMS		= star1d star2d gen_output version star_evol ester_info
 
-star1d_LDFLAGS		= -lester -lnuc_cesam -lopint -lcesam
-star2d_LDFLAGS		= -lester -lnuc_cesam -lopint -lcesam
-gen_output_LDFLAGS	= -lester -lnuc_cesam -lopint -lcesam
-version_LDFLAGS		= -lester -lnuc_cesam -lopint -lcesam
-star_evol_LDFLAGS	= -lester -lnuc_cesam -lopint -lcesam
-ester_info_LDFLAGS	= -lester -lnuc_cesam -lopint -lcesam
-
+star1d_LDFLAGS		= -lester -lopint -lcesam
+star2d_LDFLAGS		= -lester -lopint -lcesam
+gen_output_LDFLAGS	= -lester -lopint -lcesam
+version_LDFLAGS		= -lester -lopint -lcesam
+star_evol_LDFLAGS	= -lester -lopint -lcesam
+ester_info_LDFLAGS	= -lester -lopint -lcesam
 
 star1d_SOURCES		= main/star1d.cpp main/read_config.cpp
 star2d_SOURCES		= main/star2d.cpp main/read_config.cpp
@@ -77,6 +76,7 @@ libester_la_SOURCES		= global/global.cpp									\
                           symbolic/rational.cpp symbolic/symbolic.cpp		\
                           symbolic/sym.cpp symbolic/sym_expr.cpp			\
                           symbolic/sym_tens.cpp symbolic/sym_vec.cpp
+libester_la_LIBADD	= physics/libester-physics.la
 
 library_includedir  	= $(includedir)/
 library_include_HEADERS = $(srcdir)/include/constants.h \

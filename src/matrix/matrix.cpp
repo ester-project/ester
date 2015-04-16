@@ -1138,10 +1138,38 @@ const matrix matrix::block(int ifil1,int ifil2,int icol1,int icol2) const {
 	if(icol1<0) icol1+=nc;
 	if(icol2<0) icol2+=nc;
 	
-	if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
-		ester_err("(matrix.block) Index exceeds matrix dimensions");
-		exit(1);
-	}	
+    if(ifil1<0) {
+        ester_err("(matrix.block) Index ifil1 exceeds matrix dimensions");
+        exit(1);
+    }
+    if (ifil1>=nf) {
+        ester_err("(matrix.block) Index ifil1 exceeds matrix dimensions");
+        exit(1);
+    }
+    if (ifil2<0) {
+        ester_err("(matrix.block) Index ifil2 exceeds matrix dimensions");
+        exit(1);
+    }
+    if (ifil2>=nf) {
+        ester_err("(matrix.block) Index ifil2 exceeds matrix dimensions");
+        exit(1);
+    }
+    if (icol1<0) {
+        ester_err("(matrix.block) Index icol1 exceeds matrix dimensions");
+        exit(1);
+    }
+    if (icol1>=nc) {
+        ester_err("(matrix.block) Index icol1 exceeds matrix dimensions");
+        exit(1);
+    }
+    if (icol2<0) {
+        ester_err("(matrix.block) Index icol2 exceeds matrix dimensions");
+        exit(1);
+    }
+    if (icol2>=nc) {
+        ester_err("(matrix.block) Index icol2 exceeds matrix dimensions");
+        exit(1);
+    }
 
 	matrix res(ifil2-ifil1+1,icol2-icol1+1);
 	double *pi,*pres;

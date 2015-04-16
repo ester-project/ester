@@ -2,9 +2,9 @@
 c***********************************************************************
 
 	SUBROUTINE ini_ctes
-	
+
 c routine PUBLIC des modules mod_donnees et mod_exploit
-	
+
 c initialisation de l'ensemble des principales constantes physiques
 
 c constantes physiques selon  CRC Handbook of
@@ -21,21 +21,21 @@ c Auteur: P.Morel, Département J.D. Cassini : O.C.A., CESAM2k
 c-------------------------------------------------------------------
 
 	USE mod_kind
-		
+
 	IMPLICIT NONE
-	
+
 	CHARACTER (len=50) :: chain
-		
+
 c-------------------------------------------------------------------
 
 c le fichier de données
 	chain=TRIM(nom_fich2)//'.don'
-	
+
 c origine des principales données	
 	source='Handbook chem. phys. 94 + NACRE'
-	
+
 c constantes de base début: ctes_94 c'est le défaut----------------------
-	
+
 c constantes de base
 	amu=1.6605402d-24		!masse atom. unité, Avogadro=1/amu
 	aradia=7.565912199839849d-15	!constante de la radiation
@@ -102,12 +102,12 @@ c masses des isotopes en unités atomiques
 	ap31=30.973762d0	!masse atomique en amu du phosphore 31
 	
 c constantes de base fin ----------------------
-				
+
 c commentaires
 	SELECT CASE(langue)
 	CASE('english')	
 	 WRITE(*,1001)nom_ctes ; WRITE(2,1001)nom_ctes
-1001	 FORMAT('Use of the physical constants of the set ',a)	
+1001	 FORMAT('Use of the physical constants of the set ',a)
 	CASE DEFAULT
 	 WRITE(*,1)nom_ctes ; WRITE(2,1)nom_ctes
 1	 FORMAT('Utilisation des constantes physiques de l''ensemble: ',a)
@@ -177,13 +177,13 @@ c constantes de GAIA
 	 g=gmsol/msol			!gravité
   
 	CASE default
-	 IF(TRIM(nom_ctes) /= 'ctes_94')THEN	
+	 IF(TRIM(nom_ctes) /= 'ctes_94')THEN
 	  SELECT CASE(langue)
-	  CASE('english')	
+	  CASE('english')
 	   WRITE(*,1002)nom_ctes,chain ; WRITE(2,1002)nom_ctes,chain
 1002	   FORMAT('STOP, unkown set of physical constants: ',a,/
 	1  'choose among: ctes_85, ctes_94, ctes_94m, ctes_31, ctes_gaia',/,
-	2  'and correct the input data file ',a)	
+	2  'and correct the input data file ',a)
 	  CASE DEFAULT
 	   WRITE(*,2)nom_ctes,chain ; WRITE(2,2)nom_ctes,chain
 2	   FORMAT('ARRET, ensemble de constantes physiques inconnu: ',a,/,

@@ -209,11 +209,8 @@ public:
 };
 
 class star_evol : public star2d {
-protected:
-    bool comp_inited;
-    void update_comp();
 public:
-    bool converged;
+    void update_comp(star_evol &prev, double dt);
     double Lz_obj;
     star_evol();
     star_evol(const star2d &);

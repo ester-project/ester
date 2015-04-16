@@ -31,7 +31,7 @@ c-----------------------------------------------------------------
 	IMPLICIT NONE
 	
 	REAL (kind=dp), INTENT(out) :: dt
-	CHARACTER (len=80) , INTENT(out):: chaine
+	CHARACTER (len=255) , INTENT(out):: chaine
 	INTEGER :: cas, dim_ch
 	
 	LOGICAL ::  ok
