@@ -9,6 +9,8 @@ extern "C" {
 }
 
 static int stdout_dup;
+static FILE *logfile;
+
 
 int OUTFILE::open(const char *name,char mode_set) {
 
@@ -303,19 +305,22 @@ char *getFileNameWoExt(const char *fileName) {
 
 
 void redirect_stdout(const char *filename) {
-    FILE *log;
-
     stdout_dup = dup(1);
-    log = fopen(filename, "a");
-    if (log)
-        dup2(fileno(log), 1);
-    else
-        ester_warn("could not redirect stdout to `%s'\n",
+    logfile = fopen(filename, "a");
+    if (logfile)
+        dup2(fileno(logfile), 1);
+    else {
+        ester_warn("could not redirect stdout to `%s'",
                 filename);
+        perror("");
+    }
 }
 
 void restore_stdout() {
     fflush(stdout);
     dup2(stdout_dup, 1);
+    close(stdout_dup);
+    if (logfile)
+        fclose(logfile);
 }
 
