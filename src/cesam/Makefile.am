@@ -5,6 +5,9 @@ AM_LDFLAGS  = -lgfortran
 
 lib_LTLIBRARIES	= libcesam.la
 
+namelistdir = $(datadir)/ester/tables/cesam_nuc
+namelist_DATA = test.don
+
 libcesam_la_SOURCES = mod_evol.f mod_kind.f mod_nuc.f mod_donnees.f \
 					  mod_etat.f mod_opa.f mod_bp_for_alecian.f		\
 					  mod_numerique.f mod_variables.f				\
@@ -38,10 +41,11 @@ mod_donnees.lo:			mod_numerique.lo journal.f lit_nl.f ini_ctes.f \
 mod_variables.lo:		mod_donnees.lo chim_gram.f inter.f sortie.f
 
 mod_etat.lo:			mod_donnees.lo
+mod_conv.lo:			mod_donnees.lo
 mod_opa.lo:				mod_donnees.lo
 mod_numerique.lo:		mod_kind.lo
 mod_bp_for_alecian.lo:	mod_donnees.lo mod_variables.lo
-mod_static.lo:			mod_atm.lo
+mod_static.lo:			mod_atm.lo mod_evol.lo
 mod_atm.lo:				mod_conv.lo
 
 EXTRA_DIST= abon_ini.f alecian1.f arb_rom.f atm.f boite.f box.f bsp1ddn.f \
