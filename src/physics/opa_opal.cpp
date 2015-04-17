@@ -30,7 +30,7 @@ double opa_opal_i(double X,double Z,double T,double rho,double &dlogkt,double &d
 int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa) {
 
-	int i,N,error=0;
+	int i,N,error=0, ierr = -1;
 	matrix dlnkT,dlnkrho;
 
 	opa.k.dim(T.nrows(),T.ncols());
@@ -41,7 +41,10 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	
 	for(i=0;i<N;i++) {
 		opa.k(i)=opa_opal_i(X(i),Z,T(i),rho(i),dlogkt,dlogkr);
-		if(opa.k(i)==-99) error=1;
+		if(opa.k(i)==-99) {
+            error=1;
+            ierr = i;
+        }
 		dlnkT(i)=dlogkt;
 		dlnkrho(i)=dlogkr;
 	}
@@ -50,7 +53,13 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	opa.xi=16*SIG_SB*pow(T,3)/(3*opa.k*rho);
 	opa.dlnxi_lnrho=-1-dlnkrho;
     opa.dlnxi_lnT=3-dlnkT;
-	if(error) ester_err("Values outside OPAL opacity table");
+	if(error) {
+        ester_err("Values outside OPAL opacity table");
+        ester_err("    X = %e", X(ierr));
+        ester_err("    Z = %e", Z);
+        ester_err("  rho = %e", rho(ierr));
+        ester_err("    T = %e", T(ierr));
+    }
 	
 	return error;
 		

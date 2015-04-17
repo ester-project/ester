@@ -126,7 +126,7 @@ int main(int argc,char *argv[]) {
             fig->plot(XX,Wbk);
             fig->label("X(core)","Omega_bk","");
             fig->axis(1.05*max(XX),0,min(Lzc/A.Lz())*0.95,max(Lzc/A.Lz())*1.05);
-            // fig->plot(XX,Lzc/A.Lz());
+            fig->plot(XX,Lzc/A.Lz());
             fig->label("X(core)","Lz_core/Lz","");
         }
 

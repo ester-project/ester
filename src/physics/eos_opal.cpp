@@ -65,10 +65,14 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	eos.cv(i)=1e6*(*(eeos_.eos+4));
     	eos.chi_rho(i)=*(eeos_.eos+5);
     	eos.chi_T(i)=*(eeos_.eos+6);
-    }
-    if(exist(rho==-9e99)) {
-        ester_err("Values outside OPAL eos table");
-   		return 1;
+        if (rhoi == -9e99) {
+            ester_err("Values outside OPAL eos table");
+            ester_err("    X = %e", Xi);
+            ester_err("    Z = %e", Zi);
+            ester_err("    p = %e (1e-6)", p_mbi);
+            ester_err("   t6 = %e", t6i);
+            return 1;
+        }
     }
 
     return 0;
