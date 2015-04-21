@@ -35,6 +35,7 @@ public:
     matrix eval(const matrix &y,const matrix &x) const;
     matrix eval(const matrix &y,double x) const;
     matrix eval(const matrix &y,double x,matrix &T) const;
+    matrix_map eval(const matrix_map &y, const matrix &x) const;
 };
 
 /// \brief The diff_leg class implements Legendre numerical differentiation.

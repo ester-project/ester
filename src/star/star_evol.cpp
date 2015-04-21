@@ -9,30 +9,66 @@ void star_evol::update_comp(star_evol &prev, double dt) {
     int nchim = 10;
     cesam::compo c(this, nchim);
     int npts = 0;
-    matrix t0 = prev.T * prev.Tc;
-    matrix t1 = T * Tc;
-    matrix rho0 = prev.rho * prev.rhoc;
-    matrix rho1 = rho * rhoc;
 
     for (int n=0; n<this->conv; n++) {
         npts += map.gl.npts[n];
     }
 
+    matrix t0 = prev.T * prev.Tc;
+    matrix t1 = T * Tc;
+    matrix rho0 = prev.rho * prev.rhoc;
+    matrix rho1 = rho * rhoc;
+
+    const matrix prevt = prev.T;
+    const matrix prevr = prev.r;
+
+    const matrix conv_z = this->z*R/prev.R;
     // Central convective zone
     for (int i=0; i<nth; ++i) {
-        double *cesam_abon = c.to_cesam(comp.block(0, npts-1, i, i));
+        const matrix conv_t = t0.col(i);
+        const matrix conv_rho = rho0.col(i);
+        const matrix_map conv_comp = prev.comp.col(i);
 
-        redirect_stdout("cesam.log");
-        cesam::update_comp(t0.block(0, npts-1, i, i).data(), t1.block(0, npts-1, i, i).data(),
-                rho0.block(0, npts-1, i, i).data(), rho1.block(0, npts-1, i, i).data(),
+        matrix interp_t0 = prev.map.gl.eval(conv_t, conv_z);
+        matrix interp_rho0 = prev.map.gl.eval(conv_rho, conv_z);
+        matrix_map interp_comp = prev.map.gl.eval(conv_comp, conv_z);
+
+        double *cesam_abon = c.to_cesam(interp_comp.block(0, npts-1, 0, 0));
+
+        cesam::update_comp(interp_t0.block(0, npts-1, 0, 0).data(),
+                t1.block(0, npts-1, i, i).data(),
+                interp_rho0.block(0, npts, 0, 0).data(),
+                rho1.block(0, npts-1, i, i).data(),
                 cesam_abon,
                 r.block(0, npts-1, i, i).data(), nchim, npts, dt);
-        restore_stdout();
         matrix_map *newcomp = c.from_cesam(cesam_abon);
         comp.setblock(0, npts-1, i, i, *newcomp);
+
+        if (i == 0)
+            printf("comp at lim ZC: H=%e\n", interp_comp["H"](npts));
+        // Radiative envelope
+        for (int n=npts; n<nr; n++) {
+            int last_pt = n;
+            double *cesam_abon = c.to_cesam(interp_comp.block(n, n, 0, 0));
+            if (conv_z(n) > 1.0) {
+                comp.setblock(n, n, i, i, comp.block(last_pt, last_pt, i, i));
+            }
+            else {
+                last_pt = n;
+                cesam::update_comp(interp_t0.block(n, n, 0, 0).data(),
+                        t1.block(n, n, i, i).data(),
+                        interp_rho0.block(n, n, 0, 0).data(),
+                        rho1.block(n, n, i, i).data(),
+                        cesam_abon,
+                        (r.block(n, n, i, i)*R).data(), nchim, 1, dt);
+                matrix_map *newcomp = c.from_cesam(cesam_abon);
+                comp.setblock(n, n, i, i, *newcomp);
+            }
+        }
     }
-    // cesam mix elements in the convective zone; but we still have to mix them
-    // over theta
+
+    // cesam mix elements (over r) in the convective zone;
+    // so we still have to mix them over theta
     composition_map avg = comp.block(0, npts-1, 0, 0);
     for (int i=1; i<nth; ++i) {
         avg += comp.block(0, npts-1, i, i);
@@ -42,21 +78,25 @@ void star_evol::update_comp(star_evol &prev, double dt) {
         comp.setblock(0, npts-1, i, i, avg);
     }
 
-    // Radiative envelope
-    for (int n=npts; n<nr; n++) {
-        for (int i=0; i<nth; ++i) {
-            double *cesam_abon = c.to_cesam(comp.block(n, n, i, i));
+    // int *new_npts = new int[ndomains+1];
+    // for (int i=0; i<ndomains; i++) {
+    //     new_npts[i] = this->map.npts[i];
+    // }
+    // new_npts[ndomains] =  new_npts[ndomains-1];
 
-            redirect_stdout("cesam.log");
-            cesam::update_comp(t0.block(n, n, i, i).data(), t1.block(n, n, i, i).data(),
-                    rho0.block(n, n, i, i).data(), rho1.block(n, n, i, i).data(),
-                    cesam_abon,
-                    r.block(n, n, i, i).data(), nchim, 1, dt);
-            matrix_map *newcomp = c.from_cesam(cesam_abon);
-            restore_stdout();
-            comp.setblock(n, n, i, i, *newcomp);
-        }
-    }
+
+    // mapping new_map = this->map;
+    // double *new_xifs = new double[map.ndomains+1];
+    // new_xifs[0] = 0.0;
+    // new_xifs[1] = z(npts);
+    // for (int i=2; i<map.ndomains+1; i++) {
+    //     new_xifs[i] = map.gl.xif[i];
+    // }
+    // delete [] map.gl.xif;
+    // new_map.gl.xif = new_xifs;
+    // new_map.init();
+    // remapper remap(new_map);
+    // interp(&remap);
 }
 
 star_evol::star_evol() {
@@ -81,7 +121,7 @@ void star_evol::fill() {
 
 void star_evol::init_comp() {
     // only set initial compo if composition is not initialized
-    // this prevents overriding composition during evolution
+    // this prevents overwriting composition during evolution
     if (comp.size() == 1) {
         star2d::init_comp();
     }

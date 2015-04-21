@@ -93,7 +93,9 @@ compo::~compo() {
 int update_comp(double *t0, double *t1, double *rho0, double *rho1,
         double *comp, double *r, int nchim, int nconv, double dt) {
 
+    redirect_stdout("cesam.log");
     update_comp_(t0, t1, rho0, rho1, comp, r, &nconv, &dt);
+    restore_stdout();
     return 0;
 }
 

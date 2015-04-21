@@ -177,7 +177,7 @@ matrix star2d::find_boundaries(const matrix &logTi) const {
             zj+=dzj;
             nit++;
             if(nit>100) {
-                fprintf(stderr,"Error: (star2d) No convergence in find_boundaries\n");
+                ester_err("(star2d) No convergence in find_boundaries");
                 exit(1);
             }
         }
@@ -224,7 +224,7 @@ matrix star2d::distribute_domains(int ndom,int &conv_new,double p_cc) const {
 
 matrix star2d::find_boundaries_old(matrix pif) const {
     DEBUG_FUNCNAME;
-        matrix R(pif.nrows(),nth);
+    matrix R(pif.nrows(),nth);
 
     for(int j=0;j<nth;j++) {
         matrix zj,dzj,pj,dpj,TT;
@@ -250,7 +250,7 @@ matrix star2d::find_boundaries_old(matrix pif) const {
             zj+=dzj;
             nit++;
             if(nit>100) {
-                fprintf(stderr,"Error: (star2d) No convergence in find_boundaries\n");
+                ester_err("Error: (star2d) No convergence in find_boundaries\n");
                 exit(1);
             }
         }
@@ -262,7 +262,7 @@ matrix star2d::find_boundaries_old(matrix pif) const {
 
 void star2d::check_map() {
     DEBUG_FUNCNAME;
-        double pcc;
+    double pcc;
     matrix Rcc,pif;
     int conv_new;
     remapper *red;
@@ -294,7 +294,10 @@ void star2d::check_map() {
         }
     } else {
         red=new remapper(map);
-        if(!remap_domains(ndomains,*red)) {delete red;return;}
+        if(!remap_domains(ndomains,*red)) {
+            delete red;
+            return;
+        }
     }
     if(config.verbose) {printf("Remapping...");fflush(stdout);}
     map=red->get_map();
@@ -312,7 +315,8 @@ int star2d::check_convec(double &p_cc,matrix &Rcc) {
         int j=0;
         for(int n=0;n<conv;n++) j+=map.gl.npts[n];
         if(z(j)<min_core_size) {
-            if(config.verbose) printf("Size(convective core) < min_core_size. Removing...\n");
+            if(config.verbose)
+                ester_warn("Size(convective core) < min_core_size. Removing...");
             return 0;
         } else return conv;
     }

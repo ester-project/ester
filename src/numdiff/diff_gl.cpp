@@ -183,6 +183,15 @@ matrix diff_gl::eval(const matrix &y,double x,matrix &T) const {
 	return this->eval(y,X,T);
 }
 
+matrix_map diff_gl::eval(const matrix_map &y, const matrix &x) const {
+    matrix_map res;
+    matrix_map::const_iterator it;
+    for (it=y.begin(); it!=y.end(); it++)  {
+        res[it->first] = this->eval(it->second, x);
+    }
+    return res;
+}
+
 
 matrix diff_gl::eval(const matrix &y,const matrix &x,matrix &T) const {
 

@@ -62,9 +62,8 @@ int main(int argc,char *argv[]) {
 		}
 		A=A1d;
 	}
-    A0 = A;
 
-	figure *fig;
+	figure *fig = NULL;
 	solver *op;
 	
 	if (config.verbose) {
@@ -86,6 +85,7 @@ int main(int argc,char *argv[]) {
         int last_it=0, nit=0;
         double err;
         A.Xc=Xc;
+        A0 = A;
         while (!last_it) {
             nit++;
             err = A.solve(op);
@@ -97,6 +97,23 @@ int main(int argc,char *argv[]) {
                         A.Omega/A.Omegac*100,
                         1-1./A.map.leg.eval_00(A.r.row(-1),PI/2)(0),
                         A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
+            }
+            if (std::abs(A.Omega/A.Omegac*100) > 100) {
+                last_it = true;
+                ester_err("Omega > 1: stopping");
+                char *name = getFileNameWoExt(config.output_file);
+                char *ext = strrchr(config.output_file, '.');
+                char *filename = NULL;
+                if (ext == NULL)
+                    ext = strdup("");
+                if (asprintf(&filename, "%s-debug%s",
+                            name, ext) != -1) {
+                    ester_err("writing model to %s", filename);
+                    A.write(filename, config.output_mode);
+                    free(filename);
+                }
+                free (name);
+                exit(EXIT_FAILURE);
             }
         }
 
@@ -126,8 +143,11 @@ int main(int argc,char *argv[]) {
             fig->plot(XX,Wbk);
             fig->label("X(core)","Omega_bk","");
             fig->axis(1.05*max(XX),0,min(Lzc/A.Lz())*0.95,max(Lzc/A.Lz())*1.05);
-            fig->plot(XX,Lzc/A.Lz());
-            fig->label("X(core)","Lz_core/Lz","");
+            // fig->plot(XX,Lzc/A.Lz());
+            // fig->label("X(core)","Lz_core/Lz","");
+            fig->colorbar();
+            A.draw(fig, A.comp.X());
+            fig->label("X","","");
         }
 
         {
@@ -143,10 +163,21 @@ int main(int argc,char *argv[]) {
             }
             free (name);
         }
-        A.update_comp(A0, dt); // this updates the chemical composition
+        int nconv = 0;
+        for (int ni=0; ni<A.conv; ni++) {
+            nconv += A.map.gl.npts[ni];
+        }
+        if (n == 0) { // first time step
+            A.comp["H"].setblock(0, nconv-1, 0, A.nth-1, 
+                     A.comp["H"].block(0, nconv-1, 0, A.nth-1)*.95);
+        }
+        else {
+            A.update_comp(A0, dt); // this updates the chemical composition
+        }
+
+        // void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) 
+
         Xc = A.comp["H"](0, 0)/A.comp["H"](A.nr-1, 0);
-        printf("H (core) = %e\n", A.comp["H"](0));
-        A0 = A;
         n++;
     }
     printf("Last temporal iter (%d):\n", n);

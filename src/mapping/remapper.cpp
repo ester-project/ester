@@ -140,7 +140,7 @@ matrix remapper::interp(const matrix &y,int parity) {
 			anew(0,i)=a(0,i);
 		}
 		a=anew;
-	}	
+    }
 	
 	return a;
 
@@ -168,7 +168,7 @@ void remapper::remap() {
 	if(ndomains!=map.ndomains&&!changed_npts) {
 		ester_err("(remapper) Should specify number of points in each domain");
 		exit(1);
-	}
+    }
 
 	if(ndomains!=map.ndomains&&!redist) {
 		ester_err("(remapper) Should specify domain boundaries");

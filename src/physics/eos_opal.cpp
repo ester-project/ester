@@ -70,7 +70,7 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
             ester_err("    X = %e", Xi);
             ester_err("    Z = %e", Zi);
             ester_err("    p = %e (1e-6)", p_mbi);
-            ester_err("   t6 = %e", t6i);
+            ester_err("   t6 = %e (T = %e)", t6i, T(i));
             return 1;
         }
     }
