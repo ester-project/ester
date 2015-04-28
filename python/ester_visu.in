@@ -28,6 +28,8 @@ class star:
         self.opa        = f['/star'].attrs['opa.name']
         self.atm        = f['/star'].attrs['atm.name']
         self.nconv      = f['/star'].attrs['conv']
+        self.R          = f['/star'].attrs['R']
+        self.xif        = f['/star'].attrs['xif']
 
         r = self.r[:,range(self.ndomains)*self.npts]
         th = self.th
