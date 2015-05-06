@@ -152,6 +152,8 @@ void star2d::hdf5_write(const char *filename) const {
     write_attr(star, "Omega_bk",    real, &Omega_bk);
     write_attr(star, "Ekman",       real, &Ekman);
     write_attr(star, "min_core_size", real, &min_core_size);
+    double ek = this->virial_L()/2;
+    write_attr(star, "Ek",          real, &ek);
 
     H5::StrType strtype;
     strtype = H5::StrType(H5::PredType::C_S1, strlen(version.name.c_str())+1);
