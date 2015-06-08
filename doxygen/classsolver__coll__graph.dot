@@ -1,0 +1,17 @@
+digraph "solver"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="solver",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" rhs\ndep\nsol\nreg" ,fontname="Helvetica"];
+  Node2 [label="matrix",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmatrix.html",tooltip="The matrix class is used to facilitate the work with regular dense matrices. "];
+  Node3 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" bc_bot1\nbc_bot2\nbc_eq\nblock\nbc_top1\nbc_top2\nbc_pol" ,fontname="Helvetica"];
+  Node3 [label="solver::solver_block",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsolver_1_1solver__block.html",tooltip="Stores all the equations for a given block (a block can either be a domain or a set of boundary condi..."];
+  Node2 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" eq_set" ,fontname="Helvetica"];
+  Node4 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" eq" ,fontname="Helvetica"];
+  Node4 [label="solver::solver_elem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsolver_1_1solver__elem.html",tooltip="Stores one term of an equation. "];
+  Node2 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" D\nI\nL\nR" ,fontname="Helvetica"];
+  Node4 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" next" ,fontname="Helvetica"];
+  Node5 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" op" ,fontname="Helvetica"];
+  Node5 [label="solver_operator",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsolver__operator.html"];
+}

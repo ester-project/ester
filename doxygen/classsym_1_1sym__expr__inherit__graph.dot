@@ -1,0 +1,25 @@
+digraph "sym::sym_expr"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="sym::sym_expr",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="sym::sym_add",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsym_1_1sym__add.html"];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="sym::sym_cos",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsym_1_1sym__cos.html"];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="sym::sym_deriv",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsym_1_1sym__deriv.html"];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="sym::sym_exp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsym_1_1sym__exp.html"];
+  Node1 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="sym::sym_log",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsym_1_1sym__log.html"];
+  Node1 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="sym::sym_num",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsym_1_1sym__num.html"];
+  Node1 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="sym::sym_prod",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsym_1_1sym__prod.html"];
+  Node1 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="sym::sym_sin",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsym_1_1sym__sin.html"];
+  Node1 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="sym::symbol",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsym_1_1symbol.html"];
+}
