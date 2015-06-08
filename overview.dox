@@ -21,10 +21,10 @@ lap_phi=lap(phi);
 lap_phi.add(op, "Phi", "Phi");
 lap_phi.add(op, "Phi", "r");
 
-op->add_d("Phi", "rho", -\pi_c*ones(nr, nth));
-op->add_d("Phi", "\pi_c", -rho);
+op->add_d("Phi", "rho", -pi_c*ones(nr, nth));
+op->add_d("Phi", "pi_c", -rho);
 
-rhs1 = -lap_phi.eval()+\pi_c*rho;
+rhs1 = -lap_phi.eval()+pi_c*rho;
 rhs2=-lap_phi.eval();
 
 rhs=zeros(nr+nex,nth);
