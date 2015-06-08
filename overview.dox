@@ -80,10 +80,10 @@ Variable            | Name in the code | Description
 ------------------- | ---------------- | -----------
 \f$ \phi \f$        | Phi              | gravitational potential
 \f$ p \f$           | p                | pressure
-\f$ log(p) \f$      | log_p            | log of the pressure
+\f$ \log p \f$      | log_p            | log of the pressure
 \f$ \pi_c \f$       | \pi_c            | \f$ \frac{4\pi Grav \rho_c R^2}{pc} \f$
 \f$ T \f$           | T                | temperature
-\f$ log(T) \f$      | log_T            | log of the temperature
+\f$ \log T \f$      | log_T            | log of the temperature
 \f$ \Lambda \f$     | Lambda           | \f$ \frac{\rho_c R^2}{T_c} \f$
 \f$ \eta \f$        | eta              | -
 \f$ \Delta\eta \f$  | deta             | -
@@ -92,10 +92,10 @@ Variable            | Name in the code | Description
 \f$ r \f$           | r                | radius (spherical coordinate)
 \f$ r_\zeta \f$     | rz               | \f$ \frac{\partial r}{\partial \zeta} \f$
 \f$ \Omega \f$      | Omega            | angular velocity (equator)
-\f$ log(\rho_c) \f$ | log_rhoc         | -
-\f$ log(p_c) \f$    | log_pc           | -
-\f$ log(T_c) \f$    | log_Tc           | -
-\f$ log(R) \f$      | log_R            | -
+\f$ \log\rho_c \f$ | log_rhoc         | -
+\f$ \log p_c \f$    | log_pc           | -
+\f$ \log T_c \f$    | log_Tc           | -
+\f$ \log R  \f$      | log_R            | -
 \f$ m \f$           | m                | -
 \f$ p_s \f$         | ps               | -
 \f$ T_s \f$         | Ts               | -
@@ -111,30 +111,24 @@ Variable            | Name in the code | Description
 \f$ \epsilon \f$    | nuc.eps          | nuclear reaction
 \f$ s \f$           | s                | entropy
 \f$ \gamma \f$      | gamma            | -
+\f$ \mu \f$         | mu               | dynamic shear viscosity
 
 
 \section eqlist_sec Equations solved by ESTER
 
-Euqation                                                                | Name
+Equation                                                                | Name
 ----------------------------------------------------------------------- | --------
-\f$ \Delta \phi - \pi_c \rho = 0 \f$       | poisson
-\f$ \nabla p + \rho \nabla \phi - \rho s \Omega^2 \hat{s} = 0 \f$       | movement
-\f$ \hat{\varphi} . \nabla\times (\frac{mov\_eq}{\rho}) = 0 \f$         | vorticity
-\f$ \nabla. (\rho s^2 \Omega V)-\nabla. (\mu s^2\nabla \Omega) = 0 \f$  | transport of angular momentum
-\f$ -\frac{\nabla. (\xi \nabla T))}{\xi} + \frac{\Lambda \rho \epsilon}{\xi}= 0 \f$ | Heat
+\f$ \Delta \phi - \pi_c \rho = 0 \f$       | Poisson - for the gravitational potential
+\f$ \nabla p + \rho \nabla \phi - \rho s \Omega^2 \hat{s} = 0 \f$       | momentum (steady and inviscid) - for the pressure
+\f$ \hat{\varphi} \cdot \frac{\nabla P\times\nabla\rho}{\rho^2} - s\frac{\partial \Omega^2}{\partial z} = 0 \f$         | vorticity - for the differential rotation \f$\Omega(r,\theta)\f$
+\f$ \nabla\cdot (\rho s^2 \Omega \mathbf{V})-\nabla\cdot (\mu s^2\nabla \Omega) = 0 \f$  | transport of angular momentum - for the meridional circulation
+\f$ -\frac{\nabla\cdot (\xi \nabla T))}{\xi} + \frac{\Lambda \rho \epsilon}{\xi}= 0 \f$ | Heat - for the temperature
 
 Where:
-- \f$ s = r \  sin(\theta) \f$
+- \f$ s = r \sin\theta \f$
 - \f$ \hat{s} = \nabla s\f$
-- \f$ \hat{\varphi} =
-\begin{pmatrix}
-0\\
-0\\
-s
-\end{pmatrix}
-\f$
-- \f$ V = \frac{\nabla\times (\Psi \hat{\varphi})}{\rho} \f$
-- \f$ \mu \f$ ??
+- \f$ \hat{\varphi}\f$ is the azimuthal unit vector
+- \f$ \mathbf{V} = \frac{\nabla\times (\Psi \hat{\varphi})}{\rho} \f$ is the meridional velocity
 
 \section algo_sec Code Overview
 
