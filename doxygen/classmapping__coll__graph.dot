@@ -1,0 +1,23 @@
+digraph "mapping"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="mapping",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" ex" ,fontname="Helvetica"];
+  Node2 [label="mapping::ext_map",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmapping_1_1ext__map.html"];
+  Node3 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" gl" ,fontname="Helvetica"];
+  Node3 [label="diff_gl",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classdiff__gl.html",tooltip="The diff_gl class implements the Gauss-Lobatto (or more properly Gauss-Lobatto-Chebyshev) collocation..."];
+  Node4 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" x\nI" ,fontname="Helvetica"];
+  Node4 [label="matrix",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmatrix.html",tooltip="The matrix class is used to facilitate the work with regular dense matrices. "];
+  Node5 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" D\nP1\nP" ,fontname="Helvetica"];
+  Node5 [label="matrix_block_diag",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmatrix__block__diag.html",tooltip="The matrix_block_diag class is used to store block diagonal matrices. "];
+  Node4 -> Node5 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" m" ,fontname="Helvetica"];
+  Node4 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" D\ngtt\ngzz\nrt\nz\nJ\nrzt\nrz\ngzt\nrtt\n..." ,fontname="Helvetica"];
+  Node1 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" parent" ,fontname="Helvetica"];
+  Node3 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" gl" ,fontname="Helvetica"];
+  Node4 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" gtt\ngzz\nrt\nDt2\nz\nI\nth\nJ\nrzt\nDt2_10\n..." ,fontname="Helvetica"];
+  Node6 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" leg" ,fontname="Helvetica"];
+  Node6 [label="diff_leg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classdiff__leg.html",tooltip="The diff_leg class implements Legendre numerical differentiation. "];
+  Node4 -> Node6 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" lap_10\nI_00\nth\nlap_11\nlap_00\nP1_10\nlap_01\nP1_11\nP1_00\ndP1_10\n..." ,fontname="Helvetica"];
+  Node5 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" D" ,fontname="Helvetica"];
+}
