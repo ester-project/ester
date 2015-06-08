@@ -1,55 +1,78 @@
 /** \page overview Overview
 
-ESTER uses a Newton's method to solve a set of PDEs.
-Solving the PDE \f$ L(u) = 0 \tag{1} \f$ with Newton's method is done by refining the
-solution by solving:
+ESTER uses Newton's method to solve the set of stellar PDEs.
+
+Solving the PDE \f$ L(u) = 0 \tag{1} \f$ with Newton's method is done
+by refining the solution (last iterate) \f$ u_n\f$, by first solving:
+
 \f$ 
-J_L(\delta u) = -L(u) \tag{2}
+J_L(\delta u) = -L(u_n) \tag{2}
 \f$
-And updating the solution with \f$ u = u + \delta u \f$
+for \f$\delta u\f$ and then updating the solution with \f$ u = u_n +
+\delta u \f$
 
-In order to write an equation in ESTER formalism, one has to write it in the
-form of \f$ (2) \f$.
+In order to write equations in a simple way, the ESTER code uses a
+specific formalism, which can be easily understood with an example.
 
-For instance the Poisson equation (\f$ \Delta \phi = \pi_c \rho \f$, with
-\f$ \pi_c = \frac{4 \pi G \rho_c^2 R^2}{p_c} \f$), is written in ESTER with:
-\f$ \Delta \phi - \pi_c \rho = 0 \f$ (to conform notation \f$ (1) \f$).
+Let us take Poisson equation :
+
+\f$ \Delta \phi = \pi_c \rho,
+\qquad {\rm with}\quad  \pi_c = \frac{4 \pi G \rho_c^2 R^2}{p_c} \tag{3}\f$
+
+The evaluation of the Newton increment demands the solution of :
+\f$
+\Delta \delta\phi - \rho\delta\pi_c  - \pi_c\delta\rho = -(\Delta \phi -
+\pi_c \rho)_n
+\tag{4}\f$
+
+
+
 
 This is equivalent to the code:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.py}
-lap_phi=lap(phi);
-lap_phi.add(op, "Phi", "Phi");
-lap_phi.add(op, "Phi", "r");
+lap_phi=lap(phi);    
+lap_phi.add(op, "eq_Phi", "Phi");
+lap_phi.add(op, "eq_Phi", "r");
 
-op->add_d("Phi", "rho", -\pi_c*ones(nr, nth));
-op->add_d("Phi", "\pi_c", -rho);
+op->add_d("eq_Phi", "rho", -pi_c*ones(nr, nth));
+op->add_d("eq_Phi", "pi_c", -rho);
 
-rhs1 = -lap_phi.eval()+\pi_c*rho;
+rhs1 = -lap_phi.eval()+pi_c*rho;
 rhs2=-lap_phi.eval();
 
 rhs=zeros(nr+nex,nth);
 rhs.setblock(0,nr-1,0,-1,rhs1);
 rhs.setblock(nr,nr+nex-1,0,-1,rhs2);
 
-op->set_rhs("Phi",rhs);
+op->set_rhs("eq_Phi",rhs);
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Line 1 defines the symbolic expression for \f$ \Delta \phi \f$ (see
 \ref symbolic).
 
-Lines 2 and 3 add the terms of \f$ \Delta \phi \f$ depending on \f$ \phi \f$ and 
-\f$ r \f$ into the Jacobian matrix of the expression.
+Line 2 says that the equation associated with lap_phi is tagged "eq_Phi"
+and that it depends on the variable  \f$\phi\f$.
 
-Lines 5 and 6 add the terms \f$ \frac{\partial}{\partial \rho} \pi_c \rho \f$ and 
-\f$ \frac{\partial}{\partial \pi_c} \pi_c \rho \f$ into the Jacobian matrix, this
-completes the definition of the left hand side of the equation.
+Line 3 says that equation "eq_Phi" also depends on \f$ r \f$.
 
-Line 8, and 9 build the right hand side for inner domains (
-\f$ -\Delta \phi + \pi_c \rho \f$), and the external domain (\f$ -\Delta \phi \f$).
+Lines 5 and 6 add the remaining terms to the Jacobian matrix. We see
+the coefficient \f$ -\pi_c \f$ of \f$\delta\rho \f$ and \f$-\rho\f$
+of \f$\delta\pi_c\f$. This completes the definition of the left-hand
+side of the equation.
 
-Lines 11 to 13 combine the right hand side into a single matrix, and line 15
-sets the right hand side of the equation in the solver.
+Line 8 prepares the RHS of the equation for the domains within the star.
 
+Line 9 prepares the RHS of the equation for the domain outside the star.
+
+Line 11 initializes the RHS-matrix
+
+line 12 inserts rhs1 into the block describing radial points from 0 to
+nr-1, and for all latitudinal points "0,-1" (-1 is C++ coding for the
+last point).
+
+Line 13 inserts rhs2 into the block for the outer (vacuum) domain.
+
+Line 15 inserts the RHS into equation "eq_Phi"
 
 \section var_sec Variables in ESTER
 
