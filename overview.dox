@@ -81,26 +81,27 @@ Variable            | Name in the code | Description
 \f$ \phi \f$        | Phi              | gravitational potential
 \f$ p \f$           | p                | pressure
 \f$ \log p \f$      | log_p            | log of the pressure
-\f$ \pi_c \f$       | \pi_c            | \f$ \frac{4\pi Grav \rho_c R^2}{pc} \f$
+\f$ \pi_c \f$       | \pi_c            | \f$\frac{4\pi G \rho^2_c R^2}{p_c}\f$
 \f$ T \f$           | T                | temperature
 \f$ \log T \f$      | log_T            | log of the temperature
 \f$ \Lambda \f$     | Lambda           | \f$ \frac{\rho_c R^2}{T_c} \f$
-\f$ \eta \f$        | eta              | -
-\f$ \Delta\eta \f$  | deta             | -
-\f$ R_i \f$         | Ri               | -
-\f$ \Delta R_i \f$  | dRi              | -
-\f$ r \f$           | r                | radius (spherical coordinate)
+\f$ \eta \f$        | eta              | array of the polar radii of the domains
+\f$ \Delta\eta \f$  | deta             | array deta(i)=eta(i+1)-eta(i)
+\f$ R_i \f$         | Ri               | array \f$R_i(\theta_k)\f$
+\f$ \Delta R_i \f$  | dRi              | array \f$R_{i+1}(\theta_k)-R_i(\theta_k)\f$
+\f$ r \f$           | r                | radial distance (spherical coordinate)
 \f$ r_\zeta \f$     | rz               | \f$ \frac{\partial r}{\partial \zeta} \f$
+\f$ \gamma \f$      | gamma            | metric element \f$\sqrt{1+r^2_\theta/r^2}\f$
 \f$ \Omega \f$      | Omega            | angular velocity (equator)
-\f$ \log\rho_c \f$ | log_rhoc         | -
-\f$ \log p_c \f$    | log_pc           | -
-\f$ \log T_c \f$    | log_Tc           | -
-\f$ \log R  \f$      | log_R            | -
-\f$ m \f$           | m                | -
-\f$ p_s \f$         | ps               | -
-\f$ T_s \f$         | Ts               | -
-\f$ lum \f$         | lum              | -
-\f$ Frad \f$        | Frad             | -
+\f$ \log\rho_c \f$ | log_rhoc          | log of central density
+\f$ \log p_c \f$    | log_pc           | log of central pressure
+\f$ \log T_c \f$    | log_Tc           | log of central temperature
+\f$ \log R  \f$     | log_R            | log of polar radius
+\f$ m \f$           | m                | mass
+\f$ p_s \f$         | ps               | polar pressure
+\f$ T_s \f$         | Ts               | polar temperature
+\f$ lum \f$         | lum              | luminosity
+\f$ Frad \f$        | Frad             | normal radiative flux   \f$\mathbf{E}^\zeta\cdot\mathbf{F}_{\rm rad}\f$ (not normalized)
 \f$ T_{eff} \f$     | Teff             | effective temperature at star's surface
 \f$ g_{sup} \f$     | gsup             | gravity at star's surface
 \f$ \omega \f$      | w                | angular velocity
@@ -108,9 +109,8 @@ Variable            | Name in the code | Description
 \f$ \rho \f$        | rho              | density
 \f$ \xi \f$         | opa.xi           | radial conductivity
 \f$ \kappa \f$      | opa.k            | opacity
-\f$ \epsilon \f$    | nuc.eps          | nuclear reaction
+\f$ \epsilon \f$    | nuc.eps          | nuclear power
 \f$ s \f$           | s                | entropy
-\f$ \gamma \f$      | gamma            | -
 \f$ \mu \f$         | mu               | dynamic shear viscosity
 
 
