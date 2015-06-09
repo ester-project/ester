@@ -130,7 +130,7 @@ Variables in ESTER</h1>
 <tr>
 <td>\( \log p \) </td><td>log_p </td><td>log of the pressure </td></tr>
 <tr>
-<td>\( \pi_c \) </td><td></td><td>\( \frac{4\pi Grav \rho_c R^2}{pc} \) </td></tr>
+<td>\( \pi_c \) </td><td></td><td>\(\frac{4\pi G \rho^2_c R^2}{p_c}\) </td></tr>
 <tr>
 <td>\( T \) </td><td>T </td><td>temperature </td></tr>
 <tr>
@@ -138,37 +138,39 @@ Variables in ESTER</h1>
 <tr>
 <td>\( \Lambda \) </td><td>Lambda </td><td>\( \frac{\rho_c R^2}{T_c} \) </td></tr>
 <tr>
-<td>\( \eta \) </td><td>eta </td><td>- </td></tr>
+<td>\( \eta \) </td><td>eta </td><td>array of the polar radii of the domains </td></tr>
 <tr>
-<td>\( \Delta\eta \) </td><td>deta </td><td>- </td></tr>
+<td>\( \Delta\eta \) </td><td>deta </td><td>array deta(i)=eta(i+1)-eta(i) </td></tr>
 <tr>
-<td>\( R_i \) </td><td>Ri </td><td>- </td></tr>
+<td>\( R_i \) </td><td>Ri </td><td>array \(R_i(\theta_k)\) </td></tr>
 <tr>
-<td>\( \Delta R_i \) </td><td>dRi </td><td>- </td></tr>
+<td>\( \Delta R_i \) </td><td>dRi </td><td>array \(R_{i+1}(\theta_k)-R_i(\theta_k)\) </td></tr>
 <tr>
-<td>\( r \) </td><td>r </td><td>radius (spherical coordinate) </td></tr>
+<td>\( r \) </td><td>r </td><td>radial distance (spherical coordinate) </td></tr>
 <tr>
 <td>\( r_\zeta \) </td><td>rz </td><td>\( \frac{\partial r}{\partial \zeta} \) </td></tr>
 <tr>
+<td>\( \gamma \) </td><td>gamma </td><td>metric element \(\sqrt{1+r^2_\theta/r^2}\) </td></tr>
+<tr>
 <td>\( \Omega \) </td><td>Omega </td><td>angular velocity (equator) </td></tr>
 <tr>
-<td>\( \log\rho_c \) </td><td>log_rhoc </td><td>- </td></tr>
+<td>\( \log\rho_c \) </td><td>log_rhoc </td><td>log of central density </td></tr>
 <tr>
-<td>\( \log p_c \) </td><td>log_pc </td><td>- </td></tr>
+<td>\( \log p_c \) </td><td>log_pc </td><td>log of central pressure </td></tr>
 <tr>
-<td>\( \log T_c \) </td><td>log_Tc </td><td>- </td></tr>
+<td>\( \log T_c \) </td><td>log_Tc </td><td>log of central temperature </td></tr>
 <tr>
-<td>\( \log R \) </td><td>log_R </td><td>- </td></tr>
+<td>\( \log R \) </td><td>log_R </td><td>log of polar radius </td></tr>
 <tr>
-<td>\( m \) </td><td>m </td><td>- </td></tr>
+<td>\( m \) </td><td>m </td><td>mass </td></tr>
 <tr>
-<td>\( p_s \) </td><td>ps </td><td>- </td></tr>
+<td>\( p_s \) </td><td>ps </td><td>polar pressure </td></tr>
 <tr>
-<td>\( T_s \) </td><td>Ts </td><td>- </td></tr>
+<td>\( T_s \) </td><td>Ts </td><td>polar temperature </td></tr>
 <tr>
-<td>\( lum \) </td><td>lum </td><td>- </td></tr>
+<td>\( lum \) </td><td>lum </td><td>luminosity </td></tr>
 <tr>
-<td>\( Frad \) </td><td>Frad </td><td>- </td></tr>
+<td>\( Frad \) </td><td>Frad </td><td>normal radiative flux \(\mathbf{E}^\zeta\cdot\mathbf{F}_{\rm rad}\) (not normalized) </td></tr>
 <tr>
 <td>\( T_{eff} \) </td><td>Teff </td><td>effective temperature at star's surface </td></tr>
 <tr>
@@ -184,11 +186,9 @@ Variables in ESTER</h1>
 <tr>
 <td>\( \kappa \) </td><td>opa.k </td><td>opacity </td></tr>
 <tr>
-<td>\( \epsilon \) </td><td>nuc.eps </td><td>nuclear reaction </td></tr>
+<td>\( \epsilon \) </td><td>nuc.eps </td><td>nuclear power </td></tr>
 <tr>
 <td>\( s \) </td><td>s </td><td>entropy </td></tr>
-<tr>
-<td>\( \gamma \) </td><td>gamma </td><td>- </td></tr>
 <tr>
 <td>\( \mu \) </td><td>mu </td><td>dynamic shear viscosity </td></tr>
 </table>
@@ -234,7 +234,7 @@ Code Overview</h1>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jun 8 2015 17:12:21 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
