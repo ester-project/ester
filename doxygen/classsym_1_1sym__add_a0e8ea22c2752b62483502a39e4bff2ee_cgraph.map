@@ -1,0 +1,9 @@
+<map id="sym::sym_add::reduce" name="sym::sym_add::reduce">
+<area shape="rect" id="node2" href="$classsymbolic.html#a583f3acea4aab32a389a0239cf0401b5" title="symbolic::round_to_tol" alt="" coords="211,5,365,32"/>
+<area shape="rect" id="node4" href="$classsym_1_1sym__prod.html#a9df8d0ac3f97a2d3150a016632fd6415" title="sym::sym_prod::clone" alt="" coords="213,56,363,83"/>
+<area shape="rect" id="node5" href="$classsym_1_1sym__expr.html#a1ecaab666f1554ce670ee0f1497685c1" title="sym::sym_expr::mult" alt="" coords="215,107,361,133"/>
+<area shape="rect" id="node6" href="$classsym_1_1sym__expr.html#ad9bf9877b0e60666ca0b0d1df50b117d" title="sym::sym_expr::clone" alt="" coords="417,132,567,159"/>
+<area shape="rect" id="node7" href="$classsym_1_1sym__expr.html#ac2df6b4bed129567c6b78b0865685ffd" title="sym::sym_expr::reduce" alt="" coords="209,208,367,235"/>
+<area shape="rect" id="node8" href="$sym__expr_8cpp.html#a7696f3c98dee387ba19f3a40973043cc" title="sort_pair_d" alt="" coords="245,259,331,285"/>
+<area shape="rect" id="node3" href="$matrix_8h.html#acbf12261596e406e0ee0e216b2468af8" title="round" alt="" coords="465,5,519,32"/>
+</map>

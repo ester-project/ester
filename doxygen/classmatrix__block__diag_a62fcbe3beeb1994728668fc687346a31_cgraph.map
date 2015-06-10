@@ -1,0 +1,5 @@
+<map id="matrix_block_diag::operator matrix" name="matrix_block_diag::operator matrix">
+<area shape="rect" id="node2" href="$classmatrix.html#a0d38262959de19208fc8c21780457c95" title="Sets the matrix to the nrows x ncols zero matrix. " alt="" coords="201,5,292,32"/>
+<area shape="rect" id="node4" href="$classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="189,56,304,83"/>
+<area shape="rect" id="node3" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="353,5,439,32"/>
+</map>

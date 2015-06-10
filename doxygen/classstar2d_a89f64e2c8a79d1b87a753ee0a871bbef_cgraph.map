@@ -1,0 +1,7 @@
+<map id="star2d::init_comp" name="star2d::init_comp">
+<area shape="rect" id="node2" href="$physics_8h.html#a81bdfd6bf9b93bb06a4f8b674b18ebd3" title="initial_composition" alt="" coords="185,5,314,32"/>
+<area shape="rect" id="node4" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="224,56,275,83"/>
+<area shape="rect" id="node5" href="$classmatrix__map.html#a1576c1533fa8e786b28e54f46d64c045" title="matrix_map::setblock" alt="" coords="176,131,323,157"/>
+<area shape="rect" id="node6" href="$matrix_8h.html#a5982f297f6b68097009325356f2daa9e" title="exp" alt="" coords="228,181,271,208"/>
+<area shape="rect" id="node3" href="$classdouble__map.html#a883e56f1ab44bd6a1152780ad858dfde" title="double_map::sum" alt="" coords="371,5,496,32"/>
+</map>

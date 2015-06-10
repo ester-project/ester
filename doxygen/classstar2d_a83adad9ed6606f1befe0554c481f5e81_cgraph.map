@@ -1,0 +1,29 @@
+<map id="star2d::remap_domains" name="star2d::remap_domains">
+<area shape="rect" id="node2" href="$classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="750,5,855,32"/>
+<area shape="rect" id="node3" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="777,157,828,184"/>
+<area shape="rect" id="node4" href="$classstar2d.html#ac0f7f425a24378cd5b96b1abedeb8e1c" title="star2d::distribute\l_domains" alt="" coords="223,302,342,343"/>
+<area shape="rect" id="node14" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="775,259,830,285"/>
+<area shape="rect" id="node26" href="$classremapper.html#a8e81208d708e6ae81e322801c77bd665" title="remapper::set_R" alt="" coords="223,419,342,445"/>
+<area shape="rect" id="node27" href="$classmapping.html#a59e4729fdd528d34c056fcda53a050ad" title="mapping::zeta_to_r" alt="" coords="412,740,545,767"/>
+<area shape="rect" id="node28" href="$classremapper.html#a79c33bc271c554f45120368b674c1f46" title="remapper::set_fixed" alt="" coords="214,469,351,496"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="752,689,853,716"/>
+<area shape="rect" id="node6" href="$classmatrix.html#a0d38262959de19208fc8c21780457c95" title="Sets the matrix to the nrows x ncols zero matrix. " alt="" coords="433,461,524,488"/>
+<area shape="rect" id="node8" href="$matrix_8h.html#a74e0b0a7fb9b67bf7604931dd5797533" title="log" alt="" coords="634,284,673,311"/>
+<area shape="rect" id="node9" href="$classdiff__gl.html#a273893d64ef8418624695f43833c9789" title="diff_gl::eval" alt="" coords="609,639,698,665"/>
+<area shape="rect" id="node15" href="$classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="420,411,537,437"/>
+<area shape="rect" id="node19" href="$classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="421,208,536,235"/>
+<area shape="rect" id="node20" href="$classstar2d.html#affb2120c60883f2007904b8b62dfccba" title="star2d::find_boundaries" alt="" coords="400,537,557,564"/>
+<area shape="rect" id="node25" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="435,309,522,336"/>
+<area shape="rect" id="node7" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="759,487,846,513"/>
+<area shape="rect" id="node10" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="754,639,851,665"/>
+<area shape="rect" id="node11" href="$matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="781,537,824,564"/>
+<area shape="rect" id="node12" href="$matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="777,588,828,615"/>
+<area shape="rect" id="node13" href="$classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="752,436,853,463"/>
+<area shape="rect" id="node16" href="$classdiff__leg.html#ad863b7bdb1d8b47279f63a10e1843edd" title="diff_leg::eval" alt="" coords="605,385,701,412"/>
+<area shape="rect" id="node17" href="$matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="781,385,825,412"/>
+<area shape="rect" id="node18" href="$matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="783,335,822,361"/>
+<area shape="rect" id="node21" href="$classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="612,740,695,767"/>
+<area shape="rect" id="node22" href="$matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="630,487,677,513"/>
+<area shape="rect" id="node23" href="$matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="632,537,675,564"/>
+<area shape="rect" id="node24" href="$matrix_8h.html#a0259ec431cd9cc93c1a9dbd94aa162ba" title="min" alt="" coords="632,588,675,615"/>
+</map>

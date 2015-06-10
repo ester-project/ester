@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['mapping',['mapping',['../classmapping.html',1,'']]],
-  ['matrix',['matrix',['../classmatrix.html',1,'matrix'],['../classmatrix.html#a617d81e375e8529a4ee19ab9375be0d9',1,'matrix::matrix(int nfil=1, int ncol=1)'],['../classmatrix.html#a4018e1b43d9ce6fe0fe385e796b4ff9d',1,'matrix::matrix(const matrix &amp;)']]],
-  ['matrix_5fblock_5fdiag',['matrix_block_diag',['../classmatrix__block__diag.html',1,'']]],
-  ['matrix_5fmap',['matrix_map',['../classmatrix__map.html',1,'']]],
-  ['matrix_5fmap_5felem',['matrix_map_elem',['../classmatrix__map__elem.html',1,'']]]
+  ['hdf5_5fread',['hdf5_read',['../classstar2d.html#a15656fb8b185d0cd34d8114db8acb303',1,'star2d']]],
+  ['hdf5_5fwrite',['hdf5_write',['../classstar2d.html#a5c0dc205c84a2ab94558921b0adf83fb',1,'star2d']]],
+  ['hold',['hold',['../classfigure.html#ae9094f8aaa8157b600ed26cd28f09668',1,'figure']]],
+  ['hold_5fstate',['hold_state',['../classfigure.html#a3549b84fdeea11d0ee18012b7c8f1221',1,'figure']]],
+  ['hydrogen_5fmass',['HYDROGEN_MASS',['../global_8cpp.html#a0266a4e3eaf7939030e6500c8b1863d3',1,'HYDROGEN_MASS():&#160;global.cpp'],['../constants_8h.html#a0266a4e3eaf7939030e6500c8b1863d3',1,'HYDROGEN_MASS():&#160;constants.h']]]
 ];

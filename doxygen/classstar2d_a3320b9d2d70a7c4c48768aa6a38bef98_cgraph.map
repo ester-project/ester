@@ -1,0 +1,22 @@
+<map id="star2d::drawc" name="star2d::drawc">
+<area shape="rect" id="node2" href="$classmapping.html#ab068a0511d2894bb4e3dafdf6a3b71fb" title="mapping::drawc" alt="" coords="155,259,269,285"/>
+<area shape="rect" id="node3" href="$classfigure.html#ae4ca4776686825943eabcf0feb86dee7" title="figure::axis" alt="" coords="331,31,418,57"/>
+<area shape="rect" id="node4" href="$matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="351,81,398,108"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="331,132,418,159"/>
+<area shape="rect" id="node6" href="$classmapping.html#af434d9927dd8133b77c689f2b08a0a84" title="mapping::draw0" alt="" coords="317,183,432,209"/>
+<area shape="rect" id="node15" href="$classfigure.html#a9943e2237a40186b9d5d990b3ecc87be" title="figure::plot" alt="" coords="333,233,416,260"/>
+<area shape="rect" id="node16" href="$classfigure.html#ae9094f8aaa8157b600ed26cd28f09668" title="figure::hold" alt="" coords="331,284,418,311"/>
+<area shape="rect" id="node17" href="$matrix_8h.html#a0259ec431cd9cc93c1a9dbd94aa162ba" title="min" alt="" coords="353,335,396,361"/>
+<area shape="rect" id="node18" href="$classfigure.html#ae3e759a8eb5ae7a6a46cd22c1af5ebdf" title="figure::caxis" alt="" coords="328,385,421,412"/>
+<area shape="rect" id="node19" href="$matrix_8h.html#a3733d7092ed4974a7f292df2002e0ff1" title="vector" alt="" coords="345,436,404,463"/>
+<area shape="rect" id="node21" href="$classfigure.html#a7874dba5827903909cfe54e349fcb571" title="figure::contour" alt="" coords="322,487,427,513"/>
+<area shape="rect" id="node7" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="494,5,581,32"/>
+<area shape="rect" id="node8" href="$classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="480,56,595,83"/>
+<area shape="rect" id="node9" href="$matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="518,107,557,133"/>
+<area shape="rect" id="node10" href="$matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="516,157,559,184"/>
+<area shape="rect" id="node11" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="489,208,586,235"/>
+<area shape="rect" id="node12" href="$classmatrix.html#ad939a50bcde1d07fbb6bd45404351964" title="matrix::fliplr" alt="" coords="492,259,583,285"/>
+<area shape="rect" id="node13" href="$classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="487,309,588,336"/>
+<area shape="rect" id="node14" href="$classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="496,360,579,387"/>
+<area shape="rect" id="node20" href="$matrix_8cpp.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="503,436,572,463"/>
+</map>

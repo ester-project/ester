@@ -1,0 +1,16 @@
+<map id="star2d::draw" name="star2d::draw">
+<area shape="rect" id="node2" href="$classmapping.html#a1e3fdf9924fcc6d22a780e0c512d9cc5" title="mapping::draw" alt="" coords="149,132,256,159"/>
+<area shape="rect" id="node3" href="$classfigure.html#ae4ca4776686825943eabcf0feb86dee7" title="figure::axis" alt="" coords="318,31,405,57"/>
+<area shape="rect" id="node4" href="$matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="338,81,385,108"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="318,132,405,159"/>
+<area shape="rect" id="node6" href="$classmapping.html#af434d9927dd8133b77c689f2b08a0a84" title="mapping::draw0" alt="" coords="304,183,419,209"/>
+<area shape="rect" id="node15" href="$classfigure.html#a3fd55eadd7f43ed274721facf085b70c" title="figure::pcolor" alt="" coords="313,233,410,260"/>
+<area shape="rect" id="node7" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="481,5,567,32"/>
+<area shape="rect" id="node8" href="$classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="467,56,581,83"/>
+<area shape="rect" id="node9" href="$matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="505,107,543,133"/>
+<area shape="rect" id="node10" href="$matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="503,157,545,184"/>
+<area shape="rect" id="node11" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="475,208,573,235"/>
+<area shape="rect" id="node12" href="$classmatrix.html#ad939a50bcde1d07fbb6bd45404351964" title="matrix::fliplr" alt="" coords="479,259,569,285"/>
+<area shape="rect" id="node13" href="$classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="473,309,575,336"/>
+<area shape="rect" id="node14" href="$classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="483,360,565,387"/>
+</map>

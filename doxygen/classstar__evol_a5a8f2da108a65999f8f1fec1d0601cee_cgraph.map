@@ -1,0 +1,22 @@
+<map id="star_evol::solve_Omega" name="star_evol::solve_Omega">
+<area shape="rect" id="node2" href="$classsolver.html#a79682e1858c4cd5e657a10e56a8c551d" title="solver::add_d" alt="" coords="245,5,345,32"/>
+<area shape="rect" id="node6" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="637,360,688,387"/>
+<area shape="rect" id="node9" href="$classsolver.html#ad89241cdcb624742e4810bcfd7c4048e" title="solver::set_rhs" alt="" coords="422,293,530,320"/>
+<area shape="rect" id="node10" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="267,411,322,437"/>
+<area shape="rect" id="node11" href="$classsolver.html#a070bdbd40ad3f62787716e8daffd70f4" title="solver::bc_bot2_add_d" alt="" coords="218,56,371,83"/>
+<area shape="rect" id="node12" href="$classsolver.html#a28ab5b1c21a4e327c0a155d1fc249449" title="solver::bc_bot2_add_lri" alt="" coords="217,107,373,133"/>
+<area shape="rect" id="node13" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="246,461,343,488"/>
+<area shape="rect" id="node14" href="$matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="457,512,495,539"/>
+<area shape="rect" id="node15" href="$classsolver.html#ae20eb2be2d86ce8d16f6f544c5ed8041" title="solver::bc_bot1_add_d" alt="" coords="218,157,371,184"/>
+<area shape="rect" id="node16" href="$classsolver.html#a2c549e96fe900962dda8c3bf56468229" title="solver::bc_top1_add_d" alt="" coords="218,208,371,235"/>
+<area shape="rect" id="node17" href="$classsolver.html#a9db41ed412446c4d86865e28e078d8a0" title="solver::bc_top2_add_d" alt="" coords="218,259,371,285"/>
+<area shape="rect" id="node18" href="$classstar2d.html#a7da1882172f11e6a99ad4f13ee8649f7" title="star2d::Lz" alt="" coords="255,563,335,589"/>
+<area shape="rect" id="node20" href="$matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="273,613,317,640"/>
+<area shape="rect" id="node21" href="$matrix_8h.html#a74e0b0a7fb9b67bf7604931dd5797533" title="log" alt="" coords="275,664,314,691"/>
+<area shape="rect" id="node3" href="$classsolver.html#ac269e25e5b929ca3c038402351fe6631" title="solver::add" alt="" coords="433,189,519,216"/>
+<area shape="rect" id="node4" href="$classsolver.html#a4f787a2def0088a98ea9c6980a00d851" title="solver::get_id" alt="" coords="613,281,713,308"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="795,155,896,181"/>
+<area shape="rect" id="node7" href="$classsolver_1_1solver__block.html#a706a1cd2d746f9fe7a303ec20fbe572c" title="Introduces a term in an equation of the block. " alt="" coords="579,205,746,232"/>
+<area shape="rect" id="node8" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="797,205,894,232"/>
+<area shape="rect" id="node19" href="$matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="453,563,499,589"/>
+</map>

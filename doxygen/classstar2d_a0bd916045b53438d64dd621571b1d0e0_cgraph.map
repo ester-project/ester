@@ -1,0 +1,51 @@
+<map id="star2d::remap" name="star2d::remap">
+<area shape="rect" id="node2" href="$classremapper.html#a2e48d2882f96ae75298b281a94ce20c8" title="remapper::set_ndomains" alt="" coords="157,377,323,404"/>
+<area shape="rect" id="node3" href="$classremapper.html#ab80ce00bfc9a2250cd08b381e400bf20" title="remapper::set_npts" alt="" coords="173,428,307,455"/>
+<area shape="rect" id="node4" href="$classremapper.html#acc5cb6d2b7b01b6b59c587c2a9c9d7ad" title="remapper::set_nt" alt="" coords="180,479,300,505"/>
+<area shape="rect" id="node5" href="$classremapper.html#a316de5d3a7521e6d04c10d29078f01e6" title="remapper::set_nex" alt="" coords="175,529,305,556"/>
+<area shape="rect" id="node6" href="$classstar2d.html#a83adad9ed6606f1befe0554c481f5e81" title="star2d::remap_domains" alt="" coords="161,580,319,607"/>
+<area shape="rect" id="node28" href="$classremapper.html#a6aeda971f62d6b523bb85e6ba500ca21" title="remapper::get_map" alt="" coords="373,1500,507,1527"/>
+<area shape="rect" id="node41" href="$classstar2d.html#a0cd1a943f63af1f807fbf2bf846d9eb8" title="star2d::interp" alt="" coords="191,1107,289,1133"/>
+<area shape="rect" id="node7" href="$classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="1153,1348,1258,1375"/>
+<area shape="rect" id="node8" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="1180,1627,1231,1653"/>
+<area shape="rect" id="node9" href="$classstar2d.html#ac0f7f425a24378cd5b96b1abedeb8e1c" title="star2d::distribute\l_domains" alt="" coords="381,454,499,495"/>
+<area shape="rect" id="node16" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="1178,468,1233,495"/>
+<area shape="rect" id="node25" href="$classremapper.html#a8e81208d708e6ae81e322801c77bd665" title="remapper::set_R" alt="" coords="381,631,499,657"/>
+<area shape="rect" id="node26" href="$classmapping.html#a59e4729fdd528d34c056fcda53a050ad" title="mapping::zeta_to_r" alt="" coords="569,639,703,665"/>
+<area shape="rect" id="node27" href="$classremapper.html#a79c33bc271c554f45120368b674c1f46" title="remapper::set_fixed" alt="" coords="371,5,509,32"/>
+<area shape="rect" id="node10" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="984,740,1085,767"/>
+<area shape="rect" id="node11" href="$classmatrix.html#a0d38262959de19208fc8c21780457c95" title="Sets the matrix to the nrows x ncols zero matrix. " alt="" coords="797,1145,888,1172"/>
+<area shape="rect" id="node12" href="$matrix_8h.html#a74e0b0a7fb9b67bf7604931dd5797533" title="log" alt="" coords="823,639,862,665"/>
+<area shape="rect" id="node13" href="$classdiff__gl.html#a273893d64ef8418624695f43833c9789" title="diff_gl::eval" alt="" coords="798,791,887,817"/>
+<area shape="rect" id="node17" href="$classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="1147,1792,1264,1819"/>
+<area shape="rect" id="node18" href="$classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="1148,779,1263,805"/>
+<area shape="rect" id="node19" href="$classstar2d.html#affb2120c60883f2007904b8b62dfccba" title="star2d::find_boundaries" alt="" coords="557,791,715,817"/>
+<area shape="rect" id="node24" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="1162,1500,1249,1527"/>
+<area shape="rect" id="node14" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="986,791,1083,817"/>
+<area shape="rect" id="node15" href="$classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="984,993,1085,1020"/>
+<area shape="rect" id="node20" href="$classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="801,841,884,868"/>
+<area shape="rect" id="node21" href="$matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="819,943,866,969"/>
+<area shape="rect" id="node22" href="$matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="821,1044,864,1071"/>
+<area shape="rect" id="node23" href="$matrix_8h.html#a0259ec431cd9cc93c1a9dbd94aa162ba" title="min" alt="" coords="821,1095,864,1121"/>
+<area shape="rect" id="node29" href="$classremapper.html#af75764aefda4f8ea006d63c2e13d284c" title="remapper::remap" alt="" coords="576,1399,696,1425"/>
+<area shape="rect" id="node30" href="$classmapping.html#a253990fdedac4fc10becaceae5e4a2be" title="mapping::set_mode" alt="" coords="775,1855,911,1881"/>
+<area shape="rect" id="node31" href="$classmapping.html#a8de7a1d48f7783ab550732e849d29eb1" title="mapping::set_ndomains" alt="" coords="763,1905,923,1932"/>
+<area shape="rect" id="node32" href="$classmapping.html#a474b1bcf20e93fd902ba13e0a2f64684" title="mapping::set_npts" alt="" coords="778,1956,907,1983"/>
+<area shape="rect" id="node33" href="$classmapping.html#a70ee2e26bc7b2bf36a68cdb0c90a818e" title="mapping::set_nt" alt="" coords="785,2007,900,2033"/>
+<area shape="rect" id="node34" href="$classmapping.html#ad99a3e81610a4ea47070899fd7b20a78" title="mapping::set_nex" alt="" coords="780,1449,905,1476"/>
+<area shape="rect" id="node35" href="$classmapping.html#af93544cdac32ac9a8aa92a3c674eb8dd" title="mapping::init" alt="" coords="795,1652,891,1679"/>
+<area shape="rect" id="node36" href="$matrix_8h.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="1000,1601,1069,1628"/>
+<area shape="rect" id="node37" href="$classmapping.html#aad8bde507d71c669dc4259b44d5b51aa" title="mapping::remap" alt="" coords="977,1449,1092,1476"/>
+<area shape="rect" id="node38" href="$classdiff__leg.html#aab4877a3dca16f6326294f396290bb39" title="diff_leg::eval_01" alt="" coords="784,1703,901,1729"/>
+<area shape="rect" id="node39" href="$classdiff__leg.html#a3a3bd0e927bba2fa9db4f1716853fafb" title="diff_leg::eval_10" alt="" coords="784,1753,901,1780"/>
+<area shape="rect" id="node40" href="$classdiff__leg.html#a51f6535740a957cb61864bbe65e6264c" title="diff_leg::eval_11" alt="" coords="784,1804,901,1831"/>
+<area shape="rect" id="node42" href="$classremapper.html#aa98ac96bc255e1e14c835835848fd920" title="remapper::interp" alt="" coords="382,993,498,1020"/>
+<area shape="rect" id="node43" href="$classremapper.html#a87f830cfc955930a7094286dfc77c29b" title="remapper::interp_ex" alt="" coords="371,1221,509,1248"/>
+<area shape="rect" id="node44" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="803,2108,882,2135"/>
+<area shape="rect" id="node45" href="$classstar2d.html#a89f64e2c8a79d1b87a753ee0a871bbef" title="star2d::init_comp" alt="" coords="973,1981,1096,2008"/>
+<area shape="rect" id="node46" href="$classstar2d.html#a56cb59b4d6994784487320cee8ae8652" title="star2d::eq_state" alt="" coords="977,2032,1093,2059"/>
+<area shape="rect" id="node47" href="$classstar2d.html#a7dc19f2defb4e1a8a565d2170e53036a" title="star2d::opacity" alt="" coords="981,2083,1089,2109"/>
+<area shape="rect" id="node48" href="$classstar2d.html#adfe376d502e668085dba6fb5d0188df2" title="star2d::nuclear" alt="" coords="981,2184,1089,2211"/>
+<area shape="rect" id="node49" href="$matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="1011,2235,1058,2261"/>
+<area shape="rect" id="node50" href="$classstar2d.html#a2a6188281cb683bef8b1fea6691cf257" title="star2d::calc_veloc" alt="" coords="971,1652,1099,1679"/>
+</map>

@@ -1,9 +1,7 @@
 var searchData=
 [
-  ['opa_5fstruct',['opa_struct',['../structopa__struct.html',1,'']]],
-  ['operator_28_29',['operator()',['../classmatrix.html#a313527b854cbe7a5107a91256cc2207d',1,'matrix::operator()(int irow, int icol)'],['../classmatrix.html#a48b183ec67cfc792be9611ebcac09372',1,'matrix::operator()(int ielem)'],['../classmatrix.html#a91338fbdf3d1da87ec30ad0e4770f53e',1,'matrix::operator()(int irow, int icol) const '],['../classmatrix.html#a21725a9a65ef884133c4ed00a0bd0626',1,'matrix::operator()(int ielem) const ']]],
-  ['operator_2b',['operator+',['../classmatrix.html#a4688e4e0d04f530029cd21bf643de5d5',1,'matrix']]],
-  ['operator_3d',['operator=',['../classmatrix.html#af70b72315b1159ddc9f893a1dd5e48f8',1,'matrix']]],
-  ['outfile',['OUTFILE',['../classOUTFILE.html',1,'']]],
-  ['overview',['Overview',['../overview.html',1,'']]]
+  ['j',['J',['../classmapping.html#a144ad3185766d187e6a8b51ea91e3751',1,'mapping::J()'],['../classmapping_1_1ext__map.html#a5ef8b569021c65f74c5d4898c579ff1e',1,'mapping::ext_map::J()']]],
+  ['jac',['jac',['../classcomposition__map.html#a771be585b07394184f282efd87655866',1,'composition_map']]],
+  ['jacobian',['jacobian',['../classsym.html#a45ad429d24f5129f88eb3d6b3dbca974',1,'sym::jacobian()'],['../symbolic_8h.html#a45ad429d24f5129f88eb3d6b3dbca974',1,'jacobian(const sym &amp;, const sym &amp;):&#160;sym.cpp'],['../sym_8cpp.html#a075f6a28fed628ef71680874b2ca3301',1,'jacobian(const sym &amp;f, const sym &amp;a):&#160;sym.cpp']]],
+  ['just',['just',['../classfigure.html#a8070a364c158d5e6e8cfdfa03c84b5f1',1,'figure']]]
 ];

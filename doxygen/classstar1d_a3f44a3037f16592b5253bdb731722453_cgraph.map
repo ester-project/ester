@@ -1,0 +1,12 @@
+<map id="star1d::init_solver" name="star1d::init_solver">
+<area shape="rect" id="node2" href="$classsolver.html#ab884a9f22a7521203c4d4c7cb9ca9d22" title="Initialize the solver object for nblock blocks, nvar variables, using a solver operator of type solve..." alt="" coords="221,100,304,127"/>
+<area shape="rect" id="node8" href="$classstar1d.html#a0a0f82a412ac932248bb3e4b5bc07493" title="star1d::register_variables" alt="" coords="179,205,347,232"/>
+<area shape="rect" id="node3" href="$classsolver.html#a332d7bf0615badf93dbdf0a137273f30" title="solver::destroy" alt="" coords="410,12,518,39"/>
+<area shape="rect" id="node6" href="$classsolver_1_1solver__block.html#a8c88ed2bca8cd3167a466abc2ab08d0c" title="Initializes the object with nvar variables. " alt="" coords="395,63,533,105"/>
+<area shape="rect" id="node7" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="623,100,678,127"/>
+<area shape="rect" id="node4" href="$classsolver_1_1solver__block.html#a7e49cd787b3a2b02509c23ac1f866b25" title="Destroys the object and frees memory. " alt="" coords="581,5,720,46"/>
+<area shape="rect" id="node5" href="$classsolver.html#a66acaed97a3677446c8faf93a9a8ce3b" title="solver::reset" alt="" coords="769,12,863,39"/>
+<area shape="rect" id="node9" href="$classsolver.html#a13aca53582481d03ad9b3aff3103df60" title="solver::set_nr" alt="" coords="413,180,515,207"/>
+<area shape="rect" id="node10" href="$classsolver.html#a691d638dd7b4a81a3855965a4b7f2c85" title="solver::regvar" alt="" coords="600,256,701,283"/>
+<area shape="rect" id="node11" href="$classsolver.html#a9ce1b3dfe4126933967a1b17da5e678d" title="solver::regvar_dep" alt="" coords="399,281,529,308"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="solver::~solver" name="solver::~solver">
+<area shape="rect" id="node2" href="$classsolver.html#a332d7bf0615badf93dbdf0a137273f30" title="solver::destroy" alt="" coords="163,12,271,39"/>
+<area shape="rect" id="node3" href="$classsolver_1_1solver__block.html#a7e49cd787b3a2b02509c23ac1f866b25" title="Destroys the object and frees memory. " alt="" coords="320,5,459,46"/>
+<area shape="rect" id="node4" href="$classsolver.html#a66acaed97a3677446c8faf93a9a8ce3b" title="solver::reset" alt="" coords="507,12,602,39"/>
+</map>

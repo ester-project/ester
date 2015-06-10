@@ -1,0 +1,5 @@
+<map id="SDIRK_solver::init_cn" name="SDIRK_solver::init_cn">
+<area shape="rect" id="node2" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="214,5,301,32"/>
+<area shape="rect" id="node3" href="$classmatrix.html#a56f512366e313c309346a7ba00cd0341" title="Sets the values of the matrix (given in column major order). " alt="" coords="205,56,309,83"/>
+<area shape="rect" id="node4" href="$classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="357,56,480,83"/>
+</map>

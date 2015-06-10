@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -96,107 +96,867 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">matrix_map Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="matrix_8h_source.html">matrix.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for matrix_map:</div>
 <div class="dyncontent">
 <div class="center"><img src="classmatrix__map__inherit__graph.png" border="0" usemap="#matrix__map_inherit__map" alt="Inheritance graph"/></div>
 <map name="matrix__map_inherit__map" id="matrix__map_inherit__map">
-</map>
+<area shape="rect" id="node3" href="classcomposition__map.html" title="composition_map" alt="" coords="17,171,140,197"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
 Collaboration diagram for matrix_map:</div>
 <div class="dyncontent">
 <div class="center"><img src="classmatrix__map__coll__graph.png" border="0" usemap="#matrix__map_coll__map" alt="Collaboration graph"/></div>
-<map name="matrix__map_coll__map" id="matrix__map_coll__map">
-</map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a91683d43eeb070833b94fa51b8c67aca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a91683d43eeb070833b94fa51b8c67aca"></a>
-<a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator[]</b> (const std::string &amp;key)</td></tr>
+<tr class="memitem:a91683d43eeb070833b94fa51b8c67aca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a91683d43eeb070833b94fa51b8c67aca">operator[]</a> (const std::string &amp;key)</td></tr>
 <tr class="separator:a91683d43eeb070833b94fa51b8c67aca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf0312b378ace5f5474097cdac0d1356"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adf0312b378ace5f5474097cdac0d1356"></a>
-const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator[]</b> (const std::string &amp;key) const </td></tr>
+<tr class="memitem:adf0312b378ace5f5474097cdac0d1356"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#adf0312b378ace5f5474097cdac0d1356">operator[]</a> (const std::string &amp;key) const </td></tr>
 <tr class="separator:adf0312b378ace5f5474097cdac0d1356"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2432bb539080c431938deef42f6ee0c5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2432bb539080c431938deef42f6ee0c5"></a>
-<a class="el" href="classmatrix__map__elem.html">matrix_map_elem</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (int nfil, int ncol)</td></tr>
+<tr class="memitem:a2432bb539080c431938deef42f6ee0c5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map__elem.html">matrix_map_elem</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a2432bb539080c431938deef42f6ee0c5">operator()</a> (int nfil, int ncol)</td></tr>
 <tr class="separator:a2432bb539080c431938deef42f6ee0c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bde39e2f302d3b0150833ee1130825c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0bde39e2f302d3b0150833ee1130825c"></a>
-const <a class="el" href="classdouble__map.html">double_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (int nfil, int ncol) const </td></tr>
+<tr class="memitem:a0bde39e2f302d3b0150833ee1130825c"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classdouble__map.html">double_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a0bde39e2f302d3b0150833ee1130825c">operator()</a> (int nfil, int ncol) const </td></tr>
 <tr class="separator:a0bde39e2f302d3b0150833ee1130825c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3870cbf69aca7c064e5a3cde32837833"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3870cbf69aca7c064e5a3cde32837833"></a>
-const <a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>row</b> (int irow) const </td></tr>
+<tr class="memitem:a3870cbf69aca7c064e5a3cde32837833"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a3870cbf69aca7c064e5a3cde32837833">row</a> (int irow) const </td></tr>
 <tr class="separator:a3870cbf69aca7c064e5a3cde32837833"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5cde3de115419c406d05278d1bd1fbff"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5cde3de115419c406d05278d1bd1fbff"></a>
-const <a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>col</b> (int icol) const </td></tr>
+<tr class="memitem:a5cde3de115419c406d05278d1bd1fbff"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a5cde3de115419c406d05278d1bd1fbff">col</a> (int icol) const </td></tr>
 <tr class="separator:a5cde3de115419c406d05278d1bd1fbff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b1c7ba75cd4a8a1ef513eafaeb0c894"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2b1c7ba75cd4a8a1ef513eafaeb0c894"></a>
-const <a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>block</b> (int irow1, int irow2, int icol1, int icol2) const </td></tr>
+<tr class="memitem:a2b1c7ba75cd4a8a1ef513eafaeb0c894"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a2b1c7ba75cd4a8a1ef513eafaeb0c894">block</a> (int irow1, int irow2, int icol1, int icol2) const </td></tr>
 <tr class="separator:a2b1c7ba75cd4a8a1ef513eafaeb0c894"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71dcc765f3fa06b6c961226a719b8089"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a71dcc765f3fa06b6c961226a719b8089"></a>
-const <a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>block_step</b> (int irow1, int irow2, int drow, int icol1, int icol2, int dcol) const </td></tr>
+<tr class="memitem:a71dcc765f3fa06b6c961226a719b8089"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a71dcc765f3fa06b6c961226a719b8089">block_step</a> (int irow1, int irow2, int drow, int icol1, int icol2, int dcol) const </td></tr>
 <tr class="separator:a71dcc765f3fa06b6c961226a719b8089"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a942fca6ae91132f09ed5fae64ad503a6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a942fca6ae91132f09ed5fae64ad503a6"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>setrow</b> (int irow, const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;)</td></tr>
+<tr class="memitem:a942fca6ae91132f09ed5fae64ad503a6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a942fca6ae91132f09ed5fae64ad503a6">setrow</a> (int irow, const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;)</td></tr>
 <tr class="separator:a942fca6ae91132f09ed5fae64ad503a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa83bb78f6f0582d8557515fb13a83064"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa83bb78f6f0582d8557515fb13a83064"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>setcol</b> (int icol, const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;)</td></tr>
+<tr class="memitem:aa83bb78f6f0582d8557515fb13a83064"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#aa83bb78f6f0582d8557515fb13a83064">setcol</a> (int icol, const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;)</td></tr>
 <tr class="separator:aa83bb78f6f0582d8557515fb13a83064"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1576c1533fa8e786b28e54f46d64c045"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1576c1533fa8e786b28e54f46d64c045"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>setblock</b> (int irow1, int irow2, int icol1, int icol2, const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;)</td></tr>
+<tr class="memitem:a1576c1533fa8e786b28e54f46d64c045"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a1576c1533fa8e786b28e54f46d64c045">setblock</a> (int irow1, int irow2, int icol1, int icol2, const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;)</td></tr>
 <tr class="separator:a1576c1533fa8e786b28e54f46d64c045"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4781215a678f876296c8d66092c2ec4b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4781215a678f876296c8d66092c2ec4b"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>setblock_step</b> (int irow1, int irow2, int drow, int icol1, int icol2, int dcol, const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;)</td></tr>
+<tr class="memitem:a4781215a678f876296c8d66092c2ec4b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a4781215a678f876296c8d66092c2ec4b">setblock_step</a> (int irow1, int irow2, int drow, int icol1, int icol2, int dcol, const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;)</td></tr>
 <tr class="separator:a4781215a678f876296c8d66092c2ec4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb23e1a231bfff77824c7d6779f91786"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acb23e1a231bfff77824c7d6779f91786"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>setrow</b> (int irow, const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
+<tr class="memitem:acb23e1a231bfff77824c7d6779f91786"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#acb23e1a231bfff77824c7d6779f91786">setrow</a> (int irow, const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="separator:acb23e1a231bfff77824c7d6779f91786"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af60313c67a5293d911812516af50ba09"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af60313c67a5293d911812516af50ba09"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>setcol</b> (int icol, const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
+<tr class="memitem:af60313c67a5293d911812516af50ba09"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#af60313c67a5293d911812516af50ba09">setcol</a> (int icol, const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="separator:af60313c67a5293d911812516af50ba09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9507790072388d125fb907bf5d0f2ebb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9507790072388d125fb907bf5d0f2ebb"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>setblock</b> (int irow1, int irow2, int icol1, int icol2, const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
+<tr class="memitem:a9507790072388d125fb907bf5d0f2ebb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a9507790072388d125fb907bf5d0f2ebb">setblock</a> (int irow1, int irow2, int icol1, int icol2, const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="separator:a9507790072388d125fb907bf5d0f2ebb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf62bdff5834c695ed89461744709bc9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adf62bdff5834c695ed89461744709bc9"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>setblock_step</b> (int irow1, int irow2, int drow, int icol1, int icol2, int dcol, const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
+<tr class="memitem:adf62bdff5834c695ed89461744709bc9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#adf62bdff5834c695ed89461744709bc9">setblock_step</a> (int irow1, int irow2, int drow, int icol1, int icol2, int dcol, const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="separator:adf62bdff5834c695ed89461744709bc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bd7d52c59bed3ef0786e7951d905a89"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5bd7d52c59bed3ef0786e7951d905a89"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (double d) const </td></tr>
+<tr class="memitem:a5bd7d52c59bed3ef0786e7951d905a89"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a5bd7d52c59bed3ef0786e7951d905a89">operator*</a> (double d) const </td></tr>
 <tr class="separator:a5bd7d52c59bed3ef0786e7951d905a89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d3fa263b5b07735f6343c30cc682442"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4d3fa263b5b07735f6343c30cc682442"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;m) const </td></tr>
+<tr class="memitem:a4d3fa263b5b07735f6343c30cc682442"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a4d3fa263b5b07735f6343c30cc682442">operator*</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;m) const </td></tr>
 <tr class="separator:a4d3fa263b5b07735f6343c30cc682442"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa5bf35c61029f10f8eb40c95ca5c0db"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afa5bf35c61029f10f8eb40c95ca5c0db"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator*=</b> (const <a class="el" href="classdouble__map.html">double_map</a> &amp;d)</td></tr>
+<tr class="memitem:afa5bf35c61029f10f8eb40c95ca5c0db"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#afa5bf35c61029f10f8eb40c95ca5c0db">operator*=</a> (const <a class="el" href="classdouble__map.html">double_map</a> &amp;d)</td></tr>
 <tr class="separator:afa5bf35c61029f10f8eb40c95ca5c0db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9cd58456e7106ab5e0b318d7f44fcb5e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9cd58456e7106ab5e0b318d7f44fcb5e"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator/=</b> (const <a class="el" href="classdouble__map.html">double_map</a> &amp;d)</td></tr>
+<tr class="memitem:a9cd58456e7106ab5e0b318d7f44fcb5e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a9cd58456e7106ab5e0b318d7f44fcb5e">operator/=</a> (const <a class="el" href="classdouble__map.html">double_map</a> &amp;d)</td></tr>
 <tr class="separator:a9cd58456e7106ab5e0b318d7f44fcb5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0edb82a244f01f0fdfd11db9941084d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab0edb82a244f01f0fdfd11db9941084d"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator+=</b> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;d)</td></tr>
+<tr class="memitem:ab0edb82a244f01f0fdfd11db9941084d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#ab0edb82a244f01f0fdfd11db9941084d">operator+=</a> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;d)</td></tr>
 <tr class="separator:ab0edb82a244f01f0fdfd11db9941084d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a336143bb0677c2450ea5a7ebaab391e0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a336143bb0677c2450ea5a7ebaab391e0"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator-=</b> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;d)</td></tr>
+<tr class="memitem:a336143bb0677c2450ea5a7ebaab391e0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a336143bb0677c2450ea5a7ebaab391e0">operator-=</a> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;d)</td></tr>
 <tr class="separator:a336143bb0677c2450ea5a7ebaab391e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a837e8ccc73abf33846f35373983516ae"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a837e8ccc73abf33846f35373983516ae"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator*=</b> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;d)</td></tr>
+<tr class="memitem:a837e8ccc73abf33846f35373983516ae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#a837e8ccc73abf33846f35373983516ae">operator*=</a> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;d)</td></tr>
 <tr class="separator:a837e8ccc73abf33846f35373983516ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaadcbc292f86e036bb0436c8813b36cb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaadcbc292f86e036bb0436c8813b36cb"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator/=</b> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;d)</td></tr>
+<tr class="memitem:aaadcbc292f86e036bb0436c8813b36cb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#aaadcbc292f86e036bb0436c8813b36cb">operator/=</a> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;d)</td></tr>
 <tr class="separator:aaadcbc292f86e036bb0436c8813b36cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0fc9ea428bf4300519ac6322f8ba92f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad0fc9ea428bf4300519ac6322f8ba92f"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>sum</b> ()</td></tr>
+<tr class="memitem:ad0fc9ea428bf4300519ac6322f8ba92f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__map.html#ad0fc9ea428bf4300519ac6322f8ba92f">sum</a> ()</td></tr>
 <tr class="separator:ad0fc9ea428bf4300519ac6322f8ba92f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a2b1c7ba75cd4a8a1ef513eafaeb0c894"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classmatrix__map.html">matrix_map</a> matrix_map::block </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__map_a2b1c7ba75cd4a8a1ef513eafaeb0c894_cgraph.png" border="0" usemap="#classmatrix__map_a2b1c7ba75cd4a8a1ef513eafaeb0c894_cgraph" alt=""/></div>
+<map name="classmatrix__map_a2b1c7ba75cd4a8a1ef513eafaeb0c894_cgraph" id="classmatrix__map_a2b1c7ba75cd4a8a1ef513eafaeb0c894_cgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a71dcc765f3fa06b6c961226a719b8089"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classmatrix__map.html">matrix_map</a> matrix_map::block_step </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>drow</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dcol</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__map_a71dcc765f3fa06b6c961226a719b8089_cgraph.png" border="0" usemap="#classmatrix__map_a71dcc765f3fa06b6c961226a719b8089_cgraph" alt=""/></div>
+<map name="classmatrix__map_a71dcc765f3fa06b6c961226a719b8089_cgraph" id="classmatrix__map_a71dcc765f3fa06b6c961226a719b8089_cgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a5cde3de115419c406d05278d1bd1fbff"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classmatrix__map.html">matrix_map</a> matrix_map::col </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__map_a5cde3de115419c406d05278d1bd1fbff_cgraph.png" border="0" usemap="#classmatrix__map_a5cde3de115419c406d05278d1bd1fbff_cgraph" alt=""/></div>
+<map name="classmatrix__map_a5cde3de115419c406d05278d1bd1fbff_cgraph" id="classmatrix__map_a5cde3de115419c406d05278d1bd1fbff_cgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a2432bb539080c431938deef42f6ee0c5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map__elem.html">matrix_map_elem</a> matrix_map::operator() </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nfil</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ncol</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0bde39e2f302d3b0150833ee1130825c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classdouble__map.html">double_map</a> matrix_map::operator() </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nfil</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ncol</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a5bd7d52c59bed3ef0786e7951d905a89"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> matrix_map::operator* </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>d</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4d3fa263b5b07735f6343c30cc682442"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> matrix_map::operator* </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>m</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afa5bf35c61029f10f8eb40c95ca5c0db"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp; matrix_map::operator*= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classdouble__map.html">double_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>d</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a837e8ccc73abf33846f35373983516ae"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp; matrix_map::operator*= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>d</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab0edb82a244f01f0fdfd11db9941084d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp; matrix_map::operator+= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>d</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a336143bb0677c2450ea5a7ebaab391e0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp; matrix_map::operator-= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>d</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a9cd58456e7106ab5e0b318d7f44fcb5e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp; matrix_map::operator/= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classdouble__map.html">double_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>d</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aaadcbc292f86e036bb0436c8813b36cb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp; matrix_map::operator/= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>d</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a91683d43eeb070833b94fa51b8c67aca"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a>&amp; matrix_map::operator[] </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="adf0312b378ace5f5474097cdac0d1356"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classmatrix.html">matrix</a>&amp; matrix_map::operator[] </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3870cbf69aca7c064e5a3cde32837833"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classmatrix__map.html">matrix_map</a> matrix_map::row </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__map_a3870cbf69aca7c064e5a3cde32837833_cgraph.png" border="0" usemap="#classmatrix__map_a3870cbf69aca7c064e5a3cde32837833_cgraph" alt=""/></div>
+<map name="classmatrix__map_a3870cbf69aca7c064e5a3cde32837833_cgraph" id="classmatrix__map_a3870cbf69aca7c064e5a3cde32837833_cgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a1576c1533fa8e786b28e54f46d64c045"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp; matrix_map::setblock </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__map_a1576c1533fa8e786b28e54f46d64c045_cgraph.png" border="0" usemap="#classmatrix__map_a1576c1533fa8e786b28e54f46d64c045_cgraph" alt=""/></div>
+<map name="classmatrix__map_a1576c1533fa8e786b28e54f46d64c045_cgraph" id="classmatrix__map_a1576c1533fa8e786b28e54f46d64c045_cgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a9507790072388d125fb907bf5d0f2ebb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp; matrix_map::setblock </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__map_a9507790072388d125fb907bf5d0f2ebb_cgraph.png" border="0" usemap="#classmatrix__map_a9507790072388d125fb907bf5d0f2ebb_cgraph" alt=""/></div>
+<map name="classmatrix__map_a9507790072388d125fb907bf5d0f2ebb_cgraph" id="classmatrix__map_a9507790072388d125fb907bf5d0f2ebb_cgraph">
+<area shape="rect" id="node2" href="classmatrix__map.html#a1576c1533fa8e786b28e54f46d64c045" title="matrix_map::setblock" alt="" coords="200,29,347,56"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a4781215a678f876296c8d66092c2ec4b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp; matrix_map::setblock_step </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>drow</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dcol</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__map_a4781215a678f876296c8d66092c2ec4b_cgraph.png" border="0" usemap="#classmatrix__map_a4781215a678f876296c8d66092c2ec4b_cgraph" alt=""/></div>
+<map name="classmatrix__map_a4781215a678f876296c8d66092c2ec4b_cgraph" id="classmatrix__map_a4781215a678f876296c8d66092c2ec4b_cgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="adf62bdff5834c695ed89461744709bc9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp; matrix_map::setblock_step </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>drow</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dcol</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__map_adf62bdff5834c695ed89461744709bc9_cgraph.png" border="0" usemap="#classmatrix__map_adf62bdff5834c695ed89461744709bc9_cgraph" alt=""/></div>
+<map name="classmatrix__map_adf62bdff5834c695ed89461744709bc9_cgraph" id="classmatrix__map_adf62bdff5834c695ed89461744709bc9_cgraph">
+<area shape="rect" id="node2" href="classmatrix__map.html#a4781215a678f876296c8d66092c2ec4b" title="matrix_map::setblock_step" alt="" coords="232,29,411,56"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aa83bb78f6f0582d8557515fb13a83064"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp; matrix_map::setcol </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__map_aa83bb78f6f0582d8557515fb13a83064_cgraph.png" border="0" usemap="#classmatrix__map_aa83bb78f6f0582d8557515fb13a83064_cgraph" alt=""/></div>
+<map name="classmatrix__map_aa83bb78f6f0582d8557515fb13a83064_cgraph" id="classmatrix__map_aa83bb78f6f0582d8557515fb13a83064_cgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="af60313c67a5293d911812516af50ba09"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp; matrix_map::setcol </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>icol</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__map_af60313c67a5293d911812516af50ba09_cgraph.png" border="0" usemap="#classmatrix__map_af60313c67a5293d911812516af50ba09_cgraph" alt=""/></div>
+<map name="classmatrix__map_af60313c67a5293d911812516af50ba09_cgraph" id="classmatrix__map_af60313c67a5293d911812516af50ba09_cgraph">
+<area shape="rect" id="node2" href="classmatrix__map.html#aa83bb78f6f0582d8557515fb13a83064" title="matrix_map::setcol" alt="" coords="187,29,320,56"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a942fca6ae91132f09ed5fae64ad503a6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp; matrix_map::setrow </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__map_a942fca6ae91132f09ed5fae64ad503a6_cgraph.png" border="0" usemap="#classmatrix__map_a942fca6ae91132f09ed5fae64ad503a6_cgraph" alt=""/></div>
+<map name="classmatrix__map_a942fca6ae91132f09ed5fae64ad503a6_cgraph" id="classmatrix__map_a942fca6ae91132f09ed5fae64ad503a6_cgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="acb23e1a231bfff77824c7d6779f91786"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> &amp; matrix_map::setrow </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>irow</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__map_acb23e1a231bfff77824c7d6779f91786_cgraph.png" border="0" usemap="#classmatrix__map_acb23e1a231bfff77824c7d6779f91786_cgraph" alt=""/></div>
+<map name="classmatrix__map_acb23e1a231bfff77824c7d6779f91786_cgraph" id="classmatrix__map_acb23e1a231bfff77824c7d6779f91786_cgraph">
+<area shape="rect" id="node2" href="classmatrix__map.html#a942fca6ae91132f09ed5fae64ad503a6" title="matrix_map::setrow" alt="" coords="193,29,330,56"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ad0fc9ea428bf4300519ac6322f8ba92f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> matrix_map::sum </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__map_ad0fc9ea428bf4300519ac6322f8ba92f_cgraph.png" border="0" usemap="#classmatrix__map_ad0fc9ea428bf4300519ac6322f8ba92f_cgraph" alt=""/></div>
+<map name="classmatrix__map_ad0fc9ea428bf4300519ac6322f8ba92f_cgraph" id="classmatrix__map_ad0fc9ea428bf4300519ac6322f8ba92f_cgraph">
+<area shape="rect" id="node2" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="177,5,231,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/include/<a class="el" href="matrix_8h_source.html">matrix.h</a></li>
-<li>src/matrix/matrix_map.cpp</li>
+<li>src/matrix/<a class="el" href="matrix__map_8cpp.html">matrix_map.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:28 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

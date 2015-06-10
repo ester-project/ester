@@ -1,0 +1,51 @@
+<map id="star2d::solve_temp" name="star2d::solve_temp">
+<area shape="rect" id="node2" href="$classsolver.html#a79682e1858c4cd5e657a10e56a8c551d" title="solver::add_d" alt="" coords="423,309,523,336"/>
+<area shape="rect" id="node6" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="851,1247,901,1273"/>
+<area shape="rect" id="node8" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="849,1483,903,1509"/>
+<area shape="rect" id="node9" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="215,157,313,184"/>
+<area shape="rect" id="node10" href="$classsolver.html#a070bdbd40ad3f62787716e8daffd70f4" title="solver::bc_bot2_add_d" alt="" coords="397,715,550,741"/>
+<area shape="rect" id="node11" href="$classsolver.html#a28ab5b1c21a4e327c0a155d1fc249449" title="solver::bc_bot2_add_lri" alt="" coords="395,360,551,387"/>
+<area shape="rect" id="node12" href="$classsolver.html#ae20eb2be2d86ce8d16f6f544c5ed8041" title="solver::bc_bot1_add_d" alt="" coords="397,512,550,539"/>
+<area shape="rect" id="node13" href="$classsolver.html#ad89241cdcb624742e4810bcfd7c4048e" title="solver::set_rhs" alt="" coords="419,1120,527,1147"/>
+<area shape="rect" id="node14" href="$classsolver.html#a2c549e96fe900962dda8c3bf56468229" title="solver::bc_top1_add_d" alt="" coords="397,411,550,437"/>
+<area shape="rect" id="node15" href="$classsolver.html#a15f5eab5270ec0b2751855dd600dbd8a" title="solver::bc_bot2_add_l" alt="" coords="189,613,339,640"/>
+<area shape="rect" id="node16" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="221,512,307,539"/>
+<area shape="rect" id="node17" href="$classsolver.html#af4f95e43bc2798bf682cf63febb7b95f" title="solver::bc_top1_add_l" alt="" coords="189,664,339,691"/>
+<area shape="rect" id="node18" href="$classsolver.html#a54c8653b46c5ea6acbb45daf68844abd" title="solver::bc_bot2_add_r" alt="" coords="189,5,339,32"/>
+<area shape="rect" id="node19" href="$classsolver.html#a3853e0098d9e003e618091b9ce95065f" title="solver::bc_top1_add_r" alt="" coords="189,56,339,83"/>
+<area shape="rect" id="node20" href="$classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="207,715,321,741"/>
+<area shape="rect" id="node21" href="$classsymbolic.html#a0fd63811267d2cbb2c6ddf24ddff7402" title="symbolic::set_map" alt="" coords="609,1272,741,1299"/>
+<area shape="rect" id="node22" href="$classsymbolic.html#aea40bb70b53afe57a6ba5ede5793186f" title="symbolic::regvar" alt="" coords="205,765,323,792"/>
+<area shape="rect" id="node24" href="$classsymbolic.html#a576c450dbdad524d3c0b58fabce21cd3" title="symbolic::set_value" alt="" coords="195,867,333,893"/>
+<area shape="rect" id="node25" href="$classstar2d.html#a3cea89e034f15f1ba1c25311695d8064" title="star2d::entropy" alt="" coords="209,968,319,995"/>
+<area shape="rect" id="node31" href="$classsolver.html#ade5739766d46d236c9aae5460180e093" title="solver::add_l" alt="" coords="425,664,521,691"/>
+<area shape="rect" id="node33" href="$classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="622,1576,727,1603"/>
+<area shape="rect" id="node37" href="$symbolic_8h.html#ad8054f4e685a87d107a407f4a332cbaa" title="div" alt="" coords="245,1475,283,1501"/>
+<area shape="rect" id="node40" href="$symbolic_8h.html#a72f8ab962e8692c188d858cc1998c48b" title="grad" alt="" coords="241,1601,287,1628"/>
+<area shape="rect" id="node43" href="$classsym.html#ab2197625f4158c9da8efd693d7357a1b" title="sym::add" alt="" coords="637,1221,713,1248"/>
+<area shape="rect" id="node44" href="$classsym.html#aeb3b748fd44c09f07f33a5d296fc9db7" title="sym::eval" alt="" coords="225,1373,303,1400"/>
+<area shape="rect" id="node45" href="$classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="205,1728,323,1755"/>
+<area shape="rect" id="node47" href="$classsolver.html#aef7d23a6a8a7222102538fbd152b8821" title="solver::bc_top2_add_l" alt="" coords="189,107,339,133"/>
+<area shape="rect" id="node48" href="$classsolver.html#a9db41ed412446c4d86865e28e078d8a0" title="solver::bc_top2_add_d" alt="" coords="187,208,341,235"/>
+<area shape="rect" id="node49" href="$classsolver.html#a062bdaac140cc9b65bb9995b199e66c0" title="solver::bc_bot2_add_lr" alt="" coords="187,259,341,285"/>
+<area shape="rect" id="node50" href="$classsolver.html#af13e761ddfbb5173ca4a5d92eea4e57d" title="solver::bc_bot2_add_ri" alt="" coords="187,309,341,336"/>
+<area shape="rect" id="node3" href="$classsolver.html#ac269e25e5b929ca3c038402351fe6631" title="solver::add" alt="" coords="631,411,718,437"/>
+<area shape="rect" id="node4" href="$classsolver.html#a4f787a2def0088a98ea9c6980a00d851" title="solver::get_id" alt="" coords="826,968,926,995"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="1008,461,1109,488"/>
+<area shape="rect" id="node7" href="$classsolver_1_1solver__block.html#a706a1cd2d746f9fe7a303ec20fbe572c" title="Introduces a term in an equation of the block. " alt="" coords="793,461,959,488"/>
+<area shape="rect" id="node23" href="$classsymbolic.html#a5486ba63e1dbf90e65097328986a9120" title="symbolic::var" alt="" coords="423,613,523,640"/>
+<area shape="rect" id="node26" href="$classsolver.html#ab884a9f22a7521203c4d4c7cb9ca9d22" title="Initialize the solver object for nblock blocks, nvar variables, using a solver operator of type solve..." alt="" coords="432,1373,515,1400"/>
+<area shape="rect" id="node29" href="$classsolver.html#a691d638dd7b4a81a3855965a4b7f2c85" title="solver::regvar" alt="" coords="423,1019,524,1045"/>
+<area shape="rect" id="node30" href="$classsolver.html#a13aca53582481d03ad9b3aff3103df60" title="solver::set_nr" alt="" coords="423,765,524,792"/>
+<area shape="rect" id="node32" href="$matrix_8h.html#a74e0b0a7fb9b67bf7604931dd5797533" title="log" alt="" coords="454,816,493,843"/>
+<area shape="rect" id="node34" href="$classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="432,867,515,893"/>
+<area shape="rect" id="node35" href="$classsolver.html#ad26b8574d24d480e4434dc3cc2810ce3" title="Solves the set of equations stored in the operator object. " alt="" coords="425,917,521,944"/>
+<area shape="rect" id="node36" href="$classsolver.html#a24e782d8a59927c9a1662033c013ad7c" title="solver::get_var" alt="" coords="621,968,729,995"/>
+<area shape="rect" id="node27" href="$classsolver.html#a332d7bf0615badf93dbdf0a137273f30" title="solver::destroy" alt="" coords="621,1373,729,1400"/>
+<area shape="rect" id="node28" href="$classsolver_1_1solver__block.html#a8c88ed2bca8cd3167a466abc2ab08d0c" title="Initializes the object with nvar variables. " alt="" coords="605,1475,744,1517"/>
+<area shape="rect" id="node38" href="$classsym__vec.html#ac54f9f62a3b25538f1996e3066a9c8b9" title="sym_vec::check_context" alt="" coords="389,1475,557,1501"/>
+<area shape="rect" id="node39" href="$classsymbolic.html#a5eacb9808bb56179c683bc95c907ad00" title="symbolic::divergence" alt="" coords="401,1525,546,1552"/>
+<area shape="rect" id="node41" href="$classsym.html#a6bfcd0ef7887bfccc3ab9ddba568ff69" title="sym::check_context" alt="" coords="403,1576,543,1603"/>
+<area shape="rect" id="node42" href="$classsymbolic.html#a1f7cbf93ef20ee903adb22edf7834d32" title="symbolic::gradient" alt="" coords="409,1627,537,1653"/>
+<area shape="rect" id="node46" href="$classdiff__leg.html#ad863b7bdb1d8b47279f63a10e1843edd" title="diff_leg::eval" alt="" coords="425,1728,521,1755"/>
+</map>

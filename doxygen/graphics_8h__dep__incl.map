@@ -1,0 +1,30 @@
+<map id="src/include/graphics.h" name="src/include/graphics.h">
+<area shape="rect" id="node2" href="$graphics_8cpp.html" title="src/graphics/graphics.cpp" alt="" coords="5,80,176,107"/>
+<area shape="rect" id="node3" href="$ester_8h.html" title="src/include/ester.h" alt="" coords="225,304,353,331"/>
+<area shape="rect" id="node6" href="$mapping_8h.html" title="src/include/mapping.h" alt="" coords="580,80,728,107"/>
+<area shape="rect" id="node7" href="$star_8h.html" title="src/include/star.h" alt="" coords="1639,229,1761,256"/>
+<area shape="rect" id="node4" href="$ester-info_8cpp.html" title="src/main/ester&#45;info.cpp" alt="" coords="123,379,276,405"/>
+<area shape="rect" id="node5" href="$main_2star__evol_8cpp.html" title="src/main/star_evol.cpp" alt="" coords="301,379,455,405"/>
+<area shape="rect" id="node21" href="$symbolic_8h.html" title="src/include/symbolic.h" alt="" coords="836,155,988,181"/>
+<area shape="rect" id="node28" href="$mapping_8cpp.html" title="src/mapping/mapping.cpp" alt="" coords="251,155,421,181"/>
+<area shape="rect" id="node29" href="$remapper_8cpp.html" title="src/mapping/remapper.cpp" alt="" coords="1012,155,1188,181"/>
+<area shape="rect" id="node8" href="$gen__output_8cpp.html" title="src/main/gen_output.cpp" alt="" coords="1441,304,1605,331"/>
+<area shape="rect" id="node9" href="$star1d_8cpp.html" title="src/main/star1d.cpp" alt="" coords="1631,304,1768,331"/>
+<area shape="rect" id="node10" href="$star2d_8cpp.html" title="src/main/star2d.cpp" alt="" coords="1793,304,1929,331"/>
+<area shape="rect" id="node11" href="$convection_8cpp.html" title="src/star/convection.cpp" alt="" coords="1954,304,2112,331"/>
+<area shape="rect" id="node12" href="$star1d__class_8cpp.html" title="src/star/star1d_class.cpp" alt="" coords="2137,304,2305,331"/>
+<area shape="rect" id="node13" href="$star1d__extra_8cpp.html" title="src/star/star1d_extra.cpp" alt="" coords="2330,304,2496,331"/>
+<area shape="rect" id="node14" href="$star1d__solvers_8cpp.html" title="src/star/star1d_solvers.cpp" alt="" coords="683,304,863,331"/>
+<area shape="rect" id="node15" href="$star2d__class_8cpp.html" title="src/star/star2d_class.cpp" alt="" coords="2521,304,2689,331"/>
+<area shape="rect" id="node16" href="$star2d__extra_8cpp.html" title="src/star/star2d_extra.cpp" alt="" coords="2714,304,2880,331"/>
+<area shape="rect" id="node17" href="$star2d__solvers_8cpp.html" title="src/star/star2d_solvers.cpp" alt="" coords="887,304,1067,331"/>
+<area shape="rect" id="node18" href="$star_2star__evol_8cpp.html" title="src/star/star_evol.cpp" alt="" coords="2905,304,3052,331"/>
+<area shape="rect" id="node19" href="$star__map_8cpp.html" title="src/star/star_map.cpp" alt="" coords="1092,304,1240,331"/>
+<area shape="rect" id="node20" href="$star__phys_8cpp.html" title="src/star/star_phys.cpp" alt="" coords="1265,304,1417,331"/>
+<area shape="rect" id="node22" href="$rational_8cpp.html" title="src/symbolic/rational.cpp" alt="" coords="965,229,1131,256"/>
+<area shape="rect" id="node23" href="$sym_8cpp.html" title="src/symbolic/sym.cpp" alt="" coords="1155,229,1305,256"/>
+<area shape="rect" id="node24" href="$sym__expr_8cpp.html" title="src/symbolic/sym_expr.cpp" alt="" coords="1330,229,1512,256"/>
+<area shape="rect" id="node25" href="$sym__tens_8cpp.html" title="src/symbolic/sym_tens.cpp" alt="" coords="353,229,535,256"/>
+<area shape="rect" id="node26" href="$sym__vec_8cpp.html" title="src/symbolic/sym_vec.cpp" alt="" coords="560,229,739,256"/>
+<area shape="rect" id="node27" href="$symbolic_8cpp.html" title="src/symbolic/symbolic.cpp" alt="" coords="763,229,940,256"/>
+</map>

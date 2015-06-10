@@ -1,0 +1,16 @@
+<map id="symbolic::gradient" name="symbolic::gradient">
+<area shape="rect" id="node2" href="$symbolic_8h.html#a72f8ab962e8692c188d858cc1998c48b" title="grad" alt="" coords="571,56,618,83"/>
+<area shape="rect" id="node11" href="$classsym__tens.html#ab2243f0035213203cd7eff5dae0fa89e" title="sym_tens::set_context" alt="" coords="181,107,336,133"/>
+<area shape="rect" id="node12" href="$classsymbolic.html#ab35b909b2400cf47cf1256530bc2ffa6" title="symbolic::covderiv" alt="" coords="193,157,324,184"/>
+<area shape="rect" id="node3" href="$classsym.html#a6bfcd0ef7887bfccc3ab9ddba568ff69" title="sym::check_context" alt="" coords="1218,5,1358,32"/>
+<area shape="rect" id="node4" href="$classsymbolic.html#a1f7cbf93ef20ee903adb22edf7834d32" title="symbolic::gradient" alt="" coords="712,56,840,83"/>
+<area shape="rect" id="node5" href="$classsym__vec.html#a0cdf7e39f268bfb5977bb944e03175f9" title="sym_vec::set_context" alt="" coords="889,56,1039,83"/>
+<area shape="rect" id="node6" href="$symbolic_8h.html#ad1b9a0a596c68e0f303a1a43fe856108" title="diff" alt="" coords="944,107,984,133"/>
+<area shape="rect" id="node7" href="$sym_8cpp.html#a075f6a28fed628ef71680874b2ca3301" title="jacobian" alt="" coords="1089,107,1159,133"/>
+<area shape="rect" id="node8" href="$classsym_1_1sym__expr.html#ad9bf9877b0e60666ca0b0d1df50b117d" title="sym::sym_expr::clone" alt="" coords="1213,56,1363,83"/>
+<area shape="rect" id="node9" href="$classsym_1_1sym__expr.html#ad4b7089172fec60017feee9556b6b5da" title="sym::sym_expr::derive" alt="" coords="1211,107,1365,133"/>
+<area shape="rect" id="node10" href="$classsym_1_1sym__expr.html#ac2df6b4bed129567c6b78b0865685ffd" title="sym::sym_expr::reduce" alt="" coords="1209,157,1367,184"/>
+<area shape="rect" id="node13" href="$classsymbolic.html#a03d53aa3bf752117a92a57e0215b03ab" title="symbolic::d" alt="" coords="731,107,821,133"/>
+<area shape="rect" id="node14" href="$classsymbolic.html#af1be1540c3e66a039f97678bd5ce9579" title="symbolic::G" alt="" coords="385,157,477,184"/>
+<area shape="rect" id="node15" href="$classsymbolic.html#a379cc47be5ab2b03e2dc92d5b9bb72de" title="symbolic::christoffel" alt="" coords="525,157,664,184"/>
+</map>

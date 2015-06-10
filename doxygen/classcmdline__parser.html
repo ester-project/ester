@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -97,42 +97,192 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">cmdline_parser Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="parser_8h_source.html">parser.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a090059370ae5cff1d130cc2302fef3c2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a090059370ae5cff1d130cc2302fef3c2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>open</b> (int argc_in, char *argv_in[])</td></tr>
+<tr class="memitem:a090059370ae5cff1d130cc2302fef3c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcmdline__parser.html#a090059370ae5cff1d130cc2302fef3c2">open</a> (int argc_in, char *argv_in[])</td></tr>
 <tr class="separator:a090059370ae5cff1d130cc2302fef3c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd813875ea844d3b450470f3d6e1129c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd813875ea844d3b450470f3d6e1129c"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> (char *&amp;arg, char *&amp;val)</td></tr>
+<tr class="memitem:afd813875ea844d3b450470f3d6e1129c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcmdline__parser.html#afd813875ea844d3b450470f3d6e1129c">get</a> (char *&amp;arg, char *&amp;val)</td></tr>
 <tr class="separator:afd813875ea844d3b450470f3d6e1129c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a982dc23acd45abd1f1e44424fbd3c83a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a982dc23acd45abd1f1e44424fbd3c83a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>ack</b> (char *arg, char *val)</td></tr>
+<tr class="memitem:a982dc23acd45abd1f1e44424fbd3c83a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcmdline__parser.html#a982dc23acd45abd1f1e44424fbd3c83a">ack</a> (char *arg, char *val)</td></tr>
 <tr class="separator:a982dc23acd45abd1f1e44424fbd3c83a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03f070047816df9a792c3eeef7de3c5f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a03f070047816df9a792c3eeef7de3c5f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</td></tr>
+<tr class="memitem:a03f070047816df9a792c3eeef7de3c5f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcmdline__parser.html#a03f070047816df9a792c3eeef7de3c5f">close</a> ()</td></tr>
 <tr class="separator:a03f070047816df9a792c3eeef7de3c5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a7fa58ed826b91d7d1bcfb31cc1ad33f3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7fa58ed826b91d7d1bcfb31cc1ad33f3"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>argc</b></td></tr>
+<tr class="memitem:a7fa58ed826b91d7d1bcfb31cc1ad33f3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcmdline__parser.html#a7fa58ed826b91d7d1bcfb31cc1ad33f3">argc</a></td></tr>
 <tr class="separator:a7fa58ed826b91d7d1bcfb31cc1ad33f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a843723cbd33f206924d16622ac247b5a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a843723cbd33f206924d16622ac247b5a"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>i</b></td></tr>
+<tr class="memitem:a843723cbd33f206924d16622ac247b5a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcmdline__parser.html#a843723cbd33f206924d16622ac247b5a">i</a></td></tr>
 <tr class="separator:a843723cbd33f206924d16622ac247b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77652818918e543ae4601c13f3a4f752"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a77652818918e543ae4601c13f3a4f752"></a>
-char **&#160;</td><td class="memItemRight" valign="bottom"><b>argv</b></td></tr>
+<tr class="memitem:a77652818918e543ae4601c13f3a4f752"><td class="memItemLeft" align="right" valign="top">char **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcmdline__parser.html#a77652818918e543ae4601c13f3a4f752">argv</a></td></tr>
 <tr class="separator:a77652818918e543ae4601c13f3a4f752"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a982dc23acd45abd1f1e44424fbd3c83a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cmdline_parser::ack </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>arg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a03f070047816df9a792c3eeef7de3c5f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cmdline_parser::close </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afd813875ea844d3b450470f3d6e1129c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int cmdline_parser::get </td>
+          <td>(</td>
+          <td class="paramtype">char *&amp;&#160;</td>
+          <td class="paramname"><em>arg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&amp;&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a090059370ae5cff1d130cc2302fef3c2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cmdline_parser::open </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>argc_in</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>argv_in</em>[]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a7fa58ed826b91d7d1bcfb31cc1ad33f3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int cmdline_parser::argc</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a77652818918e543ae4601c13f3a4f752"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">char** cmdline_parser::argv</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a843723cbd33f206924d16622ac247b5a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int cmdline_parser::i</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/include/<a class="el" href="parser_8h_source.html">parser.h</a></li>
-<li>src/utils/parser.cpp</li>
+<li>src/utils/<a class="el" href="parser_8cpp.html">parser.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:27 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

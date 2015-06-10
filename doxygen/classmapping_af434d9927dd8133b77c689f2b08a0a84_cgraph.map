@@ -1,0 +1,10 @@
+<map id="mapping::draw0" name="mapping::draw0">
+<area shape="rect" id="node2" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="182,5,269,32"/>
+<area shape="rect" id="node3" href="$classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="168,56,283,83"/>
+<area shape="rect" id="node4" href="$matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="206,107,245,133"/>
+<area shape="rect" id="node5" href="$matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="204,157,247,184"/>
+<area shape="rect" id="node6" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="177,208,274,235"/>
+<area shape="rect" id="node7" href="$classmatrix.html#ad939a50bcde1d07fbb6bd45404351964" title="matrix::fliplr" alt="" coords="180,259,271,285"/>
+<area shape="rect" id="node8" href="$classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="175,309,276,336"/>
+<area shape="rect" id="node9" href="$classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="184,360,267,387"/>
+</map>

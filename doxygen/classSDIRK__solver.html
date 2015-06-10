@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -98,193 +98,1470 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">SDIRK_solver Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="solver_8h_source.html">solver.h</a>&gt;</code></p>
 <div class="dynheader">
 Collaboration diagram for SDIRK_solver:</div>
 <div class="dyncontent">
 <div class="center"><img src="classSDIRK__solver__coll__graph.png" border="0" usemap="#SDIRK__solver_coll__map" alt="Collaboration graph"/></div>
 <map name="SDIRK__solver_coll__map" id="SDIRK__solver_coll__map">
-</map>
+<area shape="rect" id="node2" href="classmatrix.html" title="The matrix class is used to facilitate the work with regular dense matrices. " alt="" coords="29,5,87,32"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a964031a00e5c238af786d3f22c683b89"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a964031a00e5c238af786d3f22c683b89"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (int nvar, const char *type)</td></tr>
+<tr class="memitem:a4c511243d670b84a7e84562767969f3d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a4c511243d670b84a7e84562767969f3d">SDIRK_solver</a> ()</td></tr>
+<tr class="separator:a4c511243d670b84a7e84562767969f3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a964031a00e5c238af786d3f22c683b89"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a964031a00e5c238af786d3f22c683b89">init</a> (int nvar, const char *type)</td></tr>
 <tr class="separator:a964031a00e5c238af786d3f22c683b89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a706a6d32510ee0295fc7c6e1cef4a4b4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a706a6d32510ee0295fc7c6e1cef4a4b4"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></tr>
+<tr class="memitem:a706a6d32510ee0295fc7c6e1cef4a4b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a706a6d32510ee0295fc7c6e1cef4a4b4">destroy</a> ()</td></tr>
 <tr class="separator:a706a6d32510ee0295fc7c6e1cef4a4b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:affc7a69922e03051a876df4292c46050"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="affc7a69922e03051a876df4292c46050"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>regvar</b> (const char *var_name, const <a class="el" href="classmatrix.html">matrix</a> &amp;initial_value)</td></tr>
+<tr class="memitem:ac4720f483d9df6f38bf122dd2a248780"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ac4720f483d9df6f38bf122dd2a248780">~SDIRK_solver</a> ()</td></tr>
+<tr class="separator:ac4720f483d9df6f38bf122dd2a248780"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affc7a69922e03051a876df4292c46050"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#affc7a69922e03051a876df4292c46050">regvar</a> (const char *var_name, const <a class="el" href="classmatrix.html">matrix</a> &amp;initial_value)</td></tr>
 <tr class="separator:affc7a69922e03051a876df4292c46050"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f2110dc7696d2e3a84cff64fa2cb1c1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6f2110dc7696d2e3a84cff64fa2cb1c1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>regvars</b> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;vars)</td></tr>
+<tr class="memitem:a6f2110dc7696d2e3a84cff64fa2cb1c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a6f2110dc7696d2e3a84cff64fa2cb1c1">regvars</a> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;vars)</td></tr>
 <tr class="separator:a6f2110dc7696d2e3a84cff64fa2cb1c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ec47c8a83732e3bd946c88c36be9efb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1ec47c8a83732e3bd946c88c36be9efb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_initial_derivative</b> (const char *var_name, const <a class="el" href="classmatrix.html">matrix</a> &amp;initial_value)</td></tr>
+<tr class="memitem:a1ec47c8a83732e3bd946c88c36be9efb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a1ec47c8a83732e3bd946c88c36be9efb">set_initial_derivative</a> (const char *var_name, const <a class="el" href="classmatrix.html">matrix</a> &amp;initial_value)</td></tr>
 <tr class="separator:a1ec47c8a83732e3bd946c88c36be9efb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdf74b46a4aeaecf490738d852a07459"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afdf74b46a4aeaecf490738d852a07459"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_initial_derivatives</b> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;vars)</td></tr>
+<tr class="memitem:afdf74b46a4aeaecf490738d852a07459"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#afdf74b46a4aeaecf490738d852a07459">set_initial_derivatives</a> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;vars)</td></tr>
 <tr class="separator:afdf74b46a4aeaecf490738d852a07459"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e62fa614fbca651e2d677e07c57cf67"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1e62fa614fbca651e2d677e07c57cf67"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_var</b> (const char *var_name, const <a class="el" href="classmatrix.html">matrix</a> &amp;value)</td></tr>
+<tr class="memitem:a1e62fa614fbca651e2d677e07c57cf67"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a1e62fa614fbca651e2d677e07c57cf67">set_var</a> (const char *var_name, const <a class="el" href="classmatrix.html">matrix</a> &amp;value)</td></tr>
 <tr class="separator:a1e62fa614fbca651e2d677e07c57cf67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b3fe6250e7570556ffa126b04650e83"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9b3fe6250e7570556ffa126b04650e83"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_vars</b> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;values)</td></tr>
+<tr class="memitem:a9b3fe6250e7570556ffa126b04650e83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a9b3fe6250e7570556ffa126b04650e83">set_vars</a> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;values)</td></tr>
 <tr class="separator:a9b3fe6250e7570556ffa126b04650e83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f9a24a4773c1ac790e69a10c76ed30b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5f9a24a4773c1ac790e69a10c76ed30b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_step</b> (double)</td></tr>
+<tr class="memitem:a5f9a24a4773c1ac790e69a10c76ed30b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a5f9a24a4773c1ac790e69a10c76ed30b">set_step</a> (double)</td></tr>
 <tr class="separator:a5f9a24a4773c1ac790e69a10c76ed30b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7c219c35105065b683ffa9da7256f92"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac7c219c35105065b683ffa9da7256f92"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>get_step</b> ()</td></tr>
+<tr class="memitem:ac7c219c35105065b683ffa9da7256f92"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ac7c219c35105065b683ffa9da7256f92">get_step</a> ()</td></tr>
 <tr class="separator:ac7c219c35105065b683ffa9da7256f92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60a70ec3f95a1cbe3e61a294ab1e1780"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a60a70ec3f95a1cbe3e61a294ab1e1780"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>get_delta</b> ()</td></tr>
+<tr class="memitem:a60a70ec3f95a1cbe3e61a294ab1e1780"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a60a70ec3f95a1cbe3e61a294ab1e1780">get_delta</a> ()</td></tr>
 <tr class="separator:a60a70ec3f95a1cbe3e61a294ab1e1780"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e13bbbf08e119a759054f16171cd912"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7e13bbbf08e119a759054f16171cd912"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_var</b> (const char *var_name)</td></tr>
+<tr class="memitem:a7e13bbbf08e119a759054f16171cd912"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a7e13bbbf08e119a759054f16171cd912">get_var</a> (const char *var_name)</td></tr>
 <tr class="separator:a7e13bbbf08e119a759054f16171cd912"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87ed1de020626aefca4c273ae1edb95a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a87ed1de020626aefca4c273ae1edb95a"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_vars</b> ()</td></tr>
+<tr class="memitem:a87ed1de020626aefca4c273ae1edb95a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a87ed1de020626aefca4c273ae1edb95a">get_vars</a> ()</td></tr>
 <tr class="separator:a87ed1de020626aefca4c273ae1edb95a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac8f50d2a6eedd1a9b16c9f0281400e3b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac8f50d2a6eedd1a9b16c9f0281400e3b"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>number_of_stages</b> ()</td></tr>
+<tr class="memitem:ac8f50d2a6eedd1a9b16c9f0281400e3b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ac8f50d2a6eedd1a9b16c9f0281400e3b">number_of_stages</a> ()</td></tr>
 <tr class="separator:ac8f50d2a6eedd1a9b16c9f0281400e3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ae2eae08930ce8d8f6b3a71275e114e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2ae2eae08930ce8d8f6b3a71275e114e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>number_of_implicit_stages</b> ()</td></tr>
+<tr class="memitem:a2ae2eae08930ce8d8f6b3a71275e114e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a2ae2eae08930ce8d8f6b3a71275e114e">number_of_implicit_stages</a> ()</td></tr>
 <tr class="separator:a2ae2eae08930ce8d8f6b3a71275e114e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac45fcacdfdb6245468b3d8fa9276c1d5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac45fcacdfdb6245468b3d8fa9276c1d5"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>get_order</b> ()</td></tr>
+<tr class="memitem:ac45fcacdfdb6245468b3d8fa9276c1d5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ac45fcacdfdb6245468b3d8fa9276c1d5">get_order</a> ()</td></tr>
 <tr class="separator:ac45fcacdfdb6245468b3d8fa9276c1d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2258d60585649f5dcc29e4cafa06f9b5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2258d60585649f5dcc29e4cafa06f9b5"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>needs_initial_derivative</b> ()</td></tr>
+<tr class="memitem:a2258d60585649f5dcc29e4cafa06f9b5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a2258d60585649f5dcc29e4cafa06f9b5">needs_initial_derivative</a> ()</td></tr>
 <tr class="separator:a2258d60585649f5dcc29e4cafa06f9b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb81d73e631ac9e5d5a465a0c6482f62"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acb81d73e631ac9e5d5a465a0c6482f62"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>get_t</b> ()</td></tr>
+<tr class="memitem:acb81d73e631ac9e5d5a465a0c6482f62"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#acb81d73e631ac9e5d5a465a0c6482f62">get_t</a> ()</td></tr>
 <tr class="separator:acb81d73e631ac9e5d5a465a0c6482f62"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8bcb0d23d25aeabad84a5c4e2eb0e607"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8bcb0d23d25aeabad84a5c4e2eb0e607"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>solve</b> (double t0, double t1)</td></tr>
+<tr class="memitem:a8bcb0d23d25aeabad84a5c4e2eb0e607"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a8bcb0d23d25aeabad84a5c4e2eb0e607">solve</a> (double t0, double t1)</td></tr>
 <tr class="separator:a8bcb0d23d25aeabad84a5c4e2eb0e607"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a1d7d164d3f40a7621fd8521daa074f18"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1d7d164d3f40a7621fd8521daa074f18"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>wrap</b> (const <a class="el" href="classmatrix.html">matrix</a> *, <a class="el" href="classmatrix.html">matrix</a> *)</td></tr>
+<tr class="memitem:a1d7d164d3f40a7621fd8521daa074f18"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a1d7d164d3f40a7621fd8521daa074f18">wrap</a> (const <a class="el" href="classmatrix.html">matrix</a> *, <a class="el" href="classmatrix.html">matrix</a> *)</td></tr>
 <tr class="separator:a1d7d164d3f40a7621fd8521daa074f18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b9cd0c67a94f43082f533b336dc0d0c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7b9cd0c67a94f43082f533b336dc0d0c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>unwrap</b> (const <a class="el" href="classmatrix.html">matrix</a> *, <a class="el" href="classmatrix.html">matrix</a> *)</td></tr>
+<tr class="memitem:a7b9cd0c67a94f43082f533b336dc0d0c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a7b9cd0c67a94f43082f533b336dc0d0c">unwrap</a> (const <a class="el" href="classmatrix.html">matrix</a> *, <a class="el" href="classmatrix.html">matrix</a> *)</td></tr>
 <tr class="separator:a7b9cd0c67a94f43082f533b336dc0d0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f0327b9502cb34ed0df0e4e5643b375"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9f0327b9502cb34ed0df0e4e5643b375"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>get_id</b> (const char *varn)</td></tr>
+<tr class="memitem:a9f0327b9502cb34ed0df0e4e5643b375"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a9f0327b9502cb34ed0df0e4e5643b375">get_id</a> (const char *varn)</td></tr>
 <tr class="separator:a9f0327b9502cb34ed0df0e4e5643b375"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42664dd78a61167aea2d884cd2c74469"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a42664dd78a61167aea2d884cd2c74469"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>check_init</b> ()</td></tr>
+<tr class="memitem:a42664dd78a61167aea2d884cd2c74469"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a42664dd78a61167aea2d884cd2c74469">check_init</a> ()</td></tr>
 <tr class="separator:a42664dd78a61167aea2d884cd2c74469"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba77e6d6a4c88fbb6b1820a131f22480"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aba77e6d6a4c88fbb6b1820a131f22480"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>check_method</b> ()</td></tr>
+<tr class="memitem:aba77e6d6a4c88fbb6b1820a131f22480"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#aba77e6d6a4c88fbb6b1820a131f22480">check_method</a> ()</td></tr>
 <tr class="separator:aba77e6d6a4c88fbb6b1820a131f22480"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae88b5e66cf9d16769d94200d40d15f84"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae88b5e66cf9d16769d94200d40d15f84"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init_be</b> ()</td></tr>
+<tr class="memitem:ae88b5e66cf9d16769d94200d40d15f84"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ae88b5e66cf9d16769d94200d40d15f84">init_be</a> ()</td></tr>
 <tr class="separator:ae88b5e66cf9d16769d94200d40d15f84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ee2ec2d55f090985c31e1777ee1165f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6ee2ec2d55f090985c31e1777ee1165f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init_cn</b> ()</td></tr>
+<tr class="memitem:a6ee2ec2d55f090985c31e1777ee1165f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a6ee2ec2d55f090985c31e1777ee1165f">init_cn</a> ()</td></tr>
 <tr class="separator:a6ee2ec2d55f090985c31e1777ee1165f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75763571a00e2ba6e09e7d14dca974c3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a75763571a00e2ba6e09e7d14dca974c3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init_sdirk2</b> ()</td></tr>
+<tr class="memitem:a75763571a00e2ba6e09e7d14dca974c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a75763571a00e2ba6e09e7d14dca974c3">init_sdirk2</a> ()</td></tr>
 <tr class="separator:a75763571a00e2ba6e09e7d14dca974c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a07ac54df4320ec02b856f60bed316961"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a07ac54df4320ec02b856f60bed316961"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init_sdirk3</b> ()</td></tr>
+<tr class="memitem:a07ac54df4320ec02b856f60bed316961"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a07ac54df4320ec02b856f60bed316961">init_sdirk3</a> ()</td></tr>
 <tr class="separator:a07ac54df4320ec02b856f60bed316961"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56b215390d8aeada1fee946088e46e28"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a56b215390d8aeada1fee946088e46e28"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init_sdirk4</b> ()</td></tr>
+<tr class="memitem:a56b215390d8aeada1fee946088e46e28"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a56b215390d8aeada1fee946088e46e28">init_sdirk4</a> ()</td></tr>
 <tr class="separator:a56b215390d8aeada1fee946088e46e28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49f17f6635ed103a75290c52f216ff3a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a49f17f6635ed103a75290c52f216ff3a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init_esdirk3</b> ()</td></tr>
+<tr class="memitem:a49f17f6635ed103a75290c52f216ff3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a49f17f6635ed103a75290c52f216ff3a">init_esdirk3</a> ()</td></tr>
 <tr class="separator:a49f17f6635ed103a75290c52f216ff3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7e89eadb8008c8057133900bdabcf29"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab7e89eadb8008c8057133900bdabcf29"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init_esdirk4</b> ()</td></tr>
+<tr class="memitem:ab7e89eadb8008c8057133900bdabcf29"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ab7e89eadb8008c8057133900bdabcf29">init_esdirk4</a> ()</td></tr>
 <tr class="separator:ab7e89eadb8008c8057133900bdabcf29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a233d0fdb2049aaa38076714328c0102a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a233d0fdb2049aaa38076714328c0102a"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>nv</b></td></tr>
+<tr class="memitem:a233d0fdb2049aaa38076714328c0102a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a233d0fdb2049aaa38076714328c0102a">nv</a></td></tr>
 <tr class="separator:a233d0fdb2049aaa38076714328c0102a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab401f8d0fafb4b512c31d485cef2ebcf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab401f8d0fafb4b512c31d485cef2ebcf"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>nstages</b></td></tr>
+<tr class="memitem:ab401f8d0fafb4b512c31d485cef2ebcf"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ab401f8d0fafb4b512c31d485cef2ebcf">nstages</a></td></tr>
 <tr class="separator:ab401f8d0fafb4b512c31d485cef2ebcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7cb2e5274695cb585bbc1856f9ec254"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad7cb2e5274695cb585bbc1856f9ec254"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>order</b></td></tr>
+<tr class="memitem:ad7cb2e5274695cb585bbc1856f9ec254"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ad7cb2e5274695cb585bbc1856f9ec254">order</a></td></tr>
 <tr class="separator:ad7cb2e5274695cb585bbc1856f9ec254"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91bb4fa05a2c02d6eb0d3197b2ec1e7f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a91bb4fa05a2c02d6eb0d3197b2ec1e7f"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>alpha</b></td></tr>
+<tr class="memitem:a91bb4fa05a2c02d6eb0d3197b2ec1e7f"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a91bb4fa05a2c02d6eb0d3197b2ec1e7f">alpha</a></td></tr>
 <tr class="separator:a91bb4fa05a2c02d6eb0d3197b2ec1e7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a226a6a00ebfb03115d764a46096b056b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a226a6a00ebfb03115d764a46096b056b"></a>
-char **&#160;</td><td class="memItemRight" valign="bottom"><b>var</b></td></tr>
+<tr class="memitem:a226a6a00ebfb03115d764a46096b056b"><td class="memItemLeft" align="right" valign="top">char **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a226a6a00ebfb03115d764a46096b056b">var</a></td></tr>
 <tr class="separator:a226a6a00ebfb03115d764a46096b056b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae288d9cef867e21f713e7ae786491cec"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae288d9cef867e21f713e7ae786491cec"></a>
-int *&#160;</td><td class="memItemRight" valign="bottom"><b>nr</b></td></tr>
+<tr class="memitem:ae288d9cef867e21f713e7ae786491cec"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ae288d9cef867e21f713e7ae786491cec">nr</a></td></tr>
 <tr class="separator:ae288d9cef867e21f713e7ae786491cec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7122eb66cbda298492388f9010ea0be"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab7122eb66cbda298492388f9010ea0be"></a>
-int *&#160;</td><td class="memItemRight" valign="bottom"><b>nc</b></td></tr>
+<tr class="memitem:ab7122eb66cbda298492388f9010ea0be"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ab7122eb66cbda298492388f9010ea0be">nc</a></td></tr>
 <tr class="separator:ab7122eb66cbda298492388f9010ea0be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f922443d5a00f53d9099173f8a25b43"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7f922443d5a00f53d9099173f8a25b43"></a>
-bool *&#160;</td><td class="memItemRight" valign="bottom"><b>reg</b></td></tr>
+<tr class="memitem:a7f922443d5a00f53d9099173f8a25b43"><td class="memItemLeft" align="right" valign="top">bool *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a7f922443d5a00f53d9099173f8a25b43">reg</a></td></tr>
 <tr class="separator:a7f922443d5a00f53d9099173f8a25b43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09778ae95025b07397b6020fb73aed04"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a09778ae95025b07397b6020fb73aed04"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>initd</b></td></tr>
+<tr class="memitem:a09778ae95025b07397b6020fb73aed04"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a09778ae95025b07397b6020fb73aed04">initd</a></td></tr>
 <tr class="separator:a09778ae95025b07397b6020fb73aed04"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae91ed1d39e74411e67ef19c788e7c833"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae91ed1d39e74411e67ef19c788e7c833"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>first_explicit</b></td></tr>
+<tr class="memitem:ae91ed1d39e74411e67ef19c788e7c833"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ae91ed1d39e74411e67ef19c788e7c833">first_explicit</a></td></tr>
 <tr class="separator:ae91ed1d39e74411e67ef19c788e7c833"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a43043425dd88d0ffdb8764affe1521fb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a43043425dd88d0ffdb8764affe1521fb"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>step</b></td></tr>
+<tr class="memitem:a43043425dd88d0ffdb8764affe1521fb"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a43043425dd88d0ffdb8764affe1521fb">step</a></td></tr>
 <tr class="separator:a43043425dd88d0ffdb8764affe1521fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44a95ca792cb0dd97dcd45291071ed5c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a44a95ca792cb0dd97dcd45291071ed5c"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>stage</b></td></tr>
+<tr class="memitem:a44a95ca792cb0dd97dcd45291071ed5c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a44a95ca792cb0dd97dcd45291071ed5c">stage</a></td></tr>
 <tr class="separator:a44a95ca792cb0dd97dcd45291071ed5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85d901155697ee43e0235d7246f7d782"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a85d901155697ee43e0235d7246f7d782"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>a</b></td></tr>
+<tr class="memitem:a85d901155697ee43e0235d7246f7d782"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a85d901155697ee43e0235d7246f7d782">a</a></td></tr>
 <tr class="separator:a85d901155697ee43e0235d7246f7d782"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab9fa9784e6a0b39798cb782f74953717"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab9fa9784e6a0b39798cb782f74953717"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>b</b></td></tr>
+<tr class="memitem:ab9fa9784e6a0b39798cb782f74953717"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ab9fa9784e6a0b39798cb782f74953717">b</a></td></tr>
 <tr class="separator:ab9fa9784e6a0b39798cb782f74953717"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac52ed0959da01726c3fd8e64e34e52fc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac52ed0959da01726c3fd8e64e34e52fc"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>c</b></td></tr>
+<tr class="memitem:ac52ed0959da01726c3fd8e64e34e52fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ac52ed0959da01726c3fd8e64e34e52fc">c</a></td></tr>
 <tr class="separator:ac52ed0959da01726c3fd8e64e34e52fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19a58eae571248e8ac1ecac73e018479"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a19a58eae571248e8ac1ecac73e018479"></a>
-<a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>y</b></td></tr>
+<tr class="memitem:a19a58eae571248e8ac1ecac73e018479"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a19a58eae571248e8ac1ecac73e018479">y</a></td></tr>
 <tr class="separator:a19a58eae571248e8ac1ecac73e018479"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00d34868ae37a19c4e445d247977c04d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a00d34868ae37a19c4e445d247977c04d"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>x</b></td></tr>
+<tr class="memitem:a00d34868ae37a19c4e445d247977c04d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a00d34868ae37a19c4e445d247977c04d">x</a></td></tr>
 <tr class="separator:a00d34868ae37a19c4e445d247977c04d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c78cdb6ec0d063f1584a2e8a7ef2b63"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3c78cdb6ec0d063f1584a2e8a7ef2b63"></a>
-<a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>k</b></td></tr>
+<tr class="memitem:a3c78cdb6ec0d063f1584a2e8a7ef2b63"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a3c78cdb6ec0d063f1584a2e8a7ef2b63">k</a></td></tr>
 <tr class="separator:a3c78cdb6ec0d063f1584a2e8a7ef2b63"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac212a24f56fc5e6c7148cdd72a364733"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac212a24f56fc5e6c7148cdd72a364733"></a>
-<a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>dy</b></td></tr>
+<tr class="memitem:ac212a24f56fc5e6c7148cdd72a364733"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ac212a24f56fc5e6c7148cdd72a364733">dy</a></td></tr>
 <tr class="separator:ac212a24f56fc5e6c7148cdd72a364733"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c457d4a4bfeaebbce6aa4435459bba7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7c457d4a4bfeaebbce6aa4435459bba7"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>x0</b></td></tr>
+<tr class="memitem:a7c457d4a4bfeaebbce6aa4435459bba7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a7c457d4a4bfeaebbce6aa4435459bba7">x0</a></td></tr>
 <tr class="separator:a7c457d4a4bfeaebbce6aa4435459bba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6db43ee43f7247b583242c46bad3b1c2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6db43ee43f7247b583242c46bad3b1c2"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>t</b></td></tr>
+<tr class="memitem:a6db43ee43f7247b583242c46bad3b1c2"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a6db43ee43f7247b583242c46bad3b1c2">t</a></td></tr>
 <tr class="separator:a6db43ee43f7247b583242c46bad3b1c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab99024346570597c0d23b20cedf3d455"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab99024346570597c0d23b20cedf3d455"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>t_eval</b></td></tr>
+<tr class="memitem:ab99024346570597c0d23b20cedf3d455"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#ab99024346570597c0d23b20cedf3d455">t_eval</a></td></tr>
 <tr class="separator:ab99024346570597c0d23b20cedf3d455"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a587403eb38b479e81bbc34a8cf2e4fce"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a587403eb38b479e81bbc34a8cf2e4fce"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>delta</b></td></tr>
+<tr class="memitem:a587403eb38b479e81bbc34a8cf2e4fce"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSDIRK__solver.html#a587403eb38b479e81bbc34a8cf2e4fce">delta</a></td></tr>
 <tr class="separator:a587403eb38b479e81bbc34a8cf2e4fce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a4c511243d670b84a7e84562767969f3d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">SDIRK_solver::SDIRK_solver </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac4720f483d9df6f38bf122dd2a248780"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">SDIRK_solver::~SDIRK_solver </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_ac4720f483d9df6f38bf122dd2a248780_cgraph.png" border="0" usemap="#classSDIRK__solver_ac4720f483d9df6f38bf122dd2a248780_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_ac4720f483d9df6f38bf122dd2a248780_cgraph" id="classSDIRK__solver_ac4720f483d9df6f38bf122dd2a248780_cgraph">
+<area shape="rect" id="node2" href="classSDIRK__solver.html#a706a6d32510ee0295fc7c6e1cef4a4b4" title="SDIRK_solver::destroy" alt="" coords="219,12,376,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a42664dd78a61167aea2d884cd2c74469"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::check_init </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aba77e6d6a4c88fbb6b1820a131f22480"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::check_method </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_aba77e6d6a4c88fbb6b1820a131f22480_cgraph.png" border="0" usemap="#classSDIRK__solver_aba77e6d6a4c88fbb6b1820a131f22480_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_aba77e6d6a4c88fbb6b1820a131f22480_cgraph" id="classSDIRK__solver_aba77e6d6a4c88fbb6b1820a131f22480_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="213,5,315,32"/><area shape="rect" id="node3" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="215,56,313,83"/><area shape="rect" id="node4" href="matrix_8h.html#a86292df4a6da0a0e0a8137647f9a7255" title="exist" alt="" coords="239,107,289,133"/><area shape="rect" id="node5" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="221,157,307,184"/><area shape="rect" id="node6" href="classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="203,208,325,235"/><area shape="rect" id="node7" href="matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="243,259,285,285"/><area shape="rect" id="node8" href="matrix_8h.html#a7619b7346d9689923c8d174efacb92f8" title="sum" alt="" coords="241,309,287,336"/><area shape="rect" id="node9" href="matrix_8h.html#a069930b10a8e55fb1cd4cbc7aae7625f" title="eye" alt="" coords="243,360,285,387"/><area shape="rect" id="node10" href="classmatrix.html#a0d38262959de19208fc8c21780457c95" title="Sets the matrix to the nrows x ncols zero matrix. " alt="" coords="373,360,464,387"/><area shape="rect" id="node11" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="513,360,599,387"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a706a6d32510ee0295fc7c6e1cef4a4b4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::destroy </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a60a70ec3f95a1cbe3e61a294ab1e1780"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double SDIRK_solver::get_delta </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a9f0327b9502cb34ed0df0e4e5643b375"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SDIRK_solver::get_id </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>varn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac45fcacdfdb6245468b3d8fa9276c1d5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SDIRK_solver::get_order </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac7c219c35105065b683ffa9da7256f92"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double SDIRK_solver::get_step </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="acb81d73e631ac9e5d5a465a0c6482f62"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double SDIRK_solver::get_t </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7e13bbbf08e119a759054f16171cd912"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> SDIRK_solver::get_var </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>var_name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_a7e13bbbf08e119a759054f16171cd912_cgraph.png" border="0" usemap="#classSDIRK__solver_a7e13bbbf08e119a759054f16171cd912_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_a7e13bbbf08e119a759054f16171cd912_cgraph" id="classSDIRK__solver_a7e13bbbf08e119a759054f16171cd912_cgraph">
+<area shape="rect" id="node2" href="classSDIRK__solver.html#a9f0327b9502cb34ed0df0e4e5643b375" title="SDIRK_solver::get_id" alt="" coords="211,5,360,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a87ed1de020626aefca4c273ae1edb95a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> SDIRK_solver::get_vars </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a964031a00e5c238af786d3f22c683b89"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::init </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nvar</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>type</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_a964031a00e5c238af786d3f22c683b89_cgraph.png" border="0" usemap="#classSDIRK__solver_a964031a00e5c238af786d3f22c683b89_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_a964031a00e5c238af786d3f22c683b89_cgraph" id="classSDIRK__solver_a964031a00e5c238af786d3f22c683b89_cgraph">
+<area shape="rect" id="node2" href="classSDIRK__solver.html#a706a6d32510ee0295fc7c6e1cef4a4b4" title="SDIRK_solver::destroy" alt="" coords="184,5,341,32"/><area shape="rect" id="node3" href="classSDIRK__solver.html#ae88b5e66cf9d16769d94200d40d15f84" title="SDIRK_solver::init_be" alt="" coords="541,81,693,108"/><area shape="rect" id="node5" href="classSDIRK__solver.html#a6ee2ec2d55f090985c31e1777ee1165f" title="SDIRK_solver::init_cn" alt="" coords="187,231,339,257"/><area shape="rect" id="node8" href="classSDIRK__solver.html#a75763571a00e2ba6e09e7d14dca974c3" title="SDIRK_solver::init\l_sdirk2" alt="" coords="197,155,328,197"/><area shape="rect" id="node10" href="classSDIRK__solver.html#a07ac54df4320ec02b856f60bed316961" title="SDIRK_solver::init\l_sdirk3" alt="" coords="197,282,328,323"/><area shape="rect" id="node11" href="classSDIRK__solver.html#a56b215390d8aeada1fee946088e46e28" title="SDIRK_solver::init\l_sdirk4" alt="" coords="197,347,328,389"/><area shape="rect" id="node12" href="classSDIRK__solver.html#a49f17f6635ed103a75290c52f216ff3a" title="SDIRK_solver::init\l_esdirk3" alt="" coords="197,505,328,546"/><area shape="rect" id="node14" href="classSDIRK__solver.html#ab7e89eadb8008c8057133900bdabcf29" title="SDIRK_solver::init\l_esdirk4" alt="" coords="197,413,328,454"/><area shape="rect" id="node15" href="classSDIRK__solver.html#aba77e6d6a4c88fbb6b1820a131f22480" title="SDIRK_solver::check\l_method" alt="" coords="188,733,337,774"/><area shape="rect" id="node23" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="235,799,290,825"/><area shape="rect" id="node4" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="742,284,829,311"/><area shape="rect" id="node6" href="classmatrix.html#a56f512366e313c309346a7ba00cd0341" title="Sets the values of the matrix (given in column major order). " alt="" coords="389,360,493,387"/><area shape="rect" id="node7" href="classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="556,512,679,539"/><area shape="rect" id="node9" href="matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="419,107,463,133"/><area shape="rect" id="node13" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="398,512,485,539"/><area shape="rect" id="node16" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="391,765,492,792"/><area shape="rect" id="node17" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="393,816,490,843"/><area shape="rect" id="node18" href="matrix_8h.html#a86292df4a6da0a0e0a8137647f9a7255" title="exist" alt="" coords="416,867,467,893"/><area shape="rect" id="node19" href="matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="420,917,463,944"/><area shape="rect" id="node20" href="matrix_8h.html#a7619b7346d9689923c8d174efacb92f8" title="sum" alt="" coords="418,968,465,995"/><area shape="rect" id="node21" href="matrix_8h.html#a069930b10a8e55fb1cd4cbc7aae7625f" title="eye" alt="" coords="420,715,463,741"/><area shape="rect" id="node22" href="classmatrix.html#a0d38262959de19208fc8c21780457c95" title="Sets the matrix to the nrows x ncols zero matrix. " alt="" coords="572,715,663,741"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ae88b5e66cf9d16769d94200d40d15f84"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::init_be </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_ae88b5e66cf9d16769d94200d40d15f84_cgraph.png" border="0" usemap="#classSDIRK__solver_ae88b5e66cf9d16769d94200d40d15f84_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_ae88b5e66cf9d16769d94200d40d15f84_cgraph" id="classSDIRK__solver_ae88b5e66cf9d16769d94200d40d15f84_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="206,5,293,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a6ee2ec2d55f090985c31e1777ee1165f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::init_cn </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_a6ee2ec2d55f090985c31e1777ee1165f_cgraph.png" border="0" usemap="#classSDIRK__solver_a6ee2ec2d55f090985c31e1777ee1165f_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_a6ee2ec2d55f090985c31e1777ee1165f_cgraph" id="classSDIRK__solver_a6ee2ec2d55f090985c31e1777ee1165f_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="214,5,301,32"/><area shape="rect" id="node3" href="classmatrix.html#a56f512366e313c309346a7ba00cd0341" title="Sets the values of the matrix (given in column major order). " alt="" coords="205,56,309,83"/><area shape="rect" id="node4" href="classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="357,56,480,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a49f17f6635ed103a75290c52f216ff3a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::init_esdirk3 </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_a49f17f6635ed103a75290c52f216ff3a_cgraph.png" border="0" usemap="#classSDIRK__solver_a49f17f6635ed103a75290c52f216ff3a_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_a49f17f6635ed103a75290c52f216ff3a_cgraph" id="classSDIRK__solver_a49f17f6635ed103a75290c52f216ff3a_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="193,5,279,32"/><area shape="rect" id="node3" href="classmatrix.html#a56f512366e313c309346a7ba00cd0341" title="Sets the values of the matrix (given in column major order). " alt="" coords="184,56,288,83"/><area shape="rect" id="node4" href="classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="336,81,459,108"/><area shape="rect" id="node5" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="193,157,279,184"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ab7e89eadb8008c8057133900bdabcf29"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::init_esdirk4 </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_ab7e89eadb8008c8057133900bdabcf29_cgraph.png" border="0" usemap="#classSDIRK__solver_ab7e89eadb8008c8057133900bdabcf29_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_ab7e89eadb8008c8057133900bdabcf29_cgraph" id="classSDIRK__solver_ab7e89eadb8008c8057133900bdabcf29_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="193,5,279,32"/><area shape="rect" id="node3" href="classmatrix.html#a56f512366e313c309346a7ba00cd0341" title="Sets the values of the matrix (given in column major order). " alt="" coords="184,56,288,83"/><area shape="rect" id="node4" href="classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="336,81,459,108"/><area shape="rect" id="node5" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="193,157,279,184"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a75763571a00e2ba6e09e7d14dca974c3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::init_sdirk2 </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_a75763571a00e2ba6e09e7d14dca974c3_cgraph.png" border="0" usemap="#classSDIRK__solver_a75763571a00e2ba6e09e7d14dca974c3_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_a75763571a00e2ba6e09e7d14dca974c3_cgraph" id="classSDIRK__solver_a75763571a00e2ba6e09e7d14dca974c3_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="193,5,279,32"/><area shape="rect" id="node3" href="matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="214,56,258,83"/><area shape="rect" id="node4" href="classmatrix.html#a56f512366e313c309346a7ba00cd0341" title="Sets the values of the matrix (given in column major order). " alt="" coords="184,107,288,133"/><area shape="rect" id="node5" href="classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="336,107,459,133"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a07ac54df4320ec02b856f60bed316961"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::init_sdirk3 </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_a07ac54df4320ec02b856f60bed316961_cgraph.png" border="0" usemap="#classSDIRK__solver_a07ac54df4320ec02b856f60bed316961_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_a07ac54df4320ec02b856f60bed316961_cgraph" id="classSDIRK__solver_a07ac54df4320ec02b856f60bed316961_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="193,5,279,32"/><area shape="rect" id="node3" href="classmatrix.html#a56f512366e313c309346a7ba00cd0341" title="Sets the values of the matrix (given in column major order). " alt="" coords="184,56,288,83"/><area shape="rect" id="node4" href="classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="336,56,459,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a56b215390d8aeada1fee946088e46e28"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::init_sdirk4 </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_a56b215390d8aeada1fee946088e46e28_cgraph.png" border="0" usemap="#classSDIRK__solver_a56b215390d8aeada1fee946088e46e28_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_a56b215390d8aeada1fee946088e46e28_cgraph" id="classSDIRK__solver_a56b215390d8aeada1fee946088e46e28_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="193,5,279,32"/><area shape="rect" id="node3" href="classmatrix.html#a56f512366e313c309346a7ba00cd0341" title="Sets the values of the matrix (given in column major order). " alt="" coords="184,56,288,83"/><area shape="rect" id="node4" href="classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="336,56,459,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a2258d60585649f5dcc29e4cafa06f9b5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool SDIRK_solver::needs_initial_derivative </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2ae2eae08930ce8d8f6b3a71275e114e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SDIRK_solver::number_of_implicit_stages </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac8f50d2a6eedd1a9b16c9f0281400e3b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SDIRK_solver::number_of_stages </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="affc7a69922e03051a876df4292c46050"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::regvar </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>var_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>initial_value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_affc7a69922e03051a876df4292c46050_cgraph.png" border="0" usemap="#classSDIRK__solver_affc7a69922e03051a876df4292c46050_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_affc7a69922e03051a876df4292c46050_cgraph" id="classSDIRK__solver_affc7a69922e03051a876df4292c46050_cgraph">
+<area shape="rect" id="node2" href="classSDIRK__solver.html#a42664dd78a61167aea2d884cd2c74469" title="SDIRK_solver::check_init" alt="" coords="205,5,379,32"/><area shape="rect" id="node3" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="241,56,343,83"/><area shape="rect" id="node4" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="243,107,341,133"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a6f2110dc7696d2e3a84cff64fa2cb1c1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::regvars </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>vars</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_a6f2110dc7696d2e3a84cff64fa2cb1c1_cgraph.png" border="0" usemap="#classSDIRK__solver_a6f2110dc7696d2e3a84cff64fa2cb1c1_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_a6f2110dc7696d2e3a84cff64fa2cb1c1_cgraph" id="classSDIRK__solver_a6f2110dc7696d2e3a84cff64fa2cb1c1_cgraph">
+<area shape="rect" id="node2" href="classSDIRK__solver.html#affc7a69922e03051a876df4292c46050" title="SDIRK_solver::regvar" alt="" coords="211,56,362,83"/><area shape="rect" id="node3" href="classSDIRK__solver.html#a42664dd78a61167aea2d884cd2c74469" title="SDIRK_solver::check_init" alt="" coords="411,5,584,32"/><area shape="rect" id="node4" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="447,56,548,83"/><area shape="rect" id="node5" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="449,107,546,133"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a1ec47c8a83732e3bd946c88c36be9efb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::set_initial_derivative </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>var_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>initial_value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_a1ec47c8a83732e3bd946c88c36be9efb_cgraph.png" border="0" usemap="#classSDIRK__solver_a1ec47c8a83732e3bd946c88c36be9efb_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_a1ec47c8a83732e3bd946c88c36be9efb_cgraph" id="classSDIRK__solver_a1ec47c8a83732e3bd946c88c36be9efb_cgraph">
+<area shape="rect" id="node2" href="classSDIRK__solver.html#a9f0327b9502cb34ed0df0e4e5643b375" title="SDIRK_solver::get_id" alt="" coords="224,12,373,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="afdf74b46a4aeaecf490738d852a07459"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::set_initial_derivatives </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>vars</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_afdf74b46a4aeaecf490738d852a07459_cgraph.png" border="0" usemap="#classSDIRK__solver_afdf74b46a4aeaecf490738d852a07459_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_afdf74b46a4aeaecf490738d852a07459_cgraph" id="classSDIRK__solver_afdf74b46a4aeaecf490738d852a07459_cgraph">
+<area shape="rect" id="node2" href="classSDIRK__solver.html#a1ec47c8a83732e3bd946c88c36be9efb" title="SDIRK_solver::set_initial\l_derivative" alt="" coords="225,5,394,46"/><area shape="rect" id="node3" href="classSDIRK__solver.html#a9f0327b9502cb34ed0df0e4e5643b375" title="SDIRK_solver::get_id" alt="" coords="443,12,592,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a5f9a24a4773c1ac790e69a10c76ed30b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::set_step </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>h</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1e62fa614fbca651e2d677e07c57cf67"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::set_var </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>var_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_a1e62fa614fbca651e2d677e07c57cf67_cgraph.png" border="0" usemap="#classSDIRK__solver_a1e62fa614fbca651e2d677e07c57cf67_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_a1e62fa614fbca651e2d677e07c57cf67_cgraph" id="classSDIRK__solver_a1e62fa614fbca651e2d677e07c57cf67_cgraph">
+<area shape="rect" id="node2" href="classSDIRK__solver.html#a9f0327b9502cb34ed0df0e4e5643b375" title="SDIRK_solver::get_id" alt="" coords="211,5,360,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a9b3fe6250e7570556ffa126b04650e83"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::set_vars </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>values</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_a9b3fe6250e7570556ffa126b04650e83_cgraph.png" border="0" usemap="#classSDIRK__solver_a9b3fe6250e7570556ffa126b04650e83_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_a9b3fe6250e7570556ffa126b04650e83_cgraph" id="classSDIRK__solver_a9b3fe6250e7570556ffa126b04650e83_cgraph">
+<area shape="rect" id="node2" href="classSDIRK__solver.html#a1e62fa614fbca651e2d677e07c57cf67" title="SDIRK_solver::set_var" alt="" coords="219,5,376,32"/><area shape="rect" id="node3" href="classSDIRK__solver.html#a9f0327b9502cb34ed0df0e4e5643b375" title="SDIRK_solver::get_id" alt="" coords="424,5,573,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a8bcb0d23d25aeabad84a5c4e2eb0e607"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SDIRK_solver::solve </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>t0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>t1</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_a8bcb0d23d25aeabad84a5c4e2eb0e607_cgraph.png" border="0" usemap="#classSDIRK__solver_a8bcb0d23d25aeabad84a5c4e2eb0e607_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_a8bcb0d23d25aeabad84a5c4e2eb0e607_cgraph" id="classSDIRK__solver_a8bcb0d23d25aeabad84a5c4e2eb0e607_cgraph">
+<area shape="rect" id="node2" href="classSDIRK__solver.html#a42664dd78a61167aea2d884cd2c74469" title="SDIRK_solver::check_init" alt="" coords="200,5,373,32"/><area shape="rect" id="node3" href="classSDIRK__solver.html#a1d7d164d3f40a7621fd8521daa074f18" title="SDIRK_solver::wrap" alt="" coords="215,56,358,83"/><area shape="rect" id="node7" href="classSDIRK__solver.html#a7b9cd0c67a94f43082f533b336dc0d0c" title="SDIRK_solver::unwrap" alt="" coords="209,107,365,133"/><area shape="rect" id="node4" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="451,5,506,32"/><area shape="rect" id="node5" href="classmatrix.html#a345ac4399ae6ea5d158dec467a7e0432" title="Re&#45;dimension the matrix. " alt="" coords="429,107,528,133"/><area shape="rect" id="node6" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="421,56,536,83"/><area shape="rect" id="node8" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="430,157,527,184"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a7b9cd0c67a94f43082f533b336dc0d0c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::unwrap </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> *&#160;</td>
+          <td class="paramname"><em>v</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td>
+          <td class="paramname"><em>u</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_a7b9cd0c67a94f43082f533b336dc0d0c_cgraph.png" border="0" usemap="#classSDIRK__solver_a7b9cd0c67a94f43082f533b336dc0d0c_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_a7b9cd0c67a94f43082f533b336dc0d0c_cgraph" id="classSDIRK__solver_a7b9cd0c67a94f43082f533b336dc0d0c_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="211,5,309,32"/><area shape="rect" id="node3" href="classmatrix.html#a345ac4399ae6ea5d158dec467a7e0432" title="Re&#45;dimension the matrix. " alt="" coords="211,56,309,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a1d7d164d3f40a7621fd8521daa074f18"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SDIRK_solver::wrap </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> *&#160;</td>
+          <td class="paramname"><em>u</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td>
+          <td class="paramname"><em>v</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSDIRK__solver_a1d7d164d3f40a7621fd8521daa074f18_cgraph.png" border="0" usemap="#classSDIRK__solver_a1d7d164d3f40a7621fd8521daa074f18_cgraph" alt=""/></div>
+<map name="classSDIRK__solver_a1d7d164d3f40a7621fd8521daa074f18_cgraph" id="classSDIRK__solver_a1d7d164d3f40a7621fd8521daa074f18_cgraph">
+<area shape="rect" id="node2" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="227,5,282,32"/><area shape="rect" id="node3" href="classmatrix.html#a345ac4399ae6ea5d158dec467a7e0432" title="Re&#45;dimension the matrix. " alt="" coords="205,56,304,83"/><area shape="rect" id="node4" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="197,107,312,133"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a85d901155697ee43e0235d7246f7d782"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> SDIRK_solver::a</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a91bb4fa05a2c02d6eb0d3197b2ec1e7f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double SDIRK_solver::alpha</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab9fa9784e6a0b39798cb782f74953717"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> SDIRK_solver::b</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac52ed0959da01726c3fd8e64e34e52fc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> SDIRK_solver::c</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a587403eb38b479e81bbc34a8cf2e4fce"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double SDIRK_solver::delta</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac212a24f56fc5e6c7148cdd72a364733"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> * SDIRK_solver::dy</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae91ed1d39e74411e67ef19c788e7c833"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool SDIRK_solver::first_explicit</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a09778ae95025b07397b6020fb73aed04"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool SDIRK_solver::initd</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3c78cdb6ec0d063f1584a2e8a7ef2b63"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> * SDIRK_solver::k</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab7122eb66cbda298492388f9010ea0be"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int * SDIRK_solver::nc</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae288d9cef867e21f713e7ae786491cec"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* SDIRK_solver::nr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab401f8d0fafb4b512c31d485cef2ebcf"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SDIRK_solver::nstages</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a233d0fdb2049aaa38076714328c0102a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SDIRK_solver::nv</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad7cb2e5274695cb585bbc1856f9ec254"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SDIRK_solver::order</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7f922443d5a00f53d9099173f8a25b43"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool* SDIRK_solver::reg</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a44a95ca792cb0dd97dcd45291071ed5c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SDIRK_solver::stage</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a43043425dd88d0ffdb8764affe1521fb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double SDIRK_solver::step</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a6db43ee43f7247b583242c46bad3b1c2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double SDIRK_solver::t</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab99024346570597c0d23b20cedf3d455"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double SDIRK_solver::t_eval</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a226a6a00ebfb03115d764a46096b056b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">char** SDIRK_solver::var</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a00d34868ae37a19c4e445d247977c04d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> SDIRK_solver::x</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7c457d4a4bfeaebbce6aa4435459bba7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> SDIRK_solver::x0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a19a58eae571248e8ac1ecac73e018479"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a>* SDIRK_solver::y</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/include/<a class="el" href="solver_8h_source.html">solver.h</a></li>
-<li>src/solver/SDIRK_solver.cpp</li>
+<li>src/solver/<a class="el" href="SDIRK__solver_8cpp.html">SDIRK_solver.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:28 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

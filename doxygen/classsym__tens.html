@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -99,121 +99,779 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">sym_tens Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="symbolic_8h_source.html">symbolic.h</a>&gt;</code></p>
 <div class="dynheader">
 Collaboration diagram for sym_tens:</div>
 <div class="dyncontent">
 <div class="center"><img src="classsym__tens__coll__graph.png" border="0" usemap="#sym__tens_coll__map" alt="Collaboration graph"/></div>
 <map name="sym__tens_coll__map" id="sym__tens_coll__map">
-</map>
+<area shape="rect" id="node3" href="classsymbolic.html" title="symbolic" alt="" coords="48,813,121,840"/><area shape="rect" id="node2" href="classsym.html" title="sym" alt="" coords="71,1051,117,1077"/><area shape="rect" id="node4" href="classmapping.html" title="mapping" alt="" coords="201,709,271,736"/><area shape="rect" id="node5" href="classmapping_1_1ext__map.html" title="mapping::ext_map" alt="" coords="282,813,411,840"/><area shape="rect" id="node6" href="classdiff__gl.html" title="The diff_gl class implements the Gauss&#45;Lobatto (or more properly Gauss&#45;Lobatto&#45;Chebyshev) collocation..." alt="" coords="301,551,357,577"/><area shape="rect" id="node7" href="classmatrix.html" title="The matrix class is used to facilitate the work with regular dense matrices. " alt="" coords="237,5,295,32"/><area shape="rect" id="node8" href="classmatrix__block__diag.html" title="The matrix_block_diag class is used to store block diagonal matrices. " alt="" coords="203,244,329,271"/><area shape="rect" id="node9" href="classdiff__leg.html" title="The diff_leg class implements Legendre numerical differentiation. " alt="" coords="69,364,133,391"/><area shape="rect" id="node10" href="classsym_1_1sym__expr.html" title="sym::sym_expr" alt="" coords="147,813,257,840"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0480b27d7d476cf45805da8207329be5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0480b27d7d476cf45805da8207329be5"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>sym_tens</b> (sym_vec_type type_set0=CONTRAVARIANT, sym_vec_type type_set1=CONTRAVARIANT)</td></tr>
+<tr class="memitem:a0480b27d7d476cf45805da8207329be5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a0480b27d7d476cf45805da8207329be5">sym_tens</a> (<a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36e">sym_vec_type</a> type_set0=<a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36ea380511144c0fc082e5aca2dc1217294e">CONTRAVARIANT</a>, <a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36e">sym_vec_type</a> type_set1=<a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36ea380511144c0fc082e5aca2dc1217294e">CONTRAVARIANT</a>)</td></tr>
 <tr class="separator:a0480b27d7d476cf45805da8207329be5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af194e44fe103f6c3db854c0651916513"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af194e44fe103f6c3db854c0651916513"></a>
-<a class="el" href="classsymbolic.html">symbolic</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>check_context</b> () const </td></tr>
+<tr class="memitem:af194e44fe103f6c3db854c0651916513"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsymbolic.html">symbolic</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#af194e44fe103f6c3db854c0651916513">check_context</a> () const </td></tr>
 <tr class="separator:af194e44fe103f6c3db854c0651916513"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8a8107f51ecfc5e79f4bbd4b061bb62"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af8a8107f51ecfc5e79f4bbd4b061bb62"></a>
-<a class="el" href="classsymbolic.html">symbolic</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>check_context</b> (const <a class="el" href="classsym.html">sym</a> &amp;s) const </td></tr>
+<tr class="memitem:af8a8107f51ecfc5e79f4bbd4b061bb62"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsymbolic.html">symbolic</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#af8a8107f51ecfc5e79f4bbd4b061bb62">check_context</a> (const <a class="el" href="classsym.html">sym</a> &amp;<a class="el" href="classsym__tens.html#a9400ff68de382b79cd066029c392b94c">s</a>) const </td></tr>
 <tr class="separator:af8a8107f51ecfc5e79f4bbd4b061bb62"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a012082a28efa09aed52ef2d3f34a9e17"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a012082a28efa09aed52ef2d3f34a9e17"></a>
-<a class="el" href="classsymbolic.html">symbolic</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>check_context</b> (const <a class="el" href="classsym__vec.html">sym_vec</a> &amp;s) const </td></tr>
+<tr class="memitem:a012082a28efa09aed52ef2d3f34a9e17"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsymbolic.html">symbolic</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a012082a28efa09aed52ef2d3f34a9e17">check_context</a> (const <a class="el" href="classsym__vec.html">sym_vec</a> &amp;<a class="el" href="classsym__tens.html#a9400ff68de382b79cd066029c392b94c">s</a>) const </td></tr>
 <tr class="separator:a012082a28efa09aed52ef2d3f34a9e17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a944c2a2ca57785590341cf20f36a2963"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a944c2a2ca57785590341cf20f36a2963"></a>
-<a class="el" href="classsymbolic.html">symbolic</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>check_context</b> (const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;s) const </td></tr>
+<tr class="memitem:a944c2a2ca57785590341cf20f36a2963"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsymbolic.html">symbolic</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a944c2a2ca57785590341cf20f36a2963">check_context</a> (const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;<a class="el" href="classsym__tens.html#a9400ff68de382b79cd066029c392b94c">s</a>) const </td></tr>
 <tr class="separator:a944c2a2ca57785590341cf20f36a2963"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a828e09786fcac1ac6c70186ed36c0804"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a828e09786fcac1ac6c70186ed36c0804"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_covariant</b> (int)</td></tr>
+<tr class="memitem:a828e09786fcac1ac6c70186ed36c0804"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a828e09786fcac1ac6c70186ed36c0804">is_covariant</a> (int)</td></tr>
 <tr class="separator:a828e09786fcac1ac6c70186ed36c0804"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaac1efcfce02a2c9c023da92383b33f7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaac1efcfce02a2c9c023da92383b33f7"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_contravariant</b> (int)</td></tr>
+<tr class="memitem:aaac1efcfce02a2c9c023da92383b33f7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#aaac1efcfce02a2c9c023da92383b33f7">is_contravariant</a> (int)</td></tr>
 <tr class="separator:aaac1efcfce02a2c9c023da92383b33f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab43ed144c9f863747ce50f330c0bc8d8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab43ed144c9f863747ce50f330c0bc8d8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_type</b> (sym_vec_type, sym_vec_type)</td></tr>
+<tr class="memitem:ab43ed144c9f863747ce50f330c0bc8d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#ab43ed144c9f863747ce50f330c0bc8d8">set_type</a> (<a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36e">sym_vec_type</a>, <a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36e">sym_vec_type</a>)</td></tr>
 <tr class="separator:ab43ed144c9f863747ce50f330c0bc8d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c4a4534f8ca4644a3883235dd04c698"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8c4a4534f8ca4644a3883235dd04c698"></a>
-<a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><b>set_variance</b> (const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;) const </td></tr>
+<tr class="memitem:a8c4a4534f8ca4644a3883235dd04c698"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a8c4a4534f8ca4644a3883235dd04c698">set_variance</a> (const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;) const </td></tr>
 <tr class="separator:a8c4a4534f8ca4644a3883235dd04c698"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7367e181605cf965b7dd9f2540954b74"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7367e181605cf965b7dd9f2540954b74"></a>
-<a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><b>set_variance</b> (sym_vec_type, sym_vec_type) const </td></tr>
+<tr class="memitem:a7367e181605cf965b7dd9f2540954b74"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a7367e181605cf965b7dd9f2540954b74">set_variance</a> (<a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36e">sym_vec_type</a>, <a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36e">sym_vec_type</a>) const </td></tr>
 <tr class="separator:a7367e181605cf965b7dd9f2540954b74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c46482416a41ba8c29e73268362380c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c46482416a41ba8c29e73268362380c"></a>
-<a class="el" href="classsym.html">sym</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (int, int)</td></tr>
+<tr class="memitem:a0c46482416a41ba8c29e73268362380c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym.html">sym</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a0c46482416a41ba8c29e73268362380c">operator()</a> (int, int)</td></tr>
 <tr class="separator:a0c46482416a41ba8c29e73268362380c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13472d71942c7745aa3b76daa21ce361"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a13472d71942c7745aa3b76daa21ce361"></a>
-<a class="el" href="classsym.html">sym</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (int, int) const </td></tr>
+<tr class="memitem:a13472d71942c7745aa3b76daa21ce361"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym.html">sym</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a13472d71942c7745aa3b76daa21ce361">operator()</a> (int, int) const </td></tr>
 <tr class="separator:a13472d71942c7745aa3b76daa21ce361"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd57a58b58a9254016bfdde671a34823"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abd57a58b58a9254016bfdde671a34823"></a>
-<a class="el" href="classsym__vec.html">sym_vec</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator,</b> (const <a class="el" href="classsym__vec.html">sym_vec</a> &amp;) const </td></tr>
+<tr class="memitem:abd57a58b58a9254016bfdde671a34823"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym__vec.html">sym_vec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#abd57a58b58a9254016bfdde671a34823">operator,</a> (const <a class="el" href="classsym__vec.html">sym_vec</a> &amp;) const </td></tr>
 <tr class="separator:abd57a58b58a9254016bfdde671a34823"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ff8f490a9cb0937373a10113c8d229c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5ff8f490a9cb0937373a10113c8d229c"></a>
-<a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator,</b> (const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;) const </td></tr>
+<tr class="memitem:a5ff8f490a9cb0937373a10113c8d229c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a5ff8f490a9cb0937373a10113c8d229c">operator,</a> (const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;) const </td></tr>
 <tr class="separator:a5ff8f490a9cb0937373a10113c8d229c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a312974412be6227b460137e0653e64d6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a312974412be6227b460137e0653e64d6"></a>
-<a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator+</b> (const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;) const </td></tr>
+<tr class="memitem:a312974412be6227b460137e0653e64d6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a312974412be6227b460137e0653e64d6">operator+</a> (const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;) const </td></tr>
 <tr class="separator:a312974412be6227b460137e0653e64d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71812835d5c8f89e9dfa7c0c992f0cae"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a71812835d5c8f89e9dfa7c0c992f0cae"></a>
-<a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (const <a class="el" href="classsym.html">sym</a> &amp;) const </td></tr>
+<tr class="memitem:a71812835d5c8f89e9dfa7c0c992f0cae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a71812835d5c8f89e9dfa7c0c992f0cae">operator*</a> (const <a class="el" href="classsym.html">sym</a> &amp;) const </td></tr>
 <tr class="separator:a71812835d5c8f89e9dfa7c0c992f0cae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20c014cb33fa916095de0a6512107aa0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a20c014cb33fa916095de0a6512107aa0"></a>
-<a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (double n) const </td></tr>
+<tr class="memitem:a20c014cb33fa916095de0a6512107aa0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a20c014cb33fa916095de0a6512107aa0">operator*</a> (double n) const </td></tr>
 <tr class="separator:a20c014cb33fa916095de0a6512107aa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b2dcd8ca9ba62288114efc5656bed9c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0b2dcd8ca9ba62288114efc5656bed9c"></a>
-<a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator/</b> (const <a class="el" href="classsym.html">sym</a> &amp;) const </td></tr>
+<tr class="memitem:a0b2dcd8ca9ba62288114efc5656bed9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a0b2dcd8ca9ba62288114efc5656bed9c">operator/</a> (const <a class="el" href="classsym.html">sym</a> &amp;) const </td></tr>
 <tr class="separator:a0b2dcd8ca9ba62288114efc5656bed9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7a28d35cc95cfbe7c5c8d9ab671ca51"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af7a28d35cc95cfbe7c5c8d9ab671ca51"></a>
-<a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator/</b> (double n) const </td></tr>
+<tr class="memitem:af7a28d35cc95cfbe7c5c8d9ab671ca51"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#af7a28d35cc95cfbe7c5c8d9ab671ca51">operator/</a> (double n) const </td></tr>
 <tr class="separator:af7a28d35cc95cfbe7c5c8d9ab671ca51"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8cd6c1a6eff3a5ba83687469859c9d92"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8cd6c1a6eff3a5ba83687469859c9d92"></a>
-<a class="el" href="classsym.html">sym</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator%</b> (const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;) const </td></tr>
+<tr class="memitem:a8cd6c1a6eff3a5ba83687469859c9d92"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym.html">sym</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a8cd6c1a6eff3a5ba83687469859c9d92">operator%</a> (const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;) const </td></tr>
 <tr class="separator:a8cd6c1a6eff3a5ba83687469859c9d92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af24a98ee4c0f463c0d0e9d2473ca9872"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af24a98ee4c0f463c0d0e9d2473ca9872"></a>
-<a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><b>T</b> () const </td></tr>
+<tr class="memitem:af24a98ee4c0f463c0d0e9d2473ca9872"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#af24a98ee4c0f463c0d0e9d2473ca9872">T</a> () const </td></tr>
 <tr class="separator:af24a98ee4c0f463c0d0e9d2473ca9872"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:ab2243f0035213203cd7eff5dae0fa89e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab2243f0035213203cd7eff5dae0fa89e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_context</b> (<a class="el" href="classsymbolic.html">symbolic</a> *context)</td></tr>
+<tr class="memitem:ab2243f0035213203cd7eff5dae0fa89e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#ab2243f0035213203cd7eff5dae0fa89e">set_context</a> (<a class="el" href="classsymbolic.html">symbolic</a> *context)</td></tr>
 <tr class="separator:ab2243f0035213203cd7eff5dae0fa89e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a9400ff68de382b79cd066029c392b94c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9400ff68de382b79cd066029c392b94c"></a>
-<a class="el" href="classsym.html">sym</a>&#160;</td><td class="memItemRight" valign="bottom"><b>s</b> [3][3]</td></tr>
+<tr class="memitem:a9400ff68de382b79cd066029c392b94c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym.html">sym</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a9400ff68de382b79cd066029c392b94c">s</a> [3][3]</td></tr>
 <tr class="separator:a9400ff68de382b79cd066029c392b94c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa59d352fd42e8ac17a1254ada12c2ca8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa59d352fd42e8ac17a1254ada12c2ca8"></a>
-sym_vec_type&#160;</td><td class="memItemRight" valign="bottom"><b>type</b> [2]</td></tr>
+<tr class="memitem:aa59d352fd42e8ac17a1254ada12c2ca8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36e">sym_vec_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#aa59d352fd42e8ac17a1254ada12c2ca8">type</a> [2]</td></tr>
 <tr class="separator:aa59d352fd42e8ac17a1254ada12c2ca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:a50c80d1360ce331276bb73823e725704"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a50c80d1360ce331276bb73823e725704"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>symbolic</b></td></tr>
+<tr class="memitem:a50c80d1360ce331276bb73823e725704"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a50c80d1360ce331276bb73823e725704">symbolic</a></td></tr>
 <tr class="separator:a50c80d1360ce331276bb73823e725704"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af1abf56160db3ad722bfd9c361a1aa7c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af1abf56160db3ad722bfd9c361a1aa7c"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>sym</b></td></tr>
+<tr class="memitem:af1abf56160db3ad722bfd9c361a1aa7c"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#af1abf56160db3ad722bfd9c361a1aa7c">sym</a></td></tr>
 <tr class="separator:af1abf56160db3ad722bfd9c361a1aa7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b31301bfc1e8c76403952f30f0a64ec"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2b31301bfc1e8c76403952f30f0a64ec"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>sym_vec</b></td></tr>
+<tr class="memitem:a2b31301bfc1e8c76403952f30f0a64ec"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a2b31301bfc1e8c76403952f30f0a64ec">sym_vec</a></td></tr>
 <tr class="separator:a2b31301bfc1e8c76403952f30f0a64ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5667e85cb195e820fe8cb146ed835fa2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5667e85cb195e820fe8cb146ed835fa2"></a>
-<a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator-</b> (const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;v)</td></tr>
+<tr class="memitem:a5667e85cb195e820fe8cb146ed835fa2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a5667e85cb195e820fe8cb146ed835fa2">operator-</a> (const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;v)</td></tr>
 <tr class="separator:a5667e85cb195e820fe8cb146ed835fa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2555ce6b14e546449cd34682818a3d8f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2555ce6b14e546449cd34682818a3d8f"></a>
-<a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><b>tensor</b> (const <a class="el" href="classsym__vec.html">sym_vec</a> &amp;, const <a class="el" href="classsym__vec.html">sym_vec</a> &amp;)</td></tr>
+<tr class="memitem:a2555ce6b14e546449cd34682818a3d8f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym__tens.html">sym_tens</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__tens.html#a2555ce6b14e546449cd34682818a3d8f">tensor</a> (const <a class="el" href="classsym__vec.html">sym_vec</a> &amp;, const <a class="el" href="classsym__vec.html">sym_vec</a> &amp;)</td></tr>
 <tr class="separator:a2555ce6b14e546449cd34682818a3d8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a0480b27d7d476cf45805da8207329be5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">sym_tens::sym_tens </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36e">sym_vec_type</a>&#160;</td>
+          <td class="paramname"><em>type_set0</em> = <code><a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36ea380511144c0fc082e5aca2dc1217294e">CONTRAVARIANT</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36e">sym_vec_type</a>&#160;</td>
+          <td class="paramname"><em>type_set1</em> = <code><a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36ea380511144c0fc082e5aca2dc1217294e">CONTRAVARIANT</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="af194e44fe103f6c3db854c0651916513"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsymbolic.html">symbolic</a> * sym_tens::check_context </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af8a8107f51ecfc5e79f4bbd4b061bb62"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsymbolic.html">symbolic</a> * sym_tens::check_context </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym.html">sym</a> &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym__tens_af8a8107f51ecfc5e79f4bbd4b061bb62_cgraph.png" border="0" usemap="#classsym__tens_af8a8107f51ecfc5e79f4bbd4b061bb62_cgraph" alt=""/></div>
+<map name="classsym__tens_af8a8107f51ecfc5e79f4bbd4b061bb62_cgraph" id="classsym__tens_af8a8107f51ecfc5e79f4bbd4b061bb62_cgraph">
+<area shape="rect" id="node2" href="classsym.html#a6bfcd0ef7887bfccc3ab9ddba568ff69" title="sym::check_context" alt="" coords="227,5,367,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a012082a28efa09aed52ef2d3f34a9e17"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsymbolic.html">symbolic</a> * sym_tens::check_context </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym__vec.html">sym_vec</a> &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym__tens_a012082a28efa09aed52ef2d3f34a9e17_cgraph.png" border="0" usemap="#classsym__tens_a012082a28efa09aed52ef2d3f34a9e17_cgraph" alt=""/></div>
+<map name="classsym__tens_a012082a28efa09aed52ef2d3f34a9e17_cgraph" id="classsym__tens_a012082a28efa09aed52ef2d3f34a9e17_cgraph">
+<area shape="rect" id="node2" href="classsym__vec.html#ac54f9f62a3b25538f1996e3066a9c8b9" title="sym_vec::check_context" alt="" coords="227,5,395,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a944c2a2ca57785590341cf20f36a2963"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsymbolic.html">symbolic</a> * sym_tens::check_context </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym__tens_a944c2a2ca57785590341cf20f36a2963_cgraph.png" border="0" usemap="#classsym__tens_a944c2a2ca57785590341cf20f36a2963_cgraph" alt=""/></div>
+<map name="classsym__tens_a944c2a2ca57785590341cf20f36a2963_cgraph" id="classsym__tens_a944c2a2ca57785590341cf20f36a2963_cgraph">
+<area shape="rect" id="node2" href="classsym__tens.html#af194e44fe103f6c3db854c0651916513" title="sym_tens::check_context" alt="" coords="227,5,399,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aaac1efcfce02a2c9c023da92383b33f7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sym_tens::is_contravariant </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a828e09786fcac1ac6c70186ed36c0804"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sym_tens::is_covariant </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8cd6c1a6eff3a5ba83687469859c9d92"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym.html">sym</a> sym_tens::operator% </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym__tens_a8cd6c1a6eff3a5ba83687469859c9d92_cgraph.png" border="0" usemap="#classsym__tens_a8cd6c1a6eff3a5ba83687469859c9d92_cgraph" alt=""/></div>
+<map name="classsym__tens_a8cd6c1a6eff3a5ba83687469859c9d92_cgraph" id="classsym__tens_a8cd6c1a6eff3a5ba83687469859c9d92_cgraph">
+<area shape="rect" id="node2" href="symbolic_8h.html#a7eac08b9d6ba1fca5168433d5564f319" title="contravariant_contravariant" alt="" coords="200,45,379,72"/><area shape="rect" id="node5" href="symbolic_8h.html#add5fa1b077826dc879da1eba74fd8d47" title="covariant_covariant" alt="" coords="222,96,357,123"/><area shape="rect" id="node3" href="classsym__tens.html#af194e44fe103f6c3db854c0651916513" title="sym_tens::check_context" alt="" coords="427,71,599,97"/><area shape="rect" id="node4" href="classsymbolic.html#a20cba04b0a2ebc930020f2f0c12dfce2" title="symbolic::contravariant\l_contravariant" alt="" coords="435,5,592,46"/><area shape="rect" id="node6" href="classsymbolic.html#a3a0d957269353b0e356902402092525c" title="symbolic::covariant\l_covariant" alt="" coords="446,122,581,163"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a0c46482416a41ba8c29e73268362380c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym.html">sym</a> &amp; sym_tens::operator() </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>j</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a13472d71942c7745aa3b76daa21ce361"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym.html">sym</a> sym_tens::operator() </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>j</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a71812835d5c8f89e9dfa7c0c992f0cae"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym__tens.html">sym_tens</a> sym_tens::operator* </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym.html">sym</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym__tens_a71812835d5c8f89e9dfa7c0c992f0cae_cgraph.png" border="0" usemap="#classsym__tens_a71812835d5c8f89e9dfa7c0c992f0cae_cgraph" alt=""/></div>
+<map name="classsym__tens_a71812835d5c8f89e9dfa7c0c992f0cae_cgraph" id="classsym__tens_a71812835d5c8f89e9dfa7c0c992f0cae_cgraph">
+<area shape="rect" id="node2" href="classsym__tens.html#ab2243f0035213203cd7eff5dae0fa89e" title="sym_tens::set_context" alt="" coords="192,5,347,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a20c014cb33fa916095de0a6512107aa0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym__tens.html">sym_tens</a> sym_tens::operator* </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>n</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a312974412be6227b460137e0653e64d6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym__tens.html">sym_tens</a> sym_tens::operator+ </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym__tens_a312974412be6227b460137e0653e64d6_cgraph.png" border="0" usemap="#classsym__tens_a312974412be6227b460137e0653e64d6_cgraph" alt=""/></div>
+<map name="classsym__tens_a312974412be6227b460137e0653e64d6_cgraph" id="classsym__tens_a312974412be6227b460137e0653e64d6_cgraph">
+<area shape="rect" id="node2" href="classsym__tens.html#ab2243f0035213203cd7eff5dae0fa89e" title="sym_tens::set_context" alt="" coords="201,5,356,32"/><area shape="rect" id="node3" href="classsym__tens.html#ab43ed144c9f863747ce50f330c0bc8d8" title="sym_tens::set_type" alt="" coords="210,56,347,83"/><area shape="rect" id="node4" href="classsym__tens.html#a8c4a4534f8ca4644a3883235dd04c698" title="sym_tens::set_variance" alt="" coords="198,107,359,133"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="abd57a58b58a9254016bfdde671a34823"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym__vec.html">sym_vec</a> sym_tens::operator, </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym__vec.html">sym_vec</a> &amp;&#160;</td>
+          <td class="paramname"><em>v</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym__tens_abd57a58b58a9254016bfdde671a34823_cgraph.png" border="0" usemap="#classsym__tens_abd57a58b58a9254016bfdde671a34823_cgraph" alt=""/></div>
+<map name="classsym__tens_abd57a58b58a9254016bfdde671a34823_cgraph" id="classsym__tens_abd57a58b58a9254016bfdde671a34823_cgraph">
+<area shape="rect" id="node2" href="classsym__vec.html#a0cdf7e39f268bfb5977bb944e03175f9" title="sym_vec::set_context" alt="" coords="195,5,346,32"/><area shape="rect" id="node3" href="classsym__vec.html#ae0f80f7bcc4a6d9b70883d927eb0569e" title="sym_vec::set_variance" alt="" coords="192,56,349,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a5ff8f490a9cb0937373a10113c8d229c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym__tens.html">sym_tens</a> sym_tens::operator, </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym__tens_a5ff8f490a9cb0937373a10113c8d229c_cgraph.png" border="0" usemap="#classsym__tens_a5ff8f490a9cb0937373a10113c8d229c_cgraph" alt=""/></div>
+<map name="classsym__tens_a5ff8f490a9cb0937373a10113c8d229c_cgraph" id="classsym__tens_a5ff8f490a9cb0937373a10113c8d229c_cgraph">
+<area shape="rect" id="node2" href="classsym__tens.html#ab2243f0035213203cd7eff5dae0fa89e" title="sym_tens::set_context" alt="" coords="196,5,351,32"/><area shape="rect" id="node3" href="classsym__tens.html#ab43ed144c9f863747ce50f330c0bc8d8" title="sym_tens::set_type" alt="" coords="205,56,342,83"/><area shape="rect" id="node4" href="classsym__tens.html#a8c4a4534f8ca4644a3883235dd04c698" title="sym_tens::set_variance" alt="" coords="193,107,354,133"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a0b2dcd8ca9ba62288114efc5656bed9c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym__tens.html">sym_tens</a> sym_tens::operator/ </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym.html">sym</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym__tens_a0b2dcd8ca9ba62288114efc5656bed9c_cgraph.png" border="0" usemap="#classsym__tens_a0b2dcd8ca9ba62288114efc5656bed9c_cgraph" alt=""/></div>
+<map name="classsym__tens_a0b2dcd8ca9ba62288114efc5656bed9c_cgraph" id="classsym__tens_a0b2dcd8ca9ba62288114efc5656bed9c_cgraph">
+<area shape="rect" id="node2" href="classsym__tens.html#ab2243f0035213203cd7eff5dae0fa89e" title="sym_tens::set_context" alt="" coords="192,5,347,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="af7a28d35cc95cfbe7c5c8d9ab671ca51"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym__tens.html">sym_tens</a> sym_tens::operator/ </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>n</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab2243f0035213203cd7eff5dae0fa89e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sym_tens::set_context </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classsymbolic.html">symbolic</a> *&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab43ed144c9f863747ce50f330c0bc8d8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sym_tens::set_type </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36e">sym_vec_type</a>&#160;</td>
+          <td class="paramname"><em>type_set0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36e">sym_vec_type</a>&#160;</td>
+          <td class="paramname"><em>type_set1</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8c4a4534f8ca4644a3883235dd04c698"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym__tens.html">sym_tens</a> sym_tens::set_variance </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7367e181605cf965b7dd9f2540954b74"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym__tens.html">sym_tens</a> sym_tens::set_variance </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36e">sym_vec_type</a>&#160;</td>
+          <td class="paramname"><em>t1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36e">sym_vec_type</a>&#160;</td>
+          <td class="paramname"><em>t2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym__tens_a7367e181605cf965b7dd9f2540954b74_cgraph.png" border="0" usemap="#classsym__tens_a7367e181605cf965b7dd9f2540954b74_cgraph" alt=""/></div>
+<map name="classsym__tens_a7367e181605cf965b7dd9f2540954b74_cgraph" id="classsym__tens_a7367e181605cf965b7dd9f2540954b74_cgraph">
+<area shape="rect" id="node2" href="symbolic_8h.html#add5fa1b077826dc879da1eba74fd8d47" title="covariant_covariant" alt="" coords="238,111,373,137"/><area shape="rect" id="node5" href="symbolic_8h.html#a531a4e69f87cac9b4c03495155d863b0" title="covariant_contravariant" alt="" coords="227,60,384,87"/><area shape="rect" id="node7" href="symbolic_8h.html#a7f38e07357b9a3c5e741a644555b2c23" title="contravariant_covariant" alt="" coords="227,161,384,188"/><area shape="rect" id="node9" href="symbolic_8h.html#a7eac08b9d6ba1fca5168433d5564f319" title="contravariant_contravariant" alt="" coords="216,212,395,239"/><area shape="rect" id="node3" href="classsym__tens.html#af194e44fe103f6c3db854c0651916513" title="sym_tens::check_context" alt="" coords="443,136,615,163"/><area shape="rect" id="node4" href="classsymbolic.html#a3a0d957269353b0e356902402092525c" title="symbolic::covariant\l_covariant" alt="" coords="462,70,597,111"/><area shape="rect" id="node6" href="classsymbolic.html#a74df1cb276038d89253f1ce64398fc55" title="symbolic::covariant\l_contravariant" alt="" coords="462,5,597,46"/><area shape="rect" id="node8" href="classsymbolic.html#a231cd72aa85e9ee57b9d681cc305ec05" title="symbolic::contravariant\l_covariant" alt="" coords="451,187,608,229"/><area shape="rect" id="node10" href="classsymbolic.html#a20cba04b0a2ebc930020f2f0c12dfce2" title="symbolic::contravariant\l_contravariant" alt="" coords="451,253,608,294"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="af24a98ee4c0f463c0d0e9d2473ca9872"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym__tens.html">sym_tens</a> sym_tens::T </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym__tens_af24a98ee4c0f463c0d0e9d2473ca9872_cgraph.png" border="0" usemap="#classsym__tens_af24a98ee4c0f463c0d0e9d2473ca9872_cgraph" alt=""/></div>
+<map name="classsym__tens_af24a98ee4c0f463c0d0e9d2473ca9872_cgraph" id="classsym__tens_af24a98ee4c0f463c0d0e9d2473ca9872_cgraph">
+<area shape="rect" id="node2" href="classsym__tens.html#ab2243f0035213203cd7eff5dae0fa89e" title="sym_tens::set_context" alt="" coords="149,5,304,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a class="anchor" id="a5667e85cb195e820fe8cb146ed835fa2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym__tens.html">sym_tens</a> operator- </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym__tens.html">sym_tens</a> &amp;&#160;</td>
+          <td class="paramname"><em>v</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af1abf56160db3ad722bfd9c361a1aa7c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classsym.html">sym</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2b31301bfc1e8c76403952f30f0a64ec"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classsym__vec.html">sym_vec</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a50c80d1360ce331276bb73823e725704"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classsymbolic.html">symbolic</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2555ce6b14e546449cd34682818a3d8f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym__tens.html">sym_tens</a> tensor </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym__vec.html">sym_vec</a> &amp;&#160;</td>
+          <td class="paramname"><em>v1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classsym__vec.html">sym_vec</a> &amp;&#160;</td>
+          <td class="paramname"><em>v2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a9400ff68de382b79cd066029c392b94c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym.html">sym</a> sym_tens::s[3][3]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aa59d352fd42e8ac17a1254ada12c2ca8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="symbolic_8h.html#ad73ebc3dc109a88bcb026707f31ea36e">sym_vec_type</a> sym_tens::type[2]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/include/<a class="el" href="symbolic_8h_source.html">symbolic.h</a></li>
-<li>src/symbolic/sym_tens.cpp</li>
+<li>src/symbolic/<a class="el" href="sym__tens_8cpp.html">sym_tens.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:12 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:28 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

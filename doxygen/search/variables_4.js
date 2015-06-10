@@ -1,7 +1,19 @@
 var searchData=
 [
-  ['var_5fnbot',['var_nbot',['../classsolver.html#a46a4bd961f45e04b86959a0e4699fa38',1,'solver']]],
-  ['var_5fnr',['var_nr',['../classsolver.html#a42f0b07fae1bcec156c73b1a4bcf05c0',1,'solver']]],
-  ['var_5fnth',['var_nth',['../classsolver.html#a8d66f0f7103d93ddf829bed2893e8045',1,'solver']]],
-  ['var_5fntop',['var_ntop',['../classsolver.html#a27005bd21e0cc8022c7d1f82b72b706f',1,'solver']]]
+  ['e_5f',['e_',['../opa__opal_8cpp.html#a7f09312911bfb494186e4943fabc7ce5',1,'opa_opal.cpp']]],
+  ['eeos_5f',['eeos_',['../eos__opal_8cpp.html#a485c8082094c0cece1928cab009a7c91',1,'eos_opal.cpp']]],
+  ['ekman',['Ekman',['../classstar2d.html#a87768029cf150f97cca332e52e70edeb',1,'star2d']]],
+  ['env_5fconvec',['env_convec',['../classstar2d.html#a19de6e0844b7b06f2b532cae2fb6ad6f',1,'star2d']]],
+  ['eos',['eos',['../classstar2d.html#a3341049b124083c40089e80ef5dfd391',1,'star2d::eos()'],['../eos__opal_8cpp.html#a5f756894570b84ce6ff1a461fc1e835b',1,'eos():&#160;eos_opal.cpp']]],
+  ['eps',['eps',['../structnuc__struct.html#a936d697e011818987be1f3c22fbf2825',1,'nuc_struct']]],
+  ['eq',['eq',['../classsolver_1_1solver__block.html#ac8023aa111895ec73cc5f0dbd9785c06',1,'solver::solver_block']]],
+  ['eq_5fset',['eq_set',['../classsolver_1_1solver__block.html#ae73807749271ee6a2399fdcb887dcdcc',1,'solver::solver_block']]],
+  ['equator',['equator',['../gen__output_8cpp.html#a96fc66f42fc13fa0c533576f762ac4ed',1,'gen_output.cpp']]],
+  ['esact',['esact',['../eos__opal_8cpp.html#a68555defa48df447c2e83166ac15f7ab',1,'eos_opal.cpp']]],
+  ['ester_5fdummy_5fsymbol',['ester_dummy_symbol',['../dummy_8cpp.html#a108ea2530c3c65e49e1468b203c01fd2',1,'dummy.cpp']]],
+  ['eta',['eta',['../classmapping.html#a68786df651423598b35b0e3c82571baa',1,'mapping']]],
+  ['eta_5f',['eta_',['../classmapping.html#af9d7cd1b70f62f2d3d289f5eff5510a9',1,'mapping']]],
+  ['ex',['ex',['../classmapping.html#a886e18568cb0453a1b4724de85af4371',1,'mapping']]],
+  ['expand_5fproducts',['expand_products',['../classsymbolic.html#a377e229d92c4101908ea59234a1f493d',1,'symbolic']]],
+  ['expr',['expr',['../classsym.html#a7fcc2ac8d13e08d93560c0f1ec121711',1,'sym']]]
 ];

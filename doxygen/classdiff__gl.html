@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -109,102 +109,579 @@ Collaboration diagram for diff_gl:</div>
 <div class="dyncontent">
 <div class="center"><img src="classdiff__gl__coll__graph.png" border="0" usemap="#diff__gl_coll__map" alt="Collaboration graph"/></div>
 <map name="diff__gl_coll__map" id="diff__gl_coll__map">
-</map>
+<area shape="rect" id="node2" href="classmatrix.html" title="The matrix class is used to facilitate the work with regular dense matrices. " alt="" coords="19,5,76,32"/><area shape="rect" id="node3" href="classmatrix__block__diag.html" title="The matrix_block_diag class is used to store block diagonal matrices. " alt="" coords="49,97,175,124"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4baddac50971ad8eec4aa43434e52290"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4baddac50971ad8eec4aa43434e52290"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>diff_gl</b> (int n=1)</td></tr>
+<tr class="memitem:a4baddac50971ad8eec4aa43434e52290"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#a4baddac50971ad8eec4aa43434e52290">diff_gl</a> (int n=1)</td></tr>
 <tr class="separator:a4baddac50971ad8eec4aa43434e52290"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adebe857106c67fe23d7eddeaaa996c67"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adebe857106c67fe23d7eddeaaa996c67"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>diff_gl</b> (const <a class="el" href="classdiff__gl.html">diff_gl</a> &amp;)</td></tr>
+<tr class="memitem:ab368c58728475709cc28cf4af1f7045a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#ab368c58728475709cc28cf4af1f7045a">~diff_gl</a> ()</td></tr>
+<tr class="separator:ab368c58728475709cc28cf4af1f7045a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adebe857106c67fe23d7eddeaaa996c67"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#adebe857106c67fe23d7eddeaaa996c67">diff_gl</a> (const <a class="el" href="classdiff__gl.html">diff_gl</a> &amp;)</td></tr>
 <tr class="separator:adebe857106c67fe23d7eddeaaa996c67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3a262ad3461e8eab31498d632f99c2c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae3a262ad3461e8eab31498d632f99c2c"></a>
-<a class="el" href="classdiff__gl.html">diff_gl</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="classdiff__gl.html">diff_gl</a> &amp;)</td></tr>
+<tr class="memitem:ae3a262ad3461e8eab31498d632f99c2c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdiff__gl.html">diff_gl</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#ae3a262ad3461e8eab31498d632f99c2c">operator=</a> (const <a class="el" href="classdiff__gl.html">diff_gl</a> &amp;)</td></tr>
 <tr class="separator:ae3a262ad3461e8eab31498d632f99c2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae1ada3d9db3bc9bc6d94965dd3f49877"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae1ada3d9db3bc9bc6d94965dd3f49877"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_ndomains</b> (int n)</td></tr>
+<tr class="memitem:ae1ada3d9db3bc9bc6d94965dd3f49877"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#ae1ada3d9db3bc9bc6d94965dd3f49877">set_ndomains</a> (int n)</td></tr>
 <tr class="separator:ae1ada3d9db3bc9bc6d94965dd3f49877"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a7914414877cfdc44362a5ef2fd2ac8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5a7914414877cfdc44362a5ef2fd2ac8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_xif</b> (double,...)</td></tr>
+<tr class="memitem:a5a7914414877cfdc44362a5ef2fd2ac8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#a5a7914414877cfdc44362a5ef2fd2ac8">set_xif</a> (double,...)</td></tr>
 <tr class="separator:a5a7914414877cfdc44362a5ef2fd2ac8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:affdaab7ed99681dc21750a32ddca9e26"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="affdaab7ed99681dc21750a32ddca9e26"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_npts</b> (int,...)</td></tr>
+<tr class="memitem:affdaab7ed99681dc21750a32ddca9e26"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#affdaab7ed99681dc21750a32ddca9e26">set_npts</a> (int,...)</td></tr>
 <tr class="separator:affdaab7ed99681dc21750a32ddca9e26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a302ef348022ff2d5c83416130f00c6f5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a302ef348022ff2d5c83416130f00c6f5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> ()</td></tr>
+<tr class="memitem:a302ef348022ff2d5c83416130f00c6f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#a302ef348022ff2d5c83416130f00c6f5">init</a> ()</td></tr>
 <tr class="separator:a302ef348022ff2d5c83416130f00c6f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a273893d64ef8418624695f43833c9789"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a273893d64ef8418624695f43833c9789"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>eval</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;y, const <a class="el" href="classmatrix.html">matrix</a> &amp;x, <a class="el" href="classmatrix.html">matrix</a> &amp;T) const </td></tr>
+<tr class="memitem:a273893d64ef8418624695f43833c9789"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#a273893d64ef8418624695f43833c9789">eval</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;y, const <a class="el" href="classmatrix.html">matrix</a> &amp;<a class="el" href="classdiff__gl.html#a52adbce5386e71cae595ee8058230b8e">x</a>, <a class="el" href="classmatrix.html">matrix</a> &amp;T) const </td></tr>
 <tr class="separator:a273893d64ef8418624695f43833c9789"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58e569632cc7ba3a16d1c1c514fbf5fe"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a58e569632cc7ba3a16d1c1c514fbf5fe"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>eval</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;y, const <a class="el" href="classmatrix.html">matrix</a> &amp;x) const </td></tr>
+<tr class="memitem:a58e569632cc7ba3a16d1c1c514fbf5fe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#a58e569632cc7ba3a16d1c1c514fbf5fe">eval</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;y, const <a class="el" href="classmatrix.html">matrix</a> &amp;<a class="el" href="classdiff__gl.html#a52adbce5386e71cae595ee8058230b8e">x</a>) const </td></tr>
 <tr class="separator:a58e569632cc7ba3a16d1c1c514fbf5fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5692835e45b7b4a713c40f36712853a3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5692835e45b7b4a713c40f36712853a3"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>eval</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;y, double x) const </td></tr>
+<tr class="memitem:a5692835e45b7b4a713c40f36712853a3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#a5692835e45b7b4a713c40f36712853a3">eval</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;y, double <a class="el" href="classdiff__gl.html#a52adbce5386e71cae595ee8058230b8e">x</a>) const </td></tr>
 <tr class="separator:a5692835e45b7b4a713c40f36712853a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab90db6b844b2c34a9aa08cd46c36c951"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab90db6b844b2c34a9aa08cd46c36c951"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>eval</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;y, double x, <a class="el" href="classmatrix.html">matrix</a> &amp;T) const </td></tr>
+<tr class="memitem:ab90db6b844b2c34a9aa08cd46c36c951"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#ab90db6b844b2c34a9aa08cd46c36c951">eval</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;y, double <a class="el" href="classdiff__gl.html#a52adbce5386e71cae595ee8058230b8e">x</a>, <a class="el" href="classmatrix.html">matrix</a> &amp;T) const </td></tr>
 <tr class="separator:ab90db6b844b2c34a9aa08cd46c36c951"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a52adbce5386e71cae595ee8058230b8e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a52adbce5386e71cae595ee8058230b8e"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>x</b></td></tr>
+<tr class="memitem:a52adbce5386e71cae595ee8058230b8e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#a52adbce5386e71cae595ee8058230b8e">x</a></td></tr>
 <tr class="separator:a52adbce5386e71cae595ee8058230b8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0122d73292d964b01f0069b5f505d2f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae0122d73292d964b01f0069b5f505d2f"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>I</b></td></tr>
+<tr class="memitem:ae0122d73292d964b01f0069b5f505d2f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#ae0122d73292d964b01f0069b5f505d2f">I</a></td></tr>
 <tr class="separator:ae0122d73292d964b01f0069b5f505d2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88ed6f509f0b4fc0db37b1549403f615"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a88ed6f509f0b4fc0db37b1549403f615"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>P</b></td></tr>
+<tr class="memitem:a88ed6f509f0b4fc0db37b1549403f615"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#a88ed6f509f0b4fc0db37b1549403f615">P</a></td></tr>
 <tr class="separator:a88ed6f509f0b4fc0db37b1549403f615"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f09fdee7cd623297e670fbca73d8305"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0f09fdee7cd623297e670fbca73d8305"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>P1</b></td></tr>
+<tr class="memitem:a0f09fdee7cd623297e670fbca73d8305"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#a0f09fdee7cd623297e670fbca73d8305">P1</a></td></tr>
 <tr class="separator:a0f09fdee7cd623297e670fbca73d8305"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a5de5166c2fb512821a609a7fa65a00"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7a5de5166c2fb512821a609a7fa65a00"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>D</b></td></tr>
+<tr class="memitem:a7a5de5166c2fb512821a609a7fa65a00"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#a7a5de5166c2fb512821a609a7fa65a00">D</a></td></tr>
 <tr class="separator:a7a5de5166c2fb512821a609a7fa65a00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa998e95ffee8d7e397b222c4ee0bf25b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa998e95ffee8d7e397b222c4ee0bf25b"></a>
-int *&#160;</td><td class="memItemRight" valign="bottom"><b>npts</b></td></tr>
+<tr class="memitem:aa998e95ffee8d7e397b222c4ee0bf25b"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#aa998e95ffee8d7e397b222c4ee0bf25b">npts</a></td></tr>
 <tr class="separator:aa998e95ffee8d7e397b222c4ee0bf25b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74f6b95c43d558806ba8077712525a5d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a74f6b95c43d558806ba8077712525a5d"></a>
-double *&#160;</td><td class="memItemRight" valign="bottom"><b>xif</b></td></tr>
+<tr class="memitem:a74f6b95c43d558806ba8077712525a5d"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#a74f6b95c43d558806ba8077712525a5d">xif</a></td></tr>
 <tr class="separator:a74f6b95c43d558806ba8077712525a5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f4c2fa1700668ee4b6159eec21c5379"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7f4c2fa1700668ee4b6159eec21c5379"></a>
-const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ndomains</b></td></tr>
+<tr class="memitem:a7f4c2fa1700668ee4b6159eec21c5379"><td class="memItemLeft" align="right" valign="top">const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#a7f4c2fa1700668ee4b6159eec21c5379">ndomains</a></td></tr>
 <tr class="separator:a7f4c2fa1700668ee4b6159eec21c5379"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf103e5e8b9d0571c671147242f36003"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaf103e5e8b9d0571c671147242f36003"></a>
-const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>N</b></td></tr>
+<tr class="memitem:aaf103e5e8b9d0571c671147242f36003"><td class="memItemLeft" align="right" valign="top">const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#aaf103e5e8b9d0571c671147242f36003">N</a></td></tr>
 <tr class="separator:aaf103e5e8b9d0571c671147242f36003"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:ac47c995d19386f8b54d751641ed77b63"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac47c995d19386f8b54d751641ed77b63"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init_1</b> ()</td></tr>
+<tr class="memitem:ac47c995d19386f8b54d751641ed77b63"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#ac47c995d19386f8b54d751641ed77b63">init_1</a> ()</td></tr>
 <tr class="separator:ac47c995d19386f8b54d751641ed77b63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a3777349fb51da5f77e8388149bc4d4e5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3777349fb51da5f77e8388149bc4d4e5"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>ndom</b></td></tr>
+<tr class="memitem:a3777349fb51da5f77e8388149bc4d4e5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#a3777349fb51da5f77e8388149bc4d4e5">ndom</a></td></tr>
 <tr class="separator:a3777349fb51da5f77e8388149bc4d4e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af001d2d283171d79952b4565130e28e5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af001d2d283171d79952b4565130e28e5"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>Ntot</b></td></tr>
+<tr class="memitem:af001d2d283171d79952b4565130e28e5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdiff__gl.html#af001d2d283171d79952b4565130e28e5">Ntot</a></td></tr>
 <tr class="separator:af001d2d283171d79952b4565130e28e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="classdiff__gl.html" title="The diff_gl class implements the Gauss-Lobatto (or more properly Gauss-Lobatto-Chebyshev) collocation...">diff_gl</a> class implements the Gauss-Lobatto (or more properly Gauss-Lobatto-Chebyshev) collocation method. </p>
 <p>The basis functions are Chebyshev polynomials of the first kind: \( T_l(x)=cos(l.arccos(x)) \), defined in \( [-1, 1] \). <br/>
 And the collocation points are \( x_i = -cos(\frac{i \pi}{n})\) </p>
-</div><hr/>The documentation for this class was generated from the following files:<ul>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a4baddac50971ad8eec4aa43434e52290"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">diff_gl::diff_gl </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em> = <code>1</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab368c58728475709cc28cf4af1f7045a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">diff_gl::~diff_gl </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="adebe857106c67fe23d7eddeaaa996c67"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">diff_gl::diff_gl </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classdiff__gl.html">diff_gl</a> &amp;&#160;</td>
+          <td class="paramname"><em>gl</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a273893d64ef8418624695f43833c9789"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> diff_gl::eval </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>T</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdiff__gl_a273893d64ef8418624695f43833c9789_cgraph.png" border="0" usemap="#classdiff__gl_a273893d64ef8418624695f43833c9789_cgraph" alt=""/></div>
+<map name="classdiff__gl_a273893d64ef8418624695f43833c9789_cgraph" id="classdiff__gl_a273893d64ef8418624695f43833c9789_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="144,5,245,32"/><area shape="rect" id="node3" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="146,56,243,83"/><area shape="rect" id="node4" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="151,107,238,133"/><area shape="rect" id="node5" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="173,157,216,184"/><area shape="rect" id="node6" href="matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="169,208,220,235"/><area shape="rect" id="node7" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="144,259,245,285"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a58e569632cc7ba3a16d1c1c514fbf5fe"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> diff_gl::eval </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>x</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdiff__gl_a58e569632cc7ba3a16d1c1c514fbf5fe_cgraph.png" border="0" usemap="#classdiff__gl_a58e569632cc7ba3a16d1c1c514fbf5fe_cgraph" alt=""/></div>
+<map name="classdiff__gl_a58e569632cc7ba3a16d1c1c514fbf5fe_cgraph" id="classdiff__gl_a58e569632cc7ba3a16d1c1c514fbf5fe_cgraph">
+<area shape="rect" id="node2" href="classdiff__gl.html#a273893d64ef8418624695f43833c9789" title="diff_gl::eval" alt="" coords="145,132,234,159"/><area shape="rect" id="node3" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="283,5,384,32"/><area shape="rect" id="node4" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="285,56,382,83"/><area shape="rect" id="node5" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="290,107,377,133"/><area shape="rect" id="node6" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="312,157,355,184"/><area shape="rect" id="node7" href="matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="308,208,359,235"/><area shape="rect" id="node8" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="283,259,384,285"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a5692835e45b7b4a713c40f36712853a3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> diff_gl::eval </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>x</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdiff__gl_a5692835e45b7b4a713c40f36712853a3_cgraph.png" border="0" usemap="#classdiff__gl_a5692835e45b7b4a713c40f36712853a3_cgraph" alt=""/></div>
+<map name="classdiff__gl_a5692835e45b7b4a713c40f36712853a3_cgraph" id="classdiff__gl_a5692835e45b7b4a713c40f36712853a3_cgraph">
+<area shape="rect" id="node2" href="classdiff__gl.html#a273893d64ef8418624695f43833c9789" title="diff_gl::eval" alt="" coords="145,132,234,159"/><area shape="rect" id="node3" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="283,5,384,32"/><area shape="rect" id="node4" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="285,56,382,83"/><area shape="rect" id="node5" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="290,107,377,133"/><area shape="rect" id="node6" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="312,157,355,184"/><area shape="rect" id="node7" href="matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="308,208,359,235"/><area shape="rect" id="node8" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="283,259,384,285"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ab90db6b844b2c34a9aa08cd46c36c951"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> diff_gl::eval </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>T</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdiff__gl_ab90db6b844b2c34a9aa08cd46c36c951_cgraph.png" border="0" usemap="#classdiff__gl_ab90db6b844b2c34a9aa08cd46c36c951_cgraph" alt=""/></div>
+<map name="classdiff__gl_ab90db6b844b2c34a9aa08cd46c36c951_cgraph" id="classdiff__gl_ab90db6b844b2c34a9aa08cd46c36c951_cgraph">
+<area shape="rect" id="node2" href="classdiff__gl.html#a273893d64ef8418624695f43833c9789" title="diff_gl::eval" alt="" coords="145,132,234,159"/><area shape="rect" id="node3" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="283,5,384,32"/><area shape="rect" id="node4" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="285,56,382,83"/><area shape="rect" id="node5" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="290,107,377,133"/><area shape="rect" id="node6" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="312,157,355,184"/><area shape="rect" id="node7" href="matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="308,208,359,235"/><area shape="rect" id="node8" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="283,259,384,285"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a302ef348022ff2d5c83416130f00c6f5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void diff_gl::init </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdiff__gl_a302ef348022ff2d5c83416130f00c6f5_cgraph.png" border="0" usemap="#classdiff__gl_a302ef348022ff2d5c83416130f00c6f5_cgraph" alt=""/></div>
+<map name="classdiff__gl_a302ef348022ff2d5c83416130f00c6f5_cgraph" id="classdiff__gl_a302ef348022ff2d5c83416130f00c6f5_cgraph">
+<area shape="rect" id="node2" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="366,5,421,32"/><area shape="rect" id="node3" href="classmatrix__block__diag.html#aa7e7f89e4886b81f04713cb24b14603a" title="matrix_block_diag::\lset_nblocks" alt="" coords="137,305,271,346"/><area shape="rect" id="node5" href="classdiff__gl.html#ac47c995d19386f8b54d751641ed77b63" title="diff_gl::init_1" alt="" coords="156,253,252,280"/><area shape="rect" id="node10" href="classmatrix__block__diag.html#a5352c4c2942e35d052fa44617deff202" title="matrix_block_diag::\lblock" alt="" coords="326,57,461,98"/><area shape="rect" id="node17" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="147,371,261,397"/><area shape="rect" id="node4" href="classmatrix__block__diag.html#a912db280a7c26104ae061e079c7bde26" title="matrix_block_diag::\lnblocks" alt="" coords="326,579,461,621"/><area shape="rect" id="node6" href="matrix_8h.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="359,123,428,149"/><area shape="rect" id="node7" href="matrix_8h.html#a3733d7092ed4974a7f292df2002e0ff1" title="vector" alt="" coords="364,173,423,200"/><area shape="rect" id="node9" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="372,224,415,251"/><area shape="rect" id="node11" href="matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="370,275,417,301"/><area shape="rect" id="node12" href="matrix_8h.html#a4c6cf8d39363ecd516ed51dc06c9306d" title="floor" alt="" coords="370,325,417,352"/><area shape="rect" id="node13" href="classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="341,376,446,403"/><area shape="rect" id="node14" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="350,427,437,453"/><area shape="rect" id="node15" href="classmatrix.html#a2e3c625e24844fbb6dc731c735878824" title="matrix::setblock_step" alt="" coords="320,477,467,504"/><area shape="rect" id="node16" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="345,528,442,555"/><area shape="rect" id="node8" href="matrix_8cpp.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="515,173,584,200"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ac47c995d19386f8b54d751641ed77b63"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void diff_gl::init_1 </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdiff__gl_ac47c995d19386f8b54d751641ed77b63_cgraph.png" border="0" usemap="#classdiff__gl_ac47c995d19386f8b54d751641ed77b63_cgraph" alt=""/></div>
+<map name="classdiff__gl_ac47c995d19386f8b54d751641ed77b63_cgraph" id="classdiff__gl_ac47c995d19386f8b54d751641ed77b63_cgraph">
+<area shape="rect" id="node2" href="matrix_8h.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="188,5,257,32"/><area shape="rect" id="node3" href="matrix_8h.html#a3733d7092ed4974a7f292df2002e0ff1" title="vector" alt="" coords="193,56,252,83"/><area shape="rect" id="node5" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="201,107,244,133"/><area shape="rect" id="node6" href="classmatrix__block__diag.html#a5352c4c2942e35d052fa44617deff202" title="matrix_block_diag::\lblock" alt="" coords="155,158,290,199"/><area shape="rect" id="node7" href="matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="199,224,246,251"/><area shape="rect" id="node8" href="matrix_8h.html#a4c6cf8d39363ecd516ed51dc06c9306d" title="floor" alt="" coords="199,275,246,301"/><area shape="rect" id="node9" href="classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="170,325,275,352"/><area shape="rect" id="node10" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="179,376,266,403"/><area shape="rect" id="node11" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="195,427,250,453"/><area shape="rect" id="node12" href="classmatrix.html#a2e3c625e24844fbb6dc731c735878824" title="matrix::setblock_step" alt="" coords="149,477,296,504"/><area shape="rect" id="node13" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="174,528,271,555"/><area shape="rect" id="node4" href="matrix_8cpp.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="344,56,413,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ae3a262ad3461e8eab31498d632f99c2c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdiff__gl.html">diff_gl</a> &amp; diff_gl::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classdiff__gl.html">diff_gl</a> &amp;&#160;</td>
+          <td class="paramname"><em>gl</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae1ada3d9db3bc9bc6d94965dd3f49877"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void diff_gl::set_ndomains </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="affdaab7ed99681dc21750a32ddca9e26"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void diff_gl::set_npts </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a5a7914414877cfdc44362a5ef2fd2ac8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void diff_gl::set_xif </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a7a5de5166c2fb512821a609a7fa65a00"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> diff_gl::D</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae0122d73292d964b01f0069b5f505d2f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> diff_gl::I</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aaf103e5e8b9d0571c671147242f36003"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int &amp; diff_gl::N</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3777349fb51da5f77e8388149bc4d4e5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int diff_gl::ndom</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7f4c2fa1700668ee4b6159eec21c5379"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int&amp; diff_gl::ndomains</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aa998e95ffee8d7e397b222c4ee0bf25b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* diff_gl::npts</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af001d2d283171d79952b4565130e28e5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int diff_gl::Ntot</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a88ed6f509f0b4fc0db37b1549403f615"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> diff_gl::P</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0f09fdee7cd623297e670fbca73d8305"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> diff_gl::P1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a52adbce5386e71cae595ee8058230b8e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> diff_gl::x</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a74f6b95c43d558806ba8077712525a5d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double* diff_gl::xif</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/include/<a class="el" href="numdiff_8h_source.html">numdiff.h</a></li>
-<li>src/numdiff/diff_gl.cpp</li>
+<li>src/numdiff/<a class="el" href="diff__gl_8cpp.html">diff_gl.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:27 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

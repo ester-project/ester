@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -98,144 +98,676 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">solver_full Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="solver_8h_source.html">solver.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for solver_full:</div>
 <div class="dyncontent">
 <div class="center"><img src="classsolver__full__inherit__graph.png" border="0" usemap="#solver__full_inherit__map" alt="Inheritance graph"/></div>
 <map name="solver__full_inherit__map" id="solver__full_inherit__map">
-</map>
+<area shape="rect" id="node2" href="classsolver__operator.html" title="solver_operator" alt="" coords="5,5,115,32"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
 Collaboration diagram for solver_full:</div>
 <div class="dyncontent">
 <div class="center"><img src="classsolver__full__coll__graph.png" border="0" usemap="#solver__full_coll__map" alt="Collaboration graph"/></div>
 <map name="solver__full_coll__map" id="solver__full_coll__map">
-</map>
+<area shape="rect" id="node2" href="classsolver__operator.html" title="solver_operator" alt="" coords="5,5,115,32"/><area shape="rect" id="node3" href="classmatrix.html" title="The matrix class is used to facilitate the work with regular dense matrices. " alt="" coords="140,5,197,32"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:adefad32a00974b6f149cbac8eb634962"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adefad32a00974b6f149cbac8eb634962"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>solver_full</b> (int nblocks, int offcore=0)</td></tr>
+<tr class="memitem:adefad32a00974b6f149cbac8eb634962"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#adefad32a00974b6f149cbac8eb634962">solver_full</a> (int nblocks, int offcore=0)</td></tr>
 <tr class="separator:adefad32a00974b6f149cbac8eb634962"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a994506be2f562930cd58472a005dc438"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a994506be2f562930cd58472a005dc438"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_block</b> (int iblock, <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
+<tr class="memitem:a92485a5728c06dbf87c0b7d911e855ec"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a92485a5728c06dbf87c0b7d911e855ec">~solver_full</a> ()</td></tr>
+<tr class="separator:a92485a5728c06dbf87c0b7d911e855ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a994506be2f562930cd58472a005dc438"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a994506be2f562930cd58472a005dc438">set_block</a> (int iblock, <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="separator:a994506be2f562930cd58472a005dc438"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb3ee685e1bf7589b16afa84b1960f05"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afb3ee685e1bf7589b16afa84b1960f05"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_blocksup</b> (int iblock, <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
+<tr class="memitem:afb3ee685e1bf7589b16afa84b1960f05"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#afb3ee685e1bf7589b16afa84b1960f05">set_blocksup</a> (int iblock, <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="separator:afb3ee685e1bf7589b16afa84b1960f05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d145b50582f9e2a8c5b153af41f3e28"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5d145b50582f9e2a8c5b153af41f3e28"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_blockinf</b> (int iblock, <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
+<tr class="memitem:a5d145b50582f9e2a8c5b153af41f3e28"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a5d145b50582f9e2a8c5b153af41f3e28">set_blockinf</a> (int iblock, <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="separator:a5d145b50582f9e2a8c5b153af41f3e28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aebd4eae18f7627344eb11f9ba24d8203"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aebd4eae18f7627344eb11f9ba24d8203"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>left_precond</b> (<a class="el" href="classmatrix.html">matrix</a> &amp;x)</td></tr>
+<tr class="memitem:aebd4eae18f7627344eb11f9ba24d8203"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#aebd4eae18f7627344eb11f9ba24d8203">left_precond</a> (<a class="el" href="classmatrix.html">matrix</a> &amp;x)</td></tr>
 <tr class="separator:aebd4eae18f7627344eb11f9ba24d8203"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26464cc34b8d39e480a3ec0395257452"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a26464cc34b8d39e480a3ec0395257452"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>right_precond</b> (<a class="el" href="classmatrix.html">matrix</a> &amp;x)</td></tr>
+<tr class="memitem:a26464cc34b8d39e480a3ec0395257452"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a26464cc34b8d39e480a3ec0395257452">right_precond</a> (<a class="el" href="classmatrix.html">matrix</a> &amp;x)</td></tr>
 <tr class="separator:a26464cc34b8d39e480a3ec0395257452"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a052f8a2ee08440521eb6780e28f5c5ff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a052f8a2ee08440521eb6780e28f5c5ff">solve</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="memdesc:a052f8a2ee08440521eb6780e28f5c5ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solves the set of equation stored in the object given the right hand side <code>rhs</code>.  <a href="#a052f8a2ee08440521eb6780e28f5c5ff">More...</a><br/></td></tr>
 <tr class="separator:a052f8a2ee08440521eb6780e28f5c5ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classsolver__operator"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classsolver__operator')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classsolver__operator.html">solver_operator</a></td></tr>
-<tr class="memitem:a6cc77fb688e75161095aa87df3c280ef inherit pub_methods_classsolver__operator"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6cc77fb688e75161095aa87df3c280ef"></a>
-virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~solver_operator</b> ()</td></tr>
+<tr class="memitem:a6cc77fb688e75161095aa87df3c280ef inherit pub_methods_classsolver__operator"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__operator.html#a6cc77fb688e75161095aa87df3c280ef">~solver_operator</a> ()</td></tr>
 <tr class="separator:a6cc77fb688e75161095aa87df3c280ef inherit pub_methods_classsolver__operator"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a2be6b5d2e41c57ef37a988301af9caf8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2be6b5d2e41c57ef37a988301af9caf8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>lu_calc</b> ()</td></tr>
+<tr class="memitem:a2be6b5d2e41c57ef37a988301af9caf8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a2be6b5d2e41c57ef37a988301af9caf8">lu_calc</a> ()</td></tr>
 <tr class="separator:a2be6b5d2e41c57ef37a988301af9caf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab29111731a262d11ec2390fc5ea336a3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab29111731a262d11ec2390fc5ea336a3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>lu_block</b> (int i)</td></tr>
+<tr class="memitem:ab29111731a262d11ec2390fc5ea336a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#ab29111731a262d11ec2390fc5ea336a3">lu_block</a> (int i)</td></tr>
 <tr class="separator:ab29111731a262d11ec2390fc5ea336a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a02f79235d4b37d768a6a7bbf87054b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2a02f79235d4b37d768a6a7bbf87054b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>solve_block</b> (int i, char trans, <a class="el" href="classmatrix.html">matrix</a> &amp;x)</td></tr>
+<tr class="memitem:a2a02f79235d4b37d768a6a7bbf87054b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a2a02f79235d4b37d768a6a7bbf87054b">solve_block</a> (int i, char trans, <a class="el" href="classmatrix.html">matrix</a> &amp;x)</td></tr>
 <tr class="separator:a2a02f79235d4b37d768a6a7bbf87054b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a356e24f852fcaa0c29d03cd31418a1b5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a356e24f852fcaa0c29d03cd31418a1b5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>read_block</b> (int i)</td></tr>
+<tr class="memitem:a356e24f852fcaa0c29d03cd31418a1b5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a356e24f852fcaa0c29d03cd31418a1b5">read_block</a> (int i)</td></tr>
 <tr class="separator:a356e24f852fcaa0c29d03cd31418a1b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45ff8796c0b51ee8d1ba68b15f5cf2f8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a45ff8796c0b51ee8d1ba68b15f5cf2f8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>write_block</b> (int i, const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
+<tr class="memitem:a45ff8796c0b51ee8d1ba68b15f5cf2f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a45ff8796c0b51ee8d1ba68b15f5cf2f8">write_block</a> (int i, const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="separator:a45ff8796c0b51ee8d1ba68b15f5cf2f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abfaa48709649161a5f5654990030377c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abfaa48709649161a5f5654990030377c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>flush_block</b> (int i)</td></tr>
+<tr class="memitem:abfaa48709649161a5f5654990030377c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#abfaa48709649161a5f5654990030377c">flush_block</a> (int i)</td></tr>
 <tr class="separator:abfaa48709649161a5f5654990030377c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53e2238f680bce72d0f70561c85f354b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a53e2238f680bce72d0f70561c85f354b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>read_blocksup</b> (int i)</td></tr>
+<tr class="memitem:a53e2238f680bce72d0f70561c85f354b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a53e2238f680bce72d0f70561c85f354b">read_blocksup</a> (int i)</td></tr>
 <tr class="separator:a53e2238f680bce72d0f70561c85f354b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa6344919c71b41c3d155b32d5d57643"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaa6344919c71b41c3d155b32d5d57643"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>write_blocksup</b> (int i, const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
+<tr class="memitem:aaa6344919c71b41c3d155b32d5d57643"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#aaa6344919c71b41c3d155b32d5d57643">write_blocksup</a> (int i, const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="separator:aaa6344919c71b41c3d155b32d5d57643"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5aac4aa9182b13de52d4f3b5df80932a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5aac4aa9182b13de52d4f3b5df80932a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>flush_blocksup</b> (int i)</td></tr>
+<tr class="memitem:a5aac4aa9182b13de52d4f3b5df80932a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a5aac4aa9182b13de52d4f3b5df80932a">flush_blocksup</a> (int i)</td></tr>
 <tr class="separator:a5aac4aa9182b13de52d4f3b5df80932a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ab541caa67adae45c47f285583449be"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1ab541caa67adae45c47f285583449be"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>read_blockinf</b> (int i)</td></tr>
+<tr class="memitem:a1ab541caa67adae45c47f285583449be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a1ab541caa67adae45c47f285583449be">read_blockinf</a> (int i)</td></tr>
 <tr class="separator:a1ab541caa67adae45c47f285583449be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ea41c32383c93a7b692fe5d309737ef"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6ea41c32383c93a7b692fe5d309737ef"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>write_blockinf</b> (int i, const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
+<tr class="memitem:a6ea41c32383c93a7b692fe5d309737ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a6ea41c32383c93a7b692fe5d309737ef">write_blockinf</a> (int i, const <a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="separator:a6ea41c32383c93a7b692fe5d309737ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9feb5b7aca1a030772c5e9305c9c10f8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9feb5b7aca1a030772c5e9305c9c10f8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>flush_blockinf</b> (int i)</td></tr>
+<tr class="memitem:a9feb5b7aca1a030772c5e9305c9c10f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a9feb5b7aca1a030772c5e9305c9c10f8">flush_blockinf</a> (int i)</td></tr>
 <tr class="separator:a9feb5b7aca1a030772c5e9305c9c10f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99839335217da5250516d1f7662f993e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a99839335217da5250516d1f7662f993e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>fwd_subs</b> (<a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
+<tr class="memitem:a99839335217da5250516d1f7662f993e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a99839335217da5250516d1f7662f993e">fwd_subs</a> (<a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="separator:a99839335217da5250516d1f7662f993e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac55253a9496a63fbdfc065ca70a20934"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac55253a9496a63fbdfc065ca70a20934"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>back_subs</b> (<a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
+<tr class="memitem:ac55253a9496a63fbdfc065ca70a20934"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#ac55253a9496a63fbdfc065ca70a20934">back_subs</a> (<a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="separator:ac55253a9496a63fbdfc065ca70a20934"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a74d341310165a4c31c895348c9f6e309"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a74d341310165a4c31c895348c9f6e309"></a>
-<a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>m</b></td></tr>
+<tr class="memitem:a74d341310165a4c31c895348c9f6e309"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a74d341310165a4c31c895348c9f6e309">m</a></td></tr>
 <tr class="separator:a74d341310165a4c31c895348c9f6e309"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a2d606fd4c2c33928cdca71346966f6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1a2d606fd4c2c33928cdca71346966f6"></a>
-<a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>msup</b></td></tr>
+<tr class="memitem:a1a2d606fd4c2c33928cdca71346966f6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a1a2d606fd4c2c33928cdca71346966f6">msup</a></td></tr>
 <tr class="separator:a1a2d606fd4c2c33928cdca71346966f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a980306cd8e8612dc9abbba02796e91d4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a980306cd8e8612dc9abbba02796e91d4"></a>
-<a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>minf</b></td></tr>
+<tr class="memitem:a980306cd8e8612dc9abbba02796e91d4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a980306cd8e8612dc9abbba02796e91d4">minf</a></td></tr>
 <tr class="separator:a980306cd8e8612dc9abbba02796e91d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a780a3bfab930b7593de29e6b957c8656"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a780a3bfab930b7593de29e6b957c8656"></a>
-<a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>c</b></td></tr>
+<tr class="memitem:a780a3bfab930b7593de29e6b957c8656"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a780a3bfab930b7593de29e6b957c8656">c</a></td></tr>
 <tr class="separator:a780a3bfab930b7593de29e6b957c8656"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00b30ce3764627b54e5590d46780b72a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a00b30ce3764627b54e5590d46780b72a"></a>
-<a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>r</b></td></tr>
+<tr class="memitem:a00b30ce3764627b54e5590d46780b72a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a00b30ce3764627b54e5590d46780b72a">r</a></td></tr>
 <tr class="separator:a00b30ce3764627b54e5590d46780b72a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad84a6b85eaf1309de128f20bd6d5c135"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad84a6b85eaf1309de128f20bd6d5c135"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>blk_index</b></td></tr>
+<tr class="memitem:ad84a6b85eaf1309de128f20bd6d5c135"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#ad84a6b85eaf1309de128f20bd6d5c135">blk_index</a></td></tr>
 <tr class="separator:ad84a6b85eaf1309de128f20bd6d5c135"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c4e71cf51b93b3a4017caf9229d3af8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1c4e71cf51b93b3a4017caf9229d3af8"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>ipiv_flag</b></td></tr>
+<tr class="memitem:a1c4e71cf51b93b3a4017caf9229d3af8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a1c4e71cf51b93b3a4017caf9229d3af8">ipiv_flag</a></td></tr>
 <tr class="separator:a1c4e71cf51b93b3a4017caf9229d3af8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c47058177b36f6e176c2ff7fdef34f2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c47058177b36f6e176c2ff7fdef34f2"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>nb</b></td></tr>
+<tr class="memitem:a9c47058177b36f6e176c2ff7fdef34f2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a9c47058177b36f6e176c2ff7fdef34f2">nb</a></td></tr>
 <tr class="separator:a9c47058177b36f6e176c2ff7fdef34f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d72f059b371b44e79592a3261201dc1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1d72f059b371b44e79592a3261201dc1"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>lu_flag</b></td></tr>
+<tr class="memitem:a1d72f059b371b44e79592a3261201dc1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a1d72f059b371b44e79592a3261201dc1">lu_flag</a></td></tr>
 <tr class="separator:a1d72f059b371b44e79592a3261201dc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4302e0f7b3db6f50d0d27aba3ba4ea7f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4302e0f7b3db6f50d0d27aba3ba4ea7f"></a>
-int *&#160;</td><td class="memItemRight" valign="bottom"><b>N</b></td></tr>
+<tr class="memitem:a4302e0f7b3db6f50d0d27aba3ba4ea7f"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a4302e0f7b3db6f50d0d27aba3ba4ea7f">N</a></td></tr>
 <tr class="separator:a4302e0f7b3db6f50d0d27aba3ba4ea7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44525b2b68c8899042b823c8854fbb0d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a44525b2b68c8899042b823c8854fbb0d"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>oc</b></td></tr>
+<tr class="memitem:a44525b2b68c8899042b823c8854fbb0d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a44525b2b68c8899042b823c8854fbb0d">oc</a></td></tr>
 <tr class="separator:a44525b2b68c8899042b823c8854fbb0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10ada7e1c2970f5fbc537968350be4ba"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a10ada7e1c2970f5fbc537968350be4ba"></a>
-char&#160;</td><td class="memItemRight" valign="bottom"><b>tempdir</b> [50]</td></tr>
+<tr class="memitem:a10ada7e1c2970f5fbc537968350be4ba"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#a10ada7e1c2970f5fbc537968350be4ba">tempdir</a> [50]</td></tr>
 <tr class="separator:a10ada7e1c2970f5fbc537968350be4ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad691c8e20d8abd6ef55e732a3b7bd2d0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad691c8e20d8abd6ef55e732a3b7bd2d0"></a>
-int **&#160;</td><td class="memItemRight" valign="bottom"><b>ipiv</b></td></tr>
+<tr class="memitem:ad691c8e20d8abd6ef55e732a3b7bd2d0"><td class="memItemLeft" align="right" valign="top">int **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__full.html#ad691c8e20d8abd6ef55e732a3b7bd2d0">ipiv</a></td></tr>
 <tr class="separator:ad691c8e20d8abd6ef55e732a3b7bd2d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_attribs_classsolver__operator"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classsolver__operator')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classsolver__operator.html">solver_operator</a></td></tr>
-<tr class="memitem:a00a91ddce351057c8cae682359636bef inherit pub_attribs_classsolver__operator"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a00a91ddce351057c8cae682359636bef"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>verbose</b></td></tr>
+<tr class="memitem:a00a91ddce351057c8cae682359636bef inherit pub_attribs_classsolver__operator"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__operator.html#a00a91ddce351057c8cae682359636bef">verbose</a></td></tr>
 <tr class="separator:a00a91ddce351057c8cae682359636bef inherit pub_attribs_classsolver__operator"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="adefad32a00974b6f149cbac8eb634962"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">solver_full::solver_full </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nblocks</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>offcore</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_adefad32a00974b6f149cbac8eb634962_cgraph.png" border="0" usemap="#classsolver__full_adefad32a00974b6f149cbac8eb634962_cgraph" alt=""/></div>
+<map name="classsolver__full_adefad32a00974b6f149cbac8eb634962_cgraph" id="classsolver__full_adefad32a00974b6f149cbac8eb634962_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a0d38262959de19208fc8c21780457c95" title="Sets the matrix to the nrows x ncols zero matrix. " alt="" coords="203,5,293,32"/><area shape="rect" id="node3" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="342,5,429,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a92485a5728c06dbf87c0b7d911e855ec"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">solver_full::~solver_full </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ac55253a9496a63fbdfc065ca70a20934"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::back_subs </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>x</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_ac55253a9496a63fbdfc065ca70a20934_cgraph.png" border="0" usemap="#classsolver__full_ac55253a9496a63fbdfc065ca70a20934_cgraph" alt=""/></div>
+<map name="classsolver__full_ac55253a9496a63fbdfc065ca70a20934_cgraph" id="classsolver__full_ac55253a9496a63fbdfc065ca70a20934_cgraph">
+<area shape="rect" id="node2" href="classsolver__full.html#a53e2238f680bce72d0f70561c85f354b" title="solver_full::read_blocksup" alt="" coords="205,5,379,32"/><area shape="rect" id="node5" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="235,56,349,83"/><area shape="rect" id="node6" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="429,340,526,367"/><area shape="rect" id="node7" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="243,157,341,184"/><area shape="rect" id="node8" href="classsolver__full.html#a5aac4aa9182b13de52d4f3b5df80932a" title="solver_full::flush\l_blocksup" alt="" coords="233,209,351,250"/><area shape="rect" id="node10" href="classsolver__full.html#a356e24f852fcaa0c29d03cd31418a1b5" title="solver_full::read_block" alt="" coords="216,107,368,133"/><area shape="rect" id="node11" href="classsolver__full.html#a2a02f79235d4b37d768a6a7bbf87054b" title="solver_full::solve\l_block" alt="" coords="232,391,352,433"/><area shape="rect" id="node15" href="classsolver__full.html#abfaa48709649161a5f5654990030377c" title="solver_full::flush\l_block" alt="" coords="233,274,351,315"/><area shape="rect" id="node3" href="classmatrix.html#a5764b8af09e9b5b57456d1b4d8beb983" title="Reads matrix data from a file. " alt="" coords="432,56,523,83"/><area shape="rect" id="node4" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="577,56,663,83"/><area shape="rect" id="node9" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="450,248,505,275"/><area shape="rect" id="node12" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="427,391,528,417"/><area shape="rect" id="node13" href="lapack_8h.html#a27a5040bb8500a1c3134352387aa4008" title="dgetrs_" alt="" coords="445,441,510,468"/><area shape="rect" id="node14" href="classmatrix.html#af220f2a5835e6531bb17b850063a12cf" title="Returns the pointer to the matrix data. " alt="" coords="432,492,523,519"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="abfaa48709649161a5f5654990030377c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::flush_block </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_abfaa48709649161a5f5654990030377c_cgraph.png" border="0" usemap="#classsolver__full_abfaa48709649161a5f5654990030377c_cgraph" alt=""/></div>
+<map name="classsolver__full_abfaa48709649161a5f5654990030377c_cgraph" id="classsolver__full_abfaa48709649161a5f5654990030377c_cgraph">
+<area shape="rect" id="node2" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="171,12,226,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a9feb5b7aca1a030772c5e9305c9c10f8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::flush_blockinf </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_a9feb5b7aca1a030772c5e9305c9c10f8_cgraph.png" border="0" usemap="#classsolver__full_a9feb5b7aca1a030772c5e9305c9c10f8_cgraph" alt=""/></div>
+<map name="classsolver__full_a9feb5b7aca1a030772c5e9305c9c10f8_cgraph" id="classsolver__full_a9feb5b7aca1a030772c5e9305c9c10f8_cgraph">
+<area shape="rect" id="node2" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="171,12,226,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a5aac4aa9182b13de52d4f3b5df80932a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::flush_blocksup </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_a5aac4aa9182b13de52d4f3b5df80932a_cgraph.png" border="0" usemap="#classsolver__full_a5aac4aa9182b13de52d4f3b5df80932a_cgraph" alt=""/></div>
+<map name="classsolver__full_a5aac4aa9182b13de52d4f3b5df80932a_cgraph" id="classsolver__full_a5aac4aa9182b13de52d4f3b5df80932a_cgraph">
+<area shape="rect" id="node2" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="171,12,226,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a99839335217da5250516d1f7662f993e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::fwd_subs </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>x</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_a99839335217da5250516d1f7662f993e_cgraph.png" border="0" usemap="#classsolver__full_a99839335217da5250516d1f7662f993e_cgraph" alt=""/></div>
+<map name="classsolver__full_a99839335217da5250516d1f7662f993e_cgraph" id="classsolver__full_a99839335217da5250516d1f7662f993e_cgraph">
+<area shape="rect" id="node2" href="classsolver__full.html#a1ab541caa67adae45c47f285583449be" title="solver_full::read_blockinf" alt="" coords="201,5,367,32"/><area shape="rect" id="node5" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="227,56,341,83"/><area shape="rect" id="node6" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="235,107,333,133"/><area shape="rect" id="node7" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="235,157,333,184"/><area shape="rect" id="node8" href="classsolver__full.html#a9feb5b7aca1a030772c5e9305c9c10f8" title="solver_full::flush\l_blockinf" alt="" coords="225,209,343,250"/><area shape="rect" id="node3" href="classmatrix.html#a5764b8af09e9b5b57456d1b4d8beb983" title="Reads matrix data from a file. " alt="" coords="416,5,507,32"/><area shape="rect" id="node4" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="555,5,642,32"/><area shape="rect" id="node9" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="434,216,489,243"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aebd4eae18f7627344eb11f9ba24d8203"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::left_precond </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>x</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classsolver__operator.html#ac908ed12dd50a684f095d75f72f3f413">solver_operator</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_aebd4eae18f7627344eb11f9ba24d8203_cgraph.png" border="0" usemap="#classsolver__full_aebd4eae18f7627344eb11f9ba24d8203_cgraph" alt=""/></div>
+<map name="classsolver__full_aebd4eae18f7627344eb11f9ba24d8203_cgraph" id="classsolver__full_aebd4eae18f7627344eb11f9ba24d8203_cgraph">
+<area shape="rect" id="node2" href="classsolver__full.html#a99839335217da5250516d1f7662f993e" title="solver_full::fwd_subs" alt="" coords="214,107,359,133"/><area shape="rect" id="node3" href="classsolver__full.html#a1ab541caa67adae45c47f285583449be" title="solver_full::read_blockinf" alt="" coords="409,5,575,32"/><area shape="rect" id="node6" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="435,56,549,83"/><area shape="rect" id="node7" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="443,107,541,133"/><area shape="rect" id="node8" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="443,157,541,184"/><area shape="rect" id="node9" href="classsolver__full.html#a9feb5b7aca1a030772c5e9305c9c10f8" title="solver_full::flush\l_blockinf" alt="" coords="433,209,551,250"/><area shape="rect" id="node4" href="classmatrix.html#a5764b8af09e9b5b57456d1b4d8beb983" title="Reads matrix data from a file. " alt="" coords="624,5,715,32"/><area shape="rect" id="node5" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="763,5,850,32"/><area shape="rect" id="node10" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="642,216,697,243"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ab29111731a262d11ec2390fc5ea336a3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::lu_block </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_ab29111731a262d11ec2390fc5ea336a3_cgraph.png" border="0" usemap="#classsolver__full_ab29111731a262d11ec2390fc5ea336a3_cgraph" alt=""/></div>
+<map name="classsolver__full_ab29111731a262d11ec2390fc5ea336a3_cgraph" id="classsolver__full_ab29111731a262d11ec2390fc5ea336a3_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="192,5,293,32"/><area shape="rect" id="node3" href="matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="217,56,268,83"/><area shape="rect" id="node4" href="lapack_8h.html#a56a6e30415bc2e6de851f929a6034301" title="dgeequ_" alt="" coords="207,107,278,133"/><area shape="rect" id="node5" href="classmatrix.html#a345ac4399ae6ea5d158dec467a7e0432" title="Re&#45;dimension the matrix. " alt="" coords="193,157,292,184"/><area shape="rect" id="node6" href="lapack_8h.html#ab9b7c28558916902d2c428d262d3150f" title="dlange_" alt="" coords="209,208,276,235"/><area shape="rect" id="node7" href="lapack_8h.html#ae56e8f1e7103728e3bc7c17b82868a81" title="dgetrf_" alt="" coords="211,259,274,285"/><area shape="rect" id="node8" href="lapack_8h.html#a080bf09d3d41076bf9f24afc17003307" title="dgecon_" alt="" coords="207,309,278,336"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a2be6b5d2e41c57ef37a988301af9caf8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::lu_calc </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_a2be6b5d2e41c57ef37a988301af9caf8_cgraph.png" border="0" usemap="#classsolver__full_a2be6b5d2e41c57ef37a988301af9caf8_cgraph" alt=""/></div>
+<map name="classsolver__full_a2be6b5d2e41c57ef37a988301af9caf8_cgraph" id="classsolver__full_a2be6b5d2e41c57ef37a988301af9caf8_cgraph">
+<area shape="rect" id="node2" href="classsolver__full.html#a356e24f852fcaa0c29d03cd31418a1b5" title="solver_full::read_block" alt="" coords="195,5,347,32"/><area shape="rect" id="node5" href="classsolver__full.html#a1ab541caa67adae45c47f285583449be" title="solver_full::read_blockinf" alt="" coords="187,56,354,83"/><area shape="rect" id="node6" href="classsolver__full.html#a53e2238f680bce72d0f70561c85f354b" title="solver_full::read_blocksup" alt="" coords="184,107,357,133"/><area shape="rect" id="node7" href="classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="209,157,332,184"/><area shape="rect" id="node8" href="classsolver__full.html#a2a02f79235d4b37d768a6a7bbf87054b" title="solver_full::solve\l_block" alt="" coords="211,259,331,301"/><area shape="rect" id="node9" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="405,421,507,448"/><area shape="rect" id="node10" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="407,348,505,375"/><area shape="rect" id="node12" href="classmatrix.html#af220f2a5835e6531bb17b850063a12cf" title="Returns the pointer to the matrix data. " alt="" coords="411,212,501,239"/><area shape="rect" id="node13" href="classsolver__full.html#a45ff8796c0b51ee8d1ba68b15f5cf2f8" title="solver_full::write\l_block" alt="" coords="212,493,329,534"/><area shape="rect" id="node15" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="429,523,483,549"/><area shape="rect" id="node16" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="213,725,328,752"/><area shape="rect" id="node17" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="222,776,319,803"/><area shape="rect" id="node18" href="classsolver__full.html#a6ea41c32383c93a7b692fe5d309737ef" title="solver_full::write\l_blockinf" alt="" coords="212,427,329,469"/><area shape="rect" id="node19" href="classsolver__full.html#a5aac4aa9182b13de52d4f3b5df80932a" title="solver_full::flush\l_blocksup" alt="" coords="212,558,329,599"/><area shape="rect" id="node20" href="classsolver__full.html#ab29111731a262d11ec2390fc5ea336a3" title="solver_full::lu_block" alt="" coords="202,675,339,701"/><area shape="rect" id="node3" href="classmatrix.html#a5764b8af09e9b5b57456d1b4d8beb983" title="Reads matrix data from a file. " alt="" coords="411,56,501,83"/><area shape="rect" id="node4" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="555,56,642,83"/><area shape="rect" id="node11" href="lapack_8h.html#a27a5040bb8500a1c3134352387aa4008" title="dgetrs_" alt="" coords="423,267,489,293"/><area shape="rect" id="node14" href="classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="409,472,503,499"/><area shape="rect" id="node21" href="matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="431,675,481,701"/><area shape="rect" id="node22" href="lapack_8h.html#a56a6e30415bc2e6de851f929a6034301" title="dgeequ_" alt="" coords="421,725,491,752"/><area shape="rect" id="node23" href="classmatrix.html#a345ac4399ae6ea5d158dec467a7e0432" title="Re&#45;dimension the matrix. " alt="" coords="407,776,505,803"/><area shape="rect" id="node24" href="lapack_8h.html#ab9b7c28558916902d2c428d262d3150f" title="dlange_" alt="" coords="423,827,489,853"/><area shape="rect" id="node25" href="lapack_8h.html#ae56e8f1e7103728e3bc7c17b82868a81" title="dgetrf_" alt="" coords="425,573,487,600"/><area shape="rect" id="node26" href="lapack_8h.html#a080bf09d3d41076bf9f24afc17003307" title="dgecon_" alt="" coords="421,624,491,651"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a356e24f852fcaa0c29d03cd31418a1b5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::read_block </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_a356e24f852fcaa0c29d03cd31418a1b5_cgraph.png" border="0" usemap="#classsolver__full_a356e24f852fcaa0c29d03cd31418a1b5_cgraph" alt=""/></div>
+<map name="classsolver__full_a356e24f852fcaa0c29d03cd31418a1b5_cgraph" id="classsolver__full_a356e24f852fcaa0c29d03cd31418a1b5_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a5764b8af09e9b5b57456d1b4d8beb983" title="Reads matrix data from a file. " alt="" coords="205,5,296,32"/><area shape="rect" id="node3" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="345,5,431,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a1ab541caa67adae45c47f285583449be"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::read_blockinf </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_a1ab541caa67adae45c47f285583449be_cgraph.png" border="0" usemap="#classsolver__full_a1ab541caa67adae45c47f285583449be_cgraph" alt=""/></div>
+<map name="classsolver__full_a1ab541caa67adae45c47f285583449be_cgraph" id="classsolver__full_a1ab541caa67adae45c47f285583449be_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a5764b8af09e9b5b57456d1b4d8beb983" title="Reads matrix data from a file. " alt="" coords="221,5,312,32"/><area shape="rect" id="node3" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="361,5,447,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a53e2238f680bce72d0f70561c85f354b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::read_blocksup </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_a53e2238f680bce72d0f70561c85f354b_cgraph.png" border="0" usemap="#classsolver__full_a53e2238f680bce72d0f70561c85f354b_cgraph" alt=""/></div>
+<map name="classsolver__full_a53e2238f680bce72d0f70561c85f354b_cgraph" id="classsolver__full_a53e2238f680bce72d0f70561c85f354b_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a5764b8af09e9b5b57456d1b4d8beb983" title="Reads matrix data from a file. " alt="" coords="227,5,317,32"/><area shape="rect" id="node3" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="366,5,453,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a26464cc34b8d39e480a3ec0395257452"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::right_precond </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>x</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classsolver__operator.html#a4fc83c8ec20d7b01020fcc7aa5af3894">solver_operator</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_a26464cc34b8d39e480a3ec0395257452_cgraph.png" border="0" usemap="#classsolver__full_a26464cc34b8d39e480a3ec0395257452_cgraph" alt=""/></div>
+<map name="classsolver__full_a26464cc34b8d39e480a3ec0395257452_cgraph" id="classsolver__full_a26464cc34b8d39e480a3ec0395257452_cgraph">
+<area shape="rect" id="node2" href="classsolver__full.html#ac55253a9496a63fbdfc065ca70a20934" title="solver_full::back_subs" alt="" coords="168,187,320,213"/><area shape="rect" id="node3" href="classsolver__full.html#a53e2238f680bce72d0f70561c85f354b" title="solver_full::read_blocksup" alt="" coords="368,5,541,32"/><area shape="rect" id="node6" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="397,56,512,83"/><area shape="rect" id="node7" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="591,340,689,367"/><area shape="rect" id="node8" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="406,157,503,184"/><area shape="rect" id="node9" href="classsolver__full.html#a5aac4aa9182b13de52d4f3b5df80932a" title="solver_full::flush\l_blocksup" alt="" coords="396,209,513,250"/><area shape="rect" id="node11" href="classsolver__full.html#a356e24f852fcaa0c29d03cd31418a1b5" title="solver_full::read_block" alt="" coords="379,107,531,133"/><area shape="rect" id="node12" href="classsolver__full.html#a2a02f79235d4b37d768a6a7bbf87054b" title="solver_full::solve\l_block" alt="" coords="395,391,515,433"/><area shape="rect" id="node16" href="classsolver__full.html#abfaa48709649161a5f5654990030377c" title="solver_full::flush\l_block" alt="" coords="396,274,513,315"/><area shape="rect" id="node4" href="classmatrix.html#a5764b8af09e9b5b57456d1b4d8beb983" title="Reads matrix data from a file. " alt="" coords="595,56,685,83"/><area shape="rect" id="node5" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="739,56,826,83"/><area shape="rect" id="node10" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="613,248,667,275"/><area shape="rect" id="node13" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="589,391,691,417"/><area shape="rect" id="node14" href="lapack_8h.html#a27a5040bb8500a1c3134352387aa4008" title="dgetrs_" alt="" coords="607,441,673,468"/><area shape="rect" id="node15" href="classmatrix.html#af220f2a5835e6531bb17b850063a12cf" title="Returns the pointer to the matrix data. " alt="" coords="595,492,685,519"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a994506be2f562930cd58472a005dc438"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::set_block </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>iblock</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_a994506be2f562930cd58472a005dc438_cgraph.png" border="0" usemap="#classsolver__full_a994506be2f562930cd58472a005dc438_cgraph" alt=""/></div>
+<map name="classsolver__full_a994506be2f562930cd58472a005dc438_cgraph" id="classsolver__full_a994506be2f562930cd58472a005dc438_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="365,5,467,32"/><area shape="rect" id="node3" href="classmatrix.html#ada57fea534fe926c280be99606af824c" title="Swaps two matrices. " alt="" coords="210,52,307,79"/><area shape="rect" id="node4" href="classsolver__full.html#a45ff8796c0b51ee8d1ba68b15f5cf2f8" title="solver_full::write\l_block" alt="" coords="200,103,317,145"/><area shape="rect" id="node5" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="367,60,465,87"/><area shape="rect" id="node6" href="classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="369,111,463,137"/><area shape="rect" id="node7" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="389,161,443,188"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a5d145b50582f9e2a8c5b153af41f3e28"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::set_blockinf </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>iblock</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_a5d145b50582f9e2a8c5b153af41f3e28_cgraph.png" border="0" usemap="#classsolver__full_a5d145b50582f9e2a8c5b153af41f3e28_cgraph" alt=""/></div>
+<map name="classsolver__full_a5d145b50582f9e2a8c5b153af41f3e28_cgraph" id="classsolver__full_a5d145b50582f9e2a8c5b153af41f3e28_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#ada57fea534fe926c280be99606af824c" title="Swaps two matrices. " alt="" coords="223,23,321,49"/><area shape="rect" id="node3" href="classsolver__full.html#a6ea41c32383c93a7b692fe5d309737ef" title="solver_full::write\l_blockinf" alt="" coords="213,74,331,115"/><area shape="rect" id="node4" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="379,5,480,32"/><area shape="rect" id="node5" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="381,56,478,83"/><area shape="rect" id="node6" href="classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="382,107,477,133"/><area shape="rect" id="node7" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="402,157,457,184"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="afb3ee685e1bf7589b16afa84b1960f05"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::set_blocksup </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>iblock</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_afb3ee685e1bf7589b16afa84b1960f05_cgraph.png" border="0" usemap="#classsolver__full_afb3ee685e1bf7589b16afa84b1960f05_cgraph" alt=""/></div>
+<map name="classsolver__full_afb3ee685e1bf7589b16afa84b1960f05_cgraph" id="classsolver__full_afb3ee685e1bf7589b16afa84b1960f05_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#ada57fea534fe926c280be99606af824c" title="Swaps two matrices. " alt="" coords="231,23,329,49"/><area shape="rect" id="node3" href="classsolver__full.html#aaa6344919c71b41c3d155b32d5d57643" title="solver_full::write\l_blocksup" alt="" coords="221,74,339,115"/><area shape="rect" id="node4" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="387,5,488,32"/><area shape="rect" id="node5" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="389,56,486,83"/><area shape="rect" id="node6" href="classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="390,107,485,133"/><area shape="rect" id="node7" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="410,157,465,184"/></map>
+</div>
+</p>
+
+</div>
+</div>
 <a class="anchor" id="a052f8a2ee08440521eb6780e28f5c5ff"></a>
 <div class="memitem">
 <div class="memproto">
@@ -261,18 +793,466 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>verbose</b></td></tr>
 <p>Solves the set of equation stored in the object given the right hand side <code>rhs</code>. </p>
 <p>Solving the equation is done with Crout's method: LU factorization followed forward and backward substitution. </p>
 
-<p>Implements <a class="el" href="classsolver__operator.html">solver_operator</a>.</p>
+<p>Implements <a class="el" href="classsolver__operator.html#aac5840ac069bf2fb3037343c4353be85">solver_operator</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_a052f8a2ee08440521eb6780e28f5c5ff_cgraph.png" border="0" usemap="#classsolver__full_a052f8a2ee08440521eb6780e28f5c5ff_cgraph" alt=""/></div>
+<map name="classsolver__full_a052f8a2ee08440521eb6780e28f5c5ff_cgraph" id="classsolver__full_a052f8a2ee08440521eb6780e28f5c5ff_cgraph">
+<area shape="rect" id="node2" href="classsolver__full.html#a2be6b5d2e41c57ef37a988301af9caf8" title="solver_full::lu_calc" alt="" coords="184,581,315,608"/><area shape="rect" id="node28" href="classsolver__full.html#a99839335217da5250516d1f7662f993e" title="solver_full::fwd_subs" alt="" coords="177,1019,322,1045"/><area shape="rect" id="node30" href="classsolver__full.html#ac55253a9496a63fbdfc065ca70a20934" title="solver_full::back_subs" alt="" coords="173,800,325,827"/><area shape="rect" id="node3" href="classsolver__full.html#a356e24f852fcaa0c29d03cd31418a1b5" title="solver_full::read_block" alt="" coords="384,825,536,852"/><area shape="rect" id="node6" href="classsolver__full.html#a1ab541caa67adae45c47f285583449be" title="solver_full::read_blockinf" alt="" coords="377,943,543,969"/><area shape="rect" id="node7" href="classsolver__full.html#a53e2238f680bce72d0f70561c85f354b" title="solver_full::read_blocksup" alt="" coords="373,775,547,801"/><area shape="rect" id="node8" href="classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="399,308,521,335"/><area shape="rect" id="node9" href="classsolver__full.html#a2a02f79235d4b37d768a6a7bbf87054b" title="solver_full::solve\l_block" alt="" coords="400,359,520,401"/><area shape="rect" id="node10" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="595,416,696,443"/><area shape="rect" id="node11" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="597,552,694,579"/><area shape="rect" id="node13" href="classmatrix.html#af220f2a5835e6531bb17b850063a12cf" title="Returns the pointer to the matrix data. " alt="" coords="600,313,691,340"/><area shape="rect" id="node14" href="classsolver__full.html#a45ff8796c0b51ee8d1ba68b15f5cf2f8" title="solver_full::write\l_block" alt="" coords="401,425,519,466"/><area shape="rect" id="node16" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="618,661,673,688"/><area shape="rect" id="node17" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="403,993,517,1020"/><area shape="rect" id="node18" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="411,1044,509,1071"/><area shape="rect" id="node19" href="classsolver__full.html#a6ea41c32383c93a7b692fe5d309737ef" title="solver_full::write\l_blockinf" alt="" coords="401,490,519,531"/><area shape="rect" id="node20" href="classsolver__full.html#a5aac4aa9182b13de52d4f3b5df80932a" title="solver_full::flush\l_blocksup" alt="" coords="401,709,519,750"/><area shape="rect" id="node21" href="classsolver__full.html#ab29111731a262d11ec2390fc5ea336a3" title="solver_full::lu_block" alt="" coords="391,156,529,183"/><area shape="rect" id="node4" href="classmatrix.html#a5764b8af09e9b5b57456d1b4d8beb983" title="Reads matrix data from a file. " alt="" coords="600,825,691,852"/><area shape="rect" id="node5" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="745,825,831,852"/><area shape="rect" id="node12" href="lapack_8h.html#a27a5040bb8500a1c3134352387aa4008" title="dgetrs_" alt="" coords="613,365,678,392"/><area shape="rect" id="node15" href="classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="598,483,693,509"/><area shape="rect" id="node22" href="matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="620,259,671,285"/><area shape="rect" id="node23" href="lapack_8h.html#a56a6e30415bc2e6de851f929a6034301" title="dgeequ_" alt="" coords="610,5,681,32"/><area shape="rect" id="node24" href="classmatrix.html#a345ac4399ae6ea5d158dec467a7e0432" title="Re&#45;dimension the matrix. " alt="" coords="596,56,695,83"/><area shape="rect" id="node25" href="lapack_8h.html#ab9b7c28558916902d2c428d262d3150f" title="dlange_" alt="" coords="612,107,679,133"/><area shape="rect" id="node26" href="lapack_8h.html#ae56e8f1e7103728e3bc7c17b82868a81" title="dgetrf_" alt="" coords="614,157,677,184"/><area shape="rect" id="node27" href="lapack_8h.html#a080bf09d3d41076bf9f24afc17003307" title="dgecon_" alt="" coords="610,208,681,235"/><area shape="rect" id="node29" href="classsolver__full.html#a9feb5b7aca1a030772c5e9305c9c10f8" title="solver_full::flush\l_blockinf" alt="" coords="401,1146,519,1187"/><area shape="rect" id="node31" href="classsolver__full.html#abfaa48709649161a5f5654990030377c" title="solver_full::flush\l_block" alt="" coords="401,877,519,918"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a2a02f79235d4b37d768a6a7bbf87054b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::solve_block </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>trans</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>x</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_a2a02f79235d4b37d768a6a7bbf87054b_cgraph.png" border="0" usemap="#classsolver__full_a2a02f79235d4b37d768a6a7bbf87054b_cgraph" alt=""/></div>
+<map name="classsolver__full_a2a02f79235d4b37d768a6a7bbf87054b_cgraph" id="classsolver__full_a2a02f79235d4b37d768a6a7bbf87054b_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="173,5,275,32"/><area shape="rect" id="node3" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="175,56,273,83"/><area shape="rect" id="node4" href="lapack_8h.html#a27a5040bb8500a1c3134352387aa4008" title="dgetrs_" alt="" coords="191,107,257,133"/><area shape="rect" id="node5" href="classmatrix.html#af220f2a5835e6531bb17b850063a12cf" title="Returns the pointer to the matrix data. " alt="" coords="179,157,269,184"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a45ff8796c0b51ee8d1ba68b15f5cf2f8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::write_block </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_a45ff8796c0b51ee8d1ba68b15f5cf2f8_cgraph.png" border="0" usemap="#classsolver__full_a45ff8796c0b51ee8d1ba68b15f5cf2f8_cgraph" alt=""/></div>
+<map name="classsolver__full_a45ff8796c0b51ee8d1ba68b15f5cf2f8_cgraph" id="classsolver__full_a45ff8796c0b51ee8d1ba68b15f5cf2f8_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="171,5,272,32"/><area shape="rect" id="node3" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="173,56,270,83"/><area shape="rect" id="node4" href="classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="174,107,269,133"/><area shape="rect" id="node5" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="194,157,249,184"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a6ea41c32383c93a7b692fe5d309737ef"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::write_blockinf </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_a6ea41c32383c93a7b692fe5d309737ef_cgraph.png" border="0" usemap="#classsolver__full_a6ea41c32383c93a7b692fe5d309737ef_cgraph" alt=""/></div>
+<map name="classsolver__full_a6ea41c32383c93a7b692fe5d309737ef_cgraph" id="classsolver__full_a6ea41c32383c93a7b692fe5d309737ef_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="171,5,272,32"/><area shape="rect" id="node3" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="173,56,270,83"/><area shape="rect" id="node4" href="classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="174,107,269,133"/><area shape="rect" id="node5" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="194,157,249,184"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aaa6344919c71b41c3d155b32d5d57643"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_full::write_blocksup </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsolver__full_aaa6344919c71b41c3d155b32d5d57643_cgraph.png" border="0" usemap="#classsolver__full_aaa6344919c71b41c3d155b32d5d57643_cgraph" alt=""/></div>
+<map name="classsolver__full_aaa6344919c71b41c3d155b32d5d57643_cgraph" id="classsolver__full_aaa6344919c71b41c3d155b32d5d57643_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="171,5,272,32"/><area shape="rect" id="node3" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="173,56,270,83"/><area shape="rect" id="node4" href="classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="174,107,269,133"/><area shape="rect" id="node5" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="194,157,249,184"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ad84a6b85eaf1309de128f20bd6d5c135"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> solver_full::blk_index</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a780a3bfab930b7593de29e6b957c8656"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> * solver_full::c</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad691c8e20d8abd6ef55e732a3b7bd2d0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int** solver_full::ipiv</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1c4e71cf51b93b3a4017caf9229d3af8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> solver_full::ipiv_flag</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1d72f059b371b44e79592a3261201dc1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int solver_full::lu_flag</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a74d341310165a4c31c895348c9f6e309"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a>* solver_full::m</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a980306cd8e8612dc9abbba02796e91d4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> * solver_full::minf</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1a2d606fd4c2c33928cdca71346966f6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> * solver_full::msup</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4302e0f7b3db6f50d0d27aba3ba4ea7f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int * solver_full::N</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a9c47058177b36f6e176c2ff7fdef34f2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int solver_full::nb</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a44525b2b68c8899042b823c8854fbb0d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int solver_full::oc</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a00b30ce3764627b54e5590d46780b72a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> * solver_full::r</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a10ada7e1c2970f5fbc537968350be4ba"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">char solver_full::tempdir[50]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/include/<a class="el" href="solver_8h_source.html">solver.h</a></li>
-<li>src/solver/solver_full.cpp</li>
+<li>src/solver/<a class="el" href="solver__full_8cpp.html">solver_full.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:28 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

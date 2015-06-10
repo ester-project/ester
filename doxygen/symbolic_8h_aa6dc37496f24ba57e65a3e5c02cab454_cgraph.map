@@ -1,0 +1,9 @@
+<map id="tan" name="tan">
+<area shape="rect" id="node2" href="$sym_8cpp.html#a2c2e7c91be4aa2838186f4ab16f946b4" title="sin" alt="" coords="95,132,134,159"/>
+<area shape="rect" id="node7" href="$sym_8cpp.html#a5bbdba7cfa8c9ad19062841d5358fe2c" title="cos" alt="" coords="93,81,136,108"/>
+<area shape="rect" id="node3" href="$classsym.html#a6bfcd0ef7887bfccc3ab9ddba568ff69" title="sym::check_context" alt="" coords="194,56,334,83"/>
+<area shape="rect" id="node4" href="$classsym_1_1sym__expr.html#ad9bf9877b0e60666ca0b0d1df50b117d" title="sym::sym_expr::clone" alt="" coords="189,107,339,133"/>
+<area shape="rect" id="node5" href="$classsym_1_1sym__expr.html#a317ffab1f561133e5f03cba654f3de43" title="sym::sym_expr::sin" alt="" coords="195,208,333,235"/>
+<area shape="rect" id="node6" href="$classsym_1_1sym__expr.html#ac2df6b4bed129567c6b78b0865685ffd" title="sym::sym_expr::reduce" alt="" coords="185,157,343,184"/>
+<area shape="rect" id="node8" href="$classsym_1_1sym__expr.html#ab75304f7b18194e99001b91db0719fec" title="sym::sym_expr::cos" alt="" coords="193,5,335,32"/>
+</map>

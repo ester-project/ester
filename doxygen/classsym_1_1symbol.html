@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -101,108 +101,309 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">sym::symbol Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="symbolic_8h_source.html">symbolic.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for sym::symbol:</div>
 <div class="dyncontent">
 <div class="center"><img src="classsym_1_1symbol__inherit__graph.png" border="0" usemap="#sym_1_1symbol_inherit__map" alt="Inheritance graph"/></div>
 <map name="sym_1_1symbol_inherit__map" id="sym_1_1symbol_inherit__map">
-</map>
+<area shape="rect" id="node2" href="classsym_1_1sym__expr.html" title="sym::sym_expr" alt="" coords="4,5,115,32"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
 Collaboration diagram for sym::symbol:</div>
 <div class="dyncontent">
 <div class="center"><img src="classsym_1_1symbol__coll__graph.png" border="0" usemap="#sym_1_1symbol_coll__map" alt="Collaboration graph"/></div>
 <map name="sym_1_1symbol_coll__map" id="sym_1_1symbol_coll__map">
-</map>
+<area shape="rect" id="node2" href="classsym_1_1sym__expr.html" title="sym::sym_expr" alt="" coords="4,244,115,271"/><area shape="rect" id="node4" href="classsym.html" title="sym" alt="" coords="105,551,151,577"/><area shape="rect" id="node3" href="classsymbolic.html" title="symbolic" alt="" coords="147,949,220,976"/><area shape="rect" id="node5" href="classsym__tens.html" title="sym_tens" alt="" coords="145,777,223,804"/><area shape="rect" id="node6" href="classmapping.html" title="mapping" alt="" coords="389,777,459,804"/><area shape="rect" id="node7" href="classmapping_1_1ext__map.html" title="mapping::ext_map" alt="" coords="439,949,568,976"/><area shape="rect" id="node8" href="classdiff__gl.html" title="The diff_gl class implements the Gauss&#45;Lobatto (or more properly Gauss&#45;Lobatto&#45;Chebyshev) collocation..." alt="" coords="505,551,561,577"/><area shape="rect" id="node9" href="classmatrix.html" title="The matrix class is used to facilitate the work with regular dense matrices. " alt="" coords="428,5,485,32"/><area shape="rect" id="node10" href="classmatrix__block__diag.html" title="The matrix_block_diag class is used to store block diagonal matrices. " alt="" coords="394,244,520,271"/><area shape="rect" id="node11" href="classdiff__leg.html" title="The diff_leg class implements Legendre numerical differentiation. " alt="" coords="355,364,419,391"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3eafd948b1abd884437dc11eb8c353f0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3eafd948b1abd884437dc11eb8c353f0"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>order</b> () const </td></tr>
+<tr class="memitem:a3eafd948b1abd884437dc11eb8c353f0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1symbol.html#a3eafd948b1abd884437dc11eb8c353f0">order</a> () const </td></tr>
 <tr class="separator:a3eafd948b1abd884437dc11eb8c353f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77899969511c72794e207776d6f5ea07"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a77899969511c72794e207776d6f5ea07"></a>
-<a class="el" href="classsym_1_1symbol.html">symbol</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>clone</b> () const </td></tr>
+<tr class="memitem:a77899969511c72794e207776d6f5ea07"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1symbol.html">symbol</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1symbol.html#a77899969511c72794e207776d6f5ea07">clone</a> () const </td></tr>
 <tr class="separator:a77899969511c72794e207776d6f5ea07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adaaedaefde3ee9f0886a8cac8d1d6d64"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adaaedaefde3ee9f0886a8cac8d1d6d64"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>comp</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;) const </td></tr>
+<tr class="memitem:adaaedaefde3ee9f0886a8cac8d1d6d64"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1symbol.html#adaaedaefde3ee9f0886a8cac8d1d6d64">comp</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;) const </td></tr>
 <tr class="separator:adaaedaefde3ee9f0886a8cac8d1d6d64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4730abe792f989ab8960976babd76c5f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4730abe792f989ab8960976babd76c5f"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>derive</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;)</td></tr>
+<tr class="memitem:a4730abe792f989ab8960976babd76c5f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1symbol.html#a4730abe792f989ab8960976babd76c5f">derive</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;)</td></tr>
 <tr class="separator:a4730abe792f989ab8960976babd76c5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a1e060ddbdb745aa0838e8aa2f5d5cb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0a1e060ddbdb745aa0838e8aa2f5d5cb"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>eval</b> () const </td></tr>
+<tr class="memitem:a0a1e060ddbdb745aa0838e8aa2f5d5cb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1symbol.html#a0a1e060ddbdb745aa0838e8aa2f5d5cb">eval</a> () const </td></tr>
 <tr class="separator:a0a1e060ddbdb745aa0838e8aa2f5d5cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0268ff6f298bebf82c75454487de08af"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0268ff6f298bebf82c75454487de08af"></a>
-std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>print</b> (std::ostream &amp;) const </td></tr>
+<tr class="memitem:a0268ff6f298bebf82c75454487de08af"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1symbol.html#a0268ff6f298bebf82c75454487de08af">print</a> (std::ostream &amp;) const </td></tr>
 <tr class="separator:a0268ff6f298bebf82c75454487de08af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classsym_1_1sym__expr"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classsym_1_1sym__expr')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classsym_1_1sym__expr.html">sym::sym_expr</a></td></tr>
-<tr class="memitem:ac2df6b4bed129567c6b78b0865685ffd inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac2df6b4bed129567c6b78b0865685ffd"></a>
-virtual <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>reduce</b> ()</td></tr>
+<tr class="memitem:a8feac07012521a45bcef7437597ef2ca inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a8feac07012521a45bcef7437597ef2ca">~sym_expr</a> ()</td></tr>
+<tr class="separator:a8feac07012521a45bcef7437597ef2ca inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2df6b4bed129567c6b78b0865685ffd inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#ac2df6b4bed129567c6b78b0865685ffd">reduce</a> ()</td></tr>
 <tr class="separator:ac2df6b4bed129567c6b78b0865685ffd inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a871c53c99bae0e184b7695885798c243 inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a871c53c99bae0e184b7695885798c243"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&gt;</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
+<tr class="memitem:a871c53c99bae0e184b7695885798c243 inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a871c53c99bae0e184b7695885798c243">operator&gt;</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
 <tr class="separator:a871c53c99bae0e184b7695885798c243 inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88ac3353c1b940482d378573c5a5485d inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a88ac3353c1b940482d378573c5a5485d"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
+<tr class="memitem:a88ac3353c1b940482d378573c5a5485d inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a88ac3353c1b940482d378573c5a5485d">operator&lt;</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
 <tr class="separator:a88ac3353c1b940482d378573c5a5485d inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c4598696cfa503fbe709648da8e4f9b inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c4598696cfa503fbe709648da8e4f9b"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
+<tr class="memitem:a9c4598696cfa503fbe709648da8e4f9b inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a9c4598696cfa503fbe709648da8e4f9b">operator==</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
 <tr class="separator:a9c4598696cfa503fbe709648da8e4f9b inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aced458dd44a8f3dee2fc1261308b5d89 inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aced458dd44a8f3dee2fc1261308b5d89"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&gt;=</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
+<tr class="memitem:aced458dd44a8f3dee2fc1261308b5d89 inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#aced458dd44a8f3dee2fc1261308b5d89">operator&gt;=</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
 <tr class="separator:aced458dd44a8f3dee2fc1261308b5d89 inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d51159148b67e1a9dda3e13a16d7528 inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2d51159148b67e1a9dda3e13a16d7528"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;=</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
+<tr class="memitem:a2d51159148b67e1a9dda3e13a16d7528 inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a2d51159148b67e1a9dda3e13a16d7528">operator&lt;=</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
 <tr class="separator:a2d51159148b67e1a9dda3e13a16d7528 inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48c76d4a1e682ab45ebd8f57ca9c9d5c inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a48c76d4a1e682ab45ebd8f57ca9c9d5c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
+<tr class="memitem:a48c76d4a1e682ab45ebd8f57ca9c9d5c inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a48c76d4a1e682ab45ebd8f57ca9c9d5c">operator!=</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
 <tr class="separator:a48c76d4a1e682ab45ebd8f57ca9c9d5c inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b28e5d31ce79b5c5a5829011662f4dd inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8b28e5d31ce79b5c5a5829011662f4dd"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;)</td></tr>
+<tr class="memitem:a8b28e5d31ce79b5c5a5829011662f4dd inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a8b28e5d31ce79b5c5a5829011662f4dd">add</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;)</td></tr>
 <tr class="separator:a8b28e5d31ce79b5c5a5829011662f4dd inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ecaab666f1554ce670ee0f1497685c1 inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1ecaab666f1554ce670ee0f1497685c1"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>mult</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;)</td></tr>
+<tr class="memitem:a1ecaab666f1554ce670ee0f1497685c1 inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a1ecaab666f1554ce670ee0f1497685c1">mult</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;)</td></tr>
 <tr class="separator:a1ecaab666f1554ce670ee0f1497685c1 inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb2c332245faca00ac92a1993e87dd1c inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adb2c332245faca00ac92a1993e87dd1c"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>pow</b> (const <a class="el" href="classrational.html">rational</a> &amp;)</td></tr>
+<tr class="memitem:adb2c332245faca00ac92a1993e87dd1c inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#adb2c332245faca00ac92a1993e87dd1c">pow</a> (const <a class="el" href="classrational.html">rational</a> &amp;)</td></tr>
 <tr class="separator:adb2c332245faca00ac92a1993e87dd1c inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a317ffab1f561133e5f03cba654f3de43 inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a317ffab1f561133e5f03cba654f3de43"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>sin</b> ()</td></tr>
+<tr class="memitem:a317ffab1f561133e5f03cba654f3de43 inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a317ffab1f561133e5f03cba654f3de43">sin</a> ()</td></tr>
 <tr class="separator:a317ffab1f561133e5f03cba654f3de43 inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab75304f7b18194e99001b91db0719fec inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab75304f7b18194e99001b91db0719fec"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>cos</b> ()</td></tr>
+<tr class="memitem:ab75304f7b18194e99001b91db0719fec inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#ab75304f7b18194e99001b91db0719fec">cos</a> ()</td></tr>
 <tr class="separator:ab75304f7b18194e99001b91db0719fec inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a137897acb943a54f02953ed54e42b6ab inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a137897acb943a54f02953ed54e42b6ab"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>exp</b> ()</td></tr>
+<tr class="memitem:a137897acb943a54f02953ed54e42b6ab inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a137897acb943a54f02953ed54e42b6ab">exp</a> ()</td></tr>
 <tr class="separator:a137897acb943a54f02953ed54e42b6ab inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15c83647585c33306f0687c0a361ac44 inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a15c83647585c33306f0687c0a361ac44"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>log</b> ()</td></tr>
+<tr class="memitem:a15c83647585c33306f0687c0a361ac44 inherit pub_methods_classsym_1_1sym__expr"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a15c83647585c33306f0687c0a361ac44">log</a> ()</td></tr>
 <tr class="separator:a15c83647585c33306f0687c0a361ac44 inherit pub_methods_classsym_1_1sym__expr"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a3afc626ef1e1101b9630a0c2390614da"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3afc626ef1e1101b9630a0c2390614da"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>name</b></td></tr>
+<tr class="memitem:a3afc626ef1e1101b9630a0c2390614da"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1symbol.html#a3afc626ef1e1101b9630a0c2390614da">name</a></td></tr>
 <tr class="separator:a3afc626ef1e1101b9630a0c2390614da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae73ff82f4335908e08ec7ec7bd596cf5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae73ff82f4335908e08ec7ec7bd596cf5"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_const</b></td></tr>
+<tr class="memitem:ae73ff82f4335908e08ec7ec7bd596cf5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1symbol.html#ae73ff82f4335908e08ec7ec7bd596cf5">is_const</a></td></tr>
 <tr class="separator:ae73ff82f4335908e08ec7ec7bd596cf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a946234e6849851c07e84e1d95852cc3e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a946234e6849851c07e84e1d95852cc3e"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_indep</b></td></tr>
+<tr class="memitem:a946234e6849851c07e84e1d95852cc3e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1symbol.html#a946234e6849851c07e84e1d95852cc3e">is_indep</a></td></tr>
 <tr class="separator:a946234e6849851c07e84e1d95852cc3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80372244f5ad7cfd0a4a9d05b5198dd3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a80372244f5ad7cfd0a4a9d05b5198dd3"></a>
-<a class="el" href="classsymbolic.html">symbolic</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>context</b></td></tr>
+<tr class="memitem:a80372244f5ad7cfd0a4a9d05b5198dd3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsymbolic.html">symbolic</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1symbol.html#a80372244f5ad7cfd0a4a9d05b5198dd3">context</a></td></tr>
 <tr class="separator:a80372244f5ad7cfd0a4a9d05b5198dd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a77899969511c72794e207776d6f5ea07"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym_1_1symbol.html">sym::symbol</a> * sym::symbol::clone </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classsym_1_1sym__expr.html#ad9bf9877b0e60666ca0b0d1df50b117d">sym::sym_expr</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="adaaedaefde3ee9f0886a8cac8d1d6d64"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int sym::symbol::comp </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classsym_1_1sym__expr.html#a1c17c1fc46c8aa32af30c899d6a0a0ca">sym::sym_expr</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym_1_1symbol_adaaedaefde3ee9f0886a8cac8d1d6d64_cgraph.png" border="0" usemap="#classsym_1_1symbol_adaaedaefde3ee9f0886a8cac8d1d6d64_cgraph" alt=""/></div>
+<map name="classsym_1_1symbol_adaaedaefde3ee9f0886a8cac8d1d6d64_cgraph" id="classsym_1_1symbol_adaaedaefde3ee9f0886a8cac8d1d6d64_cgraph">
+<area shape="rect" id="node2" href="classsym_1_1sym__expr.html#a82b5296dfae79e7c376fba7dccf13cfd" title="sym::sym_expr::order" alt="" coords="192,5,341,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a4730abe792f989ab8960976babd76c5f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym_1_1sym__expr.html">sym::sym_expr</a> * sym::symbol::derive </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classsym_1_1sym__expr.html#ad4b7089172fec60017feee9556b6b5da">sym::sym_expr</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym_1_1symbol_a4730abe792f989ab8960976babd76c5f_cgraph.png" border="0" usemap="#classsym_1_1symbol_a4730abe792f989ab8960976babd76c5f_cgraph" alt=""/></div>
+<map name="classsym_1_1symbol_a4730abe792f989ab8960976babd76c5f_cgraph" id="classsym_1_1symbol_a4730abe792f989ab8960976babd76c5f_cgraph">
+<area shape="rect" id="node2" href="classsym_1_1sym__expr.html#ad4b7089172fec60017feee9556b6b5da" title="sym::sym_expr::derive" alt="" coords="195,5,349,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a0a1e060ddbdb745aa0838e8aa2f5d5cb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> sym::symbol::eval </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classsym_1_1sym__expr.html#a8cee68ffef7cb32b88ad255750194d5b">sym::sym_expr</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3eafd948b1abd884437dc11eb8c353f0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int sym::symbol::order </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classsym_1_1sym__expr.html#a82b5296dfae79e7c376fba7dccf13cfd">sym::sym_expr</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0268ff6f298bebf82c75454487de08af"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ostream &amp; sym::symbol::print </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classsym_1_1sym__expr.html#ab525062349bc56167baaa67a251e84d4">sym::sym_expr</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a80372244f5ad7cfd0a4a9d05b5198dd3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsymbolic.html">symbolic</a>* sym::symbol::context</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae73ff82f4335908e08ec7ec7bd596cf5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sym::symbol::is_const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a946234e6849851c07e84e1d95852cc3e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sym::symbol::is_indep</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3afc626ef1e1101b9630a0c2390614da"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string sym::symbol::name</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/include/<a class="el" href="symbolic_8h_source.html">symbolic.h</a></li>
-<li>src/symbolic/sym_expr.cpp</li>
+<li>src/symbolic/<a class="el" href="sym__expr_8cpp.html">sym_expr.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:12 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:28 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

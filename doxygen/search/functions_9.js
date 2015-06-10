@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['read',['read',['../classmatrix.html#a5764b8af09e9b5b57456d1b4d8beb983',1,'matrix']]],
-  ['redim',['redim',['../classmatrix.html#a345ac4399ae6ea5d158dec467a7e0432',1,'matrix']]],
-  ['reset',['reset',['../classsolver_1_1solver__block.html#a3520a9feae4dd32a184ae59396623ec8',1,'solver::solver_block::reset()'],['../classsolver_1_1solver__block.html#a94e8add166c9a2705e94279f34517fd2',1,'solver::solver_block::reset(int ieq)']]]
+  ['jacobian',['jacobian',['../symbolic_8h.html#a45ad429d24f5129f88eb3d6b3dbca974',1,'jacobian(const sym &amp;, const sym &amp;):&#160;sym.cpp'],['../sym_8cpp.html#a075f6a28fed628ef71680874b2ca3301',1,'jacobian(const sym &amp;f, const sym &amp;a):&#160;sym.cpp']]]
 ];

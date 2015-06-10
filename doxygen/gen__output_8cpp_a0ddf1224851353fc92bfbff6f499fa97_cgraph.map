@@ -1,0 +1,51 @@
+<map id="main" name="main">
+<area shape="rect" id="node2" href="$classstar1d.html#a7cf9a9ff07428cd6fa46b20743c5c12e" title="star1d::read" alt="" coords="104,499,195,526"/>
+<area shape="rect" id="node3" href="$classstar2d.html#aff8755edeb32b7cefe09beb466b4eab9" title="star2d::read" alt="" coords="243,449,333,475"/>
+<area shape="rect" id="node32" href="$gen__output_8cpp.html#afede16604423995a55962c667592e3e0" title="output2d" alt="" coords="409,1361,481,1387"/>
+<area shape="rect" id="node4" href="$utils_8h.html#a66951920a856d044842546492cd8ffe3" title="isHDF5Name" alt="" coords="394,398,497,425"/>
+<area shape="rect" id="node5" href="$classstar2d.html#a15656fb8b185d0cd34d8114db8acb303" title="star2d::hdf5_read" alt="" coords="384,499,507,526"/>
+<area shape="rect" id="node6" href="$classdiff__gl.html#ae1ada3d9db3bc9bc6d94965dd3f49877" title="diff_gl::set_ndomains" alt="" coords="557,449,704,475"/>
+<area shape="rect" id="node7" href="$classmapping.html#af93544cdac32ac9a8aa92a3c674eb8dd" title="mapping::init" alt="" coords="583,145,679,171"/>
+<area shape="rect" id="node13" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="1161,550,1215,577"/>
+<area shape="rect" id="node15" href="$classmapping.html#aad8bde507d71c669dc4259b44d5b51aa" title="mapping::remap" alt="" coords="765,347,880,374"/>
+<area shape="rect" id="node19" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="961,753,1063,779"/>
+<area shape="rect" id="node20" href="$classmatrix.html#aa1971e546e300c6ee574539f1f1e06aa" title="matrix::concatenate" alt="" coords="562,43,699,70"/>
+<area shape="rect" id="node21" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="591,347,670,374"/>
+<area shape="rect" id="node22" href="$classstar2d.html#a89f64e2c8a79d1b87a753ee0a871bbef" title="star2d::init_comp" alt="" coords="761,94,884,121"/>
+<area shape="rect" id="node23" href="$classINFILE.html#aefda33c68757cc8c94a4b0d53be870ea" title="INFILE::open" alt="" coords="581,753,681,779"/>
+<area shape="rect" id="node25" href="$classstar2d.html#aa8b8d554ec82827b448fc07cd563b2e3" title="star2d::read_old" alt="" coords="388,246,503,273"/>
+<area shape="rect" id="node27" href="$classINFILE.html#a78b3333de9530c92d71e6b2802fd26da" title="INFILE::len" alt="" coords="401,670,490,697"/>
+<area shape="rect" id="node29" href="$classINFILE.html#ac10f9c93dc7dac9315f375abdef4231b" title="INFILE::read" alt="" coords="397,607,494,634"/>
+<area shape="rect" id="node30" href="$classstar2d.html#a97db189c873a941e8d0de4843d58b4b0" title="star2d::check_tag" alt="" coords="382,297,509,323"/>
+<area shape="rect" id="node31" href="$classINFILE.html#af264aaabf8419d49b2aab2560d10d19a" title="INFILE::close" alt="" coords="394,347,497,374"/>
+<area shape="rect" id="node8" href="$matrix_8h.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="788,195,857,222"/>
+<area shape="rect" id="node9" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="987,170,1037,197"/>
+<area shape="rect" id="node10" href="$classdiff__leg.html#a4a20bbf87815938450005945c35442d3" title="diff_leg::init" alt="" coords="778,246,867,273"/>
+<area shape="rect" id="node12" href="$classdiff__gl.html#a302ef348022ff2d5c83416130f00c6f5" title="diff_gl::init" alt="" coords="971,246,1053,273"/>
+<area shape="rect" id="node11" href="$matrix_8h.html#a069930b10a8e55fb1cd4cbc7aae7625f" title="eye" alt="" coords="991,449,1033,475"/>
+<area shape="rect" id="node14" href="$classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="1131,271,1245,298"/>
+<area shape="rect" id="node16" href="$classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="953,499,1071,526"/>
+<area shape="rect" id="node17" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="969,1107,1055,1134"/>
+<area shape="rect" id="node18" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="963,1791,1061,1818"/>
+<area shape="rect" id="node24" href="$classINFILE.html#a616f7020b90e992ea51c16821520e89a" title="INFILE::getline" alt="" coords="767,702,878,729"/>
+<area shape="rect" id="node26" href="$classmatrix.html#a5764b8af09e9b5b57456d1b4d8beb983" title="Reads matrix data from a file. " alt="" coords="585,499,676,526"/>
+<area shape="rect" id="node28" href="$classINFILE.html#ae6ded92fa99e01e78a7485892aeb8d84" title="INFILE::seek" alt="" coords="581,702,681,729"/>
+<area shape="rect" id="node33" href="$gen__output_8cpp.html#ad2236cdb3f855afa3bd695d4b3f46a5f" title="readconf" alt="" coords="595,1411,667,1438"/>
+<area shape="rect" id="node34" href="$gen__output_8cpp.html#a63b8fab380751c9e99d34e6bd4ccf247" title="write" alt="" coords="605,1361,656,1387"/>
+<area shape="rect" id="node35" href="$classdiff__leg.html#a51f6535740a957cb61864bbe65e6264c" title="diff_leg::eval_11" alt="" coords="764,1918,881,1945"/>
+<area shape="rect" id="node36" href="$gen__output_8cpp.html#a0f4879ec6cabc7bb4b4f7116cc6d24b3" title="matrix_fmt" alt="" coords="781,1310,865,1337"/>
+<area shape="rect" id="node37" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="963,1335,1061,1362"/>
+<area shape="rect" id="node38" href="$classstar2d.html#a7da1882172f11e6a99ad4f13ee8649f7" title="star2d::Lz" alt="" coords="783,1057,863,1083"/>
+<area shape="rect" id="node39" href="$classstar2d.html#a4a69d0527456284cdb23f675a24d71d5" title="star2d::Mcore" alt="" coords="771,1817,874,1843"/>
+<area shape="rect" id="node40" href="$classstar2d.html#ae6157562211ace8108e4462bb24f21c8" title="star2d::Lzcore" alt="" coords="770,1766,875,1793"/>
+<area shape="rect" id="node41" href="$classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="775,1158,870,1185"/>
+<area shape="rect" id="node42" href="$classcomposition__map.html#a0929bc6a71f8e7ee0663c0e8d4de5cea" title="composition_map::X" alt="" coords="941,1513,1083,1539"/>
+<area shape="rect" id="node43" href="$classcomposition__map.html#a28dbd956e652ff4f39cb8ab885d0e7c3" title="composition_map::Y" alt="" coords="941,1589,1083,1615"/>
+<area shape="rect" id="node44" href="$classcomposition__map.html#a74233bb42033f05fad93f817a480d065" title="composition_map::Z" alt="" coords="753,1563,893,1590"/>
+<area shape="rect" id="node45" href="$classstar2d.html#aae6fc5dfec25acc420bde7d970967ea4" title="star2d::N2" alt="" coords="971,1006,1053,1033"/>
+<area shape="rect" id="node46" href="$classstar2d.html#a8bdd8e6e5ed692389b676633f459707b" title="star2d::luminosity" alt="" coords="949,1690,1075,1717"/>
+<area shape="rect" id="node47" href="$classstar2d.html#a6a1ce30ca36c61e42fb6128ed6c72257" title="star2d::Teff" alt="" coords="778,1209,867,1235"/>
+<area shape="rect" id="node48" href="$classstar2d.html#a53ab7c1501edcaecf86b89396a40287c" title="star2d::gsup" alt="" coords="775,1259,870,1286"/>
+<area shape="rect" id="node49" href="$classstar2d.html#a730525cfeac7cd933e06a5a74bbb6017" title="star2d::virial" alt="" coords="776,1513,869,1539"/>
+<area shape="rect" id="node50" href="$classstar2d.html#a341a0356013bf55d26338a67808510f0" title="star2d::energy_test" alt="" coords="755,1665,890,1691"/>
+</map>

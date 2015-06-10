@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['sdirk_5fsolver_2ecpp',['SDIRK_solver.cpp',['../SDIRK__solver_8cpp.html',1,'']]],
+  ['solver_2ecpp',['solver.cpp',['../solver_8cpp.html',1,'']]],
+  ['solver_2eh',['solver.h',['../solver_8h.html',1,'']]],
+  ['solver_5ffull_2ecpp',['solver_full.cpp',['../solver__full_8cpp.html',1,'']]],
+  ['star_2eh',['star.h',['../star_8h.html',1,'']]],
+  ['star1d_2ecpp',['star1d.cpp',['../star1d_8cpp.html',1,'']]],
+  ['star1d_5fclass_2ecpp',['star1d_class.cpp',['../star1d__class_8cpp.html',1,'']]],
+  ['star1d_5fextra_2ecpp',['star1d_extra.cpp',['../star1d__extra_8cpp.html',1,'']]],
+  ['star1d_5fsolvers_2ecpp',['star1d_solvers.cpp',['../star1d__solvers_8cpp.html',1,'']]],
+  ['star2d_2ecpp',['star2d.cpp',['../star2d_8cpp.html',1,'']]],
+  ['star2d_5fclass_2ecpp',['star2d_class.cpp',['../star2d__class_8cpp.html',1,'']]],
+  ['star2d_5fextra_2ecpp',['star2d_extra.cpp',['../star2d__extra_8cpp.html',1,'']]],
+  ['star2d_5fsolvers_2ecpp',['star2d_solvers.cpp',['../star2d__solvers_8cpp.html',1,'']]],
+  ['star_5fevol_2ecpp',['star_evol.cpp',['../main_2star__evol_8cpp.html',1,'']]],
+  ['star_5fevol_2ecpp',['star_evol.cpp',['../star_2star__evol_8cpp.html',1,'']]],
+  ['star_5fmap_2ecpp',['star_map.cpp',['../star__map_8cpp.html',1,'']]],
+  ['star_5fphys_2ecpp',['star_phys.cpp',['../star__phys_8cpp.html',1,'']]],
+  ['sym_2ecpp',['sym.cpp',['../sym_8cpp.html',1,'']]],
+  ['sym_5fexpr_2ecpp',['sym_expr.cpp',['../sym__expr_8cpp.html',1,'']]],
+  ['sym_5ftens_2ecpp',['sym_tens.cpp',['../sym__tens_8cpp.html',1,'']]],
+  ['sym_5fvec_2ecpp',['sym_vec.cpp',['../sym__vec_8cpp.html',1,'']]],
+  ['symbolic_2ecpp',['symbolic.cpp',['../symbolic_8cpp.html',1,'']]],
+  ['symbolic_2eh',['symbolic.h',['../symbolic_8h.html',1,'']]]
+];

@@ -1,0 +1,8 @@
+<map id="eos_ideal" name="eos_ideal">
+<area shape="rect" id="node2" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="154,5,209,32"/>
+<area shape="rect" id="node3" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="131,56,232,83"/>
+<area shape="rect" id="node4" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="133,107,230,133"/>
+<area shape="rect" id="node5" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="156,157,207,184"/>
+<area shape="rect" id="node6" href="$matrix_8h.html#a74e0b0a7fb9b67bf7604931dd5797533" title="log" alt="" coords="162,208,201,235"/>
+<area shape="rect" id="node7" href="$matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="158,259,205,285"/>
+</map>

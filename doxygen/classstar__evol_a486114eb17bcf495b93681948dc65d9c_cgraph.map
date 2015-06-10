@@ -1,0 +1,6 @@
+<map id="star_evol::register_variables" name="star_evol::register_variables">
+<area shape="rect" id="node2" href="$classstar2d.html#ab36f673b01f9dbaff380ca54b3ceec54" title="star2d::register_variables" alt="" coords="181,81,349,108"/>
+<area shape="rect" id="node4" href="$classsolver.html#a691d638dd7b4a81a3855965a4b7f2c85" title="solver::regvar" alt="" coords="576,107,677,133"/>
+<area shape="rect" id="node3" href="$classsolver.html#a13aca53582481d03ad9b3aff3103df60" title="solver::set_nr" alt="" coords="412,5,513,32"/>
+<area shape="rect" id="node5" href="$classsolver.html#a9ce1b3dfe4126933967a1b17da5e678d" title="solver::regvar_dep" alt="" coords="398,107,527,133"/>
+</map>

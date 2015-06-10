@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['m',['m',['../classmatrix__block__diag.html#a520d597265eee5a9cf7ecfbc08a943e3',1,'matrix_block_diag::m()'],['../classsolver__full.html#a74d341310165a4c31c895348c9f6e309',1,'solver_full::m()'],['../classstar2d.html#abf17a6e9ce518dacc3752cef8f425dc8',1,'star2d::m()'],['../classstar2d.html#a1b9259332915ce83e24f3c8dc8b215bf',1,'star2d::M()']]],
+  ['m_5fmap',['m_map',['../classcreate__double__map.html#a4171730362cfd936fb7dad5811d9efd6',1,'create_double_map::m_map()'],['../classcreate__matrix__map.html#a599a2cbb862611cabdcce782d988bb29',1,'create_matrix_map::m_map()']]],
+  ['m_5fsun',['M_SUN',['../global_8cpp.html#af1140fcf75c595132faaa6edfa75684c',1,'M_SUN():&#160;global.cpp'],['../constants_8h.html#af1140fcf75c595132faaa6edfa75684c',1,'M_SUN():&#160;constants.h']]],
+  ['major',['major',['../structstar2d_1_1version__struct.html#a78ef053bc34a605f7d812f7bb46193a3',1,'star2d::version_struct']]],
+  ['map',['map',['../classremapper.html#a167b9d12b92c29c55e895e5e03a4fb02',1,'remapper::map()'],['../classstar2d.html#ac3ea89d4cf2039ca5d5a60f774bbd4da',1,'star2d::map()'],['../classsymbolic.html#ada141e5608e8cf40f333ee03c0ad262c',1,'symbolic::map()']]],
+  ['map_5fnew',['map_new',['../classremapper.html#a1db54ac23d7b7b2ab0bc31870ec97f88',1,'remapper']]],
+  ['maxder',['maxder',['../classsymbolic.html#ad01b4ba2afd9486aaad649d5f275865b',1,'symbolic']]],
+  ['maxit',['maxit',['../classconfiguration.html#a737bb6aea9f0ee34c50b834b9ab88550',1,'configuration']]],
+  ['maxit_5fcgs',['maxit_cgs',['../classsolver.html#a1f498ff242ede93839e9639592041113',1,'solver']]],
+  ['maxit_5fref',['maxit_ref',['../classsolver.html#ae476b86f0b3432377c8a7dba711ead04',1,'solver']]],
+  ['min_5fcore_5fsize',['min_core_size',['../classstar2d.html#ae49ee1de721534e37991b7510131aaf7',1,'star2d']]],
+  ['minf',['minf',['../classsolver__full.html#a980306cd8e8612dc9abbba02796e91d4',1,'solver_full']]],
+  ['minit',['minit',['../classconfiguration.html#a1295dc26d4f62cf3242c6e777a77282c',1,'configuration']]],
+  ['minor',['minor',['../structstar2d_1_1version__struct.html#a85e9e10e689c797cd30f638262afbdbf',1,'star2d::version_struct']]],
+  ['mode',['mode',['../classmapping.html#af64f8c200dc60fb68ffa18de2f439209',1,'mapping::mode()'],['../classremapper.html#a1a60c0777389ddb24fc387e19aedefbf',1,'remapper::mode()'],['../classOUTFILE.html#a4ed8f4f8776ff29c4337eb58593b9b16',1,'OUTFILE::mode()'],['../classINFILE.html#af27e79fab0cc9e609ad9375128467e98',1,'INFILE::mode()']]],
+  ['msup',['msup',['../classsolver__full.html#a1a2d606fd4c2c33928cdca71346966f6',1,'solver_full']]],
+  ['mult_5fcontext',['mult_context',['../classsolver.html#a7f08f83ae0211b3a77af197424ce7b0d',1,'solver']]],
+  ['mult_5ffcn',['mult_fcn',['../classsolver.html#ae9c86c9ba3733e670d48d52fa101c14c',1,'solver']]]
+];

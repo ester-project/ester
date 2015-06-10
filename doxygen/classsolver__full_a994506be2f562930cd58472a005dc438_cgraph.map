@@ -1,0 +1,8 @@
+<map id="solver_full::set_block" name="solver_full::set_block">
+<area shape="rect" id="node2" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="365,5,467,32"/>
+<area shape="rect" id="node3" href="$classmatrix.html#ada57fea534fe926c280be99606af824c" title="Swaps two matrices. " alt="" coords="210,52,307,79"/>
+<area shape="rect" id="node4" href="$classsolver__full.html#a45ff8796c0b51ee8d1ba68b15f5cf2f8" title="solver_full::write\l_block" alt="" coords="200,103,317,145"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="367,60,465,87"/>
+<area shape="rect" id="node6" href="$classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="369,111,463,137"/>
+<area shape="rect" id="node7" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="389,161,443,188"/>
+</map>

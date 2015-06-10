@@ -1,0 +1,12 @@
+<map id="star1d::solve_gsup" name="star1d::solve_gsup">
+<area shape="rect" id="node2" href="$classstar1d.html#afab763475cc8021f2eaafdb23b7c7222" title="star1d::gsup" alt="" coords="397,5,491,32"/>
+<area shape="rect" id="node3" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="605,5,656,32"/>
+<area shape="rect" id="node4" href="$classsolver.html#a2c549e96fe900962dda8c3bf56468229" title="solver::bc_top1_add_d" alt="" coords="187,107,341,133"/>
+<area shape="rect" id="node10" href="$classsolver.html#ad89241cdcb624742e4810bcfd7c4048e" title="solver::set_rhs" alt="" coords="390,157,498,184"/>
+<area shape="rect" id="node11" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="237,208,291,235"/>
+<area shape="rect" id="node5" href="$classsolver.html#ac269e25e5b929ca3c038402351fe6631" title="solver::add" alt="" coords="401,107,487,133"/>
+<area shape="rect" id="node6" href="$classsolver.html#a4f787a2def0088a98ea9c6980a00d851" title="solver::get_id" alt="" coords="581,157,681,184"/>
+<area shape="rect" id="node7" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="763,56,864,83"/>
+<area shape="rect" id="node8" href="$classsolver_1_1solver__block.html#a706a1cd2d746f9fe7a303ec20fbe572c" title="Introduces a term in an equation of the block. " alt="" coords="547,107,714,133"/>
+<area shape="rect" id="node9" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="765,107,862,133"/>
+</map>

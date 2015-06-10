@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -96,51 +96,178 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">solver_iter Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="solver_8h_source.html">solver.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for solver_iter:</div>
 <div class="dyncontent">
 <div class="center"><img src="classsolver__iter__inherit__graph.png" border="0" usemap="#solver__iter_inherit__map" alt="Inheritance graph"/></div>
 <map name="solver__iter_inherit__map" id="solver__iter_inherit__map">
-</map>
+<area shape="rect" id="node2" href="classsolver__operator.html" title="solver_operator" alt="" coords="5,5,115,32"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
 Collaboration diagram for solver_iter:</div>
 <div class="dyncontent">
 <div class="center"><img src="classsolver__iter__coll__graph.png" border="0" usemap="#solver__iter_coll__map" alt="Collaboration graph"/></div>
 <map name="solver__iter_coll__map" id="solver__iter_coll__map">
-</map>
+<area shape="rect" id="node2" href="classsolver__operator.html" title="solver_operator" alt="" coords="5,5,115,32"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:acabeb0650db3a19db920ea19594948b0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acabeb0650db3a19db920ea19594948b0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>left_precond</b> (<a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
+<tr class="memitem:ab0e975aae2c1fca48fc91fe8e0465b1f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__iter.html#ab0e975aae2c1fca48fc91fe8e0465b1f">solver_iter</a> ()</td></tr>
+<tr class="separator:ab0e975aae2c1fca48fc91fe8e0465b1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae06721ab18c5744c459ae5783dd8ea43"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__iter.html#ae06721ab18c5744c459ae5783dd8ea43">~solver_iter</a> ()</td></tr>
+<tr class="separator:ae06721ab18c5744c459ae5783dd8ea43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acabeb0650db3a19db920ea19594948b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__iter.html#acabeb0650db3a19db920ea19594948b0">left_precond</a> (<a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="separator:acabeb0650db3a19db920ea19594948b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af35053724a766fd3a48dc4a76f64267f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af35053724a766fd3a48dc4a76f64267f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>right_precond</b> (<a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
+<tr class="memitem:af35053724a766fd3a48dc4a76f64267f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__iter.html#af35053724a766fd3a48dc4a76f64267f">right_precond</a> (<a class="el" href="classmatrix.html">matrix</a> &amp;)</td></tr>
 <tr class="separator:af35053724a766fd3a48dc4a76f64267f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e798e2b787ea7aea7d7efe7cb1ac151"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6e798e2b787ea7aea7d7efe7cb1ac151"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>solve</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;a)</td></tr>
+<tr class="memitem:a6e798e2b787ea7aea7d7efe7cb1ac151"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__iter.html#a6e798e2b787ea7aea7d7efe7cb1ac151">solve</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;a)</td></tr>
 <tr class="separator:a6e798e2b787ea7aea7d7efe7cb1ac151"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classsolver__operator"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classsolver__operator')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classsolver__operator.html">solver_operator</a></td></tr>
-<tr class="memitem:a6cc77fb688e75161095aa87df3c280ef inherit pub_methods_classsolver__operator"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6cc77fb688e75161095aa87df3c280ef"></a>
-virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~solver_operator</b> ()</td></tr>
+<tr class="memitem:a6cc77fb688e75161095aa87df3c280ef inherit pub_methods_classsolver__operator"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__operator.html#a6cc77fb688e75161095aa87df3c280ef">~solver_operator</a> ()</td></tr>
 <tr class="separator:a6cc77fb688e75161095aa87df3c280ef inherit pub_methods_classsolver__operator"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_attribs_classsolver__operator"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classsolver__operator')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classsolver__operator.html">solver_operator</a></td></tr>
-<tr class="memitem:a00a91ddce351057c8cae682359636bef inherit pub_attribs_classsolver__operator"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a00a91ddce351057c8cae682359636bef"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>verbose</b></td></tr>
+<tr class="memitem:a00a91ddce351057c8cae682359636bef inherit pub_attribs_classsolver__operator"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsolver__operator.html#a00a91ddce351057c8cae682359636bef">verbose</a></td></tr>
 <tr class="separator:a00a91ddce351057c8cae682359636bef inherit pub_attribs_classsolver__operator"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ab0e975aae2c1fca48fc91fe8e0465b1f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">solver_iter::solver_iter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae06721ab18c5744c459ae5783dd8ea43"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">solver_iter::~solver_iter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="acabeb0650db3a19db920ea19594948b0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_iter::left_precond </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classsolver__operator.html#ac908ed12dd50a684f095d75f72f3f413">solver_operator</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af35053724a766fd3a48dc4a76f64267f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void solver_iter::right_precond </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classsolver__operator.html#a4fc83c8ec20d7b01020fcc7aa5af3894">solver_operator</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6e798e2b787ea7aea7d7efe7cb1ac151"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> solver_iter::solve </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classsolver__operator.html#aac5840ac069bf2fb3037343c4353be85">solver_operator</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/include/<a class="el" href="solver_8h_source.html">solver.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:28 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

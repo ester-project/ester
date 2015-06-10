@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -99,145 +99,987 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">RKF_solver Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="solver_8h_source.html">solver.h</a>&gt;</code></p>
 <div class="dynheader">
 Collaboration diagram for RKF_solver:</div>
 <div class="dyncontent">
 <div class="center"><img src="classRKF__solver__coll__graph.png" border="0" usemap="#RKF__solver_coll__map" alt="Collaboration graph"/></div>
 <map name="RKF__solver_coll__map" id="RKF__solver_coll__map">
-</map>
+<area shape="rect" id="node2" href="classmatrix.html" title="The matrix class is used to facilitate the work with regular dense matrices. " alt="" coords="21,5,79,32"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:abd75f0d534f18c0415737475cf02193a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abd75f0d534f18c0415737475cf02193a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (int nvar)</td></tr>
+<tr class="memitem:adcac7acf135c43bf4c074f0431ddf5e7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#adcac7acf135c43bf4c074f0431ddf5e7">RKF_solver</a> ()</td></tr>
+<tr class="separator:adcac7acf135c43bf4c074f0431ddf5e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd75f0d534f18c0415737475cf02193a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#abd75f0d534f18c0415737475cf02193a">init</a> (int nvar)</td></tr>
 <tr class="separator:abd75f0d534f18c0415737475cf02193a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af58be2fdb6ce00220ec858ecf71ff57d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af58be2fdb6ce00220ec858ecf71ff57d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></tr>
+<tr class="memitem:af58be2fdb6ce00220ec858ecf71ff57d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#af58be2fdb6ce00220ec858ecf71ff57d">destroy</a> ()</td></tr>
 <tr class="separator:af58be2fdb6ce00220ec858ecf71ff57d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42c1cc42bd69b6b0f58a7b4031576948"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a42c1cc42bd69b6b0f58a7b4031576948"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>regvar</b> (const char *var_name, const <a class="el" href="classmatrix.html">matrix</a> &amp;initial_value)</td></tr>
+<tr class="memitem:a0ba4ab93051a85d3a376a53c0c2c013e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a0ba4ab93051a85d3a376a53c0c2c013e">~RKF_solver</a> ()</td></tr>
+<tr class="separator:a0ba4ab93051a85d3a376a53c0c2c013e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42c1cc42bd69b6b0f58a7b4031576948"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a42c1cc42bd69b6b0f58a7b4031576948">regvar</a> (const char *var_name, const <a class="el" href="classmatrix.html">matrix</a> &amp;initial_value)</td></tr>
 <tr class="separator:a42c1cc42bd69b6b0f58a7b4031576948"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6ce76a981c57a028e2b96dc4c9d0bea"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af6ce76a981c57a028e2b96dc4c9d0bea"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>regvars</b> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;vars)</td></tr>
+<tr class="memitem:af6ce76a981c57a028e2b96dc4c9d0bea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#af6ce76a981c57a028e2b96dc4c9d0bea">regvars</a> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;vars)</td></tr>
 <tr class="separator:af6ce76a981c57a028e2b96dc4c9d0bea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9fe6ff7f239c20d96644272d66c311a4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9fe6ff7f239c20d96644272d66c311a4"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_step</b> (double)</td></tr>
+<tr class="memitem:a9fe6ff7f239c20d96644272d66c311a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a9fe6ff7f239c20d96644272d66c311a4">set_step</a> (double)</td></tr>
 <tr class="separator:a9fe6ff7f239c20d96644272d66c311a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7dc69b68cf2a1782920682d89d625293"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7dc69b68cf2a1782920682d89d625293"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_var</b> (const char *var_name)</td></tr>
+<tr class="memitem:a7dc69b68cf2a1782920682d89d625293"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a7dc69b68cf2a1782920682d89d625293">get_var</a> (const char *var_name)</td></tr>
 <tr class="separator:a7dc69b68cf2a1782920682d89d625293"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afcccb4e482d27398fd4a032552463386"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afcccb4e482d27398fd4a032552463386"></a>
-<a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_vars</b> ()</td></tr>
+<tr class="memitem:afcccb4e482d27398fd4a032552463386"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__map.html">matrix_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#afcccb4e482d27398fd4a032552463386">get_vars</a> ()</td></tr>
 <tr class="separator:afcccb4e482d27398fd4a032552463386"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77e79d12c269a95145beca5e1e44c607"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a77e79d12c269a95145beca5e1e44c607"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>get_t</b> ()</td></tr>
+<tr class="memitem:a77e79d12c269a95145beca5e1e44c607"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a77e79d12c269a95145beca5e1e44c607">get_t</a> ()</td></tr>
 <tr class="separator:a77e79d12c269a95145beca5e1e44c607"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a252d03f02d8324f0746c13c46a764cea"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a252d03f02d8324f0746c13c46a764cea"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_deriv</b> (const char *var_name, const <a class="el" href="classmatrix.html">matrix</a> &amp;value)</td></tr>
+<tr class="memitem:a252d03f02d8324f0746c13c46a764cea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a252d03f02d8324f0746c13c46a764cea">set_deriv</a> (const char *var_name, const <a class="el" href="classmatrix.html">matrix</a> &amp;value)</td></tr>
 <tr class="separator:a252d03f02d8324f0746c13c46a764cea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75350eef4b7b2a9691615c3d65a8bc84"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a75350eef4b7b2a9691615c3d65a8bc84"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_derivs</b> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;values)</td></tr>
+<tr class="memitem:a75350eef4b7b2a9691615c3d65a8bc84"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a75350eef4b7b2a9691615c3d65a8bc84">set_derivs</a> (const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;values)</td></tr>
 <tr class="separator:a75350eef4b7b2a9691615c3d65a8bc84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1fad03a1eb9bba6f0229c676ccfe761"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab1fad03a1eb9bba6f0229c676ccfe761"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>solve</b> (double t0, double t1)</td></tr>
+<tr class="memitem:ab1fad03a1eb9bba6f0229c676ccfe761"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#ab1fad03a1eb9bba6f0229c676ccfe761">solve</a> (double t0, double t1)</td></tr>
 <tr class="separator:ab1fad03a1eb9bba6f0229c676ccfe761"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aecdcfeab7e120ec9582d442d15a71e5a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aecdcfeab7e120ec9582d442d15a71e5a"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>abs_tol</b></td></tr>
+<tr class="memitem:aecdcfeab7e120ec9582d442d15a71e5a"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#aecdcfeab7e120ec9582d442d15a71e5a">abs_tol</a></td></tr>
 <tr class="separator:aecdcfeab7e120ec9582d442d15a71e5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a823558010d43d7afa953e5636e6bd210"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a823558010d43d7afa953e5636e6bd210"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>rel_tol</b></td></tr>
+<tr class="memitem:a823558010d43d7afa953e5636e6bd210"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a823558010d43d7afa953e5636e6bd210">rel_tol</a></td></tr>
 <tr class="separator:a823558010d43d7afa953e5636e6bd210"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:aa9517f2f799ada5680a0ac70b0682344"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa9517f2f799ada5680a0ac70b0682344"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>wrap</b> (const <a class="el" href="classmatrix.html">matrix</a> *, <a class="el" href="classmatrix.html">matrix</a> *)</td></tr>
+<tr class="memitem:aa9517f2f799ada5680a0ac70b0682344"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#aa9517f2f799ada5680a0ac70b0682344">wrap</a> (const <a class="el" href="classmatrix.html">matrix</a> *, <a class="el" href="classmatrix.html">matrix</a> *)</td></tr>
 <tr class="separator:aa9517f2f799ada5680a0ac70b0682344"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a245430f20bc38a9fcaa6a93a8e4681e6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a245430f20bc38a9fcaa6a93a8e4681e6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>unwrap</b> (const <a class="el" href="classmatrix.html">matrix</a> *, <a class="el" href="classmatrix.html">matrix</a> *)</td></tr>
+<tr class="memitem:a245430f20bc38a9fcaa6a93a8e4681e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a245430f20bc38a9fcaa6a93a8e4681e6">unwrap</a> (const <a class="el" href="classmatrix.html">matrix</a> *, <a class="el" href="classmatrix.html">matrix</a> *)</td></tr>
 <tr class="separator:a245430f20bc38a9fcaa6a93a8e4681e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc0a83ea898e5649fe91497e2411de18"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afc0a83ea898e5649fe91497e2411de18"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>get_id</b> (const char *varn)</td></tr>
+<tr class="memitem:afc0a83ea898e5649fe91497e2411de18"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#afc0a83ea898e5649fe91497e2411de18">get_id</a> (const char *varn)</td></tr>
 <tr class="separator:afc0a83ea898e5649fe91497e2411de18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60f3cf64e70e8779ff1de6728a24262e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a60f3cf64e70e8779ff1de6728a24262e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>check_init</b> ()</td></tr>
+<tr class="memitem:a60f3cf64e70e8779ff1de6728a24262e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a60f3cf64e70e8779ff1de6728a24262e">check_init</a> ()</td></tr>
 <tr class="separator:a60f3cf64e70e8779ff1de6728a24262e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a49faeba99eba975281f6e1a51b52d340"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a49faeba99eba975281f6e1a51b52d340"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>nv</b></td></tr>
+<tr class="memitem:a49faeba99eba975281f6e1a51b52d340"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a49faeba99eba975281f6e1a51b52d340">nv</a></td></tr>
 <tr class="separator:a49faeba99eba975281f6e1a51b52d340"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac23aa7496519f17ee47ddfe529fe4492"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac23aa7496519f17ee47ddfe529fe4492"></a>
-char **&#160;</td><td class="memItemRight" valign="bottom"><b>var</b></td></tr>
+<tr class="memitem:ac23aa7496519f17ee47ddfe529fe4492"><td class="memItemLeft" align="right" valign="top">char **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#ac23aa7496519f17ee47ddfe529fe4492">var</a></td></tr>
 <tr class="separator:ac23aa7496519f17ee47ddfe529fe4492"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ee4525398ae236335c1997ba8d5babf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7ee4525398ae236335c1997ba8d5babf"></a>
-int *&#160;</td><td class="memItemRight" valign="bottom"><b>nr</b></td></tr>
+<tr class="memitem:a7ee4525398ae236335c1997ba8d5babf"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a7ee4525398ae236335c1997ba8d5babf">nr</a></td></tr>
 <tr class="separator:a7ee4525398ae236335c1997ba8d5babf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8607411d2d20fb775ef482a4c1f8ef5e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8607411d2d20fb775ef482a4c1f8ef5e"></a>
-int *&#160;</td><td class="memItemRight" valign="bottom"><b>nc</b></td></tr>
+<tr class="memitem:a8607411d2d20fb775ef482a4c1f8ef5e"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a8607411d2d20fb775ef482a4c1f8ef5e">nc</a></td></tr>
 <tr class="separator:a8607411d2d20fb775ef482a4c1f8ef5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e27e894e95322870a828905a24f97f1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6e27e894e95322870a828905a24f97f1"></a>
-bool *&#160;</td><td class="memItemRight" valign="bottom"><b>reg</b></td></tr>
+<tr class="memitem:a6e27e894e95322870a828905a24f97f1"><td class="memItemLeft" align="right" valign="top">bool *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a6e27e894e95322870a828905a24f97f1">reg</a></td></tr>
 <tr class="separator:a6e27e894e95322870a828905a24f97f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1876852918b23f8b66a6e16bebeeca8e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1876852918b23f8b66a6e16bebeeca8e"></a>
-<a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>y</b></td></tr>
+<tr class="memitem:a1876852918b23f8b66a6e16bebeeca8e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a1876852918b23f8b66a6e16bebeeca8e">y</a></td></tr>
 <tr class="separator:a1876852918b23f8b66a6e16bebeeca8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a235d4ee5d952f131bb0144f36e34cfeb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a235d4ee5d952f131bb0144f36e34cfeb"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>k</b> [6]</td></tr>
+<tr class="memitem:a235d4ee5d952f131bb0144f36e34cfeb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a235d4ee5d952f131bb0144f36e34cfeb">k</a> [6]</td></tr>
 <tr class="separator:a235d4ee5d952f131bb0144f36e34cfeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8557d9b7a990b8a3b2ef10e6c2b7e529"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8557d9b7a990b8a3b2ef10e6c2b7e529"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>x</b></td></tr>
+<tr class="memitem:a8557d9b7a990b8a3b2ef10e6c2b7e529"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a8557d9b7a990b8a3b2ef10e6c2b7e529">x</a></td></tr>
 <tr class="separator:a8557d9b7a990b8a3b2ef10e6c2b7e529"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a222c384d09640f93fd5891c3a4e701f5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a222c384d09640f93fd5891c3a4e701f5"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>x_eval</b></td></tr>
+<tr class="memitem:a222c384d09640f93fd5891c3a4e701f5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a222c384d09640f93fd5891c3a4e701f5">x_eval</a></td></tr>
 <tr class="separator:a222c384d09640f93fd5891c3a4e701f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab97443b0454555f05d580a26dd512153"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab97443b0454555f05d580a26dd512153"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>b4</b></td></tr>
+<tr class="memitem:ab97443b0454555f05d580a26dd512153"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#ab97443b0454555f05d580a26dd512153">b4</a></td></tr>
 <tr class="separator:ab97443b0454555f05d580a26dd512153"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c7bcff08e732eaef02a888b20e5056c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2c7bcff08e732eaef02a888b20e5056c"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>b5</b></td></tr>
+<tr class="memitem:a2c7bcff08e732eaef02a888b20e5056c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a2c7bcff08e732eaef02a888b20e5056c">b5</a></td></tr>
 <tr class="separator:a2c7bcff08e732eaef02a888b20e5056c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7693692b9366d120ae460677e8f6ac1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac7693692b9366d120ae460677e8f6ac1"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>c</b></td></tr>
+<tr class="memitem:ac7693692b9366d120ae460677e8f6ac1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#ac7693692b9366d120ae460677e8f6ac1">c</a></td></tr>
 <tr class="separator:ac7693692b9366d120ae460677e8f6ac1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3003995e14e23dd448986b70778d545"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac3003995e14e23dd448986b70778d545"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>a</b></td></tr>
+<tr class="memitem:ac3003995e14e23dd448986b70778d545"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#ac3003995e14e23dd448986b70778d545">a</a></td></tr>
 <tr class="separator:ac3003995e14e23dd448986b70778d545"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad012293076635238d9f05deae329ad4f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad012293076635238d9f05deae329ad4f"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>deriv</b></td></tr>
+<tr class="memitem:ad012293076635238d9f05deae329ad4f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#ad012293076635238d9f05deae329ad4f">deriv</a></td></tr>
 <tr class="separator:ad012293076635238d9f05deae329ad4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2a766fc23d4eb2ea1d0b187a8642587"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae2a766fc23d4eb2ea1d0b187a8642587"></a>
-<a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>dy</b></td></tr>
+<tr class="memitem:ae2a766fc23d4eb2ea1d0b187a8642587"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#ae2a766fc23d4eb2ea1d0b187a8642587">dy</a></td></tr>
 <tr class="separator:ae2a766fc23d4eb2ea1d0b187a8642587"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a23239c3d96e244e4465d492085d27d2b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a23239c3d96e244e4465d492085d27d2b"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>t</b></td></tr>
+<tr class="memitem:a23239c3d96e244e4465d492085d27d2b"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a23239c3d96e244e4465d492085d27d2b">t</a></td></tr>
 <tr class="separator:a23239c3d96e244e4465d492085d27d2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af845193b0f2b65b90c7aaf91605f4dc1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af845193b0f2b65b90c7aaf91605f4dc1"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>t_eval</b></td></tr>
+<tr class="memitem:af845193b0f2b65b90c7aaf91605f4dc1"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#af845193b0f2b65b90c7aaf91605f4dc1">t_eval</a></td></tr>
 <tr class="separator:af845193b0f2b65b90c7aaf91605f4dc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a819cc035e8ba1c21e13034272ca82b27"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a819cc035e8ba1c21e13034272ca82b27"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>initd</b></td></tr>
+<tr class="memitem:a819cc035e8ba1c21e13034272ca82b27"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#a819cc035e8ba1c21e13034272ca82b27">initd</a></td></tr>
 <tr class="separator:a819cc035e8ba1c21e13034272ca82b27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb5918b25d47b28ba36ff5cea5eb21ca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acb5918b25d47b28ba36ff5cea5eb21ca"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>step</b></td></tr>
+<tr class="memitem:acb5918b25d47b28ba36ff5cea5eb21ca"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#acb5918b25d47b28ba36ff5cea5eb21ca">step</a></td></tr>
 <tr class="separator:acb5918b25d47b28ba36ff5cea5eb21ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaebf86ea52eea8a914467122fe535afe"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaebf86ea52eea8a914467122fe535afe"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>stage</b></td></tr>
+<tr class="memitem:aaebf86ea52eea8a914467122fe535afe"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRKF__solver.html#aaebf86ea52eea8a914467122fe535afe">stage</a></td></tr>
 <tr class="separator:aaebf86ea52eea8a914467122fe535afe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="adcac7acf135c43bf4c074f0431ddf5e7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">RKF_solver::RKF_solver </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0ba4ab93051a85d3a376a53c0c2c013e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">RKF_solver::~RKF_solver </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classRKF__solver_a0ba4ab93051a85d3a376a53c0c2c013e_cgraph.png" border="0" usemap="#classRKF__solver_a0ba4ab93051a85d3a376a53c0c2c013e_cgraph" alt=""/></div>
+<map name="classRKF__solver_a0ba4ab93051a85d3a376a53c0c2c013e_cgraph" id="classRKF__solver_a0ba4ab93051a85d3a376a53c0c2c013e_cgraph">
+<area shape="rect" id="node2" href="classRKF__solver.html#af58be2fdb6ce00220ec858ecf71ff57d" title="RKF_solver::destroy" alt="" coords="230,5,373,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a60f3cf64e70e8779ff1de6728a24262e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RKF_solver::check_init </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af58be2fdb6ce00220ec858ecf71ff57d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RKF_solver::destroy </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afc0a83ea898e5649fe91497e2411de18"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int RKF_solver::get_id </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>varn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a77e79d12c269a95145beca5e1e44c607"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double RKF_solver::get_t </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7dc69b68cf2a1782920682d89d625293"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> RKF_solver::get_var </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>var_name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classRKF__solver_a7dc69b68cf2a1782920682d89d625293_cgraph.png" border="0" usemap="#classRKF__solver_a7dc69b68cf2a1782920682d89d625293_cgraph" alt=""/></div>
+<map name="classRKF__solver_a7dc69b68cf2a1782920682d89d625293_cgraph" id="classRKF__solver_a7dc69b68cf2a1782920682d89d625293_cgraph">
+<area shape="rect" id="node2" href="classRKF__solver.html#afc0a83ea898e5649fe91497e2411de18" title="RKF_solver::get_id" alt="" coords="198,5,333,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="afcccb4e482d27398fd4a032552463386"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__map.html">matrix_map</a> RKF_solver::get_vars </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="abd75f0d534f18c0415737475cf02193a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RKF_solver::init </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nvar</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classRKF__solver_abd75f0d534f18c0415737475cf02193a_cgraph.png" border="0" usemap="#classRKF__solver_abd75f0d534f18c0415737475cf02193a_cgraph" alt=""/></div>
+<map name="classRKF__solver_abd75f0d534f18c0415737475cf02193a_cgraph" id="classRKF__solver_abd75f0d534f18c0415737475cf02193a_cgraph">
+<area shape="rect" id="node2" href="classRKF__solver.html#af58be2fdb6ce00220ec858ecf71ff57d" title="RKF_solver::destroy" alt="" coords="171,5,314,32"/><area shape="rect" id="node3" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="215,56,270,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a42c1cc42bd69b6b0f58a7b4031576948"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RKF_solver::regvar </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>var_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>initial_value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classRKF__solver_a42c1cc42bd69b6b0f58a7b4031576948_cgraph.png" border="0" usemap="#classRKF__solver_a42c1cc42bd69b6b0f58a7b4031576948_cgraph" alt=""/></div>
+<map name="classRKF__solver_a42c1cc42bd69b6b0f58a7b4031576948_cgraph" id="classRKF__solver_a42c1cc42bd69b6b0f58a7b4031576948_cgraph">
+<area shape="rect" id="node2" href="classRKF__solver.html#a60f3cf64e70e8779ff1de6728a24262e" title="RKF_solver::check_init" alt="" coords="190,5,349,32"/><area shape="rect" id="node3" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="219,56,320,83"/><area shape="rect" id="node4" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="221,107,318,133"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="af6ce76a981c57a028e2b96dc4c9d0bea"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RKF_solver::regvars </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>vars</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classRKF__solver_af6ce76a981c57a028e2b96dc4c9d0bea_cgraph.png" border="0" usemap="#classRKF__solver_af6ce76a981c57a028e2b96dc4c9d0bea_cgraph" alt=""/></div>
+<map name="classRKF__solver_af6ce76a981c57a028e2b96dc4c9d0bea_cgraph" id="classRKF__solver_af6ce76a981c57a028e2b96dc4c9d0bea_cgraph">
+<area shape="rect" id="node2" href="classRKF__solver.html#a42c1cc42bd69b6b0f58a7b4031576948" title="RKF_solver::regvar" alt="" coords="198,56,333,83"/><area shape="rect" id="node3" href="classRKF__solver.html#a60f3cf64e70e8779ff1de6728a24262e" title="RKF_solver::check_init" alt="" coords="382,5,541,32"/><area shape="rect" id="node4" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="411,56,512,83"/><area shape="rect" id="node5" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="413,107,510,133"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a252d03f02d8324f0746c13c46a764cea"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RKF_solver::set_deriv </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>var_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classRKF__solver_a252d03f02d8324f0746c13c46a764cea_cgraph.png" border="0" usemap="#classRKF__solver_a252d03f02d8324f0746c13c46a764cea_cgraph" alt=""/></div>
+<map name="classRKF__solver_a252d03f02d8324f0746c13c46a764cea_cgraph" id="classRKF__solver_a252d03f02d8324f0746c13c46a764cea_cgraph">
+<area shape="rect" id="node2" href="classRKF__solver.html#afc0a83ea898e5649fe91497e2411de18" title="RKF_solver::get_id" alt="" coords="206,5,341,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a75350eef4b7b2a9691615c3d65a8bc84"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RKF_solver::set_derivs </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__map.html">matrix_map</a> &amp;&#160;</td>
+          <td class="paramname"><em>values</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classRKF__solver_a75350eef4b7b2a9691615c3d65a8bc84_cgraph.png" border="0" usemap="#classRKF__solver_a75350eef4b7b2a9691615c3d65a8bc84_cgraph" alt=""/></div>
+<map name="classRKF__solver_a75350eef4b7b2a9691615c3d65a8bc84_cgraph" id="classRKF__solver_a75350eef4b7b2a9691615c3d65a8bc84_cgraph">
+<area shape="rect" id="node2" href="classRKF__solver.html#a252d03f02d8324f0746c13c46a764cea" title="RKF_solver::set_deriv" alt="" coords="213,5,365,32"/><area shape="rect" id="node3" href="classRKF__solver.html#afc0a83ea898e5649fe91497e2411de18" title="RKF_solver::get_id" alt="" coords="414,5,549,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a9fe6ff7f239c20d96644272d66c311a4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RKF_solver::set_step </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>h</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab1fad03a1eb9bba6f0229c676ccfe761"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int RKF_solver::solve </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>t0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>t1</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classRKF__solver_ab1fad03a1eb9bba6f0229c676ccfe761_cgraph.png" border="0" usemap="#classRKF__solver_ab1fad03a1eb9bba6f0229c676ccfe761_cgraph" alt=""/></div>
+<map name="classRKF__solver_ab1fad03a1eb9bba6f0229c676ccfe761_cgraph" id="classRKF__solver_ab1fad03a1eb9bba6f0229c676ccfe761_cgraph">
+<area shape="rect" id="node2" href="classRKF__solver.html#a60f3cf64e70e8779ff1de6728a24262e" title="RKF_solver::check_init" alt="" coords="185,5,343,32"/><area shape="rect" id="node3" href="classRKF__solver.html#aa9517f2f799ada5680a0ac70b0682344" title="RKF_solver::wrap" alt="" coords="201,56,327,83"/><area shape="rect" id="node7" href="matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="241,107,287,133"/><area shape="rect" id="node8" href="matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="243,157,285,184"/><area shape="rect" id="node9" href="matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="241,208,287,235"/><area shape="rect" id="node10" href="classRKF__solver.html#a245430f20bc38a9fcaa6a93a8e4681e6" title="RKF_solver::unwrap" alt="" coords="193,259,335,285"/><area shape="rect" id="node4" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="422,31,477,57"/><area shape="rect" id="node5" href="classmatrix.html#a345ac4399ae6ea5d158dec467a7e0432" title="Re&#45;dimension the matrix. " alt="" coords="400,157,499,184"/><area shape="rect" id="node6" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="392,81,507,108"/><area shape="rect" id="node11" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="401,259,498,285"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a245430f20bc38a9fcaa6a93a8e4681e6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RKF_solver::unwrap </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> *&#160;</td>
+          <td class="paramname"><em>v</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td>
+          <td class="paramname"><em>u</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classRKF__solver_a245430f20bc38a9fcaa6a93a8e4681e6_cgraph.png" border="0" usemap="#classRKF__solver_a245430f20bc38a9fcaa6a93a8e4681e6_cgraph" alt=""/></div>
+<map name="classRKF__solver_a245430f20bc38a9fcaa6a93a8e4681e6_cgraph" id="classRKF__solver_a245430f20bc38a9fcaa6a93a8e4681e6_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="195,5,293,32"/><area shape="rect" id="node3" href="classmatrix.html#a345ac4399ae6ea5d158dec467a7e0432" title="Re&#45;dimension the matrix. " alt="" coords="195,56,293,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aa9517f2f799ada5680a0ac70b0682344"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RKF_solver::wrap </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> *&#160;</td>
+          <td class="paramname"><em>u</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td>
+          <td class="paramname"><em>v</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classRKF__solver_aa9517f2f799ada5680a0ac70b0682344_cgraph.png" border="0" usemap="#classRKF__solver_aa9517f2f799ada5680a0ac70b0682344_cgraph" alt=""/></div>
+<map name="classRKF__solver_aa9517f2f799ada5680a0ac70b0682344_cgraph" id="classRKF__solver_aa9517f2f799ada5680a0ac70b0682344_cgraph">
+<area shape="rect" id="node2" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="211,5,266,32"/><area shape="rect" id="node3" href="classmatrix.html#a345ac4399ae6ea5d158dec467a7e0432" title="Re&#45;dimension the matrix. " alt="" coords="189,56,288,83"/><area shape="rect" id="node4" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="181,107,296,133"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ac3003995e14e23dd448986b70778d545"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> RKF_solver::a</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aecdcfeab7e120ec9582d442d15a71e5a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double RKF_solver::abs_tol</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab97443b0454555f05d580a26dd512153"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> RKF_solver::b4</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2c7bcff08e732eaef02a888b20e5056c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> RKF_solver::b5</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac7693692b9366d120ae460677e8f6ac1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> RKF_solver::c</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad012293076635238d9f05deae329ad4f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> RKF_solver::deriv</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae2a766fc23d4eb2ea1d0b187a8642587"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> * RKF_solver::dy</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a819cc035e8ba1c21e13034272ca82b27"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool RKF_solver::initd</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a235d4ee5d952f131bb0144f36e34cfeb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> RKF_solver::k[6]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8607411d2d20fb775ef482a4c1f8ef5e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int * RKF_solver::nc</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7ee4525398ae236335c1997ba8d5babf"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* RKF_solver::nr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a49faeba99eba975281f6e1a51b52d340"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int RKF_solver::nv</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a6e27e894e95322870a828905a24f97f1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool* RKF_solver::reg</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a823558010d43d7afa953e5636e6bd210"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double RKF_solver::rel_tol</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aaebf86ea52eea8a914467122fe535afe"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int RKF_solver::stage</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="acb5918b25d47b28ba36ff5cea5eb21ca"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double RKF_solver::step</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a23239c3d96e244e4465d492085d27d2b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double RKF_solver::t</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af845193b0f2b65b90c7aaf91605f4dc1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double RKF_solver::t_eval</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac23aa7496519f17ee47ddfe529fe4492"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">char** RKF_solver::var</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8557d9b7a990b8a3b2ef10e6c2b7e529"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> RKF_solver::x</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a222c384d09640f93fd5891c3a4e701f5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> RKF_solver::x_eval</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1876852918b23f8b66a6e16bebeeca8e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a>* RKF_solver::y</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/include/<a class="el" href="solver_8h_source.html">solver.h</a></li>
-<li>src/solver/RKF_solver.cpp</li>
+<li>src/solver/<a class="el" href="RKF__solver_8cpp.html">RKF_solver.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:28 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
