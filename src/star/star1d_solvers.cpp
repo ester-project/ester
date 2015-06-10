@@ -249,7 +249,7 @@ void star1d::solve_poisson(solver *op) {
 
 	j0=0;
 	for(n=0;n<ndomains;n++) {
-		if(!n) {
+		if(n==0) {
 			op->bc_bot2_add_l(n,"Phi","Phi",ones(1,1),D.block(0).row(0));
 			rhs(0)=-(D,phi)(0);
 		} else {

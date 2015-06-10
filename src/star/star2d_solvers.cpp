@@ -321,65 +321,91 @@ void star2d::solve_poisson(solver *op) {
 	S.set_value("Phi",phi);
 	S.set_map(map);
 	
-	lap_phi.add(op,"Phi","Phi");
-	lap_phi.add(op,"Phi","r");
+	lap_phi.add(op,"Phi","Phi"); // The equation is named Phi and depends on variable tagged "Phi"
+	lap_phi.add(op,"Phi","r");   // The equation is named Phi and depends on variable tagged "r"
 
-	rhs1=-lap_phi.eval()+pi_c*rho;
+	rhs1=-lap_phi.eval()+pi_c*rho; // Expression of the RHS inside the star
 	
 	//rho
-	op->add_d("Phi","rho",-pi_c*ones(nr,nth));
+	op->add_d("Phi","rho",-pi_c*ones(nr,nth));  // Coefficient of delta rho
 
 	//pi_c
-	op->add_d("Phi","pi_c",-rho);
+	op->add_d("Phi","pi_c",-rho);  // Coefficient of delta pi_c
 
 	// phiex
-	S.set_value("Phi",phiex);
+	S.set_value("Phi",phiex);     // Outside the star we define phiex but this is still equation "Phi"
 	S.set_map(map.ex);
-	lap_phi.add_ex(op,ndomains,"Phi","Phi");
-	lap_phi.add_ex(op,ndomains,"Phi","r");
+	lap_phi.add_ex(op,ndomains,"Phi","Phi"); // add exterior domain with variable tagged "Phi"
+	lap_phi.add_ex(op,ndomains,"Phi","r"); // add exterior domain with variable tagged "r"
 	
-	rhs2=-lap_phi.eval();
+	rhs2=-lap_phi.eval();     // Expression of RHS outside the star (rho=0)
 	
-	rhs=zeros(nr+nex,nth);
+	rhs=zeros(nr+nex,nth);          // set the RHS vector
 	rhs.setblock(0,nr-1,0,-1,rhs1);
 	rhs.setblock(nr,nr+nex-1,0,-1,rhs2);
 	
 	j0=0;
+
+// Loop on the domains from n=0 to n=ndomains
+// n=0 is the first domain
+// n=ndomains-1 is the last domain inside the star
+// n=ndomain is the domain outside the star (the remaining Universe !)
+// Each domain has a top and a bottom. On the top we impose the continuity
+// of phi, on the bottom we impose the continuity of (1/rz)(dphi/dzeta)
+// 1 designate the "Right condition" and 2 designate the "Left condition"
+
 	for(n=0;n<ndomains+1;n++) {
-		if(!n) {
+// set the interface conditions in the Jacobian matrix (continuity of Phi and (1/rz)*dphi/dzeta)
+// First start with the bottom conditions
+		if(n==0) {
+// In the first domain we demand that dphi/dzeta vanishes at the center (left BC)
 			op->bc_bot2_add_l(n,"Phi","Phi",ones(1,nth),D.block(0).row(0));
 			rhs.setrow(0,-(D,phi).row(0));
 		} else {
 			if(n<ndomains)
-                op->bc_bot2_add_l(n,"Phi","Phi",1/rz.row(j0),D.block(n).row(0));
+// for all stellar domains, at the bottom (1/rz)d(delta phi)/dzeta is continuuous (left block))
+                op->bc_bot2_add_l(n,"Phi","Phi",1/rz.row(j0),D.block(n).row(0)); // IC
 			else
+// in the last stellar domain continuity demanded with the "ex" fields (left block)
                 op->bc_bot2_add_l(n,"Phi","Phi",1/map.ex.rz.row(0),Dex.row(0));
 
+// for all stellar domains, at the bottom (1/rz)d(delta phi)/dzeta is continuuous (right block of IC)
 			op->bc_bot1_add_l(n,"Phi","Phi",-1/rz.row(j0-1),D.block(n-1).row(-1));
 			
 			if(n<ndomains) 
+// Functional derivative of 1/rz times dphi/dzeta, complements interface cond. IC (left block)
 				op->bc_bot2_add_d(n,"Phi","rz",-1/rz.row(j0)/rz.row(j0)*(D,phi).row(j0));
 			else
+// Same as above but for the last stellar domain
 				op->bc_bot2_add_d(n,"Phi","rz",-1/map.ex.rz.row(0)/map.ex.rz.row(0)*(Dex,phiex).row(0));
+
+// For all stellar domain Right block of the complement of IC
 			op->bc_bot1_add_d(n,"Phi","rz",1/rz.row(j0-1)/rz.row(j0-1)*(D,phi).row(j0-1));
 			
+// set the interface conditions in the RHS
 			if(n<ndomains)
+// RHS for IC
                 rhs.setrow(j0,-(D,phi).row(j0)/rz.row(j0)+(D,phi).row(j0-1)/rz.row(j0-1));
 			else
+// same as above for the last stellar domain
                 rhs.setrow(j0,-(Dex,phiex).row(0)/map.ex.rz.row(0)+(D,phi).row(j0-1)/rz.row(j0-1));
 		}
 		
-		op->bc_top1_add_d(n,"Phi","Phi",ones(1,nth));
+// Second take care of the top conditions where we impose continuity of phi and the right BC on phi
+		op->bc_top1_add_d(n,"Phi","Phi",ones(1,nth)); // right condition for Jacob
 
-		if(n<ndomains) op->bc_top2_add_d(n,"Phi","Phi",-ones(1,nth));
-		if(n<ndomains) rhs.setrow(j0+map.gl.npts[n]-1,-phi.row(j0+map.gl.npts[n]-1));
-		else rhs.setrow(nr+nex-1,-phiex.row(nex-1));
+		if(n<ndomains) op->bc_top2_add_d(n,"Phi","Phi",-ones(1,nth)); // left condition for Jacob
+
+// Prepare the RHS for the continuity of phi 
+		if(n<ndomains) rhs.setrow(j0+map.gl.npts[n]-1,-phi.row(j0+map.gl.npts[n]-1)); // left terms
+		else rhs.setrow(nr+nex-1,-phiex.row(nex-1)); // left terms of the last domain
 		if(n<ndomains-1) rhs.setrow(j0+map.gl.npts[n]-1,rhs.row(j0+map.gl.npts[n]-1)
-								+phi.row(j0+map.gl.npts[n]));
-		else if(n==ndomains-1) rhs.setrow(j0+map.gl.npts[n]-1,rhs.row(j0+map.gl.npts[n]-1)
-								+phiex.row(0)); 
-		
+								+phi.row(j0+map.gl.npts[n])); // add the right term
+		else if(n==ndomains-1) rhs.setrow(j0+map.gl.npts[n]-1,rhs.row(j0+map.gl.npts[n]-1) 
+								+phiex.row(0)); // add the right term for the last
+                                                                     // stellar domain but here the right term is phiex
 		if(n<ndomains) j0+=map.gl.npts[n];
+// Note the Right BC for phi is phi(infty)=0 so no right term in the rhs of the n==ndomain case
 	}
 	op->set_rhs("Phi",rhs);
 }
@@ -398,11 +424,11 @@ void star2d::solve_mov(solver *op) {
 		sym p,G,w,rho,phi;
 		sym mu;
 		
-		p=S.regvar("p");
-		G=S.regvar("G");
-		w=S.regvar("w");
-		rho=S.regvar("rho");
-		phi=S.regvar("Phi");
+		p=S.regvar("p");  // Pressure
+		G=S.regvar("G");  // Stream function of Merid. Circ.
+		w=S.regvar("w");  // Differential Rotation
+		rho=S.regvar("rho"); // Density
+		phi=S.regvar("Phi"); // Gravitational Potential
 		
 		#ifdef KINEMATIC_VISC
 			mu=rho;
@@ -412,16 +438,20 @@ void star2d::solve_mov(solver *op) {
 		
 		sym_vec V,phivec(COVARIANT),svec;
 		sym s;
+// Phivec is the E_phi the covariant basis phi-vector
 		phivec(0)=0*S.one;phivec(1)=0*S.one;phivec(2)=S.r*sin(S.theta);
 		s=S.r*sin(S.theta);
 		svec=grad(s);
 		V=curl(G*phivec)/rho;
 		
+// The momentum equation  is eqmov=0; it gives the pressure
 		eqmov=grad(p)+rho*grad(phi)-rho*s*w*w*svec;
 		eqmov=covariant(eqmov);
 		
+// The vorticity equation
 		eq_vort=(phivec,curl(eqmov/rho));
 		
+// The angular momentum equation
 		eq_phi=div(rho*s*s*w*V)-div(mu*s*s*grad(w));
 		
 		sym_vec nvec(COVARIANT),tvec(CONTRAVARIANT);
@@ -429,6 +459,7 @@ void star2d::solve_mov(solver *op) {
 		nvec(0)=Dz(S.r);nvec(1)=0*S.one;nvec(2)=0*S.one;
 		tvec(0)=0*S.one;tvec(1)=1/S.r;tvec(2)=0*S.one;
 		
+// the special boundary condition that couples G and w for the determination of w
 		bc=mu*s*s*(nvec,grad(w))+G*(tvec,grad(s*s*w));
 		
 		ic_w=covariant(eqmov-grad(p))(1);
@@ -443,6 +474,8 @@ void star2d::solve_mov(solver *op) {
 	
 	op->add_d("p","log_p",p);
 	
+// First component of the equation of motion
+// we explicit the dependences
 	eqmov(0).add(op,"log_p","p");
 	eqmov(0).add(op,"log_p","w");
 	eqmov(0).add(op,"log_p","rho");
@@ -450,25 +483,27 @@ void star2d::solve_mov(solver *op) {
 	eqmov(0).add(op,"log_p","r");
 	op->set_rhs("log_p",-eqmov(0).eval());
 	
+// Equation of vorticity, dependences...
 	eq_vort.add(op,"w","p");
 	eq_vort.add(op,"w","w");
 	eq_vort.add(op,"w","rho");
 	eq_vort.add(op,"w","r");
 	op->set_rhs("w",-eq_vort.eval());
 	
+// Equation of angular momentum, dependences...
 	eq_phi.add(op,"G","w");
 	eq_phi.add(op,"G","G");
 	eq_phi.add(op,"G","rho");
 	eq_phi.add(op,"G","r");
 	op->set_rhs("G",-eq_phi.eval());
 	
-	// Boundary conditions
-	
+// Boundary conditions
+
 	matrix rhs;
 	matrix q,TT;
 	int j0;
 	
-	// log_p
+	// log_p - Pressure
 	rhs=op->get_rhs("log_p");
 	op->bc_bot2_add_d(0,"log_p","p",ones(1,nth));
 	rhs.setrow(0,-p.row(0)+1);
@@ -482,7 +517,7 @@ void star2d::solve_mov(solver *op) {
 	}
 	op->set_rhs("log_p",rhs);
 	
-	// w
+	// w - Differential Rotation
 	rhs=op->get_rhs("w");
 	op->bc_bot2_add_l(0,"w","w",ones(1,nth),D.block(0).row(0));
 	rhs.setrow(0,-(D,w).row(0));
@@ -514,7 +549,7 @@ void star2d::solve_mov(solver *op) {
 	rhs.setrow(-1,-q*bc.eval().row(-1)-(1-q)*((w.row(-1),TT)-Omega));
 	op->set_rhs("w",rhs);
 	
-	//G
+	//G - Meridional circulation
 	rhs=op->get_rhs("G");
 	op->bc_bot2_add_d(0,"G","G",ones(1,nth));
 	rhs.setrow(0,-G.row(0));
@@ -528,7 +563,7 @@ void star2d::solve_mov(solver *op) {
 	}
 	op->set_rhs("G",rhs);
 	
-	//pi_c
+	//pi_c -  non-dimensional parameter
 	rhs=zeros(ndomains,1);
 	j0=0;
 	for(int n=0;n<ndomains;n++) {
@@ -577,6 +612,8 @@ void star2d::solve_temp(solver *op) {
 	
 	lum=zeros(ndomains,1);
 	j0=0;
+// for each domain we compute the luminosity at the upper boundary
+// lum(n) =int_0^pi\int_0^eta_n 2*pi*r^2*rz*rho*eps dzeta
 	for(n=0;n<ndomains;n++) {
 		if(n) lum(n)=lum(n-1);
 		lum(n)+=2*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),
