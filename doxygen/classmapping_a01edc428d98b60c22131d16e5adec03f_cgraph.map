@@ -1,0 +1,51 @@
+<map id="mapping::drawi" name="mapping::drawi">
+<area shape="rect" id="node2" href="$classfigure.html#ae4ca4776686825943eabcf0feb86dee7" title="figure::axis" alt="" coords="181,5,267,32"/>
+<area shape="rect" id="node3" href="$matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="754,275,801,301"/>
+<area shape="rect" id="node4" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="903,401,990,428"/>
+<area shape="rect" id="node5" href="$classmapping.html#a37f4931465866b34d3afcb5041cd34f7" title="mapping::drawi0" alt="" coords="165,1212,283,1239"/>
+<area shape="rect" id="node50" href="$classfigure.html#a3fd55eadd7f43ed274721facf085b70c" title="figure::pcolor" alt="" coords="175,1263,273,1289"/>
+<area shape="rect" id="node6" href="$classdiff__leg.html#a4a20bbf87815938450005945c35442d3" title="diff_leg::init" alt="" coords="359,984,449,1011"/>
+<area shape="rect" id="node13" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="729,528,826,555"/>
+<area shape="rect" id="node20" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="734,1592,821,1619"/>
+<area shape="rect" id="node21" href="$matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="756,1237,799,1264"/>
+<area shape="rect" id="node22" href="$matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="758,1187,797,1213"/>
+<area shape="rect" id="node24" href="$classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="552,1389,635,1416"/>
+<area shape="rect" id="node33" href="$classdiff__gl.html#ae1ada3d9db3bc9bc6d94965dd3f49877" title="diff_gl::set_ndomains" alt="" coords="331,249,477,276"/>
+<area shape="rect" id="node34" href="$classdiff__gl.html#affdaab7ed99681dc21750a32ddca9e26" title="diff_gl::set_npts" alt="" coords="347,300,461,327"/>
+<area shape="rect" id="node35" href="$classdiff__gl.html#a5a7914414877cfdc44362a5ef2fd2ac8" title="diff_gl::set_xif" alt="" coords="352,477,456,504"/>
+<area shape="rect" id="node36" href="$classdiff__gl.html#a302ef348022ff2d5c83416130f00c6f5" title="diff_gl::init" alt="" coords="363,351,445,377"/>
+<area shape="rect" id="node40" href="$classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="536,157,651,184"/>
+<area shape="rect" id="node41" href="$classdiff__gl.html#a273893d64ef8418624695f43833c9789" title="diff_gl::eval" alt="" coords="549,1643,638,1669"/>
+<area shape="rect" id="node43" href="$classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="727,1744,828,1771"/>
+<area shape="rect" id="node44" href="$classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="345,1541,463,1568"/>
+<area shape="rect" id="node46" href="$classdiff__leg.html#aab4877a3dca16f6326294f396290bb39" title="diff_leg::eval_01" alt="" coords="345,1288,463,1315"/>
+<area shape="rect" id="node47" href="$classdiff__leg.html#a3a3bd0e927bba2fa9db4f1716853fafb" title="diff_leg::eval_10" alt="" coords="345,1339,463,1365"/>
+<area shape="rect" id="node48" href="$classdiff__leg.html#a51f6535740a957cb61864bbe65e6264c" title="diff_leg::eval_11" alt="" coords="345,1491,463,1517"/>
+<area shape="rect" id="node49" href="$classmatrix.html#ad939a50bcde1d07fbb6bd45404351964" title="matrix::fliplr" alt="" coords="359,1389,449,1416"/>
+<area shape="rect" id="node7" href="$classdiff__leg.html#ab7a001a60e694166877d26e5b2c69b4a" title="diff_leg::nodes" alt="" coords="540,579,647,605"/>
+<area shape="rect" id="node10" href="$matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="925,959,969,985"/>
+<area shape="rect" id="node16" href="$classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="894,857,999,884"/>
+<area shape="rect" id="node17" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="921,1136,972,1163"/>
+<area shape="rect" id="node19" href="$matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="752,1339,803,1365"/>
+<area shape="rect" id="node23" href="$matrix_8h.html#a7619b7346d9689923c8d174efacb92f8" title="sum" alt="" coords="570,629,617,656"/>
+<area shape="rect" id="node25" href="$classmatrix.html#a15e603fb0acec09059aae3e2136c1572" title="matrix::inv" alt="" coords="552,1035,635,1061"/>
+<area shape="rect" id="node28" href="$classdiff__leg.html#a81d64377be0432e72a1a6ed3418e2034" title="diff_leg::l_00" alt="" coords="545,680,641,707"/>
+<area shape="rect" id="node29" href="$matrix_8h.html#a069930b10a8e55fb1cd4cbc7aae7625f" title="eye" alt="" coords="572,731,615,757"/>
+<area shape="rect" id="node30" href="$classdiff__leg.html#a62fbfdb0389262a2ab8dffa1eb4f7a78" title="diff_leg::l_01" alt="" coords="545,781,641,808"/>
+<area shape="rect" id="node31" href="$classdiff__leg.html#a0a4ab7f57f079ce5deddf3fc8190abdc" title="diff_leg::l_10" alt="" coords="545,832,641,859"/>
+<area shape="rect" id="node32" href="$classdiff__leg.html#abf8ac10597cffbb86813ea63e6321411" title="diff_leg::l_11" alt="" coords="545,883,641,909"/>
+<area shape="rect" id="node8" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="919,629,974,656"/>
+<area shape="rect" id="node9" href="$matrix_8h.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="743,477,812,504"/>
+<area shape="rect" id="node11" href="$lapack_8h.html#aef3a50072db5f395fe95586c0f468f89" title="dsterf_" alt="" coords="746,731,809,757"/>
+<area shape="rect" id="node12" href="$classmatrix.html#af220f2a5835e6531bb17b850063a12cf" title="Returns the pointer to the matrix data. " alt="" coords="732,781,823,808"/>
+<area shape="rect" id="node14" href="$classdiff__leg.html#a96d444979876988970dd44e634a7ab96" title="diff_leg::Pn" alt="" coords="733,832,821,859"/>
+<area shape="rect" id="node18" href="$matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="756,680,799,707"/>
+<area shape="rect" id="node15" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="898,1364,995,1391"/>
+<area shape="rect" id="node26" href="$lapack_8h.html#ae56e8f1e7103728e3bc7c17b82868a81" title="dgetrf_" alt="" coords="746,1035,809,1061"/>
+<area shape="rect" id="node27" href="$lapack_8h.html#ad45051b902d2f7e6f8f15c930b593291" title="dgetri_" alt="" coords="747,1085,808,1112"/>
+<area shape="rect" id="node37" href="$classmatrix__block__diag.html#aa7e7f89e4886b81f04713cb24b14603a" title="matrix_block_diag::\lset_nblocks" alt="" coords="526,259,661,301"/>
+<area shape="rect" id="node38" href="$classdiff__gl.html#ac47c995d19386f8b54d751641ed77b63" title="diff_gl::init_1" alt="" coords="545,376,641,403"/>
+<area shape="rect" id="node39" href="$classmatrix__block__diag.html#a5352c4c2942e35d052fa44617deff202" title="matrix_block_diag::\lblock" alt="" coords="710,158,845,199"/>
+<area shape="rect" id="node42" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="727,1643,828,1669"/>
+<area shape="rect" id="node45" href="$classdiff__leg.html#ad863b7bdb1d8b47279f63a10e1843edd" title="diff_leg::eval" alt="" coords="545,1491,641,1517"/>
+</map>

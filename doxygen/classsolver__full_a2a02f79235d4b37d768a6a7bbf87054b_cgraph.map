@@ -1,0 +1,6 @@
+<map id="solver_full::solve_block" name="solver_full::solve_block">
+<area shape="rect" id="node2" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="173,5,275,32"/>
+<area shape="rect" id="node3" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="175,56,273,83"/>
+<area shape="rect" id="node4" href="$lapack_8h.html#a27a5040bb8500a1c3134352387aa4008" title="dgetrs_" alt="" coords="191,107,257,133"/>
+<area shape="rect" id="node5" href="$classmatrix.html#af220f2a5835e6531bb17b850063a12cf" title="Returns the pointer to the matrix data. " alt="" coords="179,157,269,184"/>
+</map>

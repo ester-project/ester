@@ -1,0 +1,24 @@
+<map id="SDIRK_solver::init" name="SDIRK_solver::init">
+<area shape="rect" id="node2" href="$classSDIRK__solver.html#a706a6d32510ee0295fc7c6e1cef4a4b4" title="SDIRK_solver::destroy" alt="" coords="184,5,341,32"/>
+<area shape="rect" id="node3" href="$classSDIRK__solver.html#ae88b5e66cf9d16769d94200d40d15f84" title="SDIRK_solver::init_be" alt="" coords="541,81,693,108"/>
+<area shape="rect" id="node5" href="$classSDIRK__solver.html#a6ee2ec2d55f090985c31e1777ee1165f" title="SDIRK_solver::init_cn" alt="" coords="187,231,339,257"/>
+<area shape="rect" id="node8" href="$classSDIRK__solver.html#a75763571a00e2ba6e09e7d14dca974c3" title="SDIRK_solver::init\l_sdirk2" alt="" coords="197,155,328,197"/>
+<area shape="rect" id="node10" href="$classSDIRK__solver.html#a07ac54df4320ec02b856f60bed316961" title="SDIRK_solver::init\l_sdirk3" alt="" coords="197,282,328,323"/>
+<area shape="rect" id="node11" href="$classSDIRK__solver.html#a56b215390d8aeada1fee946088e46e28" title="SDIRK_solver::init\l_sdirk4" alt="" coords="197,347,328,389"/>
+<area shape="rect" id="node12" href="$classSDIRK__solver.html#a49f17f6635ed103a75290c52f216ff3a" title="SDIRK_solver::init\l_esdirk3" alt="" coords="197,505,328,546"/>
+<area shape="rect" id="node14" href="$classSDIRK__solver.html#ab7e89eadb8008c8057133900bdabcf29" title="SDIRK_solver::init\l_esdirk4" alt="" coords="197,413,328,454"/>
+<area shape="rect" id="node15" href="$classSDIRK__solver.html#aba77e6d6a4c88fbb6b1820a131f22480" title="SDIRK_solver::check\l_method" alt="" coords="188,733,337,774"/>
+<area shape="rect" id="node23" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="235,799,290,825"/>
+<area shape="rect" id="node4" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="742,284,829,311"/>
+<area shape="rect" id="node6" href="$classmatrix.html#a56f512366e313c309346a7ba00cd0341" title="Sets the values of the matrix (given in column major order). " alt="" coords="389,360,493,387"/>
+<area shape="rect" id="node7" href="$classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="556,512,679,539"/>
+<area shape="rect" id="node9" href="$matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="419,107,463,133"/>
+<area shape="rect" id="node13" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="398,512,485,539"/>
+<area shape="rect" id="node16" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="391,765,492,792"/>
+<area shape="rect" id="node17" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="393,816,490,843"/>
+<area shape="rect" id="node18" href="$matrix_8h.html#a86292df4a6da0a0e0a8137647f9a7255" title="exist" alt="" coords="416,867,467,893"/>
+<area shape="rect" id="node19" href="$matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="420,917,463,944"/>
+<area shape="rect" id="node20" href="$matrix_8h.html#a7619b7346d9689923c8d174efacb92f8" title="sum" alt="" coords="418,968,465,995"/>
+<area shape="rect" id="node21" href="$matrix_8h.html#a069930b10a8e55fb1cd4cbc7aae7625f" title="eye" alt="" coords="420,715,463,741"/>
+<area shape="rect" id="node22" href="$classmatrix.html#a0d38262959de19208fc8c21780457c95" title="Sets the matrix to the nrows x ncols zero matrix. " alt="" coords="572,715,663,741"/>
+</map>

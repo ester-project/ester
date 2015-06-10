@@ -1,0 +1,7 @@
+<map id="star2d::write_tag" name="star2d::write_tag">
+<area shape="rect" id="node2" href="$classOUTFILE.html#a4c1e239ef9617a3a030468f97d7c82f2" title="OUTFILE::write" alt="" coords="173,81,288,108"/>
+<area shape="rect" id="node3" href="$classOUTFILE.html#a2e9e024c4a942d1952c9cbb00b45ea42" title="OUTFILE::write_tag" alt="" coords="336,5,475,32"/>
+<area shape="rect" id="node4" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="357,56,454,83"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="355,107,456,133"/>
+<area shape="rect" id="node6" href="$classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="358,157,453,184"/>
+</map>

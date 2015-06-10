@@ -1,0 +1,6 @@
+<map id="readcoeos" name="readcoeos">
+<area shape="rect" id="node2" href="$classINFILE.html#a78b3333de9530c92d71e6b2802fd26da" title="INFILE::len" alt="" coords="139,5,229,32"/>
+<area shape="rect" id="node5" href="$classtiempo.html#a8e6acdf9cbe741dbff35b3ad11c1a001" title="tiempo::stop" alt="" coords="137,56,231,83"/>
+<area shape="rect" id="node3" href="$classINFILE.html#ae6ded92fa99e01e78a7485892aeb8d84" title="INFILE::seek" alt="" coords="281,5,381,32"/>
+<area shape="rect" id="node4" href="$classINFILE.html#a616f7020b90e992ea51c16821520e89a" title="INFILE::getline" alt="" coords="430,5,541,32"/>
+</map>

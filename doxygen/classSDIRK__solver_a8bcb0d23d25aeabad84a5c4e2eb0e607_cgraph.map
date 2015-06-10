@@ -1,0 +1,9 @@
+<map id="SDIRK_solver::solve" name="SDIRK_solver::solve">
+<area shape="rect" id="node2" href="$classSDIRK__solver.html#a42664dd78a61167aea2d884cd2c74469" title="SDIRK_solver::check_init" alt="" coords="200,5,373,32"/>
+<area shape="rect" id="node3" href="$classSDIRK__solver.html#a1d7d164d3f40a7621fd8521daa074f18" title="SDIRK_solver::wrap" alt="" coords="215,56,358,83"/>
+<area shape="rect" id="node7" href="$classSDIRK__solver.html#a7b9cd0c67a94f43082f533b336dc0d0c" title="SDIRK_solver::unwrap" alt="" coords="209,107,365,133"/>
+<area shape="rect" id="node4" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="451,5,506,32"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a345ac4399ae6ea5d158dec467a7e0432" title="Re&#45;dimension the matrix. " alt="" coords="429,107,528,133"/>
+<area shape="rect" id="node6" href="$classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="421,56,536,83"/>
+<area shape="rect" id="node8" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="430,157,527,184"/>
+</map>

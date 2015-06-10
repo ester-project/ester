@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -100,12 +100,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">mapping Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="mapping_8h_source.html">mapping.h</a>&gt;</code></p>
 <div class="dynheader">
 Collaboration diagram for mapping:</div>
 <div class="dyncontent">
 <div class="center"><img src="classmapping__coll__graph.png" border="0" usemap="#mapping_coll__map" alt="Collaboration graph"/></div>
 <map name="mapping_coll__map" id="mapping_coll__map">
-</map>
+<area shape="rect" id="node2" href="classmapping_1_1ext__map.html" title="mapping::ext_map" alt="" coords="104,800,233,827"/><area shape="rect" id="node3" href="classdiff__gl.html" title="The diff_gl class implements the Gauss&#45;Lobatto (or more properly Gauss&#45;Lobatto&#45;Chebyshev) collocation..." alt="" coords="44,551,101,577"/><area shape="rect" id="node4" href="classmatrix.html" title="The matrix class is used to facilitate the work with regular dense matrices. " alt="" coords="173,5,230,32"/><area shape="rect" id="node5" href="classmatrix__block__diag.html" title="The matrix_block_diag class is used to store block diagonal matrices. " alt="" coords="37,244,163,271"/><area shape="rect" id="node6" href="classdiff__leg.html" title="The diff_leg class implements Legendre numerical differentiation. " alt="" coords="251,364,315,391"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
@@ -115,210 +117,1432 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a39ef7746f9792eb2467145c0d46631f8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a39ef7746f9792eb2467145c0d46631f8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>mapping</b> (const <a class="el" href="classmapping.html">mapping</a> &amp;)</td></tr>
+<tr class="memitem:a5660b1c9035c1933420fd6acad650061"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a5660b1c9035c1933420fd6acad650061">mapping</a> ()</td></tr>
+<tr class="separator:a5660b1c9035c1933420fd6acad650061"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb4cc72d86da81e0a59aedeb219b7c69"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#aeb4cc72d86da81e0a59aedeb219b7c69">~mapping</a> ()</td></tr>
+<tr class="separator:aeb4cc72d86da81e0a59aedeb219b7c69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39ef7746f9792eb2467145c0d46631f8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a39ef7746f9792eb2467145c0d46631f8">mapping</a> (const <a class="el" href="classmapping.html">mapping</a> &amp;)</td></tr>
 <tr class="separator:a39ef7746f9792eb2467145c0d46631f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a064b38ccf1010b5102be3b2d9b950a7c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a064b38ccf1010b5102be3b2d9b950a7c"></a>
-<a class="el" href="classmapping.html">mapping</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="classmapping.html">mapping</a> &amp;)</td></tr>
+<tr class="memitem:a064b38ccf1010b5102be3b2d9b950a7c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmapping.html">mapping</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a064b38ccf1010b5102be3b2d9b950a7c">operator=</a> (const <a class="el" href="classmapping.html">mapping</a> &amp;)</td></tr>
 <tr class="separator:a064b38ccf1010b5102be3b2d9b950a7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab00a7173c588a6a99edc79f51602d0d2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab00a7173c588a6a99edc79f51602d0d2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>copy</b> (const <a class="el" href="classmapping.html">mapping</a> &amp;)</td></tr>
+<tr class="memitem:ab00a7173c588a6a99edc79f51602d0d2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#ab00a7173c588a6a99edc79f51602d0d2">copy</a> (const <a class="el" href="classmapping.html">mapping</a> &amp;)</td></tr>
 <tr class="separator:ab00a7173c588a6a99edc79f51602d0d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8de7a1d48f7783ab550732e849d29eb1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8de7a1d48f7783ab550732e849d29eb1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_ndomains</b> (int ndom)</td></tr>
+<tr class="memitem:a8de7a1d48f7783ab550732e849d29eb1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a8de7a1d48f7783ab550732e849d29eb1">set_ndomains</a> (int ndom)</td></tr>
 <tr class="separator:a8de7a1d48f7783ab550732e849d29eb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a474b1bcf20e93fd902ba13e0a2f64684"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a474b1bcf20e93fd902ba13e0a2f64684"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_npts</b> (int npts)</td></tr>
+<tr class="memitem:a474b1bcf20e93fd902ba13e0a2f64684"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a474b1bcf20e93fd902ba13e0a2f64684">set_npts</a> (int <a class="el" href="classmapping.html#a25ae128a8880975082594e514d5c6930">npts</a>)</td></tr>
 <tr class="separator:a474b1bcf20e93fd902ba13e0a2f64684"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70ee2e26bc7b2bf36a68cdb0c90a818e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a70ee2e26bc7b2bf36a68cdb0c90a818e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_nt</b> (int nt)</td></tr>
+<tr class="memitem:a70ee2e26bc7b2bf36a68cdb0c90a818e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a70ee2e26bc7b2bf36a68cdb0c90a818e">set_nt</a> (int <a class="el" href="classmapping.html#a7bf891052a78465dc2f721421758083b">nt</a>)</td></tr>
 <tr class="separator:a70ee2e26bc7b2bf36a68cdb0c90a818e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad99a3e81610a4ea47070899fd7b20a78"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad99a3e81610a4ea47070899fd7b20a78"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_nex</b> (int nex)</td></tr>
+<tr class="memitem:ad99a3e81610a4ea47070899fd7b20a78"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#ad99a3e81610a4ea47070899fd7b20a78">set_nex</a> (int <a class="el" href="classmapping.html#acf0ede8bab24d2f14a95527bcba448b9">nex</a>)</td></tr>
 <tr class="separator:ad99a3e81610a4ea47070899fd7b20a78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4cfc4d7ae09d0e92d1ce2effa64920f0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4cfc4d7ae09d0e92d1ce2effa64920f0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_npts</b> (int *npts)</td></tr>
+<tr class="memitem:a4cfc4d7ae09d0e92d1ce2effa64920f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a4cfc4d7ae09d0e92d1ce2effa64920f0">set_npts</a> (int *<a class="el" href="classmapping.html#a25ae128a8880975082594e514d5c6930">npts</a>)</td></tr>
 <tr class="separator:a4cfc4d7ae09d0e92d1ce2effa64920f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a253990fdedac4fc10becaceae5e4a2be"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a253990fdedac4fc10becaceae5e4a2be"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_mode</b> (int mode)</td></tr>
+<tr class="memitem:a253990fdedac4fc10becaceae5e4a2be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a253990fdedac4fc10becaceae5e4a2be">set_mode</a> (int <a class="el" href="classmapping.html#af64f8c200dc60fb68ffa18de2f439209">mode</a>)</td></tr>
 <tr class="separator:a253990fdedac4fc10becaceae5e4a2be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af93544cdac32ac9a8aa92a3c674eb8dd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af93544cdac32ac9a8aa92a3c674eb8dd"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> ()</td></tr>
+<tr class="memitem:af93544cdac32ac9a8aa92a3c674eb8dd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#af93544cdac32ac9a8aa92a3c674eb8dd">init</a> ()</td></tr>
 <tr class="separator:af93544cdac32ac9a8aa92a3c674eb8dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad8bde507d71c669dc4259b44d5b51aa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aad8bde507d71c669dc4259b44d5b51aa"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>remap</b> ()</td></tr>
+<tr class="memitem:aad8bde507d71c669dc4259b44d5b51aa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#aad8bde507d71c669dc4259b44d5b51aa">remap</a> ()</td></tr>
 <tr class="separator:aad8bde507d71c669dc4259b44d5b51aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a497351f1c0bcd93b5dced61cceedc8f2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a497351f1c0bcd93b5dced61cceedc8f2"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>eval</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;y, const <a class="el" href="classmatrix.html">matrix</a> &amp;ri, const <a class="el" href="classmatrix.html">matrix</a> &amp;thi, int parity=0) const </td></tr>
+<tr class="memitem:a497351f1c0bcd93b5dced61cceedc8f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a497351f1c0bcd93b5dced61cceedc8f2">eval</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;y, const <a class="el" href="classmatrix.html">matrix</a> &amp;ri, const <a class="el" href="classmatrix.html">matrix</a> &amp;thi, int parity=0) const </td></tr>
 <tr class="separator:a497351f1c0bcd93b5dced61cceedc8f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bda63a0b7b607d48e0ec7b05136afa4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5bda63a0b7b607d48e0ec7b05136afa4"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>dr</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;) const </td></tr>
+<tr class="memitem:a5bda63a0b7b607d48e0ec7b05136afa4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a5bda63a0b7b607d48e0ec7b05136afa4">dr</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;) const </td></tr>
 <tr class="separator:a5bda63a0b7b607d48e0ec7b05136afa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adbbe98f3cc7e997eba6458a95a48a160"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adbbe98f3cc7e997eba6458a95a48a160"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>dt</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;) const </td></tr>
+<tr class="memitem:adbbe98f3cc7e997eba6458a95a48a160"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#adbbe98f3cc7e997eba6458a95a48a160">dt</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;) const </td></tr>
 <tr class="separator:adbbe98f3cc7e997eba6458a95a48a160"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88a597b162bcf9e4e185d54d7ddc5692"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a88a597b162bcf9e4e185d54d7ddc5692"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>dt_odd</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;) const </td></tr>
+<tr class="memitem:a88a597b162bcf9e4e185d54d7ddc5692"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a88a597b162bcf9e4e185d54d7ddc5692">dt_odd</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;) const </td></tr>
 <tr class="separator:a88a597b162bcf9e4e185d54d7ddc5692"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a14aa3b6f67ec7510b9a7b6af8d4255e5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a14aa3b6f67ec7510b9a7b6af8d4255e5"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>dt2</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;) const </td></tr>
+<tr class="memitem:a14aa3b6f67ec7510b9a7b6af8d4255e5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a14aa3b6f67ec7510b9a7b6af8d4255e5">dt2</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;) const </td></tr>
 <tr class="separator:a14aa3b6f67ec7510b9a7b6af8d4255e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c98497263390263cfecc5ff6fa16db3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c98497263390263cfecc5ff6fa16db3"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>stream</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;Fz, <a class="el" href="classmatrix.html">matrix</a> &amp;Ft) const </td></tr>
+<tr class="memitem:a0c98497263390263cfecc5ff6fa16db3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a0c98497263390263cfecc5ff6fa16db3">stream</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;Fz, <a class="el" href="classmatrix.html">matrix</a> &amp;Ft) const </td></tr>
 <tr class="separator:a0c98497263390263cfecc5ff6fa16db3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7d037e45eebeeec91e6993cbefbd030"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af7d037e45eebeeec91e6993cbefbd030"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>stream</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;Fz) const </td></tr>
+<tr class="memitem:af7d037e45eebeeec91e6993cbefbd030"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#af7d037e45eebeeec91e6993cbefbd030">stream</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;Fz) const </td></tr>
 <tr class="separator:af7d037e45eebeeec91e6993cbefbd030"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a59e4729fdd528d34c056fcda53a050ad"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a59e4729fdd528d34c056fcda53a050ad"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>zeta_to_r</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;z) const </td></tr>
+<tr class="memitem:a59e4729fdd528d34c056fcda53a050ad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a59e4729fdd528d34c056fcda53a050ad">zeta_to_r</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;<a class="el" href="classmapping.html#a06ede61ab17a0b3e4bb057ac9e30891a">z</a>) const </td></tr>
 <tr class="separator:a59e4729fdd528d34c056fcda53a050ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af434d9927dd8133b77c689f2b08a0a84"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af434d9927dd8133b77c689f2b08a0a84"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>draw0</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;A, int parity, <a class="el" href="classmatrix.html">matrix</a> &amp;x, <a class="el" href="classmatrix.html">matrix</a> &amp;y) const </td></tr>
+<tr class="memitem:af434d9927dd8133b77c689f2b08a0a84"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#af434d9927dd8133b77c689f2b08a0a84">draw0</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;A, int parity, <a class="el" href="classmatrix.html">matrix</a> &amp;x, <a class="el" href="classmatrix.html">matrix</a> &amp;y) const </td></tr>
 <tr class="separator:af434d9927dd8133b77c689f2b08a0a84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e3fdf9924fcc6d22a780e0c512d9cc5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1e3fdf9924fcc6d22a780e0c512d9cc5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>draw</b> (<a class="el" href="classfigure.html">figure</a> *pfig, const <a class="el" href="classmatrix.html">matrix</a> &amp;A, int parity=0) const </td></tr>
+<tr class="memitem:a1e3fdf9924fcc6d22a780e0c512d9cc5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a1e3fdf9924fcc6d22a780e0c512d9cc5">draw</a> (<a class="el" href="classfigure.html">figure</a> *pfig, const <a class="el" href="classmatrix.html">matrix</a> &amp;A, int parity=0) const </td></tr>
 <tr class="separator:a1e3fdf9924fcc6d22a780e0c512d9cc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37f4931465866b34d3afcb5041cd34f7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a37f4931465866b34d3afcb5041cd34f7"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>drawi0</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;A, int sr, int st, int parity, <a class="el" href="classmatrix.html">matrix</a> &amp;x, <a class="el" href="classmatrix.html">matrix</a> &amp;y) const </td></tr>
+<tr class="memitem:a37f4931465866b34d3afcb5041cd34f7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a37f4931465866b34d3afcb5041cd34f7">drawi0</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;A, int sr, int st, int parity, <a class="el" href="classmatrix.html">matrix</a> &amp;x, <a class="el" href="classmatrix.html">matrix</a> &amp;y) const </td></tr>
 <tr class="separator:a37f4931465866b34d3afcb5041cd34f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a01edc428d98b60c22131d16e5adec03f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a01edc428d98b60c22131d16e5adec03f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>drawi</b> (<a class="el" href="classfigure.html">figure</a> *pfig, const <a class="el" href="classmatrix.html">matrix</a> &amp;A, int sr, int st, int parity=0) const </td></tr>
+<tr class="memitem:a01edc428d98b60c22131d16e5adec03f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a01edc428d98b60c22131d16e5adec03f">drawi</a> (<a class="el" href="classfigure.html">figure</a> *pfig, const <a class="el" href="classmatrix.html">matrix</a> &amp;A, int sr, int st, int parity=0) const </td></tr>
 <tr class="separator:a01edc428d98b60c22131d16e5adec03f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab068a0511d2894bb4e3dafdf6a3b71fb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab068a0511d2894bb4e3dafdf6a3b71fb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>drawc</b> (<a class="el" href="classfigure.html">figure</a> *pfig, const <a class="el" href="classmatrix.html">matrix</a> &amp;A, int ncontours, int parity=0) const </td></tr>
+<tr class="memitem:ab068a0511d2894bb4e3dafdf6a3b71fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#ab068a0511d2894bb4e3dafdf6a3b71fb">drawc</a> (<a class="el" href="classfigure.html">figure</a> *pfig, const <a class="el" href="classmatrix.html">matrix</a> &amp;A, int ncontours, int parity=0) const </td></tr>
 <tr class="separator:ab068a0511d2894bb4e3dafdf6a3b71fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69735ab5f566df0cea161bff0dd12b30"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a69735ab5f566df0cea161bff0dd12b30"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>drawci</b> (<a class="el" href="classfigure.html">figure</a> *pfig, const <a class="el" href="classmatrix.html">matrix</a> &amp;A, int sr, int st, int ncontours, int parity=0) const </td></tr>
+<tr class="memitem:a69735ab5f566df0cea161bff0dd12b30"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a69735ab5f566df0cea161bff0dd12b30">drawci</a> (<a class="el" href="classfigure.html">figure</a> *pfig, const <a class="el" href="classmatrix.html">matrix</a> &amp;A, int sr, int st, int ncontours, int parity=0) const </td></tr>
 <tr class="separator:a69735ab5f566df0cea161bff0dd12b30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a914df197007ae1a1d656426ec5b7a42e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a914df197007ae1a1d656426ec5b7a42e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>spectrum</b> (<a class="el" href="classfigure.html">figure</a> *pfig, const <a class="el" href="classmatrix.html">matrix</a> &amp;y, int parity=0) const </td></tr>
+<tr class="memitem:a914df197007ae1a1d656426ec5b7a42e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a914df197007ae1a1d656426ec5b7a42e">spectrum</a> (<a class="el" href="classfigure.html">figure</a> *pfig, const <a class="el" href="classmatrix.html">matrix</a> &amp;y, int parity=0) const </td></tr>
 <tr class="separator:a914df197007ae1a1d656426ec5b7a42e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ae292ba60db90f691e874cfd1d8be0e21"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae292ba60db90f691e874cfd1d8be0e21"></a>
-<a class="el" href="classdiff__gl.html">diff_gl</a>&#160;</td><td class="memItemRight" valign="bottom"><b>gl</b></td></tr>
+<tr class="memitem:ae292ba60db90f691e874cfd1d8be0e21"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdiff__gl.html">diff_gl</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#ae292ba60db90f691e874cfd1d8be0e21">gl</a></td></tr>
 <tr class="separator:ae292ba60db90f691e874cfd1d8be0e21"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a07570a6af8ec633d9e934ee3b13eb35d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a07570a6af8ec633d9e934ee3b13eb35d"></a>
-<a class="el" href="classdiff__leg.html">diff_leg</a>&#160;</td><td class="memItemRight" valign="bottom"><b>leg</b></td></tr>
+<tr class="memitem:a07570a6af8ec633d9e934ee3b13eb35d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdiff__leg.html">diff_leg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a07570a6af8ec633d9e934ee3b13eb35d">leg</a></td></tr>
 <tr class="separator:a07570a6af8ec633d9e934ee3b13eb35d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2024527b12d2ef19f3b37ce82b81664a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2024527b12d2ef19f3b37ce82b81664a"></a>
-const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>nr</b></td></tr>
+<tr class="memitem:a2024527b12d2ef19f3b37ce82b81664a"><td class="memItemLeft" align="right" valign="top">const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a2024527b12d2ef19f3b37ce82b81664a">nr</a></td></tr>
 <tr class="separator:a2024527b12d2ef19f3b37ce82b81664a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bf891052a78465dc2f721421758083b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7bf891052a78465dc2f721421758083b"></a>
-const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>nt</b></td></tr>
+<tr class="memitem:a7bf891052a78465dc2f721421758083b"><td class="memItemLeft" align="right" valign="top">const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a7bf891052a78465dc2f721421758083b">nt</a></td></tr>
 <tr class="separator:a7bf891052a78465dc2f721421758083b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2565166c120d55d95d5aa67674ab63b8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2565166c120d55d95d5aa67674ab63b8"></a>
-const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ndomains</b></td></tr>
+<tr class="memitem:a2565166c120d55d95d5aa67674ab63b8"><td class="memItemLeft" align="right" valign="top">const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a2565166c120d55d95d5aa67674ab63b8">ndomains</a></td></tr>
 <tr class="separator:a2565166c120d55d95d5aa67674ab63b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af64f8c200dc60fb68ffa18de2f439209"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af64f8c200dc60fb68ffa18de2f439209"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>mode</b></td></tr>
+<tr class="memitem:af64f8c200dc60fb68ffa18de2f439209"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#af64f8c200dc60fb68ffa18de2f439209">mode</a></td></tr>
 <tr class="separator:af64f8c200dc60fb68ffa18de2f439209"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25ae128a8880975082594e514d5c6930"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a25ae128a8880975082594e514d5c6930"></a>
-int *&amp;&#160;</td><td class="memItemRight" valign="bottom"><b>npts</b></td></tr>
+<tr class="memitem:a25ae128a8880975082594e514d5c6930"><td class="memItemLeft" align="right" valign="top">int *&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a25ae128a8880975082594e514d5c6930">npts</a></td></tr>
 <tr class="separator:a25ae128a8880975082594e514d5c6930"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68786df651423598b35b0e3c82571baa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a68786df651423598b35b0e3c82571baa"></a>
-const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>eta</b></td></tr>
+<tr class="memitem:a68786df651423598b35b0e3c82571baa"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a68786df651423598b35b0e3c82571baa">eta</a></td></tr>
 <tr class="separator:a68786df651423598b35b0e3c82571baa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86f70d18672dfa2fbe9c2e7a82029c6f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a86f70d18672dfa2fbe9c2e7a82029c6f"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>D</b></td></tr>
+<tr class="memitem:a86f70d18672dfa2fbe9c2e7a82029c6f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a86f70d18672dfa2fbe9c2e7a82029c6f">D</a></td></tr>
 <tr class="separator:a86f70d18672dfa2fbe9c2e7a82029c6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06ede61ab17a0b3e4bb057ac9e30891a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a06ede61ab17a0b3e4bb057ac9e30891a"></a>
-<a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>z</b></td></tr>
+<tr class="memitem:a06ede61ab17a0b3e4bb057ac9e30891a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a06ede61ab17a0b3e4bb057ac9e30891a">z</a></td></tr>
 <tr class="separator:a06ede61ab17a0b3e4bb057ac9e30891a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f7a5762d3e463233971f95a0db51147"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2f7a5762d3e463233971f95a0db51147"></a>
-<a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>th</b></td></tr>
+<tr class="memitem:a2f7a5762d3e463233971f95a0db51147"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a2f7a5762d3e463233971f95a0db51147">th</a></td></tr>
 <tr class="separator:a2f7a5762d3e463233971f95a0db51147"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5769e721b467f2aa418639d5d477614"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae5769e721b467f2aa418639d5d477614"></a>
-<a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Dt</b></td></tr>
+<tr class="memitem:ae5769e721b467f2aa418639d5d477614"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#ae5769e721b467f2aa418639d5d477614">Dt</a></td></tr>
 <tr class="separator:ae5769e721b467f2aa418639d5d477614"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba7d3690bca899540da34d29dfa2f827"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aba7d3690bca899540da34d29dfa2f827"></a>
-<a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Dt2</b></td></tr>
+<tr class="memitem:aba7d3690bca899540da34d29dfa2f827"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#aba7d3690bca899540da34d29dfa2f827">Dt2</a></td></tr>
 <tr class="separator:aba7d3690bca899540da34d29dfa2f827"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af25cd1b910fd33f9750de84d99bbc384"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af25cd1b910fd33f9750de84d99bbc384"></a>
-<a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Dt_11</b></td></tr>
+<tr class="memitem:af25cd1b910fd33f9750de84d99bbc384"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#af25cd1b910fd33f9750de84d99bbc384">Dt_11</a></td></tr>
 <tr class="separator:af25cd1b910fd33f9750de84d99bbc384"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adce3a54ddbd496ec7a847f1f4a75278a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adce3a54ddbd496ec7a847f1f4a75278a"></a>
-<a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Dt2_11</b></td></tr>
+<tr class="memitem:adce3a54ddbd496ec7a847f1f4a75278a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#adce3a54ddbd496ec7a847f1f4a75278a">Dt2_11</a></td></tr>
 <tr class="separator:adce3a54ddbd496ec7a847f1f4a75278a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6e80b5b2e3d0afd43ba62bc11bde1c7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac6e80b5b2e3d0afd43ba62bc11bde1c7"></a>
-<a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Dt_01</b></td></tr>
+<tr class="memitem:ac6e80b5b2e3d0afd43ba62bc11bde1c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#ac6e80b5b2e3d0afd43ba62bc11bde1c7">Dt_01</a></td></tr>
 <tr class="separator:ac6e80b5b2e3d0afd43ba62bc11bde1c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5a2baac99a2c44c4a4321ccb4e78284"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af5a2baac99a2c44c4a4321ccb4e78284"></a>
-<a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Dt2_01</b></td></tr>
+<tr class="memitem:af5a2baac99a2c44c4a4321ccb4e78284"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#af5a2baac99a2c44c4a4321ccb4e78284">Dt2_01</a></td></tr>
 <tr class="separator:af5a2baac99a2c44c4a4321ccb4e78284"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1cf144a9099dd28506d1cf2ebf4a011b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1cf144a9099dd28506d1cf2ebf4a011b"></a>
-<a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Dt_10</b></td></tr>
+<tr class="memitem:a1cf144a9099dd28506d1cf2ebf4a011b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a1cf144a9099dd28506d1cf2ebf4a011b">Dt_10</a></td></tr>
 <tr class="separator:a1cf144a9099dd28506d1cf2ebf4a011b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bbe5c3167a55f50b38aa4d1f3793a2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7bbe5c3167a55f50b38aa4d1f3793a2d"></a>
-<a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Dt2_10</b></td></tr>
+<tr class="memitem:a7bbe5c3167a55f50b38aa4d1f3793a2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a7bbe5c3167a55f50b38aa4d1f3793a2d">Dt2_10</a></td></tr>
 <tr class="separator:a7bbe5c3167a55f50b38aa4d1f3793a2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53f4ceff9ae0b27b9a3a6802cdf84bd1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a53f4ceff9ae0b27b9a3a6802cdf84bd1"></a>
-<a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>I</b></td></tr>
+<tr class="memitem:a53f4ceff9ae0b27b9a3a6802cdf84bd1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a53f4ceff9ae0b27b9a3a6802cdf84bd1">I</a></td></tr>
 <tr class="separator:a53f4ceff9ae0b27b9a3a6802cdf84bd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a205f451692352f2f393b556f69a4556c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a205f451692352f2f393b556f69a4556c"></a>
-<a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>It</b></td></tr>
+<tr class="memitem:a205f451692352f2f393b556f69a4556c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a205f451692352f2f393b556f69a4556c">It</a></td></tr>
 <tr class="separator:a205f451692352f2f393b556f69a4556c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adde10302f12e80b0733fbe6db9feb17d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adde10302f12e80b0733fbe6db9feb17d"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>r</b></td></tr>
+<tr class="memitem:adde10302f12e80b0733fbe6db9feb17d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#adde10302f12e80b0733fbe6db9feb17d">r</a></td></tr>
 <tr class="separator:adde10302f12e80b0733fbe6db9feb17d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad044c989b5827592437cf97dc96d4bd5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad044c989b5827592437cf97dc96d4bd5"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rz</b></td></tr>
+<tr class="memitem:ad044c989b5827592437cf97dc96d4bd5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#ad044c989b5827592437cf97dc96d4bd5">rz</a></td></tr>
 <tr class="separator:ad044c989b5827592437cf97dc96d4bd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78065257c746dc53e55287c0785e44b2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a78065257c746dc53e55287c0785e44b2"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rzz</b></td></tr>
+<tr class="memitem:a78065257c746dc53e55287c0785e44b2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a78065257c746dc53e55287c0785e44b2">rzz</a></td></tr>
 <tr class="separator:a78065257c746dc53e55287c0785e44b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97533f7bc5124f5a5cc2cda1137f4636"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a97533f7bc5124f5a5cc2cda1137f4636"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rt</b></td></tr>
+<tr class="memitem:a97533f7bc5124f5a5cc2cda1137f4636"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a97533f7bc5124f5a5cc2cda1137f4636">rt</a></td></tr>
 <tr class="separator:a97533f7bc5124f5a5cc2cda1137f4636"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bc8844118880c2c24a6a9982aed6f36"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7bc8844118880c2c24a6a9982aed6f36"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rtt</b></td></tr>
+<tr class="memitem:a7bc8844118880c2c24a6a9982aed6f36"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a7bc8844118880c2c24a6a9982aed6f36">rtt</a></td></tr>
 <tr class="separator:a7bc8844118880c2c24a6a9982aed6f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc82ffd5282dc7fd17762a943d33ee27"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abc82ffd5282dc7fd17762a943d33ee27"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rzt</b></td></tr>
+<tr class="memitem:abc82ffd5282dc7fd17762a943d33ee27"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#abc82ffd5282dc7fd17762a943d33ee27">rzt</a></td></tr>
 <tr class="separator:abc82ffd5282dc7fd17762a943d33ee27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69439587655481ab4b8689230d0cf37a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a69439587655481ab4b8689230d0cf37a"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>gzz</b></td></tr>
+<tr class="memitem:a69439587655481ab4b8689230d0cf37a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a69439587655481ab4b8689230d0cf37a">gzz</a></td></tr>
 <tr class="separator:a69439587655481ab4b8689230d0cf37a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a464f378c3c1ae698dc8e057c6ca56bbc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a464f378c3c1ae698dc8e057c6ca56bbc"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>gzt</b></td></tr>
+<tr class="memitem:a464f378c3c1ae698dc8e057c6ca56bbc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a464f378c3c1ae698dc8e057c6ca56bbc">gzt</a></td></tr>
 <tr class="separator:a464f378c3c1ae698dc8e057c6ca56bbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29da47907c300c39844b3debf95e927e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a29da47907c300c39844b3debf95e927e"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>gtt</b></td></tr>
+<tr class="memitem:a29da47907c300c39844b3debf95e927e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a29da47907c300c39844b3debf95e927e">gtt</a></td></tr>
 <tr class="separator:a29da47907c300c39844b3debf95e927e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3e6cc2324ec542f58e54854ae1af057b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3e6cc2324ec542f58e54854ae1af057b"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>R</b></td></tr>
+<tr class="memitem:a3e6cc2324ec542f58e54854ae1af057b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a3e6cc2324ec542f58e54854ae1af057b">R</a></td></tr>
 <tr class="separator:a3e6cc2324ec542f58e54854ae1af057b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a144ad3185766d187e6a8b51ea91e3751"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a144ad3185766d187e6a8b51ea91e3751"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>J</b> [4]</td></tr>
+<tr class="memitem:a144ad3185766d187e6a8b51ea91e3751"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a144ad3185766d187e6a8b51ea91e3751">J</a> [4]</td></tr>
 <tr class="separator:a144ad3185766d187e6a8b51ea91e3751"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a886e18568cb0453a1b4724de85af4371"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a886e18568cb0453a1b4724de85af4371"></a>
-class <a class="el" href="classmapping_1_1ext__map.html">mapping::ext_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>ex</b></td></tr>
+<tr class="memitem:a886e18568cb0453a1b4724de85af4371"><td class="memItemLeft" align="right" valign="top">class <a class="el" href="classmapping_1_1ext__map.html">mapping::ext_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#a886e18568cb0453a1b4724de85af4371">ex</a></td></tr>
 <tr class="separator:a886e18568cb0453a1b4724de85af4371"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf0ede8bab24d2f14a95527bcba448b9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acf0ede8bab24d2f14a95527bcba448b9"></a>
-const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>nex</b></td></tr>
+<tr class="memitem:acf0ede8bab24d2f14a95527bcba448b9"><td class="memItemLeft" align="right" valign="top">const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#acf0ede8bab24d2f14a95527bcba448b9">nex</a></td></tr>
 <tr class="separator:acf0ede8bab24d2f14a95527bcba448b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:af9d7cd1b70f62f2d3d289f5eff5510a9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af9d7cd1b70f62f2d3d289f5eff5510a9"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>eta_</b></td></tr>
+<tr class="memitem:af9d7cd1b70f62f2d3d289f5eff5510a9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#af9d7cd1b70f62f2d3d289f5eff5510a9">eta_</a></td></tr>
 <tr class="separator:af9d7cd1b70f62f2d3d289f5eff5510a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:ab5f5d23a3814866f286cf8789adad493"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab5f5d23a3814866f286cf8789adad493"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>ext_map</b></td></tr>
+<tr class="memitem:ab5f5d23a3814866f286cf8789adad493"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapping.html#ab5f5d23a3814866f286cf8789adad493">ext_map</a></td></tr>
 <tr class="separator:ab5f5d23a3814866f286cf8789adad493"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a5660b1c9035c1933420fd6acad650061"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">mapping::mapping </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_a5660b1c9035c1933420fd6acad650061_cgraph.png" border="0" usemap="#classmapping_a5660b1c9035c1933420fd6acad650061_cgraph" alt=""/></div>
+<map name="classmapping_a5660b1c9035c1933420fd6acad650061_cgraph" id="classmapping_a5660b1c9035c1933420fd6acad650061_cgraph">
+<area shape="rect" id="node2" href="classdiff__gl.html#ae1ada3d9db3bc9bc6d94965dd3f49877" title="diff_gl::set_ndomains" alt="" coords="181,5,328,32"/><area shape="rect" id="node3" href="classdiff__gl.html#a5a7914414877cfdc44362a5ef2fd2ac8" title="diff_gl::set_xif" alt="" coords="203,56,307,83"/><area shape="rect" id="node4" href="classdiff__gl.html#affdaab7ed99681dc21750a32ddca9e26" title="diff_gl::set_npts" alt="" coords="197,107,312,133"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aeb4cc72d86da81e0a59aedeb219b7c69"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">mapping::~mapping </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a39ef7746f9792eb2467145c0d46631f8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">mapping::mapping </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmapping.html">mapping</a> &amp;&#160;</td>
+          <td class="paramname"><em>map</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_a39ef7746f9792eb2467145c0d46631f8_cgraph.png" border="0" usemap="#classmapping_a39ef7746f9792eb2467145c0d46631f8_cgraph" alt=""/></div>
+<map name="classmapping_a39ef7746f9792eb2467145c0d46631f8_cgraph" id="classmapping_a39ef7746f9792eb2467145c0d46631f8_cgraph">
+<area shape="rect" id="node2" href="classmapping.html#ab00a7173c588a6a99edc79f51602d0d2" title="mapping::copy" alt="" coords="181,5,288,32"/><area shape="rect" id="node3" href="classmapping_1_1ext__map.html#a3af2b36f85a525defb7dd5192b0987b3" title="mapping::ext_map::copy" alt="" coords="336,5,501,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ab00a7173c588a6a99edc79f51602d0d2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapping::copy </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmapping.html">mapping</a> &amp;&#160;</td>
+          <td class="paramname"><em>map</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_ab00a7173c588a6a99edc79f51602d0d2_cgraph.png" border="0" usemap="#classmapping_ab00a7173c588a6a99edc79f51602d0d2_cgraph" alt=""/></div>
+<map name="classmapping_ab00a7173c588a6a99edc79f51602d0d2_cgraph" id="classmapping_ab00a7173c588a6a99edc79f51602d0d2_cgraph">
+<area shape="rect" id="node2" href="classmapping_1_1ext__map.html#a3af2b36f85a525defb7dd5192b0987b3" title="mapping::ext_map::copy" alt="" coords="160,5,325,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a5bda63a0b7b607d48e0ec7b05136afa4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::dr </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1e3fdf9924fcc6d22a780e0c512d9cc5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapping::draw </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfigure.html">figure</a> *&#160;</td>
+          <td class="paramname"><em>pfig</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>parity</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_a1e3fdf9924fcc6d22a780e0c512d9cc5_cgraph.png" border="0" usemap="#classmapping_a1e3fdf9924fcc6d22a780e0c512d9cc5_cgraph" alt=""/></div>
+<map name="classmapping_a1e3fdf9924fcc6d22a780e0c512d9cc5_cgraph" id="classmapping_a1e3fdf9924fcc6d22a780e0c512d9cc5_cgraph">
+<area shape="rect" id="node2" href="classfigure.html#ae4ca4776686825943eabcf0feb86dee7" title="figure::axis" alt="" coords="174,31,261,57"/><area shape="rect" id="node3" href="matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="194,81,241,108"/><area shape="rect" id="node4" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="174,132,261,159"/><area shape="rect" id="node5" href="classmapping.html#af434d9927dd8133b77c689f2b08a0a84" title="mapping::draw0" alt="" coords="160,183,275,209"/><area shape="rect" id="node14" href="classfigure.html#a3fd55eadd7f43ed274721facf085b70c" title="figure::pcolor" alt="" coords="169,233,266,260"/><area shape="rect" id="node6" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="337,5,423,32"/><area shape="rect" id="node7" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="323,56,437,83"/><area shape="rect" id="node8" href="matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="361,107,399,133"/><area shape="rect" id="node9" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="359,157,401,184"/><area shape="rect" id="node10" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="331,208,429,235"/><area shape="rect" id="node11" href="classmatrix.html#ad939a50bcde1d07fbb6bd45404351964" title="matrix::fliplr" alt="" coords="335,259,425,285"/><area shape="rect" id="node12" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="329,309,431,336"/><area shape="rect" id="node13" href="classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="339,360,421,387"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="af434d9927dd8133b77c689f2b08a0a84"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::draw0 </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>parity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_af434d9927dd8133b77c689f2b08a0a84_cgraph.png" border="0" usemap="#classmapping_af434d9927dd8133b77c689f2b08a0a84_cgraph" alt=""/></div>
+<map name="classmapping_af434d9927dd8133b77c689f2b08a0a84_cgraph" id="classmapping_af434d9927dd8133b77c689f2b08a0a84_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="182,5,269,32"/><area shape="rect" id="node3" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="168,56,283,83"/><area shape="rect" id="node4" href="matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="206,107,245,133"/><area shape="rect" id="node5" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="204,157,247,184"/><area shape="rect" id="node6" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="177,208,274,235"/><area shape="rect" id="node7" href="classmatrix.html#ad939a50bcde1d07fbb6bd45404351964" title="matrix::fliplr" alt="" coords="180,259,271,285"/><area shape="rect" id="node8" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="175,309,276,336"/><area shape="rect" id="node9" href="classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="184,360,267,387"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ab068a0511d2894bb4e3dafdf6a3b71fb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapping::drawc </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfigure.html">figure</a> *&#160;</td>
+          <td class="paramname"><em>pfig</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ncontours</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>parity</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_ab068a0511d2894bb4e3dafdf6a3b71fb_cgraph.png" border="0" usemap="#classmapping_ab068a0511d2894bb4e3dafdf6a3b71fb_cgraph" alt=""/></div>
+<map name="classmapping_ab068a0511d2894bb4e3dafdf6a3b71fb_cgraph" id="classmapping_ab068a0511d2894bb4e3dafdf6a3b71fb_cgraph">
+<area shape="rect" id="node2" href="classfigure.html#ae4ca4776686825943eabcf0feb86dee7" title="figure::axis" alt="" coords="182,31,269,57"/><area shape="rect" id="node3" href="matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="202,81,249,108"/><area shape="rect" id="node4" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="182,132,269,159"/><area shape="rect" id="node5" href="classmapping.html#af434d9927dd8133b77c689f2b08a0a84" title="mapping::draw0" alt="" coords="168,183,283,209"/><area shape="rect" id="node14" href="classfigure.html#a9943e2237a40186b9d5d990b3ecc87be" title="figure::plot" alt="" coords="184,233,267,260"/><area shape="rect" id="node15" href="classfigure.html#ae9094f8aaa8157b600ed26cd28f09668" title="figure::hold" alt="" coords="182,284,269,311"/><area shape="rect" id="node16" href="matrix_8h.html#a0259ec431cd9cc93c1a9dbd94aa162ba" title="min" alt="" coords="204,335,247,361"/><area shape="rect" id="node17" href="classfigure.html#ae3e759a8eb5ae7a6a46cd22c1af5ebdf" title="figure::caxis" alt="" coords="179,385,272,412"/><area shape="rect" id="node18" href="matrix_8h.html#a3733d7092ed4974a7f292df2002e0ff1" title="vector" alt="" coords="196,436,255,463"/><area shape="rect" id="node20" href="classfigure.html#a7874dba5827903909cfe54e349fcb571" title="figure::contour" alt="" coords="173,487,278,513"/><area shape="rect" id="node6" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="345,5,431,32"/><area shape="rect" id="node7" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="331,56,445,83"/><area shape="rect" id="node8" href="matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="369,107,407,133"/><area shape="rect" id="node9" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="367,157,409,184"/><area shape="rect" id="node10" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="339,208,437,235"/><area shape="rect" id="node11" href="classmatrix.html#ad939a50bcde1d07fbb6bd45404351964" title="matrix::fliplr" alt="" coords="343,259,433,285"/><area shape="rect" id="node12" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="337,309,439,336"/><area shape="rect" id="node13" href="classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="347,360,429,387"/><area shape="rect" id="node19" href="matrix_8cpp.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="353,436,423,463"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a69735ab5f566df0cea161bff0dd12b30"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapping::drawci </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfigure.html">figure</a> *&#160;</td>
+          <td class="paramname"><em>pfig</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>sr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>st</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ncontours</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>parity</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_a69735ab5f566df0cea161bff0dd12b30_cgraph.png" border="0" usemap="#classmapping_a69735ab5f566df0cea161bff0dd12b30_cgraph" alt=""/></div>
+<map name="classmapping_a69735ab5f566df0cea161bff0dd12b30_cgraph" id="classmapping_a69735ab5f566df0cea161bff0dd12b30_cgraph">
+<area shape="rect" id="node2" href="classfigure.html#ae4ca4776686825943eabcf0feb86dee7" title="figure::axis" alt="" coords="186,5,273,32"/><area shape="rect" id="node3" href="matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="759,81,806,108"/><area shape="rect" id="node4" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="739,157,826,184"/><area shape="rect" id="node5" href="classmapping.html#a37f4931465866b34d3afcb5041cd34f7" title="mapping::drawi0" alt="" coords="171,883,288,909"/><area shape="rect" id="node22" href="matrix_8h.html#a3733d7092ed4974a7f292df2002e0ff1" title="vector" alt="" coords="753,1313,812,1340"/><area shape="rect" id="node46" href="classfigure.html#a9943e2237a40186b9d5d990b3ecc87be" title="figure::plot" alt="" coords="188,1161,271,1188"/><area shape="rect" id="node47" href="classfigure.html#ae9094f8aaa8157b600ed26cd28f09668" title="figure::hold" alt="" coords="186,1212,273,1239"/><area shape="rect" id="node48" href="matrix_8h.html#a0259ec431cd9cc93c1a9dbd94aa162ba" title="min" alt="" coords="208,1263,251,1289"/><area shape="rect" id="node49" href="classfigure.html#ae3e759a8eb5ae7a6a46cd22c1af5ebdf" title="figure::caxis" alt="" coords="183,1313,276,1340"/><area shape="rect" id="node50" href="classfigure.html#a7874dba5827903909cfe54e349fcb571" title="figure::contour" alt="" coords="177,1364,282,1391"/><area shape="rect" id="node6" href="classdiff__leg.html#a4a20bbf87815938450005945c35442d3" title="diff_leg::init" alt="" coords="365,1035,454,1061"/><area shape="rect" id="node11" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="734,1465,831,1492"/><area shape="rect" id="node13" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="739,655,826,681"/><area shape="rect" id="node15" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="761,719,804,745"/><area shape="rect" id="node16" href="matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="763,1035,802,1061"/><area shape="rect" id="node19" href="classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="557,1491,640,1517"/><area shape="rect" id="node28" href="classdiff__gl.html#ae1ada3d9db3bc9bc6d94965dd3f49877" title="diff_gl::set_ndomains" alt="" coords="336,1389,483,1416"/><area shape="rect" id="node29" href="classdiff__gl.html#affdaab7ed99681dc21750a32ddca9e26" title="diff_gl::set_npts" alt="" coords="352,1440,467,1467"/><area shape="rect" id="node30" href="classdiff__gl.html#a5a7914414877cfdc44362a5ef2fd2ac8" title="diff_gl::set_xif" alt="" coords="357,1491,461,1517"/><area shape="rect" id="node31" href="classdiff__gl.html#a302ef348022ff2d5c83416130f00c6f5" title="diff_gl::init" alt="" coords="368,347,451,373"/><area shape="rect" id="node36" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="541,528,656,555"/><area shape="rect" id="node37" href="classdiff__gl.html#a273893d64ef8418624695f43833c9789" title="diff_gl::eval" alt="" coords="554,781,643,808"/><area shape="rect" id="node39" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="732,820,833,847"/><area shape="rect" id="node40" href="classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="351,427,468,453"/><area shape="rect" id="node42" href="classdiff__leg.html#aab4877a3dca16f6326294f396290bb39" title="diff_leg::eval_01" alt="" coords="351,477,468,504"/><area shape="rect" id="node43" href="classdiff__leg.html#a3a3bd0e927bba2fa9db4f1716853fafb" title="diff_leg::eval_10" alt="" coords="351,528,468,555"/><area shape="rect" id="node44" href="classdiff__leg.html#a51f6535740a957cb61864bbe65e6264c" title="diff_leg::eval_11" alt="" coords="351,579,468,605"/><area shape="rect" id="node45" href="classmatrix.html#ad939a50bcde1d07fbb6bd45404351964" title="matrix::fliplr" alt="" coords="364,1541,455,1568"/><area shape="rect" id="node7" href="classdiff__leg.html#ab7a001a60e694166877d26e5b2c69b4a" title="diff_leg::nodes" alt="" coords="545,157,652,184"/><area shape="rect" id="node10" href="matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="761,427,805,453"/><area shape="rect" id="node12" href="matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="757,903,808,929"/><area shape="rect" id="node14" href="matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="757,969,808,996"/><area shape="rect" id="node17" href="classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="730,477,835,504"/><area shape="rect" id="node18" href="matrix_8h.html#a7619b7346d9689923c8d174efacb92f8" title="sum" alt="" coords="575,1085,622,1112"/><area shape="rect" id="node20" href="classmatrix.html#a15e603fb0acec09059aae3e2136c1572" title="matrix::inv" alt="" coords="557,1136,640,1163"/><area shape="rect" id="node21" href="classdiff__leg.html#a81d64377be0432e72a1a6ed3418e2034" title="diff_leg::l_00" alt="" coords="551,1237,647,1264"/><area shape="rect" id="node24" href="matrix_8h.html#a069930b10a8e55fb1cd4cbc7aae7625f" title="eye" alt="" coords="577,1440,620,1467"/><area shape="rect" id="node25" href="classdiff__leg.html#a62fbfdb0389262a2ab8dffa1eb4f7a78" title="diff_leg::l_01" alt="" coords="551,1288,647,1315"/><area shape="rect" id="node26" href="classdiff__leg.html#a0a4ab7f57f079ce5deddf3fc8190abdc" title="diff_leg::l_10" alt="" coords="551,1339,647,1365"/><area shape="rect" id="node27" href="classdiff__leg.html#abf8ac10597cffbb86813ea63e6321411" title="diff_leg::l_11" alt="" coords="551,1389,647,1416"/><area shape="rect" id="node8" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="755,259,810,285"/><area shape="rect" id="node9" href="matrix_8h.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="748,208,817,235"/><area shape="rect" id="node23" href="matrix_8cpp.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="899,1313,968,1340"/><area shape="rect" id="node32" href="classmatrix__block__diag.html#aa7e7f89e4886b81f04713cb24b14603a" title="matrix_block_diag::\lset_nblocks" alt="" coords="531,310,666,351"/><area shape="rect" id="node33" href="classdiff__gl.html#ac47c995d19386f8b54d751641ed77b63" title="diff_gl::init_1" alt="" coords="551,259,647,285"/><area shape="rect" id="node34" href="classmatrix__block__diag.html#a5352c4c2942e35d052fa44617deff202" title="matrix_block_diag::\lblock" alt="" coords="715,335,850,377"/><area shape="rect" id="node35" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="734,528,831,555"/><area shape="rect" id="node38" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="732,769,833,796"/><area shape="rect" id="node41" href="classdiff__leg.html#ad863b7bdb1d8b47279f63a10e1843edd" title="diff_leg::eval" alt="" coords="551,477,647,504"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a01edc428d98b60c22131d16e5adec03f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapping::drawi </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfigure.html">figure</a> *&#160;</td>
+          <td class="paramname"><em>pfig</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>sr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>st</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>parity</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_a01edc428d98b60c22131d16e5adec03f_cgraph.png" border="0" usemap="#classmapping_a01edc428d98b60c22131d16e5adec03f_cgraph" alt=""/></div>
+<map name="classmapping_a01edc428d98b60c22131d16e5adec03f_cgraph" id="classmapping_a01edc428d98b60c22131d16e5adec03f_cgraph">
+<area shape="rect" id="node2" href="classfigure.html#ae4ca4776686825943eabcf0feb86dee7" title="figure::axis" alt="" coords="181,5,267,32"/><area shape="rect" id="node3" href="matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="754,275,801,301"/><area shape="rect" id="node4" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="903,401,990,428"/><area shape="rect" id="node5" href="classmapping.html#a37f4931465866b34d3afcb5041cd34f7" title="mapping::drawi0" alt="" coords="165,1212,283,1239"/><area shape="rect" id="node50" href="classfigure.html#a3fd55eadd7f43ed274721facf085b70c" title="figure::pcolor" alt="" coords="175,1263,273,1289"/><area shape="rect" id="node6" href="classdiff__leg.html#a4a20bbf87815938450005945c35442d3" title="diff_leg::init" alt="" coords="359,984,449,1011"/><area shape="rect" id="node13" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="729,528,826,555"/><area shape="rect" id="node20" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="734,1592,821,1619"/><area shape="rect" id="node21" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="756,1237,799,1264"/><area shape="rect" id="node22" href="matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="758,1187,797,1213"/><area shape="rect" id="node24" href="classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="552,1389,635,1416"/><area shape="rect" id="node33" href="classdiff__gl.html#ae1ada3d9db3bc9bc6d94965dd3f49877" title="diff_gl::set_ndomains" alt="" coords="331,249,477,276"/><area shape="rect" id="node34" href="classdiff__gl.html#affdaab7ed99681dc21750a32ddca9e26" title="diff_gl::set_npts" alt="" coords="347,300,461,327"/><area shape="rect" id="node35" href="classdiff__gl.html#a5a7914414877cfdc44362a5ef2fd2ac8" title="diff_gl::set_xif" alt="" coords="352,477,456,504"/><area shape="rect" id="node36" href="classdiff__gl.html#a302ef348022ff2d5c83416130f00c6f5" title="diff_gl::init" alt="" coords="363,351,445,377"/><area shape="rect" id="node40" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="536,157,651,184"/><area shape="rect" id="node41" href="classdiff__gl.html#a273893d64ef8418624695f43833c9789" title="diff_gl::eval" alt="" coords="549,1643,638,1669"/><area shape="rect" id="node43" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="727,1744,828,1771"/><area shape="rect" id="node44" href="classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="345,1541,463,1568"/><area shape="rect" id="node46" href="classdiff__leg.html#aab4877a3dca16f6326294f396290bb39" title="diff_leg::eval_01" alt="" coords="345,1288,463,1315"/><area shape="rect" id="node47" href="classdiff__leg.html#a3a3bd0e927bba2fa9db4f1716853fafb" title="diff_leg::eval_10" alt="" coords="345,1339,463,1365"/><area shape="rect" id="node48" href="classdiff__leg.html#a51f6535740a957cb61864bbe65e6264c" title="diff_leg::eval_11" alt="" coords="345,1491,463,1517"/><area shape="rect" id="node49" href="classmatrix.html#ad939a50bcde1d07fbb6bd45404351964" title="matrix::fliplr" alt="" coords="359,1389,449,1416"/><area shape="rect" id="node7" href="classdiff__leg.html#ab7a001a60e694166877d26e5b2c69b4a" title="diff_leg::nodes" alt="" coords="540,579,647,605"/><area shape="rect" id="node10" href="matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="925,959,969,985"/><area shape="rect" id="node16" href="classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="894,857,999,884"/><area shape="rect" id="node17" href="matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="921,1136,972,1163"/><area shape="rect" id="node19" href="matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="752,1339,803,1365"/><area shape="rect" id="node23" href="matrix_8h.html#a7619b7346d9689923c8d174efacb92f8" title="sum" alt="" coords="570,629,617,656"/><area shape="rect" id="node25" href="classmatrix.html#a15e603fb0acec09059aae3e2136c1572" title="matrix::inv" alt="" coords="552,1035,635,1061"/><area shape="rect" id="node28" href="classdiff__leg.html#a81d64377be0432e72a1a6ed3418e2034" title="diff_leg::l_00" alt="" coords="545,680,641,707"/><area shape="rect" id="node29" href="matrix_8h.html#a069930b10a8e55fb1cd4cbc7aae7625f" title="eye" alt="" coords="572,731,615,757"/><area shape="rect" id="node30" href="classdiff__leg.html#a62fbfdb0389262a2ab8dffa1eb4f7a78" title="diff_leg::l_01" alt="" coords="545,781,641,808"/><area shape="rect" id="node31" href="classdiff__leg.html#a0a4ab7f57f079ce5deddf3fc8190abdc" title="diff_leg::l_10" alt="" coords="545,832,641,859"/><area shape="rect" id="node32" href="classdiff__leg.html#abf8ac10597cffbb86813ea63e6321411" title="diff_leg::l_11" alt="" coords="545,883,641,909"/><area shape="rect" id="node8" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="919,629,974,656"/><area shape="rect" id="node9" href="matrix_8h.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="743,477,812,504"/><area shape="rect" id="node11" href="lapack_8h.html#aef3a50072db5f395fe95586c0f468f89" title="dsterf_" alt="" coords="746,731,809,757"/><area shape="rect" id="node12" href="classmatrix.html#af220f2a5835e6531bb17b850063a12cf" title="Returns the pointer to the matrix data. " alt="" coords="732,781,823,808"/><area shape="rect" id="node14" href="classdiff__leg.html#a96d444979876988970dd44e634a7ab96" title="diff_leg::Pn" alt="" coords="733,832,821,859"/><area shape="rect" id="node18" href="matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="756,680,799,707"/><area shape="rect" id="node15" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="898,1364,995,1391"/><area shape="rect" id="node26" href="lapack_8h.html#ae56e8f1e7103728e3bc7c17b82868a81" title="dgetrf_" alt="" coords="746,1035,809,1061"/><area shape="rect" id="node27" href="lapack_8h.html#ad45051b902d2f7e6f8f15c930b593291" title="dgetri_" alt="" coords="747,1085,808,1112"/><area shape="rect" id="node37" href="classmatrix__block__diag.html#aa7e7f89e4886b81f04713cb24b14603a" title="matrix_block_diag::\lset_nblocks" alt="" coords="526,259,661,301"/><area shape="rect" id="node38" href="classdiff__gl.html#ac47c995d19386f8b54d751641ed77b63" title="diff_gl::init_1" alt="" coords="545,376,641,403"/><area shape="rect" id="node39" href="classmatrix__block__diag.html#a5352c4c2942e35d052fa44617deff202" title="matrix_block_diag::\lblock" alt="" coords="710,158,845,199"/><area shape="rect" id="node42" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="727,1643,828,1669"/><area shape="rect" id="node45" href="classdiff__leg.html#ad863b7bdb1d8b47279f63a10e1843edd" title="diff_leg::eval" alt="" coords="545,1491,641,1517"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a37f4931465866b34d3afcb5041cd34f7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::drawi0 </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>sr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>st</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>parity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_a37f4931465866b34d3afcb5041cd34f7_cgraph.png" border="0" usemap="#classmapping_a37f4931465866b34d3afcb5041cd34f7_cgraph" alt=""/></div>
+<map name="classmapping_a37f4931465866b34d3afcb5041cd34f7_cgraph" id="classmapping_a37f4931465866b34d3afcb5041cd34f7_cgraph">
+<area shape="rect" id="node2" href="classdiff__leg.html#a4a20bbf87815938450005945c35442d3" title="diff_leg::init" alt="" coords="199,1197,289,1224"/><area shape="rect" id="node9" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="569,1831,666,1857"/><area shape="rect" id="node18" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="743,279,830,305"/><area shape="rect" id="node19" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="596,583,639,609"/><area shape="rect" id="node20" href="matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="598,1071,637,1097"/><area shape="rect" id="node22" href="classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="392,1704,475,1731"/><area shape="rect" id="node33" href="classdiff__gl.html#ae1ada3d9db3bc9bc6d94965dd3f49877" title="diff_gl::set_ndomains" alt="" coords="171,1349,317,1376"/><area shape="rect" id="node34" href="classdiff__gl.html#affdaab7ed99681dc21750a32ddca9e26" title="diff_gl::set_npts" alt="" coords="187,1400,301,1427"/><area shape="rect" id="node35" href="classdiff__gl.html#a5a7914414877cfdc44362a5ef2fd2ac8" title="diff_gl::set_xif" alt="" coords="192,1451,296,1477"/><area shape="rect" id="node36" href="classdiff__gl.html#a302ef348022ff2d5c83416130f00c6f5" title="diff_gl::init" alt="" coords="203,740,285,767"/><area shape="rect" id="node41" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="376,540,491,567"/><area shape="rect" id="node42" href="classdiff__gl.html#a273893d64ef8418624695f43833c9789" title="diff_gl::eval" alt="" coords="389,228,478,255"/><area shape="rect" id="node44" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="567,76,668,103"/><area shape="rect" id="node45" href="classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="185,532,303,559"/><area shape="rect" id="node47" href="classdiff__leg.html#aab4877a3dca16f6326294f396290bb39" title="diff_leg::eval_01" alt="" coords="185,380,303,407"/><area shape="rect" id="node48" href="classdiff__leg.html#a3a3bd0e927bba2fa9db4f1716853fafb" title="diff_leg::eval_10" alt="" coords="185,431,303,457"/><area shape="rect" id="node49" href="classdiff__leg.html#a51f6535740a957cb61864bbe65e6264c" title="diff_leg::eval_11" alt="" coords="185,481,303,508"/><area shape="rect" id="node50" href="classmatrix.html#ad939a50bcde1d07fbb6bd45404351964" title="matrix::fliplr" alt="" coords="199,1501,289,1528"/><area shape="rect" id="node3" href="classdiff__leg.html#ab7a001a60e694166877d26e5b2c69b4a" title="diff_leg::nodes" alt="" coords="380,1552,487,1579"/><area shape="rect" id="node6" href="matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="765,1577,809,1604"/><area shape="rect" id="node12" href="classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="734,1096,839,1123"/><area shape="rect" id="node13" href="matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="761,1223,812,1249"/><area shape="rect" id="node17" href="matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="592,532,643,559"/><area shape="rect" id="node21" href="matrix_8h.html#a7619b7346d9689923c8d174efacb92f8" title="sum" alt="" coords="410,1071,457,1097"/><area shape="rect" id="node23" href="classmatrix.html#a15e603fb0acec09059aae3e2136c1572" title="matrix::inv" alt="" coords="392,1603,475,1629"/><area shape="rect" id="node26" href="classdiff__leg.html#a81d64377be0432e72a1a6ed3418e2034" title="diff_leg::l_00" alt="" coords="385,1273,481,1300"/><area shape="rect" id="node28" href="matrix_8h.html#a069930b10a8e55fb1cd4cbc7aae7625f" title="eye" alt="" coords="412,860,455,887"/><area shape="rect" id="node30" href="classdiff__leg.html#a62fbfdb0389262a2ab8dffa1eb4f7a78" title="diff_leg::l_01" alt="" coords="385,1375,481,1401"/><area shape="rect" id="node31" href="classdiff__leg.html#a0a4ab7f57f079ce5deddf3fc8190abdc" title="diff_leg::l_10" alt="" coords="385,1223,481,1249"/><area shape="rect" id="node32" href="classdiff__leg.html#abf8ac10597cffbb86813ea63e6321411" title="diff_leg::l_11" alt="" coords="385,1324,481,1351"/><area shape="rect" id="node4" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="759,969,814,996"/><area shape="rect" id="node5" href="matrix_8h.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="583,1425,652,1452"/><area shape="rect" id="node7" href="lapack_8h.html#aef3a50072db5f395fe95586c0f468f89" title="dsterf_" alt="" coords="586,1628,649,1655"/><area shape="rect" id="node8" href="classmatrix.html#af220f2a5835e6531bb17b850063a12cf" title="Returns the pointer to the matrix data. " alt="" coords="572,1679,663,1705"/><area shape="rect" id="node10" href="classdiff__leg.html#a96d444979876988970dd44e634a7ab96" title="diff_leg::Pn" alt="" coords="573,1223,661,1249"/><area shape="rect" id="node14" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="743,1324,830,1351"/><area shape="rect" id="node15" href="matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="594,1729,641,1756"/><area shape="rect" id="node16" href="matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="596,1577,639,1604"/><area shape="rect" id="node11" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="738,624,835,651"/><area shape="rect" id="node24" href="lapack_8h.html#ae56e8f1e7103728e3bc7c17b82868a81" title="dgetrf_" alt="" coords="586,1932,649,1959"/><area shape="rect" id="node25" href="lapack_8h.html#ad45051b902d2f7e6f8f15c930b593291" title="dgetri_" alt="" coords="587,1881,648,1908"/><area shape="rect" id="node27" href="matrix_8h.html#a3733d7092ed4974a7f292df2002e0ff1" title="vector" alt="" coords="588,1375,647,1401"/><area shape="rect" id="node29" href="classmatrix.html#a0d38262959de19208fc8c21780457c95" title="Sets the matrix to the nrows x ncols zero matrix. " alt="" coords="572,751,663,777"/><area shape="rect" id="node37" href="classmatrix__block__diag.html#aa7e7f89e4886b81f04713cb24b14603a" title="matrix_block_diag::\lset_nblocks" alt="" coords="366,591,501,633"/><area shape="rect" id="node39" href="classdiff__gl.html#ac47c995d19386f8b54d751641ed77b63" title="diff_gl::init_1" alt="" coords="385,969,481,996"/><area shape="rect" id="node40" href="classmatrix__block__diag.html#a5352c4c2942e35d052fa44617deff202" title="matrix_block_diag::\lblock" alt="" coords="550,802,685,843"/><area shape="rect" id="node38" href="classmatrix__block__diag.html#a912db280a7c26104ae061e079c7bde26" title="matrix_block_diag::\lnblocks" alt="" coords="550,634,685,675"/><area shape="rect" id="node43" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="567,228,668,255"/><area shape="rect" id="node46" href="classdiff__leg.html#ad863b7bdb1d8b47279f63a10e1843edd" title="diff_leg::eval" alt="" coords="385,431,481,457"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="adbbe98f3cc7e997eba6458a95a48a160"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::dt </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a14aa3b6f67ec7510b9a7b6af8d4255e5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::dt2 </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_a14aa3b6f67ec7510b9a7b6af8d4255e5_cgraph.png" border="0" usemap="#classmapping_a14aa3b6f67ec7510b9a7b6af8d4255e5_cgraph" alt=""/></div>
+<map name="classmapping_a14aa3b6f67ec7510b9a7b6af8d4255e5_cgraph" id="classmapping_a14aa3b6f67ec7510b9a7b6af8d4255e5_cgraph">
+<area shape="rect" id="node2" href="classmapping.html#a88a597b162bcf9e4e185d54d7ddc5692" title="mapping::dt_odd" alt="" coords="153,5,271,32"/><area shape="rect" id="node3" href="classmapping.html#adbbe98f3cc7e997eba6458a95a48a160" title="mapping::dt" alt="" coords="167,56,257,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a88a597b162bcf9e4e185d54d7ddc5692"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::dt_odd </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a497351f1c0bcd93b5dced61cceedc8f2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::eval </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>ri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>thi</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>parity</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_a497351f1c0bcd93b5dced61cceedc8f2_cgraph.png" border="0" usemap="#classmapping_a497351f1c0bcd93b5dced61cceedc8f2_cgraph" alt=""/></div>
+<map name="classmapping_a497351f1c0bcd93b5dced61cceedc8f2_cgraph" id="classmapping_a497351f1c0bcd93b5dced61cceedc8f2_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="469,56,571,83"/><area shape="rect" id="node3" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="471,5,569,32"/><area shape="rect" id="node4" href="classdiff__leg.html#ad863b7bdb1d8b47279f63a10e1843edd" title="diff_leg::eval" alt="" coords="323,256,419,283"/><area shape="rect" id="node13" href="classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="157,252,275,279"/><area shape="rect" id="node14" href="matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="193,303,239,329"/><area shape="rect" id="node15" href="classdiff__gl.html#a273893d64ef8418624695f43833c9789" title="diff_gl::eval" alt="" coords="326,151,415,177"/><area shape="rect" id="node5" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="499,157,541,184"/><area shape="rect" id="node6" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="477,208,563,235"/><area shape="rect" id="node7" href="matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="495,461,545,488"/><area shape="rect" id="node8" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="493,512,547,539"/><area shape="rect" id="node9" href="classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="467,309,573,336"/><area shape="rect" id="node10" href="matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="498,360,542,387"/><area shape="rect" id="node11" href="matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="501,411,539,437"/><area shape="rect" id="node12" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="469,259,571,285"/><area shape="rect" id="node16" href="matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="495,107,545,133"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="af93544cdac32ac9a8aa92a3c674eb8dd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int mapping::init </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_af93544cdac32ac9a8aa92a3c674eb8dd_cgraph.png" border="0" usemap="#classmapping_af93544cdac32ac9a8aa92a3c674eb8dd_cgraph" alt=""/></div>
+<map name="classmapping_af93544cdac32ac9a8aa92a3c674eb8dd_cgraph" id="classmapping_af93544cdac32ac9a8aa92a3c674eb8dd_cgraph">
+<area shape="rect" id="node2" href="matrix_8h.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="700,594,769,621"/><area shape="rect" id="node3" href="matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="709,544,760,570"/><area shape="rect" id="node4" href="classdiff__leg.html#a4a20bbf87815938450005945c35442d3" title="diff_leg::init" alt="" coords="162,442,251,469"/><area shape="rect" id="node34" href="classdiff__gl.html#a302ef348022ff2d5c83416130f00c6f5" title="diff_gl::init" alt="" coords="329,1709,412,1736"/><area shape="rect" id="node43" href="classmapping.html#aad8bde507d71c669dc4259b44d5b51aa" title="mapping::remap" alt="" coords="149,1405,264,1432"/><area shape="rect" id="node5" href="classdiff__leg.html#ab7a001a60e694166877d26e5b2c69b4a" title="diff_leg::nodes" alt="" coords="317,848,424,874"/><area shape="rect" id="node7" href="matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="713,962,757,989"/><area shape="rect" id="node13" href="classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="682,1557,787,1584"/><area shape="rect" id="node17" href="matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="345,189,396,216"/><area shape="rect" id="node18" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="691,1278,778,1305"/><area shape="rect" id="node19" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="713,1608,756,1634"/><area shape="rect" id="node20" href="matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="715,1140,754,1166"/><area shape="rect" id="node21" href="matrix_8h.html#a7619b7346d9689923c8d174efacb92f8" title="sum" alt="" coords="347,290,394,317"/><area shape="rect" id="node22" href="classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="329,341,412,368"/><area shape="rect" id="node23" href="classmatrix.html#a15e603fb0acec09059aae3e2136c1572" title="matrix::inv" alt="" coords="329,392,412,418"/><area shape="rect" id="node26" href="classdiff__leg.html#a81d64377be0432e72a1a6ed3418e2034" title="diff_leg::l_00" alt="" coords="323,37,419,64"/><area shape="rect" id="node29" href="matrix_8h.html#a069930b10a8e55fb1cd4cbc7aae7625f" title="eye" alt="" coords="349,1101,392,1128"/><area shape="rect" id="node31" href="classdiff__leg.html#a62fbfdb0389262a2ab8dffa1eb4f7a78" title="diff_leg::l_01" alt="" coords="323,88,419,114"/><area shape="rect" id="node32" href="classdiff__leg.html#a0a4ab7f57f079ce5deddf3fc8190abdc" title="diff_leg::l_10" alt="" coords="323,138,419,165"/><area shape="rect" id="node33" href="classdiff__leg.html#abf8ac10597cffbb86813ea63e6321411" title="diff_leg::l_11" alt="" coords="323,240,419,266"/><area shape="rect" id="node6" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="707,1354,762,1381"/><area shape="rect" id="node8" href="lapack_8h.html#aef3a50072db5f395fe95586c0f468f89" title="dsterf_" alt="" coords="514,746,577,773"/><area shape="rect" id="node9" href="classmatrix.html#af220f2a5835e6531bb17b850063a12cf" title="Returns the pointer to the matrix data. " alt="" coords="500,797,591,824"/><area shape="rect" id="node10" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="497,1202,594,1229"/><area shape="rect" id="node11" href="classdiff__leg.html#a96d444979876988970dd44e634a7ab96" title="diff_leg::Pn" alt="" coords="501,1000,589,1026"/><area shape="rect" id="node14" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="691,1038,778,1065"/><area shape="rect" id="node15" href="matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="522,848,569,874"/><area shape="rect" id="node16" href="matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="524,898,567,925"/><area shape="rect" id="node12" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="686,1405,783,1432"/><area shape="rect" id="node24" href="lapack_8h.html#ae56e8f1e7103728e3bc7c17b82868a81" title="dgetrf_" alt="" coords="514,341,577,368"/><area shape="rect" id="node25" href="lapack_8h.html#ad45051b902d2f7e6f8f15c930b593291" title="dgetri_" alt="" coords="515,392,576,418"/><area shape="rect" id="node27" href="matrix_8h.html#a3733d7092ed4974a7f292df2002e0ff1" title="vector" alt="" coords="705,138,764,165"/><area shape="rect" id="node28" href="matrix_8cpp.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="856,138,925,165"/><area shape="rect" id="node30" href="classmatrix.html#a0d38262959de19208fc8c21780457c95" title="Sets the matrix to the nrows x ncols zero matrix. " alt="" coords="500,1152,591,1178"/><area shape="rect" id="node35" href="classmatrix__block__diag.html#aa7e7f89e4886b81f04713cb24b14603a" title="matrix_block_diag::\lset_nblocks" alt="" coords="478,1871,613,1912"/><area shape="rect" id="node37" href="classdiff__gl.html#ac47c995d19386f8b54d751641ed77b63" title="diff_gl::init_1" alt="" coords="497,1709,593,1736"/><area shape="rect" id="node38" href="classmatrix__block__diag.html#a5352c4c2942e35d052fa44617deff202" title="matrix_block_diag::\lblock" alt="" coords="667,1811,802,1852"/><area shape="rect" id="node42" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="488,1608,603,1634"/><area shape="rect" id="node36" href="classmatrix__block__diag.html#a912db280a7c26104ae061e079c7bde26" title="matrix_block_diag::\lnblocks" alt="" coords="667,1876,802,1918"/><area shape="rect" id="node39" href="matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="711,1760,758,1786"/><area shape="rect" id="node40" href="matrix_8h.html#a4c6cf8d39363ecd516ed51dc06c9306d" title="floor" alt="" coords="711,1658,758,1685"/><area shape="rect" id="node41" href="classmatrix.html#a2e3c625e24844fbb6dc731c735878824" title="matrix::setblock_step" alt="" coords="661,1709,808,1736"/><area shape="rect" id="node44" href="classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="312,1456,429,1482"/><area shape="rect" id="node48" href="matrix_8h.html#a86292df4a6da0a0e0a8137647f9a7255" title="exist" alt="" coords="345,1557,396,1584"/><area shape="rect" id="node45" href="classdiff__leg.html#ad863b7bdb1d8b47279f63a10e1843edd" title="diff_leg::eval" alt="" coords="497,1456,593,1482"/><area shape="rect" id="node46" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="684,1456,785,1482"/><area shape="rect" id="node47" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="684,1506,785,1533"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a064b38ccf1010b5102be3b2d9b950a7c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmapping.html">mapping</a> &amp; mapping::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmapping.html">mapping</a> &amp;&#160;</td>
+          <td class="paramname"><em>map</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_a064b38ccf1010b5102be3b2d9b950a7c_cgraph.png" border="0" usemap="#classmapping_a064b38ccf1010b5102be3b2d9b950a7c_cgraph" alt=""/></div>
+<map name="classmapping_a064b38ccf1010b5102be3b2d9b950a7c_cgraph" id="classmapping_a064b38ccf1010b5102be3b2d9b950a7c_cgraph">
+<area shape="rect" id="node2" href="classmapping.html#ab00a7173c588a6a99edc79f51602d0d2" title="mapping::copy" alt="" coords="189,5,296,32"/><area shape="rect" id="node3" href="classmapping_1_1ext__map.html#a3af2b36f85a525defb7dd5192b0987b3" title="mapping::ext_map::copy" alt="" coords="344,5,509,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aad8bde507d71c669dc4259b44d5b51aa"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int mapping::remap </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_aad8bde507d71c669dc4259b44d5b51aa_cgraph.png" border="0" usemap="#classmapping_aad8bde507d71c669dc4259b44d5b51aa_cgraph" alt=""/></div>
+<map name="classmapping_aad8bde507d71c669dc4259b44d5b51aa_cgraph" id="classmapping_aad8bde507d71c669dc4259b44d5b51aa_cgraph">
+<area shape="rect" id="node2" href="classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="168,261,285,288"/><area shape="rect" id="node7" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="547,5,634,32"/><area shape="rect" id="node8" href="matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="565,259,616,285"/><area shape="rect" id="node9" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="563,461,618,488"/><area shape="rect" id="node10" href="classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="538,360,643,387"/><area shape="rect" id="node14" href="classdiff__gl.html#a302ef348022ff2d5c83416130f00c6f5" title="diff_gl::init" alt="" coords="185,581,268,608"/><area shape="rect" id="node24" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="547,897,634,924"/><area shape="rect" id="node26" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="344,724,459,751"/><area shape="rect" id="node27" href="matrix_8h.html#a86292df4a6da0a0e0a8137647f9a7255" title="exist" alt="" coords="201,825,252,852"/><area shape="rect" id="node28" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="178,876,275,903"/><area shape="rect" id="node3" href="classdiff__leg.html#ad863b7bdb1d8b47279f63a10e1843edd" title="diff_leg::eval" alt="" coords="353,259,449,285"/><area shape="rect" id="node4" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="540,157,641,184"/><area shape="rect" id="node5" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="542,411,639,437"/><area shape="rect" id="node6" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="569,309,612,336"/><area shape="rect" id="node11" href="matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="569,208,613,235"/><area shape="rect" id="node12" href="matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="571,56,610,83"/><area shape="rect" id="node13" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="540,107,641,133"/><area shape="rect" id="node15" href="classmatrix__block__diag.html#aa7e7f89e4886b81f04713cb24b14603a" title="matrix_block_diag::\lset_nblocks" alt="" coords="334,658,469,699"/><area shape="rect" id="node17" href="classdiff__gl.html#ac47c995d19386f8b54d751641ed77b63" title="diff_gl::init_1" alt="" coords="353,556,449,583"/><area shape="rect" id="node21" href="classmatrix__block__diag.html#a5352c4c2942e35d052fa44617deff202" title="matrix_block_diag::\lblock" alt="" coords="523,766,658,807"/><area shape="rect" id="node16" href="classmatrix__block__diag.html#a912db280a7c26104ae061e079c7bde26" title="matrix_block_diag::\lnblocks" alt="" coords="523,831,658,873"/><area shape="rect" id="node18" href="matrix_8h.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="556,512,625,539"/><area shape="rect" id="node19" href="matrix_8h.html#a3733d7092ed4974a7f292df2002e0ff1" title="vector" alt="" coords="561,563,620,589"/><area shape="rect" id="node22" href="matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="567,613,614,640"/><area shape="rect" id="node23" href="matrix_8h.html#a4c6cf8d39363ecd516ed51dc06c9306d" title="floor" alt="" coords="567,664,614,691"/><area shape="rect" id="node25" href="classmatrix.html#a2e3c625e24844fbb6dc731c735878824" title="matrix::setblock_step" alt="" coords="517,715,664,741"/><area shape="rect" id="node20" href="matrix_8cpp.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="712,563,781,589"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a253990fdedac4fc10becaceae5e4a2be"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapping::set_mode </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8de7a1d48f7783ab550732e849d29eb1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapping::set_ndomains </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ndom</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_a8de7a1d48f7783ab550732e849d29eb1_cgraph.png" border="0" usemap="#classmapping_a8de7a1d48f7783ab550732e849d29eb1_cgraph" alt=""/></div>
+<map name="classmapping_a8de7a1d48f7783ab550732e849d29eb1_cgraph" id="classmapping_a8de7a1d48f7783ab550732e849d29eb1_cgraph">
+<area shape="rect" id="node2" href="classdiff__gl.html#ae1ada3d9db3bc9bc6d94965dd3f49877" title="diff_gl::set_ndomains" alt="" coords="213,5,360,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ad99a3e81610a4ea47070899fd7b20a78"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapping::set_nex </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nex</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_ad99a3e81610a4ea47070899fd7b20a78_cgraph.png" border="0" usemap="#classmapping_ad99a3e81610a4ea47070899fd7b20a78_cgraph" alt=""/></div>
+<map name="classmapping_ad99a3e81610a4ea47070899fd7b20a78_cgraph" id="classmapping_ad99a3e81610a4ea47070899fd7b20a78_cgraph">
+<area shape="rect" id="node2" href="classdiff__gl.html#affdaab7ed99681dc21750a32ddca9e26" title="diff_gl::set_npts" alt="" coords="179,5,293,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a474b1bcf20e93fd902ba13e0a2f64684"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapping::set_npts </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>npts</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4cfc4d7ae09d0e92d1ce2effa64920f0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapping::set_npts </td>
+          <td>(</td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>npts</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a70ee2e26bc7b2bf36a68cdb0c90a818e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapping::set_nt </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nt</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a914df197007ae1a1d656426ec5b7a42e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapping::spectrum </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfigure.html">figure</a> *&#160;</td>
+          <td class="paramname"><em>pfig</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>parity</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_a914df197007ae1a1d656426ec5b7a42e_cgraph.png" border="0" usemap="#classmapping_a914df197007ae1a1d656426ec5b7a42e_cgraph" alt=""/></div>
+<map name="classmapping_a914df197007ae1a1d656426ec5b7a42e_cgraph" id="classmapping_a914df197007ae1a1d656426ec5b7a42e_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="187,5,288,32"/><area shape="rect" id="node3" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="189,56,286,83"/><area shape="rect" id="node4" href="classdiff__leg.html#a81d64377be0432e72a1a6ed3418e2034" title="diff_leg::l_00" alt="" coords="189,107,285,133"/><area shape="rect" id="node7" href="classdiff__leg.html#a62fbfdb0389262a2ab8dffa1eb4f7a78" title="diff_leg::l_01" alt="" coords="189,157,285,184"/><area shape="rect" id="node8" href="classdiff__leg.html#a0a4ab7f57f079ce5deddf3fc8190abdc" title="diff_leg::l_10" alt="" coords="189,208,285,235"/><area shape="rect" id="node9" href="classdiff__leg.html#abf8ac10597cffbb86813ea63e6321411" title="diff_leg::l_11" alt="" coords="189,259,285,285"/><area shape="rect" id="node10" href="matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="216,309,259,336"/><area shape="rect" id="node11" href="matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="214,360,261,387"/><area shape="rect" id="node12" href="matrix_8h.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="203,411,272,437"/><area shape="rect" id="node13" href="classfigure.html#ae3e759a8eb5ae7a6a46cd22c1af5ebdf" title="figure::caxis" alt="" coords="191,461,284,488"/><area shape="rect" id="node14" href="classfigure.html#a3fd55eadd7f43ed274721facf085b70c" title="figure::pcolor" alt="" coords="189,512,286,539"/><area shape="rect" id="node15" href="matrix_8h.html#a10ecd5cb454340b8c168fd4a9924985d" title="log10" alt="" coords="211,563,264,589"/><area shape="rect" id="node16" href="classfigure.html#ae9094f8aaa8157b600ed26cd28f09668" title="figure::hold" alt="" coords="194,613,281,640"/><area shape="rect" id="node17" href="classfigure.html#a9943e2237a40186b9d5d990b3ecc87be" title="figure::plot" alt="" coords="196,664,279,691"/><area shape="rect" id="node18" href="matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="212,715,263,741"/><area shape="rect" id="node5" href="matrix_8h.html#a3733d7092ed4974a7f292df2002e0ff1" title="vector" alt="" coords="336,183,395,209"/><area shape="rect" id="node6" href="matrix_8cpp.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="443,183,512,209"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a0c98497263390263cfecc5ff6fa16db3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::stream </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>Fz</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>Ft</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_a0c98497263390263cfecc5ff6fa16db3_cgraph.png" border="0" usemap="#classmapping_a0c98497263390263cfecc5ff6fa16db3_cgraph" alt=""/></div>
+<map name="classmapping_a0c98497263390263cfecc5ff6fa16db3_cgraph" id="classmapping_a0c98497263390263cfecc5ff6fa16db3_cgraph">
+<area shape="rect" id="node2" href="classdiff__leg.html#a81d64377be0432e72a1a6ed3418e2034" title="diff_leg::l_00" alt="" coords="179,5,275,32"/><area shape="rect" id="node5" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="176,56,277,83"/><area shape="rect" id="node6" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="199,107,254,133"/><area shape="rect" id="node7" href="classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="174,157,279,184"/><area shape="rect" id="node3" href="matrix_8h.html#a3733d7092ed4974a7f292df2002e0ff1" title="vector" alt="" coords="328,5,387,32"/><area shape="rect" id="node4" href="matrix_8cpp.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="435,5,504,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="af7d037e45eebeeec91e6993cbefbd030"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::stream </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>Fz</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_af7d037e45eebeeec91e6993cbefbd030_cgraph.png" border="0" usemap="#classmapping_af7d037e45eebeeec91e6993cbefbd030_cgraph" alt=""/></div>
+<map name="classmapping_af7d037e45eebeeec91e6993cbefbd030_cgraph" id="classmapping_af7d037e45eebeeec91e6993cbefbd030_cgraph">
+<area shape="rect" id="node2" href="classmapping.html#a0c98497263390263cfecc5ff6fa16db3" title="mapping::stream" alt="" coords="174,81,293,108"/><area shape="rect" id="node3" href="classdiff__leg.html#a81d64377be0432e72a1a6ed3418e2034" title="diff_leg::l_00" alt="" coords="347,5,443,32"/><area shape="rect" id="node6" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="344,56,445,83"/><area shape="rect" id="node7" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="367,107,422,133"/><area shape="rect" id="node8" href="classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="342,157,447,184"/><area shape="rect" id="node4" href="matrix_8h.html#a3733d7092ed4974a7f292df2002e0ff1" title="vector" alt="" coords="496,5,555,32"/><area shape="rect" id="node5" href="matrix_8cpp.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="603,5,672,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a59e4729fdd528d34c056fcda53a050ad"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::zeta_to_r </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>z</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmapping_a59e4729fdd528d34c056fcda53a050ad_cgraph.png" border="0" usemap="#classmapping_a59e4729fdd528d34c056fcda53a050ad_cgraph" alt=""/></div>
+<map name="classmapping_a59e4729fdd528d34c056fcda53a050ad_cgraph" id="classmapping_a59e4729fdd528d34c056fcda53a050ad_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="325,5,427,32"/><area shape="rect" id="node3" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="327,56,425,83"/><area shape="rect" id="node4" href="classdiff__gl.html#a273893d64ef8418624695f43833c9789" title="diff_gl::eval" alt="" coords="187,107,277,133"/><area shape="rect" id="node9" href="classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="191,157,273,184"/><area shape="rect" id="node5" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="333,208,419,235"/><area shape="rect" id="node6" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="355,259,397,285"/><area shape="rect" id="node7" href="matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="351,107,401,133"/><area shape="rect" id="node8" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="325,157,427,184"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a class="anchor" id="ab5f5d23a3814866f286cf8789adad493"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classmapping_1_1ext__map.html">ext_map</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a86f70d18672dfa2fbe9c2e7a82029c6f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&amp; mapping::D</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae5769e721b467f2aa418639d5d477614"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> &amp; mapping::Dt</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aba7d3690bca899540da34d29dfa2f827"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> &amp; mapping::Dt2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af5a2baac99a2c44c4a4321ccb4e78284"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> &amp; mapping::Dt2_01</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7bbe5c3167a55f50b38aa4d1f3793a2d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> &amp; mapping::Dt2_10</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="adce3a54ddbd496ec7a847f1f4a75278a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> &amp; mapping::Dt2_11</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac6e80b5b2e3d0afd43ba62bc11bde1c7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> &amp; mapping::Dt_01</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1cf144a9099dd28506d1cf2ebf4a011b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> &amp; mapping::Dt_10</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af25cd1b910fd33f9750de84d99bbc384"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> &amp; mapping::Dt_11</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a68786df651423598b35b0e3c82571baa"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classmatrix.html">matrix</a>&amp; mapping::eta</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af9d7cd1b70f62f2d3d289f5eff5510a9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::eta_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a886e18568cb0453a1b4724de85af4371"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">class <a class="el" href="classmapping_1_1ext__map.html">mapping::ext_map</a>  mapping::ex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae292ba60db90f691e874cfd1d8be0e21"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdiff__gl.html">diff_gl</a> mapping::gl</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a29da47907c300c39844b3debf95e927e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::gtt</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a464f378c3c1ae698dc8e057c6ca56bbc"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::gzt</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a69439587655481ab4b8689230d0cf37a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::gzz</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a53f4ceff9ae0b27b9a3a6802cdf84bd1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a>&amp; mapping::I</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a205f451692352f2f393b556f69a4556c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> &amp; mapping::It</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a144ad3185766d187e6a8b51ea91e3751"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::J[4]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a07570a6af8ec633d9e934ee3b13eb35d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdiff__leg.html">diff_leg</a> mapping::leg</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af64f8c200dc60fb68ffa18de2f439209"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int mapping::mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2565166c120d55d95d5aa67674ab63b8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int &amp; mapping::ndomains</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="acf0ede8bab24d2f14a95527bcba448b9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int&amp; mapping::nex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a25ae128a8880975082594e514d5c6930"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int*&amp; mapping::npts</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2024527b12d2ef19f3b37ce82b81664a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int&amp; mapping::nr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7bf891052a78465dc2f721421758083b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int &amp; mapping::nt</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="adde10302f12e80b0733fbe6db9feb17d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::r</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3e6cc2324ec542f58e54854ae1af057b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::R</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a97533f7bc5124f5a5cc2cda1137f4636"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::rt</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7bc8844118880c2c24a6a9982aed6f36"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::rtt</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad044c989b5827592437cf97dc96d4bd5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::rz</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="abc82ffd5282dc7fd17762a943d33ee27"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::rzt</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a78065257c746dc53e55287c0785e44b2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> mapping::rzz</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2f7a5762d3e463233971f95a0db51147"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> &amp; mapping::th</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a06ede61ab17a0b3e4bb057ac9e30891a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a>&amp; mapping::z</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/include/<a class="el" href="mapping_8h_source.html">mapping.h</a></li>
-<li>src/mapping/mapping.cpp</li>
+<li>src/mapping/<a class="el" href="mapping_8cpp.html">mapping.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:27 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

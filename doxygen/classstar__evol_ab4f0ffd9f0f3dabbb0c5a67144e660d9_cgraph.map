@@ -1,0 +1,51 @@
+<map id="star_evol::fill" name="star_evol::fill">
+<area shape="rect" id="node2" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="150,859,229,885"/>
+<area shape="rect" id="node3" href="$classstar2d.html#a89f64e2c8a79d1b87a753ee0a871bbef" title="star2d::init_comp" alt="" coords="925,73,1048,100"/>
+<area shape="rect" id="node9" href="$classstar2d.html#a56cb59b4d6994784487320cee8ae8652" title="star2d::eq_state" alt="" coords="638,276,754,303"/>
+<area shape="rect" id="node16" href="$matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="1146,1239,1193,1265"/>
+<area shape="rect" id="node24" href="$classstar2d.html#a7dc19f2defb4e1a8a565d2170e53036a" title="star2d::opacity" alt="" coords="642,859,750,885"/>
+<area shape="rect" id="node32" href="$classstar2d.html#adfe376d502e668085dba6fb5d0188df2" title="star2d::nuclear" alt="" coords="291,783,399,809"/>
+<area shape="rect" id="node36" href="$classstar2d.html#a2a6188281cb683bef8b1fea6691cf257" title="star2d::calc_veloc" alt="" coords="461,491,589,517"/>
+<area shape="rect" id="node40" href="$classstar2d.html#ab151ce77d2449a289c8c3b0f3bb80302" title="star2d::calc_units" alt="" coords="283,1289,408,1316"/>
+<area shape="rect" id="node41" href="$matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="674,1239,718,1265"/>
+<area shape="rect" id="node42" href="$classstar2d.html#a1be7c76c3ebf0acfd919679f38c38706" title="star2d::atmosphere" alt="" coords="278,1087,413,1113"/>
+<area shape="rect" id="node44" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="653,1289,739,1316"/>
+<area shape="rect" id="node48" href="$classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="287,681,404,708"/>
+<area shape="rect" id="node4" href="$physics_8h.html#a81bdfd6bf9b93bb06a4f8b674b18ebd3" title="initial_composition" alt="" coords="1105,5,1234,32"/>
+<area shape="rect" id="node6" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="1144,219,1195,245"/>
+<area shape="rect" id="node7" href="$classmatrix__map.html#a1576c1533fa8e786b28e54f46d64c045" title="matrix_map::setblock" alt="" coords="1096,80,1243,107"/>
+<area shape="rect" id="node8" href="$matrix_8h.html#a5982f297f6b68097009325356f2daa9e" title="exp" alt="" coords="1148,143,1191,169"/>
+<area shape="rect" id="node5" href="$classdouble__map.html#a883e56f1ab44bd6a1152780ad858dfde" title="double_map::sum" alt="" coords="1291,5,1416,32"/>
+<area shape="rect" id="node10" href="$physics_8h.html#a58df4e0bef0508080648beb6bab8e89b" title="eos_calc" alt="" coords="803,859,877,885"/>
+<area shape="rect" id="node23" href="$classcomposition__map.html#a0929bc6a71f8e7ee0663c0e8d4de5cea" title="composition_map::X" alt="" coords="1099,352,1240,379"/>
+<area shape="rect" id="node11" href="$physics_8h.html#a3c2598bdff9e92171fb8b1de2b11f08e" title="eos_ideal" alt="" coords="948,783,1025,809"/>
+<area shape="rect" id="node17" href="$physics_8h.html#a572e441d5b06968d24e11162a6381030" title="eos_idealrad" alt="" coords="939,1188,1034,1215"/>
+<area shape="rect" id="node18" href="$physics_8h.html#adacc564d3f59c1b53b74756c0392dcb4" title="eos_opal" alt="" coords="949,935,1024,961"/>
+<area shape="rect" id="node12" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="1142,631,1197,657"/>
+<area shape="rect" id="node13" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="1119,732,1220,759"/>
+<area shape="rect" id="node14" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="1121,783,1218,809"/>
+<area shape="rect" id="node15" href="$matrix_8h.html#a74e0b0a7fb9b67bf7604931dd5797533" title="log" alt="" coords="1150,833,1189,860"/>
+<area shape="rect" id="node19" href="$eos__opal_8cpp.html#af7cc478dec436d9b67600ca5afd70b7a" title="zfs_interp_eos5_" alt="" coords="1109,985,1230,1012"/>
+<area shape="rect" id="node20" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="1126,1036,1213,1063"/>
+<area shape="rect" id="node21" href="$eos__opal_8cpp.html#a3f2df37a018499142e7413c83b0d420f" title="eos5_xtrin_" alt="" coords="1125,884,1214,911"/>
+<area shape="rect" id="node22" href="$matrix_8h.html#a86292df4a6da0a0e0a8137647f9a7255" title="exist" alt="" coords="1144,935,1195,961"/>
+<area shape="rect" id="node25" href="$physics_8h.html#afd8af70d8089ee6714a98166e853b857" title="opa_calc" alt="" coords="803,1087,877,1113"/>
+<area shape="rect" id="node26" href="$physics_8h.html#a7dd5e5c306707f8cda79b01161dd07ee" title="opa_opal" alt="" coords="949,1087,1024,1113"/>
+<area shape="rect" id="node28" href="$physics_8h.html#a74ead2b5d8983c0da11b7fd4c920822a" title="opa_houdek" alt="" coords="941,1137,1033,1164"/>
+<area shape="rect" id="node31" href="$physics_8h.html#ac3284f3ea54e3de864a24e6163e4fa7f" title="opa_kramer" alt="" coords="941,1239,1032,1265"/>
+<area shape="rect" id="node27" href="$opa__opal_8cpp.html#ae20f4336151143103b9525f44c5b26ed" title="opa_opal_i" alt="" coords="1127,1087,1211,1113"/>
+<area shape="rect" id="node29" href="$opa__houdek_8cpp.html#a1162fd67859a3fb7883f76228d6730a7" title="maceps_" alt="" coords="1132,1137,1207,1164"/>
+<area shape="rect" id="node30" href="$opa__houdek_8cpp.html#af4b3b0b21379b638574d067e5f61adff" title="opinit_" alt="" coords="1139,1188,1199,1215"/>
+<area shape="rect" id="node33" href="$physics_8h.html#a008931c691c8280c50446ad96081b584" title="nuc_calc" alt="" coords="803,631,877,657"/>
+<area shape="rect" id="node34" href="$physics_8h.html#abb4f50177199ac91eb88f448ef9ebe0d" title="nuc_simple" alt="" coords="943,529,1031,556"/>
+<area shape="rect" id="node35" href="$physics_8h.html#ac7d52e1e7ab834fc42f25d1ce5cdbfdf" title="nuc_cesam" alt="" coords="942,681,1031,708"/>
+<area shape="rect" id="node37" href="$matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="675,440,717,467"/>
+<area shape="rect" id="node38" href="$matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="677,491,715,517"/>
+<area shape="rect" id="node39" href="$classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="643,541,749,568"/>
+<area shape="rect" id="node43" href="$classstar2d.html#a53ab7c1501edcaecf86b89396a40287c" title="star2d::gsup" alt="" coords="478,1239,573,1265"/>
+<area shape="rect" id="node45" href="$classstar2d.html#a6a1ce30ca36c61e42fb6128ed6c72257" title="star2d::Teff" alt="" coords="481,1137,570,1164"/>
+<area shape="rect" id="node46" href="$physics_8h.html#a399ba5c10d71dea415f78b585cf3d964" title="atm_calc" alt="" coords="488,972,563,999"/>
+<area shape="rect" id="node47" href="$physics_8h.html#a53a9f9532d7c4efe4d32198ec627d251" title="atm_onelayer" alt="" coords="646,909,746,936"/>
+<area shape="rect" id="node49" href="$classdiff__leg.html#ad863b7bdb1d8b47279f63a10e1843edd" title="diff_leg::eval" alt="" coords="477,643,573,669"/>
+<area shape="rect" id="node50" href="$classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="645,592,747,619"/>
+</map>

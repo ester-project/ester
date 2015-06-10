@@ -68,6 +68,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -75,7 +76,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -94,31 +95,43 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">constants.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef _CONSTANTS_H</span></div>
+<a href="constants_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef _CONSTANTS_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _CONSTANTS_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;matrix.h&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="matrix_8h.html">matrix.h</a>&quot;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> PI;</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> SIG_SB;</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> K_BOL;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> HYDROGEN_MASS;</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> A_RAD;</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> GRAV;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> C_LIGHT;</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="constants_8h.html#a952eac791b596a61bba0a133a3bb439f">PI</a>;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="constants_8h.html#a15aebd2210c92354fb3763bdab216251">SIG_SB</a>;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="constants_8h.html#aba1afeeb35234493843116e1d14f26b5">K_BOL</a>;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="constants_8h.html#a0266a4e3eaf7939030e6500c8b1863d3">HYDROGEN_MASS</a>;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="constants_8h.html#a1440ffa9243603b1454d8579be812d35">A_RAD</a>;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="constants_8h.html#af58d1058f75b0f620a34760b12536fda">GRAV</a>;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="constants_8h.html#af3a6fbd5d2a8f57d7b086e5ac31a6411">C_LIGHT</a>;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> M_SUN;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> R_SUN;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> L_SUN;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="constants_8h.html#af1140fcf75c595132faaa6edfa75684c">M_SUN</a>;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="constants_8h.html#a225ec8346654985707247e2bd06ce48c">R_SUN</a>;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="constants_8h.html#a215aa582bf6f447a378fed3b23e2febd">L_SUN</a>;</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">extern</span> <a class="code" href="classdouble__map.html">double_map</a> AMASS;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">extern</span> <a class="code" href="classdouble__map.html">double_map</a> <a class="code" href="constants_8h.html#a888fed64aa66c89277c5d15caa7a66e3">AMASS</a>;</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="constants_8h_html_af58d1058f75b0f620a34760b12536fda"><div class="ttname"><a href="constants_8h.html#af58d1058f75b0f620a34760b12536fda">GRAV</a></div><div class="ttdeci">const double GRAV</div></div>
+<div class="ttc" id="constants_8h_html_af1140fcf75c595132faaa6edfa75684c"><div class="ttname"><a href="constants_8h.html#af1140fcf75c595132faaa6edfa75684c">M_SUN</a></div><div class="ttdeci">const double M_SUN</div></div>
+<div class="ttc" id="constants_8h_html_a888fed64aa66c89277c5d15caa7a66e3"><div class="ttname"><a href="constants_8h.html#a888fed64aa66c89277c5d15caa7a66e3">AMASS</a></div><div class="ttdeci">double_map AMASS</div><div class="ttdef"><b>Definition:</b> global.cpp:22</div></div>
 <div class="ttc" id="classdouble__map_html"><div class="ttname"><a href="classdouble__map.html">double_map</a></div><div class="ttdef"><b>Definition:</b> matrix.h:248</div></div>
+<div class="ttc" id="matrix_8h_html"><div class="ttname"><a href="matrix_8h.html">matrix.h</a></div></div>
+<div class="ttc" id="constants_8h_html_a952eac791b596a61bba0a133a3bb439f"><div class="ttname"><a href="constants_8h.html#a952eac791b596a61bba0a133a3bb439f">PI</a></div><div class="ttdeci">const double PI</div></div>
+<div class="ttc" id="constants_8h_html_aba1afeeb35234493843116e1d14f26b5"><div class="ttname"><a href="constants_8h.html#aba1afeeb35234493843116e1d14f26b5">K_BOL</a></div><div class="ttdeci">const double K_BOL</div></div>
+<div class="ttc" id="constants_8h_html_a15aebd2210c92354fb3763bdab216251"><div class="ttname"><a href="constants_8h.html#a15aebd2210c92354fb3763bdab216251">SIG_SB</a></div><div class="ttdeci">const double SIG_SB</div></div>
+<div class="ttc" id="constants_8h_html_af3a6fbd5d2a8f57d7b086e5ac31a6411"><div class="ttname"><a href="constants_8h.html#af3a6fbd5d2a8f57d7b086e5ac31a6411">C_LIGHT</a></div><div class="ttdeci">const double C_LIGHT</div></div>
+<div class="ttc" id="constants_8h_html_a215aa582bf6f447a378fed3b23e2febd"><div class="ttname"><a href="constants_8h.html#a215aa582bf6f447a378fed3b23e2febd">L_SUN</a></div><div class="ttdeci">const double L_SUN</div></div>
+<div class="ttc" id="constants_8h_html_a225ec8346654985707247e2bd06ce48c"><div class="ttname"><a href="constants_8h.html#a225ec8346654985707247e2bd06ce48c">R_SUN</a></div><div class="ttdeci">const double R_SUN</div></div>
+<div class="ttc" id="constants_8h_html_a0266a4e3eaf7939030e6500c8b1863d3"><div class="ttname"><a href="constants_8h.html#a0266a4e3eaf7939030e6500c8b1863d3">HYDROGEN_MASS</a></div><div class="ttdeci">const double HYDROGEN_MASS</div></div>
+<div class="ttc" id="constants_8h_html_a1440ffa9243603b1454d8579be812d35"><div class="ttname"><a href="constants_8h.html#a1440ffa9243603b1454d8579be812d35">A_RAD</a></div><div class="ttdeci">const double A_RAD</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:27 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

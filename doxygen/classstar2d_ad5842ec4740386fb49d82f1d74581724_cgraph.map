@@ -1,0 +1,42 @@
+<map id="star2d::solve_poisson" name="star2d::solve_poisson">
+<area shape="rect" id="node2" href="$classsymbolic.html#aea40bb70b53afe57a6ba5ede5793186f" title="symbolic::regvar" alt="" coords="221,132,339,159"/>
+<area shape="rect" id="node4" href="$symbolic_8h.html#a7850bfc4a75e099a234b0e0201cf9f99" title="Returns the laplacian of the expression s. " alt="" coords="261,183,299,209"/>
+<area shape="rect" id="node18" href="$classsymbolic.html#a576c450dbdad524d3c0b58fabce21cd3" title="symbolic::set_value" alt="" coords="211,233,349,260"/>
+<area shape="rect" id="node19" href="$classsymbolic.html#a0fd63811267d2cbb2c6ddf24ddff7402" title="symbolic::set_map" alt="" coords="406,284,538,311"/>
+<area shape="rect" id="node20" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="645,385,696,412"/>
+<area shape="rect" id="node21" href="$classsym.html#ab2197625f4158c9da8efd693d7357a1b" title="sym::add" alt="" coords="434,335,510,361"/>
+<area shape="rect" id="node22" href="$classsym.html#aeb3b748fd44c09f07f33a5d296fc9db7" title="sym::eval" alt="" coords="241,892,319,919"/>
+<area shape="rect" id="node23" href="$classsolver.html#a79682e1858c4cd5e657a10e56a8c551d" title="solver::add_d" alt="" coords="230,791,330,817"/>
+<area shape="rect" id="node29" href="$classsym.html#abb993790ed98f113c22af4757b4dda54" title="sym::add_ex" alt="" coords="423,385,521,412"/>
+<area shape="rect" id="node30" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="253,943,307,969"/>
+<area shape="rect" id="node31" href="$classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="223,993,337,1020"/>
+<area shape="rect" id="node32" href="$classsolver.html#a15f5eab5270ec0b2751855dd600dbd8a" title="solver::bc_bot2_add_l" alt="" coords="205,487,355,513"/>
+<area shape="rect" id="node33" href="$classmatrix__block__diag.html#a5352c4c2942e35d052fa44617deff202" title="matrix_block_diag::\lblock" alt="" coords="213,1045,347,1086"/>
+<area shape="rect" id="node34" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="237,1111,323,1137"/>
+<area shape="rect" id="node35" href="$classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="227,1161,333,1188"/>
+<area shape="rect" id="node36" href="$classsolver.html#a838830e2a4181cb10d5426c427d78b7d" title="solver::bc_bot1_add_l" alt="" coords="205,537,355,564"/>
+<area shape="rect" id="node37" href="$classsolver.html#a070bdbd40ad3f62787716e8daffd70f4" title="solver::bc_bot2_add_d" alt="" coords="203,588,357,615"/>
+<area shape="rect" id="node38" href="$classsolver.html#ae20eb2be2d86ce8d16f6f544c5ed8041" title="solver::bc_bot1_add_d" alt="" coords="203,639,357,665"/>
+<area shape="rect" id="node39" href="$classsolver.html#a2c549e96fe900962dda8c3bf56468229" title="solver::bc_top1_add_d" alt="" coords="203,689,357,716"/>
+<area shape="rect" id="node40" href="$classsolver.html#a9db41ed412446c4d86865e28e078d8a0" title="solver::bc_top2_add_d" alt="" coords="203,740,357,767"/>
+<area shape="rect" id="node41" href="$classsolver.html#ad89241cdcb624742e4810bcfd7c4048e" title="solver::set_rhs" alt="" coords="418,765,526,792"/>
+<area shape="rect" id="node3" href="$classsymbolic.html#a5486ba63e1dbf90e65097328986a9120" title="symbolic::var" alt="" coords="422,132,522,159"/>
+<area shape="rect" id="node5" href="$classsym.html#a6bfcd0ef7887bfccc3ab9ddba568ff69" title="sym::check_context" alt="" coords="1338,157,1478,184"/>
+<area shape="rect" id="node6" href="$classsymbolic.html#ad7784daac04caa8d5a2098690a783fdd" title="Returns the symbolic expression of the laplacian of s. " alt="" coords="405,183,539,209"/>
+<area shape="rect" id="node7" href="$classsymbolic.html#a5eacb9808bb56179c683bc95c907ad00" title="symbolic::divergence" alt="" coords="598,132,743,159"/>
+<area shape="rect" id="node16" href="$classsymbolic.html#a1f7cbf93ef20ee903adb22edf7834d32" title="symbolic::gradient" alt="" coords="817,132,945,159"/>
+<area shape="rect" id="node8" href="$classsymbolic.html#a9aec22bbc3a707921f98854e65406896" title="symbolic::contravariant" alt="" coords="803,183,960,209"/>
+<area shape="rect" id="node10" href="$classsymbolic.html#a03d53aa3bf752117a92a57e0215b03ab" title="symbolic::d" alt="" coords="837,81,926,108"/>
+<area shape="rect" id="node9" href="$classsym__vec.html#a0cdf7e39f268bfb5977bb944e03175f9" title="sym_vec::set_context" alt="" coords="1009,183,1159,209"/>
+<area shape="rect" id="node11" href="$symbolic_8h.html#ad1b9a0a596c68e0f303a1a43fe856108" title="diff" alt="" coords="1064,81,1104,108"/>
+<area shape="rect" id="node12" href="$sym_8cpp.html#a075f6a28fed628ef71680874b2ca3301" title="jacobian" alt="" coords="1209,81,1279,108"/>
+<area shape="rect" id="node13" href="$classsym_1_1sym__expr.html#ad9bf9877b0e60666ca0b0d1df50b117d" title="sym::sym_expr::clone" alt="" coords="1333,56,1483,83"/>
+<area shape="rect" id="node14" href="$classsym_1_1sym__expr.html#ad4b7089172fec60017feee9556b6b5da" title="sym::sym_expr::derive" alt="" coords="1331,107,1485,133"/>
+<area shape="rect" id="node15" href="$classsym_1_1sym__expr.html#ac2df6b4bed129567c6b78b0865685ffd" title="sym::sym_expr::reduce" alt="" coords="1329,5,1487,32"/>
+<area shape="rect" id="node17" href="$symbolic_8h.html#a72f8ab962e8692c188d858cc1998c48b" title="grad" alt="" coords="1061,132,1107,159"/>
+<area shape="rect" id="node24" href="$classsolver.html#ac269e25e5b929ca3c038402351fe6631" title="solver::add" alt="" coords="429,639,515,665"/>
+<area shape="rect" id="node25" href="$classsolver.html#a4f787a2def0088a98ea9c6980a00d851" title="solver::get_id" alt="" coords="621,740,721,767"/>
+<area shape="rect" id="node26" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="831,664,932,691"/>
+<area shape="rect" id="node27" href="$classsolver_1_1solver__block.html#a706a1cd2d746f9fe7a303ec20fbe572c" title="Introduces a term in an equation of the block. " alt="" coords="587,613,754,640"/>
+<area shape="rect" id="node28" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="833,613,930,640"/>
+</map>

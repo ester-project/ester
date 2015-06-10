@@ -1,6 +1,28 @@
 var searchData=
 [
-  ['wrap',['wrap',['../classsolver.html#a8f4ec1fefcb8517f070543be1bc7768c',1,'solver']]],
-  ['write',['write',['../classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50',1,'matrix']]],
-  ['write_5ffmt',['write_fmt',['../classmatrix.html#a5848015565143c909f7cfb0aceaa2ba3',1,'matrix']]]
+  ['n2',['N2',['../classstar2d.html#aae6fc5dfec25acc420bde7d970967ea4',1,'star2d::N2()'],['../classstar1d.html#aaa01a1b0bcc1ddc9ab38680e92bf1936',1,'star1d::N2()']]],
+  ['nblocks',['nblocks',['../classmatrix__block__diag.html#a912db280a7c26104ae061e079c7bde26',1,'matrix_block_diag']]],
+  ['ncols',['ncols',['../classmatrix.html#a3c80ca88a8859e777a23f48885b079ee',1,'matrix::ncols()'],['../classmatrix__block__diag.html#af9ac67bafa0e73674d26e6f4dc9d2305',1,'matrix_block_diag::ncols()']]],
+  ['needs_5finitial_5fderivative',['needs_initial_derivative',['../classSDIRK__solver.html#a2258d60585649f5dcc29e4cafa06f9b5',1,'SDIRK_solver']]],
+  ['next',['next',['../classfigure.html#a3c9254455911e4f9ca8d5445c4f0f9df',1,'figure']]],
+  ['nodes',['nodes',['../classdiff__leg.html#ab7a001a60e694166877d26e5b2c69b4a',1,'diff_leg']]],
+  ['nrows',['nrows',['../classmatrix.html#a24a177dea06300729d842111eedcfd24',1,'matrix::nrows()'],['../classmatrix__block__diag.html#a62aeb5b6bc7f309d57a0e87206a70dcb',1,'matrix_block_diag::nrows()']]],
+  ['nuc_5fcalc',['nuc_calc',['../physics_8h.html#a008931c691c8280c50446ad96081b584',1,'nuc_calc(const matrix_map &amp;X, const matrix &amp;T, const matrix &amp;rho, nuc_struct &amp;nuc):&#160;physics.cpp'],['../physics_8cpp.html#a008931c691c8280c50446ad96081b584',1,'nuc_calc(const matrix_map &amp;X, const matrix &amp;T, const matrix &amp;rho, nuc_struct &amp;nuc):&#160;physics.cpp']]],
+  ['nuc_5fcesam',['nuc_cesam',['../physics_8h.html#ac7d52e1e7ab834fc42f25d1ce5cdbfdf',1,'nuc_cesam(const composition_map &amp;comp, const matrix &amp;T, const matrix &amp;rho, nuc_struct &amp;nuc):&#160;nuc_cesam.cpp'],['../nuc__cesam_8cpp.html#ac7d52e1e7ab834fc42f25d1ce5cdbfdf',1,'nuc_cesam(const composition_map &amp;comp, const matrix &amp;T, const matrix &amp;rho, nuc_struct &amp;nuc):&#160;nuc_cesam.cpp']]],
+  ['nuc_5fcesam_5fabon',['nuc_cesam_abon',['../nuc__cesam_8cpp.html#af0c8a4056777b0f936b01f8ceb29fdbe',1,'nuc_cesam_abon(double_map comp):&#160;nuc_cesam.cpp'],['../nuc__cesam_8cpp.html#a3bd19bd22804dbca90a524738abb5637',1,'nuc_cesam_abon(matrix ab):&#160;nuc_cesam.cpp']]],
+  ['nuc_5fcesam_5fdcomp',['nuc_cesam_dcomp',['../physics_8h.html#adfaf4118109a248724e37ea73011d740',1,'nuc_cesam_dcomp(composition_map &amp;comp, const matrix &amp;T, const matrix &amp;rho, nuc_struct &amp;nuc):&#160;nuc_cesam.cpp'],['../nuc__cesam_8cpp.html#adfaf4118109a248724e37ea73011d740',1,'nuc_cesam_dcomp(composition_map &amp;comp, const matrix &amp;T, const matrix &amp;rho, nuc_struct &amp;nuc):&#160;nuc_cesam.cpp'],['../nuc__cesam__for_8F.html#a740178bc32beb49efff60638662e984d',1,'nuc_cesam_dcomp(t, ro, comp, dcomp, jac):&#160;nuc_cesam_for.F']]],
+  ['nuc_5fcesam_5fdcomp_5f',['nuc_cesam_dcomp_',['../nuc__cesam_8cpp.html#a0e93657c4323263f31ed550eea8074d2',1,'nuc_cesam.cpp']]],
+  ['nuc_5fcesam_5feps',['nuc_cesam_eps',['../nuc__cesam__for_8F.html#acd3df65b7193c5ba0d844404ec0e1161',1,'nuc_cesam_for.F']]],
+  ['nuc_5fcesam_5feps_5f',['nuc_cesam_eps_',['../nuc__cesam_8cpp.html#a78317e1179a8c7eeb4ae5b7daf3ede11',1,'nuc_cesam.cpp']]],
+  ['nuc_5fcesam_5finit',['nuc_cesam_init',['../nuc__cesam_8cpp.html#a53403972c42d24225317bbeb4b0b6e04',1,'nuc_cesam_init():&#160;nuc_cesam.cpp'],['../nuc__cesam__for_8F.html#a213465fe82f20ebfadaf6091e8425aba',1,'nuc_cesam_init:&#160;nuc_cesam_for.F']]],
+  ['nuc_5fcesam_5finit_5f',['nuc_cesam_init_',['../nuc__cesam_8cpp.html#a2223773343e23863772a57706a172ecc',1,'nuc_cesam.cpp']]],
+  ['nuc_5fcesam_5finit_5fabon',['nuc_cesam_init_abon',['../nuc__cesam__for_8F.html#a9d08f6f39128a8ea9ed187c208bfb99c',1,'nuc_cesam_for.F']]],
+  ['nuc_5fcesam_5finit_5fabon_5f',['nuc_cesam_init_abon_',['../nuc__cesam_8cpp.html#a63e24e4b5d37bc855e5fd0e764cb787e',1,'nuc_cesam.cpp']]],
+  ['nuc_5fcesam_5finit_5fjac',['nuc_cesam_init_jac',['../nuc__cesam_8cpp.html#afab5964dedf046b26c5aff690d5d9048',1,'nuc_cesam.cpp']]],
+  ['nuc_5fcesam_5fjac',['nuc_cesam_jac',['../nuc__cesam_8cpp.html#a14fb7d208e09a1d5094dd4d407b52054',1,'nuc_cesam.cpp']]],
+  ['nuc_5fsimple',['nuc_simple',['../physics_8h.html#abb4f50177199ac91eb88f448ef9ebe0d',1,'nuc_simple(const composition_map &amp;comp, const matrix &amp;T, const matrix &amp;rho, nuc_struct &amp;nuc):&#160;nuc_simple.cpp'],['../nuc__simple_8cpp.html#abb4f50177199ac91eb88f448ef9ebe0d',1,'nuc_simple(const composition_map &amp;comp, const matrix &amp;T, const matrix &amp;rho, nuc_struct &amp;nuc):&#160;nuc_simple.cpp']]],
+  ['nuclear',['nuclear',['../classstar2d.html#adfe376d502e668085dba6fb5d0188df2',1,'star2d']]],
+  ['num',['num',['../classrational.html#a26720ffed7cc241dd545f60601653a07',1,'rational']]],
+  ['number_5fof_5fimplicit_5fstages',['number_of_implicit_stages',['../classSDIRK__solver.html#a2ae2eae08930ce8d8f6b3a71275e114e',1,'SDIRK_solver']]],
+  ['number_5fof_5fstages',['number_of_stages',['../classSDIRK__solver.html#ac8f50d2a6eedd1a9b16c9f0281400e3b',1,'SDIRK_solver']]]
 ];

@@ -1,0 +1,17 @@
+<map id="mapping::eval" name="mapping::eval">
+<area shape="rect" id="node2" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="469,56,571,83"/>
+<area shape="rect" id="node3" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="471,5,569,32"/>
+<area shape="rect" id="node4" href="$classdiff__leg.html#ad863b7bdb1d8b47279f63a10e1843edd" title="diff_leg::eval" alt="" coords="323,256,419,283"/>
+<area shape="rect" id="node13" href="$classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="157,252,275,279"/>
+<area shape="rect" id="node14" href="$matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="193,303,239,329"/>
+<area shape="rect" id="node15" href="$classdiff__gl.html#a273893d64ef8418624695f43833c9789" title="diff_gl::eval" alt="" coords="326,151,415,177"/>
+<area shape="rect" id="node5" href="$matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="499,157,541,184"/>
+<area shape="rect" id="node6" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="477,208,563,235"/>
+<area shape="rect" id="node7" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="495,461,545,488"/>
+<area shape="rect" id="node8" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="493,512,547,539"/>
+<area shape="rect" id="node9" href="$classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="467,309,573,336"/>
+<area shape="rect" id="node10" href="$matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="498,360,542,387"/>
+<area shape="rect" id="node11" href="$matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="501,411,539,437"/>
+<area shape="rect" id="node12" href="$classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="469,259,571,285"/>
+<area shape="rect" id="node16" href="$matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="495,107,545,133"/>
+</map>

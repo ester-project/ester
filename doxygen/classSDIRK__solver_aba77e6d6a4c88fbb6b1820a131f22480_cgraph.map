@@ -1,0 +1,12 @@
+<map id="SDIRK_solver::check_method" name="SDIRK_solver::check_method">
+<area shape="rect" id="node2" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="213,5,315,32"/>
+<area shape="rect" id="node3" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="215,56,313,83"/>
+<area shape="rect" id="node4" href="$matrix_8h.html#a86292df4a6da0a0e0a8137647f9a7255" title="exist" alt="" coords="239,107,289,133"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="221,157,307,184"/>
+<area shape="rect" id="node6" href="$classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="203,208,325,235"/>
+<area shape="rect" id="node7" href="$matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="243,259,285,285"/>
+<area shape="rect" id="node8" href="$matrix_8h.html#a7619b7346d9689923c8d174efacb92f8" title="sum" alt="" coords="241,309,287,336"/>
+<area shape="rect" id="node9" href="$matrix_8h.html#a069930b10a8e55fb1cd4cbc7aae7625f" title="eye" alt="" coords="243,360,285,387"/>
+<area shape="rect" id="node10" href="$classmatrix.html#a0d38262959de19208fc8c21780457c95" title="Sets the matrix to the nrows x ncols zero matrix. " alt="" coords="373,360,464,387"/>
+<area shape="rect" id="node11" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="513,360,599,387"/>
+</map>

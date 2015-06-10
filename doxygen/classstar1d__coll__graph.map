@@ -1,18 +1,18 @@
 <map id="star1d" name="star1d">
-<area shape="rect" id="node2" href="$classstar2d.html" title="star2d" alt="" coords="953,552,1011,579"/>
-<area shape="rect" id="node3" href="$structstar2d_1_1units__struct.html" title="star2d::units_struct" alt="" coords="681,884,816,911"/>
-<area shape="rect" id="node4" href="$structeos__struct.html" title="eos_struct" alt="" coords="345,601,428,628"/>
+<area shape="rect" id="node2" href="$classstar2d.html" title="star2d" alt="" coords="959,552,1017,579"/>
+<area shape="rect" id="node3" href="$structstar2d_1_1units__struct.html" title="star2d::units_struct" alt="" coords="685,884,819,911"/>
+<area shape="rect" id="node4" href="$structeos__struct.html" title="eos_struct" alt="" coords="347,601,429,628"/>
 <area shape="rect" id="node5" href="$classmatrix.html" title="The matrix class is used to facilitate the work with regular dense matrices. " alt="" coords="5,760,64,787"/>
-<area shape="rect" id="node6" href="$structatm__struct.html" title="atm_struct" alt="" coords="567,296,651,323"/>
-<area shape="rect" id="node7" href="$classmatrix__block__diag.html" title="The matrix_block_diag class is used to store block diagonal matrices. " alt="" coords="185,1008,311,1035"/>
-<area shape="rect" id="node12" href="$structnuc__struct.html" title="nuc_struct" alt="" coords="567,453,650,480"/>
-<area shape="rect" id="node13" href="$structopa__struct.html" title="opa_struct" alt="" coords="345,548,428,575"/>
-<area shape="rect" id="node15" href="$classmapping.html" title="mapping" alt="" coords="713,963,784,989"/>
-<area shape="rect" id="node16" href="$classmapping_1_1ext__map.html" title="mapping::ext_map" alt="" coords="917,1031,1047,1057"/>
-<area shape="rect" id="node17" href="$classdiff__gl.html" title="The diff_gl class implements the Gauss&#45;Lobatto (or more properly Gauss&#45;Lobatto&#45;Chebyshev) collocation..." alt="" coords="469,1027,526,1053"/>
-<area shape="rect" id="node18" href="$classdiff__leg.html" title="The diff_leg class implements Legendre numerical differentiation. " alt="" coords="355,916,419,943"/>
-<area shape="rect" id="node8" href="$structstar2d_1_1version__struct.html" title="star2d::version_struct" alt="" coords="675,501,823,528"/>
-<area shape="rect" id="node9" href="$classcomposition__map.html" title="composition_map" alt="" coords="687,388,811,415"/>
-<area shape="rect" id="node10" href="$classmatrix__map.html" title="matrix_map" alt="" coords="452,348,543,375"/>
-<area shape="rect" id="node14" href="$structstar2d_1_1config__struct.html" title="star2d::config_struct" alt="" coords="678,653,819,680"/>
+<area shape="rect" id="node6" href="$structatm__struct.html" title="atm_struct" alt="" coords="569,296,653,323"/>
+<area shape="rect" id="node7" href="$classmatrix__block__diag.html" title="The matrix_block_diag class is used to store block diagonal matrices. " alt="" coords="186,1008,313,1035"/>
+<area shape="rect" id="node12" href="$structnuc__struct.html" title="nuc_struct" alt="" coords="569,453,652,480"/>
+<area shape="rect" id="node13" href="$structopa__struct.html" title="opa_struct" alt="" coords="347,548,429,575"/>
+<area shape="rect" id="node15" href="$classmapping.html" title="mapping" alt="" coords="717,963,787,989"/>
+<area shape="rect" id="node16" href="$classmapping_1_1ext__map.html" title="mapping::ext_map" alt="" coords="923,1031,1053,1057"/>
+<area shape="rect" id="node17" href="$classdiff__gl.html" title="The diff_gl class implements the Gauss&#45;Lobatto (or more properly Gauss&#45;Lobatto&#45;Chebyshev) collocation..." alt="" coords="470,1027,527,1053"/>
+<area shape="rect" id="node18" href="$classdiff__leg.html" title="The diff_leg class implements Legendre numerical differentiation. " alt="" coords="356,916,420,943"/>
+<area shape="rect" id="node8" href="$structstar2d_1_1version__struct.html" title="star2d::version_struct" alt="" coords="678,501,826,528"/>
+<area shape="rect" id="node9" href="$classcomposition__map.html" title="composition_map" alt="" coords="690,388,814,415"/>
+<area shape="rect" id="node10" href="$classmatrix__map.html" title="matrix_map" alt="" coords="453,348,544,375"/>
+<area shape="rect" id="node14" href="$structstar2d_1_1config__struct.html" title="star2d::config_struct" alt="" coords="681,653,823,680"/>
 </map>

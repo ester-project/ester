@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -108,118 +108,778 @@ Collaboration diagram for matrix_block_diag:</div>
 <div class="dyncontent">
 <div class="center"><img src="classmatrix__block__diag__coll__graph.png" border="0" usemap="#matrix__block__diag_coll__map" alt="Collaboration graph"/></div>
 <map name="matrix__block__diag_coll__map" id="matrix__block__diag_coll__map">
-</map>
+<area shape="rect" id="node2" href="classmatrix.html" title="The matrix class is used to facilitate the work with regular dense matrices. " alt="" coords="39,5,96,32"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac5c3582b65d6327a6231e0c4ae1c47a7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac5c3582b65d6327a6231e0c4ae1c47a7"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>matrix_block_diag</b> (int nblocks=1)</td></tr>
+<tr class="memitem:ac5c3582b65d6327a6231e0c4ae1c47a7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#ac5c3582b65d6327a6231e0c4ae1c47a7">matrix_block_diag</a> (int <a class="el" href="classmatrix__block__diag.html#a912db280a7c26104ae061e079c7bde26">nblocks</a>=1)</td></tr>
 <tr class="separator:ac5c3582b65d6327a6231e0c4ae1c47a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28f3d0c2c255cf665be37196e43d2719"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28f3d0c2c255cf665be37196e43d2719"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>matrix_block_diag</b> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
+<tr class="memitem:a7196b0afe009af84843f825d9a631b98"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a7196b0afe009af84843f825d9a631b98">~matrix_block_diag</a> ()</td></tr>
+<tr class="separator:a7196b0afe009af84843f825d9a631b98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28f3d0c2c255cf665be37196e43d2719"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a28f3d0c2c255cf665be37196e43d2719">matrix_block_diag</a> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
 <tr class="separator:a28f3d0c2c255cf665be37196e43d2719"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0600ceedeedd3a44e9655349257bc9dc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0600ceedeedd3a44e9655349257bc9dc"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
+<tr class="memitem:a0600ceedeedd3a44e9655349257bc9dc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a0600ceedeedd3a44e9655349257bc9dc">operator=</a> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
 <tr class="separator:a0600ceedeedd3a44e9655349257bc9dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7e7f89e4886b81f04713cb24b14603a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa7e7f89e4886b81f04713cb24b14603a"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_nblocks</b> (int nblocks)</td></tr>
+<tr class="memitem:aa7e7f89e4886b81f04713cb24b14603a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#aa7e7f89e4886b81f04713cb24b14603a">set_nblocks</a> (int <a class="el" href="classmatrix__block__diag.html#a912db280a7c26104ae061e079c7bde26">nblocks</a>)</td></tr>
 <tr class="separator:aa7e7f89e4886b81f04713cb24b14603a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62fcbe3beeb1994728668fc687346a31"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a62fcbe3beeb1994728668fc687346a31"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>operator matrix</b> () const </td></tr>
+<tr class="memitem:a62fcbe3beeb1994728668fc687346a31"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a62fcbe3beeb1994728668fc687346a31">operator matrix</a> () const </td></tr>
 <tr class="separator:a62fcbe3beeb1994728668fc687346a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5352c4c2942e35d052fa44617deff202"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5352c4c2942e35d052fa44617deff202"></a>
-const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>block</b> (int i) const </td></tr>
+<tr class="memitem:a5352c4c2942e35d052fa44617deff202"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a5352c4c2942e35d052fa44617deff202">block</a> (int i) const </td></tr>
 <tr class="separator:a5352c4c2942e35d052fa44617deff202"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab9eff3efe617466e37205677f2e68cd3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab9eff3efe617466e37205677f2e68cd3"></a>
-<a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>block</b> (int i)</td></tr>
+<tr class="memitem:ab9eff3efe617466e37205677f2e68cd3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#ab9eff3efe617466e37205677f2e68cd3">block</a> (int i)</td></tr>
 <tr class="separator:ab9eff3efe617466e37205677f2e68cd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a912db280a7c26104ae061e079c7bde26"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a912db280a7c26104ae061e079c7bde26"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>nblocks</b> () const </td></tr>
+<tr class="memitem:a912db280a7c26104ae061e079c7bde26"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a912db280a7c26104ae061e079c7bde26">nblocks</a> () const </td></tr>
 <tr class="separator:a912db280a7c26104ae061e079c7bde26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62aeb5b6bc7f309d57a0e87206a70dcb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a62aeb5b6bc7f309d57a0e87206a70dcb"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>nrows</b> () const </td></tr>
+<tr class="memitem:a62aeb5b6bc7f309d57a0e87206a70dcb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a62aeb5b6bc7f309d57a0e87206a70dcb">nrows</a> () const </td></tr>
 <tr class="separator:a62aeb5b6bc7f309d57a0e87206a70dcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9ac67bafa0e73674d26e6f4dc9d2305"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af9ac67bafa0e73674d26e6f4dc9d2305"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>ncols</b> () const </td></tr>
+<tr class="memitem:af9ac67bafa0e73674d26e6f4dc9d2305"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#af9ac67bafa0e73674d26e6f4dc9d2305">ncols</a> () const </td></tr>
 <tr class="separator:af9ac67bafa0e73674d26e6f4dc9d2305"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7b14f56144b2162c3061236b92a651e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad7b14f56144b2162c3061236b92a651e"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator,</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;) const </td></tr>
+<tr class="memitem:ad7b14f56144b2162c3061236b92a651e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#ad7b14f56144b2162c3061236b92a651e">operator,</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;) const </td></tr>
 <tr class="separator:ad7b14f56144b2162c3061236b92a651e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf5e947db4eef0671869b437c7858598"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaf5e947db4eef0671869b437c7858598"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator,</b> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;) const </td></tr>
+<tr class="memitem:aaf5e947db4eef0671869b437c7858598"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#aaf5e947db4eef0671869b437c7858598">operator,</a> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;) const </td></tr>
 <tr class="separator:aaf5e947db4eef0671869b437c7858598"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92fd88d25f208b0a89b658a4c6fc7551"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a92fd88d25f208b0a89b658a4c6fc7551"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;) const </td></tr>
+<tr class="memitem:a92fd88d25f208b0a89b658a4c6fc7551"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a92fd88d25f208b0a89b658a4c6fc7551">operator*</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;) const </td></tr>
 <tr class="separator:a92fd88d25f208b0a89b658a4c6fc7551"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf603911337730bd6036f9bba02c2f1a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acf603911337730bd6036f9bba02c2f1a"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator/</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;) const </td></tr>
+<tr class="memitem:acf603911337730bd6036f9bba02c2f1a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#acf603911337730bd6036f9bba02c2f1a">operator/</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;) const </td></tr>
 <tr class="separator:acf603911337730bd6036f9bba02c2f1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34e565963bf82d7bfacd6562ab15a603"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a34e565963bf82d7bfacd6562ab15a603"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (double) const </td></tr>
+<tr class="memitem:a34e565963bf82d7bfacd6562ab15a603"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a34e565963bf82d7bfacd6562ab15a603">operator*</a> (double) const </td></tr>
 <tr class="separator:a34e565963bf82d7bfacd6562ab15a603"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a7202af83e4cad2ef42e104f628cf54"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9a7202af83e4cad2ef42e104f628cf54"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator/</b> (double) const </td></tr>
+<tr class="memitem:a9a7202af83e4cad2ef42e104f628cf54"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a9a7202af83e4cad2ef42e104f628cf54">operator/</a> (double) const </td></tr>
 <tr class="separator:a9a7202af83e4cad2ef42e104f628cf54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b76e19d613488017f1f9ec156f10f21"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6b76e19d613488017f1f9ec156f10f21"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator+</b> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;) const </td></tr>
+<tr class="memitem:a6b76e19d613488017f1f9ec156f10f21"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a6b76e19d613488017f1f9ec156f10f21">operator+</a> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;) const </td></tr>
 <tr class="separator:a6b76e19d613488017f1f9ec156f10f21"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff207bd331442a02cae9452868201a1f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aff207bd331442a02cae9452868201a1f"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator-</b> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;) const </td></tr>
+<tr class="memitem:aff207bd331442a02cae9452868201a1f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#aff207bd331442a02cae9452868201a1f">operator-</a> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;) const </td></tr>
 <tr class="separator:aff207bd331442a02cae9452868201a1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5801bab42676ad98df2d8c9a15f0bea"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae5801bab42676ad98df2d8c9a15f0bea"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;) const </td></tr>
+<tr class="memitem:ae5801bab42676ad98df2d8c9a15f0bea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#ae5801bab42676ad98df2d8c9a15f0bea">operator*</a> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;) const </td></tr>
 <tr class="separator:ae5801bab42676ad98df2d8c9a15f0bea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84d9683f7c8844af8bcb3f5d63593887"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a84d9683f7c8844af8bcb3f5d63593887"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>row</b> (int n) const </td></tr>
+<tr class="memitem:a84d9683f7c8844af8bcb3f5d63593887"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a84d9683f7c8844af8bcb3f5d63593887">row</a> (int n) const </td></tr>
 <tr class="separator:a84d9683f7c8844af8bcb3f5d63593887"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0688fa78b5113c99a7edebdd4bfd8fe8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0688fa78b5113c99a7edebdd4bfd8fe8"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (int nfil, int ncol) const </td></tr>
+<tr class="memitem:a0688fa78b5113c99a7edebdd4bfd8fe8"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a0688fa78b5113c99a7edebdd4bfd8fe8">operator()</a> (int nfil, int ncol) const </td></tr>
 <tr class="separator:a0688fa78b5113c99a7edebdd4bfd8fe8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf4a4c253a7412993250b759172ee5cc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adf4a4c253a7412993250b759172ee5cc"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>transpose</b> () const </td></tr>
+<tr class="memitem:adf4a4c253a7412993250b759172ee5cc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#adf4a4c253a7412993250b759172ee5cc">transpose</a> () const </td></tr>
 <tr class="separator:adf4a4c253a7412993250b759172ee5cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a520d597265eee5a9cf7ecfbc08a943e3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a520d597265eee5a9cf7ecfbc08a943e3"></a>
-<a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>m</b></td></tr>
+<tr class="memitem:a520d597265eee5a9cf7ecfbc08a943e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a520d597265eee5a9cf7ecfbc08a943e3">m</a></td></tr>
 <tr class="separator:a520d597265eee5a9cf7ecfbc08a943e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee469fe681da67b21279199260557090"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aee469fe681da67b21279199260557090"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>nb</b></td></tr>
+<tr class="memitem:aee469fe681da67b21279199260557090"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#aee469fe681da67b21279199260557090">nb</a></td></tr>
 <tr class="separator:aee469fe681da67b21279199260557090"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:ad7f4e0ee802423fb6c6033402894f0cc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad7f4e0ee802423fb6c6033402894f0cc"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator,</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;, const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
+<tr class="memitem:ad7f4e0ee802423fb6c6033402894f0cc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#ad7f4e0ee802423fb6c6033402894f0cc">operator,</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;, const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
 <tr class="separator:ad7f4e0ee802423fb6c6033402894f0cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33f672d1c43459cedafc64a7e696c004"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a33f672d1c43459cedafc64a7e696c004"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;, const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
+<tr class="memitem:a33f672d1c43459cedafc64a7e696c004"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a33f672d1c43459cedafc64a7e696c004">operator*</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;, const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
 <tr class="separator:a33f672d1c43459cedafc64a7e696c004"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af236a1a7a5b9a6711d0a8f45a97aa8f5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af236a1a7a5b9a6711d0a8f45a97aa8f5"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (double, const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
+<tr class="memitem:af236a1a7a5b9a6711d0a8f45a97aa8f5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#af236a1a7a5b9a6711d0a8f45a97aa8f5">operator*</a> (double, const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
 <tr class="separator:af236a1a7a5b9a6711d0a8f45a97aa8f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48b0cfffbd925987af7f6c8917a13321"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a48b0cfffbd925987af7f6c8917a13321"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator+</b> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
+<tr class="memitem:a48b0cfffbd925987af7f6c8917a13321"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a48b0cfffbd925987af7f6c8917a13321">operator+</a> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
 <tr class="separator:a48b0cfffbd925987af7f6c8917a13321"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b0823c7af09b48608f8ff470dc75dfe"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1b0823c7af09b48608f8ff470dc75dfe"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator-</b> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
+<tr class="memitem:a1b0823c7af09b48608f8ff470dc75dfe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#a1b0823c7af09b48608f8ff470dc75dfe">operator-</a> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
 <tr class="separator:a1b0823c7af09b48608f8ff470dc75dfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa274781897bb9188dc366dd00a30a321"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa274781897bb9188dc366dd00a30a321"></a>
-<a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>eye</b> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
+<tr class="memitem:aa274781897bb9188dc366dd00a30a321"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmatrix__block__diag.html#aa274781897bb9188dc366dd00a30a321">eye</a> (const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;)</td></tr>
 <tr class="separator:aa274781897bb9188dc366dd00a30a321"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="classmatrix__block__diag.html" title="The matrix_block_diag class is used to store block diagonal matrices. ">matrix_block_diag</a> class is used to store block diagonal matrices. </p>
-</div><hr/>The documentation for this class was generated from the following files:<ul>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ac5c3582b65d6327a6231e0c4ae1c47a7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">matrix_block_diag::matrix_block_diag </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nblocks</em> = <code>1</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__block__diag_ac5c3582b65d6327a6231e0c4ae1c47a7_cgraph.png" border="0" usemap="#classmatrix__block__diag_ac5c3582b65d6327a6231e0c4ae1c47a7_cgraph" alt=""/></div>
+<map name="classmatrix__block__diag_ac5c3582b65d6327a6231e0c4ae1c47a7_cgraph" id="classmatrix__block__diag_ac5c3582b65d6327a6231e0c4ae1c47a7_cgraph">
+<area shape="rect" id="node2" href="classmatrix__block__diag.html#a912db280a7c26104ae061e079c7bde26" title="matrix_block_diag::\lnblocks" alt="" coords="190,5,325,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a7196b0afe009af84843f825d9a631b98"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">matrix_block_diag::~matrix_block_diag </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a28f3d0c2c255cf665be37196e43d2719"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">matrix_block_diag::matrix_block_diag </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a5352c4c2942e35d052fa44617deff202"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classmatrix.html">matrix</a> &amp; matrix_block_diag::block </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab9eff3efe617466e37205677f2e68cd3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> &amp; matrix_block_diag::block </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a912db280a7c26104ae061e079c7bde26"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int matrix_block_diag::nblocks </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af9ac67bafa0e73674d26e6f4dc9d2305"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int matrix_block_diag::ncols </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a62aeb5b6bc7f309d57a0e87206a70dcb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int matrix_block_diag::nrows </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a62fcbe3beeb1994728668fc687346a31"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">matrix_block_diag::operator <a class="el" href="classmatrix.html">matrix</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__block__diag_a62fcbe3beeb1994728668fc687346a31_cgraph.png" border="0" usemap="#classmatrix__block__diag_a62fcbe3beeb1994728668fc687346a31_cgraph" alt=""/></div>
+<map name="classmatrix__block__diag_a62fcbe3beeb1994728668fc687346a31_cgraph" id="classmatrix__block__diag_a62fcbe3beeb1994728668fc687346a31_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#a0d38262959de19208fc8c21780457c95" title="Sets the matrix to the nrows x ncols zero matrix. " alt="" coords="201,5,292,32"/><area shape="rect" id="node4" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="189,56,304,83"/><area shape="rect" id="node3" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="353,5,439,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a0688fa78b5113c99a7edebdd4bfd8fe8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double matrix_block_diag::operator() </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nfil</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ncol</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__block__diag_a0688fa78b5113c99a7edebdd4bfd8fe8_cgraph.png" border="0" usemap="#classmatrix__block__diag_a0688fa78b5113c99a7edebdd4bfd8fe8_cgraph" alt=""/></div>
+<map name="classmatrix__block__diag_a0688fa78b5113c99a7edebdd4bfd8fe8_cgraph" id="classmatrix__block__diag_a0688fa78b5113c99a7edebdd4bfd8fe8_cgraph">
+<area shape="rect" id="node2" href="classmatrix__block__diag.html#a62aeb5b6bc7f309d57a0e87206a70dcb" title="matrix_block_diag::\lnrows" alt="" coords="190,5,325,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a92fd88d25f208b0a89b658a4c6fc7551"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> matrix_block_diag::operator* </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>z</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__block__diag_a92fd88d25f208b0a89b658a4c6fc7551_cgraph.png" border="0" usemap="#classmatrix__block__diag_a92fd88d25f208b0a89b658a4c6fc7551_cgraph" alt=""/></div>
+<map name="classmatrix__block__diag_a92fd88d25f208b0a89b658a4c6fc7551_cgraph" id="classmatrix__block__diag_a92fd88d25f208b0a89b658a4c6fc7551_cgraph">
+<area shape="rect" id="node2" href="classmatrix__block__diag.html#af9ac67bafa0e73674d26e6f4dc9d2305" title="matrix_block_diag::\lncols" alt="" coords="190,5,325,46"/><area shape="rect" id="node3" href="classmatrix__block__diag.html#a62aeb5b6bc7f309d57a0e87206a70dcb" title="matrix_block_diag::\lnrows" alt="" coords="190,70,325,111"/><area shape="rect" id="node4" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="209,136,306,163"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a34e565963bf82d7bfacd6562ab15a603"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> matrix_block_diag::operator* </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>n</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae5801bab42676ad98df2d8c9a15f0bea"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> matrix_block_diag::operator* </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a6b76e19d613488017f1f9ec156f10f21"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> matrix_block_diag::operator+ </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad7b14f56144b2162c3061236b92a651e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> matrix_block_diag::operator, </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__block__diag_ad7b14f56144b2162c3061236b92a651e_cgraph.png" border="0" usemap="#classmatrix__block__diag_ad7b14f56144b2162c3061236b92a651e_cgraph" alt=""/></div>
+<map name="classmatrix__block__diag_ad7b14f56144b2162c3061236b92a651e_cgraph" id="classmatrix__block__diag_ad7b14f56144b2162c3061236b92a651e_cgraph">
+<area shape="rect" id="node2" href="classmatrix__block__diag.html#af9ac67bafa0e73674d26e6f4dc9d2305" title="matrix_block_diag::\lncols" alt="" coords="190,5,325,46"/><area shape="rect" id="node3" href="classmatrix__block__diag.html#a62aeb5b6bc7f309d57a0e87206a70dcb" title="matrix_block_diag::\lnrows" alt="" coords="190,70,325,111"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aaf5e947db4eef0671869b437c7858598"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> matrix_block_diag::operator, </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aff207bd331442a02cae9452868201a1f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> matrix_block_diag::operator- </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="acf603911337730bd6036f9bba02c2f1a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> matrix_block_diag::operator/ </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>z</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__block__diag_acf603911337730bd6036f9bba02c2f1a_cgraph.png" border="0" usemap="#classmatrix__block__diag_acf603911337730bd6036f9bba02c2f1a_cgraph" alt=""/></div>
+<map name="classmatrix__block__diag_acf603911337730bd6036f9bba02c2f1a_cgraph" id="classmatrix__block__diag_acf603911337730bd6036f9bba02c2f1a_cgraph">
+<area shape="rect" id="node2" href="classmatrix__block__diag.html#af9ac67bafa0e73674d26e6f4dc9d2305" title="matrix_block_diag::\lncols" alt="" coords="190,5,325,46"/><area shape="rect" id="node3" href="classmatrix__block__diag.html#a62aeb5b6bc7f309d57a0e87206a70dcb" title="matrix_block_diag::\lnrows" alt="" coords="190,70,325,111"/><area shape="rect" id="node4" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="209,136,306,163"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a9a7202af83e4cad2ef42e104f628cf54"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> matrix_block_diag::operator/ </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>n</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0600ceedeedd3a44e9655349257bc9dc"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp; matrix_block_diag::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__block__diag_a0600ceedeedd3a44e9655349257bc9dc_cgraph.png" border="0" usemap="#classmatrix__block__diag_a0600ceedeedd3a44e9655349257bc9dc_cgraph" alt=""/></div>
+<map name="classmatrix__block__diag_a0600ceedeedd3a44e9655349257bc9dc_cgraph" id="classmatrix__block__diag_a0600ceedeedd3a44e9655349257bc9dc_cgraph">
+<area shape="rect" id="node2" href="classmatrix__block__diag.html#aa7e7f89e4886b81f04713cb24b14603a" title="matrix_block_diag::\lset_nblocks" alt="" coords="190,5,325,46"/><area shape="rect" id="node3" href="classmatrix__block__diag.html#a912db280a7c26104ae061e079c7bde26" title="matrix_block_diag::\lnblocks" alt="" coords="374,5,509,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a84d9683f7c8844af8bcb3f5d63593887"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> matrix_block_diag::row </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__block__diag_a84d9683f7c8844af8bcb3f5d63593887_cgraph.png" border="0" usemap="#classmatrix__block__diag_a84d9683f7c8844af8bcb3f5d63593887_cgraph" alt=""/></div>
+<map name="classmatrix__block__diag_a84d9683f7c8844af8bcb3f5d63593887_cgraph" id="classmatrix__block__diag_a84d9683f7c8844af8bcb3f5d63593887_cgraph">
+<area shape="rect" id="node2" href="classmatrix__block__diag.html#a62aeb5b6bc7f309d57a0e87206a70dcb" title="matrix_block_diag::\lnrows" alt="" coords="211,5,346,46"/><area shape="rect" id="node3" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="251,71,306,97"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aa7e7f89e4886b81f04713cb24b14603a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp; matrix_block_diag::set_nblocks </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nblocks</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__block__diag_aa7e7f89e4886b81f04713cb24b14603a_cgraph.png" border="0" usemap="#classmatrix__block__diag_aa7e7f89e4886b81f04713cb24b14603a_cgraph" alt=""/></div>
+<map name="classmatrix__block__diag_aa7e7f89e4886b81f04713cb24b14603a_cgraph" id="classmatrix__block__diag_aa7e7f89e4886b81f04713cb24b14603a_cgraph">
+<area shape="rect" id="node2" href="classmatrix__block__diag.html#a912db280a7c26104ae061e079c7bde26" title="matrix_block_diag::\lnblocks" alt="" coords="190,5,325,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="adf4a4c253a7412993250b759172ee5cc"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> matrix_block_diag::transpose </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmatrix__block__diag_adf4a4c253a7412993250b759172ee5cc_cgraph.png" border="0" usemap="#classmatrix__block__diag_adf4a4c253a7412993250b759172ee5cc_cgraph" alt=""/></div>
+<map name="classmatrix__block__diag_adf4a4c253a7412993250b759172ee5cc_cgraph" id="classmatrix__block__diag_adf4a4c253a7412993250b759172ee5cc_cgraph">
+<area shape="rect" id="node2" href="classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="189,12,312,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a class="anchor" id="aa274781897bb9188dc366dd00a30a321"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> eye </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a33f672d1c43459cedafc64a7e696c004"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> operator* </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td>
+          <td class="paramname"><em>D</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af236a1a7a5b9a6711d0a8f45a97aa8f5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> operator* </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td>
+          <td class="paramname"><em>D</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a48b0cfffbd925987af7f6c8917a13321"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> operator+ </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad7f4e0ee802423fb6c6033402894f0cc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a> operator, </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1b0823c7af09b48608f8ff470dc75dfe"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> operator- </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a520d597265eee5a9cf7ecfbc08a943e3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmatrix.html">matrix</a>* matrix_block_diag::m</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aee469fe681da67b21279199260557090"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int matrix_block_diag::nb</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/include/<a class="el" href="matrix_8h_source.html">matrix.h</a></li>
-<li>src/matrix/matrix_block_diag.cpp</li>
+<li>src/matrix/<a class="el" href="matrix__block__diag_8cpp.html">matrix_block_diag.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:28 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

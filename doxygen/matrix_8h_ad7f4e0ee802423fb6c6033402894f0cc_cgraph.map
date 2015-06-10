@@ -1,0 +1,7 @@
+<map id="operator," name="operator,">
+<area shape="rect" id="node2" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="147,5,245,32"/>
+<area shape="rect" id="node3" href="$classmatrix__block__diag.html#a62aeb5b6bc7f309d57a0e87206a70dcb" title="matrix_block_diag::\lnrows" alt="" coords="129,57,263,98"/>
+<area shape="rect" id="node4" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="145,123,247,149"/>
+<area shape="rect" id="node5" href="$classmatrix__block__diag.html#af9ac67bafa0e73674d26e6f4dc9d2305" title="matrix_block_diag::\lncols" alt="" coords="129,174,263,215"/>
+<area shape="rect" id="node6" href="$classmatrix.html#af220f2a5835e6531bb17b850063a12cf" title="Returns the pointer to the matrix data. " alt="" coords="151,240,241,267"/>
+</map>

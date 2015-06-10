@@ -1,4 +1,25 @@
 var searchData=
 [
-  ['matrix',['matrix',['../classmatrix.html#a617d81e375e8529a4ee19ab9375be0d9',1,'matrix::matrix(int nfil=1, int ncol=1)'],['../classmatrix.html#a4018e1b43d9ce6fe0fe385e796b4ff9d',1,'matrix::matrix(const matrix &amp;)']]]
+  ['g',['G',['../classsymbolic.html#af1be1540c3e66a039f97678bd5ce9579',1,'symbolic']]],
+  ['gcd',['gcd',['../classrational.html#a16ad624beecae0c17f168fdead3f79f7',1,'rational']]],
+  ['get',['get',['../classcmdline__parser.html#afd813875ea844d3b450470f3d6e1129c',1,'cmdline_parser::get()'],['../classfile__parser.html#a8b54855d0f7848f58a2b0d57815849c1',1,'file_parser::get()']]],
+  ['get_5fdelta',['get_delta',['../classSDIRK__solver.html#a60a70ec3f95a1cbe3e61a294ab1e1780',1,'SDIRK_solver']]],
+  ['get_5fid',['get_id',['../classsolver.html#a4f787a2def0088a98ea9c6980a00d851',1,'solver::get_id()'],['../classRKF__solver.html#afc0a83ea898e5649fe91497e2411de18',1,'RKF_solver::get_id()'],['../classSDIRK__solver.html#a9f0327b9502cb34ed0df0e4e5643b375',1,'SDIRK_solver::get_id()']]],
+  ['get_5fmap',['get_map',['../classremapper.html#a6aeda971f62d6b523bb85e6ba500ca21',1,'remapper']]],
+  ['get_5fnblocks',['get_nblocks',['../classsolver.html#a96a05939f7f95e166b86ea1bf897dc42',1,'solver']]],
+  ['get_5fnvar',['get_nvar',['../classsolver.html#ab1fef6be2a36a876d28064de94ae2977',1,'solver']]],
+  ['get_5forder',['get_order',['../classSDIRK__solver.html#ac45fcacdfdb6245468b3d8fa9276c1d5',1,'SDIRK_solver']]],
+  ['get_5frhs',['get_rhs',['../classsolver.html#ab4a3eb7df0e027a8480317d9b96f5b07',1,'solver::get_rhs(const char *eqn)'],['../classsolver.html#a8dc8ce1156958f9bd2b7bfeeea4374ed',1,'solver::get_rhs(int ieq)']]],
+  ['get_5fstep',['get_step',['../classSDIRK__solver.html#ac7c219c35105065b683ffa9da7256f92',1,'SDIRK_solver']]],
+  ['get_5ft',['get_t',['../classRKF__solver.html#a77e79d12c269a95145beca5e1e44c607',1,'RKF_solver::get_t()'],['../classSDIRK__solver.html#acb81d73e631ac9e5d5a465a0c6482f62',1,'SDIRK_solver::get_t()']]],
+  ['get_5fvalue',['get_value',['../classsymbolic.html#acde5969bbdbe45e9c5fc9f036c79bb67',1,'symbolic']]],
+  ['get_5fvar',['get_var',['../classsolver.html#a24e782d8a59927c9a1662033c013ad7c',1,'solver::get_var(const char *varn)'],['../classsolver.html#a41c5933a6943a072ba727a8ee879e9d9',1,'solver::get_var(int ivar)'],['../classRKF__solver.html#a7dc69b68cf2a1782920682d89d625293',1,'RKF_solver::get_var()'],['../classSDIRK__solver.html#a7e13bbbf08e119a759054f16171cd912',1,'SDIRK_solver::get_var()']]],
+  ['get_5fvars',['get_vars',['../classsolver.html#a05b88577b871db41f552658806706123',1,'solver::get_vars()'],['../classRKF__solver.html#afcccb4e482d27398fd4a032552463386',1,'RKF_solver::get_vars()'],['../classSDIRK__solver.html#a87ed1de020626aefca4c273ae1edb95a',1,'SDIRK_solver::get_vars()']]],
+  ['getd',['getd',['../xztrin21_8F.html#a2be4685f892107f8ef7977fd13077758',1,'xztrin21.F']]],
+  ['getline',['getline',['../classINFILE.html#a616f7020b90e992ea51c16821520e89a',1,'INFILE']]],
+  ['gmass',['gmass',['../EOS5__xtrin_8F.html#aaadd5cce4437b97a493e021f0e027664',1,'EOS5_xtrin.F']]],
+  ['gmass2',['gmass2',['../ZFS__interp__EOS5_8F.html#a41e97c82a250d0a74e35c468fb175879',1,'ZFS_interp_EOS5.F']]],
+  ['grad',['grad',['../symbolic_8h.html#a72f8ab962e8692c188d858cc1998c48b',1,'grad(const sym &amp;s):&#160;symbolic.h'],['../symbolic_8h.html#af7c0895663563de16cbbae2e80bbc108',1,'grad(const sym_vec &amp;v):&#160;symbolic.h']]],
+  ['gradient',['gradient',['../classsymbolic.html#a1f7cbf93ef20ee903adb22edf7834d32',1,'symbolic::gradient(const sym &amp;)'],['../classsymbolic.html#a127cbf64c2b6cca1adc11cd1453fb8a4',1,'symbolic::gradient(const sym_vec &amp;)']]],
+  ['gsup',['gsup',['../classstar2d.html#a53ab7c1501edcaecf86b89396a40287c',1,'star2d::gsup()'],['../classstar1d.html#afab763475cc8021f2eaafdb23b7c7222',1,'star1d::gsup()']]]
 ];

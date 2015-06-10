@@ -1,0 +1,18 @@
+<map id="star2d::opacity" name="star2d::opacity">
+<area shape="rect" id="node2" href="$physics_8h.html#afd8af70d8089ee6714a98166e853b857" title="opa_calc" alt="" coords="196,107,271,133"/>
+<area shape="rect" id="node17" href="$classcomposition__map.html#a0929bc6a71f8e7ee0663c0e8d4de5cea" title="composition_map::X" alt="" coords="163,157,304,184"/>
+<area shape="rect" id="node3" href="$physics_8h.html#a7dd5e5c306707f8cda79b01161dd07ee" title="opa_opal" alt="" coords="361,107,436,133"/>
+<area shape="rect" id="node10" href="$physics_8h.html#a74ead2b5d8983c0da11b7fd4c920822a" title="opa_houdek" alt="" coords="353,183,445,209"/>
+<area shape="rect" id="node16" href="$physics_8h.html#ac3284f3ea54e3de864a24e6163e4fa7f" title="opa_kramer" alt="" coords="353,56,444,83"/>
+<area shape="rect" id="node4" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="502,157,589,184"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="495,208,596,235"/>
+<area shape="rect" id="node6" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="497,107,594,133"/>
+<area shape="rect" id="node7" href="$opa__opal_8cpp.html#ae20f4336151143103b9525f44c5b26ed" title="opa_opal_i" alt="" coords="503,5,587,32"/>
+<area shape="rect" id="node9" href="$matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="522,56,569,83"/>
+<area shape="rect" id="node8" href="$opa__opal_8cpp.html#ac7a68023fdb93290f96b5c9d55d89586" title="opacgn93_" alt="" coords="645,5,731,32"/>
+<area shape="rect" id="node11" href="$opa__houdek_8cpp.html#a1162fd67859a3fb7883f76228d6730a7" title="maceps_" alt="" coords="508,259,583,285"/>
+<area shape="rect" id="node12" href="$opa__houdek_8cpp.html#af4b3b0b21379b638574d067e5f61adff" title="opinit_" alt="" coords="515,309,575,336"/>
+<area shape="rect" id="node13" href="$opa__houdek_8cpp.html#a6011772ea5eb2eb70441515b3bbd9936" title="opa_houdek_i" alt="" coords="494,360,597,387"/>
+<area shape="rect" id="node14" href="$matrix_8h.html#a10ecd5cb454340b8c168fd4a9924985d" title="log10" alt="" coords="661,385,715,412"/>
+<area shape="rect" id="node15" href="$opa__houdek_8cpp.html#a2d0744f0a7df6a16393ee8caf6d50347" title="opints_" alt="" coords="656,335,720,361"/>
+</map>

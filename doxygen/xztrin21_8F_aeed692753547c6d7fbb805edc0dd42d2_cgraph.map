@@ -1,0 +1,26 @@
+<map id="opaltab" name="opaltab">
+<area shape="rect" id="node2" href="$classmatrix.html#af220f2a5835e6531bb17b850063a12cf" title="Returns the pointer to the matrix data. " alt="" coords="145,5,236,32"/>
+<area shape="rect" id="node3" href="$matrix_8h.html#a10ecd5cb454340b8c168fd4a9924985d" title="log10" alt="" coords="353,56,407,83"/>
+<area shape="rect" id="node4" href="$classtiempo.html#a885912ffd45013e303eeb86b7055ff47" title="tiempo::value" alt="" coords="141,461,241,488"/>
+<area shape="rect" id="node5" href="$matrix_8h.html#a74e0b0a7fb9b67bf7604931dd5797533" title="log" alt="" coords="171,512,210,539"/>
+<area shape="rect" id="node6" href="$classmatrix.html#a56f512366e313c309346a7ba00cd0341" title="Sets the values of the matrix (given in column major order). " alt="" coords="328,107,432,133"/>
+<area shape="rect" id="node8" href="$xztrin21_8F.html#a5bb43690f64a319ca5ef57ed677d97c9" title="interp" alt="" coords="163,157,218,184"/>
+<area shape="rect" id="node9" href="$classcmdline__parser.html#afd813875ea844d3b450470f3d6e1129c" title="cmdline_parser::get" alt="" coords="312,208,448,235"/>
+<area shape="rect" id="node10" href="$classsymbolic.html#a03d53aa3bf752117a92a57e0215b03ab" title="symbolic::d" alt="" coords="513,284,602,311"/>
+<area shape="rect" id="node17" href="$xztrin21_8F.html#ab89d9bc12ffc899424718651a68e1c87" title="spline" alt="" coords="529,411,585,437"/>
+<area shape="rect" id="node18" href="$xztrin21_8F.html#a0ddc475e9197700ad40d25aa06b46b23" title="splint" alt="" coords="164,563,217,589"/>
+<area shape="rect" id="node19" href="$matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="169,613,212,640"/>
+<area shape="rect" id="node20" href="$classsym_1_1sym__expr.html#ab525062349bc56167baaa67a251e84d4" title="sym::sym_expr::print" alt="" coords="118,664,263,691"/>
+<area shape="rect" id="node21" href="$classtiempo.html#a8e6acdf9cbe741dbff35b3ad11c1a001" title="tiempo::stop" alt="" coords="143,715,238,741"/>
+<area shape="rect" id="node22" href="$xztrin21_8F.html#a200badd11bcc92d8417f625cc3654a69" title="smooth" alt="" coords="158,765,223,792"/>
+<area shape="rect" id="node23" href="$xztrin21_8F.html#ac88cc0a834c8dffb5b58e6002f8f353d" title="fitx" alt="" coords="171,309,211,336"/>
+<area shape="rect" id="node25" href="$xztrin21_8F.html#aa75c54d99d724dadba01686ea43a4569" title="fity" alt="" coords="171,360,211,387"/>
+<area shape="rect" id="node7" href="$classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="496,107,619,133"/>
+<area shape="rect" id="node11" href="$symbolic_8h.html#ad1b9a0a596c68e0f303a1a43fe856108" title="diff" alt="" coords="667,284,707,311"/>
+<area shape="rect" id="node12" href="$sym_8cpp.html#a075f6a28fed628ef71680874b2ca3301" title="jacobian" alt="" coords="755,284,826,311"/>
+<area shape="rect" id="node13" href="$classsym.html#a6bfcd0ef7887bfccc3ab9ddba568ff69" title="sym::check_context" alt="" coords="885,208,1025,235"/>
+<area shape="rect" id="node14" href="$classsym_1_1sym__expr.html#ad9bf9877b0e60666ca0b0d1df50b117d" title="sym::sym_expr::clone" alt="" coords="879,259,1030,285"/>
+<area shape="rect" id="node15" href="$classsym_1_1sym__expr.html#ad4b7089172fec60017feee9556b6b5da" title="sym::sym_expr::derive" alt="" coords="877,309,1032,336"/>
+<area shape="rect" id="node16" href="$classsym_1_1sym__expr.html#ac2df6b4bed129567c6b78b0865685ffd" title="sym::sym_expr::reduce" alt="" coords="875,360,1034,387"/>
+<area shape="rect" id="node24" href="$xztrin21_8F.html#a2be4685f892107f8ef7977fd13077758" title="getd" alt="" coords="357,360,403,387"/>
+</map>

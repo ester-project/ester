@@ -1,0 +1,17 @@
+<map id="solver::create_full" name="solver::create_full">
+<area shape="rect" id="node2" href="$classmatrix.html#a0d38262959de19208fc8c21780457c95" title="Sets the matrix to the nrows x ncols zero matrix. " alt="" coords="196,35,287,61"/>
+<area shape="rect" id="node4" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="525,56,622,83"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="523,208,624,235"/>
+<area shape="rect" id="node6" href="$classsolver.html#ad5fd3909d4e0453728545bf4ed04efb6" title="solver::check_full" alt="" coords="179,259,303,285"/>
+<area shape="rect" id="node3" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="530,5,617,32"/>
+<area shape="rect" id="node7" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="546,360,601,387"/>
+<area shape="rect" id="node8" href="$classsolver.html#ab75fb52ae803c4721c08dc8f55bfd200" title="Performs the inverse operation of the wrap function: restore the single vector x into the blocked vec..." alt="" coords="355,259,461,285"/>
+<area shape="rect" id="node13" href="$classsolver.html#a5733cc995c1d6146cf5f55a5830668fb" title="solver::mult_op" alt="" coords="353,309,463,336"/>
+<area shape="rect" id="node16" href="$classsolver.html#a8f4ec1fefcb8517f070543be1bc7768c" title="Stores distributed (ie. split into several blocks) matrix y into the single vector x..." alt="" coords="361,208,455,235"/>
+<area shape="rect" id="node9" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="525,259,622,285"/>
+<area shape="rect" id="node10" href="$classmatrix.html#a345ac4399ae6ea5d158dec467a7e0432" title="Re&#45;dimension the matrix. " alt="" coords="524,157,623,184"/>
+<area shape="rect" id="node11" href="$classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="516,309,631,336"/>
+<area shape="rect" id="node12" href="$classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="512,107,635,133"/>
+<area shape="rect" id="node14" href="$classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="532,461,615,488"/>
+<area shape="rect" id="node15" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="530,411,617,437"/>
+</map>

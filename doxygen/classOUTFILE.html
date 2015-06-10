@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -98,59 +98,431 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">OUTFILE Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="parser_8h_source.html">parser.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0dbf34e45d013c5ccdab61efa4ab5401"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0dbf34e45d013c5ccdab61efa4ab5401"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>open</b> (const char *name, char mode='b')</td></tr>
+<tr class="memitem:a0dbf34e45d013c5ccdab61efa4ab5401"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOUTFILE.html#a0dbf34e45d013c5ccdab61efa4ab5401">open</a> (const char *name, char <a class="el" href="classOUTFILE.html#a4ed8f4f8776ff29c4337eb58593b9b16">mode</a>='b')</td></tr>
 <tr class="separator:a0dbf34e45d013c5ccdab61efa4ab5401"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c1e239ef9617a3a030468f97d7c82f2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4c1e239ef9617a3a030468f97d7c82f2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (const char *tag, const <a class="el" href="classmatrix.html">matrix</a> *)</td></tr>
+<tr class="memitem:a4c1e239ef9617a3a030468f97d7c82f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOUTFILE.html#a4c1e239ef9617a3a030468f97d7c82f2">write</a> (const char *tag, const <a class="el" href="classmatrix.html">matrix</a> *)</td></tr>
 <tr class="separator:a4c1e239ef9617a3a030468f97d7c82f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d2ed495d18db8e4ad97d7c1f2f6ddbd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2d2ed495d18db8e4ad97d7c1f2f6ddbd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (const char *tag, const <a class="el" href="classmatrix__map.html">matrix_map</a> *)</td></tr>
+<tr class="memitem:a2d2ed495d18db8e4ad97d7c1f2f6ddbd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOUTFILE.html#a2d2ed495d18db8e4ad97d7c1f2f6ddbd">write</a> (const char *tag, const <a class="el" href="classmatrix__map.html">matrix_map</a> *)</td></tr>
 <tr class="separator:a2d2ed495d18db8e4ad97d7c1f2f6ddbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b473319c121cea8c1ca0a0f6c3a8d34"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2b473319c121cea8c1ca0a0f6c3a8d34"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (const char *tag, <a class="el" href="classmatrix.html">matrix</a> *m)</td></tr>
+<tr class="memitem:a2b473319c121cea8c1ca0a0f6c3a8d34"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOUTFILE.html#a2b473319c121cea8c1ca0a0f6c3a8d34">write</a> (const char *tag, <a class="el" href="classmatrix.html">matrix</a> *m)</td></tr>
 <tr class="separator:a2b473319c121cea8c1ca0a0f6c3a8d34"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abed21619f06650b39ebf25b32b4256a3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abed21619f06650b39ebf25b32b4256a3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (const char *tag, <a class="el" href="classmatrix__map.html">matrix_map</a> *m)</td></tr>
+<tr class="memitem:abed21619f06650b39ebf25b32b4256a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOUTFILE.html#abed21619f06650b39ebf25b32b4256a3">write</a> (const char *tag, <a class="el" href="classmatrix__map.html">matrix_map</a> *m)</td></tr>
 <tr class="separator:abed21619f06650b39ebf25b32b4256a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a767858c2d940c9d0d8b26246bc8e4053"><td class="memTemplParams" colspan="2"><a class="anchor" id="a767858c2d940c9d0d8b26246bc8e4053"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:a767858c2d940c9d0d8b26246bc8e4053"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>write</b> (const char *tag, T *x, unsigned long n=1)</td></tr>
+<tr class="memitem:a767858c2d940c9d0d8b26246bc8e4053"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a767858c2d940c9d0d8b26246bc8e4053"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classOUTFILE.html#a767858c2d940c9d0d8b26246bc8e4053">write</a> (const char *tag, T *x, unsigned long n=1)</td></tr>
 <tr class="separator:a767858c2d940c9d0d8b26246bc8e4053"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a902b954ff2559becb69d114bf09e6cdf"><td class="memTemplParams" colspan="2"><a class="anchor" id="a902b954ff2559becb69d114bf09e6cdf"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:a902b954ff2559becb69d114bf09e6cdf"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>write_fmt</b> (const char *tag, const char *fmt, T *x, unsigned long n=1)</td></tr>
+<tr class="memitem:a902b954ff2559becb69d114bf09e6cdf"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a902b954ff2559becb69d114bf09e6cdf"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classOUTFILE.html#a902b954ff2559becb69d114bf09e6cdf">write_fmt</a> (const char *tag, const char *fmt, T *x, unsigned long n=1)</td></tr>
 <tr class="separator:a902b954ff2559becb69d114bf09e6cdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c0273b39e8dc9de3b561c15b9465b5b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6c0273b39e8dc9de3b561c15b9465b5b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</td></tr>
+<tr class="memitem:a6c0273b39e8dc9de3b561c15b9465b5b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOUTFILE.html#a6c0273b39e8dc9de3b561c15b9465b5b">close</a> ()</td></tr>
 <tr class="separator:a6c0273b39e8dc9de3b561c15b9465b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a2e9e024c4a942d1952c9cbb00b45ea42"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e9e024c4a942d1952c9cbb00b45ea42"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>write_tag</b> (const char *tag, unsigned long n)</td></tr>
+<tr class="memitem:a2e9e024c4a942d1952c9cbb00b45ea42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOUTFILE.html#a2e9e024c4a942d1952c9cbb00b45ea42">write_tag</a> (const char *tag, unsigned long n)</td></tr>
 <tr class="separator:a2e9e024c4a942d1952c9cbb00b45ea42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:ab1a057c7ea65ad6f449d80ee7f7aea69"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab1a057c7ea65ad6f449d80ee7f7aea69"></a>
-FILE *&#160;</td><td class="memItemRight" valign="bottom"><b>fp</b></td></tr>
+<tr class="memitem:ab1a057c7ea65ad6f449d80ee7f7aea69"><td class="memItemLeft" align="right" valign="top">FILE *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOUTFILE.html#ab1a057c7ea65ad6f449d80ee7f7aea69">fp</a></td></tr>
 <tr class="separator:ab1a057c7ea65ad6f449d80ee7f7aea69"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ed8f4f8776ff29c4337eb58593b9b16"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4ed8f4f8776ff29c4337eb58593b9b16"></a>
-char&#160;</td><td class="memItemRight" valign="bottom"><b>mode</b></td></tr>
+<tr class="memitem:a4ed8f4f8776ff29c4337eb58593b9b16"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOUTFILE.html#a4ed8f4f8776ff29c4337eb58593b9b16">mode</a></td></tr>
 <tr class="separator:a4ed8f4f8776ff29c4337eb58593b9b16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a6c0273b39e8dc9de3b561c15b9465b5b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void OUTFILE::close </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0dbf34e45d013c5ccdab61efa4ab5401"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int OUTFILE::open </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>'b'</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4c1e239ef9617a3a030468f97d7c82f2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void OUTFILE::write </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix.html">matrix</a> *&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classOUTFILE_a4c1e239ef9617a3a030468f97d7c82f2_cgraph.png" border="0" usemap="#classOUTFILE_a4c1e239ef9617a3a030468f97d7c82f2_cgraph" alt=""/></div>
+<map name="classOUTFILE_a4c1e239ef9617a3a030468f97d7c82f2_cgraph" id="classOUTFILE_a4c1e239ef9617a3a030468f97d7c82f2_cgraph">
+<area shape="rect" id="node2" href="classOUTFILE.html#a2e9e024c4a942d1952c9cbb00b45ea42" title="OUTFILE::write_tag" alt="" coords="168,5,307,32"/><area shape="rect" id="node3" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="189,56,286,83"/><area shape="rect" id="node4" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="187,107,288,133"/><area shape="rect" id="node5" href="classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="190,157,285,184"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a2d2ed495d18db8e4ad97d7c1f2f6ddbd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void OUTFILE::write </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classmatrix__map.html">matrix_map</a> *&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classOUTFILE_a2d2ed495d18db8e4ad97d7c1f2f6ddbd_cgraph.png" border="0" usemap="#classOUTFILE_a2d2ed495d18db8e4ad97d7c1f2f6ddbd_cgraph" alt=""/></div>
+<map name="classOUTFILE_a2d2ed495d18db8e4ad97d7c1f2f6ddbd_cgraph" id="classOUTFILE_a2d2ed495d18db8e4ad97d7c1f2f6ddbd_cgraph">
+<area shape="rect" id="node2" href="classOUTFILE.html#a2e9e024c4a942d1952c9cbb00b45ea42" title="OUTFILE::write_tag" alt="" coords="331,5,469,32"/><area shape="rect" id="node3" href="classOUTFILE.html#a4c1e239ef9617a3a030468f97d7c82f2" title="OUTFILE::write" alt="" coords="168,56,283,83"/><area shape="rect" id="node4" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="351,56,449,83"/><area shape="rect" id="node5" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="349,107,451,133"/><area shape="rect" id="node6" href="classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="353,157,447,184"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a2b473319c121cea8c1ca0a0f6c3a8d34"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void OUTFILE::write </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix.html">matrix</a> *&#160;</td>
+          <td class="paramname"><em>m</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classOUTFILE_a2b473319c121cea8c1ca0a0f6c3a8d34_cgraph.png" border="0" usemap="#classOUTFILE_a2b473319c121cea8c1ca0a0f6c3a8d34_cgraph" alt=""/></div>
+<map name="classOUTFILE_a2b473319c121cea8c1ca0a0f6c3a8d34_cgraph" id="classOUTFILE_a2b473319c121cea8c1ca0a0f6c3a8d34_cgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="abed21619f06650b39ebf25b32b4256a3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void OUTFILE::write </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmatrix__map.html">matrix_map</a> *&#160;</td>
+          <td class="paramname"><em>m</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classOUTFILE_abed21619f06650b39ebf25b32b4256a3_cgraph.png" border="0" usemap="#classOUTFILE_abed21619f06650b39ebf25b32b4256a3_cgraph" alt=""/></div>
+<map name="classOUTFILE_abed21619f06650b39ebf25b32b4256a3_cgraph" id="classOUTFILE_abed21619f06650b39ebf25b32b4256a3_cgraph">
+</map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a767858c2d940c9d0d8b26246bc8e4053"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void OUTFILE::write </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>n</em> = <code>1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classOUTFILE_a767858c2d940c9d0d8b26246bc8e4053_cgraph.png" border="0" usemap="#classOUTFILE_a767858c2d940c9d0d8b26246bc8e4053_cgraph" alt=""/></div>
+<map name="classOUTFILE_a767858c2d940c9d0d8b26246bc8e4053_cgraph" id="classOUTFILE_a767858c2d940c9d0d8b26246bc8e4053_cgraph">
+<area shape="rect" id="node2" href="classOUTFILE.html#a2e9e024c4a942d1952c9cbb00b45ea42" title="OUTFILE::write_tag" alt="" coords="168,5,307,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a902b954ff2559becb69d114bf09e6cdf"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void OUTFILE::write_fmt </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>n</em> = <code>1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classOUTFILE_a902b954ff2559becb69d114bf09e6cdf_cgraph.png" border="0" usemap="#classOUTFILE_a902b954ff2559becb69d114bf09e6cdf_cgraph" alt=""/></div>
+<map name="classOUTFILE_a902b954ff2559becb69d114bf09e6cdf_cgraph" id="classOUTFILE_a902b954ff2559becb69d114bf09e6cdf_cgraph">
+<area shape="rect" id="node2" href="classOUTFILE.html#a2e9e024c4a942d1952c9cbb00b45ea42" title="OUTFILE::write_tag" alt="" coords="195,5,333,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a2e9e024c4a942d1952c9cbb00b45ea42"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void OUTFILE::write_tag </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>n</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ab1a057c7ea65ad6f449d80ee7f7aea69"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">FILE* OUTFILE::fp</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4ed8f4f8776ff29c4337eb58593b9b16"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">char OUTFILE::mode</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/include/<a class="el" href="parser_8h_source.html">parser.h</a></li>
-<li>src/utils/iofile.cpp</li>
+<li>src/utils/<a class="el" href="iofile_8cpp.html">iofile.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:28 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

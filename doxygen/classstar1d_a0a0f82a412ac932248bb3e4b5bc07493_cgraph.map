@@ -1,0 +1,5 @@
+<map id="star1d::register_variables" name="star1d::register_variables">
+<area shape="rect" id="node2" href="$classsolver.html#a13aca53582481d03ad9b3aff3103df60" title="solver::set_nr" alt="" coords="236,5,337,32"/>
+<area shape="rect" id="node3" href="$classsolver.html#a691d638dd7b4a81a3855965a4b7f2c85" title="solver::regvar" alt="" coords="400,81,501,108"/>
+<area shape="rect" id="node4" href="$classsolver.html#a9ce1b3dfe4126933967a1b17da5e678d" title="solver::regvar_dep" alt="" coords="222,107,351,133"/>
+</map>

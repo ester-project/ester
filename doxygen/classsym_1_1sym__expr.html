@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -100,85 +100,596 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">sym::sym_expr Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="symbolic_8h_source.html">symbolic.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for sym::sym_expr:</div>
 <div class="dyncontent">
 <div class="center"><img src="classsym_1_1sym__expr__inherit__graph.png" border="0" usemap="#sym_1_1sym__expr_inherit__map" alt="Inheritance graph"/></div>
 <map name="sym_1_1sym__expr_inherit__map" id="sym_1_1sym__expr_inherit__map">
-</map>
+<area shape="rect" id="node2" href="classsym_1_1sym__add.html" title="sym::sym_add" alt="" coords="169,5,277,32"/><area shape="rect" id="node3" href="classsym_1_1sym__cos.html" title="sym::sym_cos" alt="" coords="169,56,277,83"/><area shape="rect" id="node4" href="classsym_1_1sym__deriv.html" title="sym::sym_deriv" alt="" coords="165,107,280,133"/><area shape="rect" id="node5" href="classsym_1_1sym__exp.html" title="sym::sym_exp" alt="" coords="169,157,277,184"/><area shape="rect" id="node6" href="classsym_1_1sym__log.html" title="sym::sym_log" alt="" coords="171,208,275,235"/><area shape="rect" id="node7" href="classsym_1_1sym__num.html" title="sym::sym_num" alt="" coords="167,259,279,285"/><area shape="rect" id="node8" href="classsym_1_1sym__prod.html" title="sym::sym_prod" alt="" coords="167,309,279,336"/><area shape="rect" id="node9" href="classsym_1_1sym__sin.html" title="sym::sym_sin" alt="" coords="171,360,275,387"/><area shape="rect" id="node10" href="classsym_1_1symbol.html" title="sym::symbol" alt="" coords="174,411,271,437"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a82b5296dfae79e7c376fba7dccf13cfd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a82b5296dfae79e7c376fba7dccf13cfd"></a>
-virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>order</b> () const =0</td></tr>
+<tr class="memitem:a8feac07012521a45bcef7437597ef2ca"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a8feac07012521a45bcef7437597ef2ca">~sym_expr</a> ()</td></tr>
+<tr class="separator:a8feac07012521a45bcef7437597ef2ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82b5296dfae79e7c376fba7dccf13cfd"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a82b5296dfae79e7c376fba7dccf13cfd">order</a> () const =0</td></tr>
 <tr class="separator:a82b5296dfae79e7c376fba7dccf13cfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9bf9877b0e60666ca0b0d1df50b117d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad9bf9877b0e60666ca0b0d1df50b117d"></a>
-virtual <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>clone</b> () const =0</td></tr>
+<tr class="memitem:ad9bf9877b0e60666ca0b0d1df50b117d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#ad9bf9877b0e60666ca0b0d1df50b117d">clone</a> () const =0</td></tr>
 <tr class="separator:ad9bf9877b0e60666ca0b0d1df50b117d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2df6b4bed129567c6b78b0865685ffd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac2df6b4bed129567c6b78b0865685ffd"></a>
-virtual <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>reduce</b> ()</td></tr>
+<tr class="memitem:ac2df6b4bed129567c6b78b0865685ffd"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#ac2df6b4bed129567c6b78b0865685ffd">reduce</a> ()</td></tr>
 <tr class="separator:ac2df6b4bed129567c6b78b0865685ffd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4b7089172fec60017feee9556b6b5da"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad4b7089172fec60017feee9556b6b5da"></a>
-virtual <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>derive</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;)=0</td></tr>
+<tr class="memitem:ad4b7089172fec60017feee9556b6b5da"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#ad4b7089172fec60017feee9556b6b5da">derive</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;)=0</td></tr>
 <tr class="separator:ad4b7089172fec60017feee9556b6b5da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c17c1fc46c8aa32af30c899d6a0a0ca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1c17c1fc46c8aa32af30c899d6a0a0ca"></a>
-virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>comp</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const =0</td></tr>
+<tr class="memitem:a1c17c1fc46c8aa32af30c899d6a0a0ca"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a1c17c1fc46c8aa32af30c899d6a0a0ca">comp</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const =0</td></tr>
 <tr class="separator:a1c17c1fc46c8aa32af30c899d6a0a0ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8cee68ffef7cb32b88ad255750194d5b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8cee68ffef7cb32b88ad255750194d5b"></a>
-virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>eval</b> () const =0</td></tr>
+<tr class="memitem:a8cee68ffef7cb32b88ad255750194d5b"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a8cee68ffef7cb32b88ad255750194d5b">eval</a> () const =0</td></tr>
 <tr class="separator:a8cee68ffef7cb32b88ad255750194d5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab525062349bc56167baaa67a251e84d4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab525062349bc56167baaa67a251e84d4"></a>
-virtual std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>print</b> (std::ostream &amp;) const =0</td></tr>
+<tr class="memitem:ab525062349bc56167baaa67a251e84d4"><td class="memItemLeft" align="right" valign="top">virtual std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#ab525062349bc56167baaa67a251e84d4">print</a> (std::ostream &amp;) const =0</td></tr>
 <tr class="separator:ab525062349bc56167baaa67a251e84d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a871c53c99bae0e184b7695885798c243"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a871c53c99bae0e184b7695885798c243"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&gt;</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
+<tr class="memitem:a871c53c99bae0e184b7695885798c243"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a871c53c99bae0e184b7695885798c243">operator&gt;</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
 <tr class="separator:a871c53c99bae0e184b7695885798c243"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88ac3353c1b940482d378573c5a5485d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a88ac3353c1b940482d378573c5a5485d"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
+<tr class="memitem:a88ac3353c1b940482d378573c5a5485d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a88ac3353c1b940482d378573c5a5485d">operator&lt;</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
 <tr class="separator:a88ac3353c1b940482d378573c5a5485d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c4598696cfa503fbe709648da8e4f9b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c4598696cfa503fbe709648da8e4f9b"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
+<tr class="memitem:a9c4598696cfa503fbe709648da8e4f9b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a9c4598696cfa503fbe709648da8e4f9b">operator==</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
 <tr class="separator:a9c4598696cfa503fbe709648da8e4f9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aced458dd44a8f3dee2fc1261308b5d89"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aced458dd44a8f3dee2fc1261308b5d89"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&gt;=</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
+<tr class="memitem:aced458dd44a8f3dee2fc1261308b5d89"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#aced458dd44a8f3dee2fc1261308b5d89">operator&gt;=</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
 <tr class="separator:aced458dd44a8f3dee2fc1261308b5d89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d51159148b67e1a9dda3e13a16d7528"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2d51159148b67e1a9dda3e13a16d7528"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;=</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
+<tr class="memitem:a2d51159148b67e1a9dda3e13a16d7528"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a2d51159148b67e1a9dda3e13a16d7528">operator&lt;=</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
 <tr class="separator:a2d51159148b67e1a9dda3e13a16d7528"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48c76d4a1e682ab45ebd8f57ca9c9d5c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a48c76d4a1e682ab45ebd8f57ca9c9d5c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
+<tr class="memitem:a48c76d4a1e682ab45ebd8f57ca9c9d5c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a48c76d4a1e682ab45ebd8f57ca9c9d5c">operator!=</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;s) const </td></tr>
 <tr class="separator:a48c76d4a1e682ab45ebd8f57ca9c9d5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b28e5d31ce79b5c5a5829011662f4dd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8b28e5d31ce79b5c5a5829011662f4dd"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;)</td></tr>
+<tr class="memitem:a8b28e5d31ce79b5c5a5829011662f4dd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a8b28e5d31ce79b5c5a5829011662f4dd">add</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;)</td></tr>
 <tr class="separator:a8b28e5d31ce79b5c5a5829011662f4dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ecaab666f1554ce670ee0f1497685c1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1ecaab666f1554ce670ee0f1497685c1"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>mult</b> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;)</td></tr>
+<tr class="memitem:a1ecaab666f1554ce670ee0f1497685c1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a1ecaab666f1554ce670ee0f1497685c1">mult</a> (const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;)</td></tr>
 <tr class="separator:a1ecaab666f1554ce670ee0f1497685c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb2c332245faca00ac92a1993e87dd1c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adb2c332245faca00ac92a1993e87dd1c"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>pow</b> (const <a class="el" href="classrational.html">rational</a> &amp;)</td></tr>
+<tr class="memitem:adb2c332245faca00ac92a1993e87dd1c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#adb2c332245faca00ac92a1993e87dd1c">pow</a> (const <a class="el" href="classrational.html">rational</a> &amp;)</td></tr>
 <tr class="separator:adb2c332245faca00ac92a1993e87dd1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a317ffab1f561133e5f03cba654f3de43"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a317ffab1f561133e5f03cba654f3de43"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>sin</b> ()</td></tr>
+<tr class="memitem:a317ffab1f561133e5f03cba654f3de43"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a317ffab1f561133e5f03cba654f3de43">sin</a> ()</td></tr>
 <tr class="separator:a317ffab1f561133e5f03cba654f3de43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab75304f7b18194e99001b91db0719fec"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab75304f7b18194e99001b91db0719fec"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>cos</b> ()</td></tr>
+<tr class="memitem:ab75304f7b18194e99001b91db0719fec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#ab75304f7b18194e99001b91db0719fec">cos</a> ()</td></tr>
 <tr class="separator:ab75304f7b18194e99001b91db0719fec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a137897acb943a54f02953ed54e42b6ab"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a137897acb943a54f02953ed54e42b6ab"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>exp</b> ()</td></tr>
+<tr class="memitem:a137897acb943a54f02953ed54e42b6ab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a137897acb943a54f02953ed54e42b6ab">exp</a> ()</td></tr>
 <tr class="separator:a137897acb943a54f02953ed54e42b6ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15c83647585c33306f0687c0a361ac44"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a15c83647585c33306f0687c0a361ac44"></a>
-<a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>log</b> ()</td></tr>
+<tr class="memitem:a15c83647585c33306f0687c0a361ac44"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym_1_1sym__expr.html#a15c83647585c33306f0687c0a361ac44">log</a> ()</td></tr>
 <tr class="separator:a15c83647585c33306f0687c0a361ac44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a8feac07012521a45bcef7437597ef2ca"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual sym::sym_expr::~sym_expr </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a8b28e5d31ce79b5c5a5829011662f4dd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym_1_1sym__expr.html">sym::sym_expr</a> * sym::sym_expr::add </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym_1_1sym__expr_a8b28e5d31ce79b5c5a5829011662f4dd_cgraph.png" border="0" usemap="#classsym_1_1sym__expr_a8b28e5d31ce79b5c5a5829011662f4dd_cgraph" alt=""/></div>
+<map name="classsym_1_1sym__expr_a8b28e5d31ce79b5c5a5829011662f4dd_cgraph" id="classsym_1_1sym__expr_a8b28e5d31ce79b5c5a5829011662f4dd_cgraph">
+<area shape="rect" id="node2" href="classsym_1_1sym__expr.html#ad9bf9877b0e60666ca0b0d1df50b117d" title="sym::sym_expr::clone" alt="" coords="195,5,346,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ad9bf9877b0e60666ca0b0d1df50b117d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a>* sym::sym_expr::clone </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classsym_1_1sym__log.html#ac2e2cdff9a5130ae066f2c0b17d12253">sym::sym_log</a>, <a class="el" href="classsym_1_1sym__exp.html#aa3e66b435a5a748ed1efa75c704a2273">sym::sym_exp</a>, <a class="el" href="classsym_1_1sym__cos.html#a5455fe0e7783f1d46a65f8d30ec6e71b">sym::sym_cos</a>, <a class="el" href="classsym_1_1sym__sin.html#a4bb30744f16c7ea13b82fae940f1252b">sym::sym_sin</a>, <a class="el" href="classsym_1_1sym__prod.html#a9df8d0ac3f97a2d3150a016632fd6415">sym::sym_prod</a>, <a class="el" href="classsym_1_1sym__add.html#ac5bde5d2bdb4da9ac612a5fb4f376d55">sym::sym_add</a>, <a class="el" href="classsym_1_1sym__deriv.html#af3c590a5d8433182f24df35e549051dd">sym::sym_deriv</a>, <a class="el" href="classsym_1_1symbol.html#a77899969511c72794e207776d6f5ea07">sym::symbol</a>, and <a class="el" href="classsym_1_1sym__num.html#a3b2371d59a6f7d01a9b634bc5f08fe12">sym::sym_num</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1c17c1fc46c8aa32af30c899d6a0a0ca"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual int sym::sym_expr::comp </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classsym_1_1sym__log.html#af581530f75afc7afa3f9fa74949121bd">sym::sym_log</a>, <a class="el" href="classsym_1_1sym__exp.html#af5818da23c6cb7a387d423af88503689">sym::sym_exp</a>, <a class="el" href="classsym_1_1sym__cos.html#af54625cef278376da16a0a1368594e8c">sym::sym_cos</a>, <a class="el" href="classsym_1_1sym__sin.html#a6f065609448d5a48398663c6d42bc092">sym::sym_sin</a>, <a class="el" href="classsym_1_1sym__prod.html#a307cfb628957daa7a7912f5000696835">sym::sym_prod</a>, <a class="el" href="classsym_1_1sym__add.html#a41a97a76464d5be20975cf643ea20549">sym::sym_add</a>, <a class="el" href="classsym_1_1sym__deriv.html#a905c19767dd9c380b658f878c84db550">sym::sym_deriv</a>, <a class="el" href="classsym_1_1symbol.html#adaaedaefde3ee9f0886a8cac8d1d6d64">sym::symbol</a>, and <a class="el" href="classsym_1_1sym__num.html#a71468c9ebbba34a99b949310a018f4a1">sym::sym_num</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab75304f7b18194e99001b91db0719fec"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym_1_1sym__expr.html">sym::sym_expr</a> * sym::sym_expr::cos </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad4b7089172fec60017feee9556b6b5da"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a>* sym::sym_expr::derive </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classsym_1_1sym__log.html#a597a99bffca88728596466a68481a35d">sym::sym_log</a>, <a class="el" href="classsym_1_1sym__exp.html#ac8f2872157bdaa8d7045bf7ceecd39a2">sym::sym_exp</a>, <a class="el" href="classsym_1_1sym__cos.html#a1d6f9e15d9c2e10236e2c9f064ee529a">sym::sym_cos</a>, <a class="el" href="classsym_1_1sym__sin.html#a35a13ac0ac8e55f2fecb1a31ae876e4e">sym::sym_sin</a>, <a class="el" href="classsym_1_1sym__prod.html#a00e478d394a1d9ad0cb9b7abbd10a30c">sym::sym_prod</a>, <a class="el" href="classsym_1_1sym__add.html#a63baf6c2f45224a731bafb74405888e3">sym::sym_add</a>, <a class="el" href="classsym_1_1sym__deriv.html#ab8aec0edb75ddf92fb186fbaebdce0dc">sym::sym_deriv</a>, <a class="el" href="classsym_1_1symbol.html#a4730abe792f989ab8960976babd76c5f">sym::symbol</a>, and <a class="el" href="classsym_1_1sym__num.html#a3ea0008bed72efb589b7269c82bf7b9b">sym::sym_num</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8cee68ffef7cb32b88ad255750194d5b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classmatrix.html">matrix</a> sym::sym_expr::eval </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classsym_1_1sym__log.html#aba218b0afc847f362a497d20c5e166f1">sym::sym_log</a>, <a class="el" href="classsym_1_1sym__exp.html#ac7d4ff84ba77b38f2b5c0e48c6d34e01">sym::sym_exp</a>, <a class="el" href="classsym_1_1sym__cos.html#a7926656129f8b4760300b02070d45450">sym::sym_cos</a>, <a class="el" href="classsym_1_1sym__sin.html#ac8ac414cda3884d114e2c1771e51c933">sym::sym_sin</a>, <a class="el" href="classsym_1_1sym__prod.html#a4d024771a86b28ad0db9e62d75f5e78e">sym::sym_prod</a>, <a class="el" href="classsym_1_1sym__add.html#a7eefc6962cc03b668f72161a1d89c986">sym::sym_add</a>, <a class="el" href="classsym_1_1sym__deriv.html#a2e79d554beef1613a10c8081ef6c1f5e">sym::sym_deriv</a>, <a class="el" href="classsym_1_1symbol.html#a0a1e060ddbdb745aa0838e8aa2f5d5cb">sym::symbol</a>, and <a class="el" href="classsym_1_1sym__num.html#a07aae20aa439da3227ac09db08a57c96">sym::sym_num</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a137897acb943a54f02953ed54e42b6ab"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym_1_1sym__expr.html">sym::sym_expr</a> * sym::sym_expr::exp </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a15c83647585c33306f0687c0a361ac44"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym_1_1sym__expr.html">sym::sym_expr</a> * sym::sym_expr::log </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1ecaab666f1554ce670ee0f1497685c1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym_1_1sym__expr.html">sym::sym_expr</a> * sym::sym_expr::mult </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym_1_1sym__expr_a1ecaab666f1554ce670ee0f1497685c1_cgraph.png" border="0" usemap="#classsym_1_1sym__expr_a1ecaab666f1554ce670ee0f1497685c1_cgraph" alt=""/></div>
+<map name="classsym_1_1sym__expr_a1ecaab666f1554ce670ee0f1497685c1_cgraph" id="classsym_1_1sym__expr_a1ecaab666f1554ce670ee0f1497685c1_cgraph">
+<area shape="rect" id="node2" href="classsym_1_1sym__expr.html#ad9bf9877b0e60666ca0b0d1df50b117d" title="sym::sym_expr::clone" alt="" coords="201,5,351,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a48c76d4a1e682ab45ebd8f57ca9c9d5c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sym::sym_expr::operator!= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym_1_1sym__expr_a48c76d4a1e682ab45ebd8f57ca9c9d5c_cgraph.png" border="0" usemap="#classsym_1_1sym__expr_a48c76d4a1e682ab45ebd8f57ca9c9d5c_cgraph" alt=""/></div>
+<map name="classsym_1_1sym__expr_a48c76d4a1e682ab45ebd8f57ca9c9d5c_cgraph" id="classsym_1_1sym__expr_a48c76d4a1e682ab45ebd8f57ca9c9d5c_cgraph">
+<area shape="rect" id="node2" href="classsym_1_1sym__expr.html#a1c17c1fc46c8aa32af30c899d6a0a0ca" title="sym::sym_expr::comp" alt="" coords="232,5,384,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a88ac3353c1b940482d378573c5a5485d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sym::sym_expr::operator&lt; </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym_1_1sym__expr_a88ac3353c1b940482d378573c5a5485d_cgraph.png" border="0" usemap="#classsym_1_1sym__expr_a88ac3353c1b940482d378573c5a5485d_cgraph" alt=""/></div>
+<map name="classsym_1_1sym__expr_a88ac3353c1b940482d378573c5a5485d_cgraph" id="classsym_1_1sym__expr_a88ac3353c1b940482d378573c5a5485d_cgraph">
+<area shape="rect" id="node2" href="classsym_1_1sym__expr.html#a1c17c1fc46c8aa32af30c899d6a0a0ca" title="sym::sym_expr::comp" alt="" coords="229,5,381,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a2d51159148b67e1a9dda3e13a16d7528"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sym::sym_expr::operator&lt;= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym_1_1sym__expr_a2d51159148b67e1a9dda3e13a16d7528_cgraph.png" border="0" usemap="#classsym_1_1sym__expr_a2d51159148b67e1a9dda3e13a16d7528_cgraph" alt=""/></div>
+<map name="classsym_1_1sym__expr_a2d51159148b67e1a9dda3e13a16d7528_cgraph" id="classsym_1_1sym__expr_a2d51159148b67e1a9dda3e13a16d7528_cgraph">
+<area shape="rect" id="node2" href="classsym_1_1sym__expr.html#a1c17c1fc46c8aa32af30c899d6a0a0ca" title="sym::sym_expr::comp" alt="" coords="237,5,389,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a9c4598696cfa503fbe709648da8e4f9b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sym::sym_expr::operator== </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym_1_1sym__expr_a9c4598696cfa503fbe709648da8e4f9b_cgraph.png" border="0" usemap="#classsym_1_1sym__expr_a9c4598696cfa503fbe709648da8e4f9b_cgraph" alt=""/></div>
+<map name="classsym_1_1sym__expr_a9c4598696cfa503fbe709648da8e4f9b_cgraph" id="classsym_1_1sym__expr_a9c4598696cfa503fbe709648da8e4f9b_cgraph">
+<area shape="rect" id="node2" href="classsym_1_1sym__expr.html#a1c17c1fc46c8aa32af30c899d6a0a0ca" title="sym::sym_expr::comp" alt="" coords="237,5,389,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a871c53c99bae0e184b7695885798c243"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sym::sym_expr::operator&gt; </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym_1_1sym__expr_a871c53c99bae0e184b7695885798c243_cgraph.png" border="0" usemap="#classsym_1_1sym__expr_a871c53c99bae0e184b7695885798c243_cgraph" alt=""/></div>
+<map name="classsym_1_1sym__expr_a871c53c99bae0e184b7695885798c243_cgraph" id="classsym_1_1sym__expr_a871c53c99bae0e184b7695885798c243_cgraph">
+<area shape="rect" id="node2" href="classsym_1_1sym__expr.html#a1c17c1fc46c8aa32af30c899d6a0a0ca" title="sym::sym_expr::comp" alt="" coords="229,5,381,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aced458dd44a8f3dee2fc1261308b5d89"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sym::sym_expr::operator&gt;= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsym_1_1sym__expr_aced458dd44a8f3dee2fc1261308b5d89_cgraph.png" border="0" usemap="#classsym_1_1sym__expr_aced458dd44a8f3dee2fc1261308b5d89_cgraph" alt=""/></div>
+<map name="classsym_1_1sym__expr_aced458dd44a8f3dee2fc1261308b5d89_cgraph" id="classsym_1_1sym__expr_aced458dd44a8f3dee2fc1261308b5d89_cgraph">
+<area shape="rect" id="node2" href="classsym_1_1sym__expr.html#a1c17c1fc46c8aa32af30c899d6a0a0ca" title="sym::sym_expr::comp" alt="" coords="237,5,389,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a82b5296dfae79e7c376fba7dccf13cfd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual int sym::sym_expr::order </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classsym_1_1sym__log.html#a47f9256fd878c244c915e9ef4343d63b">sym::sym_log</a>, <a class="el" href="classsym_1_1sym__exp.html#a8f5bb7bec99a0b0c21f4b9382cb52fba">sym::sym_exp</a>, <a class="el" href="classsym_1_1sym__cos.html#ae05e913bb7be7900fa4468dee4a1fa60">sym::sym_cos</a>, <a class="el" href="classsym_1_1sym__sin.html#a0ef09549cf7419db497f8b6ef45a3b56">sym::sym_sin</a>, <a class="el" href="classsym_1_1sym__prod.html#a71b0728242efbc860b9177fa489d4f47">sym::sym_prod</a>, <a class="el" href="classsym_1_1sym__add.html#a89494847dc3d3a87d48ebb7dd990e944">sym::sym_add</a>, <a class="el" href="classsym_1_1sym__deriv.html#ad2f6eb5e818bf0fed1476e587bea3305">sym::sym_deriv</a>, <a class="el" href="classsym_1_1symbol.html#a3eafd948b1abd884437dc11eb8c353f0">sym::symbol</a>, and <a class="el" href="classsym_1_1sym__num.html#ac9ec0bd24fbd2cd934ffbc782e403fbf">sym::sym_num</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="adb2c332245faca00ac92a1993e87dd1c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym_1_1sym__expr.html">sym::sym_expr</a> * sym::sym_expr::pow </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab525062349bc56167baaa67a251e84d4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::ostream&amp; sym::sym_expr::print </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classsym_1_1sym__log.html#a517afc928388ddd73d2a9923b4effa68">sym::sym_log</a>, <a class="el" href="classsym_1_1sym__exp.html#ab89d3afc6a74d95aa428e21843d12745">sym::sym_exp</a>, <a class="el" href="classsym_1_1sym__cos.html#afd7ab4a2f82fe5356aaa229fc4fb1f92">sym::sym_cos</a>, <a class="el" href="classsym_1_1sym__sin.html#ab20d44b3f0663435c4b4153b9ce9e6ec">sym::sym_sin</a>, <a class="el" href="classsym_1_1sym__prod.html#adfe19b11aed0d1ae27702cadf900df8b">sym::sym_prod</a>, <a class="el" href="classsym_1_1sym__add.html#a203efedce355c445b787cd250644c665">sym::sym_add</a>, <a class="el" href="classsym_1_1sym__deriv.html#a19fe6a7ab1daebd8944f9573245b65fd">sym::sym_deriv</a>, <a class="el" href="classsym_1_1symbol.html#a0268ff6f298bebf82c75454487de08af">sym::symbol</a>, and <a class="el" href="classsym_1_1sym__num.html#a9ea763092ef94b8b6a4a429e3ae073c7">sym::sym_num</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac2df6b4bed129567c6b78b0865685ffd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classsym_1_1sym__expr.html">sym_expr</a>* sym::sym_expr::reduce </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented in <a class="el" href="classsym_1_1sym__log.html#a2974beffed4cc5a888e702731389605c">sym::sym_log</a>, <a class="el" href="classsym_1_1sym__exp.html#acecc293059c5baf41f1ac664fc7afeb5">sym::sym_exp</a>, <a class="el" href="classsym_1_1sym__cos.html#ab3b03f1bcd21eabc4f0d591ba2444de2">sym::sym_cos</a>, <a class="el" href="classsym_1_1sym__sin.html#ad409e036ebde4b136848d32096a7fd8e">sym::sym_sin</a>, <a class="el" href="classsym_1_1sym__prod.html#a3497a76b114dc92e600ed87a99eb5c59">sym::sym_prod</a>, <a class="el" href="classsym_1_1sym__add.html#a0e8ea22c2752b62483502a39e4bff2ee">sym::sym_add</a>, <a class="el" href="classsym_1_1sym__deriv.html#a61ea1181e7658d32be223df53556a4aa">sym::sym_deriv</a>, and <a class="el" href="classsym_1_1sym__num.html#afaaa8d5d3c8c2e17f21bb8aa7b8b7f97">sym::sym_num</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a317ffab1f561133e5f03cba654f3de43"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym_1_1sym__expr.html">sym::sym_expr</a> * sym::sym_expr::sin </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/include/<a class="el" href="symbolic_8h_source.html">symbolic.h</a></li>
-<li>src/symbolic/sym_expr.cpp</li>
+<li>src/symbolic/<a class="el" href="sym__expr_8cpp.html">sym_expr.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:12 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:28 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

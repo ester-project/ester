@@ -1,0 +1,31 @@
+<map id="star2d::solve_Teff" name="star2d::solve_Teff">
+<area shape="rect" id="node2" href="$classstar2d.html#a6a1ce30ca36c61e42fb6128ed6c72257" title="star2d::Teff" alt="" coords="214,100,303,127"/>
+<area shape="rect" id="node3" href="$matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="429,5,473,32"/>
+<area shape="rect" id="node4" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="407,63,494,89"/>
+<area shape="rect" id="node5" href="$matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="427,125,474,152"/>
+<area shape="rect" id="node6" href="$classsolver.html#a2c549e96fe900962dda8c3bf56468229" title="solver::bc_top1_add_d" alt="" coords="182,252,335,279"/>
+<area shape="rect" id="node13" href="$classsymbolic.html#aea40bb70b53afe57a6ba5ede5793186f" title="symbolic::regvar" alt="" coords="199,404,318,431"/>
+<area shape="rect" id="node15" href="$classsymbolic.html#a0fd63811267d2cbb2c6ddf24ddff7402" title="symbolic::set_map" alt="" coords="385,303,517,329"/>
+<area shape="rect" id="node16" href="$classsymbolic.html#a576c450dbdad524d3c0b58fabce21cd3" title="symbolic::set_value" alt="" coords="189,455,328,481"/>
+<area shape="rect" id="node17" href="$symbolic_8h.html#a0c7b613edbff23dd026a291f02cb0bd6" title="Dz" alt="" coords="239,556,278,583"/>
+<area shape="rect" id="node25" href="$symbolic_8h.html#a72f8ab962e8692c188d858cc1998c48b" title="grad" alt="" coords="235,505,282,532"/>
+<area shape="rect" id="node28" href="$classsym.html#a225bf809f7d2e1e167fdc670e29ea1fb" title="sym::bc_top1_add" alt="" coords="194,353,323,380"/>
+<area shape="rect" id="node29" href="$classsolver.html#ad89241cdcb624742e4810bcfd7c4048e" title="solver::set_rhs" alt="" coords="397,201,505,228"/>
+<area shape="rect" id="node30" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="231,607,286,633"/>
+<area shape="rect" id="node7" href="$classsolver.html#ac269e25e5b929ca3c038402351fe6631" title="solver::add" alt="" coords="407,252,494,279"/>
+<area shape="rect" id="node8" href="$classsolver.html#a4f787a2def0088a98ea9c6980a00d851" title="solver::get_id" alt="" coords="599,201,699,228"/>
+<area shape="rect" id="node9" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="781,252,883,279"/>
+<area shape="rect" id="node10" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="624,353,675,380"/>
+<area shape="rect" id="node11" href="$classsolver_1_1solver__block.html#a706a1cd2d746f9fe7a303ec20fbe572c" title="Introduces a term in an equation of the block. " alt="" coords="566,303,733,329"/>
+<area shape="rect" id="node12" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="783,303,881,329"/>
+<area shape="rect" id="node14" href="$classsymbolic.html#a5486ba63e1dbf90e65097328986a9120" title="symbolic::var" alt="" coords="401,404,501,431"/>
+<area shape="rect" id="node18" href="$classsym.html#a6bfcd0ef7887bfccc3ab9ddba568ff69" title="sym::check_context" alt="" coords="941,531,1081,557"/>
+<area shape="rect" id="node19" href="$classsymbolic.html#a360b3328ca0d373f196f57133c4d2984" title="symbolic::Dz" alt="" coords="401,607,500,633"/>
+<area shape="rect" id="node20" href="$symbolic_8h.html#ad1b9a0a596c68e0f303a1a43fe856108" title="diff" alt="" coords="629,607,669,633"/>
+<area shape="rect" id="node21" href="$sym_8cpp.html#a075f6a28fed628ef71680874b2ca3301" title="jacobian" alt="" coords="797,607,867,633"/>
+<area shape="rect" id="node22" href="$classsym_1_1sym__expr.html#ad9bf9877b0e60666ca0b0d1df50b117d" title="sym::sym_expr::clone" alt="" coords="935,683,1086,709"/>
+<area shape="rect" id="node23" href="$classsym_1_1sym__expr.html#ad4b7089172fec60017feee9556b6b5da" title="sym::sym_expr::derive" alt="" coords="933,581,1088,608"/>
+<area shape="rect" id="node24" href="$classsym_1_1sym__expr.html#ac2df6b4bed129567c6b78b0865685ffd" title="sym::sym_expr::reduce" alt="" coords="931,632,1090,659"/>
+<area shape="rect" id="node26" href="$classsymbolic.html#a1f7cbf93ef20ee903adb22edf7834d32" title="symbolic::gradient" alt="" coords="387,505,515,532"/>
+<area shape="rect" id="node27" href="$classsym__vec.html#a0cdf7e39f268bfb5977bb944e03175f9" title="sym_vec::set_context" alt="" coords="574,505,725,532"/>
+</map>

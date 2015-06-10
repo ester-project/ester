@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -100,111 +100,738 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">rational Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="symbolic_8h_source.html">symbolic.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0648e4505f5684adc3c5f0aa00968a17"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0648e4505f5684adc3c5f0aa00968a17"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>rational</b> (int num=1, int den=1)</td></tr>
+<tr class="memitem:a0648e4505f5684adc3c5f0aa00968a17"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a0648e4505f5684adc3c5f0aa00968a17">rational</a> (int <a class="el" href="classrational.html#a26720ffed7cc241dd545f60601653a07">num</a>=1, int <a class="el" href="classrational.html#a66710f5c04ceb9babd0f63003bc3dd8a">den</a>=1)</td></tr>
 <tr class="separator:a0648e4505f5684adc3c5f0aa00968a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26720ffed7cc241dd545f60601653a07"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a26720ffed7cc241dd545f60601653a07"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>num</b> () const </td></tr>
+<tr class="memitem:a26720ffed7cc241dd545f60601653a07"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a26720ffed7cc241dd545f60601653a07">num</a> () const </td></tr>
 <tr class="separator:a26720ffed7cc241dd545f60601653a07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66710f5c04ceb9babd0f63003bc3dd8a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a66710f5c04ceb9babd0f63003bc3dd8a"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>den</b> () const </td></tr>
+<tr class="memitem:a66710f5c04ceb9babd0f63003bc3dd8a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a66710f5c04ceb9babd0f63003bc3dd8a">den</a> () const </td></tr>
 <tr class="separator:a66710f5c04ceb9babd0f63003bc3dd8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab5bc08f40978ae826fcc06028515bf96"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab5bc08f40978ae826fcc06028515bf96"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>eval</b> () const </td></tr>
+<tr class="memitem:ab5bc08f40978ae826fcc06028515bf96"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#ab5bc08f40978ae826fcc06028515bf96">eval</a> () const </td></tr>
 <tr class="separator:ab5bc08f40978ae826fcc06028515bf96"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1fc552fad6736ba0cf6883b563585245"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1fc552fad6736ba0cf6883b563585245"></a>
-<a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator+</b> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
+<tr class="memitem:a1fc552fad6736ba0cf6883b563585245"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a1fc552fad6736ba0cf6883b563585245">operator+</a> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
 <tr class="separator:a1fc552fad6736ba0cf6883b563585245"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63970981f72ea43fc482f6c4ffea7f50"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a63970981f72ea43fc482f6c4ffea7f50"></a>
-<a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator+</b> () const </td></tr>
+<tr class="memitem:a63970981f72ea43fc482f6c4ffea7f50"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a63970981f72ea43fc482f6c4ffea7f50">operator+</a> () const </td></tr>
 <tr class="separator:a63970981f72ea43fc482f6c4ffea7f50"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af107f63aa8fd1ef693d64fdcc2c757d9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af107f63aa8fd1ef693d64fdcc2c757d9"></a>
-<a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator-</b> () const </td></tr>
+<tr class="memitem:af107f63aa8fd1ef693d64fdcc2c757d9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#af107f63aa8fd1ef693d64fdcc2c757d9">operator-</a> () const </td></tr>
 <tr class="separator:af107f63aa8fd1ef693d64fdcc2c757d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c00d442bf7c18c3d6841b887fc68dc4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4c00d442bf7c18c3d6841b887fc68dc4"></a>
-<a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator-</b> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
+<tr class="memitem:a4c00d442bf7c18c3d6841b887fc68dc4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a4c00d442bf7c18c3d6841b887fc68dc4">operator-</a> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
 <tr class="separator:a4c00d442bf7c18c3d6841b887fc68dc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39574133ab41e238be9d3f41cefc8197"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a39574133ab41e238be9d3f41cefc8197"></a>
-<a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
+<tr class="memitem:a39574133ab41e238be9d3f41cefc8197"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a39574133ab41e238be9d3f41cefc8197">operator*</a> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
 <tr class="separator:a39574133ab41e238be9d3f41cefc8197"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac1ea08870e03e67b71402cbff41e84fe"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac1ea08870e03e67b71402cbff41e84fe"></a>
-<a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><b>inv</b> () const </td></tr>
+<tr class="memitem:ac1ea08870e03e67b71402cbff41e84fe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#ac1ea08870e03e67b71402cbff41e84fe">inv</a> () const </td></tr>
 <tr class="separator:ac1ea08870e03e67b71402cbff41e84fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3bb3e0dee624bd135199f0d779d9cda4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3bb3e0dee624bd135199f0d779d9cda4"></a>
-<a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator/</b> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
+<tr class="memitem:a3bb3e0dee624bd135199f0d779d9cda4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a3bb3e0dee624bd135199f0d779d9cda4">operator/</a> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
 <tr class="separator:a3bb3e0dee624bd135199f0d779d9cda4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ab8ab259a79ead799e1df408f916c55"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ab8ab259a79ead799e1df408f916c55"></a>
-<a class="el" href="classrational.html">rational</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator+=</b> (const <a class="el" href="classrational.html">rational</a> &amp;q)</td></tr>
+<tr class="memitem:a3ab8ab259a79ead799e1df408f916c55"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrational.html">rational</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a3ab8ab259a79ead799e1df408f916c55">operator+=</a> (const <a class="el" href="classrational.html">rational</a> &amp;q)</td></tr>
 <tr class="separator:a3ab8ab259a79ead799e1df408f916c55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2999ff4be1e3be269bae67472d183cf8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2999ff4be1e3be269bae67472d183cf8"></a>
-<a class="el" href="classrational.html">rational</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator-=</b> (const <a class="el" href="classrational.html">rational</a> &amp;q)</td></tr>
+<tr class="memitem:a2999ff4be1e3be269bae67472d183cf8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrational.html">rational</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a2999ff4be1e3be269bae67472d183cf8">operator-=</a> (const <a class="el" href="classrational.html">rational</a> &amp;q)</td></tr>
 <tr class="separator:a2999ff4be1e3be269bae67472d183cf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0812324d0b7f6c64d11c11916fcd4d66"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0812324d0b7f6c64d11c11916fcd4d66"></a>
-<a class="el" href="classrational.html">rational</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator*=</b> (const <a class="el" href="classrational.html">rational</a> &amp;q)</td></tr>
+<tr class="memitem:a0812324d0b7f6c64d11c11916fcd4d66"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrational.html">rational</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a0812324d0b7f6c64d11c11916fcd4d66">operator*=</a> (const <a class="el" href="classrational.html">rational</a> &amp;q)</td></tr>
 <tr class="separator:a0812324d0b7f6c64d11c11916fcd4d66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4faedc5604f540a064491fb11e7f6236"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4faedc5604f540a064491fb11e7f6236"></a>
-<a class="el" href="classrational.html">rational</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator/=</b> (const <a class="el" href="classrational.html">rational</a> &amp;q)</td></tr>
+<tr class="memitem:a4faedc5604f540a064491fb11e7f6236"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrational.html">rational</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a4faedc5604f540a064491fb11e7f6236">operator/=</a> (const <a class="el" href="classrational.html">rational</a> &amp;q)</td></tr>
 <tr class="separator:a4faedc5604f540a064491fb11e7f6236"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad84d73ada18def4f4ef4b06aacb8abec"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad84d73ada18def4f4ef4b06aacb8abec"></a>
-<a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><b>pow</b> (int) const </td></tr>
+<tr class="memitem:ad84d73ada18def4f4ef4b06aacb8abec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrational.html">rational</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#ad84d73ada18def4f4ef4b06aacb8abec">pow</a> (int) const </td></tr>
 <tr class="separator:ad84d73ada18def4f4ef4b06aacb8abec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa80d6991541cfc8fab185784a7051963"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa80d6991541cfc8fab185784a7051963"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
+<tr class="memitem:aa80d6991541cfc8fab185784a7051963"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#aa80d6991541cfc8fab185784a7051963">operator==</a> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
 <tr class="separator:aa80d6991541cfc8fab185784a7051963"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6260f1f339d555b4aec13ae1422943a0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6260f1f339d555b4aec13ae1422943a0"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
+<tr class="memitem:a6260f1f339d555b4aec13ae1422943a0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a6260f1f339d555b4aec13ae1422943a0">operator!=</a> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
 <tr class="separator:a6260f1f339d555b4aec13ae1422943a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac639f1d5f0a43846bdba12ead2f9574a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac639f1d5f0a43846bdba12ead2f9574a"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&gt;</b> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
+<tr class="memitem:ac639f1d5f0a43846bdba12ead2f9574a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#ac639f1d5f0a43846bdba12ead2f9574a">operator&gt;</a> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
 <tr class="separator:ac639f1d5f0a43846bdba12ead2f9574a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0a130bccf527a18cbc7bdf0ef06aee1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae0a130bccf527a18cbc7bdf0ef06aee1"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;</b> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
+<tr class="memitem:ae0a130bccf527a18cbc7bdf0ef06aee1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#ae0a130bccf527a18cbc7bdf0ef06aee1">operator&lt;</a> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
 <tr class="separator:ae0a130bccf527a18cbc7bdf0ef06aee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87e32301ffc1821da364a72f643f90f1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a87e32301ffc1821da364a72f643f90f1"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&gt;=</b> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
+<tr class="memitem:a87e32301ffc1821da364a72f643f90f1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a87e32301ffc1821da364a72f643f90f1">operator&gt;=</a> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
 <tr class="separator:a87e32301ffc1821da364a72f643f90f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a14835ed2d48fd2d8aeda19ec716acf72"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a14835ed2d48fd2d8aeda19ec716acf72"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;=</b> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
+<tr class="memitem:a14835ed2d48fd2d8aeda19ec716acf72"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a14835ed2d48fd2d8aeda19ec716acf72">operator&lt;=</a> (const <a class="el" href="classrational.html">rational</a> &amp;q) const </td></tr>
 <tr class="separator:a14835ed2d48fd2d8aeda19ec716acf72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a362abda87197885afbf9ba530df689a9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a362abda87197885afbf9ba530df689a9"></a>
-<a class="el" href="classrational.html">rational</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>reduce</b> ()</td></tr>
+<tr class="memitem:a362abda87197885afbf9ba530df689a9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrational.html">rational</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a362abda87197885afbf9ba530df689a9">reduce</a> ()</td></tr>
 <tr class="separator:a362abda87197885afbf9ba530df689a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
-<tr class="memitem:a16ad624beecae0c17f168fdead3f79f7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a16ad624beecae0c17f168fdead3f79f7"></a>
-static int&#160;</td><td class="memItemRight" valign="bottom"><b>gcd</b> (int a, int b)</td></tr>
+<tr class="memitem:a16ad624beecae0c17f168fdead3f79f7"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a16ad624beecae0c17f168fdead3f79f7">gcd</a> (int a, int b)</td></tr>
 <tr class="separator:a16ad624beecae0c17f168fdead3f79f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a7f7556c7b126dc8559a160082f5f09cd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7f7556c7b126dc8559a160082f5f09cd"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>n</b></td></tr>
+<tr class="memitem:a7f7556c7b126dc8559a160082f5f09cd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a7f7556c7b126dc8559a160082f5f09cd">n</a></td></tr>
 <tr class="separator:a7f7556c7b126dc8559a160082f5f09cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae17602a9f7f018a39362a460c365ea44"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae17602a9f7f018a39362a460c365ea44"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>d</b></td></tr>
+<tr class="memitem:ae17602a9f7f018a39362a460c365ea44"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#ae17602a9f7f018a39362a460c365ea44">d</a></td></tr>
 <tr class="separator:ae17602a9f7f018a39362a460c365ea44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:a41926c6ce945642b91c5e074daf3f3a5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a41926c6ce945642b91c5e074daf3f3a5"></a>
-std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const <a class="el" href="classrational.html">rational</a> &amp;)</td></tr>
+<tr class="memitem:a41926c6ce945642b91c5e074daf3f3a5"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrational.html#a41926c6ce945642b91c5e074daf3f3a5">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="classrational.html">rational</a> &amp;)</td></tr>
 <tr class="separator:a41926c6ce945642b91c5e074daf3f3a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a0648e4505f5684adc3c5f0aa00968a17"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">rational::rational </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num</em> = <code>1</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>den</em> = <code>1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classrational_a0648e4505f5684adc3c5f0aa00968a17_cgraph.png" border="0" usemap="#classrational_a0648e4505f5684adc3c5f0aa00968a17_cgraph" alt=""/></div>
+<map name="classrational_a0648e4505f5684adc3c5f0aa00968a17_cgraph" id="classrational_a0648e4505f5684adc3c5f0aa00968a17_cgraph">
+<area shape="rect" id="node2" href="classrational.html#a26720ffed7cc241dd545f60601653a07" title="rational::num" alt="" coords="561,5,658,32"/><area shape="rect" id="node3" href="classrational.html#a66710f5c04ceb9babd0f63003bc3dd8a" title="rational::den" alt="" coords="563,81,656,108"/><area shape="rect" id="node4" href="classrational.html#a362abda87197885afbf9ba530df689a9" title="rational::reduce" alt="" coords="169,43,279,69"/><area shape="rect" id="node5" href="classrational.html#a16ad624beecae0c17f168fdead3f79f7" title="rational::gcd" alt="" coords="328,43,421,69"/><area shape="rect" id="node6" href="rational_8cpp.html#aa77ac98f899bd016b9d9810746ab4b49" title="abs" alt="" coords="469,43,512,69"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a66710f5c04ceb9babd0f63003bc3dd8a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rational::den </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab5bc08f40978ae826fcc06028515bf96"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double rational::eval </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a16ad624beecae0c17f168fdead3f79f7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rational::gcd </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classrational_a16ad624beecae0c17f168fdead3f79f7_cgraph.png" border="0" usemap="#classrational_a16ad624beecae0c17f168fdead3f79f7_cgraph" alt=""/></div>
+<map name="classrational_a16ad624beecae0c17f168fdead3f79f7_cgraph" id="classrational_a16ad624beecae0c17f168fdead3f79f7_cgraph">
+<area shape="rect" id="node2" href="rational_8cpp.html#aa77ac98f899bd016b9d9810746ab4b49" title="abs" alt="" coords="147,31,189,57"/><area shape="rect" id="node3" href="classrational.html#a26720ffed7cc241dd545f60601653a07" title="rational::num" alt="" coords="238,5,335,32"/><area shape="rect" id="node4" href="classrational.html#a66710f5c04ceb9babd0f63003bc3dd8a" title="rational::den" alt="" coords="240,56,333,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ac1ea08870e03e67b71402cbff41e84fe"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classrational.html">rational</a> rational::inv </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classrational_ac1ea08870e03e67b71402cbff41e84fe_cgraph.png" border="0" usemap="#classrational_ac1ea08870e03e67b71402cbff41e84fe_cgraph" alt=""/></div>
+<map name="classrational_ac1ea08870e03e67b71402cbff41e84fe_cgraph" id="classrational_ac1ea08870e03e67b71402cbff41e84fe_cgraph">
+<area shape="rect" id="node2" href="classrational.html#a0648e4505f5684adc3c5f0aa00968a17" title="rational::rational" alt="" coords="144,43,259,69"/><area shape="rect" id="node3" href="classrational.html#a26720ffed7cc241dd545f60601653a07" title="rational::num" alt="" coords="699,5,797,32"/><area shape="rect" id="node4" href="classrational.html#a66710f5c04ceb9babd0f63003bc3dd8a" title="rational::den" alt="" coords="701,81,795,108"/><area shape="rect" id="node5" href="classrational.html#a362abda87197885afbf9ba530df689a9" title="rational::reduce" alt="" coords="307,43,418,69"/><area shape="rect" id="node6" href="classrational.html#a16ad624beecae0c17f168fdead3f79f7" title="rational::gcd" alt="" coords="467,43,560,69"/><area shape="rect" id="node7" href="rational_8cpp.html#aa77ac98f899bd016b9d9810746ab4b49" title="abs" alt="" coords="608,43,651,69"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a26720ffed7cc241dd545f60601653a07"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rational::num </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a6260f1f339d555b4aec13ae1422943a0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rational::operator!= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a39574133ab41e238be9d3f41cefc8197"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classrational.html">rational</a> rational::operator* </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0812324d0b7f6c64d11c11916fcd4d66"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classrational.html">rational</a>&amp; rational::operator*= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1fc552fad6736ba0cf6883b563585245"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classrational.html">rational</a> rational::operator+ </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classrational_a1fc552fad6736ba0cf6883b563585245_cgraph.png" border="0" usemap="#classrational_a1fc552fad6736ba0cf6883b563585245_cgraph" alt=""/></div>
+<map name="classrational_a1fc552fad6736ba0cf6883b563585245_cgraph" id="classrational_a1fc552fad6736ba0cf6883b563585245_cgraph">
+<area shape="rect" id="node2" href="classrational.html#a16ad624beecae0c17f168fdead3f79f7" title="rational::gcd" alt="" coords="341,31,435,57"/><area shape="rect" id="node6" href="classrational.html#a362abda87197885afbf9ba530df689a9" title="rational::reduce" alt="" coords="182,56,293,83"/><area shape="rect" id="node3" href="rational_8cpp.html#aa77ac98f899bd016b9d9810746ab4b49" title="abs" alt="" coords="483,31,525,57"/><area shape="rect" id="node4" href="classrational.html#a26720ffed7cc241dd545f60601653a07" title="rational::num" alt="" coords="574,5,671,32"/><area shape="rect" id="node5" href="classrational.html#a66710f5c04ceb9babd0f63003bc3dd8a" title="rational::den" alt="" coords="576,56,669,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a63970981f72ea43fc482f6c4ffea7f50"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classrational.html">rational</a> rational::operator+ </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3ab8ab259a79ead799e1df408f916c55"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classrational.html">rational</a>&amp; rational::operator+= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af107f63aa8fd1ef693d64fdcc2c757d9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classrational.html">rational</a> rational::operator- </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4c00d442bf7c18c3d6841b887fc68dc4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classrational.html">rational</a> rational::operator- </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2999ff4be1e3be269bae67472d183cf8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classrational.html">rational</a>&amp; rational::operator-= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3bb3e0dee624bd135199f0d779d9cda4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classrational.html">rational</a> rational::operator/ </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classrational_a3bb3e0dee624bd135199f0d779d9cda4_cgraph.png" border="0" usemap="#classrational_a3bb3e0dee624bd135199f0d779d9cda4_cgraph" alt=""/></div>
+<map name="classrational_a3bb3e0dee624bd135199f0d779d9cda4_cgraph" id="classrational_a3bb3e0dee624bd135199f0d779d9cda4_cgraph">
+<area shape="rect" id="node2" href="classrational.html#ac1ea08870e03e67b71402cbff41e84fe" title="rational::inv" alt="" coords="177,43,266,69"/><area shape="rect" id="node3" href="classrational.html#a0648e4505f5684adc3c5f0aa00968a17" title="rational::rational" alt="" coords="315,43,429,69"/><area shape="rect" id="node4" href="classrational.html#a26720ffed7cc241dd545f60601653a07" title="rational::num" alt="" coords="870,5,967,32"/><area shape="rect" id="node5" href="classrational.html#a66710f5c04ceb9babd0f63003bc3dd8a" title="rational::den" alt="" coords="872,81,965,108"/><area shape="rect" id="node6" href="classrational.html#a362abda87197885afbf9ba530df689a9" title="rational::reduce" alt="" coords="478,43,589,69"/><area shape="rect" id="node7" href="classrational.html#a16ad624beecae0c17f168fdead3f79f7" title="rational::gcd" alt="" coords="637,43,731,69"/><area shape="rect" id="node8" href="rational_8cpp.html#aa77ac98f899bd016b9d9810746ab4b49" title="abs" alt="" coords="779,43,821,69"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a4faedc5604f540a064491fb11e7f6236"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classrational.html">rational</a>&amp; rational::operator/= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae0a130bccf527a18cbc7bdf0ef06aee1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rational::operator&lt; </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classrational_ae0a130bccf527a18cbc7bdf0ef06aee1_cgraph.png" border="0" usemap="#classrational_ae0a130bccf527a18cbc7bdf0ef06aee1_cgraph" alt=""/></div>
+<map name="classrational_ae0a130bccf527a18cbc7bdf0ef06aee1_cgraph" id="classrational_ae0a130bccf527a18cbc7bdf0ef06aee1_cgraph">
+<area shape="rect" id="node2" href="classrational.html#ab5bc08f40978ae826fcc06028515bf96" title="rational::eval" alt="" coords="181,5,277,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a14835ed2d48fd2d8aeda19ec716acf72"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rational::operator&lt;= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aa80d6991541cfc8fab185784a7051963"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rational::operator== </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac639f1d5f0a43846bdba12ead2f9574a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rational::operator&gt; </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classrational_ac639f1d5f0a43846bdba12ead2f9574a_cgraph.png" border="0" usemap="#classrational_ac639f1d5f0a43846bdba12ead2f9574a_cgraph" alt=""/></div>
+<map name="classrational_ac639f1d5f0a43846bdba12ead2f9574a_cgraph" id="classrational_ac639f1d5f0a43846bdba12ead2f9574a_cgraph">
+<area shape="rect" id="node2" href="classrational.html#ab5bc08f40978ae826fcc06028515bf96" title="rational::eval" alt="" coords="181,5,277,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a87e32301ffc1821da364a72f643f90f1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rational::operator&gt;= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad84d73ada18def4f4ef4b06aacb8abec"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classrational.html">rational</a> rational::pow </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classrational_ad84d73ada18def4f4ef4b06aacb8abec_cgraph.png" border="0" usemap="#classrational_ad84d73ada18def4f4ef4b06aacb8abec_cgraph" alt=""/></div>
+<map name="classrational_ad84d73ada18def4f4ef4b06aacb8abec_cgraph" id="classrational_ad84d73ada18def4f4ef4b06aacb8abec_cgraph">
+<area shape="rect" id="node2" href="classrational.html#ac1ea08870e03e67b71402cbff41e84fe" title="rational::inv" alt="" coords="150,43,239,69"/><area shape="rect" id="node3" href="classrational.html#a0648e4505f5684adc3c5f0aa00968a17" title="rational::rational" alt="" coords="288,43,403,69"/><area shape="rect" id="node4" href="classrational.html#a26720ffed7cc241dd545f60601653a07" title="rational::num" alt="" coords="843,5,941,32"/><area shape="rect" id="node5" href="classrational.html#a66710f5c04ceb9babd0f63003bc3dd8a" title="rational::den" alt="" coords="845,81,939,108"/><area shape="rect" id="node6" href="classrational.html#a362abda87197885afbf9ba530df689a9" title="rational::reduce" alt="" coords="451,43,562,69"/><area shape="rect" id="node7" href="classrational.html#a16ad624beecae0c17f168fdead3f79f7" title="rational::gcd" alt="" coords="611,43,704,69"/><area shape="rect" id="node8" href="rational_8cpp.html#aa77ac98f899bd016b9d9810746ab4b49" title="abs" alt="" coords="752,43,795,69"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a362abda87197885afbf9ba530df689a9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classrational.html">rational</a> &amp; rational::reduce </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classrational_a362abda87197885afbf9ba530df689a9_cgraph.png" border="0" usemap="#classrational_a362abda87197885afbf9ba530df689a9_cgraph" alt=""/></div>
+<map name="classrational_a362abda87197885afbf9ba530df689a9_cgraph" id="classrational_a362abda87197885afbf9ba530df689a9_cgraph">
+<area shape="rect" id="node2" href="classrational.html#a16ad624beecae0c17f168fdead3f79f7" title="rational::gcd" alt="" coords="165,31,259,57"/><area shape="rect" id="node3" href="rational_8cpp.html#aa77ac98f899bd016b9d9810746ab4b49" title="abs" alt="" coords="307,31,349,57"/><area shape="rect" id="node4" href="classrational.html#a26720ffed7cc241dd545f60601653a07" title="rational::num" alt="" coords="398,5,495,32"/><area shape="rect" id="node5" href="classrational.html#a66710f5c04ceb9babd0f63003bc3dd8a" title="rational::den" alt="" coords="400,56,493,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a class="anchor" id="a41926c6ce945642b91c5e074daf3f3a5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream&amp; operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>os</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classrational.html">rational</a> &amp;&#160;</td>
+          <td class="paramname"><em>q</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ae17602a9f7f018a39362a460c365ea44"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rational::d</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7f7556c7b126dc8559a160082f5f09cd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rational::n</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/include/<a class="el" href="symbolic_8h_source.html">symbolic.h</a></li>
-<li>src/symbolic/rational.cpp</li>
+<li>src/symbolic/<a class="el" href="rational_8cpp.html">rational.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:28 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

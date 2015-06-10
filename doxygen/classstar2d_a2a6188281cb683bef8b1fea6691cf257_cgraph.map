@@ -1,0 +1,6 @@
+<map id="star2d::calc_veloc" name="star2d::calc_veloc">
+<area shape="rect" id="node2" href="$matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="213,5,256,32"/>
+<area shape="rect" id="node3" href="$matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="215,56,254,83"/>
+<area shape="rect" id="node4" href="$classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="182,107,287,133"/>
+<area shape="rect" id="node5" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="207,157,262,184"/>
+</map>

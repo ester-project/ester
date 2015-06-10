@@ -1,0 +1,20 @@
+<map id="star1d::solve_poisson" name="star1d::solve_poisson">
+<area shape="rect" id="node2" href="$classsolver.html#ade5739766d46d236c9aae5460180e093" title="solver::add_l" alt="" coords="232,48,328,75"/>
+<area shape="rect" id="node6" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="621,138,672,164"/>
+<area shape="rect" id="node9" href="$classsolver.html#a79682e1858c4cd5e657a10e56a8c551d" title="solver::add_d" alt="" coords="230,99,330,126"/>
+<area shape="rect" id="node10" href="$classsolver.html#a15f5eab5270ec0b2751855dd600dbd8a" title="solver::bc_bot2_add_l" alt="" coords="205,150,355,176"/>
+<area shape="rect" id="node11" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="231,200,329,227"/>
+<area shape="rect" id="node12" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="237,251,323,278"/>
+<area shape="rect" id="node13" href="$classsolver.html#a838830e2a4181cb10d5426c427d78b7d" title="solver::bc_bot1_add_l" alt="" coords="205,302,355,328"/>
+<area shape="rect" id="node14" href="$classsolver.html#a070bdbd40ad3f62787716e8daffd70f4" title="solver::bc_bot2_add_d" alt="" coords="203,352,357,379"/>
+<area shape="rect" id="node15" href="$classsolver.html#ae20eb2be2d86ce8d16f6f544c5ed8041" title="solver::bc_bot1_add_d" alt="" coords="203,403,357,430"/>
+<area shape="rect" id="node16" href="$classsolver.html#af4f95e43bc2798bf682cf63febb7b95f" title="solver::bc_top1_add_l" alt="" coords="205,454,355,480"/>
+<area shape="rect" id="node17" href="$classsolver.html#a2c549e96fe900962dda8c3bf56468229" title="solver::bc_top1_add_d" alt="" coords="203,504,357,531"/>
+<area shape="rect" id="node18" href="$classsolver.html#a9db41ed412446c4d86865e28e078d8a0" title="solver::bc_top2_add_d" alt="" coords="203,555,357,582"/>
+<area shape="rect" id="node19" href="$classsolver.html#ad89241cdcb624742e4810bcfd7c4048e" title="solver::set_rhs" alt="" coords="406,560,514,587"/>
+<area shape="rect" id="node3" href="$classsolver.html#ac269e25e5b929ca3c038402351fe6631" title="solver::add" alt="" coords="417,352,503,379"/>
+<area shape="rect" id="node4" href="$classsolver.html#a4f787a2def0088a98ea9c6980a00d851" title="solver::get_id" alt="" coords="597,516,697,543"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="779,327,880,354"/>
+<area shape="rect" id="node7" href="$classsolver_1_1solver__block.html#a706a1cd2d746f9fe7a303ec20fbe572c" title="Introduces a term in an equation of the block. " alt="" coords="563,378,730,404"/>
+<area shape="rect" id="node8" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="781,378,878,404"/>
+</map>

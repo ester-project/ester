@@ -1,0 +1,15 @@
+<map id="star2d::find_boundaries" name="star2d::find_boundaries">
+<area shape="rect" id="node2" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="349,5,451,32"/>
+<area shape="rect" id="node3" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="229,56,283,83"/>
+<area shape="rect" id="node4" href="$matrix_8h.html#a74e0b0a7fb9b67bf7604931dd5797533" title="log" alt="" coords="237,107,275,133"/>
+<area shape="rect" id="node5" href="$classdiff__gl.html#a273893d64ef8418624695f43833c9789" title="diff_gl::eval" alt="" coords="211,157,301,184"/>
+<area shape="rect" id="node11" href="$classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="215,208,297,235"/>
+<area shape="rect" id="node12" href="$matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="233,259,279,285"/>
+<area shape="rect" id="node13" href="$matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="235,309,277,336"/>
+<area shape="rect" id="node14" href="$matrix_8h.html#a0259ec431cd9cc93c1a9dbd94aa162ba" title="min" alt="" coords="235,360,277,387"/>
+<area shape="rect" id="node6" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="351,56,449,83"/>
+<area shape="rect" id="node7" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="357,107,443,133"/>
+<area shape="rect" id="node8" href="$matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="379,157,421,184"/>
+<area shape="rect" id="node9" href="$matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="375,208,425,235"/>
+<area shape="rect" id="node10" href="$classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="349,259,451,285"/>
+</map>

@@ -1,0 +1,8 @@
+<map id="mapping::stream" name="mapping::stream">
+<area shape="rect" id="node2" href="$classdiff__leg.html#a81d64377be0432e72a1a6ed3418e2034" title="diff_leg::l_00" alt="" coords="179,5,275,32"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="176,56,277,83"/>
+<area shape="rect" id="node6" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="199,107,254,133"/>
+<area shape="rect" id="node7" href="$classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="174,157,279,184"/>
+<area shape="rect" id="node3" href="$matrix_8h.html#a3733d7092ed4974a7f292df2002e0ff1" title="vector" alt="" coords="328,5,387,32"/>
+<area shape="rect" id="node4" href="$matrix_8cpp.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="435,5,504,32"/>
+</map>

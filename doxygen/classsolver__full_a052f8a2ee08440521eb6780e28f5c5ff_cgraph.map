@@ -1,0 +1,32 @@
+<map id="solver_full::solve" name="solver_full::solve">
+<area shape="rect" id="node2" href="$classsolver__full.html#a2be6b5d2e41c57ef37a988301af9caf8" title="solver_full::lu_calc" alt="" coords="184,581,315,608"/>
+<area shape="rect" id="node28" href="$classsolver__full.html#a99839335217da5250516d1f7662f993e" title="solver_full::fwd_subs" alt="" coords="177,1019,322,1045"/>
+<area shape="rect" id="node30" href="$classsolver__full.html#ac55253a9496a63fbdfc065ca70a20934" title="solver_full::back_subs" alt="" coords="173,800,325,827"/>
+<area shape="rect" id="node3" href="$classsolver__full.html#a356e24f852fcaa0c29d03cd31418a1b5" title="solver_full::read_block" alt="" coords="384,825,536,852"/>
+<area shape="rect" id="node6" href="$classsolver__full.html#a1ab541caa67adae45c47f285583449be" title="solver_full::read_blockinf" alt="" coords="377,943,543,969"/>
+<area shape="rect" id="node7" href="$classsolver__full.html#a53e2238f680bce72d0f70561c85f354b" title="solver_full::read_blocksup" alt="" coords="373,775,547,801"/>
+<area shape="rect" id="node8" href="$classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="399,308,521,335"/>
+<area shape="rect" id="node9" href="$classsolver__full.html#a2a02f79235d4b37d768a6a7bbf87054b" title="solver_full::solve\l_block" alt="" coords="400,359,520,401"/>
+<area shape="rect" id="node10" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="595,416,696,443"/>
+<area shape="rect" id="node11" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="597,552,694,579"/>
+<area shape="rect" id="node13" href="$classmatrix.html#af220f2a5835e6531bb17b850063a12cf" title="Returns the pointer to the matrix data. " alt="" coords="600,313,691,340"/>
+<area shape="rect" id="node14" href="$classsolver__full.html#a45ff8796c0b51ee8d1ba68b15f5cf2f8" title="solver_full::write\l_block" alt="" coords="401,425,519,466"/>
+<area shape="rect" id="node16" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="618,661,673,688"/>
+<area shape="rect" id="node17" href="$classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="403,993,517,1020"/>
+<area shape="rect" id="node18" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="411,1044,509,1071"/>
+<area shape="rect" id="node19" href="$classsolver__full.html#a6ea41c32383c93a7b692fe5d309737ef" title="solver_full::write\l_blockinf" alt="" coords="401,490,519,531"/>
+<area shape="rect" id="node20" href="$classsolver__full.html#a5aac4aa9182b13de52d4f3b5df80932a" title="solver_full::flush\l_blocksup" alt="" coords="401,709,519,750"/>
+<area shape="rect" id="node21" href="$classsolver__full.html#ab29111731a262d11ec2390fc5ea336a3" title="solver_full::lu_block" alt="" coords="391,156,529,183"/>
+<area shape="rect" id="node4" href="$classmatrix.html#a5764b8af09e9b5b57456d1b4d8beb983" title="Reads matrix data from a file. " alt="" coords="600,825,691,852"/>
+<area shape="rect" id="node5" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="745,825,831,852"/>
+<area shape="rect" id="node12" href="$lapack_8h.html#a27a5040bb8500a1c3134352387aa4008" title="dgetrs_" alt="" coords="613,365,678,392"/>
+<area shape="rect" id="node15" href="$classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="598,483,693,509"/>
+<area shape="rect" id="node22" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="620,259,671,285"/>
+<area shape="rect" id="node23" href="$lapack_8h.html#a56a6e30415bc2e6de851f929a6034301" title="dgeequ_" alt="" coords="610,5,681,32"/>
+<area shape="rect" id="node24" href="$classmatrix.html#a345ac4399ae6ea5d158dec467a7e0432" title="Re&#45;dimension the matrix. " alt="" coords="596,56,695,83"/>
+<area shape="rect" id="node25" href="$lapack_8h.html#ab9b7c28558916902d2c428d262d3150f" title="dlange_" alt="" coords="612,107,679,133"/>
+<area shape="rect" id="node26" href="$lapack_8h.html#ae56e8f1e7103728e3bc7c17b82868a81" title="dgetrf_" alt="" coords="614,157,677,184"/>
+<area shape="rect" id="node27" href="$lapack_8h.html#a080bf09d3d41076bf9f24afc17003307" title="dgecon_" alt="" coords="610,208,681,235"/>
+<area shape="rect" id="node29" href="$classsolver__full.html#a9feb5b7aca1a030772c5e9305c9c10f8" title="solver_full::flush\l_blockinf" alt="" coords="401,1146,519,1187"/>
+<area shape="rect" id="node31" href="$classsolver__full.html#abfaa48709649161a5f5654990030377c" title="solver_full::flush\l_block" alt="" coords="401,877,519,918"/>
+</map>

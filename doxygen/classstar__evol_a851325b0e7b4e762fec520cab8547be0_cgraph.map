@@ -1,0 +1,13 @@
+<map id="star_evol::init_solver" name="star_evol::init_solver">
+<area shape="rect" id="node2" href="$classstar2d.html#a7578e44a9b12a8a592e652703f39151a" title="star2d::init_solver" alt="" coords="197,140,323,167"/>
+<area shape="rect" id="node3" href="$classsolver.html#ab884a9f22a7521203c4d4c7cb9ca9d22" title="Initialize the solver object for nblock blocks, nvar variables, using a solver operator of type solve..." alt="" coords="413,100,496,127"/>
+<area shape="rect" id="node9" href="$classstar2d.html#ab36f673b01f9dbaff380ca54b3ceec54" title="star2d::register_variables" alt="" coords="371,205,539,232"/>
+<area shape="rect" id="node4" href="$classsolver.html#a332d7bf0615badf93dbdf0a137273f30" title="solver::destroy" alt="" coords="602,12,710,39"/>
+<area shape="rect" id="node7" href="$classsolver_1_1solver__block.html#a8c88ed2bca8cd3167a466abc2ab08d0c" title="Initializes the object with nvar variables. " alt="" coords="587,63,725,105"/>
+<area shape="rect" id="node8" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="815,100,870,127"/>
+<area shape="rect" id="node5" href="$classsolver_1_1solver__block.html#a7e49cd787b3a2b02509c23ac1f866b25" title="Destroys the object and frees memory. " alt="" coords="773,5,912,46"/>
+<area shape="rect" id="node6" href="$classsolver.html#a66acaed97a3677446c8faf93a9a8ce3b" title="solver::reset" alt="" coords="961,12,1055,39"/>
+<area shape="rect" id="node10" href="$classsolver.html#a13aca53582481d03ad9b3aff3103df60" title="solver::set_nr" alt="" coords="605,180,707,207"/>
+<area shape="rect" id="node11" href="$classsolver.html#a691d638dd7b4a81a3855965a4b7f2c85" title="solver::regvar" alt="" coords="792,256,893,283"/>
+<area shape="rect" id="node12" href="$classsolver.html#a9ce1b3dfe4126933967a1b17da5e678d" title="solver::regvar_dep" alt="" coords="591,281,721,308"/>
+</map>

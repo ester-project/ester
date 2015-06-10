@@ -1,0 +1,6 @@
+<map id="INFILE::read" name="INFILE::read">
+<area shape="rect" id="node2" href="$classINFILE.html#ae6ded92fa99e01e78a7485892aeb8d84" title="INFILE::seek" alt="" coords="153,5,253,32"/>
+<area shape="rect" id="node3" href="$classINFILE.html#a616f7020b90e992ea51c16821520e89a" title="INFILE::getline" alt="" coords="302,31,413,57"/>
+<area shape="rect" id="node4" href="$classmatrix.html#a5764b8af09e9b5b57456d1b4d8beb983" title="Reads matrix data from a file. " alt="" coords="157,107,248,133"/>
+<area shape="rect" id="node5" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="314,107,401,133"/>
+</map>

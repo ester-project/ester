@@ -1,8 +1,19 @@
 var searchData=
 [
-  ['nb',['nb',['../classsolver.html#a9745e36aad996beb7a2d1173856e98f3',1,'solver']]],
-  ['next',['next',['../classsolver_1_1solver__elem.html#ae055ec22d779e47dfe6bc6f1ec1022a9',1,'solver::solver_elem']]],
-  ['nr',['nr',['../classsolver_1_1solver__block.html#a1a9a8f67fd0108b868ab27bc778b95e2',1,'solver::solver_block']]],
-  ['nth',['nth',['../classsolver_1_1solver__block.html#ac511dd69cfdbe84329adeb1f0221660c',1,'solver::solver_block']]],
-  ['nv',['nv',['../classsolver_1_1solver__block.html#a2279c9a73f3b2b155f3851ad1f13ab71',1,'solver::solver_block::nv()'],['../classsolver.html#a494b7bd1f3797752ea250c05eb397ab0',1,'solver::nv()']]]
+  ['c',['c',['../classsolver__full.html#a780a3bfab930b7593de29e6b957c8656',1,'solver_full::c()'],['../classRKF__solver.html#ac7693692b9366d120ae460677e8f6ac1',1,'RKF_solver::c()'],['../classSDIRK__solver.html#ac52ed0959da01726c3fd8e64e34e52fc',1,'SDIRK_solver::c()']]],
+  ['c_5flight',['C_LIGHT',['../global_8cpp.html#af3a6fbd5d2a8f57d7b086e5ac31a6411',1,'C_LIGHT():&#160;global.cpp'],['../constants_8h.html#af3a6fbd5d2a8f57d7b086e5ac31a6411',1,'C_LIGHT():&#160;constants.h']]],
+  ['caxis_5fset',['caxis_set',['../classfigure.html#a7f3f5549b13a7f00cc227c14ae221628',1,'figure']]],
+  ['changed_5fnpts',['changed_npts',['../classremapper.html#a406d158449f31826e6724b9ec9fef79e',1,'remapper']]],
+  ['chi_5frho',['chi_rho',['../structeos__struct.html#aea12138675b2e534942b86a999a40fb1',1,'eos_struct']]],
+  ['chi_5ft',['chi_T',['../structeos__struct.html#a2836d366152558003594ba39781ff997',1,'eos_struct']]],
+  ['cno',['cno',['../structnuc__struct.html#ae78e82ecba4853361e20126a2aa847d7',1,'nuc_struct']]],
+  ['comp',['comp',['../classstar2d.html#acdd5689512208625e67831cf7cb8fda2',1,'star2d']]],
+  ['comp_5finited',['comp_inited',['../classstar__evol.html#a0af8546801d3827975afb00166f67889',1,'star_evol']]],
+  ['config',['config',['../classstar2d.html#a4d2f1e892a5f9b8f0c7c5ee7795b2442',1,'star2d']]],
+  ['context',['context',['../classsym.html#aa095812543eba84668e1c32fc00b405d',1,'sym::context()'],['../classsym_1_1symbol.html#a80372244f5ad7cfd0a4a9d05b5198dd3',1,'sym::symbol::context()'],['../classsym_1_1sym__deriv.html#a6d9025d8ff0068f94fd6597035ab4267',1,'sym::sym_deriv::context()']]],
+  ['conv',['conv',['../classstar2d.html#ac36d92a140e808f58e4193b45aaa701b',1,'star2d']]],
+  ['converged',['converged',['../classstar__evol.html#ab5bd6e8573281bbaebfb4106117e5252',1,'star_evol']]],
+  ['core_5fconvec',['core_convec',['../classstar2d.html#ae3d8fec8e39457429c967f9b00215cc2',1,'star2d']]],
+  ['cp',['cp',['../structeos__struct.html#aedd51410e5e2f2d17fe227b6ab6687a7',1,'eos_struct']]],
+  ['cv',['cv',['../structeos__struct.html#a3dc11cbce3bc9141ff0c5f3dbd74dbec',1,'eos_struct']]]
 ];

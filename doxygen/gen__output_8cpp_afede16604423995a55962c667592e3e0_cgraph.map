@@ -1,0 +1,43 @@
+<map id="output2d" name="output2d">
+<area shape="rect" id="node2" href="$gen__output_8cpp.html#ad2236cdb3f855afa3bd695d4b3f46a5f" title="readconf" alt="" coords="125,588,197,615"/>
+<area shape="rect" id="node3" href="$gen__output_8cpp.html#a63b8fab380751c9e99d34e6bd4ccf247" title="write" alt="" coords="136,639,187,665"/>
+<area shape="rect" id="node4" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="658,5,713,32"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="259,867,373,893"/>
+<area shape="rect" id="node6" href="$classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="257,309,375,336"/>
+<area shape="rect" id="node9" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="637,208,734,235"/>
+<area shape="rect" id="node17" href="$classdiff__leg.html#a51f6535740a957cb61864bbe65e6264c" title="diff_leg::eval_11" alt="" coords="257,360,375,387"/>
+<area shape="rect" id="node18" href="$matrix_8h.html#a069930b10a8e55fb1cd4cbc7aae7625f" title="eye" alt="" coords="295,411,337,437"/>
+<area shape="rect" id="node20" href="$gen__output_8cpp.html#a0f4879ec6cabc7bb4b4f7116cc6d24b3" title="matrix_fmt" alt="" coords="463,208,547,235"/>
+<area shape="rect" id="node23" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="642,563,729,589"/>
+<area shape="rect" id="node24" href="$classstar2d.html#a7da1882172f11e6a99ad4f13ee8649f7" title="star2d::Lz" alt="" coords="276,664,356,691"/>
+<area shape="rect" id="node26" href="$classstar2d.html#a4a69d0527456284cdb23f675a24d71d5" title="star2d::Mcore" alt="" coords="265,816,367,843"/>
+<area shape="rect" id="node27" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="457,968,554,995"/>
+<area shape="rect" id="node28" href="$classstar2d.html#ae6157562211ace8108e4462bb24f21c8" title="star2d::Lzcore" alt="" coords="263,715,369,741"/>
+<area shape="rect" id="node29" href="$classmatrix.html#a079db3c1bd16368452e4e27ec7e05f50" title="Saves matrix to a file. " alt="" coords="269,917,363,944"/>
+<area shape="rect" id="node30" href="$classcomposition__map.html#a0929bc6a71f8e7ee0663c0e8d4de5cea" title="composition_map::X" alt="" coords="435,1019,576,1045"/>
+<area shape="rect" id="node31" href="$classcomposition__map.html#a28dbd956e652ff4f39cb8ab885d0e7c3" title="composition_map::Y" alt="" coords="435,1069,576,1096"/>
+<area shape="rect" id="node32" href="$classcomposition__map.html#a74233bb42033f05fad93f817a480d065" title="composition_map::Z" alt="" coords="246,1019,386,1045"/>
+<area shape="rect" id="node33" href="$classstar2d.html#aae6fc5dfec25acc420bde7d970967ea4" title="star2d::N2" alt="" coords="464,107,547,133"/>
+<area shape="rect" id="node34" href="$classstar2d.html#a8bdd8e6e5ed692389b676633f459707b" title="star2d::luminosity" alt="" coords="443,1145,568,1172"/>
+<area shape="rect" id="node35" href="$classstar2d.html#a6a1ce30ca36c61e42fb6128ed6c72257" title="star2d::Teff" alt="" coords="271,512,361,539"/>
+<area shape="rect" id="node36" href="$classstar2d.html#a53ab7c1501edcaecf86b89396a40287c" title="star2d::gsup" alt="" coords="458,411,553,437"/>
+<area shape="rect" id="node37" href="$classstar2d.html#a730525cfeac7cd933e06a5a74bbb6017" title="star2d::virial" alt="" coords="269,613,363,640"/>
+<area shape="rect" id="node42" href="$classstar2d.html#a341a0356013bf55d26338a67808510f0" title="star2d::energy_test" alt="" coords="249,1171,383,1197"/>
+<area shape="rect" id="node7" href="$classdiff__leg.html#ad863b7bdb1d8b47279f63a10e1843edd" title="diff_leg::eval" alt="" coords="457,309,553,336"/>
+<area shape="rect" id="node8" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="635,259,736,285"/>
+<area shape="rect" id="node10" href="$matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="664,309,707,336"/>
+<area shape="rect" id="node11" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="642,461,729,488"/>
+<area shape="rect" id="node12" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="660,360,711,387"/>
+<area shape="rect" id="node13" href="$classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="633,107,738,133"/>
+<area shape="rect" id="node14" href="$matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="663,512,707,539"/>
+<area shape="rect" id="node15" href="$matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="666,765,705,792"/>
+<area shape="rect" id="node16" href="$classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="635,411,736,437"/>
+<area shape="rect" id="node19" href="$classmatrix.html#a0d38262959de19208fc8c21780457c95" title="Sets the matrix to the nrows x ncols zero matrix. " alt="" coords="460,360,551,387"/>
+<area shape="rect" id="node21" href="$classmatrix.html#ad4a1ea9d5fcd7dc84f2b80d911fafa19" title="matrix::transpose" alt="" coords="624,157,747,184"/>
+<area shape="rect" id="node22" href="$classmatrix.html#af220f2a5835e6531bb17b850063a12cf" title="Returns the pointer to the matrix data. " alt="" coords="640,56,731,83"/>
+<area shape="rect" id="node25" href="$matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="482,816,529,843"/>
+<area shape="rect" id="node38" href="$classstar2d.html#a42261c1997cce7ea7150a28ce5a58f4d" title="star2d::virial_3P" alt="" coords="447,765,563,792"/>
+<area shape="rect" id="node39" href="$classstar2d.html#a8161600fcf66e1d59f47b60af56a561f" title="star2d::virial_L" alt="" coords="452,664,559,691"/>
+<area shape="rect" id="node40" href="$classstar2d.html#a4886b3ff1f9f251885051ec3e8e85c63" title="star2d::virial_ps" alt="" coords="448,613,563,640"/>
+<area shape="rect" id="node41" href="$classstar2d.html#a2319d559924e791bb547a523638c32a0" title="star2d::virial_W" alt="" coords="449,715,562,741"/>
+</map>

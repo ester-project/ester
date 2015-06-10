@@ -1,0 +1,8 @@
+<map id="solver::check_struct" name="solver::check_struct">
+<area shape="rect" id="node2" href="$classsolver.html#a42081aa7436553d84285de97531ee805" title="solver::check_struct\l_block" alt="" coords="206,5,346,46"/>
+<area shape="rect" id="node6" href="$classsolver.html#acc76d61bce3e745db7c15164d50a51df" title="solver::check_struct\l_bc_th" alt="" coords="206,70,346,111"/>
+<area shape="rect" id="node7" href="$classsolver.html#a8e7cae91c9c3515ef42942b6e87de501" title="solver::check_struct_bc" alt="" coords="195,136,357,163"/>
+<area shape="rect" id="node3" href="$classsolver.html#a0a5a034f26e3ce3c42fddd4e23d8d075" title="solver::check_struct\l_error" alt="" coords="406,11,546,53"/>
+<area shape="rect" id="node4" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="425,77,527,104"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="427,128,525,155"/>
+</map>

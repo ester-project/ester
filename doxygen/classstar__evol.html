@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -98,446 +98,595 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">star_evol Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="star_8h_source.html">star.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for star_evol:</div>
 <div class="dyncontent">
 <div class="center"><img src="classstar__evol__inherit__graph.png" border="0" usemap="#star__evol_inherit__map" alt="Inheritance graph"/></div>
 <map name="star__evol_inherit__map" id="star__evol_inherit__map">
-</map>
+<area shape="rect" id="node2" href="classstar2d.html" title="star2d" alt="" coords="12,5,69,32"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
 Collaboration diagram for star_evol:</div>
 <div class="dyncontent">
 <div class="center"><img src="classstar__evol__coll__graph.png" border="0" usemap="#star__evol_coll__map" alt="Collaboration graph"/></div>
 <map name="star__evol_coll__map" id="star__evol_coll__map">
-</map>
+<area shape="rect" id="node2" href="classstar2d.html" title="star2d" alt="" coords="959,552,1017,579"/><area shape="rect" id="node3" href="structstar2d_1_1units__struct.html" title="star2d::units_struct" alt="" coords="685,884,819,911"/><area shape="rect" id="node4" href="structeos__struct.html" title="eos_struct" alt="" coords="347,601,429,628"/><area shape="rect" id="node5" href="classmatrix.html" title="The matrix class is used to facilitate the work with regular dense matrices. " alt="" coords="5,760,64,787"/><area shape="rect" id="node6" href="structatm__struct.html" title="atm_struct" alt="" coords="569,296,653,323"/><area shape="rect" id="node7" href="classmatrix__block__diag.html" title="The matrix_block_diag class is used to store block diagonal matrices. " alt="" coords="186,1008,313,1035"/><area shape="rect" id="node12" href="structnuc__struct.html" title="nuc_struct" alt="" coords="569,453,652,480"/><area shape="rect" id="node13" href="structopa__struct.html" title="opa_struct" alt="" coords="347,548,429,575"/><area shape="rect" id="node15" href="classmapping.html" title="mapping" alt="" coords="717,963,787,989"/><area shape="rect" id="node16" href="classmapping_1_1ext__map.html" title="mapping::ext_map" alt="" coords="923,1031,1053,1057"/><area shape="rect" id="node17" href="classdiff__gl.html" title="The diff_gl class implements the Gauss&#45;Lobatto (or more properly Gauss&#45;Lobatto&#45;Chebyshev) collocation..." alt="" coords="470,1027,527,1053"/><area shape="rect" id="node18" href="classdiff__leg.html" title="The diff_leg class implements Legendre numerical differentiation. " alt="" coords="356,916,420,943"/><area shape="rect" id="node8" href="structstar2d_1_1version__struct.html" title="star2d::version_struct" alt="" coords="678,501,826,528"/><area shape="rect" id="node9" href="classcomposition__map.html" title="composition_map" alt="" coords="690,388,814,415"/><area shape="rect" id="node10" href="classmatrix__map.html" title="matrix_map" alt="" coords="453,348,544,375"/><area shape="rect" id="node14" href="structstar2d_1_1config__struct.html" title="star2d::config_struct" alt="" coords="681,653,823,680"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a044a6cd690ccdc5896f5f893508ee6b6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a044a6cd690ccdc5896f5f893508ee6b6"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>star_evol</b> (const <a class="el" href="classstar2d.html">star2d</a> &amp;)</td></tr>
+<tr class="memitem:ad5289b93c0d579af0680adb426621b6e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar__evol.html#ad5289b93c0d579af0680adb426621b6e">star_evol</a> ()</td></tr>
+<tr class="separator:ad5289b93c0d579af0680adb426621b6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a044a6cd690ccdc5896f5f893508ee6b6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar__evol.html#a044a6cd690ccdc5896f5f893508ee6b6">star_evol</a> (const <a class="el" href="classstar2d.html">star2d</a> &amp;)</td></tr>
 <tr class="separator:a044a6cd690ccdc5896f5f893508ee6b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4f0ffd9f0f3dabbb0c5a67144e660d9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab4f0ffd9f0f3dabbb0c5a67144e660d9"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar__evol.html#ab4f0ffd9f0f3dabbb0c5a67144e660d9">fill</a> ()</td></tr>
-<tr class="memdesc:ab4f0ffd9f0f3dabbb0c5a67144e660d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize star's chemical composition, equation of state, opacity, nuclear reaction and atmosphere. <br/></td></tr>
+<tr class="memitem:ab4f0ffd9f0f3dabbb0c5a67144e660d9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar__evol.html#ab4f0ffd9f0f3dabbb0c5a67144e660d9">fill</a> ()</td></tr>
+<tr class="memdesc:ab4f0ffd9f0f3dabbb0c5a67144e660d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize star's chemical composition, equation of state, opacity, nuclear reaction and atmosphere.  <a href="#ab4f0ffd9f0f3dabbb0c5a67144e660d9">More...</a><br/></td></tr>
 <tr class="separator:ab4f0ffd9f0f3dabbb0c5a67144e660d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a23526370c94d94c9d3aa4a295fc267ce"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a23526370c94d94c9d3aa4a295fc267ce"></a>
-virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>read</b> (const char *input_file, int dim=2)</td></tr>
+<tr class="memitem:a23526370c94d94c9d3aa4a295fc267ce"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar__evol.html#a23526370c94d94c9d3aa4a295fc267ce">read</a> (const char *input_file, int <a class="el" href="gen__output_8cpp.html#a70b5e28b5bc3d1b63a7435c5fe50b837">dim</a>=2)</td></tr>
 <tr class="separator:a23526370c94d94c9d3aa4a295fc267ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a851325b0e7b4e762fec520cab8547be0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a851325b0e7b4e762fec520cab8547be0"></a>
-virtual <a class="el" href="classsolver.html">solver</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>init_solver</b> (int nvar_add=0)</td></tr>
+<tr class="memitem:a851325b0e7b4e762fec520cab8547be0"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classsolver.html">solver</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar__evol.html#a851325b0e7b4e762fec520cab8547be0">init_solver</a> (int nvar_add=0)</td></tr>
 <tr class="separator:a851325b0e7b4e762fec520cab8547be0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a486114eb17bcf495b93681948dc65d9c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a486114eb17bcf495b93681948dc65d9c"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>register_variables</b> (<a class="el" href="classsolver.html">solver</a> *op)</td></tr>
+<tr class="memitem:a486114eb17bcf495b93681948dc65d9c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar__evol.html#a486114eb17bcf495b93681948dc65d9c">register_variables</a> (<a class="el" href="classsolver.html">solver</a> *op)</td></tr>
 <tr class="separator:a486114eb17bcf495b93681948dc65d9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a8f2da108a65999f8f1fec1d0601cee"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5a8f2da108a65999f8f1fec1d0601cee"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>solve_Omega</b> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
+<tr class="memitem:a5a8f2da108a65999f8f1fec1d0601cee"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar__evol.html#a5a8f2da108a65999f8f1fec1d0601cee">solve_Omega</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
 <tr class="separator:a5a8f2da108a65999f8f1fec1d0601cee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classstar2d"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classstar2d')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classstar2d.html">star2d</a></td></tr>
-<tr class="memitem:ab151ce77d2449a289c8c3b0f3bb80302 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab151ce77d2449a289c8c3b0f3bb80302"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>calc_units</b> ()</td></tr>
+<tr class="memitem:ab151ce77d2449a289c8c3b0f3bb80302 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ab151ce77d2449a289c8c3b0f3bb80302">calc_units</a> ()</td></tr>
 <tr class="separator:ab151ce77d2449a289c8c3b0f3bb80302 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5b7a9737431d252c886c80586bffd08 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac5b7a9737431d252c886c80586bffd08"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>star2d</b> (const <a class="el" href="classstar2d.html">star2d</a> &amp;)</td></tr>
+<tr class="memitem:a71af1a46fe046a0e151e238aece2c894 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a71af1a46fe046a0e151e238aece2c894">star2d</a> ()</td></tr>
+<tr class="separator:a71af1a46fe046a0e151e238aece2c894 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a898dd4fe6538fea93bd88fcc6bec7256 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a898dd4fe6538fea93bd88fcc6bec7256">~star2d</a> ()</td></tr>
+<tr class="separator:a898dd4fe6538fea93bd88fcc6bec7256 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5b7a9737431d252c886c80586bffd08 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ac5b7a9737431d252c886c80586bffd08">star2d</a> (const <a class="el" href="classstar2d.html">star2d</a> &amp;)</td></tr>
 <tr class="separator:ac5b7a9737431d252c886c80586bffd08 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdd0af730d56645f0a352124b6e1d33c inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afdd0af730d56645f0a352124b6e1d33c"></a>
-<a class="el" href="classstar2d.html">star2d</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="classstar2d.html">star2d</a> &amp;)</td></tr>
+<tr class="memitem:afdd0af730d56645f0a352124b6e1d33c inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstar2d.html">star2d</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#afdd0af730d56645f0a352124b6e1d33c">operator=</a> (const <a class="el" href="classstar2d.html">star2d</a> &amp;)</td></tr>
 <tr class="separator:afdd0af730d56645f0a352124b6e1d33c inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7dc19f2defb4e1a8a565d2170e53036a inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7dc19f2defb4e1a8a565d2170e53036a"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>opacity</b> ()</td></tr>
+<tr class="memitem:a7dc19f2defb4e1a8a565d2170e53036a inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a7dc19f2defb4e1a8a565d2170e53036a">opacity</a> ()</td></tr>
 <tr class="separator:a7dc19f2defb4e1a8a565d2170e53036a inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adfe376d502e668085dba6fb5d0188df2 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adfe376d502e668085dba6fb5d0188df2"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>nuclear</b> ()</td></tr>
+<tr class="memitem:adfe376d502e668085dba6fb5d0188df2 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#adfe376d502e668085dba6fb5d0188df2">nuclear</a> ()</td></tr>
 <tr class="separator:adfe376d502e668085dba6fb5d0188df2 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56cb59b4d6994784487320cee8ae8652 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a56cb59b4d6994784487320cee8ae8652"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>eq_state</b> ()</td></tr>
+<tr class="memitem:a56cb59b4d6994784487320cee8ae8652 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a56cb59b4d6994784487320cee8ae8652">eq_state</a> ()</td></tr>
 <tr class="separator:a56cb59b4d6994784487320cee8ae8652 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1be7c76c3ebf0acfd919679f38c38706 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1be7c76c3ebf0acfd919679f38c38706"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>atmosphere</b> ()</td></tr>
+<tr class="memitem:a1be7c76c3ebf0acfd919679f38c38706 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a1be7c76c3ebf0acfd919679f38c38706">atmosphere</a> ()</td></tr>
 <tr class="separator:a1be7c76c3ebf0acfd919679f38c38706 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75b156580e70c18eae74b6a9f1654241 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a75b156580e70c18eae74b6a9f1654241"></a>
-virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (const char *input_file, const char *param_file, int argc, char *argv[])</td></tr>
+<tr class="memitem:a75b156580e70c18eae74b6a9f1654241 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a75b156580e70c18eae74b6a9f1654241">init</a> (const char *input_file, const char *param_file, int argc, char *argv[])</td></tr>
 <tr class="separator:a75b156580e70c18eae74b6a9f1654241 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac17107e3c96035770425afd514317bf3 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac17107e3c96035770425afd514317bf3"></a>
-virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>check_arg</b> (char *arg, char *val, int *change_grid)</td></tr>
+<tr class="memitem:ac17107e3c96035770425afd514317bf3 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ac17107e3c96035770425afd514317bf3">check_arg</a> (char *arg, char *val, int *change_grid)</td></tr>
 <tr class="separator:ac17107e3c96035770425afd514317bf3 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8b8d554ec82827b448fc07cd563b2e3 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa8b8d554ec82827b448fc07cd563b2e3"></a>
-virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>read_old</b> (const char *input_file)</td></tr>
+<tr class="memitem:aa8b8d554ec82827b448fc07cd563b2e3 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#aa8b8d554ec82827b448fc07cd563b2e3">read_old</a> (const char *input_file)</td></tr>
 <tr class="separator:aa8b8d554ec82827b448fc07cd563b2e3 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37503eacfb984a7ce5c2b2888b8d7c39 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a37503eacfb984a7ce5c2b2888b8d7c39"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (const char *output_file, char output_mode='b') const </td></tr>
+<tr class="memitem:a37503eacfb984a7ce5c2b2888b8d7c39 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a37503eacfb984a7ce5c2b2888b8d7c39">write</a> (const char *output_file, char output_mode='b') const </td></tr>
 <tr class="separator:a37503eacfb984a7ce5c2b2888b8d7c39 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0cd1a943f63af1f807fbf2bf846d9eb8 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0cd1a943f63af1f807fbf2bf846d9eb8"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>interp</b> (<a class="el" href="classremapper.html">remapper</a> *red)</td></tr>
+<tr class="memitem:a0cd1a943f63af1f807fbf2bf846d9eb8 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a0cd1a943f63af1f807fbf2bf846d9eb8">interp</a> (<a class="el" href="classremapper.html">remapper</a> *red)</td></tr>
 <tr class="separator:a0cd1a943f63af1f807fbf2bf846d9eb8 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26ba86778871df1d8a000ae039bb976c inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a26ba86778871df1d8a000ae039bb976c"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>dump_info</b> ()</td></tr>
+<tr class="memitem:a26ba86778871df1d8a000ae039bb976c inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a26ba86778871df1d8a000ae039bb976c">dump_info</a> ()</td></tr>
 <tr class="separator:a26ba86778871df1d8a000ae039bb976c inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89f64e2c8a79d1b87a753ee0a871bbef inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a89f64e2c8a79d1b87a753ee0a871bbef"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>init_comp</b> ()</td></tr>
+<tr class="memitem:a89f64e2c8a79d1b87a753ee0a871bbef inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a89f64e2c8a79d1b87a753ee0a871bbef">init_comp</a> ()</td></tr>
 <tr class="separator:a89f64e2c8a79d1b87a753ee0a871bbef inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a478e9e40c696a8d4cfe1e28353d3ea69 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a478e9e40c696a8d4cfe1e28353d3ea69"></a>
-virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a478e9e40c696a8d4cfe1e28353d3ea69">solve</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
-<tr class="memdesc:a478e9e40c696a8d4cfe1e28353d3ea69 inherit pub_methods_classstar2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs one step of the Newton algorithm to compute the star's internal structure. <br/></td></tr>
+<tr class="memitem:a478e9e40c696a8d4cfe1e28353d3ea69 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a478e9e40c696a8d4cfe1e28353d3ea69">solve</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
+<tr class="memdesc:a478e9e40c696a8d4cfe1e28353d3ea69 inherit pub_methods_classstar2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs one step of the Newton algorithm to compute the star's internal structure.  <a href="#a478e9e40c696a8d4cfe1e28353d3ea69">More...</a><br/></td></tr>
 <tr class="separator:a478e9e40c696a8d4cfe1e28353d3ea69 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5842ec4740386fb49d82f1d74581724 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad5842ec4740386fb49d82f1d74581724"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ad5842ec4740386fb49d82f1d74581724">solve_poisson</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
-<tr class="memdesc:ad5842ec4740386fb49d82f1d74581724 inherit pub_methods_classstar2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes Poisson equation and interface conditions into the solver. <br/></td></tr>
+<tr class="memitem:ad5842ec4740386fb49d82f1d74581724 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ad5842ec4740386fb49d82f1d74581724">solve_poisson</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
+<tr class="memdesc:ad5842ec4740386fb49d82f1d74581724 inherit pub_methods_classstar2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes Poisson equation and interface conditions into the solver.  <a href="#ad5842ec4740386fb49d82f1d74581724">More...</a><br/></td></tr>
 <tr class="separator:ad5842ec4740386fb49d82f1d74581724 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a744a12b8bd2aa2e9672b8e1588f319b4 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a744a12b8bd2aa2e9672b8e1588f319b4"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a744a12b8bd2aa2e9672b8e1588f319b4">solve_mov</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
-<tr class="memdesc:a744a12b8bd2aa2e9672b8e1588f319b4 inherit pub_methods_classstar2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes movement and vorticity equations into the solver. <br/></td></tr>
+<tr class="memitem:a744a12b8bd2aa2e9672b8e1588f319b4 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a744a12b8bd2aa2e9672b8e1588f319b4">solve_mov</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
+<tr class="memdesc:a744a12b8bd2aa2e9672b8e1588f319b4 inherit pub_methods_classstar2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes movement and vorticity equations into the solver.  <a href="#a744a12b8bd2aa2e9672b8e1588f319b4">More...</a><br/></td></tr>
 <tr class="separator:a744a12b8bd2aa2e9672b8e1588f319b4 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1af2f9bcd3eb35edd3029001ba1176aa inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1af2f9bcd3eb35edd3029001ba1176aa"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a1af2f9bcd3eb35edd3029001ba1176aa">solve_temp</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
-<tr class="memdesc:a1af2f9bcd3eb35edd3029001ba1176aa inherit pub_methods_classstar2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes temperature and luminosity equations and interface conditions into the solver. <br/></td></tr>
+<tr class="memitem:a1af2f9bcd3eb35edd3029001ba1176aa inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a1af2f9bcd3eb35edd3029001ba1176aa">solve_temp</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
+<tr class="memdesc:a1af2f9bcd3eb35edd3029001ba1176aa inherit pub_methods_classstar2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes temperature and luminosity equations and interface conditions into the solver.  <a href="#a1af2f9bcd3eb35edd3029001ba1176aa">More...</a><br/></td></tr>
 <tr class="separator:a1af2f9bcd3eb35edd3029001ba1176aa inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c5a011a2fb940862fcaf59c7e7652b4 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c5a011a2fb940862fcaf59c7e7652b4"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>solve_dim</b> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
+<tr class="memitem:a0c5a011a2fb940862fcaf59c7e7652b4 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a0c5a011a2fb940862fcaf59c7e7652b4">solve_dim</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
 <tr class="separator:a0c5a011a2fb940862fcaf59c7e7652b4 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87b3599d967c97e280071875cfd254d1 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a87b3599d967c97e280071875cfd254d1"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>solve_map</b> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
+<tr class="memitem:a87b3599d967c97e280071875cfd254d1 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a87b3599d967c97e280071875cfd254d1">solve_map</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
 <tr class="separator:a87b3599d967c97e280071875cfd254d1 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adddd3217fe7a264ba96729a765340027 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adddd3217fe7a264ba96729a765340027"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>solve_gsup</b> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
+<tr class="memitem:adddd3217fe7a264ba96729a765340027 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#adddd3217fe7a264ba96729a765340027">solve_gsup</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
 <tr class="separator:adddd3217fe7a264ba96729a765340027 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09a038589a741f85d1021bbf6cad4a00 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a09a038589a741f85d1021bbf6cad4a00"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>solve_Teff</b> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
+<tr class="memitem:a09a038589a741f85d1021bbf6cad4a00 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a09a038589a741f85d1021bbf6cad4a00">solve_Teff</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
 <tr class="separator:a09a038589a741f85d1021bbf6cad4a00 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99d83e13764a03c45df37ccea0940366 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a99d83e13764a03c45df37ccea0940366"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a99d83e13764a03c45df37ccea0940366">solve_definitions</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
-<tr class="memdesc:a99d83e13764a03c45df37ccea0940366 inherit pub_methods_classstar2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes terms depending opacity and state tables into the solver. <br/></td></tr>
+<tr class="memitem:a99d83e13764a03c45df37ccea0940366 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a99d83e13764a03c45df37ccea0940366">solve_definitions</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
+<tr class="memdesc:a99d83e13764a03c45df37ccea0940366 inherit pub_methods_classstar2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes terms depending opacity and state tables into the solver.  <a href="#a99d83e13764a03c45df37ccea0940366">More...</a><br/></td></tr>
 <tr class="separator:a99d83e13764a03c45df37ccea0940366 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a119a475c8f6fbdb96426423b73e662bc inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a119a475c8f6fbdb96426423b73e662bc"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>solve_atm</b> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
+<tr class="memitem:a119a475c8f6fbdb96426423b73e662bc inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a119a475c8f6fbdb96426423b73e662bc">solve_atm</a> (<a class="el" href="classsolver.html">solver</a> *)</td></tr>
 <tr class="separator:a119a475c8f6fbdb96426423b73e662bc inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06704ed51d174314252ab159eb9f4c3e inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a06704ed51d174314252ab159eb9f4c3e"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>update_map</b> (<a class="el" href="classmatrix.html">matrix</a> dR)</td></tr>
+<tr class="memitem:a06704ed51d174314252ab159eb9f4c3e inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a06704ed51d174314252ab159eb9f4c3e">update_map</a> (<a class="el" href="classmatrix.html">matrix</a> dR)</td></tr>
 <tr class="separator:a06704ed51d174314252ab159eb9f4c3e inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a6188281cb683bef8b1fea6691cf257 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2a6188281cb683bef8b1fea6691cf257"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>calc_veloc</b> ()</td></tr>
+<tr class="memitem:a2a6188281cb683bef8b1fea6691cf257 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a2a6188281cb683bef8b1fea6691cf257">calc_veloc</a> ()</td></tr>
 <tr class="separator:a2a6188281cb683bef8b1fea6691cf257 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3cea89e034f15f1ba1c25311695d8064 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3cea89e034f15f1ba1c25311695d8064"></a>
-virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>entropy</b> () const </td></tr>
+<tr class="memitem:a3cea89e034f15f1ba1c25311695d8064 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a3cea89e034f15f1ba1c25311695d8064">entropy</a> () const </td></tr>
 <tr class="separator:a3cea89e034f15f1ba1c25311695d8064 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8bdd8e6e5ed692389b676633f459707b inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8bdd8e6e5ed692389b676633f459707b"></a>
-virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>luminosity</b> () const </td></tr>
+<tr class="memitem:a8bdd8e6e5ed692389b676633f459707b inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a8bdd8e6e5ed692389b676633f459707b">luminosity</a> () const </td></tr>
 <tr class="separator:a8bdd8e6e5ed692389b676633f459707b inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a1ce30ca36c61e42fb6128ed6c72257 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6a1ce30ca36c61e42fb6128ed6c72257"></a>
-virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Teff</b> () const </td></tr>
+<tr class="memitem:a6a1ce30ca36c61e42fb6128ed6c72257 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a6a1ce30ca36c61e42fb6128ed6c72257">Teff</a> () const </td></tr>
 <tr class="separator:a6a1ce30ca36c61e42fb6128ed6c72257 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae6fc5dfec25acc420bde7d970967ea4 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aae6fc5dfec25acc420bde7d970967ea4"></a>
-virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>N2</b> () const </td></tr>
+<tr class="memitem:aae6fc5dfec25acc420bde7d970967ea4 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#aae6fc5dfec25acc420bde7d970967ea4">N2</a> () const </td></tr>
 <tr class="separator:aae6fc5dfec25acc420bde7d970967ea4 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53ab7c1501edcaecf86b89396a40287c inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a53ab7c1501edcaecf86b89396a40287c"></a>
-virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>gsup</b> () const </td></tr>
+<tr class="memitem:a53ab7c1501edcaecf86b89396a40287c inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a53ab7c1501edcaecf86b89396a40287c">gsup</a> () const </td></tr>
 <tr class="separator:a53ab7c1501edcaecf86b89396a40287c inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42261c1997cce7ea7150a28ce5a58f4d inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a42261c1997cce7ea7150a28ce5a58f4d"></a>
-virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>virial_3P</b> () const </td></tr>
+<tr class="memitem:a42261c1997cce7ea7150a28ce5a58f4d inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a42261c1997cce7ea7150a28ce5a58f4d">virial_3P</a> () const </td></tr>
 <tr class="separator:a42261c1997cce7ea7150a28ce5a58f4d inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8161600fcf66e1d59f47b60af56a561f inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8161600fcf66e1d59f47b60af56a561f"></a>
-virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>virial_L</b> () const </td></tr>
+<tr class="memitem:a8161600fcf66e1d59f47b60af56a561f inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a8161600fcf66e1d59f47b60af56a561f">virial_L</a> () const </td></tr>
 <tr class="separator:a8161600fcf66e1d59f47b60af56a561f inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2319d559924e791bb547a523638c32a0 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2319d559924e791bb547a523638c32a0"></a>
-virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>virial_W</b> () const </td></tr>
+<tr class="memitem:a2319d559924e791bb547a523638c32a0 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a2319d559924e791bb547a523638c32a0">virial_W</a> () const </td></tr>
 <tr class="separator:a2319d559924e791bb547a523638c32a0 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4886b3ff1f9f251885051ec3e8e85c63 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4886b3ff1f9f251885051ec3e8e85c63"></a>
-virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>virial_ps</b> () const </td></tr>
+<tr class="memitem:a4886b3ff1f9f251885051ec3e8e85c63 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a4886b3ff1f9f251885051ec3e8e85c63">virial_ps</a> () const </td></tr>
 <tr class="separator:a4886b3ff1f9f251885051ec3e8e85c63 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a730525cfeac7cd933e06a5a74bbb6017 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a730525cfeac7cd933e06a5a74bbb6017"></a>
-virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>virial</b> () const </td></tr>
+<tr class="memitem:a730525cfeac7cd933e06a5a74bbb6017 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a730525cfeac7cd933e06a5a74bbb6017">virial</a> () const </td></tr>
 <tr class="separator:a730525cfeac7cd933e06a5a74bbb6017 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a341a0356013bf55d26338a67808510f0 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a341a0356013bf55d26338a67808510f0"></a>
-virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>energy_test</b> () const </td></tr>
+<tr class="memitem:a341a0356013bf55d26338a67808510f0 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a341a0356013bf55d26338a67808510f0">energy_test</a> () const </td></tr>
 <tr class="separator:a341a0356013bf55d26338a67808510f0 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac209ac919c83d7dda4f25c2c1ae2e0f8 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac209ac919c83d7dda4f25c2c1ae2e0f8"></a>
-virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>stream</b> () const </td></tr>
+<tr class="memitem:ac209ac919c83d7dda4f25c2c1ae2e0f8 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ac209ac919c83d7dda4f25c2c1ae2e0f8">stream</a> () const </td></tr>
 <tr class="separator:ac209ac919c83d7dda4f25c2c1ae2e0f8 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac8f6387a7451fb8c010cab950d4f4e93 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac8f6387a7451fb8c010cab950d4f4e93"></a>
-virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>apparent_luminosity</b> (double i) const </td></tr>
+<tr class="memitem:ac8f6387a7451fb8c010cab950d4f4e93 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ac8f6387a7451fb8c010cab950d4f4e93">apparent_luminosity</a> (double i) const </td></tr>
 <tr class="separator:ac8f6387a7451fb8c010cab950d4f4e93 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7da1882172f11e6a99ad4f13ee8649f7 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7da1882172f11e6a99ad4f13ee8649f7"></a>
-virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>Lz</b> () const </td></tr>
+<tr class="memitem:a7da1882172f11e6a99ad4f13ee8649f7 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a7da1882172f11e6a99ad4f13ee8649f7">Lz</a> () const </td></tr>
 <tr class="separator:a7da1882172f11e6a99ad4f13ee8649f7 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a69d0527456284cdb23f675a24d71d5 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4a69d0527456284cdb23f675a24d71d5"></a>
-virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>Mcore</b> () const </td></tr>
+<tr class="memitem:a4a69d0527456284cdb23f675a24d71d5 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a4a69d0527456284cdb23f675a24d71d5">Mcore</a> () const </td></tr>
 <tr class="separator:a4a69d0527456284cdb23f675a24d71d5 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6157562211ace8108e4462bb24f21c8 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae6157562211ace8108e4462bb24f21c8"></a>
-virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>Lzcore</b> () const </td></tr>
+<tr class="memitem:ae6157562211ace8108e4462bb24f21c8 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ae6157562211ace8108e4462bb24f21c8">Lzcore</a> () const </td></tr>
 <tr class="separator:ae6157562211ace8108e4462bb24f21c8 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7be50891d86b1773268c014e27731d4a inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7be50891d86b1773268c014e27731d4a"></a>
-virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Rcore</b> () const </td></tr>
+<tr class="memitem:a7be50891d86b1773268c014e27731d4a inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a7be50891d86b1773268c014e27731d4a">Rcore</a> () const </td></tr>
 <tr class="separator:a7be50891d86b1773268c014e27731d4a inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bd916045b53438d64dd621571b1d0e0 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0bd916045b53438d64dd621571b1d0e0"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>remap</b> (int ndomains, int *npts, int nth, int nex)</td></tr>
+<tr class="memitem:a0bd916045b53438d64dd621571b1d0e0 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a0bd916045b53438d64dd621571b1d0e0">remap</a> (int <a class="el" href="classstar2d.html#a84260742cbc2fecc1a6be9ff2d9e9f7c">ndomains</a>, int *npts, int <a class="el" href="classstar2d.html#aec3d8979d6332b74e70018bf99f934a5">nth</a>, int <a class="el" href="classstar2d.html#adcba142827cda7bce7a1ee6816dd5f21">nex</a>)</td></tr>
 <tr class="separator:a0bd916045b53438d64dd621571b1d0e0 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a83adad9ed6606f1befe0554c481f5e81 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a83adad9ed6606f1befe0554c481f5e81"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>remap_domains</b> (int ndom, <a class="el" href="classremapper.html">remapper</a> &amp;red)</td></tr>
+<tr class="memitem:a83adad9ed6606f1befe0554c481f5e81 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a83adad9ed6606f1befe0554c481f5e81">remap_domains</a> (int ndom, <a class="el" href="classremapper.html">remapper</a> &amp;red)</td></tr>
 <tr class="separator:a83adad9ed6606f1befe0554c481f5e81 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:affb2120c60883f2007904b8b62dfccba inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="affb2120c60883f2007904b8b62dfccba"></a>
-virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>find_boundaries</b> (const <a class="el" href="classmatrix.html">matrix</a> &amp;logTi) const </td></tr>
+<tr class="memitem:affb2120c60883f2007904b8b62dfccba inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#affb2120c60883f2007904b8b62dfccba">find_boundaries</a> (const <a class="el" href="classmatrix.html">matrix</a> &amp;logTi) const </td></tr>
 <tr class="separator:affb2120c60883f2007904b8b62dfccba inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0f7f425a24378cd5b96b1abedeb8e1c inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac0f7f425a24378cd5b96b1abedeb8e1c"></a>
-virtual std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>distribute_domains</b> (int ndom, <a class="el" href="classmatrix.html">matrix</a> &amp;zif, bool check_only=false) const </td></tr>
+<tr class="memitem:ac0f7f425a24378cd5b96b1abedeb8e1c inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="matrix_8cpp.html#a3733d7092ed4974a7f292df2002e0ff1">std::vector</a>&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ac0f7f425a24378cd5b96b1abedeb8e1c">distribute_domains</a> (int ndom, <a class="el" href="classmatrix.html">matrix</a> &amp;zif, bool check_only=false) const </td></tr>
 <tr class="separator:ac0f7f425a24378cd5b96b1abedeb8e1c inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f93f6500584d17ea53a435548b12770 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6f93f6500584d17ea53a435548b12770"></a>
-virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>distribute_domains</b> (int ndomains, int &amp;conv_new, double p_cc=0) const </td></tr>
+<tr class="memitem:a6f93f6500584d17ea53a435548b12770 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a6f93f6500584d17ea53a435548b12770">distribute_domains</a> (int <a class="el" href="classstar2d.html#a84260742cbc2fecc1a6be9ff2d9e9f7c">ndomains</a>, int &amp;conv_new, double p_cc=0) const </td></tr>
 <tr class="separator:a6f93f6500584d17ea53a435548b12770 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac8b5644658ac5042c718a0e1ba15b442 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac8b5644658ac5042c718a0e1ba15b442"></a>
-virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>find_boundaries_old</b> (<a class="el" href="classmatrix.html">matrix</a> pif) const </td></tr>
+<tr class="memitem:ac8b5644658ac5042c718a0e1ba15b442 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ac8b5644658ac5042c718a0e1ba15b442">find_boundaries_old</a> (<a class="el" href="classmatrix.html">matrix</a> pif) const </td></tr>
 <tr class="separator:ac8b5644658ac5042c718a0e1ba15b442 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7812d6ae0c3f8490f3feeb470deecafa inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7812d6ae0c3f8490f3feeb470deecafa"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>check_map</b> ()</td></tr>
+<tr class="memitem:a7812d6ae0c3f8490f3feeb470deecafa inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a7812d6ae0c3f8490f3feeb470deecafa">check_map</a> ()</td></tr>
 <tr class="separator:a7812d6ae0c3f8490f3feeb470deecafa inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa451ccdbfbbc167e98d08a97c0688442 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa451ccdbfbbc167e98d08a97c0688442"></a>
-virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>check_convec</b> (double &amp;p_cc, <a class="el" href="classmatrix.html">matrix</a> &amp;Rcc)</td></tr>
+<tr class="memitem:aa451ccdbfbbc167e98d08a97c0688442 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#aa451ccdbfbbc167e98d08a97c0688442">check_convec</a> (double &amp;p_cc, <a class="el" href="classmatrix.html">matrix</a> &amp;Rcc)</td></tr>
 <tr class="separator:aa451ccdbfbbc167e98d08a97c0688442 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae370e3578138ea054497e84d35610169 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae370e3578138ea054497e84d35610169"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>draw</b> (<a class="el" href="classfigure.html">figure</a> *, const <a class="el" href="classmatrix.html">matrix</a> &amp;, int parity=0) const </td></tr>
+<tr class="memitem:ae370e3578138ea054497e84d35610169 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ae370e3578138ea054497e84d35610169">draw</a> (<a class="el" href="classfigure.html">figure</a> *, const <a class="el" href="classmatrix.html">matrix</a> &amp;, int parity=0) const </td></tr>
 <tr class="separator:ae370e3578138ea054497e84d35610169 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8570a6c78c7c60f9faee4a45bf7acce9 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8570a6c78c7c60f9faee4a45bf7acce9"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>drawi</b> (<a class="el" href="classfigure.html">figure</a> *, const <a class="el" href="classmatrix.html">matrix</a> &amp;, int sr, int st, int parity=0) const </td></tr>
+<tr class="memitem:a8570a6c78c7c60f9faee4a45bf7acce9 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a8570a6c78c7c60f9faee4a45bf7acce9">drawi</a> (<a class="el" href="classfigure.html">figure</a> *, const <a class="el" href="classmatrix.html">matrix</a> &amp;, int sr, int st, int parity=0) const </td></tr>
 <tr class="separator:a8570a6c78c7c60f9faee4a45bf7acce9 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3320b9d2d70a7c4c48768aa6a38bef98 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3320b9d2d70a7c4c48768aa6a38bef98"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>drawc</b> (<a class="el" href="classfigure.html">figure</a> *, const <a class="el" href="classmatrix.html">matrix</a> &amp;, int ncontours, int parity=0) const </td></tr>
+<tr class="memitem:a3320b9d2d70a7c4c48768aa6a38bef98 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a3320b9d2d70a7c4c48768aa6a38bef98">drawc</a> (<a class="el" href="classfigure.html">figure</a> *, const <a class="el" href="classmatrix.html">matrix</a> &amp;, int ncontours, int parity=0) const </td></tr>
 <tr class="separator:a3320b9d2d70a7c4c48768aa6a38bef98 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1575f4d835eae668d10332d774e37f29 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1575f4d835eae668d10332d774e37f29"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>drawci</b> (<a class="el" href="classfigure.html">figure</a> *, const <a class="el" href="classmatrix.html">matrix</a> &amp;, int sr, int st, int ncontours, int parity=0) const </td></tr>
+<tr class="memitem:a1575f4d835eae668d10332d774e37f29 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a1575f4d835eae668d10332d774e37f29">drawci</a> (<a class="el" href="classfigure.html">figure</a> *, const <a class="el" href="classmatrix.html">matrix</a> &amp;, int sr, int st, int ncontours, int parity=0) const </td></tr>
 <tr class="separator:a1575f4d835eae668d10332d774e37f29 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab389be7d1b0c0baccd501569b85a11dd inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab389be7d1b0c0baccd501569b85a11dd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>spectrum</b> (<a class="el" href="classfigure.html">figure</a> *, const <a class="el" href="classmatrix.html">matrix</a> &amp;, int parity=0) const </td></tr>
+<tr class="memitem:ab389be7d1b0c0baccd501569b85a11dd inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ab389be7d1b0c0baccd501569b85a11dd">spectrum</a> (<a class="el" href="classfigure.html">figure</a> *, const <a class="el" href="classmatrix.html">matrix</a> &amp;, int parity=0) const </td></tr>
 <tr class="separator:ab389be7d1b0c0baccd501569b85a11dd inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad74beca3637117e87b72cfe140abc521 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad74beca3637117e87b72cfe140abc521"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>kconv</b> () const </td></tr>
+<tr class="memitem:ad74beca3637117e87b72cfe140abc521 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ad74beca3637117e87b72cfe140abc521">kconv</a> () const </td></tr>
 <tr class="separator:ad74beca3637117e87b72cfe140abc521 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4404eab9ba16f2d29621df5f1ca4efd9 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4404eab9ba16f2d29621df5f1ca4efd9"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>add_kconv</b> (<a class="el" href="classsolver.html">solver</a> *op, const char *eqn, const <a class="el" href="classmatrix.html">matrix</a> &amp;d)</td></tr>
+<tr class="memitem:a4404eab9ba16f2d29621df5f1ca4efd9 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a4404eab9ba16f2d29621df5f1ca4efd9">add_kconv</a> (<a class="el" href="classsolver.html">solver</a> *op, const char *eqn, const <a class="el" href="classmatrix.html">matrix</a> &amp;d)</td></tr>
 <tr class="separator:a4404eab9ba16f2d29621df5f1ca4efd9 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c19ec38f691c7760afc8233d9a0f7d3 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7c19ec38f691c7760afc8233d9a0f7d3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>add_dkconv_dz</b> (<a class="el" href="classsolver.html">solver</a> *op, const char *eqn, const <a class="el" href="classmatrix.html">matrix</a> &amp;d)</td></tr>
+<tr class="memitem:a7c19ec38f691c7760afc8233d9a0f7d3 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a7c19ec38f691c7760afc8233d9a0f7d3">add_dkconv_dz</a> (<a class="el" href="classsolver.html">solver</a> *op, const char *eqn, const <a class="el" href="classmatrix.html">matrix</a> &amp;d)</td></tr>
 <tr class="separator:a7c19ec38f691c7760afc8233d9a0f7d3 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1fb466f299d586a9b2584025f0d02a4e inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1fb466f299d586a9b2584025f0d02a4e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>kconv_common</b> (<a class="el" href="classmatrix.html">matrix</a> &amp;kc, <a class="el" href="classmatrix.html">matrix</a> &amp;Ja, <a class="el" href="classmatrix.html">matrix</a> &amp;Jb, <a class="el" href="classsymbolic.html">symbolic</a> &amp;S, <a class="el" href="classsym.html">sym</a> &amp;a_, <a class="el" href="classsym.html">sym</a> &amp;b_) const </td></tr>
+<tr class="memitem:a1fb466f299d586a9b2584025f0d02a4e inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a1fb466f299d586a9b2584025f0d02a4e">kconv_common</a> (<a class="el" href="classmatrix.html">matrix</a> &amp;kc, <a class="el" href="classmatrix.html">matrix</a> &amp;Ja, <a class="el" href="classmatrix.html">matrix</a> &amp;Jb, <a class="el" href="classsymbolic.html">symbolic</a> &amp;S, <a class="el" href="classsym.html">sym</a> &amp;a_, <a class="el" href="classsym.html">sym</a> &amp;b_) const </td></tr>
 <tr class="separator:a1fb466f299d586a9b2584025f0d02a4e inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13c3a79f4e7aebca00a87eb0ec6a1859 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a13c3a79f4e7aebca00a87eb0ec6a1859"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>check_jacobian</b> (<a class="el" href="classsolver.html">solver</a> *op, const char *eqn)</td></tr>
+<tr class="memitem:a13c3a79f4e7aebca00a87eb0ec6a1859 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a13c3a79f4e7aebca00a87eb0ec6a1859">check_jacobian</a> (<a class="el" href="classsolver.html">solver</a> *op, const char *eqn)</td></tr>
 <tr class="separator:a13c3a79f4e7aebca00a87eb0ec6a1859 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c0dc205c84a2ab94558921b0adf83fb inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5c0dc205c84a2ab94558921b0adf83fb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>hdf5_write</b> (const char *filename) const </td></tr>
+<tr class="memitem:a5c0dc205c84a2ab94558921b0adf83fb inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a5c0dc205c84a2ab94558921b0adf83fb">hdf5_write</a> (const char *filename) const </td></tr>
 <tr class="separator:a5c0dc205c84a2ab94558921b0adf83fb inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15656fb8b185d0cd34d8114db8acb303 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a15656fb8b185d0cd34d8114db8acb303"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>hdf5_read</b> (const char *input_file, int dim)</td></tr>
+<tr class="memitem:a15656fb8b185d0cd34d8114db8acb303 inherit pub_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a15656fb8b185d0cd34d8114db8acb303">hdf5_read</a> (const char *input_file, int <a class="el" href="gen__output_8cpp.html#a70b5e28b5bc3d1b63a7435c5fe50b837">dim</a>)</td></tr>
 <tr class="separator:a15656fb8b185d0cd34d8114db8acb303 inherit pub_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ab5bd6e8573281bbaebfb4106117e5252"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab5bd6e8573281bbaebfb4106117e5252"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>converged</b></td></tr>
+<tr class="memitem:ab5bd6e8573281bbaebfb4106117e5252"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar__evol.html#ab5bd6e8573281bbaebfb4106117e5252">converged</a></td></tr>
 <tr class="separator:ab5bd6e8573281bbaebfb4106117e5252"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a111bc6ca18cf2277f3c01a9babe1699c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a111bc6ca18cf2277f3c01a9babe1699c"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Lz_obj</b></td></tr>
+<tr class="memitem:a111bc6ca18cf2277f3c01a9babe1699c"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar__evol.html#a111bc6ca18cf2277f3c01a9babe1699c">Lz_obj</a></td></tr>
 <tr class="separator:a111bc6ca18cf2277f3c01a9babe1699c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_classstar2d"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classstar2d')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classstar2d.html">star2d</a></td></tr>
-<tr class="memitem:ac3ea89d4cf2039ca5d5a60f774bbd4da inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac3ea89d4cf2039ca5d5a60f774bbd4da"></a>
-<a class="el" href="classmapping.html">mapping</a>&#160;</td><td class="memItemRight" valign="bottom"><b>map</b></td></tr>
+<tr class="memitem:ac3ea89d4cf2039ca5d5a60f774bbd4da inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmapping.html">mapping</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ac3ea89d4cf2039ca5d5a60f774bbd4da">map</a></td></tr>
 <tr class="separator:ac3ea89d4cf2039ca5d5a60f774bbd4da inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e787d7bd9d6f8c28b8bc8d9c8d8cf8f inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5e787d7bd9d6f8c28b8bc8d9c8d8cf8f"></a>
-const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>nr</b></td></tr>
+<tr class="memitem:a5e787d7bd9d6f8c28b8bc8d9c8d8cf8f inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a5e787d7bd9d6f8c28b8bc8d9c8d8cf8f">nr</a></td></tr>
 <tr class="separator:a5e787d7bd9d6f8c28b8bc8d9c8d8cf8f inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec3d8979d6332b74e70018bf99f934a5 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aec3d8979d6332b74e70018bf99f934a5"></a>
-const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>nth</b></td></tr>
+<tr class="memitem:aec3d8979d6332b74e70018bf99f934a5 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#aec3d8979d6332b74e70018bf99f934a5">nth</a></td></tr>
 <tr class="separator:aec3d8979d6332b74e70018bf99f934a5 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adcba142827cda7bce7a1ee6816dd5f21 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adcba142827cda7bce7a1ee6816dd5f21"></a>
-const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>nex</b></td></tr>
+<tr class="memitem:adcba142827cda7bce7a1ee6816dd5f21 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#adcba142827cda7bce7a1ee6816dd5f21">nex</a></td></tr>
 <tr class="separator:adcba142827cda7bce7a1ee6816dd5f21 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84260742cbc2fecc1a6be9ff2d9e9f7c inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a84260742cbc2fecc1a6be9ff2d9e9f7c"></a>
-const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ndomains</b></td></tr>
+<tr class="memitem:a84260742cbc2fecc1a6be9ff2d9e9f7c inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a84260742cbc2fecc1a6be9ff2d9e9f7c">ndomains</a></td></tr>
 <tr class="separator:a84260742cbc2fecc1a6be9ff2d9e9f7c inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a260e5ae082e178fd8a4e5e35b0850bea inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a260e5ae082e178fd8a4e5e35b0850bea"></a>
-const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>r</b></td></tr>
+<tr class="memitem:a260e5ae082e178fd8a4e5e35b0850bea inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a260e5ae082e178fd8a4e5e35b0850bea">r</a></td></tr>
 <tr class="separator:a260e5ae082e178fd8a4e5e35b0850bea inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b0e031d921c0289db57a3a6f8a265cb inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0b0e031d921c0289db57a3a6f8a265cb"></a>
-const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>z</b></td></tr>
+<tr class="memitem:a0b0e031d921c0289db57a3a6f8a265cb inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a0b0e031d921c0289db57a3a6f8a265cb">z</a></td></tr>
 <tr class="separator:a0b0e031d921c0289db57a3a6f8a265cb inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afbac819f4162c9748e4ebb5a986759fc inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afbac819f4162c9748e4ebb5a986759fc"></a>
-const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>th</b></td></tr>
+<tr class="memitem:afbac819f4162c9748e4ebb5a986759fc inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#afbac819f4162c9748e4ebb5a986759fc">th</a></td></tr>
 <tr class="separator:afbac819f4162c9748e4ebb5a986759fc inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab645fd546fab5dd65ea4f8c153a06cde inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab645fd546fab5dd65ea4f8c153a06cde"></a>
-const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Dt</b></td></tr>
+<tr class="memitem:ab645fd546fab5dd65ea4f8c153a06cde inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ab645fd546fab5dd65ea4f8c153a06cde">Dt</a></td></tr>
 <tr class="separator:ab645fd546fab5dd65ea4f8c153a06cde inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a82708656e054da5054a972545cf3b336 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a82708656e054da5054a972545cf3b336"></a>
-const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Dt2</b></td></tr>
+<tr class="memitem:a82708656e054da5054a972545cf3b336 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a82708656e054da5054a972545cf3b336">Dt2</a></td></tr>
 <tr class="separator:a82708656e054da5054a972545cf3b336 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c9bceef7182f47d26cc3c2486acc0de inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2c9bceef7182f47d26cc3c2486acc0de"></a>
-const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>zex</b></td></tr>
+<tr class="memitem:a2c9bceef7182f47d26cc3c2486acc0de inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a2c9bceef7182f47d26cc3c2486acc0de">zex</a></td></tr>
 <tr class="separator:a2c9bceef7182f47d26cc3c2486acc0de inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b1c973364ab0e35448c0d3257c3297f inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6b1c973364ab0e35448c0d3257c3297f"></a>
-const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Dex</b></td></tr>
+<tr class="memitem:a6b1c973364ab0e35448c0d3257c3297f inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a6b1c973364ab0e35448c0d3257c3297f">Dex</a></td></tr>
 <tr class="separator:a6b1c973364ab0e35448c0d3257c3297f inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a023a0aafad41ec9c5cfc2d88010e8459 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a023a0aafad41ec9c5cfc2d88010e8459"></a>
-const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>rex</b></td></tr>
+<tr class="memitem:a023a0aafad41ec9c5cfc2d88010e8459 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix.html">matrix</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a023a0aafad41ec9c5cfc2d88010e8459">rex</a></td></tr>
 <tr class="separator:a023a0aafad41ec9c5cfc2d88010e8459 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc9016271711862c1e6a8c52a5909027 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acc9016271711862c1e6a8c52a5909027"></a>
-const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>D</b></td></tr>
+<tr class="memitem:acc9016271711862c1e6a8c52a5909027 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classmatrix__block__diag.html">matrix_block_diag</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#acc9016271711862c1e6a8c52a5909027">D</a></td></tr>
 <tr class="separator:acc9016271711862c1e6a8c52a5909027 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8d4e154cffff448792f6212291b3938 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa8d4e154cffff448792f6212291b3938"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rho</b></td></tr>
+<tr class="memitem:aa8d4e154cffff448792f6212291b3938 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#aa8d4e154cffff448792f6212291b3938">rho</a></td></tr>
 <tr class="separator:aa8d4e154cffff448792f6212291b3938 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4610ce3fd024f0745cba772d6bbf90fe inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4610ce3fd024f0745cba772d6bbf90fe"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>phi</b></td></tr>
+<tr class="memitem:a4610ce3fd024f0745cba772d6bbf90fe inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a4610ce3fd024f0745cba772d6bbf90fe">phi</a></td></tr>
 <tr class="separator:a4610ce3fd024f0745cba772d6bbf90fe inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d32025228f56b901a81c937d872eba2 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0d32025228f56b901a81c937d872eba2"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>p</b></td></tr>
+<tr class="memitem:a0d32025228f56b901a81c937d872eba2 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a0d32025228f56b901a81c937d872eba2">p</a></td></tr>
 <tr class="separator:a0d32025228f56b901a81c937d872eba2 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa03ea09748eac720b8cf576d11e55602 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa03ea09748eac720b8cf576d11e55602"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>T</b></td></tr>
+<tr class="memitem:aa03ea09748eac720b8cf576d11e55602 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#aa03ea09748eac720b8cf576d11e55602">T</a></td></tr>
 <tr class="separator:aa03ea09748eac720b8cf576d11e55602 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64caf472a261c40fa812f39119dadf8b inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a64caf472a261c40fa812f39119dadf8b"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>phiex</b></td></tr>
+<tr class="memitem:a64caf472a261c40fa812f39119dadf8b inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a64caf472a261c40fa812f39119dadf8b">phiex</a></td></tr>
 <tr class="separator:a64caf472a261c40fa812f39119dadf8b inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5e61464609098a9133a4057cf94796b inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa5e61464609098a9133a4057cf94796b"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>vr</b></td></tr>
+<tr class="memitem:aa5e61464609098a9133a4057cf94796b inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#aa5e61464609098a9133a4057cf94796b">vr</a></td></tr>
 <tr class="separator:aa5e61464609098a9133a4057cf94796b inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a317cdaeb441aa72a5866b5a9f55c3e inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1a317cdaeb441aa72a5866b5a9f55c3e"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>vt</b></td></tr>
+<tr class="memitem:a1a317cdaeb441aa72a5866b5a9f55c3e inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a1a317cdaeb441aa72a5866b5a9f55c3e">vt</a></td></tr>
 <tr class="separator:a1a317cdaeb441aa72a5866b5a9f55c3e inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac0c1106b7376e7ca7ad23fe8bef35f0 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aac0c1106b7376e7ca7ad23fe8bef35f0"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>G</b></td></tr>
+<tr class="memitem:aac0c1106b7376e7ca7ad23fe8bef35f0 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#aac0c1106b7376e7ca7ad23fe8bef35f0">G</a></td></tr>
 <tr class="separator:aac0c1106b7376e7ca7ad23fe8bef35f0 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad514c742d0c28bfb59d062736c204e6e inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad514c742d0c28bfb59d062736c204e6e"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>w</b></td></tr>
+<tr class="memitem:ad514c742d0c28bfb59d062736c204e6e inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ad514c742d0c28bfb59d062736c204e6e">w</a></td></tr>
 <tr class="separator:ad514c742d0c28bfb59d062736c204e6e inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acdd5689512208625e67831cf7cb8fda2 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acdd5689512208625e67831cf7cb8fda2"></a>
-<a class="el" href="classcomposition__map.html">composition_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>comp</b></td></tr>
+<tr class="memitem:acdd5689512208625e67831cf7cb8fda2 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcomposition__map.html">composition_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#acdd5689512208625e67831cf7cb8fda2">comp</a></td></tr>
 <tr class="separator:acdd5689512208625e67831cf7cb8fda2 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b7948ab8dc6dc7997e5bf510426b7d1 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7b7948ab8dc6dc7997e5bf510426b7d1"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>X0</b></td></tr>
+<tr class="memitem:a7b7948ab8dc6dc7997e5bf510426b7d1 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a7b7948ab8dc6dc7997e5bf510426b7d1">X0</a></td></tr>
 <tr class="separator:a7b7948ab8dc6dc7997e5bf510426b7d1 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ee5737ca5243f14391c10841719c161 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6ee5737ca5243f14391c10841719c161"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Y0</b></td></tr>
+<tr class="memitem:a6ee5737ca5243f14391c10841719c161 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a6ee5737ca5243f14391c10841719c161">Y0</a></td></tr>
 <tr class="separator:a6ee5737ca5243f14391c10841719c161 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a532c027e255e82d84a954ec58e2dce7f inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a532c027e255e82d84a954ec58e2dce7f"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Z0</b></td></tr>
+<tr class="memitem:a532c027e255e82d84a954ec58e2dce7f inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a532c027e255e82d84a954ec58e2dce7f">Z0</a></td></tr>
 <tr class="separator:a532c027e255e82d84a954ec58e2dce7f inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8094ed9b964d7c83752c8fe53f405ce2 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8094ed9b964d7c83752c8fe53f405ce2"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>R</b></td></tr>
+<tr class="memitem:a8094ed9b964d7c83752c8fe53f405ce2 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a8094ed9b964d7c83752c8fe53f405ce2">R</a></td></tr>
 <tr class="separator:a8094ed9b964d7c83752c8fe53f405ce2 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b9259332915ce83e24f3c8dc8b215bf inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1b9259332915ce83e24f3c8dc8b215bf"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>M</b></td></tr>
+<tr class="memitem:a1b9259332915ce83e24f3c8dc8b215bf inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a1b9259332915ce83e24f3c8dc8b215bf">M</a></td></tr>
 <tr class="separator:a1b9259332915ce83e24f3c8dc8b215bf inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4922e26e7468cb0261a9e4df9714ec0c inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4922e26e7468cb0261a9e4df9714ec0c"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>rhoc</b></td></tr>
+<tr class="memitem:a4922e26e7468cb0261a9e4df9714ec0c inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a4922e26e7468cb0261a9e4df9714ec0c">rhoc</a></td></tr>
 <tr class="separator:a4922e26e7468cb0261a9e4df9714ec0c inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d3b2533861ffff7d281a8a557307793 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4d3b2533861ffff7d281a8a557307793"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Tc</b></td></tr>
+<tr class="memitem:a4d3b2533861ffff7d281a8a557307793 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a4d3b2533861ffff7d281a8a557307793">Tc</a></td></tr>
 <tr class="separator:a4d3b2533861ffff7d281a8a557307793 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7af947eedeb0cdacb061ec0fcaa2aede inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7af947eedeb0cdacb061ec0fcaa2aede"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>pc</b></td></tr>
+<tr class="memitem:a7af947eedeb0cdacb061ec0fcaa2aede inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a7af947eedeb0cdacb061ec0fcaa2aede">pc</a></td></tr>
 <tr class="separator:a7af947eedeb0cdacb061ec0fcaa2aede inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56b590aff6d152b4eb1e43b0f32427a8 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a56b590aff6d152b4eb1e43b0f32427a8"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Omega</b></td></tr>
+<tr class="memitem:a56b590aff6d152b4eb1e43b0f32427a8 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a56b590aff6d152b4eb1e43b0f32427a8">Omega</a></td></tr>
 <tr class="separator:a56b590aff6d152b4eb1e43b0f32427a8 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe41c34ac1b18410b57d94c69aabf0a8 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abe41c34ac1b18410b57d94c69aabf0a8"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Omega_bk</b></td></tr>
+<tr class="memitem:abe41c34ac1b18410b57d94c69aabf0a8 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#abe41c34ac1b18410b57d94c69aabf0a8">Omega_bk</a></td></tr>
 <tr class="separator:abe41c34ac1b18410b57d94c69aabf0a8 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada5e8670f613bbff2766f1f50026b85f inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ada5e8670f613bbff2766f1f50026b85f"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Omegac</b></td></tr>
+<tr class="memitem:ada5e8670f613bbff2766f1f50026b85f inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ada5e8670f613bbff2766f1f50026b85f">Omegac</a></td></tr>
 <tr class="separator:ada5e8670f613bbff2766f1f50026b85f inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87768029cf150f97cca332e52e70edeb inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a87768029cf150f97cca332e52e70edeb"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Ekman</b></td></tr>
+<tr class="memitem:a87768029cf150f97cca332e52e70edeb inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a87768029cf150f97cca332e52e70edeb">Ekman</a></td></tr>
 <tr class="separator:a87768029cf150f97cca332e52e70edeb inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9db795b6941becd89b7ab3b8439d790d inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9db795b6941becd89b7ab3b8439d790d"></a>
-<a class="el" href="structopa__struct.html">opa_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><b>opa</b></td></tr>
+<tr class="memitem:a9db795b6941becd89b7ab3b8439d790d inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structopa__struct.html">opa_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a9db795b6941becd89b7ab3b8439d790d">opa</a></td></tr>
 <tr class="separator:a9db795b6941becd89b7ab3b8439d790d inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02445d58c10a7f09bc6c570d596163ce inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a02445d58c10a7f09bc6c570d596163ce"></a>
-<a class="el" href="structnuc__struct.html">nuc_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><b>nuc</b></td></tr>
+<tr class="memitem:a02445d58c10a7f09bc6c570d596163ce inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structnuc__struct.html">nuc_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a02445d58c10a7f09bc6c570d596163ce">nuc</a></td></tr>
 <tr class="separator:a02445d58c10a7f09bc6c570d596163ce inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3341049b124083c40089e80ef5dfd391 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3341049b124083c40089e80ef5dfd391"></a>
-<a class="el" href="structeos__struct.html">eos_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><b>eos</b></td></tr>
+<tr class="memitem:a3341049b124083c40089e80ef5dfd391 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structeos__struct.html">eos_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a3341049b124083c40089e80ef5dfd391">eos</a></td></tr>
 <tr class="separator:a3341049b124083c40089e80ef5dfd391 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a27b9737ca4ebc957e9d57aaa415af948 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a27b9737ca4ebc957e9d57aaa415af948"></a>
-<a class="el" href="structatm__struct.html">atm_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><b>atm</b></td></tr>
+<tr class="memitem:a27b9737ca4ebc957e9d57aaa415af948 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structatm__struct.html">atm_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a27b9737ca4ebc957e9d57aaa415af948">atm</a></td></tr>
 <tr class="separator:a27b9737ca4ebc957e9d57aaa415af948 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdb23fe29763f611f2b87f034c90f89b inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afdb23fe29763f611f2b87f034c90f89b"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>ps</b></td></tr>
+<tr class="memitem:afdb23fe29763f611f2b87f034c90f89b inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#afdb23fe29763f611f2b87f034c90f89b">ps</a></td></tr>
 <tr class="separator:afdb23fe29763f611f2b87f034c90f89b inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2b3f553e6ecfa15f2f1630e1a56657e inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae2b3f553e6ecfa15f2f1630e1a56657e"></a>
-<a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Ts</b></td></tr>
+<tr class="memitem:ae2b3f553e6ecfa15f2f1630e1a56657e inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmatrix.html">matrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ae2b3f553e6ecfa15f2f1630e1a56657e">Ts</a></td></tr>
 <tr class="separator:ae2b3f553e6ecfa15f2f1630e1a56657e inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf17a6e9ce518dacc3752cef8f425dc8 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abf17a6e9ce518dacc3752cef8f425dc8"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>m</b></td></tr>
+<tr class="memitem:abf17a6e9ce518dacc3752cef8f425dc8 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#abf17a6e9ce518dacc3752cef8f425dc8">m</a></td></tr>
 <tr class="separator:abf17a6e9ce518dacc3752cef8f425dc8 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46161b61b71a0663678d1ab9e11971c0 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a46161b61b71a0663678d1ab9e11971c0"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>pi_c</b></td></tr>
+<tr class="memitem:a46161b61b71a0663678d1ab9e11971c0 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a46161b61b71a0663678d1ab9e11971c0">pi_c</a></td></tr>
 <tr class="separator:a46161b61b71a0663678d1ab9e11971c0 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2dc2e2bc038164756b4528805bef7031 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2dc2e2bc038164756b4528805bef7031"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Lambda</b></td></tr>
+<tr class="memitem:a2dc2e2bc038164756b4528805bef7031 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a2dc2e2bc038164756b4528805bef7031">Lambda</a></td></tr>
 <tr class="separator:a2dc2e2bc038164756b4528805bef7031 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77f849c70e5982d9040cb9bc1cd72006 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a77f849c70e5982d9040cb9bc1cd72006"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>surff</b></td></tr>
+<tr class="memitem:a77f849c70e5982d9040cb9bc1cd72006 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a77f849c70e5982d9040cb9bc1cd72006">surff</a></td></tr>
 <tr class="separator:a77f849c70e5982d9040cb9bc1cd72006 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac36d92a140e808f58e4193b45aaa701b inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac36d92a140e808f58e4193b45aaa701b"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>conv</b></td></tr>
+<tr class="memitem:ac36d92a140e808f58e4193b45aaa701b inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ac36d92a140e808f58e4193b45aaa701b">conv</a></td></tr>
 <tr class="separator:ac36d92a140e808f58e4193b45aaa701b inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71f0224cd92296018e0b17258fa1d4ee inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a71f0224cd92296018e0b17258fa1d4ee"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Xc</b></td></tr>
+<tr class="memitem:a71f0224cd92296018e0b17258fa1d4ee inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a71f0224cd92296018e0b17258fa1d4ee">Xc</a></td></tr>
 <tr class="separator:a71f0224cd92296018e0b17258fa1d4ee inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3d8fec8e39457429c967f9b00215cc2 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae3d8fec8e39457429c967f9b00215cc2"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>core_convec</b></td></tr>
+<tr class="memitem:ae3d8fec8e39457429c967f9b00215cc2 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ae3d8fec8e39457429c967f9b00215cc2">core_convec</a></td></tr>
 <tr class="separator:ae3d8fec8e39457429c967f9b00215cc2 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19de6e0844b7b06f2b532cae2fb6ad6f inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a19de6e0844b7b06f2b532cae2fb6ad6f"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>env_convec</b></td></tr>
+<tr class="memitem:a19de6e0844b7b06f2b532cae2fb6ad6f inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a19de6e0844b7b06f2b532cae2fb6ad6f">env_convec</a></td></tr>
 <tr class="separator:a19de6e0844b7b06f2b532cae2fb6ad6f inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12272bc8d714838e523f5547ad0a86b3 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a12272bc8d714838e523f5547ad0a86b3"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>stratified_comp</b></td></tr>
+<tr class="memitem:a12272bc8d714838e523f5547ad0a86b3 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a12272bc8d714838e523f5547ad0a86b3">stratified_comp</a></td></tr>
 <tr class="separator:a12272bc8d714838e523f5547ad0a86b3 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae49ee1de721534e37991b7510131aaf7 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae49ee1de721534e37991b7510131aaf7"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>min_core_size</b></td></tr>
+<tr class="memitem:ae49ee1de721534e37991b7510131aaf7 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ae49ee1de721534e37991b7510131aaf7">min_core_size</a></td></tr>
 <tr class="separator:ae49ee1de721534e37991b7510131aaf7 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a615019afc6313526740fa8404fe637a7 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a615019afc6313526740fa8404fe637a7"></a>
-std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>domain_type</b></td></tr>
+<tr class="memitem:a615019afc6313526740fa8404fe637a7 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="matrix_8cpp.html#a3733d7092ed4974a7f292df2002e0ff1">std::vector</a>&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a615019afc6313526740fa8404fe637a7">domain_type</a></td></tr>
 <tr class="separator:a615019afc6313526740fa8404fe637a7 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a139360ca95d898b41ae322a3361ad357 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a139360ca95d898b41ae322a3361ad357"></a>
-struct <a class="el" href="structstar2d_1_1version__struct.html">star2d::version_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><b>version</b></td></tr>
+<tr class="memitem:a139360ca95d898b41ae322a3361ad357 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structstar2d_1_1version__struct.html">star2d::version_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a139360ca95d898b41ae322a3361ad357">version</a></td></tr>
 <tr class="separator:a139360ca95d898b41ae322a3361ad357 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acbda1162c6339e0f5c1ef537691c8737 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acbda1162c6339e0f5c1ef537691c8737"></a>
-struct <a class="el" href="structstar2d_1_1units__struct.html">star2d::units_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><b>units</b></td></tr>
+<tr class="memitem:acbda1162c6339e0f5c1ef537691c8737 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structstar2d_1_1units__struct.html">star2d::units_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#acbda1162c6339e0f5c1ef537691c8737">units</a></td></tr>
 <tr class="separator:acbda1162c6339e0f5c1ef537691c8737 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d2f1e892a5f9b8f0c7c5ee7795b2442 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4d2f1e892a5f9b8f0c7c5ee7795b2442"></a>
-struct <a class="el" href="structstar2d_1_1config__struct.html">star2d::config_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><b>config</b></td></tr>
+<tr class="memitem:a4d2f1e892a5f9b8f0c7c5ee7795b2442 inherit pub_attribs_classstar2d"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structstar2d_1_1config__struct.html">star2d::config_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a4d2f1e892a5f9b8f0c7c5ee7795b2442">config</a></td></tr>
 <tr class="separator:a4d2f1e892a5f9b8f0c7c5ee7795b2442 inherit pub_attribs_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a0af8546801d3827975afb00166f67889"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0af8546801d3827975afb00166f67889"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>comp_inited</b></td></tr>
+<tr class="memitem:a0af8546801d3827975afb00166f67889"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar__evol.html#a0af8546801d3827975afb00166f67889">comp_inited</a></td></tr>
 <tr class="separator:a0af8546801d3827975afb00166f67889"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_classstar2d"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classstar2d')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classstar2d.html">star2d</a></td></tr>
-<tr class="memitem:aa5bfda7158d72175c95053872c070842 inherit pro_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa5bfda7158d72175c95053872c070842"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>copy</b> (const <a class="el" href="classstar2d.html">star2d</a> &amp;)</td></tr>
+<tr class="memitem:aa5bfda7158d72175c95053872c070842 inherit pro_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#aa5bfda7158d72175c95053872c070842">copy</a> (const <a class="el" href="classstar2d.html">star2d</a> &amp;)</td></tr>
 <tr class="separator:aa5bfda7158d72175c95053872c070842 inherit pro_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5070b2700ad1c7955537bf3e0ad255b inherit pro_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae5070b2700ad1c7955537bf3e0ad255b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init1d</b> (const <a class="el" href="classstar1d.html">star1d</a> &amp;A, int npts_th, int npts_ex)</td></tr>
+<tr class="memitem:ae5070b2700ad1c7955537bf3e0ad255b inherit pro_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ae5070b2700ad1c7955537bf3e0ad255b">init1d</a> (const <a class="el" href="classstar1d.html">star1d</a> &amp;A, int npts_th, int npts_ex)</td></tr>
 <tr class="separator:ae5070b2700ad1c7955537bf3e0ad255b inherit pro_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97db189c873a941e8d0de4843d58b4b0 inherit pro_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a97db189c873a941e8d0de4843d58b4b0"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>check_tag</b> (const char *tag) const </td></tr>
+<tr class="memitem:a97db189c873a941e8d0de4843d58b4b0 inherit pro_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#a97db189c873a941e8d0de4843d58b4b0">check_tag</a> (const char *tag) const </td></tr>
 <tr class="separator:a97db189c873a941e8d0de4843d58b4b0 inherit pro_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad67d71a7d806222f3e3b9e5c285e6ac9 inherit pro_methods_classstar2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad67d71a7d806222f3e3b9e5c285e6ac9"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>write_tag</b> (<a class="el" href="classOUTFILE.html">OUTFILE</a> *fp) const </td></tr>
+<tr class="memitem:ad67d71a7d806222f3e3b9e5c285e6ac9 inherit pro_methods_classstar2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstar2d.html#ad67d71a7d806222f3e3b9e5c285e6ac9">write_tag</a> (<a class="el" href="classOUTFILE.html">OUTFILE</a> *fp) const </td></tr>
 <tr class="separator:ad67d71a7d806222f3e3b9e5c285e6ac9 inherit pro_methods_classstar2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ad5289b93c0d579af0680adb426621b6e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">star_evol::star_evol </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a044a6cd690ccdc5896f5f893508ee6b6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">star_evol::star_evol </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classstar2d.html">star2d</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classstar__evol_a044a6cd690ccdc5896f5f893508ee6b6_cgraph.png" border="0" usemap="#classstar__evol_a044a6cd690ccdc5896f5f893508ee6b6_cgraph" alt=""/></div>
+<map name="classstar__evol_a044a6cd690ccdc5896f5f893508ee6b6_cgraph" id="classstar__evol_a044a6cd690ccdc5896f5f893508ee6b6_cgraph">
+<area shape="rect" id="node2" href="classstar2d.html#a7da1882172f11e6a99ad4f13ee8649f7" title="star2d::Lz" alt="" coords="189,31,269,57"/><area shape="rect" id="node3" href="matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="322,5,361,32"/><area shape="rect" id="node4" href="matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="318,56,365,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ab4f0ffd9f0f3dabbb0c5a67144e660d9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void star_evol::fill </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Initialize star's chemical composition, equation of state, opacity, nuclear reaction and atmosphere. </p>
+
+<p>Reimplemented from <a class="el" href="classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29">star2d</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classstar__evol_ab4f0ffd9f0f3dabbb0c5a67144e660d9_cgraph.png" border="0" usemap="#classstar__evol_ab4f0ffd9f0f3dabbb0c5a67144e660d9_cgraph" alt=""/></div>
+<map name="classstar__evol_ab4f0ffd9f0f3dabbb0c5a67144e660d9_cgraph" id="classstar__evol_ab4f0ffd9f0f3dabbb0c5a67144e660d9_cgraph">
+<area shape="rect" id="node2" href="classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="150,859,229,885"/><area shape="rect" id="node3" href="classstar2d.html#a89f64e2c8a79d1b87a753ee0a871bbef" title="star2d::init_comp" alt="" coords="925,73,1048,100"/><area shape="rect" id="node9" href="classstar2d.html#a56cb59b4d6994784487320cee8ae8652" title="star2d::eq_state" alt="" coords="638,276,754,303"/><area shape="rect" id="node16" href="matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="1146,1239,1193,1265"/><area shape="rect" id="node24" href="classstar2d.html#a7dc19f2defb4e1a8a565d2170e53036a" title="star2d::opacity" alt="" coords="642,859,750,885"/><area shape="rect" id="node32" href="classstar2d.html#adfe376d502e668085dba6fb5d0188df2" title="star2d::nuclear" alt="" coords="291,783,399,809"/><area shape="rect" id="node36" href="classstar2d.html#a2a6188281cb683bef8b1fea6691cf257" title="star2d::calc_veloc" alt="" coords="461,491,589,517"/><area shape="rect" id="node40" href="classstar2d.html#ab151ce77d2449a289c8c3b0f3bb80302" title="star2d::calc_units" alt="" coords="283,1289,408,1316"/><area shape="rect" id="node41" href="matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="674,1239,718,1265"/><area shape="rect" id="node42" href="classstar2d.html#a1be7c76c3ebf0acfd919679f38c38706" title="star2d::atmosphere" alt="" coords="278,1087,413,1113"/><area shape="rect" id="node44" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="653,1289,739,1316"/><area shape="rect" id="node48" href="classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="287,681,404,708"/><area shape="rect" id="node4" href="physics_8h.html#a81bdfd6bf9b93bb06a4f8b674b18ebd3" title="initial_composition" alt="" coords="1105,5,1234,32"/><area shape="rect" id="node6" href="matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="1144,219,1195,245"/><area shape="rect" id="node7" href="classmatrix__map.html#a1576c1533fa8e786b28e54f46d64c045" title="matrix_map::setblock" alt="" coords="1096,80,1243,107"/><area shape="rect" id="node8" href="matrix_8h.html#a5982f297f6b68097009325356f2daa9e" title="exp" alt="" coords="1148,143,1191,169"/><area shape="rect" id="node5" href="classdouble__map.html#a883e56f1ab44bd6a1152780ad858dfde" title="double_map::sum" alt="" coords="1291,5,1416,32"/><area shape="rect" id="node10" href="physics_8h.html#a58df4e0bef0508080648beb6bab8e89b" title="eos_calc" alt="" coords="803,859,877,885"/><area shape="rect" id="node23" href="classcomposition__map.html#a0929bc6a71f8e7ee0663c0e8d4de5cea" title="composition_map::X" alt="" coords="1099,352,1240,379"/><area shape="rect" id="node11" href="physics_8h.html#a3c2598bdff9e92171fb8b1de2b11f08e" title="eos_ideal" alt="" coords="948,783,1025,809"/><area shape="rect" id="node17" href="physics_8h.html#a572e441d5b06968d24e11162a6381030" title="eos_idealrad" alt="" coords="939,1188,1034,1215"/><area shape="rect" id="node18" href="physics_8h.html#adacc564d3f59c1b53b74756c0392dcb4" title="eos_opal" alt="" coords="949,935,1024,961"/><area shape="rect" id="node12" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="1142,631,1197,657"/><area shape="rect" id="node13" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="1119,732,1220,759"/><area shape="rect" id="node14" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="1121,783,1218,809"/><area shape="rect" id="node15" href="matrix_8h.html#a74e0b0a7fb9b67bf7604931dd5797533" title="log" alt="" coords="1150,833,1189,860"/><area shape="rect" id="node19" href="eos__opal_8cpp.html#af7cc478dec436d9b67600ca5afd70b7a" title="zfs_interp_eos5_" alt="" coords="1109,985,1230,1012"/><area shape="rect" id="node20" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="1126,1036,1213,1063"/><area shape="rect" id="node21" href="eos__opal_8cpp.html#a3f2df37a018499142e7413c83b0d420f" title="eos5_xtrin_" alt="" coords="1125,884,1214,911"/><area shape="rect" id="node22" href="matrix_8h.html#a86292df4a6da0a0e0a8137647f9a7255" title="exist" alt="" coords="1144,935,1195,961"/><area shape="rect" id="node25" href="physics_8h.html#afd8af70d8089ee6714a98166e853b857" title="opa_calc" alt="" coords="803,1087,877,1113"/><area shape="rect" id="node26" href="physics_8h.html#a7dd5e5c306707f8cda79b01161dd07ee" title="opa_opal" alt="" coords="949,1087,1024,1113"/><area shape="rect" id="node28" href="physics_8h.html#a74ead2b5d8983c0da11b7fd4c920822a" title="opa_houdek" alt="" coords="941,1137,1033,1164"/><area shape="rect" id="node31" href="physics_8h.html#ac3284f3ea54e3de864a24e6163e4fa7f" title="opa_kramer" alt="" coords="941,1239,1032,1265"/><area shape="rect" id="node27" href="opa__opal_8cpp.html#ae20f4336151143103b9525f44c5b26ed" title="opa_opal_i" alt="" coords="1127,1087,1211,1113"/><area shape="rect" id="node29" href="opa__houdek_8cpp.html#a1162fd67859a3fb7883f76228d6730a7" title="maceps_" alt="" coords="1132,1137,1207,1164"/><area shape="rect" id="node30" href="opa__houdek_8cpp.html#af4b3b0b21379b638574d067e5f61adff" title="opinit_" alt="" coords="1139,1188,1199,1215"/><area shape="rect" id="node33" href="physics_8h.html#a008931c691c8280c50446ad96081b584" title="nuc_calc" alt="" coords="803,631,877,657"/><area shape="rect" id="node34" href="physics_8h.html#abb4f50177199ac91eb88f448ef9ebe0d" title="nuc_simple" alt="" coords="943,529,1031,556"/><area shape="rect" id="node35" href="physics_8h.html#ac7d52e1e7ab834fc42f25d1ce5cdbfdf" title="nuc_cesam" alt="" coords="942,681,1031,708"/><area shape="rect" id="node37" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="675,440,717,467"/><area shape="rect" id="node38" href="matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="677,491,715,517"/><area shape="rect" id="node39" href="classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="643,541,749,568"/><area shape="rect" id="node43" href="classstar2d.html#a53ab7c1501edcaecf86b89396a40287c" title="star2d::gsup" alt="" coords="478,1239,573,1265"/><area shape="rect" id="node45" href="classstar2d.html#a6a1ce30ca36c61e42fb6128ed6c72257" title="star2d::Teff" alt="" coords="481,1137,570,1164"/><area shape="rect" id="node46" href="physics_8h.html#a399ba5c10d71dea415f78b585cf3d964" title="atm_calc" alt="" coords="488,972,563,999"/><area shape="rect" id="node47" href="physics_8h.html#a53a9f9532d7c4efe4d32198ec627d251" title="atm_onelayer" alt="" coords="646,909,746,936"/><area shape="rect" id="node49" href="classdiff__leg.html#ad863b7bdb1d8b47279f63a10e1843edd" title="diff_leg::eval" alt="" coords="477,643,573,669"/><area shape="rect" id="node50" href="classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="645,592,747,619"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a851325b0e7b4e762fec520cab8547be0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsolver.html">solver</a> * star_evol::init_solver </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nvar_add</em> = <code>0</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classstar2d.html#a7578e44a9b12a8a592e652703f39151a">star2d</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classstar__evol_a851325b0e7b4e762fec520cab8547be0_cgraph.png" border="0" usemap="#classstar__evol_a851325b0e7b4e762fec520cab8547be0_cgraph" alt=""/></div>
+<map name="classstar__evol_a851325b0e7b4e762fec520cab8547be0_cgraph" id="classstar__evol_a851325b0e7b4e762fec520cab8547be0_cgraph">
+<area shape="rect" id="node2" href="classstar2d.html#a7578e44a9b12a8a592e652703f39151a" title="star2d::init_solver" alt="" coords="197,140,323,167"/><area shape="rect" id="node3" href="classsolver.html#ab884a9f22a7521203c4d4c7cb9ca9d22" title="Initialize the solver object for nblock blocks, nvar variables, using a solver operator of type solve..." alt="" coords="413,100,496,127"/><area shape="rect" id="node9" href="classstar2d.html#ab36f673b01f9dbaff380ca54b3ceec54" title="star2d::register_variables" alt="" coords="371,205,539,232"/><area shape="rect" id="node4" href="classsolver.html#a332d7bf0615badf93dbdf0a137273f30" title="solver::destroy" alt="" coords="602,12,710,39"/><area shape="rect" id="node7" href="classsolver_1_1solver__block.html#a8c88ed2bca8cd3167a466abc2ab08d0c" title="Initializes the object with nvar variables. " alt="" coords="587,63,725,105"/><area shape="rect" id="node8" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="815,100,870,127"/><area shape="rect" id="node5" href="classsolver_1_1solver__block.html#a7e49cd787b3a2b02509c23ac1f866b25" title="Destroys the object and frees memory. " alt="" coords="773,5,912,46"/><area shape="rect" id="node6" href="classsolver.html#a66acaed97a3677446c8faf93a9a8ce3b" title="solver::reset" alt="" coords="961,12,1055,39"/><area shape="rect" id="node10" href="classsolver.html#a13aca53582481d03ad9b3aff3103df60" title="solver::set_nr" alt="" coords="605,180,707,207"/><area shape="rect" id="node11" href="classsolver.html#a691d638dd7b4a81a3855965a4b7f2c85" title="solver::regvar" alt="" coords="792,256,893,283"/><area shape="rect" id="node12" href="classsolver.html#a9ce1b3dfe4126933967a1b17da5e678d" title="solver::regvar_dep" alt="" coords="591,281,721,308"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a23526370c94d94c9d3aa4a295fc267ce"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int star_evol::read </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>input_file</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dim</em> = <code>2</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classstar2d.html#aff8755edeb32b7cefe09beb466b4eab9">star2d</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classstar__evol_a23526370c94d94c9d3aa4a295fc267ce_cgraph.png" border="0" usemap="#classstar__evol_a23526370c94d94c9d3aa4a295fc267ce_cgraph" alt=""/></div>
+<map name="classstar__evol_a23526370c94d94c9d3aa4a295fc267ce_cgraph" id="classstar__evol_a23526370c94d94c9d3aa4a295fc267ce_cgraph">
+<area shape="rect" id="node2" href="classstar2d.html#aff8755edeb32b7cefe09beb466b4eab9" title="star2d::read" alt="" coords="163,967,253,993"/><area shape="rect" id="node50" href="classstar2d.html#a7da1882172f11e6a99ad4f13ee8649f7" title="star2d::Lz" alt="" coords="700,1423,780,1449"/><area shape="rect" id="node3" href="utils_8h.html#a66951920a856d044842546492cd8ffe3" title="isHDF5Name" alt="" coords="314,713,417,740"/><area shape="rect" id="node4" href="classstar2d.html#a15656fb8b185d0cd34d8114db8acb303" title="star2d::hdf5_read" alt="" coords="304,916,427,943"/><area shape="rect" id="node5" href="classdiff__gl.html#ae1ada3d9db3bc9bc6d94965dd3f49877" title="diff_gl::set_ndomains" alt="" coords="477,764,624,791"/><area shape="rect" id="node6" href="classmapping.html#af93544cdac32ac9a8aa92a3c674eb8dd" title="mapping::init" alt="" coords="503,713,599,740"/><area shape="rect" id="node11" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="1081,195,1135,221"/><area shape="rect" id="node24" href="classmapping.html#aad8bde507d71c669dc4259b44d5b51aa" title="mapping::remap" alt="" coords="683,688,797,715"/><area shape="rect" id="node27" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="500,1119,601,1145"/><area shape="rect" id="node28" href="classmatrix.html#aa1971e546e300c6ee574539f1f1e06aa" title="matrix::concatenate" alt="" coords="482,612,619,639"/><area shape="rect" id="node29" href="classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="511,1017,590,1044"/><area shape="rect" id="node30" href="classstar2d.html#a89f64e2c8a79d1b87a753ee0a871bbef" title="star2d::init_comp" alt="" coords="679,1259,801,1285"/><area shape="rect" id="node41" href="classINFILE.html#aefda33c68757cc8c94a4b0d53be870ea" title="INFILE::open" alt="" coords="501,1504,601,1531"/><area shape="rect" id="node43" href="classstar2d.html#aa8b8d554ec82827b448fc07cd563b2e3" title="star2d::read_old" alt="" coords="308,815,423,841"/><area shape="rect" id="node45" href="classINFILE.html#a78b3333de9530c92d71e6b2802fd26da" title="INFILE::len" alt="" coords="321,1321,410,1348"/><area shape="rect" id="node47" href="classINFILE.html#ac10f9c93dc7dac9315f375abdef4231b" title="INFILE::read" alt="" coords="317,1271,414,1297"/><area shape="rect" id="node48" href="classstar2d.html#a97db189c873a941e8d0de4843d58b4b0" title="star2d::check_tag" alt="" coords="302,1220,429,1247"/><area shape="rect" id="node49" href="classINFILE.html#af264aaabf8419d49b2aab2560d10d19a" title="INFILE::close" alt="" coords="314,663,417,689"/><area shape="rect" id="node7" href="matrix_8h.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="1073,347,1143,373"/><area shape="rect" id="node8" href="matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="904,1056,955,1083"/><area shape="rect" id="node9" href="classdiff__leg.html#a4a20bbf87815938450005945c35442d3" title="diff_leg::init" alt="" coords="695,752,785,779"/><area shape="rect" id="node22" href="classdiff__gl.html#a302ef348022ff2d5c83416130f00c6f5" title="diff_gl::init" alt="" coords="888,144,971,171"/><area shape="rect" id="node10" href="classdiff__leg.html#ab7a001a60e694166877d26e5b2c69b4a" title="diff_leg::nodes" alt="" coords="876,752,983,779"/><area shape="rect" id="node12" href="matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="1086,1056,1130,1083"/><area shape="rect" id="node15" href="matrix_8h.html#a5d56e99f572794bfa07446296b8f4b15" title="acos" alt="" coords="904,600,955,627"/><area shape="rect" id="node16" href="classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="886,296,973,323"/><area shape="rect" id="node17" href="matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="908,1005,951,1032"/><area shape="rect" id="node18" href="matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="910,1107,949,1133"/><area shape="rect" id="node19" href="classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="877,904,982,931"/><area shape="rect" id="node20" href="matrix_8h.html#a7619b7346d9689923c8d174efacb92f8" title="sum" alt="" coords="906,651,953,677"/><area shape="rect" id="node21" href="classmatrix.html#a6ce1982719deee00bffa7e11bc3e4cc9" title="matrix::col" alt="" coords="888,549,971,576"/><area shape="rect" id="node13" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="1059,625,1157,652"/><area shape="rect" id="node14" href="classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="1065,1271,1151,1297"/><area shape="rect" id="node23" href="classmatrix.html#a5846df038f922d105cbbd34d5ace50ed" title="matrix::setblock" alt="" coords="1051,144,1165,171"/><area shape="rect" id="node25" href="classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="871,853,988,880"/><area shape="rect" id="node26" href="matrix_8h.html#a86292df4a6da0a0e0a8137647f9a7255" title="exist" alt="" coords="904,448,955,475"/><area shape="rect" id="node34" href="classstar2d.html#a56cb59b4d6994784487320cee8ae8652" title="star2d::eq_state" alt="" coords="682,1005,798,1032"/><area shape="rect" id="node35" href="classstar2d.html#a7dc19f2defb4e1a8a565d2170e53036a" title="star2d::opacity" alt="" coords="686,1107,794,1133"/><area shape="rect" id="node36" href="classstar2d.html#adfe376d502e668085dba6fb5d0188df2" title="star2d::nuclear" alt="" coords="686,1157,794,1184"/><area shape="rect" id="node37" href="matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="906,1485,953,1512"/><area shape="rect" id="node38" href="classstar2d.html#a2a6188281cb683bef8b1fea6691cf257" title="star2d::calc_veloc" alt="" coords="676,904,804,931"/><area shape="rect" id="node39" href="classstar2d.html#ab151ce77d2449a289c8c3b0f3bb80302" title="star2d::calc_units" alt="" coords="677,1208,803,1235"/><area shape="rect" id="node40" href="classstar2d.html#a1be7c76c3ebf0acfd919679f38c38706" title="star2d::atmosphere" alt="" coords="673,1473,807,1500"/><area shape="rect" id="node31" href="physics_8h.html#a81bdfd6bf9b93bb06a4f8b674b18ebd3" title="initial_composition" alt="" coords="865,1309,994,1336"/><area shape="rect" id="node32" href="classmatrix__map.html#a1576c1533fa8e786b28e54f46d64c045" title="matrix_map::setblock" alt="" coords="856,1384,1003,1411"/><area shape="rect" id="node33" href="matrix_8h.html#a5982f297f6b68097009325356f2daa9e" title="exp" alt="" coords="908,1259,951,1285"/><area shape="rect" id="node42" href="classINFILE.html#a616f7020b90e992ea51c16821520e89a" title="INFILE::getline" alt="" coords="685,1524,795,1551"/><area shape="rect" id="node44" href="classmatrix.html#a5764b8af09e9b5b57456d1b4d8beb983" title="Reads matrix data from a file. " alt="" coords="505,865,596,892"/><area shape="rect" id="node46" href="classINFILE.html#ae6ded92fa99e01e78a7485892aeb8d84" title="INFILE::seek" alt="" coords="501,1321,601,1348"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a486114eb17bcf495b93681948dc65d9c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void star_evol::register_variables </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classsolver.html">solver</a> *&#160;</td>
+          <td class="paramname"><em>op</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classstar2d.html#ab36f673b01f9dbaff380ca54b3ceec54">star2d</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classstar__evol_a486114eb17bcf495b93681948dc65d9c_cgraph.png" border="0" usemap="#classstar__evol_a486114eb17bcf495b93681948dc65d9c_cgraph" alt=""/></div>
+<map name="classstar__evol_a486114eb17bcf495b93681948dc65d9c_cgraph" id="classstar__evol_a486114eb17bcf495b93681948dc65d9c_cgraph">
+<area shape="rect" id="node2" href="classstar2d.html#ab36f673b01f9dbaff380ca54b3ceec54" title="star2d::register_variables" alt="" coords="181,81,349,108"/><area shape="rect" id="node4" href="classsolver.html#a691d638dd7b4a81a3855965a4b7f2c85" title="solver::regvar" alt="" coords="576,107,677,133"/><area shape="rect" id="node3" href="classsolver.html#a13aca53582481d03ad9b3aff3103df60" title="solver::set_nr" alt="" coords="412,5,513,32"/><area shape="rect" id="node5" href="classsolver.html#a9ce1b3dfe4126933967a1b17da5e678d" title="solver::regvar_dep" alt="" coords="398,107,527,133"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a5a8f2da108a65999f8f1fec1d0601cee"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void star_evol::solve_Omega </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classsolver.html">solver</a> *&#160;</td>
+          <td class="paramname"><em>op</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classstar2d.html#ab7da2979326f2262ff8087ece44b5d50">star2d</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classstar__evol_a5a8f2da108a65999f8f1fec1d0601cee_cgraph.png" border="0" usemap="#classstar__evol_a5a8f2da108a65999f8f1fec1d0601cee_cgraph" alt=""/></div>
+<map name="classstar__evol_a5a8f2da108a65999f8f1fec1d0601cee_cgraph" id="classstar__evol_a5a8f2da108a65999f8f1fec1d0601cee_cgraph">
+<area shape="rect" id="node2" href="classsolver.html#a79682e1858c4cd5e657a10e56a8c551d" title="solver::add_d" alt="" coords="245,5,345,32"/><area shape="rect" id="node6" href="matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="637,360,688,387"/><area shape="rect" id="node9" href="classsolver.html#ad89241cdcb624742e4810bcfd7c4048e" title="solver::set_rhs" alt="" coords="422,293,530,320"/><area shape="rect" id="node10" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="267,411,322,437"/><area shape="rect" id="node11" href="classsolver.html#a070bdbd40ad3f62787716e8daffd70f4" title="solver::bc_bot2_add_d" alt="" coords="218,56,371,83"/><area shape="rect" id="node12" href="classsolver.html#a28ab5b1c21a4e327c0a155d1fc249449" title="solver::bc_bot2_add_lri" alt="" coords="217,107,373,133"/><area shape="rect" id="node13" href="classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="246,461,343,488"/><area shape="rect" id="node14" href="matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="457,512,495,539"/><area shape="rect" id="node15" href="classsolver.html#ae20eb2be2d86ce8d16f6f544c5ed8041" title="solver::bc_bot1_add_d" alt="" coords="218,157,371,184"/><area shape="rect" id="node16" href="classsolver.html#a2c549e96fe900962dda8c3bf56468229" title="solver::bc_top1_add_d" alt="" coords="218,208,371,235"/><area shape="rect" id="node17" href="classsolver.html#a9db41ed412446c4d86865e28e078d8a0" title="solver::bc_top2_add_d" alt="" coords="218,259,371,285"/><area shape="rect" id="node18" href="classstar2d.html#a7da1882172f11e6a99ad4f13ee8649f7" title="star2d::Lz" alt="" coords="255,563,335,589"/><area shape="rect" id="node20" href="matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="273,613,317,640"/><area shape="rect" id="node21" href="matrix_8h.html#a74e0b0a7fb9b67bf7604931dd5797533" title="log" alt="" coords="275,664,314,691"/><area shape="rect" id="node3" href="classsolver.html#ac269e25e5b929ca3c038402351fe6631" title="solver::add" alt="" coords="433,189,519,216"/><area shape="rect" id="node4" href="classsolver.html#a4f787a2def0088a98ea9c6980a00d851" title="solver::get_id" alt="" coords="613,281,713,308"/><area shape="rect" id="node5" href="classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="795,155,896,181"/><area shape="rect" id="node7" href="classsolver_1_1solver__block.html#a706a1cd2d746f9fe7a303ec20fbe572c" title="Introduces a term in an equation of the block. " alt="" coords="579,205,746,232"/><area shape="rect" id="node8" href="classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="797,205,894,232"/><area shape="rect" id="node19" href="matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="453,563,499,589"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a0af8546801d3827975afb00166f67889"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool star_evol::comp_inited</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab5bd6e8573281bbaebfb4106117e5252"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool star_evol::converged</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a111bc6ca18cf2277f3c01a9babe1699c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double star_evol::Lz_obj</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/include/<a class="el" href="star_8h_source.html">star.h</a></li>
-<li>src/star/star_evol.cpp</li>
+<li>src/star/<a class="el" href="star_2star__evol_8cpp.html">star_evol.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:28 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

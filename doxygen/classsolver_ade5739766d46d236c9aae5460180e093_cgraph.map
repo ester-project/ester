@@ -1,0 +1,8 @@
+<map id="solver::add_l" name="solver::add_l">
+<area shape="rect" id="node2" href="$classsolver.html#ac269e25e5b929ca3c038402351fe6631" title="solver::add" alt="" coords="150,81,237,108"/>
+<area shape="rect" id="node3" href="$classsolver.html#a4f787a2def0088a98ea9c6980a00d851" title="solver::get_id" alt="" coords="319,5,419,32"/>
+<area shape="rect" id="node4" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="501,81,603,108"/>
+<area shape="rect" id="node5" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="344,107,395,133"/>
+<area shape="rect" id="node6" href="$classsolver_1_1solver__block.html#a706a1cd2d746f9fe7a303ec20fbe572c" title="Introduces a term in an equation of the block. " alt="" coords="286,157,453,184"/>
+<area shape="rect" id="node7" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="503,157,601,184"/>
+</map>

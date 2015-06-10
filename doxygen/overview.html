@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -93,17 +93,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>\( \Delta \phi = \pi_c \rho, \qquad {\rm with}\quad \pi_c = \frac{4 \pi G \rho_c^2 R^2}{p_c} \tag{3}\)</p>
 <p>The evaluation of the Newton increment demands the solution of : \( \Delta \delta\phi - \rho\delta\pi_c - \pi_c\delta\rho = -(\Delta \phi - \pi_c \rho)_n \tag{4}\)</p>
 <p>This is equivalent to the code: </p>
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;lap_phi=lap(phi);    </div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;lap_phi=<a class="code" href="symbolic_8h.html#a7850bfc4a75e099a234b0e0201cf9f99">lap</a>(phi);    </div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;lap_phi.add(op, <span class="stringliteral">&quot;eq_Phi&quot;</span>, <span class="stringliteral">&quot;Phi&quot;</span>);</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;lap_phi.add(op, <span class="stringliteral">&quot;eq_Phi&quot;</span>, <span class="stringliteral">&quot;</span><span class="stringliteral">r&quot;);</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="stringliteral"></span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="stringliteral">op-&gt;add_d(</span><span class="stringliteral">&quot;eq_Phi&quot;</span>, <span class="stringliteral">&quot;rho&quot;</span>, -pi_c*ones(nr, nth));</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="stringliteral">op-&gt;add_d(</span><span class="stringliteral">&quot;eq_Phi&quot;</span>, <span class="stringliteral">&quot;rho&quot;</span>, -pi_c*<a class="code" href="matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60">ones</a>(nr, nth));</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;op-&gt;add_d(<span class="stringliteral">&quot;eq_Phi&quot;</span>, <span class="stringliteral">&quot;pi_c&quot;</span>, -rho);</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;rhs1 = -lap_phi.eval()+pi_c*rho;</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;rhs2=-lap_phi.eval();</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;rhs=zeros(nr+nex,nth);</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;rhs=<a class="code" href="matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626">zeros</a>(nr+nex,nth);</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;rhs.setblock(0,nr-1,0,-1,rhs1);</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;rhs.setblock(nr,nr+nex-1,0,-1,rhs2);</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
@@ -223,18 +223,18 @@ Code Overview</h1>
 <li><a class="el" href="classstar2d.html#ad5842ec4740386fb49d82f1d74581724" title="Writes Poisson equation and interface conditions into the solver. ">star2d::solve_poisson</a></li>
 <li><a class="el" href="classstar2d.html#a744a12b8bd2aa2e9672b8e1588f319b4" title="Writes movement and vorticity equations into the solver. ">star2d::solve_mov</a></li>
 <li><a class="el" href="classstar2d.html#a1af2f9bcd3eb35edd3029001ba1176aa" title="Writes temperature and luminosity equations and interface conditions into the solver. ">star2d::solve_temp</a></li>
-<li>star2d::solve_dim</li>
-<li>star2d::solve_map</li>
-<li>star2d::solve_Omega</li>
-<li>star2d::solve_atm</li>
-<li>star2d::solve_gsup</li>
-<li>star2d::solve_Teff</li>
+<li><a class="el" href="classstar2d.html#a0c5a011a2fb940862fcaf59c7e7652b4">star2d::solve_dim</a></li>
+<li><a class="el" href="classstar2d.html#a87b3599d967c97e280071875cfd254d1">star2d::solve_map</a></li>
+<li><a class="el" href="classstar2d.html#ab7da2979326f2262ff8087ece44b5d50">star2d::solve_Omega</a></li>
+<li><a class="el" href="classstar2d.html#a119a475c8f6fbdb96426423b73e662bc">star2d::solve_atm</a></li>
+<li><a class="el" href="classstar2d.html#adddd3217fe7a264ba96729a765340027">star2d::solve_gsup</a></li>
+<li><a class="el" href="classstar2d.html#a09a038589a741f85d1021bbf6cad4a00">star2d::solve_Teff</a></li>
 </ul>
 <p>Function <a class="el" href="classsolver.html#ad26b8574d24d480e4434dc3cc2810ce3" title="Solves the set of equations stored in the operator object. ">solver::solve</a> stores all the terms registered in the operator in the previous steps into the operator matrix (see <a class="el" href="classsolver.html#a8f4ec1fefcb8517f070543be1bc7768c" title="Stores distributed (ie. split into several blocks) matrix y into the single vector x...">solver::wrap</a>, <a class="el" href="classsolver.html#ab75fb52ae803c4721c08dc8f55bfd200" title="Performs the inverse operation of the wrap function: restore the single vector x into the blocked vec...">solver::unwrap</a> and <a class="el" href="classsolver.html#a56b249056bea1e6f7dcd8f1166246a26" title="Creates the solver solver operator depending on the type of solver configured (defined when calling s...">solver::create</a>). And then solves the matrix and update the solution the solution fields. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 9 2015 11:48:11 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 9 2015 18:02:27 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

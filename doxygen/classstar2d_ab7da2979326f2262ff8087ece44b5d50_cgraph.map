@@ -1,0 +1,23 @@
+<map id="star2d::solve_Omega" name="star2d::solve_Omega">
+<area shape="rect" id="node2" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="617,208,671,235"/>
+<area shape="rect" id="node3" href="$classsolver.html#a2c549e96fe900962dda8c3bf56468229" title="solver::bc_top1_add_d" alt="" coords="201,107,354,133"/>
+<area shape="rect" id="node7" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="619,157,669,184"/>
+<area shape="rect" id="node10" href="$classsolver.html#a9db41ed412446c4d86865e28e078d8a0" title="solver::bc_top2_add_d" alt="" coords="201,157,354,184"/>
+<area shape="rect" id="node11" href="$classdiff__leg.html#a1abc8bc43e077df4f92f3914556fc6cf" title="diff_leg::eval_00" alt="" coords="219,360,336,387"/>
+<area shape="rect" id="node16" href="$matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="622,613,666,640"/>
+<area shape="rect" id="node19" href="$classmatrix.html#a4d19d5add9acaeca4fa89ceb141fc6d2" title="matrix::row" alt="" coords="234,461,321,488"/>
+<area shape="rect" id="node20" href="$classsolver.html#ae20eb2be2d86ce8d16f6f544c5ed8041" title="solver::bc_bot1_add_d" alt="" coords="201,208,354,235"/>
+<area shape="rect" id="node21" href="$classsolver.html#a54c8653b46c5ea6acbb45daf68844abd" title="solver::bc_bot2_add_r" alt="" coords="202,56,353,83"/>
+<area shape="rect" id="node22" href="$classsolver.html#ad89241cdcb624742e4810bcfd7c4048e" title="solver::set_rhs" alt="" coords="403,5,511,32"/>
+<area shape="rect" id="node4" href="$classsolver.html#ac269e25e5b929ca3c038402351fe6631" title="solver::add" alt="" coords="414,107,501,133"/>
+<area shape="rect" id="node5" href="$classsolver.html#a4f787a2def0088a98ea9c6980a00d851" title="solver::get_id" alt="" coords="594,5,694,32"/>
+<area shape="rect" id="node6" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="776,107,877,133"/>
+<area shape="rect" id="node8" href="$classsolver_1_1solver__block.html#a706a1cd2d746f9fe7a303ec20fbe572c" title="Introduces a term in an equation of the block. " alt="" coords="561,107,727,133"/>
+<area shape="rect" id="node9" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="778,360,875,387"/>
+<area shape="rect" id="node12" href="$classdiff__leg.html#ad863b7bdb1d8b47279f63a10e1843edd" title="diff_leg::eval" alt="" coords="409,360,505,387"/>
+<area shape="rect" id="node13" href="$matrix_8h.html#a82f91731c36056426ccd815a37f3a0a9" title="cos" alt="" coords="623,309,665,336"/>
+<area shape="rect" id="node14" href="$classmatrix.html#acbc33d59a23dd97c3dd64ecd77a43426" title="Re&#45;dimension the matrix. " alt="" coords="601,360,687,387"/>
+<area shape="rect" id="node15" href="$classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="591,411,697,437"/>
+<area shape="rect" id="node17" href="$matrix_8h.html#aa9eb893eed24df3ae8f60b8316b5d17c" title="sin" alt="" coords="625,461,663,488"/>
+<area shape="rect" id="node18" href="$classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="593,512,695,539"/>
+</map>

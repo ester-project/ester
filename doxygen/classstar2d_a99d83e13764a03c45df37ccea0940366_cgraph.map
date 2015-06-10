@@ -1,0 +1,9 @@
+<map id="star2d::solve_definitions" name="star2d::solve_definitions">
+<area shape="rect" id="node2" href="$classsolver.html#a79682e1858c4cd5e657a10e56a8c551d" title="solver::add_d" alt="" coords="217,81,317,108"/>
+<area shape="rect" id="node3" href="$classsolver.html#ac269e25e5b929ca3c038402351fe6631" title="solver::add" alt="" coords="366,81,453,108"/>
+<area shape="rect" id="node4" href="$classsolver.html#a4f787a2def0088a98ea9c6980a00d851" title="solver::get_id" alt="" coords="535,5,635,32"/>
+<area shape="rect" id="node5" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="717,81,819,108"/>
+<area shape="rect" id="node6" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="560,107,611,133"/>
+<area shape="rect" id="node7" href="$classsolver_1_1solver__block.html#a706a1cd2d746f9fe7a303ec20fbe572c" title="Introduces a term in an equation of the block. " alt="" coords="502,157,669,184"/>
+<area shape="rect" id="node8" href="$classmatrix.html#a3c80ca88a8859e777a23f48885b079ee" title="Returns the columns of rows of the matrix. " alt="" coords="719,157,817,184"/>
+</map>
