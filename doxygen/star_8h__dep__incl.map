@@ -1,18 +1,18 @@
 <map id="src/include/star.h" name="src/include/star.h">
-<area shape="rect" id="node2" href="$ester_8h.html" title="src/include/ester.h" alt="" coords="106,80,235,107"/>
-<area shape="rect" id="node5" href="$gen__output_8cpp.html" title="src/main/gen_output.cpp" alt="" coords="260,80,424,107"/>
-<area shape="rect" id="node6" href="$star1d_8cpp.html" title="src/main/star1d.cpp" alt="" coords="450,80,587,107"/>
-<area shape="rect" id="node7" href="$star2d_8cpp.html" title="src/main/star2d.cpp" alt="" coords="611,80,748,107"/>
-<area shape="rect" id="node8" href="$convection_8cpp.html" title="src/star/convection.cpp" alt="" coords="773,80,931,107"/>
-<area shape="rect" id="node9" href="$star1d__class_8cpp.html" title="src/star/star1d_class.cpp" alt="" coords="955,80,1124,107"/>
-<area shape="rect" id="node10" href="$star1d__extra_8cpp.html" title="src/star/star1d_extra.cpp" alt="" coords="1149,80,1315,107"/>
-<area shape="rect" id="node11" href="$star1d__solvers_8cpp.html" title="src/star/star1d_solvers.cpp" alt="" coords="1339,80,1519,107"/>
-<area shape="rect" id="node12" href="$star2d__class_8cpp.html" title="src/star/star2d_class.cpp" alt="" coords="1543,80,1712,107"/>
-<area shape="rect" id="node13" href="$star2d__extra_8cpp.html" title="src/star/star2d_extra.cpp" alt="" coords="1737,80,1903,107"/>
-<area shape="rect" id="node14" href="$star2d__solvers_8cpp.html" title="src/star/star2d_solvers.cpp" alt="" coords="1927,80,2107,107"/>
-<area shape="rect" id="node15" href="$star_2star__evol_8cpp.html" title="src/star/star_evol.cpp" alt="" coords="2131,80,2279,107"/>
-<area shape="rect" id="node16" href="$star__map_8cpp.html" title="src/star/star_map.cpp" alt="" coords="2304,80,2452,107"/>
-<area shape="rect" id="node17" href="$star__phys_8cpp.html" title="src/star/star_phys.cpp" alt="" coords="2477,80,2629,107"/>
-<area shape="rect" id="node3" href="$ester-info_8cpp.html" title="src/main/ester&#45;info.cpp" alt="" coords="4,155,157,181"/>
-<area shape="rect" id="node4" href="$main_2star__evol_8cpp.html" title="src/main/star_evol.cpp" alt="" coords="183,155,336,181"/>
+<area shape="rect" id="node2" href="$ester_8h.html" title="src/include/ester.h" alt="" coords="107,80,236,107"/>
+<area shape="rect" id="node5" href="$gen__output_8cpp.html" title="src/main/gen_output.cpp" alt="" coords="261,80,425,107"/>
+<area shape="rect" id="node6" href="$star1d_8cpp.html" title="src/main/star1d.cpp" alt="" coords="451,80,588,107"/>
+<area shape="rect" id="node7" href="$star2d_8cpp.html" title="src/main/star2d.cpp" alt="" coords="613,80,749,107"/>
+<area shape="rect" id="node8" href="$convection_8cpp.html" title="src/star/convection.cpp" alt="" coords="774,80,932,107"/>
+<area shape="rect" id="node9" href="$star1d__class_8cpp.html" title="src/star/star1d_class.cpp" alt="" coords="957,80,1125,107"/>
+<area shape="rect" id="node10" href="$star1d__extra_8cpp.html" title="src/star/star1d_extra.cpp" alt="" coords="1150,80,1316,107"/>
+<area shape="rect" id="node11" href="$star1d__solvers_8cpp.html" title="src/star/star1d_solvers.cpp" alt="" coords="1341,80,1520,107"/>
+<area shape="rect" id="node12" href="$star2d__class_8cpp.html" title="src/star/star2d_class.cpp" alt="" coords="1545,80,1713,107"/>
+<area shape="rect" id="node13" href="$star2d__extra_8cpp.html" title="src/star/star2d_extra.cpp" alt="" coords="1738,80,1904,107"/>
+<area shape="rect" id="node14" href="$star2d__solvers_8cpp.html" title="src/star/star2d_solvers.cpp" alt="" coords="1929,80,2108,107"/>
+<area shape="rect" id="node15" href="$star_2star__evol_8cpp.html" title="src/star/star_evol.cpp" alt="" coords="2133,80,2280,107"/>
+<area shape="rect" id="node16" href="$star__map_8cpp.html" title="src/star/star_map.cpp" alt="" coords="2305,80,2453,107"/>
+<area shape="rect" id="node17" href="$star__phys_8cpp.html" title="src/star/star_phys.cpp" alt="" coords="2479,80,2631,107"/>
+<area shape="rect" id="node3" href="$ester-info_8cpp.html" title="src/main/ester&#45;info.cpp" alt="" coords="5,155,159,181"/>
+<area shape="rect" id="node4" href="$main_2star__evol_8cpp.html" title="src/main/star_evol.cpp" alt="" coords="184,155,337,181"/>
 </map>
