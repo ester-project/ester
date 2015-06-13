@@ -38,14 +38,14 @@
 <area shape="rect" id="node25" href="$classstar2d.html#a1be7c76c3ebf0acfd919679f38c38706" title="star2d::atmosphere" alt="" coords="591,411,726,437"/>
 <area shape="rect" id="node31" href="$classstar2d.html#a7812d6ae0c3f8490f3feeb470deecafa" title="star2d::check_map" alt="" coords="592,1019,725,1045"/>
 <area shape="rect" id="node32" href="$classsolver.html#a66acaed97a3677446c8faf93a9a8ce3b" title="solver::reset" alt="" coords="797,2235,891,2261"/>
-<area shape="rect" id="node33" href="$classstar2d.html#a99d83e13764a03c45df37ccea0940366" title="Writes terms depending opacity and state tables into the solver. " alt="" coords="373,1829,536,1856"/>
+<area shape="rect" id="node33" href="$classstar2d.html#a99d83e13764a03c45df37ccea0940366" title="insert the definitions depending on opacity and eos tables into the solver, and the definitions used ..." alt="" coords="373,1829,536,1856"/>
 <area shape="rect" id="node34" href="$classstar2d.html#ad5842ec4740386fb49d82f1d74581724" title="Writes Poisson equation and interface conditions into the solver. " alt="" coords="584,1779,733,1805"/>
 <area shape="rect" id="node35" href="$classstar2d.html#a744a12b8bd2aa2e9672b8e1588f319b4" title="Writes movement and vorticity equations into the solver. " alt="" coords="594,2184,723,2211"/>
 <area shape="rect" id="node37" href="$classstar2d.html#a1af2f9bcd3eb35edd3029001ba1176aa" title="Writes temperature and luminosity equations and interface conditions into the solver. " alt="" coords="592,1677,725,1704"/>
-<area shape="rect" id="node38" href="$classstar2d.html#a0c5a011a2fb940862fcaf59c7e7652b4" title="star2d::solve_dim" alt="" coords="596,1728,721,1755"/>
-<area shape="rect" id="node39" href="$classstar2d.html#a87b3599d967c97e280071875cfd254d1" title="star2d::solve_map" alt="" coords="594,1576,723,1603"/>
-<area shape="rect" id="node40" href="$classstar2d.html#ab7da2979326f2262ff8087ece44b5d50" title="star2d::solve_Omega" alt="" coords="585,1981,732,2008"/>
-<area shape="rect" id="node41" href="$classstar2d.html#a119a475c8f6fbdb96426423b73e662bc" title="star2d::solve_atm" alt="" coords="595,1525,722,1552"/>
-<area shape="rect" id="node42" href="$classstar2d.html#adddd3217fe7a264ba96729a765340027" title="star2d::solve_gsup" alt="" coords="593,1627,725,1653"/>
-<area shape="rect" id="node43" href="$classstar2d.html#a09a038589a741f85d1021bbf6cad4a00" title="star2d::solve_Teff" alt="" coords="595,360,722,387"/>
+<area shape="rect" id="node38" href="$classstar2d.html#a0c5a011a2fb940862fcaf59c7e7652b4" title="Writes the equations for the dimensional quantities (T_c, rho_c, R, etc.) " alt="" coords="596,1728,721,1755"/>
+<area shape="rect" id="node39" href="$classstar2d.html#a87b3599d967c97e280071875cfd254d1" title="Part of the Jacobian associated with the mapping There are geometrical relations and physical relatio..." alt="" coords="594,1576,723,1603"/>
+<area shape="rect" id="node40" href="$classstar2d.html#ab7da2979326f2262ff8087ece44b5d50" title="Equation setting the equatorial angular velocity. " alt="" coords="585,1981,732,2008"/>
+<area shape="rect" id="node41" href="$classstar2d.html#a119a475c8f6fbdb96426423b73e662bc" title="Equation setting the &#39;simple&#39; atmosphere model equations To be checked. " alt="" coords="595,1525,722,1552"/>
+<area shape="rect" id="node42" href="$classstar2d.html#adddd3217fe7a264ba96729a765340027" title="Equation setting the surface pressure condition To be checked. " alt="" coords="593,1627,725,1653"/>
+<area shape="rect" id="node43" href="$classstar2d.html#a09a038589a741f85d1021bbf6cad4a00" title="Equation setting the surface effective temperature To be checked. " alt="" coords="595,360,722,387"/>
 </map>

@@ -6,16 +6,16 @@
 <area shape="rect" id="node13" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="821,1895,918,1922"/>
 <area shape="rect" id="node18" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="629,1145,707,1171"/>
 <area shape="rect" id="node19" href="$classsolver.html#a66acaed97a3677446c8faf93a9a8ce3b" title="solver::reset" alt="" coords="822,1769,917,1795"/>
-<area shape="rect" id="node20" href="$classstar2d.html#a99d83e13764a03c45df37ccea0940366" title="Writes terms depending opacity and state tables into the solver. " alt="" coords="152,511,315,538"/>
+<area shape="rect" id="node20" href="$classstar2d.html#a99d83e13764a03c45df37ccea0940366" title="insert the definitions depending on opacity and eos tables into the solver, and the definitions used ..." alt="" coords="152,511,315,538"/>
 <area shape="rect" id="node22" href="$classstar2d.html#ad5842ec4740386fb49d82f1d74581724" title="Writes Poisson equation and interface conditions into the solver. " alt="" coords="593,689,743,715"/>
 <area shape="rect" id="node38" href="$classstar2d.html#a744a12b8bd2aa2e9672b8e1588f319b4" title="Writes movement and vorticity equations into the solver. " alt="" coords="603,790,733,817"/>
 <area shape="rect" id="node39" href="$classstar2d.html#a1af2f9bcd3eb35edd3029001ba1176aa" title="Writes temperature and luminosity equations and interface conditions into the solver. " alt="" coords="601,891,735,918"/>
-<area shape="rect" id="node40" href="$classstar2d.html#a0c5a011a2fb940862fcaf59c7e7652b4" title="star2d::solve_dim" alt="" coords="605,841,731,867"/>
-<area shape="rect" id="node41" href="$classstar2d.html#a87b3599d967c97e280071875cfd254d1" title="star2d::solve_map" alt="" coords="603,739,733,766"/>
-<area shape="rect" id="node42" href="$classstar2d.html#ab7da2979326f2262ff8087ece44b5d50" title="star2d::solve_Omega" alt="" coords="595,993,741,1019"/>
-<area shape="rect" id="node43" href="$classstar2d.html#a119a475c8f6fbdb96426423b73e662bc" title="star2d::solve_atm" alt="" coords="605,1094,731,1121"/>
-<area shape="rect" id="node44" href="$classstar2d.html#adddd3217fe7a264ba96729a765340027" title="star2d::solve_gsup" alt="" coords="602,1043,734,1070"/>
-<area shape="rect" id="node45" href="$classstar2d.html#a09a038589a741f85d1021bbf6cad4a00" title="star2d::solve_Teff" alt="" coords="605,942,731,969"/>
+<area shape="rect" id="node40" href="$classstar2d.html#a0c5a011a2fb940862fcaf59c7e7652b4" title="Writes the equations for the dimensional quantities (T_c, rho_c, R, etc.) " alt="" coords="605,841,731,867"/>
+<area shape="rect" id="node41" href="$classstar2d.html#a87b3599d967c97e280071875cfd254d1" title="Part of the Jacobian associated with the mapping There are geometrical relations and physical relatio..." alt="" coords="603,739,733,766"/>
+<area shape="rect" id="node42" href="$classstar2d.html#ab7da2979326f2262ff8087ece44b5d50" title="Equation setting the equatorial angular velocity. " alt="" coords="595,993,741,1019"/>
+<area shape="rect" id="node43" href="$classstar2d.html#a119a475c8f6fbdb96426423b73e662bc" title="Equation setting the &#39;simple&#39; atmosphere model equations To be checked. " alt="" coords="605,1094,731,1121"/>
+<area shape="rect" id="node44" href="$classstar2d.html#adddd3217fe7a264ba96729a765340027" title="Equation setting the surface pressure condition To be checked. " alt="" coords="602,1043,734,1070"/>
+<area shape="rect" id="node45" href="$classstar2d.html#a09a038589a741f85d1021bbf6cad4a00" title="Equation setting the surface effective temperature To be checked. " alt="" coords="605,942,731,969"/>
 <area shape="rect" id="node46" href="$classsolver.html#ad26b8574d24d480e4434dc3cc2810ce3" title="Solves the set of equations stored in the operator object. " alt="" coords="185,2047,281,2074"/>
 <area shape="rect" id="node47" href="$classsolver.html#a24e782d8a59927c9a1662033c013ad7c" title="solver::get_var" alt="" coords="179,2098,287,2125"/>
 <area shape="rect" id="node48" href="$matrix_8h.html#a86292df4a6da0a0e0a8137647f9a7255" title="exist" alt="" coords="643,1870,693,1897"/>

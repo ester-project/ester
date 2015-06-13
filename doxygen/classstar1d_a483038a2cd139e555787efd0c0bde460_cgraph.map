@@ -35,15 +35,15 @@
 <area shape="rect" id="node22" href="$classstar2d.html#a1be7c76c3ebf0acfd919679f38c38706" title="star2d::atmosphere" alt="" coords="594,461,729,488"/>
 <area shape="rect" id="node28" href="$classstar2d.html#a7812d6ae0c3f8490f3feeb470deecafa" title="star2d::check_map" alt="" coords="595,1779,728,1805"/>
 <area shape="rect" id="node29" href="$classsolver.html#a66acaed97a3677446c8faf93a9a8ce3b" title="solver::reset" alt="" coords="614,1019,709,1045"/>
-<area shape="rect" id="node30" href="$classstar1d.html#adfe2f4080411117bfe099e0eb4c9b429" title="Writes terms depending opacity and state tables into the solver. " alt="" coords="373,1069,536,1096"/>
+<area shape="rect" id="node30" href="$classstar1d.html#adfe2f4080411117bfe099e0eb4c9b429" title="insert the definitions depending on opacity and eos tables into the solver, and the definitions used ..." alt="" coords="373,1069,536,1096"/>
 <area shape="rect" id="node31" href="$classstar1d.html#a908568a79c07452aec18a2ac1373ff00" title="Writes Poisson equation and interface conditions into the solver. " alt="" coords="587,1272,736,1299"/>
 <area shape="rect" id="node32" href="$classstar1d.html#a94173a4de4463b3a10a3b139197cfb25" title="star1d::solve_pressure" alt="" coords="584,664,739,691"/>
 <area shape="rect" id="node33" href="$classstar1d.html#a45bce917f73ac32c398593c9efb7f842" title="Writes temperature and luminosity equations and interface conditions into the solver. " alt="" coords="595,1627,728,1653"/>
-<area shape="rect" id="node34" href="$classstar2d.html#a119a475c8f6fbdb96426423b73e662bc" title="star2d::solve_atm" alt="" coords="598,1171,725,1197"/>
-<area shape="rect" id="node35" href="$classstar1d.html#aaa89b666018c4563312022ab58f97976" title="star1d::solve_dim" alt="" coords="599,1576,724,1603"/>
-<area shape="rect" id="node36" href="$classstar1d.html#a91006050a70483ad37dcce9116ab7be4" title="star1d::solve_map" alt="" coords="390,1019,519,1045"/>
-<area shape="rect" id="node37" href="$classstar1d.html#a0de9fbd9141021c89561ad3ba57f8dd6" title="star1d::solve_gsup" alt="" coords="389,917,521,944"/>
-<area shape="rect" id="node38" href="$classstar1d.html#ac760ef1f36f1efd4d8c3a7328cdff7c2" title="star1d::solve_Teff" alt="" coords="391,753,518,780"/>
+<area shape="rect" id="node34" href="$classstar2d.html#a119a475c8f6fbdb96426423b73e662bc" title="Equation setting the &#39;simple&#39; atmosphere model equations To be checked. " alt="" coords="598,1171,725,1197"/>
+<area shape="rect" id="node35" href="$classstar1d.html#aaa89b666018c4563312022ab58f97976" title="Writes the equations for the dimensional quantities (T_c, rho_c, R, etc.) " alt="" coords="599,1576,724,1603"/>
+<area shape="rect" id="node36" href="$classstar1d.html#a91006050a70483ad37dcce9116ab7be4" title="Part of the Jacobian associated with the mapping There are geometrical relations and physical relatio..." alt="" coords="390,1019,519,1045"/>
+<area shape="rect" id="node37" href="$classstar1d.html#a0de9fbd9141021c89561ad3ba57f8dd6" title="Equation setting the surface pressure condition To be checked. " alt="" coords="389,917,521,944"/>
+<area shape="rect" id="node38" href="$classstar1d.html#ac760ef1f36f1efd4d8c3a7328cdff7c2" title="Equation setting the surface effective temperature To be checked. " alt="" coords="391,753,518,780"/>
 <area shape="rect" id="node39" href="$classsolver.html#ad26b8574d24d480e4434dc3cc2810ce3" title="Solves the set of equations stored in the operator object. " alt="" coords="407,1171,503,1197"/>
 <area shape="rect" id="node40" href="$classsolver.html#a24e782d8a59927c9a1662033c013ad7c" title="solver::get_var" alt="" coords="401,1880,509,1907"/>
 <area shape="rect" id="node41" href="$matrix_8h.html#a4aa69214591170aac97566e1f1e9c657" title="max" alt="" coords="431,1373,478,1400"/>

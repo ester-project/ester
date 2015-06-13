@@ -219,22 +219,22 @@ Equations solved by ESTER</h1>
 Code Overview</h1>
 <p>The Newton iteration is performed in <a class="el" href="classstar2d.html#a478e9e40c696a8d4cfe1e28353d3ea69" title="Performs one step of the Newton algorithm to compute the star&#39;s internal structure. ">star2d::solve</a>. The set of equation and boundary conditions are written in the solver in functions:</p>
 <ul>
-<li><a class="el" href="classstar2d.html#a99d83e13764a03c45df37ccea0940366" title="Writes terms depending opacity and state tables into the solver. ">star2d::solve_definitions</a></li>
+<li><a class="el" href="classstar2d.html#a99d83e13764a03c45df37ccea0940366" title="insert the definitions depending on opacity and eos tables into the solver, and the definitions used ...">star2d::solve_definitions</a></li>
 <li><a class="el" href="classstar2d.html#ad5842ec4740386fb49d82f1d74581724" title="Writes Poisson equation and interface conditions into the solver. ">star2d::solve_poisson</a></li>
 <li><a class="el" href="classstar2d.html#a744a12b8bd2aa2e9672b8e1588f319b4" title="Writes movement and vorticity equations into the solver. ">star2d::solve_mov</a></li>
 <li><a class="el" href="classstar2d.html#a1af2f9bcd3eb35edd3029001ba1176aa" title="Writes temperature and luminosity equations and interface conditions into the solver. ">star2d::solve_temp</a></li>
-<li><a class="el" href="classstar2d.html#a0c5a011a2fb940862fcaf59c7e7652b4">star2d::solve_dim</a></li>
-<li><a class="el" href="classstar2d.html#a87b3599d967c97e280071875cfd254d1">star2d::solve_map</a></li>
-<li><a class="el" href="classstar2d.html#ab7da2979326f2262ff8087ece44b5d50">star2d::solve_Omega</a></li>
-<li><a class="el" href="classstar2d.html#a119a475c8f6fbdb96426423b73e662bc">star2d::solve_atm</a></li>
-<li><a class="el" href="classstar2d.html#adddd3217fe7a264ba96729a765340027">star2d::solve_gsup</a></li>
-<li><a class="el" href="classstar2d.html#a09a038589a741f85d1021bbf6cad4a00">star2d::solve_Teff</a></li>
+<li><a class="el" href="classstar2d.html#a0c5a011a2fb940862fcaf59c7e7652b4" title="Writes the equations for the dimensional quantities (T_c, rho_c, R, etc.) ">star2d::solve_dim</a></li>
+<li><a class="el" href="classstar2d.html#a87b3599d967c97e280071875cfd254d1" title="Part of the Jacobian associated with the mapping There are geometrical relations and physical relatio...">star2d::solve_map</a></li>
+<li><a class="el" href="classstar2d.html#ab7da2979326f2262ff8087ece44b5d50" title="Equation setting the equatorial angular velocity. ">star2d::solve_Omega</a></li>
+<li><a class="el" href="classstar2d.html#a119a475c8f6fbdb96426423b73e662bc" title="Equation setting the &#39;simple&#39; atmosphere model equations To be checked. ">star2d::solve_atm</a></li>
+<li><a class="el" href="classstar2d.html#adddd3217fe7a264ba96729a765340027" title="Equation setting the surface pressure condition To be checked. ">star2d::solve_gsup</a></li>
+<li><a class="el" href="classstar2d.html#a09a038589a741f85d1021bbf6cad4a00" title="Equation setting the surface effective temperature To be checked. ">star2d::solve_Teff</a></li>
 </ul>
 <p>Function <a class="el" href="classsolver.html#ad26b8574d24d480e4434dc3cc2810ce3" title="Solves the set of equations stored in the operator object. ">solver::solve</a> stores all the terms registered in the operator in the previous steps into the operator matrix (see <a class="el" href="classsolver.html#a8f4ec1fefcb8517f070543be1bc7768c" title="Stores distributed (ie. split into several blocks) matrix y into the single vector x...">solver::wrap</a>, <a class="el" href="classsolver.html#ab75fb52ae803c4721c08dc8f55bfd200" title="Performs the inverse operation of the wrap function: restore the single vector x into the blocked vec...">solver::unwrap</a> and <a class="el" href="classsolver.html#a56b249056bea1e6f7dcd8f1166246a26" title="Creates the solver solver operator depending on the type of solver configured (defined when calling s...">solver::create</a>). And then solves the matrix and update the solution the solution fields. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jun 13 2015 16:34:58 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jun 13 2015 16:49:49 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
