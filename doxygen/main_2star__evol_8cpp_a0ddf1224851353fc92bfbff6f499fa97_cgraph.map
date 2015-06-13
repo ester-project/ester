@@ -32,16 +32,16 @@
 <area shape="rect" id="node20" href="$classstar2d.html#a7812d6ae0c3f8490f3feeb470deecafa" title="star2d::check_map" alt="" coords="489,1069,623,1096"/>
 <area shape="rect" id="node21" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="711,1171,809,1197"/>
 <area shape="rect" id="node22" href="$classsolver.html#a66acaed97a3677446c8faf93a9a8ce3b" title="solver::reset" alt="" coords="713,613,807,640"/>
-<area shape="rect" id="node23" href="$classstar2d.html#a99d83e13764a03c45df37ccea0940366" title="Writes terms depending opacity and state tables into the solver. " alt="" coords="475,1323,637,1349"/>
+<area shape="rect" id="node23" href="$classstar2d.html#a99d83e13764a03c45df37ccea0940366" title="insert the definitions depending on opacity and eos tables into the solver, and the definitions used ..." alt="" coords="475,1323,637,1349"/>
 <area shape="rect" id="node24" href="$classstar2d.html#ad5842ec4740386fb49d82f1d74581724" title="Writes Poisson equation and interface conditions into the solver. " alt="" coords="685,1069,835,1096"/>
 <area shape="rect" id="node25" href="$classstar2d.html#a744a12b8bd2aa2e9672b8e1588f319b4" title="Writes movement and vorticity equations into the solver. " alt="" coords="491,512,621,539"/>
 <area shape="rect" id="node26" href="$classstar2d.html#a1af2f9bcd3eb35edd3029001ba1176aa" title="Writes temperature and luminosity equations and interface conditions into the solver. " alt="" coords="489,917,623,944"/>
-<area shape="rect" id="node27" href="$classstar2d.html#a0c5a011a2fb940862fcaf59c7e7652b4" title="star2d::solve_dim" alt="" coords="493,1171,619,1197"/>
-<area shape="rect" id="node28" href="$classstar2d.html#a87b3599d967c97e280071875cfd254d1" title="star2d::solve_map" alt="" coords="491,867,621,893"/>
-<area shape="rect" id="node29" href="$classstar2d.html#ab7da2979326f2262ff8087ece44b5d50" title="star2d::solve_Omega" alt="" coords="483,411,629,437"/>
-<area shape="rect" id="node30" href="$classstar2d.html#a119a475c8f6fbdb96426423b73e662bc" title="star2d::solve_atm" alt="" coords="493,715,619,741"/>
-<area shape="rect" id="node32" href="$classstar2d.html#adddd3217fe7a264ba96729a765340027" title="star2d::solve_gsup" alt="" coords="694,1120,826,1147"/>
-<area shape="rect" id="node33" href="$classstar2d.html#a09a038589a741f85d1021bbf6cad4a00" title="star2d::solve_Teff" alt="" coords="493,816,619,843"/>
+<area shape="rect" id="node27" href="$classstar2d.html#a0c5a011a2fb940862fcaf59c7e7652b4" title="Writes the equations for the dimensional quantities (T_c, rho_c, R, etc.) " alt="" coords="493,1171,619,1197"/>
+<area shape="rect" id="node28" href="$classstar2d.html#a87b3599d967c97e280071875cfd254d1" title="Part of the Jacobian associated with the mapping There are geometrical relations and physical relatio..." alt="" coords="491,867,621,893"/>
+<area shape="rect" id="node29" href="$classstar2d.html#ab7da2979326f2262ff8087ece44b5d50" title="Equation setting the equatorial angular velocity. " alt="" coords="483,411,629,437"/>
+<area shape="rect" id="node30" href="$classstar2d.html#a119a475c8f6fbdb96426423b73e662bc" title="Equation setting the &#39;simple&#39; atmosphere model equations To be checked. " alt="" coords="493,715,619,741"/>
+<area shape="rect" id="node32" href="$classstar2d.html#adddd3217fe7a264ba96729a765340027" title="Equation setting the surface pressure condition To be checked. " alt="" coords="694,1120,826,1147"/>
+<area shape="rect" id="node33" href="$classstar2d.html#a09a038589a741f85d1021bbf6cad4a00" title="Equation setting the surface effective temperature To be checked. " alt="" coords="493,816,619,843"/>
 <area shape="rect" id="node34" href="$classsolver.html#ad26b8574d24d480e4434dc3cc2810ce3" title="Solves the set of equations stored in the operator object. " alt="" coords="508,1373,604,1400"/>
 <area shape="rect" id="node35" href="$classsolver.html#a24e782d8a59927c9a1662033c013ad7c" title="solver::get_var" alt="" coords="502,664,610,691"/>
 <area shape="rect" id="node37" href="$matrix_8h.html#a263c177f2362f24c1d67688bd82d75d6" title="abs" alt="" coords="739,1449,781,1476"/>
