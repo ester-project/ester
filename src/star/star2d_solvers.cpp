@@ -1080,7 +1080,8 @@ void star2d::solve_gsup(solver *op) {
 	p_=S.regvar("p");
 	S.set_map(map);
 	S.set_value("p",p);
-	S.set_value("gamma",sqrt(1-rt*rt/r/r));  // Looks like an error, should be sqrt(1+rt*rt/r/r)
+	S.set_value("gamma",sqrt(1+rt*rt/r/r));  // Bug corrected 14/6/2015, MR
+	//S.set_value("gamma",sqrt(1-rt*rt/r/r));  // Looks like an error, should be sqrt(1+rt*rt/r/r)
 	n_(0)=Dz(S.r)/gamma_;n_(1)=0*S.one;n_(2)=0*S.one;
 	
 	eq=(n_,grad(p_));
@@ -1116,7 +1117,8 @@ void star2d::solve_Teff(solver *op) {
 	T_=S.regvar("T");
 	S.set_map(map);
 	S.set_value("T",T);
-	S.set_value("gamma",sqrt(1-rt*rt/r/r)); // Looks like an error, should be sqrt(1+rt*rt/r/r)
+	S.set_value("gamma",sqrt(1+rt*rt/r/r)); // Bug corrected 14/6/2015, MR
+	//S.set_value("gamma",sqrt(1-rt*rt/r/r)); // Looks like an error, should be sqrt(1+rt*rt/r/r)
 	n_(0)=Dz(S.r)/gamma_;n_(1)=0*S.one;n_(2)=0*S.one;
 	
 	eq=(n_,grad(T_));
