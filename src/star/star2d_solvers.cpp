@@ -1095,7 +1095,7 @@ void star2d::solve_gsup(solver *op) {
 }
 
 /// \brief Equation setting the surface effective temperature
-/// To be checked
+/// Derived from sigma T_e^4 = -xi\vn\cdot\gradT
 void star2d::solve_Teff(solver *op) {
     DEBUG_FUNCNAME;
 	matrix q,Te,F;
