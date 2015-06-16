@@ -1057,8 +1057,8 @@ void star2d::solve_Omega(solver *op) {
 
 
 
-/// \brief Equation setting the surface pressure condition
-/// To be checked
+/// \brief Equation giving the effective surface gravity gsup
+/// gsup=(-\vn\cdot\grad P)/rho
 void star2d::solve_gsup(solver *op) {
     DEBUG_FUNCNAME;
 	matrix q,g;
