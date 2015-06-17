@@ -118,7 +118,7 @@ With these scalings, the equation now read:
 \begin{equation} \Delta\phi = \pi_c \rho\end{equation}
 where
 
-\begin{equation} \pi_c = \frac{4\pi G\rho_c^2}{P_c}\end{equation}
+\begin{equation} \pi_c = \frac{4\pi G\rho_c^2 R^2}{P_c}\label{picdef}\end{equation}
 Energy equation can be written
 
 \begin{equation} \Delta T + \na\ln\chi\cdot\na T +
@@ -241,7 +241,7 @@ boundary condition are simply:
 \item Mass is an input parameter that is related to the preceding
 quantities by
 
-\beq M = \rho_cR^3\intvol \rho dV = \rho_cR^3 m\eeq
+\beq M = \rho_cR^3\intvol \rho dV = \rho_cR^3 m\eeqn{massdef}
 
 \item Angular momentum is another integral quantity that is useful to
 monitor or to impose:
@@ -351,6 +351,55 @@ in their actual order in the code.}
 
 "Phi"; "log\_p"; "pi\_c"; "log\_T"; "Lambda"; "eta"; "deta"; "Ri";
 "dRi"; "Omega"; "log\_pc"; "log\_Tc"; "log\_R"; "m"; "ps"; "Ts"; "lum"; "Frad"; "Teff"; "gsup"; "w"; "G"; "gamma"; 
+
+\subsection{The equations}
+
+\subsubsection{Initialization {\tt fill}}
+
+Uses \eq{massdef} and that
+
+\[ m=2\pi\int_0^1\int_0^\pi\rho r^2r_\zeta d\zeta\sin\theta d\theta\]
+Set the definition of $\pi_c$ as \eq{picdef}, and the definition of 
+$\Omega_c$, namely the scaled keplerian velocity. We have
+
+\[ \Omega_c=\frac{\Omega_k}{\Omega_0} \with \Omega_k=\sqrt{\frac{GM}{R_e^3}}\]
+and $\Omega_0^2=P_c/\rho_c/R^2$.
+
+\subsubsection{Surface effective gravity {\tt solve\_gsup}}
+
+Effective gravity is defined as
+
+\[ \vg_{\rm eff} = -\nabla\phi+s\Omega^2\es\]
+Thus from the simplified meridional momentum equation \eq{barocnd}, we get
+
+\[ \vg_{\rm eff} = \frac{1}{\rho}\nabla p\]
+The variable {\tt gsup} is defined as $g_s=-\vn\cdot\vg_{\rm eff}$ so as to be positive. Thus, from the equation
+
+\[ g_s=\frac{P_c}{\rho_cR}\frac{-\vn\cdot\nabla p}{\rho}\]
+We get the following functional equation
+
+\begin{equation}
+\delta g_s -g_s\delta\ln P_c +g_s\delta\ln\rho_c+g_s\delta\ln R + \frac{g_s}{\rho}\delta\rho+
+\frac{P_c}{R\rho_c\rho}\delta(\vn\cdot\nabla P) = RHS
+\end{equation}
+
+\subsubsection{Surface effective temperature {\tt solve\_Teff}}
+
+Effective temperature is defined as
+
+\[ \sigma T_e^4 = -\khi\vn\cdot\na T\]
+Showing the dimensional and non-dimensional variables we rewrite the previous equality as:
+
+\[ \sigma T_e^4 = -\khi\vn\cdot\na T \frac{T_c}{R}\]
+Taking the log and making the functional derivative, we get
+
+\begin{equation}
+4T_e^3\delta T_e -T_e^4\delta\ln T_c + T_e^4\delta\ln R -\frac{T_e^4}{\khi}\delta\khi + \frac{\khi T_c}{\sigma
+R}\delta(\vn\cdot\nabla T) = RHS
+\end{equation}
+
+
+
 
 \subsection{Implementation of Newton's algorithm}
 

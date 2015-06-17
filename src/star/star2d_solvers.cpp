@@ -6,7 +6,8 @@
 #include"symbolic.h"
 
 /// \brief Initialize star's chemical composition, equation of state, opacity,
-/// nuclear reaction and atmosphere.
+/// nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere,
+/// flatness, scaled keplerian angular velocity
 void star2d::fill() {
     DEBUG_FUNCNAME;
 	Y0=1.-X0-Z0;
