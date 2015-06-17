@@ -354,7 +354,7 @@ in their actual order in the code.}
 
 \subsection{The equations}
 
-\subsubsection{Initialization {\tt fill}}
+\subsubsection{$\bullet$ \bf Initialization {\tt fill}}
 
 Uses \eq{massdef} and that
 
@@ -365,7 +365,51 @@ $\Omega_c$, namely the scaled keplerian velocity. We have
 \[ \Omega_c=\frac{\Omega_k}{\Omega_0} \with \Omega_k=\sqrt{\frac{GM}{R_e^3}}\]
 and $\Omega_0^2=P_c/\rho_c/R^2$.
 
-\subsubsection{Surface effective gravity {\tt solve\_gsup}}
+\subsubsection{$\bullet$ \bf Constitutive relations {\tt solve\_definitions}}
+
+The EOS is written as the dependence of $\rho_*$ with respect to $P_*$ and
+$T_*$ ($*$ quantities are dimensional). Thus we have:
+
+\[ \delta\rho_* = \frac{\rho_*}{P_*}\lp\frac{\partial\ln\rho}{\partial\ln
+P}\rp_T\delta(P_cP) + \frac{\rho_*}{T_*}\lp\frac{\partial\ln\rho}{\partial\ln
+T}\rp_P\delta(T_cT)\]
+After some manipulations, we get:
+
+\[ \frac{\delta\rho}{\rho} = \frac{1}{P\chi_\rho}\delta P +
+\frac{1}{\chi_\rho}\delta\ln P_c -\delta\ln\rho_c + d_p\delta\ln T_c +
+\frac{d_p}{T}\delta T\]
+where we introduced
+
+\[ \chi_\rho = \lp\frac{\partial\ln P}{\partial\ln\rho}\rp_T\]
+according to \cite{RSI96}. We also introduced
+
+\[ d_P = \lp\frac{\partial\ln\rho}{\partial\ln T}\rp_P = -\chi_t/\chi_\rho\]
+From the definitions of \cite{RSI96} and the thermodynamic triangular relation.
+
+Opacity and nuclear heat production depend on $\rho$ and $T$. So for both of
+these quantities we have the formal relation $f=f(\rho,T)$. For instance, for
+opacity, denoted $\xi$ we get
+
+\[ \delta\xi = \frac{\partial\xi}{\partial\rho_*}\delta\rho_* +
+\frac{\partial\xi}{\partial T_*}\delta T_*\]
+Noting that $\rho_*=\rho_c\rho$ and $T_*=T_cT$, after some manipulations we
+get:
+
+\[ \delta\xi =
+\frac{\xi}{\rho}\frac{\partial\ln\xi}{\partial\ln\rho}\delta\rho +
+\xi\frac{\partial\ln\xi}{\partial\ln\rho}\delta\ln\rho_c +
+\frac{\xi}{T}\frac{\partial\ln\xi}{\partial\ln T}\delta T +
+\xi\frac{\partial\ln\xi}{\partial\ln T}\delta\ln T_c\]
+For radiative conductivity, its expression
+
+\[ k = \frac{16\sigma T^3}{3\rho\xi}\]
+leads to the following contribution
+
+\[ \frac{\delta k}{k} = \frac{3}{T}\delta T+3\delta\ln T_c
+-\frac{1}{\rho}\delta\rho - \delta\ln\rho_c - \frac{1}{\xi}\delta\xi\]
+where we took into account that $\rho$ and $T$ are non-dimensional.
+
+\subsubsection{$\bullet$ \bf Surface effective gravity {\tt solve\_gsup}}
 
 Effective gravity is defined as
 
@@ -383,7 +427,7 @@ We get the following functional equation
 \frac{P_c}{R\rho_c\rho}\delta(\vn\cdot\nabla P) = RHS
 \end{equation}
 
-\subsubsection{Surface effective temperature {\tt solve\_Teff}}
+\subsubsection{$\bullet$ \bf Surface effective temperature {\tt solve\_Teff}}
 
 Effective temperature is defined as
 
