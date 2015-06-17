@@ -259,7 +259,8 @@ void star2d::update_map(matrix dR) {
 void star2d::solve_definitions(solver *op) {
     DEBUG_FUNCNAME;
 
-// EOS written rho(P,T). eos.chi_rho is from OPAL, but eos.d needs definition
+// EOS written rho(P,T). eos.chi_rho is from OPAL,
+// and eos.d=chi_t/chi_rho
 	op->add_d("rho","p",rho/eos.chi_rho/p);
 	op->add_d("rho","T",-rho*eos.d/T);
 	op->add_d("rho","log_pc",rho/eos.chi_rho);
