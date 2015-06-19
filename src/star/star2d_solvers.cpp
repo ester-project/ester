@@ -286,23 +286,29 @@ void star2d::solve_definitions(solver *op) {
 	op->add_d("nuc.eps","T",nuc.dlneps_lnT*nuc.eps/T);
 	op->add_d("nuc.eps","log_Tc",nuc.dlneps_lnT*nuc.eps);
 	
+// Here we write the variation of r as a function of the variations of the mapping
+// parameters according to equation 6.10 of the manual
 	op->add_d("r","eta",map.J[0]);
 	op->add_d("r","deta",map.J[1]);
 	op->add_d("r","Ri",map.J[2]);
 	op->add_d("r","dRi",map.J[3]);
 	
+// same as above but for the last vacuum domain
 	op->add_d(ndomains,"r","eta",map.ex.J[0]);
 	op->add_d(ndomains,"r","Ri",map.ex.J[2]);
 	
+// same as for r but for rz
 	op->add_d("rz","eta",(D,map.J[0]));
 	op->add_d("rz","deta",(D,map.J[1]));
 	op->add_d("rz","Ri",(D,map.J[2]));
 	op->add_d("rz","dRi",(D,map.J[3]));
 	
+// last domain for rz
 	op->add_d(ndomains,"rz","eta",(Dex,map.ex.J[0]));
 	op->add_d(ndomains,"rz","Ri",(Dex,map.ex.J[2]));
 	
-	//	Valid only for homogeneus composition !!!!!!
+// From the variation of entropy with respect to the variation of pressure and
+// temperature but valid only for homogeneus composition !!!!!!
 	op->add_d("s","T",eos.cp/T);
 	op->add_d("s","log_Tc",eos.cp);
 	op->add_d("s","p",-eos.cp*eos.del_ad/p);

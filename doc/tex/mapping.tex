@@ -82,6 +82,12 @@ where we have defined:
 \xi&=&\displaystyle\frac{\zeta-\eta_i}{\Delta\eta_i} \quad {\rm so\;
 that}\quad 0\leq\xi\leq 1
 \end{eqnarray*} 
+so the $\eta_i$ are the polar radii of the interfaces bewteen the domains.
+Since we choose the polar radius as the unit length $R_n(\theta=0)=1$. Hence,
+inside the star
+
+\[ 0\leq \zeta\leq1\]
+From the definition we also have $\eta_0=0$ and $\eta_n=1$.
 
 The function(s) $A_i(\xi)$ and the constant(s) $a_i$ determine the final
 form of the mapping. In particular, the function $A_i(\xi)$ should verify
@@ -121,7 +127,7 @@ A'_i(\xi) = 6\xi(1-\xi) \andet A'_0 = 7.5\xi^2(1-\xi^2)
 \end{equation}
 
 The constants $a_i$ deserve some special attention. We first note that
-the jacobian of the transformation \eq{themap} is non-singular, namely
+the Jacobian of the transformation \eq{themap} is non-singular, namely
 
 \[ J=\left|\begin{array}{cc}
 \dzeta{r} & \frac{\partial r}{\partial\theta'}\\
@@ -153,17 +159,22 @@ or, using (\ref{eq:map_bonazzola})
 \end{array}
 \label{cdtstab}
 \end{equation}
-In practice, we take $a_i=1$. This is motivated by the fact that
+In practice, we take
+
+\begin{equation}
+a_i=1\; .
+\end{equation}
+This is motivated by the fact that
 we work with oblate domains. Indeed, the flattening increases for
 the successive subdomains so that $\min(\Delta R_i(\theta))=\Delta
 R_i(0)=\Delta\eta_i$. Hence, conditions \eq{cdtstab} are fully satisfied.
 
 In addition, working with a fixed value of $a_i$ makes easier to work
 with problems where the frontiers between the subdomains are not known
-a priori, and the jacobian of the mapping becomes a smooth function
+a priori, and the Jacobian of the mapping becomes a smooth function
 suitable for iterative methods.
 
-The general form of the jacobian of the mapping is defined by the expression
+The general form of the Jacobian of the mapping is defined by the expression
 
 \begin{equation}
 \delta r^{i}=J_0^{(i)}(\zeta,\theta)\delta\eta_i+
@@ -191,7 +202,7 @@ so that
 \begin{equation}
 r_{ex}(\zeta,\theta)=\xi_{ex}+R(\theta)
 \end{equation}
-with jacobian
+with Jacobian
 
 \begin{equation}
 \begin{array}{l}

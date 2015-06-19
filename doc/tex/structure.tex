@@ -409,6 +409,26 @@ leads to the following contribution
 -\frac{1}{\rho}\delta\rho - \delta\ln\rho_c - \frac{1}{\xi}\delta\xi\]
 where we took into account that $\rho$ and $T$ are non-dimensional.
 
+As far as entropy is concerned, we express its dependence with temperature and
+pressure:
+
+\[ \delta s = \frac{c_p}{T_*}\delta T_* + \lp\frac{\partial s}{\partial
+P_*}\rp_T\delta P_*\]
+We note that
+
+\[ \lp\frac{\partial s}{\partial
+P_*}\rp_T = -\frac{\alpha}{\rho} = -\frac{c_p\nabla_a}{P}\]
+where
+
+\[ \nabla_a= \lp\frac{\partial\ln T}{\partial\ln P}\rp_s \andet
+\alpha=-\lp\frac{\partial\ln\rho}{\partial T}\rp_P\]
+Thus, after some manipulation we find
+
+\[ \delta s = c_p\lp\delta\ln T_c + \frac{\delta T}{T} - \nabla_a\delta\ln P_c
+-\frac{\nabla_a}{P}\delta P \rp\]
+
+
+
 \subsubsection{$\bullet$ \bf Surface effective gravity {\tt solve\_gsup}}
 
 Effective gravity is defined as
