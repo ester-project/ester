@@ -50,13 +50,17 @@ in a radiative zone and
 in the convective core. This equation gives the temperature gradient as a function
 of the pressure gradient thanks to the thermodynamics relation
 
-\[ ds = \frac{c_p}{T}dT - \frac{\alpha_T}{\rho T}dP\]
+\[ ds = \frac{c_p}{T}dT - \frac{\alpha_t}{\rho T}dP\]
 where 
 
-\[ \alpha_T = -\lp\frac{\partial \ln\rho}{\partial\ln T}\rp_{\!\!P}\]
+\[ \alpha_t = -\lp\frac{\partial \ln\rho}{\partial\ln T}\rp_{\!\!P}\]
 is the isobar expansion coefficient. Hence, \eq{nas} leads to
 
 \begin{equation} \na T = \frac{\alpha_T}{\rho c_p}\na P\end{equation}
+which also means that
+
+\[ \nabla_a=\lp\frac{\partial \ln T}{\partial\ln P}\rp_{\!\!s} =
+\frac{P\alpha_t}{\rho c_pT}\]
 As for the momentum equation, we split it into its azimuthal and
 meridional components. The meridional components of the equation may be
 reduced to
@@ -427,7 +431,46 @@ Thus, after some manipulation we find
 \[ \delta s = c_p\lp\delta\ln T_c + \frac{\delta T}{T} - \nabla_a\delta\ln P_c
 -\frac{\nabla_a}{P}\delta P \rp\]
 
+\subsubsection{$\bullet$ \bf Poisson equation {\tt solve\_poisson}}
 
+Poisson equation reads
+
+\[ \Delta \phi = \pi_c \rho \qquad {\rm with}\quad  \pi_c = \frac{4 \pi G
+\rho_c^2 R^2}{p_c}\]
+so that its variational expression is 
+
+\[ \Delta \delta\phi +(\delta\Delta)\phi - \rho\delta\pi_c  -
+\pi_c\delta\rho = -(\Delta \phi - \pi_c \rho)_n \]
+where $(\delta\Delta)$ represents the variation of the Laplacian operator due
+to the change of the metric. Note that the last domain is void of matter.
+
+Together with Poisson equation, we need to impose the boundary conditions and
+the interface conditions at each domain boundary. The boundary conditions are
+
+\[ \na\phi(\vzero) = \vzero  \andet \phi(\infty) = 0\]
+The first condition is equivalent to $\partial_\zeta=0$.
+
+At the interface of the domains we demand that $\phi$ and $\vn\cdot\na\phi$
+are continuous. The continuity of the normal component of the gradient implies
+the continuity of
+
+\[ \frac{1}{r_\zeta}\dzeta{\phi}\]
+Even though we have chosen a continuous $r_\zeta$-field, we keep the
+dependence of the interface condition with $r_\zeta$ in case we would like to
+test other kinds of mapping (see chapter 6 for more details).
+
+\subsubsection{$\bullet$ \bf Momentum equation {\tt solve\_mov}}
+
+We start from the meridional compents of the (inviscid) momentum equation
+\eq{baroc}, \eq{eq:vort_inv} and \eq{eq:angular_mom}. For the angular momentum
+equation \eq{eq:angular_mom}, we impose boundary condition \eq{eq:bl}.
+
+For non-dimensional parameters like $\pi_c$, it is continuous at the domain
+interface:
+
+\[ 1\times\delta\pi_c({\rm Right}) -1\times\delta\pi_c({\rm Left}) = 0\]
+Right means ``Right of the lower domain" and Left means ``Left of the upper
+domain".
 
 \subsubsection{$\bullet$ \bf Surface effective gravity {\tt solve\_gsup}}
 
