@@ -512,8 +512,38 @@ Explicit expression of $\frad$ is
 \[ \frad = \xi\lp\gzz\partial_\zeta T + \gzt\partial_\theta T \rp\]
 so that the functional derivative is given by
 
+\[ \delta\frad -\frac{\frad}{\xi}\delta\xi -\xi\lp
+\gzz\partial_\zeta\delta T + \gzt\partial_\theta\delta T +
+\delta\gzz\partial_\zeta T + \delta\gzt\partial_\theta T\rp = 0\]
+where we have
 
+\[ \delta\gzz = -2r(\gzt)^2\delta r -\frac{2\gzz}{\rz}\delta\rz
+-\frac{2\gzt}{\rz}\delta r_\theta\]
+and
 
+\[ \delta\gzt = -\frac{2\gzt}{r}\delta r -\frac{\gzt}{\rz}\delta\rz
+-\frac{\delta r_\theta}{r^2\rz}\]
+
+Then we introduce the core and the envelope with two Heaviside
+functions:
+
+\[ {\tt qcore}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm Core}\]
+\[ {\tt qenv}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm Envelope}\]
+Then the temperature equation is inserted, namely
+
+\[ \frac{\Div(\xi\na T)}{\xi} + \Lambda\rho\frac{\eps_*}{\xi_*} = 0\]
+This equation is differentiated functionally and multiplied by {\tt qenv}.
+
+In the core the temperature equation reduces to
+
+\[ \partial_\zeta s = 0\]
+Hence {\tt rhs\_T} in the core.
+
+Then we need to impose the interface conditions which reduce to
+demanding the continuity of $T$ and $\partial_\zeta T/\rz$. In the last
+domain the boundary condition imposes that $T=T_s$.
+
+\[ \]
 
 
 
