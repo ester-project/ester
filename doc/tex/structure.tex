@@ -10,7 +10,7 @@ governed by the following equations for macroscopic quantities:
 
 \begin{equation} \Delta\phi = 4\pi G\rho\end{equation}
 
-\begin{equation} \rho T \vv\cdot\nabla s = -\Div\vF + \eps_*\end{equation}
+\begin{equation} \rho T \vv\cdot\nabla s = -\Div\vF + \rho\eps_*\end{equation}
 
 \begin{equation} \rho \vv\cdot\na\vv = -\na P -\rho\na\phi+\vF_v\end{equation}
 
@@ -43,7 +43,7 @@ where the convective flux is non-negligible. Core convection is
 simplified in assuming an isentropic core. Hence, the energy/entropy
 equation just reads:
 
-\begin{equation} -\Div\vF + \eps_* = 0\end{equation}
+\begin{equation} -\Div\vF + \rho\eps_* = 0\end{equation}
 in a radiative zone and
 
 \begin{equation} \na s ={\vec 0}\label{nas}\end{equation}
@@ -53,14 +53,15 @@ of the pressure gradient thanks to the thermodynamics relation
 \[ ds = \frac{c_p}{T}dT - \frac{\alpha_t}{\rho T}dP\]
 where 
 
-\[ \alpha_t = -\lp\frac{\partial \ln\rho}{\partial\ln T}\rp_{\!\!P}\]
+\beq \alpha_t = -\lp\frac{\partial \ln\rho}{\partial\ln
+T}\rp_{\!\!P}\eeqn{alphat}
 is the isobar expansion coefficient. Hence, \eq{nas} leads to
 
-\begin{equation} \na T = \frac{\alpha_T}{\rho c_p}\na P\end{equation}
+\begin{equation} \na T = \frac{\alpha_t}{\rho c_p}\na P\end{equation}
 which also means that
 
-\[ \nabla_a=\lp\frac{\partial \ln T}{\partial\ln P}\rp_{\!\!s} =
-\frac{P\alpha_t}{\rho c_pT}\]
+\beq \nabla_a=\lp\frac{\partial \ln T}{\partial\ln P}\rp_{\!\!s} =
+\frac{P\alpha_t}{\rho c_pT}\eeqn{nabla_ad}
 As for the momentum equation, we split it into its azimuthal and
 meridional components. The meridional components of the equation may be
 reduced to
@@ -126,7 +127,7 @@ where
 Energy equation can be written
 
 \begin{equation} \Delta T + \na\ln\chi\cdot\na T +
-\Lambda\frac{\eps_*}{\chi_*} = 0\end{equation}
+\Lambda\rho\frac{\eps_*}{\chi_*} = 0\end{equation}
 where
 
 \begin{equation} \Lambda = \frac{\rho_c R^2}{T_c}\end{equation}
@@ -371,6 +372,9 @@ and $\Omega_0^2=P_c/\rho_c/R^2$.
 
 \subsubsection{$\bullet$ \bf Constitutive relations {\tt solve\_definitions}}
 
+Intermediate variables are used to simplify the writing of the Jacobian
+matrix.
+
 The EOS is written as the dependence of $\rho_*$ with respect to $P_*$ and
 $T_*$ ($*$ quantities are dimensional). Thus we have:
 
@@ -422,11 +426,8 @@ We note that
 
 \[ \lp\frac{\partial s}{\partial
 P_*}\rp_T = -\frac{\alpha}{\rho} = -\frac{c_p\nabla_a}{P}\]
-where
-
-\[ \nabla_a= \lp\frac{\partial\ln T}{\partial\ln P}\rp_s \andet
-\alpha=-\lp\frac{\partial\ln\rho}{\partial T}\rp_P\]
-Thus, after some manipulation we find
+where we used \eq{alphat} and \eq{nabla_ad}.
+Thus, after some manipulations we find
 
 \[ \delta s = c_p\lp\delta\ln T_c + \frac{\delta T}{T} - \nabla_a\delta\ln P_c
 -\frac{\nabla_a}{P}\delta P \rp\]
@@ -465,6 +466,12 @@ We start from the meridional compents of the (inviscid) momentum equation
 \eq{baroc}, \eq{eq:vort_inv} and \eq{eq:angular_mom}. For the angular momentum
 equation \eq{eq:angular_mom}, we impose boundary condition \eq{eq:bl}.
 
+The equation are solved for the log of the pressure. At the domain
+interfaces we impose the continuity of pressure, while at the center the
+non-dimensional pressure is set to unity.
+
+
+
 For non-dimensional parameters like $\pi_c$, it is continuous at the domain
 interface:
 
@@ -487,7 +494,7 @@ We get the following functional equation
 
 \begin{equation}
 \delta g_s -g_s\delta\ln P_c +g_s\delta\ln\rho_c+g_s\delta\ln R + \frac{g_s}{\rho}\delta\rho+
-\frac{P_c}{R\rho_c\rho}\delta(\vn\cdot\nabla P) = RHS
+\frac{P_c}{R\rho_c\rho}\delta(\vn\cdot\nabla P) = 0
 \end{equation}
 
 \subsubsection{$\bullet$ \bf Surface effective temperature {\tt solve\_Teff}}
@@ -502,7 +509,7 @@ Taking the log and making the functional derivative, we get
 
 \begin{equation}
 4T_e^3\delta T_e -T_e^4\delta\ln T_c + T_e^4\delta\ln R -\frac{T_e^4}{\khi}\delta\khi + \frac{\khi T_c}{\sigma
-R}\delta(\vn\cdot\nabla T) = RHS
+R}\delta(\vn\cdot\nabla T) = 0
 \end{equation}
 
 

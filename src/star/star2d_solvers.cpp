@@ -520,10 +520,10 @@ void star2d::solve_mov(solver *op) {
 	// log_p - Pressure
 	rhs=op->get_rhs("log_p");
 	op->bc_bot2_add_d(0,"log_p","p",ones(1,nth));
-	rhs.setrow(0,-p.row(0)+1);
+	rhs.setrow(0,-p.row(0)+1); // central pressure is unity
 	
 	j0=map.gl.npts[0];
-	for(int n=1;n<ndomains;n++) {
+	for(int n=1;n<ndomains;n++) { // continuity of pressure
 		op->bc_bot2_add_d(n,"log_p","p",ones(1,nth));
 		op->bc_bot1_add_d(n,"log_p","p",-ones(1,nth));
 		rhs.setrow(j0,-p.row(j0)+p.row(j0-1));	
