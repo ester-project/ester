@@ -479,6 +479,51 @@ interface:
 Right means ``Right of the lower domain" and Left means ``Left of the upper
 domain".
 
+\subsubsection{$\bullet$ \bf Temperature equation {\tt solve\_temp}}
+
+First the luminosity at each domain boundary is computed through
+
+\[ L_n = 2\pi\Lambda\int_0^\pi\int_0^{\eta_n} \rho\eps_* r^2r_\zeta\sth
+d\theta\]
+The definition of the luminosity 
+
+\[ L=\Lambda\intvol \rho\eps_* dV\]
+is differentiated and yields
+
+\[ \delta L - \Lambda\intvol (\delta\rho\eps_* +\rho\delta\eps_*)dV -
+\delta\Lambda\intvol \rho\eps_* dV - \Lambda\intvol \rho\eps_* \delta dV
+= 0\]
+with $L$ continuous at domain interfaces.
+
+Then we introduce
+
+\[ \frad = -\xi\vE^\zeta\cdot\na T\]
+so the projection of the radiative flux on $\vE^\zeta$, the normal
+direction of the $\zeta=\cst$ surfaces. The basic property of this
+scalar quantity is that it gives the radiative luminosity when
+integrated over a surface, namely
+
+\[ L= \intsur \frad dS\]
+where
+
+\[ dS = 2\pi r^2r_\zeta\sth d\theta\]
+Explicit expression of $\frad$ is
+
+\[ \frad = \xi\lp\gzz\partial_\zeta T + \gzt\partial_\theta T \rp\]
+so that the functional derivative is given by
+
+
+
+
+
+
+
+
+
+
+
+
+
 \subsubsection{$\bullet$ \bf Surface effective gravity {\tt solve\_gsup}}
 
 Effective gravity is defined as

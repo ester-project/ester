@@ -627,7 +627,7 @@ void star2d::solve_temp(solver *op) {
 	lum=zeros(ndomains,1);
 	j0=0;
 // for each domain we compute the luminosity at the upper boundary
-// lum(n) =int_0^pi\int_0^eta_n 2*pi*r^2*rz*rho*eps dzeta dtheta
+// lum(n) =int_0^pi\int_0^eta_n 2*pi*r^2*rz*rho*eps dzeta sin(theta)dtheta
 	for(n=0;n<ndomains;n++) {
 		if(n) lum(n)=lum(n-1);
 		lum(n)+=2*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),
