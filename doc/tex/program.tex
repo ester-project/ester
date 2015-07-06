@@ -568,44 +568,55 @@ Dt2&Second order angular differentiation matrix for symmetric variables&&*\\
 It&Angular integration matrix over $\mu=\cos\theta$ &&*\\
 \hline
 \end{longtable}
-For 2D variables, their values at the collocation points are written in the output file
-in matrix form. Each line corresponds to a different value of the colatitude $\theta$
-(i.e. a different column), {\em starting at the equator.}
+For 2D variables, their values at the collocation points are written
+in the output file in matrix form. Each line corresponds to a different
+value of the colatitude $\theta$ {\em starting
+at the equator.} Namely, if {\tt nth=8}, we have
+
+\beqa
+\theta_0&=&1.47564028,\; \theta_1=1.28533144,\; \theta_2=1.0950334,\;
+\theta_3=0.90475753,\; \theta_4=0.71452525,\\
+\theta_5&=&0.52438664,\; \theta_6=0.33449864,\; \theta_7=0.14572468
+\eeqa
+while the values of a field are ordered as
+
 $$\begin{array}{cccc}
 p(\zeta_0,\theta_0)&p(\zeta_1,\theta_0)&p(\zeta_2,\theta_0)&\cdots\\
 p(\zeta_0,\theta_1)&p(\zeta_1,\theta_1)&p(\zeta_2,\theta_1)&\cdots\\
 p(\zeta_0,\theta_2)&p(\zeta_1,\theta_2)&p(\zeta_2,\theta_2)&\cdots\\
 \vdots&\vdots&\vdots&
 \end{array}$$
-Being $\zeta$ the radial spheroidal coordinate.
-Similarly, 1D variables can be seen as a column vector and are written in one line in the
-output file, terminated by a new line character.
-This behavior can be inverted by writing this line in the template file
+$\zeta$ being the radial spheroidal coordinate.  Similarly, 1D variables
+can be seen as a column vector and are written in one line in the output
+file, terminated by a new line character.  This behavior can be inverted
+by writing this line in the template file
+
 \begin{verbatim}
 \conf{transpose=1}
 \end{verbatim}
-After this command, the variables will be written row wise, i.e. one line for each value of
-the radial coordinate. Note that it does not affect variables written in binary format,
-which are always column wise. To recover the original behaviour we use
+After this command, the variables will be written row wise, i.e. one line
+for each value of the radial coordinate. Note that it does not affect
+variables written in binary format, which are always column wise. To
+recover the original behaviour we use
+
 \begin{verbatim}
 \conf{transpose=0}
 \end{verbatim}
+The original grid  does not contain points at the equator nor at the pole. If
+we want the values at these points we should write
 
-The original grid  does not contain points in the equator and the pole. If we want the values
-at this points we should write
 \begin{verbatim}
 \conf{equator=1}
 \conf{pole=1}
 \end{verbatim}
+By default, the output uses cgs units. If we want the normalized values
+used internally by the code, we simply put
 
-By default, the output uses cgs units. If we want the normalized values used internally by
-the code, we simply put
 \begin{verbatim}
 \conf{dim=0}
 \end{verbatim}
-
-These control commands can be written anywhere in the template file, in separated lines, 
-affecting only the code that appears below them.
+These control commands can be written anywhere in the template file,
+in separated lines, affecting only the code that appears below them.
 
 Let's see an example.
 

@@ -30,7 +30,7 @@ class star2d:
 				'X_O17','Mcore','Lz','Lzcore']
 		fd,template_file=tempfile.mkstemp(prefix='star_template_',suffix='.tmp')
 		fp=os.fdopen(fd,'w')
-		fp.write('\\conf{equator=1}\n\\conf{pole=1}\n\\conf{dim=1}\n')
+		fp.write('\\conf{equator=0}\n\\conf{pole=0}\n\\conf{dim=1}\n')
 		fp.write('${nr}${nth}${nex}${ndomains}${npts}${conv}')
 		for x in names:
 			fp.write('${'+x+'}')

@@ -514,10 +514,11 @@ saying that  functional variations are on variables "p", "w", etc. like
 Equation "w" is completed by the interface and boundary conditions that
 say that:
 
-\[ \partial_\zeta\Omega(\zeta=0) = 0,\quad  E\mu s^2\vn\cdot\na\Omega +
+\[ \partial_\zeta\Omega(\zeta=0) = 0,\quad  \mu s^2\vn\cdot\na\Omega +
 G\vec{t}\cdot\na(s^2\Omega)=0 \andet \Omega(\zeta=1,\theta=\pi/2) =
 \Omega_e\]
-so that the central boundary condition reads:
+where we scaled the stream function $\psi$ in \eq{eq:bl} with the Ekman
+number ($\psi=EG$); the central boundary condition reads:
 \bigskip
 
 \centerline{\tt
@@ -546,7 +547,27 @@ Then we loop on the domains to impose the continuity of {\tt ic\_w}
 \end{center}
 
 \bigskip
-Then we impose the condition on the value of the velocity at equator:
+Then we impose the condition on the value of the velocity at equator and
+the special BC that suppresses the Ekman layer:
+\eq{eq:bl} is inserted as
+
+\bigskip
+\centerline{\tt
+bc=mu*s*s*(nvec,grad(w))+G*(tvec,grad(s*s*w));
+}
+
+\bigskip
+\noindent and plugged in the BC of the last domain. So the outer
+boundary condition on $\Omega$ imposes the angular velocity at the
+equator. Since $\Omega$ obeys a first order equation the central
+condition and its fixed equatorial value determines $\Omega$ everywhere
+provided we lift the degeneracy $\Omega^2\tv\Omega^2+f(s)$ where $f$ is
+arbitrary. This is done by \eq{eq:bl} which also provides the second BC
+for $G$ the stream function which obeys a second order PDE. Hence,
+noting that $\Omega_{\rm eq}$ is a linear function of the values of
+$\Omega$ on the latitudinal grid, BC \eq{eq:bl} is imposed on all the
+grid points except the first one where the equatorial angular velocity
+is imposed: hence,
 
 \bigskip
 \begin{center}

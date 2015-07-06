@@ -551,6 +551,7 @@ void star2d::solve_mov(solver *op) {
 		j0+=map.gl.npts[n];
 	}
 	
+// Surface condition on the angular velocity and stream function
 	q=ones(1,nth);
 	q(0)=0;
 	map.leg.eval_00(th,PI/2*ones(1,nth),TT);
