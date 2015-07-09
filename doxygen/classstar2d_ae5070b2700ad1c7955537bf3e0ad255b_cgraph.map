@@ -3,7 +3,7 @@
 <area shape="rect" id="node3" href="$classfile__parser.html#a8b54855d0f7848f58a2b0d57815849c1" title="file_parser::get" alt="" coords="159,709,267,735"/>
 <area shape="rect" id="node4" href="$classfile__parser.html#a6b391c8b3ac2533e713ab427bbc75c09" title="file_parser::close" alt="" coords="153,759,274,786"/>
 <area shape="rect" id="node5" href="$classstar2d.html#a0bd916045b53438d64dd621571b1d0e0" title="star2d::remap" alt="" coords="162,810,265,837"/>
-<area shape="rect" id="node32" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="774,1150,853,1177"/>
+<area shape="rect" id="node32" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere, flatness, scaled keplerian angular velocity. " alt="" coords="774,1150,853,1177"/>
 <area shape="rect" id="node6" href="$classremapper.html#a2e48d2882f96ae75298b281a94ce20c8" title="remapper::set_ndomains" alt="" coords="323,785,488,811"/>
 <area shape="rect" id="node7" href="$classremapper.html#ab80ce00bfc9a2250cd08b381e400bf20" title="remapper::set_npts" alt="" coords="338,835,473,862"/>
 <area shape="rect" id="node8" href="$classremapper.html#acc5cb6d2b7b01b6b59c587c2a9c9d7ad" title="remapper::set_nt" alt="" coords="345,886,465,913"/>

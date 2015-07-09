@@ -5,7 +5,7 @@
 <area shape="rect" id="node31" href="$classmapping.html#aad8bde507d71c669dc4259b44d5b51aa" title="mapping::remap" alt="" coords="371,1064,485,1091"/>
 <area shape="rect" id="node34" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="932,2094,1033,2120"/>
 <area shape="rect" id="node36" href="$classmatrix.html#aa1971e546e300c6ee574539f1f1e06aa" title="matrix::concatenate" alt="" coords="534,1372,671,1399"/>
-<area shape="rect" id="node37" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="389,1803,467,1830"/>
+<area shape="rect" id="node37" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere, flatness, scaled keplerian angular velocity. " alt="" coords="389,1803,467,1830"/>
 <area shape="rect" id="node4" href="$matrix_8h.html#a01a2cbd27abb4b4be9c05a49606a8e8d" title="vector_t" alt="" coords="948,495,1017,522"/>
 <area shape="rect" id="node5" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="957,1803,1008,1830"/>
 <area shape="rect" id="node6" href="$classdiff__leg.html#a4a20bbf87815938450005945c35442d3" title="diff_leg::init" alt="" coords="558,495,647,522"/>

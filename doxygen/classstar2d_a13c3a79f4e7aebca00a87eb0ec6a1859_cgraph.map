@@ -9,7 +9,7 @@
 <area shape="rect" id="node13" href="$classmatrix.html#a194683136b4f808dcc7b9e98399123bf" title="matrix::block" alt="" coords="795,993,893,1020"/>
 <area shape="rect" id="node14" href="$matrix_8h.html#a6944abb7fdda6efa5248b19a17139e60" title="ones" alt="" coords="819,1931,869,1957"/>
 <area shape="rect" id="node15" href="$classmatrix.html#a1535ca2fbb2172aee12161f76b8983b8" title="matrix::setrow" alt="" coords="791,1272,897,1299"/>
-<area shape="rect" id="node16" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="415,765,494,792"/>
+<area shape="rect" id="node16" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere, flatness, scaled keplerian angular velocity. " alt="" coords="415,765,494,792"/>
 <area shape="rect" id="node24" href="$matrix_8h.html#abe5888ffd398a269f9a8467b144d5fae" title="sqrt" alt="" coords="983,487,1027,513"/>
 <area shape="rect" id="node26" href="$classstar2d.html#a53ab7c1501edcaecf86b89396a40287c" title="star2d::gsup" alt="" coords="797,683,891,709"/>
 <area shape="rect" id="node27" href="$classstar2d.html#a6a1ce30ca36c61e42fb6128ed6c72257" title="star2d::Teff" alt="" coords="799,487,889,513"/>
@@ -46,6 +46,6 @@
 <area shape="rect" id="node39" href="$classstar2d.html#a87b3599d967c97e280071875cfd254d1" title="Part of the Jacobian associated with the mapping There are geometrical relations and physical relatio..." alt="" coords="594,1576,723,1603"/>
 <area shape="rect" id="node40" href="$classstar2d.html#ab7da2979326f2262ff8087ece44b5d50" title="Equation setting the equatorial angular velocity. " alt="" coords="585,1981,732,2008"/>
 <area shape="rect" id="node41" href="$classstar2d.html#a119a475c8f6fbdb96426423b73e662bc" title="Equation setting the &#39;simple&#39; atmosphere model equations To be checked. " alt="" coords="595,1525,722,1552"/>
-<area shape="rect" id="node42" href="$classstar2d.html#adddd3217fe7a264ba96729a765340027" title="Equation setting the surface pressure condition To be checked. " alt="" coords="593,1627,725,1653"/>
-<area shape="rect" id="node43" href="$classstar2d.html#a09a038589a741f85d1021bbf6cad4a00" title="Equation setting the surface effective temperature To be checked. " alt="" coords="595,360,722,387"/>
+<area shape="rect" id="node42" href="$classstar2d.html#adddd3217fe7a264ba96729a765340027" title="Equation giving the effective surface gravity gsup gsup=(&#45; P)/rho. " alt="" coords="593,1627,725,1653"/>
+<area shape="rect" id="node43" href="$classstar2d.html#a09a038589a741f85d1021bbf6cad4a00" title="Equation setting the surface effective temperature Derived from sigma T_e^4 = &#45;xi. " alt="" coords="595,360,722,387"/>
 </map>

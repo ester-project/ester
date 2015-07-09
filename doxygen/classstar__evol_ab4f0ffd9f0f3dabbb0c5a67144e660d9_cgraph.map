@@ -1,5 +1,5 @@
 <map id="star_evol::fill" name="star_evol::fill">
-<area shape="rect" id="node2" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="150,859,229,885"/>
+<area shape="rect" id="node2" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere, flatness, scaled keplerian angular velocity. " alt="" coords="150,859,229,885"/>
 <area shape="rect" id="node3" href="$classstar2d.html#a89f64e2c8a79d1b87a753ee0a871bbef" title="star2d::init_comp" alt="" coords="925,73,1048,100"/>
 <area shape="rect" id="node9" href="$classstar2d.html#a56cb59b4d6994784487320cee8ae8652" title="star2d::eq_state" alt="" coords="638,276,754,303"/>
 <area shape="rect" id="node16" href="$matrix_8h.html#ac2a10710af9a185be9bbadce0cb3b2e4" title="pow" alt="" coords="1146,1239,1193,1265"/>

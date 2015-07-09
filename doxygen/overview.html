@@ -227,14 +227,14 @@ Code Overview</h1>
 <li><a class="el" href="classstar2d.html#a87b3599d967c97e280071875cfd254d1" title="Part of the Jacobian associated with the mapping There are geometrical relations and physical relatio...">star2d::solve_map</a></li>
 <li><a class="el" href="classstar2d.html#ab7da2979326f2262ff8087ece44b5d50" title="Equation setting the equatorial angular velocity. ">star2d::solve_Omega</a></li>
 <li><a class="el" href="classstar2d.html#a119a475c8f6fbdb96426423b73e662bc" title="Equation setting the &#39;simple&#39; atmosphere model equations To be checked. ">star2d::solve_atm</a></li>
-<li><a class="el" href="classstar2d.html#adddd3217fe7a264ba96729a765340027" title="Equation setting the surface pressure condition To be checked. ">star2d::solve_gsup</a></li>
-<li><a class="el" href="classstar2d.html#a09a038589a741f85d1021bbf6cad4a00" title="Equation setting the surface effective temperature To be checked. ">star2d::solve_Teff</a></li>
+<li><a class="el" href="classstar2d.html#adddd3217fe7a264ba96729a765340027" title="Equation giving the effective surface gravity gsup gsup=(- P)/rho. ">star2d::solve_gsup</a></li>
+<li><a class="el" href="classstar2d.html#a09a038589a741f85d1021bbf6cad4a00" title="Equation setting the surface effective temperature Derived from sigma T_e^4 = -xi. ">star2d::solve_Teff</a></li>
 </ul>
 <p>Function <a class="el" href="classsolver.html#ad26b8574d24d480e4434dc3cc2810ce3" title="Solves the set of equations stored in the operator object. ">solver::solve</a> stores all the terms registered in the operator in the previous steps into the operator matrix (see <a class="el" href="classsolver.html#a8f4ec1fefcb8517f070543be1bc7768c" title="Stores distributed (ie. split into several blocks) matrix y into the single vector x...">solver::wrap</a>, <a class="el" href="classsolver.html#ab75fb52ae803c4721c08dc8f55bfd200" title="Performs the inverse operation of the wrap function: restore the single vector x into the blocked vec...">solver::unwrap</a> and <a class="el" href="classsolver.html#a56b249056bea1e6f7dcd8f1166246a26" title="Creates the solver solver operator depending on the type of solver configured (defined when calling s...">solver::create</a>). And then solves the matrix and update the solution the solution fields. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jun 13 2015 16:49:49 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jul 9 2015 15:08:06 for ESTER by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -46,6 +46,6 @@
 <area shape="rect" id="node45" href="$classdiff__leg.html#a51f6535740a957cb61864bbe65e6264c" title="diff_leg::eval_11" alt="" coords="747,1723,864,1749"/>
 <area shape="rect" id="node47" href="$classremapper.html#aa98ac96bc255e1e14c835835848fd920" title="remapper::interp" alt="" coords="382,1495,498,1521"/>
 <area shape="rect" id="node48" href="$classremapper.html#a87f830cfc955930a7094286dfc77c29b" title="remapper::interp_ex" alt="" coords="371,1444,509,1471"/>
-<area shape="rect" id="node49" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="970,1976,1049,2003"/>
+<area shape="rect" id="node49" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere, flatness, scaled keplerian angular velocity. " alt="" coords="970,1976,1049,2003"/>
 <area shape="rect" id="node50" href="$classstar2d.html#a89f64e2c8a79d1b87a753ee0a871bbef" title="star2d::init_comp" alt="" coords="1369,2027,1492,2053"/>
 </map>
