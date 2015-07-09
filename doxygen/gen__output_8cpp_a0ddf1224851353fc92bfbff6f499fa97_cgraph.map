@@ -10,7 +10,7 @@
 <area shape="rect" id="node15" href="$classmapping.html#aad8bde507d71c669dc4259b44d5b51aa" title="mapping::remap" alt="" coords="765,347,880,374"/>
 <area shape="rect" id="node19" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="961,753,1063,779"/>
 <area shape="rect" id="node20" href="$classmatrix.html#aa1971e546e300c6ee574539f1f1e06aa" title="matrix::concatenate" alt="" coords="562,43,699,70"/>
-<area shape="rect" id="node21" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="591,347,670,374"/>
+<area shape="rect" id="node21" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere, flatness, scaled keplerian angular velocity. " alt="" coords="591,347,670,374"/>
 <area shape="rect" id="node22" href="$classstar2d.html#a89f64e2c8a79d1b87a753ee0a871bbef" title="star2d::init_comp" alt="" coords="761,94,884,121"/>
 <area shape="rect" id="node23" href="$classINFILE.html#aefda33c68757cc8c94a4b0d53be870ea" title="INFILE::open" alt="" coords="581,753,681,779"/>
 <area shape="rect" id="node25" href="$classstar2d.html#aa8b8d554ec82827b448fc07cd563b2e3" title="star2d::read_old" alt="" coords="388,246,503,273"/>

@@ -2,7 +2,7 @@
 <area shape="rect" id="node2" href="$classstar2d.html#aff8755edeb32b7cefe09beb466b4eab9" title="star2d::read" alt="" coords="349,473,440,500"/>
 <area shape="rect" id="node6" href="$classmapping.html#af93544cdac32ac9a8aa92a3c674eb8dd" title="mapping::init" alt="" coords="743,701,839,728"/>
 <area shape="rect" id="node11" href="$matrix_8h.html#a34b6a0f0bd1a612e60c345042d8dd626" title="zeros" alt="" coords="1315,575,1370,601"/>
-<area shape="rect" id="node15" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="751,1005,830,1032"/>
+<area shape="rect" id="node15" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere, flatness, scaled keplerian angular velocity. " alt="" coords="751,1005,830,1032"/>
 <area shape="rect" id="node16" href="$classstar2d.html#a89f64e2c8a79d1b87a753ee0a871bbef" title="star2d::init_comp" alt="" coords="931,853,1053,880"/>
 <area shape="rect" id="node32" href="$classstar1d.html#a7cf9a9ff07428cd6fa46b20743c5c12e" title="star1d::read" alt="" coords="165,600,256,627"/>
 <area shape="rect" id="node33" href="$classfile__parser.html#a30c2b39d333160d4d5d58142e5d4382e" title="file_parser::open" alt="" coords="335,1081,454,1108"/>

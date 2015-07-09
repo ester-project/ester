@@ -12,7 +12,7 @@
 <area shape="rect" id="node40" href="$classcmdline__parser.html#a982dc23acd45abd1f1e44424fbd3c83a" title="cmdline_parser::ack" alt="" coords="141,1411,280,1437"/>
 <area shape="rect" id="node41" href="$classcmdline__parser.html#a03f070047816df9a792c3eeef7de3c5f" title="cmdline_parser::close" alt="" coords="136,1461,285,1488"/>
 <area shape="rect" id="node42" href="$classstar2d.html#a0bd916045b53438d64dd621571b1d0e0" title="star2d::remap" alt="" coords="346,1132,449,1159"/>
-<area shape="rect" id="node50" href="$classstar1d.html#a415cb7221570797cf9b97a9d44c5d4a0" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="757,955,835,981"/>
+<area shape="rect" id="node50" href="$classstar1d.html#a415cb7221570797cf9b97a9d44c5d4a0" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere, flatness, scaled keplerian angular velocity. " alt="" coords="757,955,835,981"/>
 <area shape="rect" id="node3" href="$classstar2d.html#aff8755edeb32b7cefe09beb466b4eab9" title="star2d::read" alt="" coords="352,448,443,475"/>
 <area shape="rect" id="node4" href="$utils_8h.html#a66951920a856d044842546492cd8ffe3" title="isHDF5Name" alt="" coords="541,144,643,171"/>
 <area shape="rect" id="node5" href="$classstar2d.html#a15656fb8b185d0cd34d8114db8acb303" title="star2d::hdf5_read" alt="" coords="531,397,653,424"/>
@@ -20,7 +20,7 @@
 <area shape="rect" id="node13" href="$classmapping.html#aad8bde507d71c669dc4259b44d5b51aa" title="mapping::remap" alt="" coords="940,499,1055,525"/>
 <area shape="rect" id="node14" href="$classmatrix.html#a24a177dea06300729d842111eedcfd24" title="Returns the number of rows of the matrix. " alt="" coords="745,245,847,272"/>
 <area shape="rect" id="node15" href="$classmatrix.html#aa1971e546e300c6ee574539f1f1e06aa" title="matrix::concatenate" alt="" coords="727,448,865,475"/>
-<area shape="rect" id="node16" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="757,904,835,931"/>
+<area shape="rect" id="node16" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere, flatness, scaled keplerian angular velocity. " alt="" coords="757,904,835,931"/>
 <area shape="rect" id="node27" href="$classINFILE.html#aefda33c68757cc8c94a4b0d53be870ea" title="INFILE::open" alt="" coords="542,600,642,627"/>
 <area shape="rect" id="node28" href="$classstar2d.html#aa8b8d554ec82827b448fc07cd563b2e3" title="star2d::read_old" alt="" coords="535,499,649,525"/>
 <area shape="rect" id="node29" href="$classINFILE.html#a78b3333de9530c92d71e6b2802fd26da" title="INFILE::len" alt="" coords="547,651,637,677"/>

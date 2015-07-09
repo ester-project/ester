@@ -1,7 +1,7 @@
 <map id="star2d::interp" name="star2d::interp">
 <area shape="rect" id="node2" href="$classremapper.html#aa98ac96bc255e1e14c835835848fd920" title="remapper::interp" alt="" coords="163,1423,279,1449"/>
 <area shape="rect" id="node32" href="$classremapper.html#a87f830cfc955930a7094286dfc77c29b" title="remapper::interp_ex" alt="" coords="153,967,290,993"/>
-<area shape="rect" id="node33" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction and atmosphere..." alt="" coords="547,308,626,335"/>
+<area shape="rect" id="node33" href="$classstar2d.html#a2fcfb5e94e3e768ec869b530a8cedf29" title="Initialize star&#39;s chemical composition, equation of state, opacity, nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere, flatness, scaled keplerian angular velocity. " alt="" coords="547,308,626,335"/>
 <area shape="rect" id="node3" href="$classremapper.html#af75764aefda4f8ea006d63c2e13d284c" title="remapper::remap" alt="" coords="339,967,459,993"/>
 <area shape="rect" id="node23" href="$classdiff__gl.html#a273893d64ef8418624695f43833c9789" title="diff_gl::eval" alt="" coords="542,1423,631,1449"/>
 <area shape="rect" id="node26" href="$classmatrix.html#a9c8dae47ff6ca2a8b548dc2822f39bed" title="matrix::setcol" alt="" coords="732,1473,833,1500"/>
