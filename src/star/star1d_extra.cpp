@@ -1,10 +1,13 @@
 #include "ester-config.h"
 #include"star.h"
+#include <stdio.h>
 
 void star1d::spectrum(figure *pfig,const matrix &y,const char *line) const {
 
 	matrix ys,x;
 	int i,j;
+	FILE *f = fopen("spectrum1d.txt", "w");
+	if (!f) fprintf(stderr, "error fopen spectrum1d\n");
 	
 	pfig->axis(1,nr,-16,0,0);
 	x.dim(2,1);
@@ -22,12 +25,24 @@ void star1d::spectrum(figure *pfig,const matrix &y,const char *line) const {
 	//pfig->semilogy(x,ys,"r:");
 	ys=(map.gl.P,y);
 	j=0;
+// output for idl
+	fprintf(f, "%d\n",nr);
+	for(i=0;i<ndomains;i++) {
+		j+=map.gl.npts[i];
+		fprintf(f, "%d\n", j);
+	}
+	for (i=0; i<nr; i++) {
+		fprintf(f, "%d\t%e\n", i, ys(i));
+	}
+// end output for idl
+	j=0;
 	for(i=0;i<ndomains;i++) {
 		x=vector_t(j+1,j+map.gl.npts[i],map.gl.npts[i]);
 		pfig->semilogy(x,abs(ys.block(j,j+map.gl.npts[i]-1,0,0)/ys(j)),line);
 		j+=map.gl.npts[i];
 	}
 	pfig->hold(0);
+	fclose(f);
 }
 
 double star1d::luminosity() const {
