@@ -15,7 +15,11 @@ int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,nuc
 	// O=0.482273;
 	XCNO=Z*(C+N);
 
+// nuc.pp from the CESAM code (cited in Espinosa Lara Rieutord 2007)
+// Actually used in routine pp1.f of CESAM code citing GONG
+
 	nuc.pp=8.2398e4*X*X*pow(T9,-2./3.)*exp(-3.6*pow(T9,-1./3.));
+// nuc.cno from Kippenhahn & Weigert (1991)
 	nuc.cno=8.67e25*XCNO*X*pow(T9,-2./3.)*exp(-15.228*pow(T9,-1./3.))
 		*(1+0.027*pow(T9,1./3.)-0.778*pow(T9,2./3.)-0.149*T9);
 
