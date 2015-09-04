@@ -52,4 +52,3 @@ libopint_la_SOURCES	= condux_ad.f \
 					  rat2d.f \
 					  dcspline.f 
 
-

@@ -1,2 +1,2 @@
-SUBDIRS = cesam_nuc houdek/v9/lib opal
+SUBDIRS = cesam_nuc houdek/v9 opal
 

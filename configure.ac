@@ -133,6 +133,7 @@ AC_CHECK_FUNCS([floor gettimeofday pow sqrt strtoul])
 AC_CONFIG_FILES([Makefile
                  tables/Makefile
                  tables/cesam_nuc/Makefile
+                 tables/houdek/v9/Makefile
                  tables/houdek/v9/lib/Makefile
                  tables/opal/Makefile
                  src/Makefile
