@@ -138,6 +138,7 @@ AC_CONFIG_FILES([Makefile
                  tables/opal/Makefile
                  src/Makefile
                  src/physics/Makefile
+                 lib-example/Makefile
                  test/models/Makefile])
 
 AC_LANG_PUSH([Fortran 77])
