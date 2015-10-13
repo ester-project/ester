@@ -94,7 +94,8 @@ solution *solve_poly1d(double n, double tol, int nr) {
 
         matrix dPhi = op.get_var("Phi");
         error = max(abs(dPhi));  // Calculate the error (absolute)
-        printf("Error: %e\n", error);
+        //printf("Error: %e\n", error);
+	printf("Error: %d\t%e\n",it,error);
 
         double relax = 1.;
         if(error>0.01) relax = 0.2; // Relax if error too large
@@ -646,7 +647,7 @@ solution *solve_poly2d(double n, double tol, int nr, int nt, int nex, double ome
 		printf("Error: %d\t%e\n",it,error);
 
 		double relax = 1.;
-		if (error > 0.1)
+		if (error > 0.001)
 			relax = 0.2; // Relax if error too large
 
 		// Update variables
