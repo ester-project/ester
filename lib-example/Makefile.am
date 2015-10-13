@@ -11,9 +11,9 @@ polytrope1d_CXXFLAGS = -I$(prefix)/include
 polytrope2d_CXXFLAGS = -I$(prefix)/include
 polytrope2d_final_CXXFLAGS = -I$(prefix)/include
 
-polytrope1d_LDFLAGS = -L$(prefix)/lib -lester -lopint -lnuc -lcesam -lnuc_cesam -lm -Wl,-rpath=$(prefix)/lib
-polytrope2d_LDFLAGS = -L$(prefix)/lib -lester -lopint -lnuc -lcesam -lnuc_cesam -lm -Wl,-rpath=$(prefix)/lib
-polytrope2d_final_LDFLAGS = -L$(prefix)/lib -lester -lopint -lnuc -lcesam -lnuc_cesam -lm -Wl,-rpath=$(prefix)/lib
+polytrope1d_LDFLAGS = -L$(prefix)/lib -lester -lopint -lnuc -lnuc_cesam -lm -Wl,-rpath=$(prefix)/lib
+polytrope2d_LDFLAGS = -L$(prefix)/lib -lester -lopint -lnuc -lnuc_cesam -lm -Wl,-rpath=$(prefix)/lib
+polytrope2d_final_LDFLAGS = -L$(prefix)/lib -lester -lopint -lnuc -lnuc_cesam -lm -Wl,-rpath=$(prefix)/lib
 
 # %:src/%.cpp
 # 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) $(AM_LDFLAGS) -o $@ $^ $(LIBS)
