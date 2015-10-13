@@ -14,14 +14,11 @@ int main(int argc, char *argv[]) {
 
 	double n = atof(argv[1]); // Polytropic index (first command-line argument)
 	double tol = 1e-12; // Required tolerance
-	int nr = 50; // # of radial points
-	int nt = 32; // # of points in theta
+	int nr = atof(argv[3]); // # of radial points
+	int nt = atof(argv[4]); // # of points in theta
 	int nex = 25; // # of points in external domain
 	double omega = atof(argv[2]); // Angular velocity (second command-line argument)
 
-
-    nr = 10;
-    nt = 5;
 
     printf("Solving 1D Polytropic problem:\n");
     solution *sol_1d = solve_poly1d(n, tol, nr);
