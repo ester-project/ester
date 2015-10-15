@@ -5,7 +5,7 @@
 /* Solve the rotating polytrope in 2d.
  *
  *	Usage:
- *			polytrope2d polytropic_index omega
+ *			polytrope2d_final polytropic_index omega nr nt
  *
  *
  */
