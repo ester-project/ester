@@ -1,5 +1,7 @@
 do_subst = sed -e 's,[@]PYTHON[@],$(PYTHON),g'
 
+EXTRA_DIST = ester.in
+
 BUILT_SOURCES = ester_wrap.cpp ester.py
 SWIG_SOURCES = ester_wrap.i
 
@@ -16,3 +18,5 @@ ester_wrap.cpp: $(SWIG_SOURCES)
 
 ester.py: $(srcdir)/ester.in Makefile
 	$(do_subst) < $< > $@
+
+CLEANFILES = $(BUILT_SOURCES)

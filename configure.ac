@@ -79,13 +79,12 @@ AC_COMPILE_IFELSE(
 AC_MSG_RESULT($have_mkl)
 
 AS_IF([test "x$have_cblas" == "xno" -a "x$have_blas" == "xno" -a "x$have_lapack" == "xno"],
-      [AC_SEARCH_LIBS([dgetrf_], [mkl_intel_lp64],
+      [AC_SEARCH_LIBS([dgetrf_], [mkl_rt],
                [have_mkl=yes
                 AC_DEFINE([USE_MKL], [1],
                           [Use MKL lib])
-                LIBS="$LIBS -lmkl_intel_thread -lmkl_core -liomp5 -lpthread"],
-               [have_mkl=no],
-               [-lmkl_intel_thread -lmkl_core -liomp5 -lpthread])])
+                LIBS="$LIBS -lmkl_rt"],
+               [have_mkl=no])])
 
 AS_IF([test "x$have_mkl" == "xno"],
       [AS_IF([test "x$ac_cv_header_cblas_h" == "xno"],
