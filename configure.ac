@@ -19,17 +19,23 @@ AC_CONFIG_SRCDIR([config.h.in])
 AC_PREFIX_DEFAULT(${HOME}/local)
 
 # Checks for programs.
+AC_PROG_LIBTOOL
 AC_PROG_CPP
 AC_PROG_CXX(icpc g++ clang++)
+AC_PROG_CC(icc gcc clang)
 AC_PROG_FC(ifort gfortran44 gfortran)
 AC_PROG_F77($FC)
 AC_PROG_AWK
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AC_PROG_LIBTOOL
 
-AM_PATH_PYTHON
+AM_PATH_PYTHON(2.3)
+AC_PROG_SWIG
+
+AS_IF([test "x$PYTHON" != "x:"],
+      [PYTHONINC=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_inc()"`
+       CPPFLAGS="$CPPFLAGS -I$PYTHONINC"])
 
 # Checks for libraries.
 
@@ -98,11 +104,16 @@ AS_IF([test "x$have_mkl" == "xno"],
 AC_ARG_ENABLE([hdf5],
               AS_HELP_STRING([--enable-hdf5],
                              [Enable HDF5 support]))
-HDF5_BACKEND="$CXX"
+
+AX_LIB_HDF5([serial])
+AS_IF([test "x$HDF5_LIBS" != "x"],
+      [LIBS="$LIBS $HDF5_LIBS -lhdf5_cpp"
+       CPPFLAGS="$CPPFLAGS $HDF5_CPPFLAGS"
+       LDFLAGS="$LDFLAGS $HDF5_LDFLAGS"])
+
 extension="out"
 AS_IF([test "x$enable_hdf5" != "xno"],
-      [CXX="h5c++"
-       AC_MSG_CHECKING([whether h5c++ works])
+      [AC_MSG_CHECKING([whether we can link against hdf5 libraries])
        AC_LINK_IFELSE(
                       [AC_LANG_SOURCE([
                        #include <H5Cpp.h>
@@ -111,13 +122,22 @@ AS_IF([test "x$enable_hdf5" != "xno"],
                        [h5cxx_works="yes"],
                        [h5cxx_works="no"])
        AC_MSG_RESULT($h5cxx_works)
-       AS_IF([test "x$h5cxx_works" == "xno"],
+       AC_MSG_CHECKING([whether h5cc works])
+       AC_LANG_PUSH([C])
+       AC_LINK_IFELSE(
+                      [AC_LANG_SOURCE([
+                       #include <hdf5.h>
+                       int main(void) {}
+                       ])],
+                       [h5cc_works="yes"],
+                       [h5cc_works="no"])
+       AC_LANG_POP([C])
+       AC_MSG_RESULT($h5cc_works)
+       AS_IF([test "x$h5cxx_works" == "xno" -o "x$h5cc_works" == "xno"],
              [enable_hdf5="no"
-              extension="out"
-              CXX=$HDF5_BACKEND],
+              extension="out"],
              [enable_hdf5="yes"
               extension="h5"
-              AC_SUBST(HDF5_BACKEND)
               AC_DEFINE([USE_HDF5], [1], [Enable hdf5 support]) ])],
    [enable_hdf5="no"])
 
@@ -139,7 +159,8 @@ AC_CONFIG_FILES([Makefile
                  src/Makefile
                  src/physics/Makefile
                  lib-example/Makefile
-                 test/models/Makefile])
+                 test/models/Makefile
+                 python/Makefile])
 
 AC_LANG_PUSH([Fortran 77])
 AC_MSG_CHECKING([whether $FC supports -fno-align-commons])
@@ -228,7 +249,8 @@ cat<< EOF
 ester build configuration:
 
 FC:         $FC
-CXX:        $CXX ($HDF5_BACKEND)
+CPPFLAGS:   $CPPFLAGS
+CXX:        $CXX
 CXXFLAGS:   $CXXFLAGS
 LIBS:       $LIBS
 pgplot:     $have_pgplot

@@ -1,0 +1,44 @@
+#!@PYTHON@
+
+import numpy as _np
+import ester_wrap as _wrapper
+
+def _to_numpy(s, name, nr, nth):
+    cmd = 'ptr = s.%s' % name
+    print('exec: %s' % cmd)
+    exec(cmd)
+    tmp = _wrapper.doubleArray_frompointer(ptr.data())
+    field = _np.zeros(shape=(nr, nth))
+    print('value for %s: %e - %e' % (name, tmp[0], tmp[nr*nth-1]))
+    for ir in range(0, nr):
+        for it in range(0, nth):
+            field[ir, it] = tmp[it*nr + ir]
+    return field
+
+class star2d:
+    def __init__(self, model):
+
+        self.s = _wrapper.star2d()
+        if self.s.read(model):
+            raise Exception('Failed reading `%s\'' % model)
+
+        self.opa = self.s.opa.name
+        self.eos = self.s.eos.name
+        self.nuc = self.s.nuc.name
+
+        self.z      = _to_numpy(self.s, 'z', self.s.nr, 1)
+        self.G      = _to_numpy(self.s, 'G', self.s.nr, self.s.nth)
+        self.N2     = _to_numpy(self.s, 'N2()', self.s.nr, self.s.nth)
+        self.R      = _to_numpy(self.s, 'map.R', self.s.ndomains+1, self.s.nth)
+        self.T      = _to_numpy(self.s, 'T', self.s.nr, self.s.nth)
+        self.X      = _to_numpy(self.s, 'comp.X()', self.s.nr, self.s.nth)
+        self.Y      = _to_numpy(self.s, 'comp.Y()', self.s.nr, self.s.nth)
+        self.Z      = _to_numpy(self.s, 'comp.Z()', self.s.nr, self.s.nth)
+        self.eps    = _to_numpy(self.s, 'nuc.eps', self.s.nr, self.s.nth)
+        self.p      = _to_numpy(self.s, 'p', self.s.nr, self.s.nth)
+        self.phi    = _to_numpy(self.s, 'phi', self.s.nr, self.s.nth)
+        self.phiex  = _to_numpy(self.s, 'phiex', self.s.nex, self.s.nth)
+        self.r      = _to_numpy(self.s, 'r', self.s.nr, self.s.nth)
+        self.rho    = _to_numpy(self.s, 'rho', self.s.nr, self.s.nth)
+        self.th     = _to_numpy(self.s, 'th', 1, self.s.nth)
+        self.w      = _to_numpy(self.s, 'w', 1, self.s.nth)

@@ -1,6 +1,7 @@
 #include "ester-config.h"
 #include "utils.h"
 #include "star.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

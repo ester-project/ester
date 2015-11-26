@@ -50,7 +50,8 @@ autoconf/install-sh
 autoconf/ltmain.sh
 autoconf/missing
 autom4te.cache
-m4
+m4/libtool.m4
+m4/ltoptions.m4
 aclocal.m4
 configure
 config.h.in

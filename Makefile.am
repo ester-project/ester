@@ -1,8 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 
-export HDF5_CXX=$(HDF5_BACKEND)
-
-SUBDIRS = . tables src test/models lib-example
+SUBDIRS = . tables src test/models lib-example python
 
 all-local: ester-config.h
 clean-local:

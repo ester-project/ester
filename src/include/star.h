@@ -155,7 +155,7 @@ class star2d {
 	matrix kconv() const;
 	void add_kconv(solver *op,const char *eqn,const matrix &d);
 	void add_dkconv_dz(solver *op,const char *eqn,const matrix &d);
-	void kconv_common(matrix &kc,matrix &Ja,matrix &Jb,symbolic &S,sym &a_,sym &b_) const;
+	// void kconv_common(matrix &kc,matrix &Ja,matrix &Jb,symbolic &S,sym &a_,sym &b_) const;
 
 	virtual void check_jacobian(solver *op,const char *eqn);
 

@@ -39,3 +39,4 @@ matrix composition_map::Z() const {
 	return 1.-X()-Y();
 
 }
+
