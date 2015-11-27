@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.59])
+AC_PREREQ([2.63])
 AC_INIT([ESTER],
         [m4_normalize(esyscmd([autoconf/ester_get_version.sh VERSION]))],
         [http://ester-project.github.io/ester/],
@@ -10,6 +10,7 @@ AC_CONFIG_AUX_DIR(autoconf)
 AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-bzip2 tar-ustar -Wall subdir-objects foreign])
+
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
@@ -19,26 +20,16 @@ AC_CONFIG_SRCDIR([config.h.in])
 AC_PREFIX_DEFAULT(${HOME}/local)
 
 # Checks for programs.
-m4_ifdef([AC_PROG_GREP], 
-         [AC_PROG_GREP],
-         [GREP=grep
-          m4_defun(AC_PROG_GREP)])
-m4_ifdef([AC_PROG_SED], 
-         [AC_PROG_SED],
-         [SED=sed
-          m4_defun(AC_PROG_SED)])
 AC_PROG_LIBTOOL
 AC_PROG_CPP
 AC_PROG_CXX([icpc g++ clang++])
 AC_PROG_CC([icc gcc clang])
 AC_PROG_FC([ifort gfortran44 gfortran])
-AC_PROG_F77
+AC_PROG_F77([$FC])
 AC_PROG_AWK
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-
-F77=$FC
 
 AM_PATH_PYTHON(2.3)
 AX_PKG_SWIG([1.3.17], [have_swig="yes"], [have_swig="no"])
