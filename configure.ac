@@ -31,7 +31,9 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
 AM_PATH_PYTHON(2.3)
-AC_PROG_SWIG
+AX_PKG_SWIG([1.3.17], [have_swig="yes"], [have_swig="no"])
+
+AM_CONDITIONAL(HAVE_SWIG, [test "x$have_swig" == "xyes"])
 
 AS_IF([test "x$PYTHON" != "x:"],
       [PYTHONINC=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_inc()"`
@@ -254,6 +256,7 @@ CXXFLAGS:   $CXXFLAGS
 LIBS:       $LIBS
 pgplot:     $have_pgplot
 HDF5:       $enable_hdf5
+swig:       $have_swig
 perf_log:   $perf_log
 prefix:     $prefix
 -------------------------------------------------------------------------------
