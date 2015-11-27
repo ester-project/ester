@@ -2,8 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
+m4_include([version.m4])
+
 AC_INIT([ESTER],
-        [m4_normalize(esyscmd([autoconf/ester_get_version.sh VERSION]))],
+        [ESTER_VERSION],
         [http://ester-project.github.io/ester/],
         [ester])
 AC_CONFIG_AUX_DIR(autoconf)
@@ -237,7 +239,7 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([
               [can_run="no"])
 AC_MSG_RESULT($can_run)
 
-AC_SUBST([CONFIGURE_DEPENDENCIES], ['$(top_srcdir)/VERSION'])
+AC_SUBST([CONFIGURE_DEPENDENCIES], ['$(top_srcdir)/version.m4'])
 
 AC_OUTPUT
 
@@ -248,7 +250,7 @@ AS_IF([test "x$can_run" == "xno"],
 cat<< EOF
 
 -------------------------------------------------------------------------------
-ester build configuration:
+ester-$VERSION build configuration:
 
 FC:         $FC
 CPPFLAGS:   $CPPFLAGS
