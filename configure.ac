@@ -19,16 +19,26 @@ AC_CONFIG_SRCDIR([config.h.in])
 AC_PREFIX_DEFAULT(${HOME}/local)
 
 # Checks for programs.
+m4_ifdef([AC_PROG_GREP], 
+         [AC_PROG_GREP],
+         [GREP=grep
+          m4_defun(AC_PROG_GREP)])
+m4_ifdef([AC_PROG_SED], 
+         [AC_PROG_SED],
+         [SED=sed
+          m4_defun(AC_PROG_SED)])
 AC_PROG_LIBTOOL
 AC_PROG_CPP
-AC_PROG_CXX(icpc g++ clang++)
-AC_PROG_CC(icc gcc clang)
-AC_PROG_FC(ifort gfortran44 gfortran)
-AC_PROG_F77($FC)
+AC_PROG_CXX([icpc g++ clang++])
+AC_PROG_CC([icc gcc clang])
+AC_PROG_FC([ifort gfortran44 gfortran])
+AC_PROG_F77
 AC_PROG_AWK
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
+
+F77=$FC
 
 AM_PATH_PYTHON(2.3)
 AX_PKG_SWIG([1.3.17], [have_swig="yes"], [have_swig="no"])
