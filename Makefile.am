@@ -60,4 +60,3 @@ EXTRA_DIST = $(top_srcdir)/README \
 
 doxygen:
 	cd $(top_srcdir) && doxygen doc/doxygen.conf
-

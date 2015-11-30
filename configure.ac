@@ -59,6 +59,11 @@ AC_CHECK_HEADERS([cpgplot.h],
 
 AC_CHECK_HEADERS([stddef.h stdlib.h string.h sys/time.h])
 AC_CHECK_HEADERS([cblas.h lapack.h])
+AC_CHECK_HEADERS([Python.h],
+                 [pymodule=yes],
+                 [pymodule=no])
+
+AM_CONDITIONAL(BUILD_ESTER_PY, [test "x$HAVE_PYTHON_H" == "xyes"])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
@@ -110,14 +115,13 @@ AC_ARG_ENABLE([hdf5],
                              [Enable HDF5 support]))
 
 AX_LIB_HDF5([serial])
-AS_IF([test "x$HDF5_LIBS" != "x"],
-      [LIBS="$LIBS $HDF5_LIBS -lhdf5_cpp"
-       CPPFLAGS="$CPPFLAGS $HDF5_CPPFLAGS"
-       LDFLAGS="$LDFLAGS $HDF5_LDFLAGS"])
-
 extension="out"
 AS_IF([test "x$enable_hdf5" != "xno"],
       [AC_MSG_CHECKING([whether we can link against hdf5 libraries])
+      AS_IF([test "x$HDF5_LIBS" != "x"],
+            [LIBS="$LIBS $HDF5_LIBS -lhdf5_cpp"
+             CPPFLAGS="$CPPFLAGS $HDF5_CPPFLAGS"
+             LDFLAGS="$LDFLAGS $HDF5_LDFLAGS"])
        AC_LINK_IFELSE(
                       [AC_LANG_SOURCE([
                        #include <H5Cpp.h>
@@ -246,12 +250,12 @@ AC_OUTPUT
 AS_IF([test "x$can_run" == "xno"],
       [AC_WARN(Could not run compiled binary: check your LD_LIBRARY_PATH)])
 
-
 cat<< EOF
 
 -------------------------------------------------------------------------------
 ester-$VERSION build configuration:
 
+prefix:     $prefix
 FC:         $FC
 CPPFLAGS:   $CPPFLAGS
 CXX:        $CXX
@@ -260,8 +264,8 @@ LIBS:       $LIBS
 pgplot:     $have_pgplot
 HDF5:       $enable_hdf5
 swig:       $have_swig
-perf_log:   $perf_log
-prefix:     $prefix
+python:     $PYTHON_VERSION
+py module:  $pymodule
 -------------------------------------------------------------------------------
 
 EOF
