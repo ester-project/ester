@@ -63,7 +63,7 @@ AC_CHECK_HEADERS([Python.h],
                  [pymodule=yes],
                  [pymodule=no])
 
-AM_CONDITIONAL(BUILD_ESTER_PY, [test "x$HAVE_PYTHON_H" == "xyes"])
+AM_CONDITIONAL(BUILD_ESTER_PY, [test "x$pymodule" == "xyes"])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE

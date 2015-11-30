@@ -32,4 +32,37 @@ ester.py: $(srcdir)/ester.in Makefile
 	$(do_subst) < $< > $@
 
 CLEANFILES = $(BUILT_SOURCES)
+
+install-exec-hook:
+	@echo
+	@echo
+	@echo
+	@echo "Binaries are installed in:"
+	@echo "    $(prefix)/bin"
+	@echo
+	@echo "Libraries are installed in:"
+	@echo "    $(libdir)"
+	@echo
+	@echo "Python modules are in:"
+	@echo "    $(pkgpythondir)"
+	@echo "    $(pkgpyexecdir)"
+	@echo
+	@echo
+	@echo
+
+else
+
+install-exec-hook:
+	@echo
+	@echo
+	@echo
+	@echo "Binaries are installed in:"
+	@echo "    $(prefix)/bin"
+	@echo
+	@echo "Libraries are installed in:"
+	@echo "    $(libdir)"
+	@echo
+	@echo
+	@echo
+
 endif
