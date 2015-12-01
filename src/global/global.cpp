@@ -19,6 +19,11 @@ extern const double L_SUN=3.8396e33;
 
 #include "matrix.h"
 
+extern "C"
+char *ester_version() {
+    return VERSION;
+}
+
 double_map AMASS = create_double_map
 		("n",1.008665)
 		("p",1.00727647)
@@ -54,5 +59,3 @@ double_map AMASS = create_double_map
 		("S32",31.972070)
 		("P31",30.973762)
 		("Fe56",55.847);
-		
-		

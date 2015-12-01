@@ -1,15 +1,15 @@
 #ifndef _SYMBOLIC_H
 #define _SYMBOLIC_H
 
-#include "ester-config.h"
+#include "matrix.h"
+#include "mapping.h"
+#include "solver.h"
+
 #include <vector>
 #include <map>
 #include <string>
 #include <iostream>
 #include <cmath>
-#include "matrix.h"
-#include "mapping.h"
-#include "solver.h"
 
 class rational {
 	int n,d;

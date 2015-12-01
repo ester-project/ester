@@ -1,8 +1,6 @@
 #ifndef _NUMDIFF_H
 #define _NUMDIFF_H
 
-#include "ester-config.h"
-
 #include "matrix.h"
 
 /// \brief

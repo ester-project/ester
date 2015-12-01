@@ -1,7 +1,6 @@
 #ifndef _MAPPING_H
 #define _MAPPING_H
 
-#include "ester-config.h"
 #include "matrix.h"
 #include "numdiff.h"
 #include "graphics.h"

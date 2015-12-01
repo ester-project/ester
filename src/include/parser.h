@@ -1,13 +1,13 @@
 #ifndef _PARSER_H
 #define _PARSER_H
 
-#include "ester-config.h"
+#include <string.h>
+#include "matrix.h"
+
 #include <stdio.h>
 #include <iostream>
 #include <sstream>
 #include <typeinfo>
-#include <string.h>
-#include "matrix.h"
 
 class cmdline_parser {
 	int argc,i;

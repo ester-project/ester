@@ -1,8 +1,6 @@
 #ifndef _SOLVER_H
 #define _SOLVER_H
 
-#include "ester-config.h"
-#include "matrix.h"
 #include "matrix.h"
 
 /// \page term_representation Term representation in the equations
