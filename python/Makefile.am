@@ -39,6 +39,7 @@ install-exec-hook:
 	@echo
 	@echo "Binaries are installed in:"
 	@echo "    $(prefix)/bin"
+	@echo "    (add it to your PATH)"
 	@echo
 	@echo "Libraries are installed in:"
 	@echo "    $(libdir)"
@@ -46,6 +47,7 @@ install-exec-hook:
 	@echo "Python modules are in:"
 	@echo "    $(pkgpythondir)"
 	@echo "    $(pkgpyexecdir)"
+	@echo "    (add it to your PYTHONPATH)"
 	@echo
 	@echo
 	@echo
