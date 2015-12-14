@@ -37,6 +37,7 @@ install-exec-hook:
 	@echo
 	@echo
 	@echo
+	@echo "----------------------------------------------------------------------"
 	@echo "Binaries are installed in:"
 	@echo "    $(prefix)/bin"
 	@echo "    (add it to your PATH)"
@@ -49,6 +50,10 @@ install-exec-hook:
 	@echo "    $(pkgpyexecdir)"
 	@echo "    (add it to your PYTHONPATH)"
 	@echo
+	@echo "Examples have been built in:"
+	@echo "    $(abs_top_builddir)/lib-example/bin"
+	@echo "----------------------------------------------------------------------"
+	@echo
 	@echo
 	@echo
 
@@ -58,11 +63,16 @@ install-exec-hook:
 	@echo
 	@echo
 	@echo
+	@echo "----------------------------------------------------------------------"
 	@echo "Binaries are installed in:"
 	@echo "    $(prefix)/bin"
 	@echo
 	@echo "Libraries are installed in:"
 	@echo "    $(libdir)"
+	@echo
+	@echo "Examples have been built in:"
+	@echo "    $(abs_top_builddir)/lib-example"
+	@echo "----------------------------------------------------------------------"
 	@echo
 	@echo
 	@echo
