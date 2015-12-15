@@ -32,6 +32,7 @@ ester.py: $(srcdir)/ester.in Makefile
 	$(do_subst) < $< > $@
 
 CLEANFILES = $(BUILT_SOURCES)
+endif
 
 install-exec-hook:
 	@echo
@@ -45,10 +46,14 @@ install-exec-hook:
 	@echo "Libraries are installed in:"
 	@echo "    $(libdir)"
 	@echo
+if BUILD_ESTER_PY
 	@echo "Python modules are in:"
 	@echo "    $(pkgpythondir)"
 	@echo "    $(pkgpyexecdir)"
 	@echo "    (add it to your PYTHONPATH)"
+else
+	@echo "Python modules were not built"
+endif
 	@echo
 	@echo "Examples have been built in:"
 	@echo "    $(abs_top_builddir)/lib-example/bin"
@@ -56,25 +61,3 @@ install-exec-hook:
 	@echo
 	@echo
 	@echo
-
-else
-
-install-exec-hook:
-	@echo
-	@echo
-	@echo
-	@echo "----------------------------------------------------------------------"
-	@echo "Binaries are installed in:"
-	@echo "    $(prefix)/bin"
-	@echo
-	@echo "Libraries are installed in:"
-	@echo "    $(libdir)"
-	@echo
-	@echo "Examples have been built in:"
-	@echo "    $(abs_top_builddir)/lib-example"
-	@echo "----------------------------------------------------------------------"
-	@echo
-	@echo
-	@echo
-
-endif
