@@ -132,12 +132,12 @@ solution *solve_poly1d(double n, double tol, int nr) {
     printf("dPhi/dr(0) = %e\n", (map.D, Phi)(0));
     printf("dPhi/dr(1) + Phi(1) = %e\n", (map.D, Phi)(-1)+Phi(-1));
 
-    return new solution(new matrix(Phi), Lambda);
+    return new solution(new matrix(Phi), NULL, NULL, Lambda);
 }
 
 
 solution *solve_poly2d(double n, double tol, int nr, int nt, int nex, double omega,
-        matrix *init_phi, double lambda) {
+        solution *init_guess) {
 
 	/**********  Mapping *************/
 
@@ -309,16 +309,27 @@ solution *solve_poly2d(double n, double tol, int nr, int nt, int nex, double ome
 
 
     // set initial guess if provided
-    if (init_phi != NULL) {
+    if (init_guess != NULL) {
+        matrix *init_phi = init_guess->phi;
+        matrix *init_phi_ex = init_guess->phi_ex;
+        matrix *init_Rs = init_guess->Rs;
+        double lambda = init_guess->lambda;
         if (Phi.ncols() != init_phi->ncols() || Phi.nrows() != init_phi->nrows()) {
             printf("Initial solution doesn't have the correct size\n");
             return NULL;
         }
         Phi = *init_phi;
-        matrix linspace = vector_t(1.0, 0.0, nex);
+        // matrix linspace = vector_t(1.0, 0.0, nex);
         Phiex = (vector_t(1.0, 0.0, nex), Phi.row(-1));
-        Phi0 = Phi(0);
+        Phi0 = (Phi.row(0),Tmean)(0);
         Lambda = lambda;
+        if (init_phi_ex != NULL) {
+            Phiex = *init_phi_ex;
+        }
+        if (init_Rs != NULL) {
+            map.R.setrow(1, *init_Rs);
+            map.remap();
+        }
     }
 
 
@@ -683,9 +694,18 @@ solution *solve_poly2d(double n, double tol, int nr, int nt, int nex, double ome
 	fig.label("r", "Residual", "");
 
 	printf("Lambda = %f\n",Lambda);
+	printf("Phi0 = %f\n", Phi(0, 0));
+	printf("Phi1 = %f\n", Phi(-1, 0));
+	printf("PhiEx0 = %f\n", Phiex(0, 0));
+	printf("PhiEx1 = %f\n", Phiex(-1, 0));
+    printf("Rs: %f %f\n", map.R.row(1)(0), map.R.row(1)(-1));
 	float Re = map.leg.eval_00(map.r.row(-1),PI/2)(0);
 	float Rp = map.leg.eval_00(map.r.row(-1),0)(0);
 	printf("eps = %f \n",(Re-Rp)/Re);
 
-	return new solution(new matrix(Phi), Lambda);
+	return new solution(
+            new matrix(Phi),
+            new matrix(Phiex),
+            new matrix(map.R.row(1)),
+            Lambda);
 }

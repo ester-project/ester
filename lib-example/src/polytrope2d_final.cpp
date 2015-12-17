@@ -28,9 +28,15 @@ int main(int argc, char *argv[]) {
     for (int it=0; it<nt; it++) {
         guess->setcol(it, *sol_1d->phi);
     }
+    sol_1d->phi = guess;
 
     printf("\n\nSolving 2D Polytropic problem with guess:\n");
-    solve_poly2d(n, tol, nr, nt, nex, omega, guess, sol_1d->lambda);
+    if (omega <= 0.4) solve_poly2d(n, tol, nr, nt, nex, omega, sol_1d);
+    if (omega > 0.4) {
+      solution *sol_2d = solve_poly2d(n, tol, nr, nt, nex, 0.4, sol_1d);
+      printf("\n\nSolving 2D Polytropic problem with (2D) guess:\n");
+      solve_poly2d(n, tol, nr, nt, nex, omega, sol_2d);
+    }
 
     delete(sol_1d);
     delete(guess);
