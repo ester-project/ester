@@ -16,6 +16,8 @@ extern "C" {
 #endif
 }
 
+bool dump_jac = false;
+
 solver_full::solver_full(int nblocks,int offcore) {
 	
 	nb=nblocks;
@@ -117,13 +119,43 @@ matrix solver_full::solve(const matrix &rhs) {
 
 }
 
+void dump_mat(FILE *f, matrix& m, int ioff, int joff) {
+    for (int i=0; i<m.nrows(); i++) {
+        for (int j=0; j<m.ncols(); j++) {
+            if (abs(m(i, j)) > 1e-25)
+            fprintf(f, "%d\t%d\t%e\n", i+ioff, j+joff, m(i, j));
+        }
+    }
+}
+
 void solver_full::lu_calc() {
 
+    static int n = 0;
 	int i;
 	matrix UU;
+    int ioff = 0, joff = 0;
+    char *fname;
+    FILE *f = NULL;
+
+    if (dump_jac) {
+        asprintf(&fname, "J-%d.txt", n++);
+        f = fopen(fname, "w");
+    }
 
 	if(oc) read_block(0);
 	for(i=0;i<nb;i++) {
+
+        if (dump_jac) {
+            if (i < nb-1)
+                dump_mat(f, minf[i-1], ioff+m->nrows(), joff);
+            dump_mat(f, m[i], ioff, joff);
+            if (i > 0)
+                dump_mat(f, msup[i-1], ioff, joff+m->ncols());
+
+            ioff += m->nrows();
+            joff += m->ncols();
+        }
+
 		if(i) {
 			if(oc) {
 				if(blk_index(i-1,0)) read_blockinf(i-1);
@@ -155,6 +187,10 @@ void solver_full::lu_calc() {
 
 		lu_block(i);
 	}
+    if (dump_jac) {
+        free(fname);
+        fclose(f);
+    }
 	if(oc) write_block(nb-1,m[nb-1]);
 	lu_flag=1;	
 }

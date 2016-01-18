@@ -943,6 +943,7 @@ void star2d::interp(remapper *red) {
 
 }
 
+extern bool dump_jac;
 int star2d::check_arg(char *arg,char *val,int *change_grid) {
     DEBUG_FUNCNAME;
         int err=0,i;
@@ -1055,6 +1056,9 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
         if(val==NULL) return 2;
         stratified_comp = atoi(val);
     }
+    else if(!strcmp(arg, "dump_jac")) {
+        dump_jac = true;
+    }
     else if(!strcmp(arg,"dump_iter")) {
         config.dump_iter = 1;
 #ifndef USE_HDF5
@@ -1065,7 +1069,6 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
     else err=1;
 
     return err;
-
 }
 
 void star2d::dump_info() {
