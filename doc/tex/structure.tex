@@ -396,25 +396,25 @@ triangular relation.
 \bigskip
 Opacity and nuclear heat production depend on $\rho$ and $T$. So for both of
 these quantities we have the formal relation $f=f(\rho,T)$. For instance, for
-opacity, denoted $\xi$ we get
+opacity, denoted $\kappa$ we get
 
-\[ \delta\xi = \frac{\partial\xi}{\partial\rho_*}\delta\rho_* +
-\frac{\partial\xi}{\partial T_*}\delta T_*\]
+\[ \delta\kappa = \frac{\partial\kappa}{\partial\rho_*}\delta\rho_* +
+\frac{\partial\kappa}{\partial T_*}\delta T_*\]
 Noting that $\rho_*=\rho_c\rho$ and $T_*=T_cT$, after some manipulations we
 get:
 
-\[ \delta\xi =
-\frac{\xi}{\rho}\frac{\partial\ln\xi}{\partial\ln\rho}\delta\rho +
-\xi\frac{\partial\ln\xi}{\partial\ln\rho}\delta\ln\rho_c +
-\frac{\xi}{T}\frac{\partial\ln\xi}{\partial\ln T}\delta T +
-\xi\frac{\partial\ln\xi}{\partial\ln T}\delta\ln T_c\]
+\[ \delta\kappa =
+\frac{\kappa}{\rho}\frac{\partial\ln\kappa}{\partial\ln\rho}\delta\rho +
+\kappa\frac{\partial\ln\kappa}{\partial\ln\rho}\delta\ln\rho_c +
+\frac{\kappa}{T}\frac{\partial\ln\kappa}{\partial\ln T}\delta T +
+\kappa\frac{\partial\ln\kappa}{\partial\ln T}\delta\ln T_c\]
 For radiative conductivity, its expression
 
-\[ k = \frac{16\sigma T^3}{3\rho\xi}\]
+\[ \chi = \frac{16\sigma T^3}{3\rho\kappa}\]
 leads to the following contribution
 
-\[ \frac{\delta k}{k} = \frac{3}{T}\delta T+3\delta\ln T_c
--\frac{1}{\rho}\delta\rho - \delta\ln\rho_c - \frac{1}{\xi}\delta\xi\]
+\[ \frac{\delta \chi}{\chi} = \frac{3}{T}\delta T+3\delta\ln T_c
+-\frac{1}{\rho}\delta\rho - \delta\ln\rho_c - \frac{1}{\kappa}\delta\kappa\]
 where we took into account that $\rho$ and $T$ are non-dimensional.
 
 As far as entropy is concerned, we express its dependence with temperature and
@@ -449,7 +449,7 @@ Together with Poisson equation, we need to impose the boundary conditions and
 the interface conditions at each domain boundary. The boundary conditions are
 
 \[ \na\phi(\vzero) = \vzero  \andet \phi(\infty) = 0\]
-The first condition is equivalent to $\partial_\zeta=0$.
+The first condition is equivalent to $\partial_\zeta\phi=0$.
 
 At the interface of the domains we demand that $\phi$ and $\vn\cdot\na\phi$
 are continuous. The continuity of the normal component of the gradient implies
@@ -587,7 +587,7 @@ is imposed: hence,
 }
 \end{center}
 
-Of course the equation for $\Omega$ is strongly couple to that of the
+Of course the equation for $\Omega$ is strongly coupled to that of the
 meridional circulation that is represented by the stream function $G$
 which is actually the stream function of $\rho\vv$. Hence, on introduces
 
@@ -599,8 +599,8 @@ which is actually the stream function of $\rho\vv$. Hence, on introduces
 \centerline{\tt  eq\_phi=div(rho*s*s*w*V)-div(mu*s*s*grad(w));}
 \bigskip
 
-Again the equation of angular momentum is plugged in the Jacobian
-matrix:
+Again the equation of angular momentum is plugged into the Jacobian
+matrix by:
 
 \bigskip
 \begin{center}
@@ -637,7 +637,7 @@ First the luminosity at each domain boundary is computed through
 d\theta\]
 The definition of the luminosity 
 
-\[ L=\Lambda\intvol \rho\eps_* dV\]
+\[ L=\Lambda\intvol \rho\eps_* dV \with \Lambda = \frac{\rho_cR^2}{T_c}\]
 is differentiated and yields
 
 \[ \delta L - \Lambda\intvol (\delta\rho\eps_* +\rho\delta\eps_*)dV -
@@ -647,9 +647,10 @@ with $L$ continuous at domain interfaces.
 
 Then we introduce
 
-\[ \frad = -\xi\vE^\zeta\cdot\na T\]
+\[ \frad = -\chi\vE^\zeta\cdot\na T\]
 so the projection of the radiative flux on $\vE^\zeta$, the normal
-direction of the $\zeta=\cst$ surfaces. The basic property of this
+direction of the $\zeta=\cst$ surfaces ($\chi$ is the thermal
+conductivity). The basic property of this
 scalar quantity is that it gives the radiative luminosity when
 integrated over a surface, namely
 
@@ -659,10 +660,10 @@ where
 \[ dS = 2\pi r^2r_\zeta\sth d\theta\]
 Explicit expression of $\frad$ is
 
-\[ \frad = \xi\lp\gzz\partial_\zeta T + \gzt\partial_\theta T \rp\]
+\[ \frad = \chi\lp\gzz\partial_\zeta T + \gzt\partial_\theta T \rp\]
 so that the functional derivative is given by
 
-\[ \delta\frad -\frac{\frad}{\xi}\delta\xi -\xi\lp
+\[ \delta\frad -\frac{\frad}{\chi}\delta\chi -\chi\lp
 \gzz\partial_\zeta\delta T + \gzt\partial_\theta\delta T +
 \delta\gzz\partial_\zeta T + \delta\gzt\partial_\theta T\rp = 0\]
 where we have
@@ -681,7 +682,7 @@ functions:
 \[ {\tt qenv}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm Envelope}\]
 Then the temperature equation is inserted, namely
 
-\[ \frac{\Div(\xi\na T)}{\xi} + \Lambda\rho\frac{\eps_*}{\xi_*} = 0\]
+\[ \frac{\Div(\chi\na T)}{\chi} + \Lambda\rho\frac{\eps_*}{\chi_*} = 0\]
 This equation is differentiated functionally and multiplied by {\tt qenv}.
 
 In the core the temperature equation reduces to
@@ -753,14 +754,14 @@ The construction of ESTER's models follows the following steps:
 
 \item Read the initial model or build it (only in 1D)
 \item Build the jacobian matrix
-\item LU factorization of the jacobian matrix
-\item solve for the correction $\delta\vx$
+\item LU factorization of the Jacobian matrix
+\item CGS solve (or refine) for the correction $\delta\vx$
 \item Update $\vx$
 \item recompute the RHS, $\vF(\vx_k)$ and the jacobian matrix
-\item Attempt a conjugate gradient solution to derive the new
+\item Attempt a Conjugate Gradient Squared (CGS) solution to derive the new
 $\delta\vx$ using the former LU matrices as a preconditionner. Namely,
 if $L_k$ and $U_k$ are the factors of $\tens J_k$, the $k+1$ equation is
-solved with the (split-preconditioned) biconjugate gradient solver as
+solved with the (split-preconditioned) CGS solver as
 
 \[ J_k^{k+1}U_k\delta\vx_{k+1} = -L_k^{-1}\vF_{k+1}  \]
 where the $J_k^{k+1}=L_k^{-1}\tens J_{k+1}U_k^{-1}$-matrix is almost
@@ -769,7 +770,7 @@ iterates, then the algorithm continues at step 5. N is chosen such that
 the N iterations are faster than a LU factorization. If convergence is
 not reached, then the algorithm continues on step 3
 
-\item if $\|\delta\vx\|\leq$tol, then stop.
+\item if $\|\delta\vx\|/\|\vx\|\leq$tolerance, then stop.
 \end{enumerate}
 \noindent -----------------------------------------------------------------------
 
