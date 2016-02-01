@@ -320,6 +320,11 @@ int star2d::check_convec(double &p_cc,matrix &Rcc) {
     int i=0;
     while(z(i)<1.05*min_core_size) i++;
     matrix schw;
+// Schwarzschild criterion
+// schw = -(grad P).(grad s)
+// if schw > 0 then stable
+// if schw < 0 then unstable = convection zone
+
     schw=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
         -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
     schw.setrow(0,zeros(1,nth));
