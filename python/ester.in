@@ -34,6 +34,14 @@ def _mat_to_numpy(mat, nr, nth):
             field[ir, it] = tmp[it*nr + ir]
     return field
 
+def _double_to_numpy(mat, nr, nth):
+    tmp = _wrapper.doubleArray_frompointer(mat)
+    field = _np.zeros(shape=(nr, nth))
+    for ir in range(0, nr):
+        for it in range(0, nth):
+            field[ir, it] = tmp[it*nr + ir]
+    return field
+
 class star2d:
     def __init__(self, model):
 
@@ -51,22 +59,51 @@ class star2d:
         self.eos = self.s.eos.name
         self.nuc = self.s.nuc.name
 
-        self.z     = _to_numpy(self.s, 'z', self.nr, 1)
-        self.G     = _to_numpy(self.s, 'G', self.nr, self.nth)
-        self.N2    = _to_numpy(self.s, 'N2()', self.nr, self.nth)
-        self.R     = _to_numpy(self.s, 'map.R', self.ndomains+1, self.nth)
-        self.T     = _to_numpy(self.s, 'T', self.nr, self.nth)
-        self.X     = _to_numpy(self.s, 'comp.X()', self.nr, self.nth)
-        self.Y     = _to_numpy(self.s, 'comp.Y()', self.nr, self.nth)
-        self.Z     = _to_numpy(self.s, 'comp.Z()', self.nr, self.nth)
-        self.eps   = _to_numpy(self.s, 'nuc.eps', self.nr, self.nth)
-        self.p     = _to_numpy(self.s, 'p', self.nr, self.nth)
-        self.phi   = _to_numpy(self.s, 'phi', self.nr, self.nth)
-        self.phiex = _to_numpy(self.s, 'phiex', self.nex, self.nth)
-        self.r     = _to_numpy(self.s, 'r', self.nr, self.nth)
-        self.rho   = _to_numpy(self.s, 'rho', self.nr, self.nth)
-        self.th    = _to_numpy(self.s, 'th', 1, self.nth)
-        self.w     = _to_numpy(self.s, 'w', self.nr, self.nth)
+        self.z          = _to_numpy(self.s, 'z', self.nr, 1)
+        self.G          = _to_numpy(self.s, 'G', self.nr, self.nth)
+        self.N2         = _to_numpy(self.s, 'N2()', self.nr, self.nth)
+        self.R          = _to_numpy(self.s, 'map.R', self.ndomains+1, self.nth)
+        self.T          = _to_numpy(self.s, 'T', self.nr, self.nth)
+        self.X          = _to_numpy(self.s, 'comp.X()', self.nr, self.nth)
+        self.Y          = _to_numpy(self.s, 'comp.Y()', self.nr, self.nth)
+        self.Z          = _to_numpy(self.s, 'comp.Z()', self.nr, self.nth)
+        self.eps        = _to_numpy(self.s, 'nuc.eps', self.nr, self.nth)
+        self.p          = _to_numpy(self.s, 'p', self.nr, self.nth)
+        self.phi        = _to_numpy(self.s, 'phi', self.nr, self.nth)
+        self.phiex      = _to_numpy(self.s, 'phiex', self.nex, self.nth)
+        self.r          = _to_numpy(self.s, 'r', self.nr, self.nth)
+        self.rho        = _to_numpy(self.s, 'rho', self.nr, self.nth)
+        self.th         = _to_numpy(self.s, 'th', 1, self.nth)
+        self.w          = _to_numpy(self.s, 'w', self.nr, self.nth)
+        self.Rp         = 1.0 # self.s.R
+        self.Re         = _mat_to_numpy(self.s.map.leg.eval_00(self.s.r.row(self.nr-1), _np.pi/2),
+                self.nr, self.nth)[0, 0]
+        # self.D     = _to_numpy(self.s, 'w', self.nr, self.nth)
+        self.Dt         = _to_numpy(self.s, 'Dt', self.nr, self.nth)
+        self.Dt2        = _to_numpy(self.s, 'Dt2', self.nr, self.nth)
+        self.xif        = _double_to_numpy(self.s.map.gl.xif, self.ndomains+1, 1)
+        self.surff      = self.s.surff
+        self.Omega_bk   = self.s.Omega_bk
+        self.Omega      = self.s.Omega
+        self.Omegac     = self.s.Omegac
+        self.Xc         = self.s.Xc
+        self.rhoc       = self.s.rhoc
+        self.Tc         = self.s.Tc
+        self.pc         = self.s.pc
+        self.M          = self.s.M
+        self.L          = self.s.luminosity()
+        self.rex        = _to_numpy(self.s, 'rex', self.nex, self.nth)
+        self.rex        = _to_numpy(self.s, 'rex', self.nex, self.nth)
+        self.Teff       = _mat_to_numpy(self.s.Teff(), 1, self.nth)
+        self.gsup       = _mat_to_numpy(self.s.gsup(), 1, self.nth)
+        self.I          = _mat_to_numpy(self.s.map.gl.I, self.nr, self.nth)
+        self.Mcore      = self.s.Mcore()
+        self.Lz         = self.s.Lz()
+        self.Lzcore     = self.s.Lzcore()
+
+        # print('Rp: %e' % self.Rp)
+        # print('Re: %e' % self.Re)
+        # print(' R: %e' % self.R)
 
         ones = _wrapper.ones(1, self.nth)
         te = _wrapper.zeros(self.nth, 1)
