@@ -122,8 +122,8 @@ matrix solver_full::solve(const matrix &rhs) {
 void dump_mat(FILE *f, matrix& m, int ioff, int joff) {
     for (int i=0; i<m.nrows(); i++) {
         for (int j=0; j<m.ncols(); j++) {
-            if (abs(m(i, j)) > 1e-25)
-            fprintf(f, "%d\t%d\t%e\n", i+ioff, j+joff, m(i, j));
+            if (m(i, j) > 0.0)
+                fprintf(f, "%d\t%d\t%e\n", i+ioff, j+joff, m(i, j));
         }
     }
 }

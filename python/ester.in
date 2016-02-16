@@ -101,10 +101,6 @@ class star2d:
         self.Lz         = self.s.Lz()
         self.Lzcore     = self.s.Lzcore()
 
-        # print('Rp: %e' % self.Rp)
-        # print('Re: %e' % self.Re)
-        # print(' R: %e' % self.R)
-
         ones = _wrapper.ones(1, self.nth)
         te = _wrapper.zeros(self.nth, 1)
         self.s.map.leg.eval_00(ones, _np.pi/2, te)
