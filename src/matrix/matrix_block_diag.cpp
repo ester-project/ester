@@ -75,6 +75,9 @@ matrix_block_diag & matrix_block_diag::set_nblocks(int nblocks) {
 	return *this;
 }
 
+matrix matrix_block_diag::full_matrix() const {
+    return (matrix) (*this);
+}
 
 matrix_block_diag::operator matrix() const{
 

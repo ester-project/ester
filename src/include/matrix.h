@@ -208,6 +208,7 @@ public:
 	matrix_block_diag & operator=(const matrix_block_diag &);
 	matrix_block_diag &set_nblocks(int nblocks);
 	operator matrix() const;
+    matrix full_matrix() const;
 	const matrix &block(int i) const;
 	matrix &block(int i);
 	int nblocks() const;
