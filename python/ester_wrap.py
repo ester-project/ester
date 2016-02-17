@@ -401,6 +401,9 @@ class matrix_block_diag(_object):
     def set_nblocks(self, nblocks):
         return _ester_wrap.matrix_block_diag_set_nblocks(self, nblocks)
 
+    def full_matrix(self):
+        return _ester_wrap.matrix_block_diag_full_matrix(self)
+
     def block(self, *args):
         return _ester_wrap.matrix_block_diag_block(self, *args)
 

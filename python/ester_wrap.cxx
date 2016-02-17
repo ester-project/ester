@@ -8835,6 +8835,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_matrix_block_diag_full_matrix(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  matrix_block_diag *arg1 = (matrix_block_diag *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  matrix result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:matrix_block_diag_full_matrix",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_matrix_block_diag, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "matrix_block_diag_full_matrix" "', argument " "1"" of type '" "matrix_block_diag const *""'"); 
+  }
+  arg1 = reinterpret_cast< matrix_block_diag * >(argp1);
+  result = ((matrix_block_diag const *)arg1)->full_matrix();
+  resultobj = SWIG_NewPointerObj((new matrix(static_cast< const matrix& >(result))), SWIGTYPE_p_matrix, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_matrix_block_diag_block__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   matrix_block_diag *arg1 = (matrix_block_diag *) 0 ;
@@ -30697,6 +30719,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_matrix_block_diag", _wrap_delete_matrix_block_diag, METH_VARARGS, NULL},
 	 { (char *)"new_matrix_block_diag", _wrap_new_matrix_block_diag, METH_VARARGS, NULL},
 	 { (char *)"matrix_block_diag_set_nblocks", _wrap_matrix_block_diag_set_nblocks, METH_VARARGS, NULL},
+	 { (char *)"matrix_block_diag_full_matrix", _wrap_matrix_block_diag_full_matrix, METH_VARARGS, NULL},
 	 { (char *)"matrix_block_diag_block", _wrap_matrix_block_diag_block, METH_VARARGS, NULL},
 	 { (char *)"matrix_block_diag_nblocks", _wrap_matrix_block_diag_nblocks, METH_VARARGS, NULL},
 	 { (char *)"matrix_block_diag_nrows", _wrap_matrix_block_diag_nrows, METH_VARARGS, NULL},
