@@ -62,7 +62,7 @@ class star2d:
         self.z          = _to_numpy(self._s, 'z', self.nr, 1)
         self.G          = _to_numpy(self._s, 'G', self.nr, self.nth)
         self.N2         = _to_numpy(self._s, 'N2()', self.nr, self.nth)
-        self.R          = _to_numpy(self._s, 'map.R', self.ndomains+1, self.nth)
+        self.R          = self._s.R
         self.T          = _to_numpy(self._s, 'T', self.nr, self.nth)
         self.X          = _to_numpy(self._s, 'comp.X()', self.nr, self.nth)
         self.Y          = _to_numpy(self._s, 'comp.Y()', self.nr, self.nth)
@@ -71,14 +71,27 @@ class star2d:
         self.p          = _to_numpy(self._s, 'p', self.nr, self.nth)
         self.phi        = _to_numpy(self._s, 'phi', self.nr, self.nth)
         self.phiex      = _to_numpy(self._s, 'phiex', self.nex, self.nth)
-        self.r          = _to_numpy(self._s, 'r', self.nr, self.nth)
+        self.r          = _np.zeros(shape=(self.nr, self.nth+2))
+        self.r[:, 1:self.nth+1] = _to_numpy(self._s, 'r', self.nr, self.nth)
+        self.th         = _np.zeros(shape=(self.nth+2))
+        self.th[1:self.nth+1] = _to_numpy(self._s, 'th', 1, self.nth)
+        self.th[0] = _np.pi/2
+        self.th         = _np.ones((self.nr, 1)) * self.th
+        P_eq            = _wrapper.matrix()
+        self._s.map.leg.eval_00(_wrapper.ones(1, self.nth), _np.pi/2, P_eq)
+        P_po            = _wrapper.matrix()
+        self._s.map.leg.eval_00(_wrapper.ones(1, self.nth), 0.0, P_po)
+        self.P_eq       = _mat_to_numpy(P_eq, self.nth, 1)
+        self.P_po       = _mat_to_numpy(P_po, self.nth, 1)
+        self.r[:, 0]    = _np.matmul(self.r[:, 1:9], self.P_eq)[:, 0]
+        self.r[:, -1]   = _np.matmul(self.r[:, 1:9], self.P_po)[:, 0]
+        self.r          = self.r * self.R
         self.rho        = _to_numpy(self._s, 'rho', self.nr, self.nth)
-        self.th         = _to_numpy(self._s, 'th', 1, self.nth)
         self.w          = _to_numpy(self._s, 'w', self.nr, self.nth)
-        self.Rp         = 1.0
+        self.Rp         = self.R
         self.Re         = _mat_to_numpy(
                 self._s.map.leg.eval_00(self._s.r.row(self.nr-1), _np.pi/2),
-                self.nr, self.nth)[0, 0]
+                self.nr, self.nth)[0, 0]*self.R
         self.D          = _mat_to_numpy(self._s.D.full_matrix(), self.nr, self.nth)
         self.Dt         = _to_numpy(self._s, 'Dt', self.nr, self.nth)
         self.Dt2        = _to_numpy(self._s, 'Dt2', self.nr, self.nth)
