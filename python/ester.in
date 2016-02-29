@@ -83,8 +83,8 @@ class star2d:
         self._s.map.leg.eval_00(_wrapper.ones(1, self.nth), 0.0, P_po)
         self.P_eq       = _mat_to_numpy(P_eq, self.nth, 1)
         self.P_po       = _mat_to_numpy(P_po, self.nth, 1)
-        self.r[:, 0]    = _np.matmul(self.r[:, 1:9], self.P_eq)[:, 0]
-        self.r[:, -1]   = _np.matmul(self.r[:, 1:9], self.P_po)[:, 0]
+        self.r[:, 0]    = _np.dot(self.r[:, 1:9], self.P_eq)[:, 0]
+        self.r[:, -1]   = _np.dot(self.r[:, 1:9], self.P_po)[:, 0]
         self.r          = self.r * self.R
         self.rho        = _to_numpy(self._s, 'rho', self.nr, self.nth)
         self.w          = _to_numpy(self._s, 'w', self.nr, self.nth)
