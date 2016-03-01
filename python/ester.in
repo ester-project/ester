@@ -43,6 +43,15 @@ def _double_to_numpy(mat, nr, nth):
     return field
 
 class star2d:
+
+    # interpolate field f at theta = 0 and theta = pi/2
+    def interp(self, f):
+        r = _np.zeros(shape=(f.shape[0], self.nth+2))
+        r[:, 1:self.nth+1] = f
+        r[:, 0] = _np.dot(f, self.P_eq)[:, 0]
+        r[:, -1] = _np.dot(f, self.P_po)[:, 0]
+        return r
+
     def __init__(self, model):
 
         self._s = _wrapper.star2d()
@@ -59,35 +68,35 @@ class star2d:
         self.eos = self._s.eos.name
         self.nuc = self._s.nuc.name
 
-        self.z          = _to_numpy(self._s, 'z', self.nr, 1)
-        self.G          = _to_numpy(self._s, 'G', self.nr, self.nth)
-        self.N2         = _to_numpy(self._s, 'N2()', self.nr, self.nth)
-        self.R          = self._s.R
-        self.T          = _to_numpy(self._s, 'T', self.nr, self.nth)
-        self.X          = _to_numpy(self._s, 'comp.X()', self.nr, self.nth)
-        self.Y          = _to_numpy(self._s, 'comp.Y()', self.nr, self.nth)
-        self.Z          = _to_numpy(self._s, 'comp.Z()', self.nr, self.nth)
-        self.eps        = _to_numpy(self._s, 'nuc.eps', self.nr, self.nth)
-        self.p          = _to_numpy(self._s, 'p', self.nr, self.nth)
-        self.phi        = _to_numpy(self._s, 'phi', self.nr, self.nth)
-        self.phiex      = _to_numpy(self._s, 'phiex', self.nex, self.nth)
-        self.r          = _np.zeros(shape=(self.nr, self.nth+2))
-        self.r[:, 1:self.nth+1] = _to_numpy(self._s, 'r', self.nr, self.nth)
-        self.th         = _np.zeros(shape=(self.nth+2))
-        self.th[1:self.nth+1] = _to_numpy(self._s, 'th', 1, self.nth)
-        self.th[0] = _np.pi/2
-        self.th         = _np.ones((self.nr, 1)) * self.th
         P_eq            = _wrapper.matrix()
         self._s.map.leg.eval_00(_wrapper.ones(1, self.nth), _np.pi/2, P_eq)
         P_po            = _wrapper.matrix()
         self._s.map.leg.eval_00(_wrapper.ones(1, self.nth), 0.0, P_po)
         self.P_eq       = _mat_to_numpy(P_eq, self.nth, 1)
         self.P_po       = _mat_to_numpy(P_po, self.nth, 1)
-        self.r[:, 0]    = _np.dot(self.r[:, 1:self.nth+1], self.P_eq)[:, 0]
-        self.r[:, -1]   = _np.dot(self.r[:, 1:self.nth+1], self.P_po)[:, 0]
+
+        self.z          = _to_numpy(self._s, 'z', self.nr, 1)
+        self.G          = self.interp(_to_numpy(self._s, 'G', self.nr, self.nth))
+        self.N2         = self.interp(_to_numpy(self._s, 'N2()', self.nr, self.nth))
+        self.R          = self._s.R
+        self.T          = self.interp(_to_numpy(self._s, 'T', self.nr, self.nth))
+        self.X          = self.interp(_to_numpy(self._s, 'comp.X()', self.nr, self.nth))
+        self.Y          = self.interp(_to_numpy(self._s, 'comp.Y()', self.nr, self.nth))
+        self.Z          = self.interp(_to_numpy(self._s, 'comp.Z()', self.nr, self.nth))
+        self.eps        = self.interp(_to_numpy(self._s, 'nuc.eps', self.nr, self.nth))
+        self.p          = self.interp(_to_numpy(self._s, 'p', self.nr, self.nth))
+        self.phi        = self.interp(_to_numpy(self._s, 'phi', self.nr, self.nth))
+        self.phiex      = self.interp(_to_numpy(self._s, 'phiex', self.nex, self.nth))
+        self.r          = self.interp(_to_numpy(self._s, 'r', self.nr, self.nth))
+        self.th         = _np.zeros(shape=(self.nth+2))
+        self.th[1:self.nth+1] = _to_numpy(self._s, 'th', 1, self.nth)
+        self.th[0] = _np.pi/2
+        self.th         = _np.ones((self.nr, 1)) * self.th
+        # self.r[:, 0]    = _np.dot(self.r[:, 1:self.nth+1], self.P_eq)[:, 0]
+        # self.r[:, -1]   = _np.dot(self.r[:, 1:self.nth+1], self.P_po)[:, 0]
         self.r          = self.r * self.R
-        self.rho        = _to_numpy(self._s, 'rho', self.nr, self.nth)
-        self.w          = _to_numpy(self._s, 'w', self.nr, self.nth)
+        self.rho        = self.interp(_to_numpy(self._s, 'rho', self.nr, self.nth))
+        self.w          = self.interp(_to_numpy(self._s, 'w', self.nr, self.nth))
         self.Rp         = self.R
         self.Re         = _mat_to_numpy(
                 self._s.map.leg.eval_00(self._s.r.row(self.nr-1), _np.pi/2),
@@ -106,26 +115,25 @@ class star2d:
         self.pc         = self._s.pc
         self.M          = self._s.M
         self.L          = self._s.luminosity()
-        self.rex        = _to_numpy(self._s, 'rex', self.nex, self.nth)
-        self.rex        = _to_numpy(self._s, 'rex', self.nex, self.nth)
+        self.rex        = _to_numpy(self._s, 'rex', self.nex, self.nth) * self.R
         self.Teff       = _mat_to_numpy(self._s.Teff(), 1, self.nth)
         self.gsup       = _mat_to_numpy(self._s.gsup(), 1, self.nth)
-        self.I          = _mat_to_numpy(self._s.map.gl.I, self.nr, self.nth)
+        self.I          = self.interp(_mat_to_numpy(self._s.map.gl.I, self.nr, self.nth))
         self.Mcore      = self._s.Mcore()
         self.Lz         = self._s.Lz()
         self.Lzcore     = self._s.Lzcore()
-        self.G1         = _mat_to_numpy(self._s.eos.G1, self.nr, self.nth)
-        self.cp         = _mat_to_numpy(self._s.eos.cp, self.nr, self.nth)
-        self.del_ad     = _mat_to_numpy(self._s.eos.del_ad, self.nr, self.nth)
-        self.G3_1       = _mat_to_numpy(self._s.eos.G3_1, self.nr, self.nth)
-        self.cv         = _mat_to_numpy(self._s.eos.cv, self.nr, self.nth)
-        self.prad       = _mat_to_numpy(self._s.eos.prad, self.nr, self.nth)
-        self.chi_T      = _mat_to_numpy(self._s.eos.chi_T, self.nr, self.nth)
-        self.chi_rho    = _mat_to_numpy(self._s.eos.chi_rho, self.nr, self.nth)
-        self.d          = _mat_to_numpy(self._s.eos.d, self.nr, self.nth)
-        self.s          = _mat_to_numpy(self._s.eos.s, self.nr, self.nth)
-        self.vr         = _mat_to_numpy(self._s.vr, self.nr, self.nth)
-        self.vt         = _mat_to_numpy(self._s.vt, self.nr, self.nth)
+        self.G1         = self.interp(_mat_to_numpy(self._s.eos.G1, self.nr, self.nth))
+        self.cp         = self.interp(_mat_to_numpy(self._s.eos.cp, self.nr, self.nth))
+        self.del_ad     = self.interp(_mat_to_numpy(self._s.eos.del_ad, self.nr, self.nth))
+        self.G3_1       = self.interp(_mat_to_numpy(self._s.eos.G3_1, self.nr, self.nth))
+        self.cv         = self.interp(_mat_to_numpy(self._s.eos.cv, self.nr, self.nth))
+        self.prad       = self.interp(_mat_to_numpy(self._s.eos.prad, self.nr, self.nth))
+        self.chi_T      = self.interp(_mat_to_numpy(self._s.eos.chi_T, self.nr, self.nth))
+        self.chi_rho    = self.interp(_mat_to_numpy(self._s.eos.chi_rho, self.nr, self.nth))
+        self.d          = self.interp(_mat_to_numpy(self._s.eos.d, self.nr, self.nth))
+        self.s          = self.interp(_mat_to_numpy(self._s.eos.s, self.nr, self.nth))
+        self.vr         = self.interp(_mat_to_numpy(self._s.vr, self.nr, self.nth))
+        self.vt         = self.interp(_mat_to_numpy(self._s.vt, self.nr, self.nth))
 
         ones = _wrapper.ones(1, self.nth)
         te = _wrapper.zeros(self.nth, 1)
