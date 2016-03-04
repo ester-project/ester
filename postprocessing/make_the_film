@@ -1,0 +1,1 @@
+mencoder "mf://*.png" -mf w=800:h=600:fps=25:type=png -ovc x264 -x264encopts bitrate=5000 -oac copy -o film.avi
