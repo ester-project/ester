@@ -116,8 +116,8 @@ class star2d:
         self.M          = self._s.M
         self.L          = self._s.luminosity()
         self.rex        = _to_numpy(self._s, 'rex', self.nex, self.nth) * self.R
-        self.Teff       = _mat_to_numpy(self._s.Teff(), 1, self.nth)
-        self.gsup       = _mat_to_numpy(self._s.gsup(), 1, self.nth)
+        self.Teff       = self.interp(_mat_to_numpy(self._s.Teff(), 1, self.nth))
+        self.gsup       = self.interp(_mat_to_numpy(self._s.gsup(), 1, self.nth))
         self.I          = self.interp(_mat_to_numpy(self._s.map.gl.I, self.nr, self.nth))
         self.Mcore      = self._s.Mcore()
         self.Lz         = self._s.Lz()
