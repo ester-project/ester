@@ -1,6 +1,7 @@
 # Python script to view the stellar surface from a polar orbit
-# 360 images are produced to make a film of the views from a polar orbit around the
-# star. Use the script "make_the_film" to generate the avi file.
+# 360 images are produced to make a film of the views from a polar
+# orbit around the star.
+# Use the script "make_the_film" to generate the avi file.
 
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
@@ -24,11 +25,9 @@ r_sud=a.r[-1,:]
 r_nord=a.r[-1,nth:0:-1]
 r=np.concatenate([r_nord,r_sud])/a.Re
 
-teff_po=np.reshape(np.dot(a.Teff,a.P_po),1)
-teff_eq=np.reshape(np.dot(a.Teff,a.P_eq),1)
-teff_others=np.reshape(a.Teff,24)
-Teff_all=np.concatenate([teff_eq,teff_others,teff_po])
-teff_ext=np.ma.concatenate([Teff_all[nth:0:-1],Teff_all])
+teff_rsh=np.reshape(a.Teff,nth)
+teff_ext=np.concatenate([teff_rsh[nth:0:-1],teff_rsh])
+
 
 x = np.outer(np.cos(u), r*np.sin(v))
 y = np.outer(np.sin(u), r*np.sin(v))
