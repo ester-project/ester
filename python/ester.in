@@ -145,4 +145,4 @@ class star2d:
         self.Tp     = _mat_to_numpy(tp, self.nth, 1)
 
     def apparent_luminosity(self, angle):
-        return self._s.apparent_luminosity(float(angle)/_np.pi)/L_SUN
+        return self._s.apparent_luminosity(float(angle)/180*_np.pi)/L_SUN
