@@ -52,12 +52,14 @@ class star2d:
         r[:, -1] = _np.dot(f, self.P_po)[:, 0]
         return r
 
-    def __init__(self, model, d=2, interpolate=True):
-
+    def __init__(self, model, interpolate=True):
         self._s = _wrapper.star2d()
 
-        if self._s.read(model, d):
+        if self._s.read(model):
             raise Exception('Failed reading `%s\'' % model)
+        self._init_fields(interpolate)
+
+    def _init_fields(self, interpolate=True):
 
         self.nr = self._s.nr
         self.nth = self._s.nth
@@ -139,8 +141,9 @@ class star2d:
 	self.Dt		= _to_numpy(self._s,'Dt',self.nth,self.nth) #theta derivative
         self.r          = _to_numpy(self._s, 'r', self.nr, self.nth)
         self.rt         = _np.dot(self.r,self.Dt)
-        self.r          = self.interp(self.r)
-        self.rt         = self.interp(self.rt)
+        if interpolate:
+            self.r          = self.interp(self.r)
+            self.rt         = self.interp(self.rt)
         self.th         = _np.zeros(shape=(self.nth+2))
         self.th[1:self.nth+1] = _to_numpy(self._s, 'th', 1, self.nth)
         self.th[0] = _np.pi/2
@@ -189,4 +192,9 @@ class star2d:
 
 class star1d(star2d):
     def __init__(self, model):
-        self = star2d.__init__(self, model, 1, False)
+        self._s = _wrapper.star1d()
+
+        if self._s.read(model):
+            raise Exception('Failed reading `%s\'' % model)
+
+        self._init_fields(interpolate=False)
