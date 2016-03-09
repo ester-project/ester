@@ -44,8 +44,8 @@ def _double_to_numpy(mat, nr, nth):
 
 class star2d:
 
-    # interpolate field f at theta = 0 and theta = pi/2
     def interp(self, f):
+    # add points f(theta=0) and f(theta=pi/2) to  field f 
         r = _np.zeros(shape=(f.shape[0], self.nth+2))
         r[:, 1:self.nth+1] = f
         r[:, 0] = _np.dot(f, self.P_eq)[:, 0]
@@ -87,7 +87,11 @@ class star2d:
         self.p          = self.interp(_to_numpy(self._s, 'p', self.nr, self.nth))
         self.phi        = self.interp(_to_numpy(self._s, 'phi', self.nr, self.nth))
         self.phiex      = self.interp(_to_numpy(self._s, 'phiex', self.nex, self.nth))
-        self.r          = self.interp(_to_numpy(self._s, 'r', self.nr, self.nth))
+	self.Dt		= _to_numpy(self._s,'Dt',self.nth,self.nth) #theta derivative
+        self.r          = _to_numpy(self._s, 'r', self.nr, self.nth)
+        self.rt         = _np.dot(self.r,self.Dt)
+        self.r          = self.interp(self.r)
+        self.rt         = self.interp(self.rt)
         self.th         = _np.zeros(shape=(self.nth+2))
         self.th[1:self.nth+1] = _to_numpy(self._s, 'th', 1, self.nth)
         self.th[0] = _np.pi/2
@@ -134,8 +138,11 @@ class star2d:
         self.s          = self.interp(_mat_to_numpy(self._s.eos.s, self.nr, self.nth))
         self.vr         = self.interp(_mat_to_numpy(self._s.vr, self.nr, self.nth))
         self.vt         = self.interp(_mat_to_numpy(self._s.vt, self.nr, self.nth))
+# It = weights for computing theta-integrals, since polar and equatorial points
+# are used in the representation of the fields, the associated weights are zero
         self.It         = _np.zeros(shape=(1, self.nth+2))
         self.It[0, 1:self.nth+1] = _mat_to_numpy(self._s.map.leg.I_00, 1, self.nth)[0, :]
+        self.It         = _np.reshape(self.It,self.nth+2)
 
         ones = _wrapper.ones(1, self.nth)
         te = _wrapper.zeros(self.nth, 1)
@@ -147,4 +154,5 @@ class star2d:
         self.Tp     = _mat_to_numpy(tp, self.nth, 1)
 
     def apparent_luminosity(self, angle):
+# use of the C++ function apparent_luminosity of the ester library
         return self._s.apparent_luminosity(float(angle)/180*_np.pi)/L_SUN
