@@ -134,6 +134,8 @@ class star2d:
         self.s          = self.interp(_mat_to_numpy(self._s.eos.s, self.nr, self.nth))
         self.vr         = self.interp(_mat_to_numpy(self._s.vr, self.nr, self.nth))
         self.vt         = self.interp(_mat_to_numpy(self._s.vt, self.nr, self.nth))
+        self.It         = _np.zeros(shape=(1, self.nth+2))
+        self.It[0, 1:self.nth+1] = _mat_to_numpy(self._s.map.leg.I_00, 1, self.nth)[0, :]
 
         ones = _wrapper.ones(1, self.nth)
         te = _wrapper.zeros(self.nth, 1)
