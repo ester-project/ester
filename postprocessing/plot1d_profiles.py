@@ -1,0 +1,29 @@
+# Script giving an example for plotting profiles of physical quantities
+# from 1d models
+
+from ester import *
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+a=star1d('M5_50') # open a 1D solution
+
+Rayon=a.R/R_SUN
+print  Rayon # print the radius
+
+lnrho=np.log(a.rho)         # ln(rho)
+dlnrho=np.dot(a.D,lnrho)    # radial derivative of ln(rho)
+
+lnp=np.log(a.p)
+dlnp=np.dot(a.D,lnp)
+
+phi=a.phi		   # gravitational potential
+dphi=np.dot(a.D,phi)	   # gravity
+
+plt.plot(a.r/a.R,dphi,'ro') # plot red dots
+plt.plot(dphi,'ro')
+#plt.yscale('log')        # if log scale needed
+#plt.xscale('log')
+
+
+plt.show()
