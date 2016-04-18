@@ -57,6 +57,10 @@ class star2d:
         self.nth = self._s.nth
         self.nex = self._s.nex
         self.ndomains = self._s.ndomains
+        self.npts    = []
+        tmp = _wrapper.intArray_frompointer(self._s.map.gl.npts)
+        for i in range(0, self.ndomains):
+            self.npts.append(tmp[i])
 
         self.opa = self._s.opa.name
         self.eos = self._s.eos.name

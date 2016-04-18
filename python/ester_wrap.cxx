@@ -2980,30 +2980,32 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 #define SWIGTYPE_p_eos_struct swig_types[10]
 #define SWIGTYPE_p_figure swig_types[11]
 #define SWIGTYPE_p_int swig_types[12]
-#define SWIGTYPE_p_mapping swig_types[13]
-#define SWIGTYPE_p_mapping__ext_map swig_types[14]
-#define SWIGTYPE_p_matrix swig_types[15]
-#define SWIGTYPE_p_matrix_block_diag swig_types[16]
-#define SWIGTYPE_p_matrix_map swig_types[17]
-#define SWIGTYPE_p_matrix_map_elem swig_types[18]
-#define SWIGTYPE_p_nuc_struct swig_types[19]
-#define SWIGTYPE_p_opa_struct swig_types[20]
-#define SWIGTYPE_p_p_char swig_types[21]
-#define SWIGTYPE_p_p_int swig_types[22]
-#define SWIGTYPE_p_remapper swig_types[23]
-#define SWIGTYPE_p_solver swig_types[24]
-#define SWIGTYPE_p_star1d swig_types[25]
-#define SWIGTYPE_p_star2d swig_types[26]
-#define SWIGTYPE_p_star2d__config_struct swig_types[27]
-#define SWIGTYPE_p_star2d__units_struct swig_types[28]
-#define SWIGTYPE_p_star2d__version_struct swig_types[29]
-#define SWIGTYPE_p_star_evol swig_types[30]
-#define SWIGTYPE_p_std__mapT_std__string_matrix_map_t swig_types[31]
-#define SWIGTYPE_p_std__string swig_types[32]
-#define SWIGTYPE_p_std__vectorT_int_t swig_types[33]
-#define SWIGTYPE_p_tiempo swig_types[34]
-static swig_type_info *swig_types[36];
-static swig_module_info swig_module = {swig_types, 35, 0, 0, 0, 0};
+#define SWIGTYPE_p_intArray swig_types[13]
+#define SWIGTYPE_p_mapping swig_types[14]
+#define SWIGTYPE_p_mapping__ext_map swig_types[15]
+#define SWIGTYPE_p_matrix swig_types[16]
+#define SWIGTYPE_p_matrix_block_diag swig_types[17]
+#define SWIGTYPE_p_matrix_map swig_types[18]
+#define SWIGTYPE_p_matrix_map_elem swig_types[19]
+#define SWIGTYPE_p_nuc_struct swig_types[20]
+#define SWIGTYPE_p_opa_struct swig_types[21]
+#define SWIGTYPE_p_p_char swig_types[22]
+#define SWIGTYPE_p_p_int swig_types[23]
+#define SWIGTYPE_p_p_intArray swig_types[24]
+#define SWIGTYPE_p_remapper swig_types[25]
+#define SWIGTYPE_p_solver swig_types[26]
+#define SWIGTYPE_p_star1d swig_types[27]
+#define SWIGTYPE_p_star2d swig_types[28]
+#define SWIGTYPE_p_star2d__config_struct swig_types[29]
+#define SWIGTYPE_p_star2d__units_struct swig_types[30]
+#define SWIGTYPE_p_star2d__version_struct swig_types[31]
+#define SWIGTYPE_p_star_evol swig_types[32]
+#define SWIGTYPE_p_std__mapT_std__string_matrix_map_t swig_types[33]
+#define SWIGTYPE_p_std__string swig_types[34]
+#define SWIGTYPE_p_std__vectorT_int_t swig_types[35]
+#define SWIGTYPE_p_tiempo swig_types[36]
+static swig_type_info *swig_types[38];
+static swig_module_info swig_module = {swig_types, 37, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3288,6 +3290,25 @@ SWIGINTERN doubleArray *doubleArray_frompointer(double *t){
     return static_cast< doubleArray * >(t);
   }
 
+typedef int intArray;
+
+SWIGINTERN intArray *new_intArray(size_t nelements){
+    return (new int[nelements]);
+  }
+SWIGINTERN void delete_intArray(intArray *self){
+    delete[] self;
+  }
+SWIGINTERN int intArray___getitem__(intArray *self,size_t index){
+    return self[index];
+  }
+
+SWIGINTERNINLINE PyObject*
+  SWIG_From_int  (int value)
+{
+  return PyInt_FromLong((long) value);
+}
+
+
 #include <limits.h>
 #if !defined(SWIG_NO_LLONG_MAX)
 # if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
@@ -3352,13 +3373,15 @@ SWIG_AsVal_int (PyObject * obj, int *val)
   return res;
 }
 
-
-SWIGINTERNINLINE PyObject*
-  SWIG_From_int  (int value)
-{
-  return PyInt_FromLong((long) value);
-}
-
+SWIGINTERN void intArray___setitem__(intArray *self,size_t index,int value){
+    self[index] = value;
+  }
+SWIGINTERN int *intArray_cast(intArray *self){
+    return self;
+  }
+SWIGINTERN intArray *intArray_frompointer(int *t){
+    return static_cast< intArray * >(t);
+  }
 
 SWIGINTERN swig_type_info*
 SWIG_pchar_descriptor(void)
@@ -3722,6 +3745,170 @@ SWIGINTERN PyObject *doubleArray_swigregister(PyObject *SWIGUNUSEDPARM(self), Py
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
   SWIG_TypeNewClientData(SWIGTYPE_p_doubleArray, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_new_intArray(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  size_t arg1 ;
+  size_t val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  intArray *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_intArray",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_size_t(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_intArray" "', argument " "1"" of type '" "size_t""'");
+  } 
+  arg1 = static_cast< size_t >(val1);
+  result = (intArray *)new_intArray(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_intArray, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_intArray(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  intArray *arg1 = (intArray *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_intArray",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_intArray, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_intArray" "', argument " "1"" of type '" "intArray *""'"); 
+  }
+  arg1 = reinterpret_cast< intArray * >(argp1);
+  delete_intArray(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_intArray___getitem__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  intArray *arg1 = (intArray *) 0 ;
+  size_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:intArray___getitem__",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_intArray, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "intArray___getitem__" "', argument " "1"" of type '" "intArray *""'"); 
+  }
+  arg1 = reinterpret_cast< intArray * >(argp1);
+  ecode2 = SWIG_AsVal_size_t(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "intArray___getitem__" "', argument " "2"" of type '" "size_t""'");
+  } 
+  arg2 = static_cast< size_t >(val2);
+  result = (int)intArray___getitem__(arg1,arg2);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_intArray___setitem__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  intArray *arg1 = (intArray *) 0 ;
+  size_t arg2 ;
+  int arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:intArray___setitem__",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_intArray, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "intArray___setitem__" "', argument " "1"" of type '" "intArray *""'"); 
+  }
+  arg1 = reinterpret_cast< intArray * >(argp1);
+  ecode2 = SWIG_AsVal_size_t(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "intArray___setitem__" "', argument " "2"" of type '" "size_t""'");
+  } 
+  arg2 = static_cast< size_t >(val2);
+  ecode3 = SWIG_AsVal_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "intArray___setitem__" "', argument " "3"" of type '" "int""'");
+  } 
+  arg3 = static_cast< int >(val3);
+  intArray___setitem__(arg1,arg2,arg3);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_intArray_cast(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  intArray *arg1 = (intArray *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:intArray_cast",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_intArray, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "intArray_cast" "', argument " "1"" of type '" "intArray *""'"); 
+  }
+  arg1 = reinterpret_cast< intArray * >(argp1);
+  result = (int *)intArray_cast(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_intArray_frompointer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int *arg1 = (int *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  intArray *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:intArray_frompointer",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "intArray_frompointer" "', argument " "1"" of type '" "int *""'"); 
+  }
+  arg1 = reinterpret_cast< int * >(argp1);
+  result = (intArray *)intArray_frompointer(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_intArray, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *intArray_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_intArray, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -30643,6 +30830,13 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"doubleArray_cast", _wrap_doubleArray_cast, METH_VARARGS, NULL},
 	 { (char *)"doubleArray_frompointer", _wrap_doubleArray_frompointer, METH_VARARGS, NULL},
 	 { (char *)"doubleArray_swigregister", doubleArray_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_intArray", _wrap_new_intArray, METH_VARARGS, NULL},
+	 { (char *)"delete_intArray", _wrap_delete_intArray, METH_VARARGS, NULL},
+	 { (char *)"intArray___getitem__", _wrap_intArray___getitem__, METH_VARARGS, NULL},
+	 { (char *)"intArray___setitem__", _wrap_intArray___setitem__, METH_VARARGS, NULL},
+	 { (char *)"intArray_cast", _wrap_intArray_cast, METH_VARARGS, NULL},
+	 { (char *)"intArray_frompointer", _wrap_intArray_frompointer, METH_VARARGS, NULL},
+	 { (char *)"intArray_swigregister", intArray_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_matrix", _wrap_delete_matrix, METH_VARARGS, NULL},
 	 { (char *)"new_matrix", _wrap_new_matrix, METH_VARARGS, NULL},
 	 { (char *)"matrix_nrows", _wrap_matrix_nrows, METH_VARARGS, NULL},
@@ -31274,8 +31468,14 @@ static void *_p_star_evolTo_p_star2d(void *x, int *SWIGUNUSEDPARM(newmemory)) {
 static void *_p_star1dTo_p_star2d(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((star2d *)  ((star1d *) x));
 }
+static void *_p_intArrayTo_p_int(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((int *)  ((intArray *) x));
+}
 static void *_p_doubleArrayTo_p_double(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((double *)  ((doubleArray *) x));
+}
+static void *_p_p_intArrayTo_p_p_int(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((int **)  ((intArray **) x));
 }
 static void *_p_composition_mapTo_p_matrix_map(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((matrix_map *)  ((composition_map *) x));
@@ -31293,6 +31493,7 @@ static swig_type_info _swigt__p_double_map = {"_p_double_map", "double_map *", 0
 static swig_type_info _swigt__p_eos_struct = {"_p_eos_struct", "eos_struct *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_figure = {"_p_figure", "figure *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_int = {"_p_int", "int *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_intArray = {"_p_intArray", "intArray *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_mapping = {"_p_mapping", "mapping *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_mapping__ext_map = {"_p_mapping__ext_map", "mapping::ext_map *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_matrix = {"_p_matrix", "matrix *", 0, 0, (void*)0, 0};
@@ -31303,6 +31504,7 @@ static swig_type_info _swigt__p_nuc_struct = {"_p_nuc_struct", "nuc_struct *", 0
 static swig_type_info _swigt__p_opa_struct = {"_p_opa_struct", "opa_struct *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_p_char = {"_p_p_char", "char **", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_p_int = {"_p_p_int", "int **", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_p_intArray = {"_p_p_intArray", 0, 0, 0, 0, 0};
 static swig_type_info _swigt__p_remapper = {"_p_remapper", "remapper *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_solver = {"_p_solver", "solver *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_star1d = {"_p_star1d", "star1d *", 0, 0, (void*)0, 0};
@@ -31330,6 +31532,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_eos_struct,
   &_swigt__p_figure,
   &_swigt__p_int,
+  &_swigt__p_intArray,
   &_swigt__p_mapping,
   &_swigt__p_mapping__ext_map,
   &_swigt__p_matrix,
@@ -31340,6 +31543,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_opa_struct,
   &_swigt__p_p_char,
   &_swigt__p_p_int,
+  &_swigt__p_p_intArray,
   &_swigt__p_remapper,
   &_swigt__p_solver,
   &_swigt__p_star1d,
@@ -31366,7 +31570,8 @@ static swig_cast_info _swigc__p_doubleArray[] = {  {&_swigt__p_doubleArray, 0, 0
 static swig_cast_info _swigc__p_double_map[] = {  {&_swigt__p_double_map, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_eos_struct[] = {  {&_swigt__p_eos_struct, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_figure[] = {  {&_swigt__p_figure, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_int[] = {  {&_swigt__p_int, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_int[] = {  {&_swigt__p_intArray, _p_intArrayTo_p_int, 0, 0},  {&_swigt__p_int, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_intArray[] = {  {&_swigt__p_intArray, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_mapping[] = {  {&_swigt__p_mapping, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_mapping__ext_map[] = {  {&_swigt__p_mapping__ext_map, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_matrix[] = {  {&_swigt__p_matrix, 0, 0, 0},{0, 0, 0, 0}};
@@ -31376,7 +31581,8 @@ static swig_cast_info _swigc__p_matrix_map_elem[] = {  {&_swigt__p_matrix_map_el
 static swig_cast_info _swigc__p_nuc_struct[] = {  {&_swigt__p_nuc_struct, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_opa_struct[] = {  {&_swigt__p_opa_struct, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_p_char[] = {  {&_swigt__p_p_char, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_p_int[] = {  {&_swigt__p_p_int, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_p_intArray[] = {{&_swigt__p_p_intArray, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_p_int[] = {  {&_swigt__p_p_intArray, _p_p_intArrayTo_p_p_int, 0, 0},  {&_swigt__p_p_int, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_remapper[] = {  {&_swigt__p_remapper, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_solver[] = {  {&_swigt__p_solver, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_star1d[] = {  {&_swigt__p_star1d, 0, 0, 0},{0, 0, 0, 0}};
@@ -31404,6 +31610,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_eos_struct,
   _swigc__p_figure,
   _swigc__p_int,
+  _swigc__p_intArray,
   _swigc__p_mapping,
   _swigc__p_mapping__ext_map,
   _swigc__p_matrix,
@@ -31414,6 +31621,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_opa_struct,
   _swigc__p_p_char,
   _swigc__p_p_int,
+  _swigc__p_p_intArray,
   _swigc__p_remapper,
   _swigc__p_solver,
   _swigc__p_star1d,

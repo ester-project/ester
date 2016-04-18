@@ -42,6 +42,7 @@
 
 %include "carrays.i"
 %array_class(double, doubleArray);
+%array_class(int, intArray);
 
 %include "../src/include/matrix.h"
 %include "../src/include/physics.h"
