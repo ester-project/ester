@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import cm
 
-filename='M5_O95'
+filename='M5_O95_nth30'
 a=star2d(filename) # open a 2D solution
 
 print 'Compute the 2D spectrum of the density'
@@ -26,7 +26,17 @@ for i in range(a.nr):
     sp_leg[i,:]=np.dot(a.P_00,a.rho[i,1:a.nth+1]) 
 
 for k in range(a.nth):
-    sp_leg[:,k]=np.dot(a.P,sp_leg[:,k])
+    sp_leg[:,k]=abs(np.dot(a.P,sp_leg[:,k]))
+
+# Normalisation by the coefficient (0,0) in each domain
+jfirst=np.zeros(a.ndomains)
+
+for i in np.arange(a.ndomains-1)+1:
+   jfirst[i]=jfirst[i-1]+a.npts[i]
+
+for i in range(a.ndomains):
+    sp0=sp_leg[jfirst[i],0] # normalization by the (n=0,l=0) coefficient
+    sp_leg[jfirst[i]:jfirst[i]+a.npts[i],:]=sp_leg[jfirst[i]:jfirst[i]+a.npts[i],:]/sp0
 
 x=np.arange(a.nth)
 y=np.arange(a.nr)
@@ -34,6 +44,7 @@ y=np.arange(a.nr)
 rap=float(a.nth)/a.nr
 cax = plt.matshow(np.log10(abs(sp_leg)),origin='lower',aspect=rap)
 cbar = plt.colorbar(cax,fraction=0.05,pad=0.1)
+# fraction = 5 % and pad = white padding between bar and plot in inches!
 
 #plt.grid(True)
 #plt.xlabel('2D spectrum')
@@ -42,6 +53,7 @@ plt.ylabel(r'Chebyshev index + domain rank')
 
 li=[str(2*x[i]) for i in range(a.nth)]
 plt.xticks(x,li)
+plt.yticks(jfirst)
 
 
 fig = plt.gcf()
