@@ -763,13 +763,14 @@ $\zeta=\eta$ we impose
 \[ f(\zeta_{\rm interf}^n) = f(\zeta_{\rm interf}^{n+1}) \andet f'(\zeta_{\rm
 interf}^n) = f'(\zeta_{\rm interf}^{n+1})\]
 where the prime is for the derivative. $n$ designates the lower domain
-and $n+1$ the upper domain. The equation to be solved may be Laplace
+and $n+1$ the upper domain. Of course $\zeta_{\rm interf}^n=\zeta_{\rm
+interf}^{n+1}=\eta$. The equation to be solved may be Laplace
 equation for instance. In figure~\ref{matp} we display the structure of the
 matrix using 20 grid points, with 10 points in each domain. We use the
 strong formulation of the differential problem \cite[][]{RELP16}. On the
 first line of the matrix we have, for instance, the boundary condition
 at the bottom of the first domain. On row 10, the last grid point of the
-first domain we impose the continuity of the solution, so the first dot
+first domain, we impose the continuity of the solution, so the first dot
 is just "1" and the second dot is "-1". In the ESTER-nomenclature, the
 "1" represents the first part of the interface condition while the "-1"
 is the second part. Hence the "1" is inserted in the matrix via a {\tt
