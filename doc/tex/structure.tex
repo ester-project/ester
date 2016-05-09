@@ -37,11 +37,13 @@ below).
 \subsection{Simplifications}
 
 We simplify the system of equations by first neglecting entropy
-advection by meridional circulation. We also neglect the convective
-flux: thus we avoid computing stars with an outer convective envelope
-where the convective flux is non-negligible. Core convection is
-simplified in assuming an isentropic core. Hence, the energy/entropy
-equation just reads:
+advection by meridional circulation, which is justified at low viscosity
+(e.g. \href{http://arxiv.org/abs/astro-ph/0608431}{\citealt{R06b}} or
+\citealt{RELP16}).
+We also neglect the convective flux: thus we avoid computing stars
+with an outer convective envelope where the convective flux is
+non-negligible. Core convection is simplified in assuming an isentropic
+core. Hence, the energy/entropy equation just reads:
 
 \begin{equation} -\Div\vF + \rho\eps_* = 0\end{equation}
 in a radiative zone and
@@ -117,8 +119,12 @@ Meridional velocity scale \dotfill $E\sqrt{\frac{P_c}{\rho_c}}$
 }
 \end{center}\bigskip
 
-where $E$ is the Ekman number defined below.
-With these scalings, the equation now read:
+\noindent where $E$ is the Ekman number defined as:
+
+\begin{equation} E = \frac{\mu_c}{\rho_c \Omega_0 R^2} \with
+\Omega_0=\sqrt{\frac{P_c}{R^2\rho_c}}\; .\end{equation}
+
+With these scalings, the Poisson equation now reads:
 
 \begin{equation} \Delta\phi = \pi_c \rho\end{equation}
 where
@@ -149,12 +155,8 @@ while angular momentum flux balance reads
 
 \begin{equation}
 \label{eq:angular_momnd}
-\na\cdot{(\rho s^2\Omega\vu)}=E\na\cdot (\mu s^2\na\Omega)
+\na\cdot{(\rho s^2\Omega\vu)}=\na\cdot (\mu s^2\na\Omega)
 \end{equation}
-In this latter equation we introduced the Ekman number
-
-\begin{equation} E = \frac{\mu_c}{\rho_c \Omega_0 R^2} \with
-\Omega_0=\sqrt{\frac{P_c}{R^2\rho_c}}\; .\end{equation}
 Mass conservation remains the same
 
 \begin{equation} \Div(\rho\vu) =0\end{equation}
@@ -206,7 +208,7 @@ the interior flow can be mimicked by the boundary condition:
 
 \begin{equation}
 \label{eq:bl}
-E\mu
+\mu
 s^2\vec{\hat\xi}\cdot\na\Omega+\psi\vec{\hat\tau}\cdot\na(s^2\Omega)=0
 \qquad\mbox{on the surface}\;.
 \end{equation}
@@ -462,7 +464,7 @@ test other kinds of mapping (see chapter 6 for more details).
 
 \subsubsection{$\bullet$ \bf Momentum equation {\tt solve\_mov}}
 
-We start from the meridional compents of the (inviscid) momentum equation
+We start from the meridional components of the (inviscid) momentum equation
 \eq{baroc}, \eq{eq:vort_inv} and \eq{eq:angular_mom}. For the angular momentum
 equation \eq{eq:angular_mom}, we impose boundary condition \eq{eq:bl}.
 
@@ -499,8 +501,9 @@ explained by Eq. (63) in \cite{ELR13}. Thus the programme introduces:
 }
 \bigskip
 
-The vorticity equation is then plugged into the big Jacobian matrix by just
-saying that  functional variations are on variables "p", "w", etc. like
+The vorticity equation, which is called "w", is then plugged into the
+big Jacobian matrix by just saying that  functional variations are on
+variables "p", "w", "rho" and "r" like
 
 \begin{center}
 {\tt
@@ -515,11 +518,13 @@ saying that  functional variations are on variables "p", "w", etc. like
 Equation "w" is completed by the interface and boundary conditions that
 say that:
 
-\[ \partial_\zeta\Omega(\zeta=0) = 0,\quad  \mu s^2\vn\cdot\na\Omega +
-G\vec{t}\cdot\na(s^2\Omega)=0 \andet \Omega(\zeta=1,\theta=\pi/2) =
-\Omega_e\]
-where we scaled the stream function $\psi$ in \eq{eq:bl} with the Ekman
-number ($\psi=EG$); the central boundary condition reads:
+\[ \partial_\zeta\Omega(\zeta=0) = 0,\quad {\rm at\; center} \]
+
+\[ \mu s^2\vn\cdot\na\Omega +
+G\vec{t}\cdot\na(s^2\Omega)=0,\quad {\rm at\; surface} \]
+\[ \Omega(\zeta=1,\theta=\pi/2) = \Omega_e\]
+where $G$ is the stream function $\psi$ in \eq{eq:bl}.
+The central boundary condition reads:
 \bigskip
 
 \centerline{\tt
@@ -559,7 +564,7 @@ bc=mu*s*s*(nvec,grad(w))+G*(tvec,grad(s*s*w));
 
 \bigskip
 \noindent and plugged in the BC of the last domain. So the outer
-boundary condition on $\Omega$ imposes the angular velocity at the
+boundary condition on $\Omega$ imposes the angular velocity at
 equator. Since $\Omega$ obeys a first order equation the central
 condition and its fixed equatorial value determines $\Omega$ everywhere
 provided we lift the degeneracy $\Omega^2\tv\Omega^2+f(s)$ where $f$ is
@@ -588,8 +593,8 @@ is imposed: hence,
 \end{center}
 
 Of course the equation for $\Omega$ is strongly coupled to that of the
-meridional circulation that is represented by the stream function $G$
-which is actually the stream function of $\rho\vv$. Hence, on introduces
+meridional circulation that is represented by the stream function $G$,
+which is actually the stream function of $\rho\vv$. Hence, one introduces
 
 \centerline{\tt V=curl(G*phivec)/rho;}
 \bigskip
@@ -738,7 +743,44 @@ Taking the log and making the functional derivative, we get
 R}\delta(\vn\cdot\nabla T) = 0
 \end{equation}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\linewidth]{fig/matrix_pedago.eps}
+\caption{Example of discretized-operator matrix with two domains and
+interface conditions.}
+\label{matp}
+\end{figure}
 
+\subsection{Setting interface and boundary conditions}
+
+At the interface of two domains we need to impose the continuity of the
+functions and of their normal derivative (when the operators are of
+second order). The conditions are imposed on the last grid point of the
+lower domain and on the first grid point of the upper domain. To be
+clear let us take an example of a 1D problem, where at some radius
+$\zeta=\eta$ we impose
+
+\[ f(\zeta_{\rm interf}^n) = f(\zeta_{\rm interf}^{n+1}) \andet f'(\zeta_{\rm
+interf}^n) = f'(\zeta_{\rm interf}^{n+1})\]
+where the prime is for the derivative. $n$ designates the lower domain
+and $n+1$ the upper domain. Of course $\zeta_{\rm interf}^n=\zeta_{\rm
+interf}^{n+1}=\eta$. The equation to be solved may be Laplace
+equation for instance. In figure~\ref{matp} we display the structure of the
+matrix using 20 grid points, with 10 points in each domain. We use the
+strong formulation of the differential problem \cite[][]{RELP16}. On the
+first line of the matrix we have, for instance, the boundary condition
+at the bottom of the first domain. On row 10, the last grid point of the
+first domain, we impose the continuity of the solution, so the first dot
+is just "1" and the second dot is "-1". In the ESTER-nomenclature, the
+"1" represents the first part of the interface condition while the "-1"
+is the second part. Hence the "1" is inserted in the matrix via a {\tt
+bc\_top1\_add} operation, while the "-1" is inserted in the matrix via a
+{\tt bc\_top2\_add}  operation.
+
+The second domain, in our example, starts at row 11 by the other
+interface condition imposing the continuity of the derivative of the
+solution. In row 20, we impose the ``surface" boundary condition saying
+$f(\zeta_{\rm surf})=0$, so the dot is just a "1".
 
 
 \subsection{Implementation of Newton's algorithm}
