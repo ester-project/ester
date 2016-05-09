@@ -97,8 +97,11 @@ stellar model to be calculated (see below).
 \section{Default values}
 
 Default values to be used by {\tt star1d} or {\tt star2d} may be set up
-with the files {\tt \$prefix/share/ester/config/1d\_default.par} and {\tt
-\$prefix/share/ester/config/2d\_default.par}.
+with the files 
+\begin{itemize}
+\item[-]{\tt \$prefix/share/ester/config/1d\_default.par} 
+\item[-]{\tt \$prefix/share/ester/config/2d\_default.par}.
+\end{itemize}
 
 In the distribution of ESTER, the proposed default values are such that
 the star is divided in 8 domains with 30 points in each domains. Opacities
@@ -333,7 +336,7 @@ of orthogonal polynomials in the ``radial" ($\zeta$) and ``horizontal"
 $\theta$ directions, for instance
 
 \[\rho(\zeta,\theta)=
-\sum_{i=0}^{n_r-1}\sum_{j=0}^{n_\theta-1}\rho_{ij}T_i(\zeta)P_j(\theta)\]
+\sum_{i=0}^{n_r-1}\sum_{j=0}^{n_\theta-1}\rho_{ij}T_i(\zeta)P_j(\cos\theta)\]
 where $T_i$ and $P_j$ are Chebyshev and Legendre polynomial
 respectively.
 When $n_r$ and $n_\theta$ are high enough, the spectral representation
@@ -665,29 +668,41 @@ Pressure:
 
 \subsection{Using ESTER Native format}
 
-A basic python module for reading the models is included in the
-distribution. It is located in {\tt ester/python/star.py}. At the moment
-it only works for models calculated using {\tt ester 2d}. The variables in
-the models are defined as \emph{numpy} arrays. Here is a little example:
+A basic interface python module for reading the models is included in
+the distribution. It is located in {\tt ester/python/}. The interface
+between the C/C++ and python variables is based on SWIG. The C++.variables
+of ESTER are made visible using the interface file \texttt{ester.in},
+which can be modified by the (advanced) user if necessary. In principles
+all fields have been made available. If the \texttt{ester.in} file
+is modified then a run of \texttt{make install} in the \texttt{build}
+directory is necessary.
+
+The variables in the models are defined as \emph{numpy} arrays. Here is
+a little example extracted from the postprocessing directory where various
+python scripts are available:
 
 \begin{minted}{python}
 #---------------------------------------------------------------------
 import sys
-sys.path.append('path_to/ester/python') # include the full path to the module
+from ester import *      # Loads the module
+import matplotlib.pyplot as plt
+import numpy as np
 
-from star import *      # Loads the module
-
-A=star2d('model_file')  # Loads a model 
+A=star1d('model_file')  # Loads a model 
+# or A=star2d('model_file') if you use a 2D-model
 
 print A.p[0,0]          # Prints the central pressure
 
-A.draw(A.w)             # Makes a plot of the differential rotation
+plt.plot(A.r[:],np.log10(A.rho[:]))
+
 show()                  # Needed in non-interactive mode of matplotlib
 #---------------------------------------------------------------------
 \end{minted}
 
-Note that ``dotted variables'' like \verb|opa.k| are accessed via
-\verb|A.opa_k| under python.
+Other examples are availble, especially meridional cuts like the
+differential rotation (see \texttt{P\_rot.py}). Note that ``dotted
+variables'' like \verb|opa.k| are accessed via \verb|A.opa_k| under
+python.
 
 \subsection{Using HDF5}
 If you installed ESTER with

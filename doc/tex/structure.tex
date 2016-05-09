@@ -753,11 +753,11 @@ The construction of ESTER's models follows the following steps:
 \begin{enumerate}
 
 \item Read the initial model or build it (only in 1D)
-\item Build the jacobian matrix
+\item Build the Jacobian matrix
 \item LU factorization of the Jacobian matrix
 \item CGS solve (or refine) for the correction $\delta\vx$
 \item Update $\vx$
-\item recompute the RHS, $\vF(\vx_k)$ and the jacobian matrix
+\item recompute the RHS, $\vF(\vx_k)$ and the Jacobian matrix
 \item Attempt a Conjugate Gradient Squared (CGS) solution to derive the new
 $\delta\vx$ using the former LU matrices as a preconditionner. Namely,
 if $L_k$ and $U_k$ are the factors of $\tens J_k$, the $k+1$ equation is
