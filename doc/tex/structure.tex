@@ -350,9 +350,36 @@ Lum      &                  &  lum   &  Luminosity  \\
 \end{tabular}
 \end{center}
 \caption[]
-{This table lists all the variables contained in $\vx$ but not
+{This table lists all the primary variables contained in $\vx$ but not
 in their actual order in the code.}
 \end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{lll}
+\hline
+C++ Variable & Dependence (C++ quantity) & Comments \\
+\\
+T  & log\_T & Temperature \\
+r  & R$_i$, $\Delta\eta_i$      & radius \\
+rz &   r    & radius $\zeta$-derivative\\
+log\_rhoc &   log\_pc,log\_Tc   & log of central density \\
+rho &   log\_T,log\_p    & density \\
+opa.xi &   log\_T,log\_p    & thermal conductivity \\
+opa.k &   log\_T,log\_p    & opacity \\
+nuc.eps &   log\_T,log\_p    & nuclear heating \\
+s  &   log\_T,log\_p    & entropy \\
+\hline
+\end{tabular}
+\end{center}
+\caption[]
+{This table lists all the secondary variables. They depend on the
+primary variables and are used as short-cut in the programming.}
+\end{table}
+
+
+
+
 
 \noindent Real ordering of variables:
 
@@ -630,13 +657,14 @@ the interfaces.
 For non-dimensional parameters like $\pi_c$, it is continuous at the domain
 interface:
 
-\[ 1\times\delta\pi_c({\rm Right}) -1\times\delta\pi_c({\rm Left}) = 0\]
-Right means ``Right of the lower domain" and Left means ``Left of the upper
-domain".
+\[ 1\times\delta\pi_c({\rm 1}) -1\times\delta\pi_c({\rm 2}) = 0\]
+``1" means ``part 1 of the interface condition" and ``2" means ``part 2
+of the interface condition" (see Fig.~\ref{matp}).
+
 
 \subsubsection{$\bullet$ \bf Temperature equation {\tt solve\_temp}}
 
-First the luminosity at each domain boundary is computed through
+First, the luminosity at each domain boundary is computed through
 
 \[ L_n = 2\pi\Lambda\int_0^\pi\int_0^{\eta_n} \rho\eps_* r^2r_\zeta\sth
 d\theta\]
@@ -674,32 +702,38 @@ so that the functional derivative is given by
 where we have
 
 \[ \delta\gzz = -2r(\gzt)^2\delta r -\frac{2\gzz}{\rz}\delta\rz
--\frac{2\gzt}{\rz}\delta r_\theta\]
-and
-
-\[ \delta\gzt = -\frac{2\gzt}{r}\delta r -\frac{\gzt}{\rz}\delta\rz
+-\frac{2\gzt}{\rz}\delta r_\theta\andet
+\delta\gzt = -\frac{2\gzt}{r}\delta r -\frac{\gzt}{\rz}\delta\rz
 -\frac{\delta r_\theta}{r^2\rz}\]
 
-Then we introduce the core and the envelope with two Heaviside
-functions:
+Then we introduce the masks of the convective zones (CZ) {\tt qconv} and
+of the radiative zones (RZ) {\tt qrad}.
 
-\[ {\tt qcore}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm Core}\]
-\[ {\tt qenv}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm Envelope}\]
-Then the temperature equation is inserted, namely
+\[ {\tt qconv}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm CZ}\]
+\[ {\tt qrad}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm RZ}\]
+and of course {\tt qconv+qrad=1}.
 
-\[ \frac{\Div(\chi\na T)}{\chi} + \Lambda\rho\frac{\eps_*}{\chi_*} = 0\]
-This equation is differentiated functionally and multiplied by {\tt qenv}.
+Hence, the temperature equation can be written
 
-In the core the temperature equation reduces to
+\beq q_{\rm conv}(\vn\cdot\na s) +  q_{\rm rad}\lp\frac{\Div(\chi\na
+T)}{\chi} + \Lambda\rho\frac{\eps_*}{\chi_*}\rp = 0\eeqn{eq_temp}
+where $\vn$ is the unit vector opposite to local effective gravity. Note
+that this expression of the temperature equation assumes that the
+temperature profile of the convective region is such that entropy is
+constant along a vertical. This assumes complete vertical mixing and no
+horizontal mixing. If the core is convective, the equation is equivalent
+to saying that the entropy is the same all over the core and
+$\vn\cdot\na s$ can be replaced by $\partial_\zeta s$. Equation
+\eq{eq_temp} is then differentiated functionally.
 
-\[ \partial_\zeta s = 0\]
-Hence {\tt rhs\_T} in the core.
-
-Then we need to impose the interface conditions which reduce to
-demanding the continuity of $T$ and $\partial_\zeta T/\rz$. In the last
+Then, we need to impose the interface conditions which reduce to
+demanding the continuity of $T$ and $\partial_\zeta T/\rz$. If the
+interface separates a CZ and a RZ, then $\partial_\zeta T$ is not
+continuous. Note that the continuity of $\partial_\zeta T/\rz$ is
+equivalent to the continuity of $\frad$ (provided there is no chemical
+jump) since our mapping insures the continuity of $\rz$. In the last
 domain the boundary condition imposes that $T=T_s$.
 
-\[ \]
 
 
 
