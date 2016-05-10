@@ -201,44 +201,44 @@ void star1d::update_map(matrix dR) {
 }
 
 void star1d::solve_definitions(solver *op) {
-    op->add_d("rho","p",rho/eos.chi_rho/p);
-    op->add_d("rho","log_T",-rho*eos.d);
-    op->add_d("rho","log_pc",rho/eos.chi_rho);
-    op->add_d("rho","log_Tc",-rho*eos.d);
-    op->add_d("rho","log_rhoc",-rho);
-
-    op->add_d("r","Ri",map.J[0]);
-    op->add_d("r","dRi",map.J[1]);
-    op->add_d("r","Ri",map.J[2]);
-    op->add_d("r","dRi",map.J[3]);
-
-    op->add_d("rz","Ri",(D,map.J[0]));
-    op->add_d("rz","dRi",(D,map.J[1]));
-    op->add_d("rz","Ri",(D,map.J[2]));
-    op->add_d("rz","dRi",(D,map.J[3]));
-
-    //    Valid only for homogeneus composition !!!!!!
-    op->add_d("s","T",eos.cp/T);
-    op->add_d("s","log_Tc",eos.cp);
-    op->add_d("s","p",-eos.cp*eos.del_ad/p);
-    op->add_d("s","log_pc",-eos.cp*eos.del_ad);
-
-    op->add_d("opa.xi","rho",opa.dlnxi_lnrho*opa.xi/rho);
-    op->add_d("opa.xi","log_rhoc",opa.dlnxi_lnrho*opa.xi);
-    op->add_d("opa.xi","T",opa.dlnxi_lnT*opa.xi/T);
-    op->add_d("opa.xi","log_Tc",opa.dlnxi_lnT*opa.xi);
-
-    op->add_d("opa.k","T",3*opa.k/T);
-    op->add_d("opa.k","log_Tc",3*opa.k);
-    op->add_d("opa.k","rho",-opa.k/rho);
-    op->add_d("opa.k","log_rhoc",-opa.k);
-    op->add_d("opa.k","opa.xi",-opa.k/opa.xi);
-
-    op->add_d("nuc.eps","rho",nuc.dlneps_lnrho*nuc.eps/rho);
-    op->add_d("nuc.eps","log_rhoc",nuc.dlneps_lnrho*nuc.eps);
-    op->add_d("nuc.eps","T",nuc.dlneps_lnT*nuc.eps/T);
-    op->add_d("nuc.eps","log_Tc",nuc.dlneps_lnT*nuc.eps);
-
+	op->add_d("rho","p",rho/eos.chi_rho/p);
+	op->add_d("rho","log_T",-rho*eos.d);
+	op->add_d("rho","log_pc",rho/eos.chi_rho);
+	op->add_d("rho","log_Tc",-rho*eos.d);
+	op->add_d("rho","log_rhoc",-rho);
+	
+	op->add_d("r","Ri",map.J[0]);
+	op->add_d("r","dRi",map.J[1]);
+	op->add_d("r","Ri",map.J[2]);
+	op->add_d("r","dRi",map.J[3]);
+	
+	op->add_d("rz","Ri",(D,map.J[0]));
+	op->add_d("rz","dRi",(D,map.J[1]));
+	op->add_d("rz","Ri",(D,map.J[2]));
+	op->add_d("rz","dRi",(D,map.J[3]));
+	
+	//	Valid only for homogeneus composition !!!!!!
+	op->add_d("s","log_T",eos.cp);
+	op->add_d("s","log_Tc",eos.cp);
+	op->add_d("s","log_p",-eos.cp*eos.del_ad);
+	op->add_d("s","log_pc",-eos.cp*eos.del_ad);
+	
+	op->add_d("opa.xi","rho",opa.dlnxi_lnrho*opa.xi/rho);
+	op->add_d("opa.xi","log_rhoc",opa.dlnxi_lnrho*opa.xi);
+	op->add_d("opa.xi","log_T",opa.dlnxi_lnT*opa.xi);
+	op->add_d("opa.xi","log_Tc",opa.dlnxi_lnT*opa.xi);
+	
+	op->add_d("opa.k","log_T",3*opa.k);
+	op->add_d("opa.k","log_Tc",3*opa.k);
+	op->add_d("opa.k","rho",-opa.k/rho);
+	op->add_d("opa.k","log_rhoc",-opa.k);
+	op->add_d("opa.k","opa.xi",-opa.k/opa.xi);
+	
+	op->add_d("nuc.eps","rho",nuc.dlneps_lnrho*nuc.eps/rho);
+	op->add_d("nuc.eps","log_rhoc",nuc.dlneps_lnrho*nuc.eps);
+	op->add_d("nuc.eps","log_T",nuc.dlneps_lnT*nuc.eps);
+	op->add_d("nuc.eps","log_Tc",nuc.dlneps_lnT*nuc.eps);
+	
 }
 
 void star1d::solve_poisson(solver *op) {
