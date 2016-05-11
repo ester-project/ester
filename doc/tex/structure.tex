@@ -401,7 +401,7 @@ and $\Omega_0^2=P_c/\rho_c/R^2$.
 
 \subsubsection{$\bullet$ \bf Constitutive relations {\tt solve\_definitions}}
 
-Intermediate variables are used to simplify the writing of the Jacobian
+Secondary variables are used to simplify the writing of the Jacobian
 matrix.
 
 The EOS is written as the dependence of $\rho_*$ with respect to $P_*$ and
@@ -412,9 +412,9 @@ P}\rp_T\delta(P_cP) + \frac{\rho_*}{T_*}\lp\frac{\partial\ln\rho}{\partial\ln
 T}\rp_P\delta(T_cT)\]
 After some manipulations, we get:
 
-\[ \frac{\delta\rho}{\rho} = \frac{1}{P\chi_\rho}\delta P +
+\[ \frac{\delta\rho}{\rho} = \frac{1}{\chi_\rho}\delta\ln P +
 \frac{1}{\chi_\rho}\delta\ln P_c -\delta\ln\rho_c - d_p\delta\ln T_c -
-\frac{d_p}{T}\delta T\]
+d_p\delta\ln T\]
 where we introduced
 
 \[ \chi_\rho = \lp\frac{\partial\ln P}{\partial\ln\rho}\rp_T \andet d_p
@@ -435,14 +435,14 @@ get:
 \[ \delta\kappa =
 \frac{\kappa}{\rho}\frac{\partial\ln\kappa}{\partial\ln\rho}\delta\rho +
 \kappa\frac{\partial\ln\kappa}{\partial\ln\rho}\delta\ln\rho_c +
-\frac{\kappa}{T}\frac{\partial\ln\kappa}{\partial\ln T}\delta T +
+\kappa\frac{\partial\ln\kappa}{\partial\ln T}\delta\ln T +
 \kappa\frac{\partial\ln\kappa}{\partial\ln T}\delta\ln T_c\]
 For radiative conductivity, its expression
 
 \[ \chi = \frac{16\sigma T^3}{3\rho\kappa}\]
 leads to the following contribution
 
-\[ \frac{\delta \chi}{\chi} = \frac{3}{T}\delta T+3\delta\ln T_c
+\[ \frac{\delta \chi}{\chi} = 3\delta\ln T+3\delta\ln T_c
 -\frac{1}{\rho}\delta\rho - \delta\ln\rho_c - \frac{1}{\kappa}\delta\kappa\]
 where we took into account that $\rho$ and $T$ are non-dimensional.
 
@@ -458,8 +458,8 @@ P_*}\rp_T = -\frac{\alpha}{\rho} = -\frac{c_p\nabla_a}{P}\]
 where we used \eq{alphat} and \eq{nabla_ad}.
 Thus, after some manipulations we find
 
-\[ \delta s = c_p\lp\delta\ln T_c + \frac{\delta T}{T} - \nabla_a\delta\ln P_c
--\frac{\nabla_a}{P}\delta P \rp\]
+\[ \delta s = c_p\lp\delta\ln T_c + \delta\ln T - \nabla_a\delta\ln P_c
+-\nabla_a\delta\ln P \rp\]
 
 \subsubsection{$\bullet$ \bf Poisson equation {\tt solve\_poisson}}
 
