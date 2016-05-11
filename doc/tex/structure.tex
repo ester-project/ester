@@ -361,8 +361,8 @@ in their actual order in the code.}
 C++ Variable & Dependence (C++ quantity) & Comments \\
 \\
 T  & log\_T & Temperature \\
-r  & R$_i$, $\Delta\eta_i$      & radius \\
-rz &   r    & radius $\zeta$-derivative\\
+r  & R$_i$, dR$_i$, $\eta_i$, d$\eta_i$      & radius \\
+rz &    R$_i$, dR$_i$, $\eta_i$, d$\eta_i$   & $\partial_\zeta r$\\
 log\_rhoc &   log\_pc,log\_Tc   & log of central density \\
 rho &   log\_T,log\_p    & density \\
 opa.xi &   log\_T,log\_p    & thermal conductivity \\
@@ -711,7 +711,7 @@ of the radiative zones (RZ) {\tt qrad}.
 
 \[ {\tt qconv}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm CZ}\]
 \[ {\tt qrad}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm RZ}\]
-and of course {\tt qconv+qrad=1}.
+and of course {\tt qconv+qrad=1} $\forall \vr$.
 
 Hence, the temperature equation can be written
 
