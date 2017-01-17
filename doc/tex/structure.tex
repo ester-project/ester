@@ -143,19 +143,25 @@ The momentum equation leads to
 
 \begin{equation}
 \rho s\Omega^2\es=\na p+\rho\na\phi
-\label{barocnd}
+\label{baroc_nd}
 \end{equation}
 and the vorticity equation to
 
 \begin{equation}
 s\frac{\partial\Omega^2}{\partial z}=\ephi\cdot\frac{\na
 p\times\na\rho}{\rho^2} \;.
+\label{vort_nd}
 \end{equation}
 while angular momentum flux balance reads
 
 \begin{equation}
+<<<<<<< HEAD
 \label{eq:angular_momnd}
 \na\cdot{(\rho s^2\Omega\vu)}=\na\cdot (\mu s^2\na\Omega)
+=======
+\label{am_nd}
+\na\cdot{(\rho s^2\Omega\vu)}=E\na\cdot (\mu s^2\na\Omega)
+>>>>>>> d5bb85f... MAJ de la doc (structure.tex)
 \end{equation}
 Mass conservation remains the same
 
@@ -492,28 +498,28 @@ test other kinds of mapping (see chapter 6 for more details).
 \subsubsection{$\bullet$ \bf Momentum equation {\tt solve\_mov}}
 
 We start from the meridional components of the (inviscid) momentum equation
-\eq{baroc}, \eq{eq:vort_inv} and \eq{eq:angular_mom}. For the angular momentum
-equation \eq{eq:angular_mom}, we impose boundary condition \eq{eq:bl}.
+\eq{baroc_nd}, \eq{vort_nd} and \eq{am_nd}. For the angular momentum
+equation \eq{am_nd}, we impose boundary condition \eq{eq:bl}.
 
 The equation are solved for the log of the pressure. At the domain
 interfaces we impose the continuity of pressure, while at the center the
 non-dimensional pressure is set to unity.
 
-Let us discuss the implementation of the vorticity equation. It reads
+Let us discuss the implementation of the vorticity equation. We first rewrite \eq{baroc_nd} as 
 
-\[ s\frac{\partial\Omega^2}{\partial z}=\ephi\cdot\frac{\na
-p\times\na\rho}{\rho^2} \;.
-\]
-which is written
-
-\centerline{\tt eq\_vort=(phivec,curl(eqmov/rho));}
-\bigskip
-\noindent which means the scalar product of $\ephi$ with the curl of
-the equation of motion divided by $\rho$, since we have
+\[ \na p +\rho\na\phi -\rho s\Omega^2\es=\vzero\]
+and introduce the {\tt eqmov} equation as
 
 \bigskip
 \centerline{\tt eqmov=grad(p)+rho*grad(phi)-rho*s*w*w*svec;}
 \bigskip
+\noindent from which we derive the equation of vorticity \eq{vort_nd}, symbolically name {\tt eq\_vort},
+and defined as
+
+\centerline{\tt eq\_vort=(phivec,curl(eqmov/rho));}
+\bigskip
+\noindent which means the scalar product of $\ephi$ with the curl of
+the equation {\tt eqmov} by $\rho$.
 
 At the interface of the domain, since we are working in the inviscid
 limit, $\Omega$ is not necessarily continuous. It is continuous only if
@@ -524,8 +530,10 @@ of the horizontal component of $\rho\na\phi-\rho s\Omega^2\es$ as
 explained by Eq. (63) in \cite{ELR13}. Thus the programme introduces:
 
 \bigskip
-\centerline{\tt ic\_w=covariant(eqmov-grad(p))(1);
-}
+\centerline{\tt ic\_w=covariant(eqmov-grad(p))(1);}
+\bigskip
+\noindent namely the $\theta$ (as 1) covariant component of $\rho\na\phi-\rho s\Omega^2\es$,
+since $\vE_\theta$ is parallel to $\zeta=\cst$ surfaces.
 \bigskip
 
 The vorticity equation, which is called "w", is then plugged into the
@@ -534,13 +542,10 @@ variables "p", "w", "rho" and "r" like
 
 \begin{center}
 {\tt
-        eq\_vort.add(op,"w","p"); \par
-        eq\_vort.add(op,"w","w"); \par
-        eq\_vort.add(op,"w","rho"); \par
-        eq\_vort.add(op,"w","r"); \par
+        eq\_vort.add(op,"w","p");\qquad eq\_vort.add(op,"w","w"); \par
+        eq\_vort.add(op,"w","rho"); \qquad eq\_vort.add(op,"w","r"); \par
         op->set\_rhs("w",-eq\_vort.eval()); \par
 }
-
 \end{center}
 Equation "w" is completed by the interface and boundary conditions that
 say that:
@@ -749,7 +754,7 @@ domain the boundary condition imposes that $T=T_s$.
 Effective gravity is defined as
 
 \[ \vg_{\rm eff} = -\nabla\phi+s\Omega^2\es\]
-Thus from the simplified meridional momentum equation \eq{barocnd}, we get
+Thus from the simplified meridional momentum equation \eq{baroc_nd}, we get
 
 \[ \vg_{\rm eff} = \frac{1}{\rho}\nabla p\]
 The variable {\tt gsup} is defined as $g_s=-\vn\cdot\vg_{\rm eff}$ so as to be positive. Thus, from the equation
