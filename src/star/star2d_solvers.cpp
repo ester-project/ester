@@ -335,8 +335,10 @@ void star2d::solve_poisson(solver *op) {
 	S.set_value("Phi",phi);
 	S.set_map(map);
 	
-	lap_phi.add(op,"Phi","Phi"); // The equation is named Phi and depends on variable tagged "Phi"
-	lap_phi.add(op,"Phi","r");   // The equation is named Phi and depends on variable tagged "r"
+	lap_phi.add(op,"Phi","Phi");
+// The equation is named Phi and depends on variable tagged "Phi"
+	lap_phi.add(op,"Phi","r");
+// The equation is named Phi and depends on variable tagged "r"
 
 	rhs1=-lap_phi.eval()+pi_c*rho; // Expression of the RHS inside the star
 	
@@ -346,11 +348,14 @@ void star2d::solve_poisson(solver *op) {
 	//pi_c
 	op->add_d("Phi","pi_c",-rho);  // Coefficient of delta pi_c
 
-	// phiex
-	S.set_value("Phi",phiex);     // Outside the star we define phiex but this is still equation "Phi"
+// phiex:
+// Outside the star we define phiex but this is still equation "Phi"
+	S.set_value("Phi",phiex);
 	S.set_map(map.ex);
-	lap_phi.add_ex(op,ndomains,"Phi","Phi"); // add exterior domain with variable tagged "Phi"
-	lap_phi.add_ex(op,ndomains,"Phi","r"); // add exterior domain with variable tagged "r"
+// add exterior domain with variable tagged "Phi":
+	lap_phi.add_ex(op,ndomains,"Phi","Phi");
+// add exterior domain with variable tagged "r":
+	lap_phi.add_ex(op,ndomains,"Phi","r");
 	
 	rhs2=-lap_phi.eval();     // Expression of RHS outside the star (rho=0)
 	
@@ -366,60 +371,66 @@ void star2d::solve_poisson(solver *op) {
 // n=ndomain is the domain outside the star (the remaining Universe !)
 // Each domain has a top and a bottom. On the top we impose the continuity
 // of phi, on the bottom we impose the continuity of (1/rz)(dphi/dzeta)
-// 1 designate the "Right condition" and 2 designate the "Left condition"
+// 1 designate the "Left condition" associated with the (n-1)th domain,
+// and 2 designate the "Right condition" associated with the nth domain.
+
+// set the interface conditions in the Jacobian matrix
+// i.e. continuity of Phi and (1/rz)*dphi/dzeta
 
 	for(n=0;n<ndomains+1;n++) {
-// set the interface conditions in the Jacobian matrix (continuity of Phi and (1/rz)*dphi/dzeta)
+	  if(n==0) {
 // First start with the bottom conditions
-		if(n==0) {
-// In the first domain we demand that dphi/dzeta vanishes at the center (left BC)
-			op->bc_bot2_add_l(n,"Phi","Phi",ones(1,nth),D.block(0).row(0));
-			rhs.setrow(0,-(D,phi).row(0));
-		} else {
-			if(n<ndomains)
-// for all stellar domains, at the bottom (1/rz)d(delta phi)/dzeta is continuuous (left block))
-                op->bc_bot2_add_l(n,"Phi","Phi",1/rz.row(j0),D.block(n).row(0)); // IC
-			else
-// in the last stellar domain continuity demanded with the "ex" fields (left block)
-                op->bc_bot2_add_l(n,"Phi","Phi",1/map.ex.rz.row(0),Dex.row(0));
+// In the first domain we demand that dphi/dzeta
+// vanishes at the center (right BC):
+		op->bc_bot2_add_l(n,"Phi","Phi",ones(1,nth),D.block(0).row(0));
+		rhs.setrow(0,-(D,phi).row(0));
+	   } else {
+	if(n<ndomains)
+// for all stellar domains, at the bottom (1/rz)d(delta phi)/dzeta
+// is continuuous (Right block tagged 2))
+                op->bc_bot2_add_l(n,"Phi","Phi",1/rz.row(j0),D.block(n).row(0));
+// in the last stellar domain continuity demanded with the "ex" fields
+// (Right block)
+	else op->bc_bot2_add_l(n,"Phi","Phi",1/map.ex.rz.row(0),Dex.row(0));
 
-// for all stellar domains, at the bottom (1/rz)d(delta phi)/dzeta is continuuous (right block of IC)
-			op->bc_bot1_add_l(n,"Phi","Phi",-1/rz.row(j0-1),D.block(n-1).row(-1));
+// for all stellar domains, at the bottom (1/rz)d(delta phi)/dzeta
+// is continuuous (left block assoc. with domain n-1)
+	op->bc_bot1_add_l(n,"Phi","Phi",-1/rz.row(j0-1),D.block(n-1).row(-1));
 			
-			if(n<ndomains) 
-// Functional derivative of 1/rz times dphi/dzeta, complements interface cond. IC (left block)
-				op->bc_bot2_add_d(n,"Phi","rz",-1/rz.row(j0)/rz.row(j0)*(D,phi).row(j0));
-			else
-// Same as above but for the last stellar domain
-				op->bc_bot2_add_d(n,"Phi","rz",-1/map.ex.rz.row(0)/map.ex.rz.row(0)*(Dex,phiex).row(0));
+// Functional derivative of "1/rz times dphi/dzeta",s
+// complements the interface cond. (Right cond. block n)
+	if(n<ndomains) op->bc_bot2_add_d(n,"Phi","rz",-1/rz.row(j0)/rz.row(j0)*(D,phi).row(j0));
+	else op->bc_bot2_add_d(n,"Phi","rz",-1/map.ex.rz.row(0)/map.ex.rz.row(0)*(Dex,phiex).row(0));
 
-// For all stellar domain Right block of the complement of IC
-			op->bc_bot1_add_d(n,"Phi","rz",1/rz.row(j0-1)/rz.row(j0-1)*(D,phi).row(j0-1));
+// For all stellar domain Left cond. in block n-1 of the complement of IC
+  op->bc_bot1_add_d(n,"Phi","rz",1/rz.row(j0-1)/rz.row(j0-1)*(D,phi).row(j0-1));
 			
 // set the interface conditions in the RHS
-			if(n<ndomains)
-// RHS for IC
-                rhs.setrow(j0,-(D,phi).row(j0)/rz.row(j0)+(D,phi).row(j0-1)/rz.row(j0-1));
-			else
-// same as above for the last stellar domain
-                rhs.setrow(j0,-(Dex,phiex).row(0)/map.ex.rz.row(0)+(D,phi).row(j0-1)/rz.row(j0-1));
-		}
+	if(n<ndomains)
+      rhs.setrow(j0,-(D,phi).row(j0)/rz.row(j0)+(D,phi).row(j0-1)/rz.row(j0-1));
+	else
+      rhs.setrow(j0,-(Dex,phiex).row(0)/map.ex.rz.row(0)+(D,phi).row(j0-1)/rz.row(j0-1));
+		} // end of block n#0
 		
-// Second take care of the top conditions where we impose continuity of phi and the right BC on phi
-		op->bc_top1_add_d(n,"Phi","Phi",ones(1,nth)); // right condition for Jacob
+// Continuity of Phi imposed on top of the domains
+// left condition for Jacobian (in domain n-1):
+	op->bc_top1_add_d(n,"Phi","Phi",ones(1,nth)); 
 
-		if(n<ndomains) op->bc_top2_add_d(n,"Phi","Phi",-ones(1,nth)); // left condition for Jacob
+// Right condition for Jacobian (in domain n)
+	if(n<ndomains) op->bc_top2_add_d(n,"Phi","Phi",-ones(1,nth));
 
 // Prepare the RHS for the continuity of phi 
-		if(n<ndomains) rhs.setrow(j0+map.gl.npts[n]-1,-phi.row(j0+map.gl.npts[n]-1)); // left terms
-		else rhs.setrow(nr+nex-1,-phiex.row(nex-1)); // left terms of the last domain
-		if(n<ndomains-1) rhs.setrow(j0+map.gl.npts[n]-1,rhs.row(j0+map.gl.npts[n]-1)
-								+phi.row(j0+map.gl.npts[n])); // add the right term
-		else if(n==ndomains-1) rhs.setrow(j0+map.gl.npts[n]-1,rhs.row(j0+map.gl.npts[n]-1) 
-								+phiex.row(0)); // add the right term for the last
-                                                                     // stellar domain but here the right term is phiex
-		if(n<ndomains) j0+=map.gl.npts[n];
-// Note the Right BC for phi is phi(infty)=0 so no right term in the rhs of the n==ndomain case
+   if(n<ndomains) rhs.setrow(j0+map.gl.npts[n]-1,-phi.row(j0+map.gl.npts[n]-1));
+   else rhs.setrow(nr+nex-1,-phiex.row(nex-1)); // left terms of the last domain
+   if(n<ndomains-1) rhs.setrow(j0+map.gl.npts[n]-1,rhs.row(j0+map.gl.npts[n]-1)
+	+phi.row(j0+map.gl.npts[n])); // add the right term
+// add the right term for the last stellar domain but here the
+// right term is phiex:
+   else if(n==ndomains-1) rhs.setrow(j0+map.gl.npts[n]-1,
+    rhs.row(j0+map.gl.npts[n]-1)+phiex.row(0));
+   if(n<ndomains) j0+=map.gl.npts[n];
+// Note the Right BC for phi is phi(infty)=0,
+// so no right term in the rhs of the n==ndomain case
 	}
 	op->set_rhs("Phi",rhs);
 }
@@ -488,7 +499,7 @@ void star2d::solve_mov(solver *op) {
 	
 	op->add_d("p","log_p",p);
 	
-// First component of the equation of motion
+// First component of the equation of motion tagged "log_p"
 // we explicit the dependences
 	eqmov(0).add(op,"log_p","p");
 	eqmov(0).add(op,"log_p","w");
@@ -533,8 +544,11 @@ void star2d::solve_mov(solver *op) {
 	
 	// w - Differential Rotation
 	rhs=op->get_rhs("w");
+// d_zeta Omega=0 at r=0
 	op->bc_bot2_add_l(0,"w","w",ones(1,nth),D.block(0).row(0));
 	rhs.setrow(0,-(D,w).row(0));
+// Interface condition for the continuity of the horizontal component of
+// pressure gradient
 	j0=0;
 	for(int n=0;n<ndomains-1;n++) {
 		ic_w.bc_top1_add(op,n,"w","w");
