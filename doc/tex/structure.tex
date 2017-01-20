@@ -274,8 +274,31 @@ This system of partial differential equation is solved using a spectral
 method or more precisely spectral elements. The star divided in
 ``onion" layers where the vertical direction is discretized on the
 Gauss-Lobatto collocation grid (associated with Chebyshev polynomials)
-and the horizontal dependence is expanded on the spherical harmonic
-basis.
+and the Gauss-Legendre collocation grid for the horizontal dependence.
+This is associated with Legendre polynomials (or axisymmeric spherical
+harmonics).
+
+Let us recall the ordering of pressure discretized values, namely
+
+\[\begin{array}{cccc}
+p(\zeta_0,\theta_0)&p(\zeta_1,\theta_0)&p(\zeta_2,\theta_0)&\cdots\\
+p(\zeta_0,\theta_1)&p(\zeta_1,\theta_1)&p(\zeta_2,\theta_1)&\cdots\\
+p(\zeta_0,\theta_2)&p(\zeta_1,\theta_2)&p(\zeta_2,\theta_2)&\cdots\\
+\vdots&\vdots&\vdots&
+\end{array}\]
+Scalar fields can therefore be represented by a 2D matrix
+
+\[ p_{ij}\]
+where the first index represents the radial variations and the second the
+angular variations. Hence, operators acting on $\zeta$ apply on "left"
+while operators acting on $\theta$ apply on right of the matrix $[p]$.
+Hence, we shall write
+
+\[ [\partial_{\zeta\theta}p] = [D_\zeta][p][D_\theta]\]
+or
+
+\[ (\partial_{\zeta\theta}p)_{ij} = (D_\zeta)_{ik}p_{kl}(D_\theta)_{lj}\]
+
 
 \subsection{Iterations}
 
@@ -729,16 +752,15 @@ $\vn\cdot\na s$ can be replaced by $\partial_\zeta s$. Equation
 Then, we need to impose the interface conditions which reduce to
 demanding the continuity of $T$ and $\partial_\zeta T/\rz$. If the
 interface separates a CZ and a RZ, then $\partial_\zeta T$ is not
-continuous. Note that the continuity of $\partial_\zeta T/\rz$ is
-equivalent to the continuity of $\frad$ (provided there is no chemical
-jump) since our mapping insures the continuity of $\rz$. In the last
-domain the boundary condition imposes that $T=T_s$.
+continuous (in a CZ temperature is derived from entropy and therefore,
+if pressure is known, temperature is known; if entropy is assumed
+constant there is no differential equation and imposing the continuity
+of the fields is sufficient).
 
-
-
-
-
-
+Note that the continuity of $\partial_\zeta T/\rz$ is equivalent to the
+continuity of $\frad$ (provided there is no chemical jump) since our
+mapping insures the continuity of $\rz$. In the last domain the boundary
+condition imposes that $T=T_s$.
 
 
 
