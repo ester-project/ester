@@ -155,13 +155,8 @@ p\times\na\rho}{\rho^2} \;.
 while angular momentum flux balance reads
 
 \begin{equation}
-<<<<<<< HEAD
-\label{eq:angular_momnd}
-\na\cdot{(\rho s^2\Omega\vu)}=\na\cdot (\mu s^2\na\Omega)
-=======
 \label{am_nd}
 \na\cdot{(\rho s^2\Omega\vu)}=E\na\cdot (\mu s^2\na\Omega)
->>>>>>> d5bb85f... MAJ de la doc (structure.tex)
 \end{equation}
 Mass conservation remains the same
 
@@ -818,8 +813,11 @@ bc\_top1\_add} operation, while the "-1" is inserted in the matrix via a
 
 The second domain, in our example, starts at row 11 by the other
 interface condition imposing the continuity of the derivative of the
-solution. In row 20, we impose the ``surface" boundary condition saying
-$f(\zeta_{\rm surf})=0$, so the dot is just a "1".
+solution. In the ESTER-nomenclature, the lower domain ($n-1$) part is
+inserted by a {\tt bc\_bot1\_add} operation, while the actual domain $n$
+condition need a {\tt bc\_bot2\_add} operation (see figure~\ref{matp}). In
+row 20, we impose the ``surface" boundary condition saying $f(\zeta_{\rm
+surf})=0$, so the dot is just a "1".
 
 
 \subsection{Implementation of Newton's algorithm}
