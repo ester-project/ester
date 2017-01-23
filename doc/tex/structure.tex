@@ -690,7 +690,7 @@ of the interface condition" (see Fig.~\ref{matp}).
 First, the luminosity at each domain boundary is computed through
 
 \[ L_n = 2\pi\Lambda\int_0^\pi\int_0^{\eta_n} \rho\eps_* r^2r_\zeta\sth
-d\theta\]
+d\theta d\zeta\]
 The definition of the luminosity 
 
 \[ L=\Lambda\intvol \rho\eps_* dV \with \Lambda = \frac{\rho_cR^2}{T_c}\]
@@ -710,10 +710,7 @@ conductivity). The basic property of this
 scalar quantity is that it gives the radiative luminosity when
 integrated over a surface, namely
 
-\[ L= \intsur \frad dS\]
-where
-
-\[ dS = 2\pi r^2r_\zeta\sth d\theta\]
+\[ L= \intsur \frad 2\pi r^2r_\zeta\sth d\theta\]
 Explicit expression of $\frad$ is
 
 \[ \frad = \chi\lp\gzz\partial_\zeta T + \gzt\partial_\theta T \rp\]
@@ -802,7 +799,7 @@ R}\delta(\vn\cdot\nabla T) = 0
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.8\linewidth]{fig/matrix_pedago.eps}
-\caption{Example of discretized-operator matrix with two domains and
+\caption{Example of discretized-operator matrix, in 1D, with two domains and
 interface conditions.}
 \label{matp}
 \end{figure}
@@ -841,6 +838,35 @@ condition need a {\tt bc\_bot2\_add} operation (see figure~\ref{matp}). In
 row 20, we impose the ``surface" boundary condition saying $f(\zeta_{\rm
 surf})=0$, so the dot is just a "1".
 
+\begin{table}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+ &\multicolumn{4}{c|}{Options} & Example & Argument \\
+\hline
+\multirow{4}{1cm}{bc} & \multirow{2}{1cm}{top} & \multirow{2}{1cm}{1} &
+\multirow{4}{1cm}{add} & $\ell$ & \multirow{4}{2.5cm}{\tt bc\_top1\_add\_l}
+ & \multirow{4}{4.5cm}{(idom,"Eq","var",coef,mat)} \\
+      &     &   &         &  $r$   &  & \\
+      & \multirow{2}{1cm}{bot} & \multirow{2}{1cm}{2}   &         &  $d$   &  & \\
+      &     &   &         &  $ex$   &  & \\
+\hline
+\end{tabular}
+\caption[]{Reading guide for the implementation of boundary conditions.}
+\end{table}
+
+Meaning of the symbols (but see also Fig.~\ref{matp}):
+\begin{itemize}
+\item $\ell\equiv$ left operator $\equiv$ Operator on the radial grid
+\item $r\equiv$ right operator $\equiv$ Operator on the $\theta$-grid
+\item $d\equiv$ both $\equiv$ Operator on the $\zeta,\theta$-grid, namely multiplication by a
+function of $(\zeta,\theta)$.
+\item $ex\equiv$ concerning the exterior (vacuum) domain.
+
+\item $1$ and $2$: If we consider the $n$th domain, interface conditions with the $n-1$-th
+domain are set with {\tt bot1} and {\tt bot2} ({\tt bot1} for the $n-1$th domain), and interface
+conditions with the $n+1$-th domain are set with {\tt top1} and {\tt top2} ({\tt top2} for the
+$n+1$th domain).
+\end{itemize}
 
 \subsection{Implementation of Newton's algorithm}
 
