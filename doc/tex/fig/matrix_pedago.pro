@@ -40,10 +40,22 @@ xyouts,12,11,'!94!17Top of first domain (top2)'
 xyouts,2,11,'!17Top of first domain (top1)!96!17'
 xyouts,6,10.2,'(bot1)  !17Bottom of second domain  (bot2)'
 xyouts,12,1,'!17Top of second domain (top1)'
-xyouts,3,9,'!17Right condition'
-xyouts,14,9.2,'!17Left condition'
+;xyouts,3,8,'!17Right condition'
+;xyouts,14,9.2,'!17Left condition'
 oplot,[0,40],[10.5,10.5],lin=1
 oplot,[10.5,10.5],[0,40],lin=1
+
+; la box 1
+xb=[0.5,10.25,10.25,0.5,0.5]
+yb=[11.5,11.5,9.5,9.5,11.5]
+plots,xb,yb
+xyouts,2,9,'!17Part 1 of interface conditions'
+
+; la box 2
+xb=[10.75,20.5,20.5,10.75,10.75]
+yb=[11.5,11.5,9.5,9.5,11.5]
+plots,xb,yb
+xyouts,12,12.,'!17Part 2 of interface conditions'
 
 
 if ( jps eq 1 ) then goto,thend
