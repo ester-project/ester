@@ -396,9 +396,9 @@ s  &   log\_T,log\_p    & entropy \\
 \hline
 \end{tabular}
 \end{center}
-\caption[]
-{This table lists all the secondary variables. They depend on the
+\caption[]{This table lists all the secondary variables. They depend on the
 primary variables and are used as short-cut in the programming.}
+\label{depvar}
 \end{table}
 
 
@@ -407,8 +407,18 @@ primary variables and are used as short-cut in the programming.}
 
 \noindent Real ordering of variables:
 
-"Phi"; "log\_p"; "pi\_c"; "log\_T"; "Lambda"; "eta"; "deta"; "Ri";
-"dRi"; "Omega"; "log\_pc"; "log\_Tc"; "log\_R"; "m"; "ps"; "Ts"; "lum"; "Frad"; "Teff"; "gsup"; "w"; "G"; "gamma"; 
+"Phi"; "log\_p"; "pi\_c"; "log\_T"; "Lambda"; "eta"; "deta"; "Ri"; "dRi";
+"Omega"; "log\_pc"; "log\_Tc"; "log\_R"; "m"; "ps"; "Ts"; "lum"; "Frad";
+"Teff"; "gsup"; "w"; "G"; "gamma";
+
+Note that this list is completed by a list of secondary variable
+(e.g. Tab.~\ref{depvar}). These variables are, in the end, substituted
+by their expression in the final jacobian. They are used to facilitate
+the programming. They are declared as {\tt regvar\_dep}. However,
+declared {\tt regvar} variables can be used as shortcuts when they do
+not increase the size of the Jacobian too much. These are {\tt ps} and
+{\tt Ts} for instance (see the equation for atmosphere {\tt solve\_atm}).
+
 
 \subsection{The equations}
 
@@ -711,7 +721,7 @@ scalar quantity is that it gives the radiative luminosity when
 integrated over a surface, namely
 
 \[ L= \intsur \frad 2\pi r^2r_\zeta\sth d\theta\]
-Explicit expression of $\frad$ is
+Explicit expression of $\frad$  (a comfort equation, see~\ref{comf_eq}) is
 
 \[ \frad = \chi\lp\gzz\partial_\zeta T + \gzt\partial_\theta T \rp\]
 so that the functional derivative is given by
@@ -765,13 +775,14 @@ condition imposes that $T=T_s$.
 
 \subsubsection{$\bullet$ \bf Surface effective gravity {\tt solve\_gsup}}
 
-Effective gravity is defined as
+Comfort equation (e.g.~\ref{comf_eq}): Effective gravity is defined as
 
 \[ \vg_{\rm eff} = -\nabla\phi+s\Omega^2\es\]
 Thus from the simplified meridional momentum equation \eq{baroc_nd}, we get
 
 \[ \vg_{\rm eff} = \frac{1}{\rho}\nabla p\]
-The variable {\tt gsup} is defined as $g_s=-\vn\cdot\vg_{\rm eff}$ so as to be positive. Thus, from the equation
+The variable {\tt gsup} is defined as $g_s=-\vn\cdot\vg_{\rm eff}$
+so as to be positive. Thus, from the equation
 
 \[ g_s=\frac{P_c}{\rho_cR}\frac{-\vn\cdot\nabla p}{\rho}\]
 We get the following functional equation
@@ -783,10 +794,11 @@ We get the following functional equation
 
 \subsubsection{$\bullet$ \bf Surface effective temperature {\tt solve\_Teff}}
 
-Effective temperature is defined as
+This is a new comfort equation (e.g.~\ref{comf_eq}). Effective temperature is defined as
 
 \[ \sigma T_e^4 = -\khi\vn\cdot\na T\]
-Showing the dimensional and non-dimensional variables we rewrite the previous equality as:
+Showing the dimensional and non-dimensional variables we rewrite the
+previous equality as:
 
 \[ \sigma T_e^4 = -\khi\vn\cdot\na T \frac{T_c}{R}\]
 Taking the log and making the functional derivative, we get
@@ -795,6 +807,78 @@ Taking the log and making the functional derivative, we get
 4T_e^3\delta T_e -T_e^4\delta\ln T_c + T_e^4\delta\ln R -\frac{T_e^4}{\khi}\delta\khi + \frac{\khi T_c}{\sigma
 R}\delta(\vn\cdot\nabla T) = 0
 \end{equation}
+
+\subsubsection{$\bullet$ \bf Atmosphere {\tt solve\_atm}}
+
+The atmosphere of the star is described in a simple manner by a polytropic
+atmosphere as described in \cite{ELR13} after Eq.~(9). It follows that
+the surface temperature $T_s(\theta)$ is derived from the pressure field
+by the polytropic relation $P\propto T^{n+1}$. Namely,
+
+\begin{equation}
+T_s(\theta) = T_e\lp\frac{P_s}{P_e}\rp^{1/(n+1)}
+\label{atm_poly}
+\end{equation}
+In this expression $P_s$ is the pressure of the isobar on which the
+boundary conditions are taken. In \cite{ELR13}, it is assumed to be the
+pressure at the pole given by $\tau_sg_{\rm pole}/\kappa_{\rm pole}$
+but higher values are possible. $P_e$ is the pressure at the top of
+the atmosphere, where presumably $T=T_{\rm eff}$ and $P_e=\tau_sg_{\rm
+eff}/\kappa_e\sim\tau_sg_{\rm eff}/\kappa_s$.
+
+In the simple model, $P_s=\tau_sg_s/\kappa_s$, which is translated as
+
+\[ \ln P_s+\ln P_c = \ln\tau_s +\ln g_s -\ln\kappa_s\]
+assuming that $\tau_s$ is a fixed quantity, then the variational equation is 
+
+\begin{equation}
+\delta P_s/P_s + \delta\ln P_c - \delta g_s/g_s +\delta\kappa_s/\kappa_s = 0
+\end{equation}
+while for the temperature of the last bounding surface, we translate
+(\ref{atm_poly}) into
+
+\[ \ln T_s + \ln T_c = \ln T_e + \frac{1}{n+1}(\ln P_s - \ln P_e)\]
+and gives the variational equation
+
+\begin{equation}
+\delta T_s/T_s + \delta\ln T_c -\delta T_e/T_e -\frac{1}{n+1}(\delta
+P_s/P_s+\delta P_e/P_e) = 0
+\end{equation}
+where $P_e$ is approximated by $P$.
+
+These two equations are also ``comfort" equations.
+
+\subsection{Comfort equations}\label{comf_eq}
+
+Basically, some quantities can be introduced to simplify the writing of
+equations. For instance, the use the surface effective gravity is convenient.
+Since it plays a role at the surface only, we can introduce this
+quantity as a regular variable without increasing too much the size of the
+Jacobian. Such ``comfort" variables are different than the \_dep variables
+like {\tt rho}, which do not exist at all in the final Jacobian. These
+latter variables are replaced symbolically by their dependance before
+the construction of the Jacobian.
+
+The comfort equations do not need a RHS. Let us see an example to explain
+this point. If we consider the Emden-like equation
+
+\[ y''+\Lambda y^n = 0\]
+with some boundary conditions, $\Lambda$ being an unkown quantity part
+of the solution, the associated variational form is
+
+\[ \delta y'' + y^n\delta\Lambda + n\Lambda y^{n-1}\delta y = -(y''+\Lambda y^n)\]
+Now, let us introduce a ``comfort" equation namely
+
+\[ Y=\Lambda y^n\]
+so that the former equation reads
+
+\[ \delta y'' + \delta Y = -(y''+\Lambda y^n)\]
+much simpler indeed, but we need to add the new variational equation
+
+\[ \delta Y - y^n\delta\Lambda - n\Lambda y^{n-1}\delta y = 0\]
+that has no RHS.
+
+
 
 \begin{figure}[t]
 \centering

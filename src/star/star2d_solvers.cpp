@@ -1161,12 +1161,12 @@ void star2d::solve_Teff(solver *op) {
 }
 
 /// \brief Equation setting the 'simple' atmosphere model equations
-/// To be checked
+/// 'simple' == the polytropic model for the atmosphere
+/// checked but approximate on ... "p",-1/p.row(-1)/(n_atm+1) ...
 void star2d::solve_atm(solver *op) {
 
 	if(!strcmp(atm.name,"simple")) {
-		matrix q;
-		int n=ndomains-1;
+		int n=ndomains-1, n_atm=3;
 	
 		op->bc_top1_add_d(n,"ps","ps",1/ps);
 		op->bc_top1_add_d(n,"ps","gsup",-1/gsup());
@@ -1175,8 +1175,8 @@ void star2d::solve_atm(solver *op) {
 		op->set_rhs("ps",zeros(1,nth));
 	
 		op->bc_top1_add_d(n,"Ts","Ts",1/Ts);
-		op->bc_top1_add_d(n,"Ts","p",-0.25/p.row(-1));
-		op->bc_top1_add_d(n,"Ts","ps",0.25/ps);
+		op->bc_top1_add_d(n,"Ts","p",-1/p.row(-1)/(n_atm+1));
+		op->bc_top1_add_d(n,"Ts","ps",1/ps/(n_atm+1));
 		op->bc_top1_add_d(n,"Ts","Teff",-1/Teff());
 		op->bc_top1_add_d(n,"Ts","log_Tc",ones(1,nth));
 		op->set_rhs("Ts",zeros(1,nth));
