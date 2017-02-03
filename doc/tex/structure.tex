@@ -711,6 +711,39 @@ is differentiated and yields
 = 0\]
 with $L$ continuous at domain interfaces.
 
+Let us examine the coding of one of the terms of this equation, namely
+
+\[ - \Lambda\intvol\delta\rho\eps_* dV = -\Lambda\int_0^\pi\sth d\theta
+\int_{\eta_n}^{\eta_{n+1}} \delta\rho\eps_*r^2r_\zeta d\zeta\]
+This terms needs an operation on the $\theta$-coordinate and on the
+$\zeta$ coordinate. Recalling that left indices are for the $\zeta_i$
+grid and right indices are for the $\theta_j$ grid the discretized form of
+this  term is like
+
+\[\sum_k ( \sum_l  ( D_{ij} * L_{ik} * (\eps_*r^2r_\zeta)_{kl} * R_{lj}  ))  \]
+where $D$ is just a scalar function, here $D=-2\pi\Lambda$, $L$ is the
+left-operator that does the integration over $\zeta$ and $R$ the right
+operator that does the integration over $\theta$. In terms of coding it
+reads:
+
+\begin{center}
+{\tt
+bc\_bot2\_add\_lri(n,"lum","rho",-2*PI*Lambda*ones(1,1),\\
+map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I\_00,\\
+(r*r*rz*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,-1)); }
+\end{center}
+
+with
+
+\begin{eqnarray}
+\tt D &\equiv&\tt -2*PI*Lambda*ones(1,1)\nonumber\\
+\tt L &\equiv&\tt map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1)\nonumber\\
+\tt R &\equiv&\tt map.leg.I_{00}\nonumber\\
+\tt I &\equiv&\tt
+(r*r*rz*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,-1))\nonumber 
+\end{eqnarray}
+
+
 Then we introduce
 
 \[ \frad = -\chi\vE^\zeta\cdot\na T\]
@@ -927,10 +960,11 @@ surf})=0$, so the dot is just a "1".
 \hline
  &\multicolumn{4}{c|}{Options} & Example & Argument \\
 \hline
-\multirow{4}{1cm}{bc} & \multirow{2}{1cm}{top} & \multirow{2}{1cm}{1} &
-\multirow{4}{1cm}{add} & $\ell$ & \multirow{4}{2.5cm}{\tt bc\_top1\_add\_l}
- & \multirow{4}{4.5cm}{(idom,"Eq","var",coef,mat)} \\
+\multirow{5}{1cm}{bc} & \multirow{2}{1cm}{top} & \multirow{2}{1cm}{1} &
+\multirow{5}{1cm}{add} & $\ell$ & \multirow{5}{2.5cm}{\tt bc\_top1\_add\_l}
+ & \multirow{5}{4.5cm}{(idom,"Eq","var",coef,mat)} \\
       &     &   &         &  $r$   &  & \\
+      &     &   &         &  $lri$   &  & \\
       & \multirow{2}{1cm}{bot} & \multirow{2}{1cm}{2}   &         &  $d$   &  & \\
       &     &   &         &  $ex$   &  & \\
 \hline
