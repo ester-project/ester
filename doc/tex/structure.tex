@@ -1064,3 +1064,36 @@ arguments and file input/output.
 \end{itemize} 
 
 
+\section{Heading to time evolution}
+
+\subsection{Simple scheme for hydrogen burning}
+
+During hydrogen burning, heat is basically produced by the transformation of
+protons into alpha particles ($^4$He nuclei) and thus, not to bother with
+the nuclear reaction network, we can write
+
+\[ \dnt{X} = -\frac{4m_p\eps}{Q}\]
+where $m_p$ is the proton mass, and 
+
+\[ Q= (4m_p-m_{\rm He})c^2 = 4.3\times10^{-12}\; {\rm J}\]
+is the energy released by the transformation of the 4 protons. We thus deduced
+the discretized time evolution for $\ln X$ during $\Delta t$, namely
+
+\beq \ln X + \frac{4m_p\eps\Delta t}{QX} = \ln X_{n-1}\eeqn{varlnX}
+where the LHS variables refer to the time-step $n$. The variational form for
+solving \eq{varlnX} is
+
+\beq \delta\ln X + \frac{4m_p\eps\Delta t}{QX}\lc
+\lp\frac{\partial\ln\eps}{\partial\ln T}\rp\delta\ln T +
+\lp\frac{\partial\ln\eps}{\partial\ln\rho}\rp\delta\ln \rho +
+\lp\frac{\partial\ln\eps}{\partial\ln X}-1\rp\delta\ln X\rc = RHS
+\eeq
+where
+
+\[ RHS = \ln X_{n-1} -\lp\ln X + \frac{4m_p\eps\Delta t}{QX}\rp\]
+we note that when the CNO-cycle dominates the third term in $[...]$ can be
+neglected. Indeed, $\eps = \eps_{\rm pp}+\eps_{\rm cno}$ and $\eps_{\rm
+pp}\propto X^2$ while $\eps_{\rm cno}\propto X$, it follows that
+
+\[ \frac{\partial\ln\eps}{\partial\ln X}-1 = \frac{\eps_{\rm pp}}{\eps}\]
+which can be neglected at high temperature.
