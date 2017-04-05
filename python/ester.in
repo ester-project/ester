@@ -193,6 +193,15 @@ class star2d:
 # use of the C++ function apparent_luminosity of the ester library
         return self._s.apparent_luminosity(float(angle)/180*_np.pi)/L_SUN
 
+    def leg_eval_matrix(self, theta):
+        """
+        this function return a matrix to be used to evaluate at the given
+        colatitude theta
+        """
+        m = _wrapper.matrix()
+        self._s.map.leg.eval_00(_wrapper.ones(1, self.nth), theta, m)
+        return _mat_to_numpy(m)
+
 class star1d(star2d):
     def __init__(self, model):
         self._s = _wrapper.star1d()

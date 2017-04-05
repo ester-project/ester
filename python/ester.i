@@ -49,4 +49,3 @@
 %include "../src/include/mapping.h"
 %include "../src/include/numdiff.h"
 %include "../src/include/star.h"
-
