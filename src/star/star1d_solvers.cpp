@@ -80,7 +80,8 @@ void star1d::register_variables(solver *op) {
 	op->regvar_dep("opa.k");
 	op->regvar_dep("nuc.eps");
 // Evolution of X
-	op->regvar("log_X");
+	op->regvar("lnX");
+
 }
 
 double star1d::solve(solver *op) {
@@ -145,7 +146,7 @@ double star1d::solve(solver *op) {
 	while(exist(abs(h*dT)>q)) h/=2;
 
 // Compute dX
-	dX=op->get_var("log_X");	
+	dX=op->get_var("lnX");	
 	err2=max(abs(dX));err=err2>err?err2:err;
 	while(exist(abs(h*dX)>q)) h/=2;
 // End of dX computation
@@ -164,8 +165,8 @@ double star1d::solve(solver *op) {
 	phi+=h*dphi;
 	p+=h*dp*p;
 	T+=h*dT*T;
-// Evolution of X, dX is the variation on lnX assumed to be small
-	X+=h*dX*X;
+// Evolution of Xh, dX is the variation on ln(Xh) assumed to be small
+	Xh+=h*dX*Xh;
 
 	pc*=exp(h*dpc(0));
 	Tc*=exp(h*dTc(0));
@@ -331,6 +332,12 @@ void star1d::solve_X(solver *op) {
 	matrix q;
 	char eqn[8];
 	
+        factor=4*mp/Qmc2*dt
+	op->add_d("lnX","lnX",ones);
+	op->add_d("lnX","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
+	op->add_d("lnX","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
+
+        rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh
 	
 }
 
