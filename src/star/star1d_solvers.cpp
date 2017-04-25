@@ -343,6 +343,15 @@ void star1d::solve_Xh(solver *op) {
 //Evolution Xh end-----------------------------------
 
 
+void star1d::solve_X(solver *op) {
+    DEBUG_FUNCNAME;
+	int n,j0;
+	matrix q;
+	char eqn[8];
+	
+	
+}
+
 void star1d::solve_temp(solver *op) {
     int n,j0;
     matrix q;
