@@ -349,6 +349,12 @@ void star1d::solve_X(solver *op) {
 	matrix q;
 	char eqn[8];
 	
+        factor=4*mp/Qmc2*dt
+	op->add_d("lnX","lnX",ones);
+	op->add_d("lnX","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
+	op->add_d("lnX","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
+
+        rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh
 	
 }
 
