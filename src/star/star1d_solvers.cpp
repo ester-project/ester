@@ -46,126 +46,139 @@ solver *star1d::init_solver(int nvar_add) {
 }
 
 void star1d::register_variables(solver *op) {
-    int i,var_nr[ndomains];
+	int i,var_nr[ndomains];
+	
+	for(i=0;i<ndomains;i++) 
+		var_nr[i]=map.gl.npts[i];
+	op->set_nr(var_nr);
 
-    for(i=0;i<ndomains;i++)
-        var_nr[i]=map.gl.npts[i];
-    op->set_nr(var_nr);
-
-    op->regvar("Phi");
-    op->regvar("log_p");
-    op->regvar_dep("p");
-    op->regvar("pi_c");
-    op->regvar("log_T");
-    op->regvar_dep("T");
-    op->regvar("Lambda");
-    op->regvar("Ri");
-    op->regvar("dRi");
-    op->regvar_dep("r");
-    op->regvar_dep("rz");
-    op->regvar_dep("log_rhoc");
-    op->regvar("log_pc");
-    op->regvar("log_Tc");
-    op->regvar("log_R");
-    op->regvar("m");
-    op->regvar("ps");
-    op->regvar("Ts");
-    op->regvar("lum");
-    op->regvar("Frad");
-    op->regvar_dep("rho");
-    op->regvar_dep("s");
-    op->regvar("Teff");
-    op->regvar("gsup");
-    op->regvar_dep("opa.xi");
-    op->regvar_dep("opa.k");
-    op->regvar_dep("nuc.eps");
-
+	op->regvar("Phi");
+	op->regvar("log_p");
+	op->regvar_dep("p");
+	op->regvar("pi_c");
+	op->regvar("log_T");
+	op->regvar_dep("T");
+	op->regvar("Lambda");
+	op->regvar("Ri");
+	op->regvar("dRi");
+	op->regvar_dep("r");
+	op->regvar_dep("rz");
+	op->regvar_dep("log_rhoc");
+	op->regvar("log_pc");
+	op->regvar("log_Tc");
+	op->regvar("log_R");
+	op->regvar("m");
+	op->regvar("ps");
+	op->regvar("Ts");
+	op->regvar("lum");
+	op->regvar("Frad");
+	op->regvar_dep("rho");
+	op->regvar_dep("s");
+	op->regvar("Teff");
+	op->regvar("gsup");
+	op->regvar_dep("opa.xi");
+	op->regvar_dep("opa.k");
+	op->regvar_dep("nuc.eps");
+// Evolution of X
+	op->regvar("log_X");
 }
 
 double star1d::solve(solver *op) {
-    int info[5];
-    matrix rho0;
-    double err,err2;
+	int info[5];
+	matrix rho0;
+	double err,err2;
+	
+	check_map();
+	
+	op->reset();
+	solve_definitions(op);
+	solve_poisson(op);
+	solve_pressure(op);
+	solve_temp(op);
+	solve_atm(op);
+	solve_dim(op);
+	solve_map(op);
+	solve_gsup(op);
+	solve_Teff(op);
+// Evolution of X
+        solve_X(op);
+	
+	op->solve(info);
+	
+// Some output verbose ----------------------
+	if (config.verbose) {
+		if(info[2]) {
+			printf("CGS Iteration: ");
+			if(info[4]>0) 
+				printf("Converged after %d iterations\n",info[4]);
+			else 
+				printf("Not converged (Error %d)\n",info[4]);
+		}
+		if(info[0]) 
+			printf("Solved using LU factorization\n");
+		if(info[1]) {
+			printf("CGS Refinement: ");
+			if(info[3]>0) 
+				printf("Converged after %d iterations\n",info[3]);
+			else
+				printf("Not converged (Error %d)\n",info[3]);
+		}
+	}
+// End  output verbose ----------------------
 
-    check_map();
+	double q,h;
+		
+	h=1;
+	q=config.newton_dmax;
+	
+	matrix dphi,dp,dT,dX,dpc,dTc,dRi;
+	
+	dphi=op->get_var("Phi");
+	err=max(abs(dphi/phi));
 
-    op->reset();
-    solve_definitions(op);
-    solve_poisson(op);
-    solve_pressure(op);
-    solve_temp(op);
-    solve_atm(op);
-    solve_dim(op);
-    solve_map(op);
-    solve_gsup(op);
-    solve_Teff(op);
+	dp=op->get_var("log_p");
+	err2=max(abs(dp));err=err2>err?err2:err;
+	while(exist(abs(h*dp)>q)) h/=2;
 
-    op->solve(info);
+	dT=op->get_var("log_T");	
+	err2=max(abs(dT));err=err2>err?err2:err;
+	while(exist(abs(h*dT)>q)) h/=2;
 
-    if (config.verbose) {
-        if(info[2]) {
-            printf("CGS Iteration: ");
-            if(info[4]>0)
-                printf("Converged after %d iterations\n",info[4]);
-            else
-                printf("Not converged (Error %d)\n",info[4]);
-        }
-        if(info[0])
-            printf("Solved using LU factorization\n");
-        if(info[1]) {
-            printf("CGS Refinement: ");
-            if(info[3]>0)
-                printf("Converged after %d iterations\n",info[3]);
-            else
-                printf("Not converged (Error %d)\n",info[3]);
-        }
-    }
+// Compute dX
+	dX=op->get_var("log_X");	
+	err2=max(abs(dX));err=err2>err?err2:err;
+	while(exist(abs(h*dX)>q)) h/=2;
+// End of dX computation
 
-    double q,h;
+	dpc=op->get_var("log_pc");	
+	err2=fabs(dpc(0)/pc);err=err2>err?err2:err;
+	while(fabs(h*dpc(0))>q*pc) h/=2;
 
-    h=1;
-    q=config.newton_dmax;
+	dTc=op->get_var("log_Tc");	
+	err2=fabs(dTc(0));err=err2>err?err2:err;
+	while(fabs(h*dTc(0))>q) h/=2;
+	
+	dRi=op->get_var("Ri");	
+	update_map(h*dRi);
+	
+	phi+=h*dphi;
+	p+=h*dp*p;
+	T+=h*dT*T;
+// Evolution of X, dX is the variation on lnX assumed to be small
+	X+=h*dX*X;
 
-    matrix dphi,dp,dT,dpc,dTc,dRi;
+	pc*=exp(h*dpc(0));
+	Tc*=exp(h*dTc(0));
 
-    dphi=op->get_var("Phi");
-    err=max(abs(dphi/phi));
+	err2=max(abs(dRi));err=err2>err?err2:err;
+	
+	rho0=rho;
 
-    dp=op->get_var("log_p");
-    err2=max(abs(dp));err=err2>err?err2:err;
-    while(exist(abs(h*dp)>q)) h/=2;
-
-    dT=op->get_var("log_T");
-    err2=max(abs(dT));err=err2>err?err2:err;
-    while(exist(abs(h*dT)>q)) h/=2;
-
-    dpc=op->get_var("log_pc");
-    err2=fabs(dpc(0)/pc);err=err2>err?err2:err;
-    while(fabs(h*dpc(0))>q*pc) h/=2;
-
-    dTc=op->get_var("log_Tc");
-    err2=fabs(dTc(0));err=err2>err?err2:err;
-    while(fabs(h*dTc(0))>q) h/=2;
-
-    dRi=op->get_var("Ri");
-    update_map(h*dRi);
-
-    phi+=h*dphi;
-    p+=h*dp*p;
-    T+=h*dT*T;
-    pc*=exp(h*dpc(0));
-    Tc*=exp(h*dTc(0));
-
-    err2=max(abs(dRi));err=err2>err?err2:err;
-
-    rho0=rho;
-
-    fill();
-
-    err2=max(abs(rho-rho0));err=err2>err?err2:err;
-
-    return err;
-
+	fill();
+	
+	err2=max(abs(rho-rho0));err=err2>err?err2:err;
+	
+	return err;
 }
 
 void star1d::update_map(matrix dR) {
@@ -311,6 +324,15 @@ void star1d::solve_pressure(solver *op) {
     op->set_rhs("pi_c",rhs_pi_c);
 }
 
+
+void star1d::solve_X(solver *op) {
+    DEBUG_FUNCNAME;
+	int n,j0;
+	matrix q;
+	char eqn[8];
+	
+	
+}
 
 void star1d::solve_temp(solver *op) {
     int n,j0;
