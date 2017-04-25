@@ -82,6 +82,8 @@ void star1d::register_variables(solver *op) {
 	op->regvar_dep("opa.xi");
 	op->regvar_dep("opa.k");
 	op->regvar_dep("nuc.eps");
+// Evolution of X
+	op->regvar("log_X");
 
 }
 
@@ -103,9 +105,12 @@ double star1d::solve(solver *op) {
 	solve_map(op);
 	solve_gsup(op);
 	solve_Teff(op);
+// Evolution of X
+        solve_X(op);
 	
 	op->solve(info);
 	
+// Some output verbose ----------------------
 	if (config.verbose) {
 		if(info[2]) {
 			printf("CGS Iteration: ");
@@ -124,13 +129,14 @@ double star1d::solve(solver *op) {
 				printf("Not converged (Error %d)\n",info[3]);
 		}
 	}
+// End  output verbose ----------------------
 
 	double q,h;
 		
 	h=1;
 	q=config.newton_dmax;
 	
-	matrix dphi,dp,dT,dpc,dTc,dRi;
+	matrix dphi,dp,dT,dX,dpc,dTc,dRi;
 	
 	dphi=op->get_var("Phi");
 	err=max(abs(dphi/phi));
@@ -142,6 +148,12 @@ double star1d::solve(solver *op) {
 	dT=op->get_var("log_T");	
 	err2=max(abs(dT));err=err2>err?err2:err;
 	while(exist(abs(h*dT)>q)) h/=2;
+
+// Compute dX
+	dX=op->get_var("log_X");	
+	err2=max(abs(dX));err=err2>err?err2:err;
+	while(exist(abs(h*dX)>q)) h/=2;
+// End of dX computation
 
 	dpc=op->get_var("log_pc");	
 	err2=fabs(dpc(0)/pc);err=err2>err?err2:err;
@@ -157,6 +169,9 @@ double star1d::solve(solver *op) {
 	phi+=h*dphi;
 	p+=h*dp*p;
 	T+=h*dT*T;
+// Evolution of X, dX is the variation on lnX assumed to be small
+	X+=h*dX*X;
+
 	pc*=exp(h*dpc(0));
 	Tc*=exp(h*dTc(0));
 
@@ -314,6 +329,15 @@ void star1d::solve_pressure(solver *op) {
 	op->set_rhs("pi_c",rhs_pi_c);
 }
 
+
+void star1d::solve_X(solver *op) {
+    DEBUG_FUNCNAME;
+	int n,j0;
+	matrix q;
+	char eqn[8];
+	
+	
+}
 
 void star1d::solve_temp(solver *op) {
     DEBUG_FUNCNAME;
