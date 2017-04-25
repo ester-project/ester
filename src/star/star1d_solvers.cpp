@@ -82,8 +82,8 @@ void star1d::register_variables(solver *op) {
 	op->regvar_dep("opa.xi");
 	op->regvar_dep("opa.k");
 	op->regvar_dep("nuc.eps");
-// Evolution of X
-	op->regvar("lnX");
+// Evolution of Xh
+	op->regvar("lnXh");
 
 }
 
@@ -105,8 +105,8 @@ double star1d::solve(solver *op) {
 	solve_map(op);
 	solve_gsup(op);
 	solve_Teff(op);
-// Evolution of X
-        solve_X(op);
+// Evolution of Xh
+        solve_Xh(op);
 	
 	op->solve(info);
 	
@@ -136,7 +136,7 @@ double star1d::solve(solver *op) {
 	h=1;
 	q=config.newton_dmax;
 	
-	matrix dphi,dp,dT,dX,dpc,dTc,dRi;
+	matrix dphi,dp,dT,dXh,dpc,dTc,dRi;
 	
 	dphi=op->get_var("Phi");
 	err=max(abs(dphi/phi));
@@ -149,11 +149,11 @@ double star1d::solve(solver *op) {
 	err2=max(abs(dT));err=err2>err?err2:err;
 	while(exist(abs(h*dT)>q)) h/=2;
 
-// Compute dX
-	dX=op->get_var("lnX");	
-	err2=max(abs(dX));err=err2>err?err2:err;
-	while(exist(abs(h*dX)>q)) h/=2;
-// End of dX computation
+// Compute dXh
+	dXh=op->get_var("lnXh");	
+	err2=max(abs(dXh));err=err2>err?err2:err;
+	while(exist(abs(h*dXh)>q)) h/=2;
+// End of dXh computation
 
 	dpc=op->get_var("log_pc");	
 	err2=fabs(dpc(0)/pc);err=err2>err?err2:err;
@@ -169,8 +169,8 @@ double star1d::solve(solver *op) {
 	phi+=h*dphi;
 	p+=h*dp*p;
 	T+=h*dT*T;
-// Evolution of Xh, dX is the variation on ln(Xh) assumed to be small
-	Xh+=h*dX*Xh;
+// Evolution of Xh, dXh is the variation on ln(Xh) assumed to be small
+	Xh+=h*dXh*Xh;
 
 	pc*=exp(h*dpc(0));
 	Tc*=exp(h*dTc(0));
@@ -329,21 +329,21 @@ void star1d::solve_pressure(solver *op) {
 	op->set_rhs("pi_c",rhs_pi_c);
 }
 
-
-void star1d::solve_X(solver *op) {
+//Evolution Xh --------------------------------------
+void star1d::solve_Xh(solver *op) {
     DEBUG_FUNCNAME;
-	int n,j0;
-	matrix q;
-	char eqn[8];
 	
-        factor=4*mp/Qmc2*dt
-	op->add_d("lnX","lnX",ones);
-	op->add_d("lnX","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
-	op->add_d("lnX","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
+	Qmc2=(4*HYDROGEN_MASS-UMA*4.0026033)*C_LIGHT*C_LIGHT
+        factor=4*HYDROGEN_MASS/Qmc2*dt
+	op->add_d("lnXh","lnXh",ones);
+	op->add_d("lnXh","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
+	op->add_d("lnXh","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
 
         rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh
 	
 }
+//Evolution Xh end-----------------------------------
+
 
 void star1d::solve_temp(solver *op) {
     DEBUG_FUNCNAME;
