@@ -342,21 +342,21 @@ void star1d::solve_Xh(solver *op) {
 }
 //Evolution Xh end-----------------------------------
 
-
-void star1d::solve_X(solver *op) {
+//Evolution Xh --------------------------------------
+void star1d::solve_Xh(solver *op) {
     DEBUG_FUNCNAME;
-	int n,j0;
-	matrix q;
-	char eqn[8];
 	
-        factor=4*mp/Qmc2*dt
-	op->add_d("lnX","lnX",ones);
-	op->add_d("lnX","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
-	op->add_d("lnX","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
+	Qmc2=(4*HYDROGEN_MASS-UMA*4.0026033)*C_LIGHT*C_LIGHT
+        factor=4*HYDROGEN_MASS/Qmc2*dt
+	op->add_d("lnXh","lnXh",ones);
+	op->add_d("lnXh","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
+	op->add_d("lnXh","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
 
         rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh
 	
 }
+//Evolution Xh end-----------------------------------
+
 
 void star1d::solve_temp(solver *op) {
     int n,j0;
