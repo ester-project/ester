@@ -140,14 +140,24 @@ class star2d:
 	self.Dt		= _mat_to_numpy(self._s.Dt) #theta derivative
         self.r          = _mat_to_numpy(self._s.r)
         self.rt         = _np.dot(self.r, self.Dt)
+        self.rz         = _mat_to_numpy(self._s.map.rz)
+        self.rzz        = _mat_to_numpy(self._s.map.rzz)
+        self.rzt        = _mat_to_numpy(self._s.map.rzt)
+        self.gzz        = _mat_to_numpy(self._s.map.gzz)
+        self.gzt        = _mat_to_numpy(self._s.map.gzt)
         if interpolate:
             self.r          = self.interp(self.r)
             self.rt         = self.interp(self.rt)
+            self.rz         = self.interp(self.rz)
+            self.rzz        = self.interp(self.rzz)
+            self.rzt        = self.interp(self.rzt)
+            self.gzz        = self.interp(self.gzz)
+            self.gzt        = self.interp(self.gzt)
         self.th         = _np.zeros(shape=(self.nth+2))
         self.th[1:self.nth+1] = _mat_to_numpy(self._s.th)
         self.th[0] = _np.pi/2
         self.th         = _np.ones((self.nr, 1)) * self.th
-        self.r          = self.r * self.R
+#       self.r          = self.r * self.R
         self.Rp         = self.R
         self.Re         = _mat_to_numpy(
                 self._s.map.leg.eval_00(self._s.r.row(self.nr-1), _np.pi/2))[0, 0]*self.R
