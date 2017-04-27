@@ -29,7 +29,7 @@ for k in range(a.nth):
     sp_leg[:,k]=abs(np.dot(a.P,sp_leg[:,k]))
 
 # Normalisation by the coefficient (0,0) in each domain
-jfirst=np.zeros(a.ndomains)
+jfirst=np.zeros(a.ndomains,dtype=np.int)
 
 for i in np.arange(a.ndomains-1)+1:
    jfirst[i]=jfirst[i-1]+a.npts[i]
