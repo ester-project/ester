@@ -262,6 +262,8 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		T=1-0.5*r*r;
 		p=T;
 		phi=-T;
+		Xh=X0*ones(nr,1);
+		Xh_prec=Xh;
 		G=0*T;
 		w=0*T;
 		conv=0;

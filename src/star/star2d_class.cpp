@@ -188,6 +188,7 @@ void star2d::hdf5_write(const char *filename) const {
     fields["Z"] = comp.Z();
     fields["N2"] = N2();
     fields["nuc.eps"] = nuc.eps;
+    fields["Xh"] = Xh;
 
     for (matrix_map::iterator it=fields.begin(); it!=fields.end(); ++it) {
         write_field(star, it->first.c_str(), it->second);
@@ -241,6 +242,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("phi",&phi);
     fp.write("p",&p);
     fp.write("T",&T);
+    fp.write("Xh",&Xh);
     fp.write("phiex",&phiex);
     fp.write("map.R",&map.R);
     fp.write("w",&w);
@@ -463,6 +465,10 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_warn("Could not read field 'G' from file `%s'", input_file);
         G = zeros(nr, nth);
     }
+    if (read_field(star, "Xh", Xh)) {
+        ester_warn("Could not read field 'Xh' from file `%s'", input_file);
+        Xh = zeros(nr, nth);
+    }
     if (read_field(star, "X", comp["H"])) {
         ester_warn("Could not read field 'X' from file `%s'", input_file);
         comp["H"] = zeros(nr, nth);
@@ -582,6 +588,7 @@ int star2d::read(const char *input_file, int dim) {
     fp.read("phi",&phi);
     fp.read("p",&p);
     fp.read("T",&T);
+    fp.read("Xh",&Xh);
     if(fp.read("phiex",&phiex)) phiex=zeros(nex,nth);
     fp.read("map.R",&map.R);
     if(map.R.nrows()<map.ndomains+1) {
@@ -1047,6 +1054,10 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
     else if(!strcmp(arg,"env_convec")) {
         if(val==NULL) return 2;
         env_convec=atoi(val);
+    }
+    else if(!strcmp(arg,"dt")) { // dt added
+        if(val==NULL) return 2;
+        dt=atof(val);
     }
     else if(!strcmp(arg,"min_core_size")) {
         if(val==NULL) return 2;

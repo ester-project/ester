@@ -34,7 +34,7 @@ class star2d {
   	const int &nr,&nth,&nex,&ndomains;
 	const matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
 	const matrix_block_diag &D;
-    matrix rho,phi,p,T;
+    matrix rho,phi,p,T,Xh,Xh_prec;
     matrix phiex;
 	matrix vr,vt,G,w;
 	composition_map comp; 
@@ -56,6 +56,7 @@ class star2d {
 	int env_convec;
 	int stratified_comp;
 	double min_core_size;
+	double dt; // in Myrs
 	std::vector<int> domain_type;
 	#define RADIATIVE 0
 	#define CORE 1
@@ -191,6 +192,7 @@ class star1d : public star2d {
 	virtual void solve_definitions(solver *);
 	virtual void solve_Teff(solver *);
 	virtual void solve_gsup(solver *);
+	virtual void solve_Xh(solver *);
 	
 	virtual void update_map(matrix dR);
 
