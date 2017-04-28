@@ -96,7 +96,6 @@ solver *star2d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 	
-        printf("Me voila dans init_solver of star2d\n");
 	nvar=34; // include Xh
 	op=new solver;
 	op->init(ndomains+1,nvar+nvar_add,"full");
@@ -189,7 +188,11 @@ double star2d::solve(solver *op) {
 
 // Solving the system:
 	op->solve(info);
+<<<<<<< e858c4b1a0338dbd750a9e2ec436eb0ba197c47d
 
+=======
+	
+>>>>>>> Modification de
 // Some output verbose ----------------------
 	if (config.verbose) {
 		if(info[2]) {
@@ -210,7 +213,11 @@ double star2d::solve(solver *op) {
 		}
 	}
 // End  output verbose ----------------------
+<<<<<<< e858c4b1a0338dbd750a9e2ec436eb0ba197c47d
 
+=======
+	
+>>>>>>> Modification de
 	h=1;
 // h : relaxation parameter for Newton solver: useful for the first
 // iterations
@@ -659,7 +666,10 @@ void star2d::solve_mov(solver *op) {
 void star2d::solve_Xh(solver *op) {
     DEBUG_FUNCNAME;
 
+<<<<<<< e858c4b1a0338dbd750a9e2ec436eb0ba197c47d
 	printf("Start of solve_Xh\n");
+=======
+>>>>>>> Modification de
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
     double factor=4*HYDROGEN_MASS/Qmc2*MYR*dt;
         op->add_d("lnXh","lnXh",ones(nr,nth));
@@ -668,7 +678,10 @@ void star2d::solve_Xh(solver *op) {
 
     matrix rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh;
     op->set_rhs("lnXh",rhs);
+<<<<<<< e858c4b1a0338dbd750a9e2ec436eb0ba197c47d
 	printf("End of solve_Xh\n");
+=======
+>>>>>>> Modification de
 
 }
 //Evolution Xh end-----------------------------------
