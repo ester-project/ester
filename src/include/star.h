@@ -112,6 +112,7 @@ class star2d {
 	virtual void solve_Teff(solver *);
 	virtual void solve_definitions(solver *);
 	virtual void solve_atm(solver *);
+	virtual void solve_Xh(solver *);
 	
 	virtual void update_map(matrix dR);
 	
