@@ -30,19 +30,19 @@ void star1d::fill() {
 }
 
 solver *star1d::init_solver(int nvar_add) {
-    int nvar;
-    solver *op;
-
-    nvar=27;
-
-    op=new solver();
-    op->init(ndomains,nvar+nvar_add,"full");
-
-    op->maxit_ref=10;op->use_cgs=0;op->maxit_cgs=20;
-    op->rel_tol=1e-12;op->abs_tol=1e-20;
-    register_variables(op);
-
-    return op;
+	int nvar;
+	solver *op;
+	
+	nvar=28; // one more variable added (Xh & lnXh)
+	
+	op=new solver();
+	op->init(ndomains,nvar+nvar_add,"full");
+	
+	op->maxit_ref=10;op->use_cgs=0;op->maxit_cgs=20;
+	op->rel_tol=1e-12;op->abs_tol=1e-20;
+	register_variables(op);
+	
+	return op;
 }
 
 void star1d::register_variables(solver *op) {
@@ -328,16 +328,16 @@ void star1d::solve_pressure(solver *op) {
 //Evolution Xh --------------------------------------
 void star1d::solve_Xh(solver *op) {
     DEBUG_FUNCNAME;
-	
-	Qmc2=(4*HYDROGEN_MASS-UMA*4.0026033)*C_LIGHT*C_LIGHT
-	Qmc2=(4*HYDROGEN_MASS-UMA*AMASS["He4"])*C_LIGHT*C_LIGHT
-        factor=4*HYDROGEN_MASS/Qmc2*dt
-	op->add_d("lnXh","lnXh",ones);
-	op->add_d("lnXh","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
-	op->add_d("lnXh","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
 
-        rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh
-	
+    double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
+    double factor=4*HYDROGEN_MASS/Qmc2*MYR*dt;
+        op->add_d("lnXh","lnXh",ones(nr,1));
+        op->add_d("lnXh","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
+        op->add_d("lnXh","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
+
+    matrix rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh;
+    op->set_rhs("lnXh",rhs);
+
 }
 //Evolution Xh end-----------------------------------
 

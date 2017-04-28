@@ -105,6 +105,7 @@ class star2d:
         self.vt         = _mat_to_numpy(self._s.vt)
         self.opacity    = _mat_to_numpy(self._s.opa.k)
         self.conduct    = _mat_to_numpy(self._s.opa.xi)
+        self.Xh         = _mat_to_numpy(self._s.Xh)
 
         if interpolate:
             self.G          = self.interp(self.G)
@@ -135,6 +136,7 @@ class star2d:
             self.vt         = self.interp(self.vt)
             self.opacity    = self.interp(self.opacity)
             self.conduct    = self.interp(self.conduct)
+            self.Xh         = self.interp(self.Xh)
 
 
 	self.Dt		= _mat_to_numpy(self._s.Dt) #theta derivative

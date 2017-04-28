@@ -8,11 +8,12 @@
 extern const double PI=acos(-1);
 extern const double SIG_SB=5.670400e-5;
 extern const double K_BOL=1.3806503e-16;
-extern const double UMA=1.660538922e-24;
+extern const double UMA=1.660538922e-24; // Atomic Mass Unit cgs
 extern const double HYDROGEN_MASS=1.67353249e-24;
 extern const double A_RAD=7.565767e-15;
 extern const double GRAV=6.67384e-8;
 extern const double C_LIGHT=2.99792458e10;
+extern const double MYR=3.15576e13; // one Myear in seconds
 
 extern const double M_SUN=1.9891e33;
 extern const double R_SUN=6.95508e10;

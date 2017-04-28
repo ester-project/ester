@@ -11,6 +11,7 @@ extern const double HYDROGEN_MASS;
 extern const double A_RAD;
 extern const double GRAV;
 extern const double C_LIGHT;
+extern const double MYR;
 
 extern const double M_SUN;
 extern const double R_SUN;
