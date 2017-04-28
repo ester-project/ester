@@ -78,8 +78,8 @@ void star2d::calc_veloc() {
 solver *star2d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
-
-	nvar=33;
+	
+	nvar=34; // include Xh
 	op=new solver;
 	op->init(ndomains+1,nvar+nvar_add,"full");
 
@@ -131,8 +131,9 @@ void star2d::register_variables(solver *op) {
 	op->regvar_dep("nuc.eps");
 	op->regvar_dep("s");
 	op->regvar("gamma");
-
-
+// Evolution of Xh
+        op->regvar("lnXh");
+	
 }
 
 /// \brief Performs one step of the Newton algorithm to compute the star's
@@ -165,6 +166,7 @@ double star2d::solve(solver *op) {
 	solve_atm(op);
 	solve_gsup(op);
 	solve_Teff(op);
+	solve_Xh(op);
 	if(config.verbose) printf("Done\n");
 
 // Solving the system:
@@ -195,8 +197,8 @@ double star2d::solve(solver *op) {
 // h : relaxation parameter for Newton solver: useful for the first
 // iterations
 	dmax=config.newton_dmax;
-
-	matrix dphi,dphiex,dp,dT,dpc,dTc;
+	
+	matrix dphi,dphiex,dp,dT,dXh,dpc,dTc;
 	dphi=op->get_var("Phi").block(0,nr-1,0,-1);
 	dphiex=op->get_var("Phi").block(nr,nr+nex-1,0,-1);
 	err=max(abs(dphi/phi));
@@ -209,6 +211,12 @@ double star2d::solve(solver *op) {
 	err2=max(abs(dT/T));err=err2>err?err2:err;
 	while(exist(abs(h*dT/T)>dmax)) h/=2;
 	//printf("err(T)=%e\n",err2);
+// Compute dXh
+	dXh=op->get_var("lnXh");
+	err2=max(abs(dXh));err=err2>err?err2:err;
+	while(exist(abs(h*dXh)>dmax)) h/=2;
+	//printf("err(Xh)=%e\n",err2);
+// End compute dXh
 	dpc=op->get_var("log_pc");
 	err2=fabs(dpc(0));err=err2>err?err2:err;
 	while(fabs(h*dpc(0))>dmax) h/=2;
@@ -222,6 +230,9 @@ double star2d::solve(solver *op) {
 	phiex+=h*dphiex;
 	p+=h*dp;
 	T+=h*dT;
+// Evolution of Xh, dXh is the variation on ln(Xh) assumed to be small
+        Xh+=h*dXh*Xh;
+
 	pc*=exp(h*dpc(0));
 	Tc*=exp(h*dTc(0));
 	Omega=Omega+h*op->get_var("Omega")(0);
@@ -625,6 +636,22 @@ void star2d::solve_mov(solver *op) {
 	}
 }
 
+/// \brief Writes Xh equation for the evolution
+//Evolution Xh --------------------------------------
+void star2d::solve_Xh(solver *op) {
+    DEBUG_FUNCNAME;
+
+    double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
+    double factor=4*HYDROGEN_MASS/Qmc2*MYR*dt;
+        op->add_d("lnXh","lnXh",ones(nr,nth));
+        op->add_d("lnXh","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
+        op->add_d("lnXh","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
+
+    matrix rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh;
+    op->set_rhs("lnXh",rhs);
+
+}
+//Evolution Xh end-----------------------------------
 
 
 /// \brief Writes temperature and luminosity equations and interface conditions

@@ -934,6 +934,7 @@ void star2d::interp(remapper *red) {
     p=red->interp(p);
     phi=red->interp(phi);
     T=red->interp(T);
+    Xh=red->interp(Xh);
     w=red->interp(w);
     G=red->interp(G,11);
     comp=red->interp(comp);
