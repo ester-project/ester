@@ -907,6 +907,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         w=zeros(nr,nth);
         G=zeros(nr,nth);
         Xh=X0*ones(nr,nth);
+        Xh_prec=Xh;
         conv=0;
         domain_type.resize(ndomains);
         for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
