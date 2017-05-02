@@ -50,6 +50,7 @@ void star2d::copy(const star2d &A) {
     phi=A.phi;
     p=A.p;
     T=A.T;
+    Xh=A.Xh;
     rho=A.rho;
     comp=A.comp;
 
@@ -440,6 +441,11 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_err("Could not read field 'p' from file `%s'", input_file);
         exit(EXIT_FAILURE);
     }
+    if (read_field(star, "Xh", Xh)) {
+        ester_err("Could not read field 'Xh' from file `%s'", input_file);
+        Xh = zeros(nr, nth);
+        exit(EXIT_FAILURE);
+    }
     if (read_field(star, "T", T)) {
         ester_err("Could not read field 'T' from file `%s'", input_file);
         T = zeros(nr, nth);
@@ -775,13 +781,19 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     diff_leg leg_new;
     matrix Tr,m0;
 
+	printf("Enter init in star2d_class\n");
     sprintf(default_params,"%s/ester/1d_default.par", ESTER_DATADIR);
 
     if(input_file != NULL) {
+	printf("Enter 2 init in star2d_class\n");
         if (read(input_file)) {
+ 	    printf("Enter 3 init in star2d_class\n");
             if(!in1d.read(input_file)) {
+ 	      printf("Enter 4 init in star2d_class\n");
                 if(*param_file) {
+ 	      printf("Enter 5 init in star2d_class\n");
                     if(fp.open(param_file)) {
+ 	      printf("Enter 6 init in star2d_class\n");
                         while((k=fp.get(arg,val))) {
                             if(!strcmp(arg,"nth")&&val) nt=atoi(val);		
                             if(!strcmp(arg,"nex")&&val) next=atoi(val);
@@ -789,13 +801,17 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
                         fp.close();
                     }
                 }
+ 	      printf("Enter 7 init in star2d_class\n");
                 cmd.open(argc,argv);
+ 	      printf("Enter 8 init in star2d_class\n");
                 while(cmd.get(arg,val)) {
                     if(!strcmp(arg,"nth")&&val) nt=atoi(val);		
                     if(!strcmp(arg,"nex")&&val) next=atoi(val);
                 }
                 cmd.close();
+ 	      printf("Enter 9 init in star2d_class\n");
                 init1d(in1d, nt, next);
+ 	      printf("Enter 10 init in star2d_class\n");
             } else {
                 ester_err("Error reading input file: %s", input_file);
                 return 1;
@@ -886,6 +902,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
             remap(ndomains-1,map.npts,map.nt,map.nex);
         }
     } else {
+	printf("Enter a piece of code in star2d_call\n");
         map.init();
         T=1-0.5*r*r;
         p=T;
@@ -893,6 +910,8 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         phiex=zeros(nex,nth);
         w=zeros(nr,nth);
         G=zeros(nr,nth);
+        Xh=X0*ones(nr,nth);
+        Xh_prec=Xh;
         conv=0;
         domain_type.resize(ndomains);
         for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
@@ -909,6 +928,7 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
     int k;
     file_parser fp;
 
+ 	      printf("Enter init1d in star2d_class\n");
     sprintf(default_params,"%s/config/2d_default.par",ESTER_DATADIR);
 
     *this=A;
@@ -930,8 +950,10 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
     if(npts_th==-1) npts_th=8;
     if(npts_ex==-1) npts_ex=8;
 
+ 	      printf("Enter init1d  remap in star2d_class\n");
 
     remap(ndomains,map.gl.npts,npts_th,npts_ex);
+ 	      printf("Enter init1d  after remap in star2d_class\n");
 
     fill();
 
@@ -939,14 +961,21 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 
 void star2d::interp(remapper *red) {
     DEBUG_FUNCNAME;
+ 	printf("Enter interp in star2d_class\n");
         p=red->interp(p);
     phi=red->interp(phi);
     T=red->interp(T);
+ 	printf("Enter interp 2 in star2d_class\n");
+ 	printf("Xh size: %dx%d\n", Xh.nrows(), Xh.ncols());
     Xh=red->interp(Xh);
+ 	printf("Enter interp 3 in star2d_class\n");
     w=red->interp(w);
+ 	printf("Enter interp 5 in star2d_class\n");
     G=red->interp(G,11);
+ 	printf("Enter interp 6 in star2d_class\n");
     comp=red->interp(comp);
     phiex=red->interp_ex(phiex);
+ 	printf("Leave interp in star2d_class\n");
     fill();
 
 }
