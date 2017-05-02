@@ -458,7 +458,7 @@ void solver::solve(int *info) {
 	}
 	if(!sync) {
 		if(verbose)
-			printf("LU Fatorization...\n");
+			printf("LU Factorization...\n");
 #ifdef PERF_LOG
 		tlu.start();
 #endif
