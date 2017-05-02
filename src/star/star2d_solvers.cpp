@@ -80,6 +80,7 @@ solver *star2d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 	
+        printf("Me voila dans init_solver of star2d\n");
 	nvar=34; // include Xh
 	op=new solver;
 	op->init(ndomains+1,nvar+nvar_add,"full");
@@ -640,6 +641,7 @@ void star2d::solve_mov(solver *op) {
 void star2d::solve_Xh(solver *op) {
     DEBUG_FUNCNAME;
 
+	printf("Start of solve_Xh\n");
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
     double factor=4*HYDROGEN_MASS/Qmc2*MYR*dt;
         op->add_d("lnXh","lnXh",ones(nr,nth));
@@ -648,6 +650,7 @@ void star2d::solve_Xh(solver *op) {
 
     matrix rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh;
     op->set_rhs("lnXh",rhs);
+	printf("End of solve_Xh\n");
 
 }
 //Evolution Xh end-----------------------------------

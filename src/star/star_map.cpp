@@ -9,6 +9,7 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
     DEBUG_FUNCNAME;
     remapper red(map);
 
+	printf("Enter remap in star_map\n");
     red.set_ndomains(ndom_in);
     red.set_npts(npts_in);
     red.set_nt(nth_in);
@@ -18,8 +19,10 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
         remap_domains(ndom_in,red);
 
     map=red.get_map();
+	printf("Enter remap 2 in star_map\n");
     interp(&red);
 
+	printf("Leave remap in star_map\n");
 }
 
 bool star2d::remap_domains(int ndom, remapper &red) {

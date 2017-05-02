@@ -24,6 +24,7 @@ int main(int argc,char *argv[]) {
 	signal(SIGINT,sig_handler);
 	
 	t.start();
+    printf("je suis au debut\n");
 		
 	if(config.verbose) {
 		fig=new figure(config.plot_device);
@@ -33,10 +34,12 @@ int main(int argc,char *argv[]) {
 	star2d A;
 	solver *op;
 	
+    printf("je suis au debut apres star2d A\n");
 	if(A.init(config.input_file,config.param_file,argc,argv)) {
         ester_err("Could not initialize star");
         return 1;
     }
+    printf("et la?\n");
 	
 	nit=0;
 	
@@ -44,7 +47,9 @@ int main(int argc,char *argv[]) {
 
 	t_plot=0;
 	last_it=nit>=config.maxit;
+    printf("je suis au debut avant init_solver\n");
 	op=A.init_solver();
+    printf("je suis au debut apres init_solver\n");
 	if(config.verbose>2) op->verbose=1;
 	A.config.newton_dmax=config.newton_dmax;
 	if(config.verbose>1) A.config.verbose=1;
@@ -55,6 +60,7 @@ int main(int argc,char *argv[]) {
 		A.core_convec=0;
 	}
 	
+    printf("je suis au debut\n");
     while(!last_it) {
         if (A.config.dump_iter) {
             char *filename = NULL;
