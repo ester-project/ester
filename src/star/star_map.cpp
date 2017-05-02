@@ -14,6 +14,7 @@ extern "C" {
 void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
     remapper red(map);  // declaration object of class remapper
 
+	printf("Enter remap in star_map\n");
     red.set_ndomains(ndom_in);
     red.set_npts(npts_in);
     red.set_nt(nth_in);
@@ -25,6 +26,7 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
     map=red.get_map(); // update the mapping
     interp(&red); // interpolate the variable on the new update
 
+	printf("Leave remap in star_map\n");
 }
 
 // Some domains have boundaries imposed by the physics and these

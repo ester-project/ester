@@ -165,6 +165,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 	int i,k,change_grid=0;
 	matrix Tr;
 
+        printf("je suis dans star1d::init au debut\n");
 	sprintf(default_params,"%s/ester/1d_default.par", ESTER_DATADIR);
 
 	if(*input_file) {
