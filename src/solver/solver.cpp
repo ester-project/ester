@@ -105,7 +105,7 @@ solver::solver() {
 	def_nr=NULL;
 	mult_fcn=NULL;
 	mult_context=NULL;
-	debug=1;
+	debug=0;
 };
 
 
