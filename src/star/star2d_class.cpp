@@ -587,7 +587,6 @@ int star2d::read(const char *input_file, int dim) {
     if(fp.read("stratified_comp",&stratified_comp)) stratified_comp = 0;
 
     map.init();
-	printf("Reading the fields phi,p,T,Xh...\n");
     fp.read("phi",&phi);
     fp.read("p",&p);
     fp.read("T",&T);
