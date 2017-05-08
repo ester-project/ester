@@ -129,6 +129,7 @@ int star1d::read_old(const char *input_file) {
             ester_warn("could not read atm.name");
 	}
 	
+        printf("start phi.read etc...\n");
 	map.remap();
 	phi.read(nr,1,fp,mode);
 	p.read(nr,1,fp,mode);
@@ -169,6 +170,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 	sprintf(default_params,"%s/ester/1d_default.par", ESTER_DATADIR);
 
 	if(*input_file) {
+                printf("*input_file true in star1d::init\n");
 		if(read(input_file, 1)) {
 			printf("Error reading input file: %s\n",input_file);
 			return 1;
@@ -198,6 +200,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		change_grid=0;
 	}
 	
+        printf("je suis dans star1d::init au milieu\n");
 	if(*param_file) {
 		if(!fp.open(param_file)) { 
 			printf("Can't open parameters file %s\n",param_file);
@@ -264,6 +267,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		phiex=zeros(map.nex,map.nt);
 	}
 	
+        printf("je suis dans star1d::init avant init_comp\n");
 	init_comp();
 	fill();
 	
