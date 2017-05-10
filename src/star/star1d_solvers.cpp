@@ -6,7 +6,7 @@
 
 void star1d::fill() {
 	Y0=1.-X0-Z0;
-        printf("star1d fill appel init_comp\n");
+        printf("star1d::fill call init_comp\n");
 	init_comp();
 
     eq_state();
