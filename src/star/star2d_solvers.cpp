@@ -53,9 +53,9 @@ void star2d::init_comp() {
     double Xh0 = ((map.gl.I.block(0, 0, 0, n-1)),
             (Xh*r*r*rz).block(0, n-1, 0, 0),
             (map.leg.I_00))(0);
-    printf("%lf\n", Xh0);
     double Volc = ((map.gl.I.block(0, 0, 0, n-1)), (r*r*rz).block(0, n-1, 0, 0),
             (map.leg.I_00))(0);
+    printf("%lf\n", Xh0/Volc);
 	comp.setblock(0, n-1, 0, 0, initial_composition(Xh0/Volc, Z0)*ones(n, nth));
     for (int i=n; i<nr; i++) {
         comp.setblock(i, i, 0, 0, initial_composition(comp["H"](i, 0), Z0)*ones(1, nth));
