@@ -590,7 +590,7 @@ int star2d::read(const char *input_file, int dim) {
     if(fp.read("stratified_comp",&stratified_comp)) stratified_comp = 0;
 
     map.init();
-	printf("Reading the fields phi,p,T,Xh...");
+	printf("Reading the fields phi,p,T,Xh...\n");
     fp.read("phi",&phi);
     fp.read("p",&p);
     fp.read("T",&T);
@@ -607,6 +607,7 @@ int star2d::read(const char *input_file, int dim) {
         ester_warn("cannot read w,set to 0\n");
     }
     if(fp.read("G",&G)) G=zeros(nr,nth);
+    if(fp.read("comp",(matrix_map *)&comp)) printf("Appel init_comp fp.read\n");
     if(fp.read("comp",(matrix_map *)&comp)) init_comp();
 
     fp.close();
@@ -765,6 +766,7 @@ int star2d::read_old(const char *input_file){
         if(n<conv) domain_type[n]=CORE;
         else domain_type[n]=RADIATIVE;
     }
+    printf("Appel init_comp read_old\n");
     init_comp();
     fclose(fp);
     fill();
@@ -917,6 +919,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
     }
     Xh_prec=Xh;
+    printf("Appel init_comp dans init\n");
     init_comp();
     fill();
     return 0;
