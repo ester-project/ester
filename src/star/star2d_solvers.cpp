@@ -48,6 +48,21 @@ void star2d::init_comp() {
         n += map.gl.npts[i];
     }
 
+    matrix &rz = map.rz;
+    printf("AVG comp: (n: %d)\n", n);
+    double Xh0 = ((map.gl.I.block(0, 0, 0, n-1)),
+            (Xh*r*r*rz).block(0, n-1, 0, 0),
+            (map.leg.I_00))(0);
+    printf("%lf\n", Xh0);
+    double Volc = ((map.gl.I.block(0, 0, 0, n-1)), (r*r*rz).block(0, n-1, 0, 0),
+            (map.leg.I_00))(0);
+	comp.setblock(0, n-1, 0, 0, initial_composition(Xh0/Volc, Z0)*ones(n, nth));
+    for (int i=n; i<nr; i++) {
+        comp.setblock(i, i, 0, 0, initial_composition(comp["H"](i, 0), Z0)*ones(1, nth));
+    }
+    // Xh.setblock(0, n-1, 0, 0, comp["H"].block(0, n-1, 0, 0));
+
+#if 0
     if(stratified_comp == 0) {
         comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
     }
@@ -64,6 +79,7 @@ void star2d::init_comp() {
             l += m;
         }
     }
+#endif
 }
 
 void star2d::calc_veloc() {
