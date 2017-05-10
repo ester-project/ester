@@ -911,6 +911,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
     }
     Xh_prec=Xh;
+    printf("Appel init_comp dans init\n");
     init_comp();
     fill();
     return 0;
