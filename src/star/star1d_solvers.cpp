@@ -7,6 +7,7 @@
 void star1d::fill() {
     DEBUG_FUNCNAME;
 	Y0=1.-X0-Z0;
+        printf("star1d::fill call init_comp\n");
 	init_comp();
 
 	eq_state();
