@@ -37,7 +37,7 @@ void star2d::fill() {
 void star2d::init_comp() {
 // Update the object comp
 
-	printf("start of star2d::init_comp\n");
+	printf("start of star2d::init_comp\n"); //to be modified
 	comp=initial_composition(X0,Z0)*ones(nr,nth);
 
 	if(!conv) return;
