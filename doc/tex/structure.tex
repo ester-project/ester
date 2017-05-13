@@ -37,11 +37,13 @@ below).
 \subsection{Simplifications}
 
 We simplify the system of equations by first neglecting entropy
-advection by meridional circulation. We also neglect the convective
-flux: thus we avoid computing stars with an outer convective envelope
-where the convective flux is non-negligible. Core convection is
-simplified in assuming an isentropic core. Hence, the energy/entropy
-equation just reads:
+advection by meridional circulation, which is justified at low viscosity
+(e.g. \href{http://arxiv.org/abs/astro-ph/0608431}{\citealt{R06b}} or
+\citealt{RELP16}).
+We also neglect the convective flux: thus we avoid computing stars
+with an outer convective envelope where the convective flux is
+non-negligible. Core convection is simplified in assuming an isentropic
+core. Hence, the energy/entropy equation just reads:
 
 \begin{equation} -\Div\vF + \rho\eps_* = 0\end{equation}
 in a radiative zone and
@@ -117,8 +119,12 @@ Meridional velocity scale \dotfill $E\sqrt{\frac{P_c}{\rho_c}}$
 }
 \end{center}\bigskip
 
-where $E$ is the Ekman number defined below.
-With these scalings, the equation now read:
+\noindent where $E$ is the Ekman number defined as:
+
+\begin{equation} E = \frac{\mu_c}{\rho_c \Omega_0 R^2} \with
+\Omega_0=\sqrt{\frac{P_c}{R^2\rho_c}}\; .\end{equation}
+
+With these scalings, the Poisson equation now reads:
 
 \begin{equation} \Delta\phi = \pi_c \rho\end{equation}
 where
@@ -126,7 +132,7 @@ where
 \begin{equation} \pi_c = \frac{4\pi G\rho_c^2 R^2}{P_c}\label{picdef}\end{equation}
 Energy equation can be written
 
-\begin{equation} \Delta T + \na\ln\chi\cdot\na T +
+\begin{equation} \Delta T + \na\ln\chi_*\cdot\na T +
 \Lambda\rho\frac{\eps_*}{\chi_*} = 0\end{equation}
 where
 
@@ -137,24 +143,21 @@ The momentum equation leads to
 
 \begin{equation}
 \rho s\Omega^2\es=\na p+\rho\na\phi
-\label{barocnd}
+\label{baroc_nd}
 \end{equation}
 and the vorticity equation to
 
 \begin{equation}
 s\frac{\partial\Omega^2}{\partial z}=\ephi\cdot\frac{\na
 p\times\na\rho}{\rho^2} \;.
+\label{vort_nd}
 \end{equation}
 while angular momentum flux balance reads
 
 \begin{equation}
-\label{eq:angular_momnd}
+\label{am_nd}
 \na\cdot{(\rho s^2\Omega\vu)}=E\na\cdot (\mu s^2\na\Omega)
 \end{equation}
-In this latter equation we introduced the Ekman number
-
-\begin{equation} E = \frac{\mu_c}{\rho_c \Omega_0 R^2} \with
-\Omega_0=\sqrt{\frac{P_c}{R^2\rho_c}}\; .\end{equation}
 Mass conservation remains the same
 
 \begin{equation} \Div(\rho\vu) =0\end{equation}
@@ -206,7 +209,7 @@ the interior flow can be mimicked by the boundary condition:
 
 \begin{equation}
 \label{eq:bl}
-E\mu
+\mu
 s^2\vec{\hat\xi}\cdot\na\Omega+\psi\vec{\hat\tau}\cdot\na(s^2\Omega)=0
 \qquad\mbox{on the surface}\;.
 \end{equation}
@@ -251,7 +254,7 @@ quantities by
 \item Angular momentum is another integral quantity that is useful to
 monitor or to impose:
 
-\beq L = \rho_cR^4\sqrt{\frac{P_c}{\rho_c}}
+\beq L_z = \rho_cR^4\sqrt{\frac{P_c}{\rho_c}}
 \intvol r^2\sin^2\theta\Omega\rho dV \eeq
 
 \end{itemize}
@@ -271,8 +274,31 @@ This system of partial differential equation is solved using a spectral
 method or more precisely spectral elements. The star divided in
 ``onion" layers where the vertical direction is discretized on the
 Gauss-Lobatto collocation grid (associated with Chebyshev polynomials)
-and the horizontal dependence is expanded on the spherical harmonic
-basis.
+and the Gauss-Legendre collocation grid for the horizontal dependence.
+This is associated with Legendre polynomials (or axisymmeric spherical
+harmonics).
+
+Let us recall the ordering of pressure discretized values, namely
+
+\[\begin{array}{cccc}
+p(\zeta_0,\theta_0)&p(\zeta_1,\theta_0)&p(\zeta_2,\theta_0)&\cdots\\
+p(\zeta_0,\theta_1)&p(\zeta_1,\theta_1)&p(\zeta_2,\theta_1)&\cdots\\
+p(\zeta_0,\theta_2)&p(\zeta_1,\theta_2)&p(\zeta_2,\theta_2)&\cdots\\
+\vdots&\vdots&\vdots&
+\end{array}\]
+Scalar fields can therefore be represented by a 2D matrix
+
+\[ p_{ij}\]
+where the first index represents the radial variations and the second the
+angular variations. Hence, operators acting on $\zeta$ apply on "left"
+while operators acting on $\theta$ apply on right of the matrix $[p]$.
+Hence, we shall write
+
+\[ [\partial_{\zeta\theta}p] = [D_\zeta][p][D_\theta]\]
+or
+
+\[ (\partial_{\zeta\theta}p)_{ij} = (D_\zeta)_{ik}p_{kl}(D_\theta)_{lj}\]
+
 
 \subsection{Iterations}
 
@@ -348,14 +374,51 @@ Lum      &                  &  lum   &  Luminosity  \\
 \end{tabular}
 \end{center}
 \caption[]
-{This table lists all the variables contained in $\vx$ but not
+{This table lists all the primary variables contained in $\vx$ but not
 in their actual order in the code.}
 \end{table}
 
+\begin{table}
+\begin{center}
+\begin{tabular}{lll}
+\hline
+C++ Variable & Dependence (C++ quantity) & Comments \\
+\\
+T  & log\_T & Temperature \\
+r  & R$_i$, dR$_i$, $\eta_i$, d$\eta_i$      & radius \\
+rz &    R$_i$, dR$_i$, $\eta_i$, d$\eta_i$   & $\partial_\zeta r$\\
+log\_rhoc &   log\_pc,log\_Tc   & log of central density \\
+rho &   log\_T,log\_p    & density \\
+opa.xi &   log\_T,log\_p    & thermal conductivity \\
+opa.k &   log\_T,log\_p    & opacity \\
+nuc.eps &   log\_T,log\_p    & nuclear heating \\
+s  &   log\_T,log\_p    & entropy \\
+\hline
+\end{tabular}
+\end{center}
+\caption[]{This table lists all the secondary variables. They depend on the
+primary variables and are used as short-cut in the programming.}
+\label{depvar}
+\end{table}
+
+
+
+
+
 \noindent Real ordering of variables:
 
-"Phi"; "log\_p"; "pi\_c"; "log\_T"; "Lambda"; "eta"; "deta"; "Ri";
-"dRi"; "Omega"; "log\_pc"; "log\_Tc"; "log\_R"; "m"; "ps"; "Ts"; "lum"; "Frad"; "Teff"; "gsup"; "w"; "G"; "gamma"; 
+"Phi"; "log\_p"; "pi\_c"; "log\_T"; "Lambda"; "eta"; "deta"; "Ri"; "dRi";
+"Omega"; "log\_pc"; "log\_Tc"; "log\_R"; "m"; "ps"; "Ts"; "lum"; "Frad";
+"Teff"; "gsup"; "w"; "G"; "gamma";
+
+Note that this list is completed by a list of secondary variable
+(e.g. Tab.~\ref{depvar}). These variables are, in the end, substituted
+by their expression in the final jacobian. They are used to facilitate
+the programming. They are declared as {\tt regvar\_dep}. However,
+declared {\tt regvar} variables can be used as shortcuts when they do
+not increase the size of the Jacobian too much. These are {\tt ps} and
+{\tt Ts} for instance (see the equation for atmosphere {\tt solve\_atm}).
+
 
 \subsection{The equations}
 
@@ -372,7 +435,7 @@ and $\Omega_0^2=P_c/\rho_c/R^2$.
 
 \subsubsection{$\bullet$ \bf Constitutive relations {\tt solve\_definitions}}
 
-Intermediate variables are used to simplify the writing of the Jacobian
+Secondary variables are used to simplify the writing of the Jacobian
 matrix.
 
 The EOS is written as the dependence of $\rho_*$ with respect to $P_*$ and
@@ -383,9 +446,9 @@ P}\rp_T\delta(P_cP) + \frac{\rho_*}{T_*}\lp\frac{\partial\ln\rho}{\partial\ln
 T}\rp_P\delta(T_cT)\]
 After some manipulations, we get:
 
-\[ \frac{\delta\rho}{\rho} = \frac{1}{P\chi_\rho}\delta P +
+\[ \frac{\delta\rho}{\rho} = \frac{1}{\chi_\rho}\delta\ln P +
 \frac{1}{\chi_\rho}\delta\ln P_c -\delta\ln\rho_c - d_p\delta\ln T_c -
-\frac{d_p}{T}\delta T\]
+d_p\delta\ln T\]
 where we introduced
 
 \[ \chi_\rho = \lp\frac{\partial\ln P}{\partial\ln\rho}\rp_T \andet d_p
@@ -406,14 +469,14 @@ get:
 \[ \delta\kappa =
 \frac{\kappa}{\rho}\frac{\partial\ln\kappa}{\partial\ln\rho}\delta\rho +
 \kappa\frac{\partial\ln\kappa}{\partial\ln\rho}\delta\ln\rho_c +
-\frac{\kappa}{T}\frac{\partial\ln\kappa}{\partial\ln T}\delta T +
+\kappa\frac{\partial\ln\kappa}{\partial\ln T}\delta\ln T +
 \kappa\frac{\partial\ln\kappa}{\partial\ln T}\delta\ln T_c\]
 For radiative conductivity, its expression
 
 \[ \chi = \frac{16\sigma T^3}{3\rho\kappa}\]
 leads to the following contribution
 
-\[ \frac{\delta \chi}{\chi} = \frac{3}{T}\delta T+3\delta\ln T_c
+\[ \frac{\delta \chi}{\chi} = 3\delta\ln T+3\delta\ln T_c
 -\frac{1}{\rho}\delta\rho - \delta\ln\rho_c - \frac{1}{\kappa}\delta\kappa\]
 where we took into account that $\rho$ and $T$ are non-dimensional.
 
@@ -429,8 +492,8 @@ P_*}\rp_T = -\frac{\alpha}{\rho} = -\frac{c_p\nabla_a}{P}\]
 where we used \eq{alphat} and \eq{nabla_ad}.
 Thus, after some manipulations we find
 
-\[ \delta s = c_p\lp\delta\ln T_c + \frac{\delta T}{T} - \nabla_a\delta\ln P_c
--\frac{\nabla_a}{P}\delta P \rp\]
+\[ \delta s = c_p\lp\delta\ln T_c + \delta\ln T - \nabla_a\delta\ln P_c
+-\nabla_a\delta\ln P \rp\]
 
 \subsubsection{$\bullet$ \bf Poisson equation {\tt solve\_poisson}}
 
@@ -462,29 +525,29 @@ test other kinds of mapping (see chapter 6 for more details).
 
 \subsubsection{$\bullet$ \bf Momentum equation {\tt solve\_mov}}
 
-We start from the meridional compents of the (inviscid) momentum equation
-\eq{baroc}, \eq{eq:vort_inv} and \eq{eq:angular_mom}. For the angular momentum
-equation \eq{eq:angular_mom}, we impose boundary condition \eq{eq:bl}.
+We start from the meridional components of the (inviscid) momentum equation
+\eq{baroc_nd}, \eq{vort_nd} and \eq{am_nd}. For the angular momentum
+equation \eq{am_nd}, we impose boundary condition \eq{eq:bl}.
 
 The equation are solved for the log of the pressure. At the domain
 interfaces we impose the continuity of pressure, while at the center the
 non-dimensional pressure is set to unity.
 
-Let us discuss the implementation of the vorticity equation. It reads
+Let us discuss the implementation of the vorticity equation. We first rewrite \eq{baroc_nd} as 
 
-\[ s\frac{\partial\Omega^2}{\partial z}=\ephi\cdot\frac{\na
-p\times\na\rho}{\rho^2} \;.
-\]
-which is written
-
-\centerline{\tt eq\_vort=(phivec,curl(eqmov/rho));}
-\bigskip
-\noindent which means the scalar product of $\ephi$ with the curl of
-the equation of motion divided by $\rho$, since we have
+\[ \na p +\rho\na\phi -\rho s\Omega^2\es=\vzero\]
+and introduce the {\tt eqmov} equation as
 
 \bigskip
 \centerline{\tt eqmov=grad(p)+rho*grad(phi)-rho*s*w*w*svec;}
 \bigskip
+\noindent from which we derive the equation of vorticity \eq{vort_nd}, symbolically name {\tt eq\_vort},
+and defined as
+
+\centerline{\tt eq\_vort=(phivec,curl(eqmov/rho));}
+\bigskip
+\noindent which means the scalar product of $\ephi$ with the curl of
+the equation {\tt eqmov} by $\rho$.
 
 At the interface of the domain, since we are working in the inviscid
 limit, $\Omega$ is not necessarily continuous. It is continuous only if
@@ -495,31 +558,33 @@ of the horizontal component of $\rho\na\phi-\rho s\Omega^2\es$ as
 explained by Eq. (63) in \cite{ELR13}. Thus the programme introduces:
 
 \bigskip
-\centerline{\tt ic\_w=covariant(eqmov-grad(p))(1);
-}
+\centerline{\tt ic\_w=covariant(eqmov-grad(p))(1);}
+\bigskip
+\noindent namely the $\theta$ (as 1) covariant component of $\rho\na\phi-\rho s\Omega^2\es$,
+since $\vE_\theta$ is parallel to $\zeta=\cst$ surfaces.
 \bigskip
 
-The vorticity equation is then plugged into the big Jacobian matrix by just
-saying that  functional variations are on variables "p", "w", etc. like
+The vorticity equation, which is called "w", is then plugged into the
+big Jacobian matrix by just saying that  functional variations are on
+variables "p", "w", "rho" and "r" like
 
 \begin{center}
 {\tt
-        eq\_vort.add(op,"w","p"); \par
-        eq\_vort.add(op,"w","w"); \par
-        eq\_vort.add(op,"w","rho"); \par
-        eq\_vort.add(op,"w","r"); \par
+        eq\_vort.add(op,"w","p");\qquad eq\_vort.add(op,"w","w"); \par
+        eq\_vort.add(op,"w","rho"); \qquad eq\_vort.add(op,"w","r"); \par
         op->set\_rhs("w",-eq\_vort.eval()); \par
 }
-
 \end{center}
 Equation "w" is completed by the interface and boundary conditions that
 say that:
 
-\[ \partial_\zeta\Omega(\zeta=0) = 0,\quad  \mu s^2\vn\cdot\na\Omega +
-G\vec{t}\cdot\na(s^2\Omega)=0 \andet \Omega(\zeta=1,\theta=\pi/2) =
-\Omega_e\]
-where we scaled the stream function $\psi$ in \eq{eq:bl} with the Ekman
-number ($\psi=EG$); the central boundary condition reads:
+\[ \partial_\zeta\Omega(\zeta=0) = 0,\quad {\rm at\; center} \]
+
+\[ \mu s^2\vn\cdot\na\Omega +
+G\vec{t}\cdot\na(s^2\Omega)=0,\quad {\rm at\; surface} \]
+\[ \Omega(\zeta=1,\theta=\pi/2) = \Omega_e\]
+where $G$ is the stream function $\psi$ in \eq{eq:bl}.
+The central boundary condition reads:
 \bigskip
 
 \centerline{\tt
@@ -559,7 +624,7 @@ bc=mu*s*s*(nvec,grad(w))+G*(tvec,grad(s*s*w));
 
 \bigskip
 \noindent and plugged in the BC of the last domain. So the outer
-boundary condition on $\Omega$ imposes the angular velocity at the
+boundary condition on $\Omega$ imposes the angular velocity at
 equator. Since $\Omega$ obeys a first order equation the central
 condition and its fixed equatorial value determines $\Omega$ everywhere
 provided we lift the degeneracy $\Omega^2\tv\Omega^2+f(s)$ where $f$ is
@@ -588,8 +653,8 @@ is imposed: hence,
 \end{center}
 
 Of course the equation for $\Omega$ is strongly coupled to that of the
-meridional circulation that is represented by the stream function $G$
-which is actually the stream function of $\rho\vv$. Hence, on introduces
+meridional circulation that is represented by the stream function $G$,
+which is actually the stream function of $\rho\vv$. Hence, one introduces
 
 \centerline{\tt V=curl(G*phivec)/rho;}
 \bigskip
@@ -625,16 +690,17 @@ the interfaces.
 For non-dimensional parameters like $\pi_c$, it is continuous at the domain
 interface:
 
-\[ 1\times\delta\pi_c({\rm Right}) -1\times\delta\pi_c({\rm Left}) = 0\]
-Right means ``Right of the lower domain" and Left means ``Left of the upper
-domain".
+\[ 1\times\delta\pi_c({\rm 1}) -1\times\delta\pi_c({\rm 2}) = 0\]
+``1" means ``part 1 of the interface condition" and ``2" means ``part 2
+of the interface condition" (see Fig.~\ref{matp}).
+
 
 \subsubsection{$\bullet$ \bf Temperature equation {\tt solve\_temp}}
 
-First the luminosity at each domain boundary is computed through
+First, the luminosity at each domain boundary is computed through
 
 \[ L_n = 2\pi\Lambda\int_0^\pi\int_0^{\eta_n} \rho\eps_* r^2r_\zeta\sth
-d\theta\]
+d\theta d\zeta\]
 The definition of the luminosity 
 
 \[ L=\Lambda\intvol \rho\eps_* dV \with \Lambda = \frac{\rho_cR^2}{T_c}\]
@@ -645,61 +711,96 @@ is differentiated and yields
 = 0\]
 with $L$ continuous at domain interfaces.
 
+Let us examine the coding of one of the terms of this equation, namely
+
+\[ - \Lambda\intvol\delta\rho\eps_* dV = -\Lambda\int_0^\pi\sth d\theta
+\int_{\eta_n}^{\eta_{n+1}} \delta\rho\eps_*r^2r_\zeta d\zeta\]
+This terms needs an operation on the $\theta$-coordinate and on the
+$\zeta$ coordinate. Recalling that left indices are for the $\zeta_i$
+grid and right indices are for the $\theta_j$ grid the discretized form of
+this  term is like
+
+\[\sum_k ( \sum_l  ( D_{ij} * L_{ik} * (\eps_*r^2r_\zeta)_{kl} * R_{lj}  ))  \]
+where $D$ is just a scalar function, here $D=-2\pi\Lambda$, $L$ is the
+left-operator that does the integration over $\zeta$ and $R$ the right
+operator that does the integration over $\theta$. In terms of coding it
+reads:
+
+\begin{center}
+{\tt
+bc\_bot2\_add\_lri(n,"lum","rho",-2*PI*Lambda*ones(1,1),\\
+map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I\_00,\\
+(r*r*rz*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,-1)); }
+\end{center}
+
+with
+
+\begin{eqnarray}
+\tt D &\equiv&\tt -2*PI*Lambda*ones(1,1)\nonumber\\
+\tt L &\equiv&\tt map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1)\nonumber\\
+\tt R &\equiv&\tt map.leg.I_{00}\nonumber\\
+\tt I &\equiv&\tt
+(r*r*rz*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,-1))\nonumber 
+\end{eqnarray}
+
+
 Then we introduce
 
-\[ \frad = -\chi\vE^\zeta\cdot\na T\]
+\[ \frad = -\chi_*\vE^\zeta\cdot\na T\]
 so the projection of the radiative flux on $\vE^\zeta$, the normal
-direction of the $\zeta=\cst$ surfaces ($\chi$ is the thermal
+direction of the $\zeta=\cst$ surfaces ($\chi_*$ is the dimensional thermal
 conductivity). The basic property of this
 scalar quantity is that it gives the radiative luminosity when
 integrated over a surface, namely
 
-\[ L= \intsur \frad dS\]
-where
+\[ L= \intsur \frad 2\pi r^2r_\zeta\sth d\theta\]
+Explicit expression of $\frad$  (a comfort equation, see~\ref{comf_eq}) is
 
-\[ dS = 2\pi r^2r_\zeta\sth d\theta\]
-Explicit expression of $\frad$ is
-
-\[ \frad = \chi\lp\gzz\partial_\zeta T + \gzt\partial_\theta T \rp\]
+\[ \frad = -\chi\lp\gzz\partial_\zeta T + \gzt\partial_\theta T \rp\]
 so that the functional derivative is given by
 
-\[ \delta\frad -\frac{\frad}{\chi}\delta\chi -\chi\lp
+\[ \delta\frad +\frac{\frad}{\chi}\delta\chi +\chi\lp
 \gzz\partial_\zeta\delta T + \gzt\partial_\theta\delta T +
 \delta\gzz\partial_\zeta T + \delta\gzt\partial_\theta T\rp = 0\]
 where we have
 
 \[ \delta\gzz = -2r(\gzt)^2\delta r -\frac{2\gzz}{\rz}\delta\rz
--\frac{2\gzt}{\rz}\delta r_\theta\]
-and
-
-\[ \delta\gzt = -\frac{2\gzt}{r}\delta r -\frac{\gzt}{\rz}\delta\rz
+-\frac{2\gzt}{\rz}\delta r_\theta\andet
+\delta\gzt = -\frac{2\gzt}{r}\delta r -\frac{\gzt}{\rz}\delta\rz
 -\frac{\delta r_\theta}{r^2\rz}\]
 
-Then we introduce the core and the envelope with two Heaviside
-functions:
+Then we introduce the masks of the convective zones (CZ) {\tt qconv} and
+of the radiative zones (RZ) {\tt qrad}.
 
-\[ {\tt qcore}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm Core}\]
-\[ {\tt qenv}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm Envelope}\]
-Then the temperature equation is inserted, namely
+\[ {\tt qconv}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm CZ}\]
+\[ {\tt qrad}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm RZ}\]
+and of course {\tt qconv+qrad=1} $\forall \vr$.
 
-\[ \frac{\Div(\chi\na T)}{\chi} + \Lambda\rho\frac{\eps_*}{\chi_*} = 0\]
-This equation is differentiated functionally and multiplied by {\tt qenv}.
+Hence, the temperature equation can be written
 
-In the core the temperature equation reduces to
+\beq q_{\rm conv}(\vn\cdot\na s) +  q_{\rm rad}\lp\frac{\Div(\chi_*\na
+T)}{\chi_*} + \Lambda\rho\frac{\eps_*}{\chi_*}\rp = 0\eeqn{eq_temp}
+where $\vn$ is the unit vector opposite to local effective gravity. Note
+that this expression of the temperature equation assumes that the
+temperature profile of the convective region is such that entropy is
+constant along a vertical. This assumes complete vertical mixing and no
+horizontal mixing. If the core is convective, the equation is equivalent
+to saying that the entropy is the same all over the core and
+$\vn\cdot\na s$ can be replaced by $\partial_\zeta s$. Equation
+\eq{eq_temp} is then differentiated functionally.
 
-\[ \partial_\zeta s = 0\]
-Hence {\tt rhs\_T} in the core.
+Then, we need to impose the interface conditions which reduce to
+demanding the continuity of $T$ and $\partial_\zeta T/\rz$. If the
+interface separates a CZ and a RZ, then $\partial_\zeta T$ is not
+continuous (in a CZ temperature is derived from entropy and therefore,
+if pressure is known, temperature is known; if entropy is assumed
+constant there is no differential equation and imposing the continuity
+of the fields is sufficient).
 
-Then we need to impose the interface conditions which reduce to
-demanding the continuity of $T$ and $\partial_\zeta T/\rz$. In the last
-domain the boundary condition imposes that $T=T_s$.
-
-\[ \]
-
-
-
-
-
+Note that the continuity of $\partial_\zeta T/\rz$ is equivalent to the
+continuity of $\frad$ (provided there is no chemical jump) since our
+mapping insures the continuity of $\rz$. In the last domain the boundary
+condition imposes that $T=T_s$.
 
 
 
@@ -707,13 +808,14 @@ domain the boundary condition imposes that $T=T_s$.
 
 \subsubsection{$\bullet$ \bf Surface effective gravity {\tt solve\_gsup}}
 
-Effective gravity is defined as
+Comfort equation (e.g.~\ref{comf_eq}): Effective gravity is defined as
 
 \[ \vg_{\rm eff} = -\nabla\phi+s\Omega^2\es\]
-Thus from the simplified meridional momentum equation \eq{barocnd}, we get
+Thus from the simplified meridional momentum equation \eq{baroc_nd}, we get
 
 \[ \vg_{\rm eff} = \frac{1}{\rho}\nabla p\]
-The variable {\tt gsup} is defined as $g_s=-\vn\cdot\vg_{\rm eff}$ so as to be positive. Thus, from the equation
+The variable {\tt gsup} is defined as $g_s=-\vn\cdot\vg_{\rm eff}$
+so as to be positive. Thus, from the equation
 
 \[ g_s=\frac{P_c}{\rho_cR}\frac{-\vn\cdot\nabla p}{\rho}\]
 We get the following functional equation
@@ -725,10 +827,11 @@ We get the following functional equation
 
 \subsubsection{$\bullet$ \bf Surface effective temperature {\tt solve\_Teff}}
 
-Effective temperature is defined as
+This is a new comfort equation (e.g.~\ref{comf_eq}). Effective temperature is defined as
 
 \[ \sigma T_e^4 = -\khi\vn\cdot\na T\]
-Showing the dimensional and non-dimensional variables we rewrite the previous equality as:
+Showing the dimensional and non-dimensional variables we rewrite the
+previous equality as:
 
 \[ \sigma T_e^4 = -\khi\vn\cdot\na T \frac{T_c}{R}\]
 Taking the log and making the functional derivative, we get
@@ -738,8 +841,150 @@ Taking the log and making the functional derivative, we get
 R}\delta(\vn\cdot\nabla T) = 0
 \end{equation}
 
+\subsubsection{$\bullet$ \bf Atmosphere {\tt solve\_atm}}
+
+The atmosphere of the star is described in a simple manner by a polytropic
+atmosphere as described in \cite{ELR13} after Eq.~(9). It follows that
+the surface temperature $T_s(\theta)$ is derived from the pressure field
+by the polytropic relation $P\propto T^{n+1}$. Namely,
+
+\begin{equation}
+T_s(\theta) = T_e\lp\frac{P_s}{P_e}\rp^{1/(n+1)}
+\label{atm_poly}
+\end{equation}
+In this expression $P_s$ is the pressure of the isobar on which the
+boundary conditions are taken. In \cite{ELR13}, it is assumed to be the
+pressure at the pole given by $\tau_sg_{\rm pole}/\kappa_{\rm pole}$
+but higher values are possible. $P_e$ is the pressure at the top of
+the atmosphere, where presumably $T=T_{\rm eff}$ and $P_e=\tau_sg_{\rm
+eff}/\kappa_e\sim\tau_sg_{\rm eff}/\kappa_s$.
+
+In the simple model, $P_s=\tau_sg_s/\kappa_s$, which is translated as
+
+\[ \ln P_s+\ln P_c = \ln\tau_s +\ln g_s -\ln\kappa_s\]
+assuming that $\tau_s$ is a fixed quantity, then the variational equation is 
+
+\begin{equation}
+\delta P_s/P_s + \delta\ln P_c - \delta g_s/g_s +\delta\kappa_s/\kappa_s = 0
+\end{equation}
+while for the temperature of the last bounding surface, we translate
+(\ref{atm_poly}) into
+
+\[ \ln T_s + \ln T_c = \ln T_e + \frac{1}{n+1}(\ln P_s - \ln P_e)\]
+and gives the variational equation
+
+\begin{equation}
+\delta T_s/T_s + \delta\ln T_c -\delta T_e/T_e -\frac{1}{n+1}(\delta
+P_s/P_s+\delta P_e/P_e) = 0
+\end{equation}
+where $P_e$ is approximated by $P$.
+
+These two equations are also ``comfort" equations.
+
+\subsection{Comfort equations}\label{comf_eq}
+
+Basically, some quantities can be introduced to simplify the writing of
+equations. For instance, the use the surface effective gravity is convenient.
+Since it plays a role at the surface only, we can introduce this
+quantity as a regular variable without increasing too much the size of the
+Jacobian. Such ``comfort" variables are different than the \_dep variables
+like {\tt rho}, which do not exist at all in the final Jacobian. These
+latter variables are replaced symbolically by their dependance before
+the construction of the Jacobian.
+
+The comfort equations do not need a RHS. Let us see an example to explain
+this point. If we consider the Emden-like equation
+
+\[ y''+\Lambda y^n = 0\]
+with some boundary conditions, $\Lambda$ being an unkown quantity part
+of the solution, the associated variational form is
+
+\[ \delta y'' + y^n\delta\Lambda + n\Lambda y^{n-1}\delta y = -(y''+\Lambda y^n)\]
+Now, let us introduce a ``comfort" equation namely
+
+\[ Y=\Lambda y^n\]
+so that the former equation reads
+
+\[ \delta y'' + \delta Y = -(y''+\Lambda y^n)\]
+much simpler indeed, but we need to add the new variational equation
+
+\[ \delta Y - y^n\delta\Lambda - n\Lambda y^{n-1}\delta y = 0\]
+that has no RHS.
 
 
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\linewidth]{fig/matrix_pedago.eps}
+\caption{Example of discretized-operator matrix, in 1D, with two domains and
+interface conditions.}
+\label{matp}
+\end{figure}
+
+\subsection{Setting interface and boundary conditions}
+
+At the interface of two domains we need to impose the continuity of the
+functions and of their normal derivative (when the operators are of
+second order). The conditions are imposed on the last grid point of the
+lower domain and on the first grid point of the upper domain. To be
+clear let us take an example of a 1D problem, where at some radius
+$\zeta=\eta$ we impose
+
+\[ f(\zeta_{\rm interf}^n) = f(\zeta_{\rm interf}^{n+1}) \andet f'(\zeta_{\rm
+interf}^n) = f'(\zeta_{\rm interf}^{n+1})\]
+where the prime is for the derivative. $n$ designates the lower domain
+and $n+1$ the upper domain. Of course $\zeta_{\rm interf}^n=\zeta_{\rm
+interf}^{n+1}=\eta$. The equation to be solved may be Laplace
+equation for instance. In figure~\ref{matp} we display the structure of the
+matrix using 20 grid points, with 10 points in each domain. We use the
+strong formulation of the differential problem \cite[][]{RELP16}. On the
+first line of the matrix we have, for instance, the boundary condition
+at the bottom of the first domain. On row 10, the last grid point of the
+first domain, we impose the continuity of the solution, so the first dot
+is just "1" and the second dot is "-1". In the ESTER-nomenclature, the
+"1" represents the first part of the interface condition while the "-1"
+is the second part. Hence the "1" is inserted in the matrix via a {\tt
+bc\_top1\_add} operation, while the "-1" is inserted in the matrix via a
+{\tt bc\_top2\_add}  operation.
+
+The second domain, in our example, starts at row 11 by the other
+interface condition imposing the continuity of the derivative of the
+solution. In the ESTER-nomenclature, the lower domain ($n-1$) part is
+inserted by a {\tt bc\_bot1\_add} operation, while the actual domain $n$
+condition need a {\tt bc\_bot2\_add} operation (see figure~\ref{matp}). In
+row 20, we impose the ``surface" boundary condition saying $f(\zeta_{\rm
+surf})=0$, so the dot is just a "1".
+
+\begin{table}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+ &\multicolumn{4}{c|}{Options} & Example & Argument \\
+\hline
+\multirow{5}{1cm}{bc} & \multirow{2}{1cm}{top} & \multirow{2}{1cm}{1} &
+\multirow{5}{1cm}{add} & $\ell$ & \multirow{5}{2.5cm}{\tt bc\_top1\_add\_l}
+ & \multirow{5}{4.5cm}{(idom,"Eq","var",coef,mat)} \\
+      &     &   &         &  $r$   &  & \\
+      &     &   &         &  $lri$   &  & \\
+      & \multirow{2}{1cm}{bot} & \multirow{2}{1cm}{2}   &         &  $d$   &  & \\
+      &     &   &         &  $ex$   &  & \\
+\hline
+\end{tabular}
+\caption[]{Reading guide for the implementation of boundary conditions.}
+\end{table}
+
+Meaning of the symbols (but see also Fig.~\ref{matp}):
+\begin{itemize}
+\item $\ell\equiv$ left operator $\equiv$ Operator on the radial grid
+\item $r\equiv$ right operator $\equiv$ Operator on the $\theta$-grid
+\item $d\equiv$ both $\equiv$ Operator on the $\zeta,\theta$-grid, namely multiplication by a
+function of $(\zeta,\theta)$.
+\item $ex\equiv$ concerning the exterior (vacuum) domain.
+
+\item $1$ and $2$: If we consider the $n$th domain, interface conditions with the $n-1$-th
+domain are set with {\tt bot1} and {\tt bot2} ({\tt bot1} for the $n-1$th domain), and interface
+conditions with the $n+1$-th domain are set with {\tt top1} and {\tt top2} ({\tt top2} for the
+$n+1$th domain).
+\end{itemize}
 
 \subsection{Implementation of Newton's algorithm}
 
@@ -753,11 +998,11 @@ The construction of ESTER's models follows the following steps:
 \begin{enumerate}
 
 \item Read the initial model or build it (only in 1D)
-\item Build the jacobian matrix
+\item Build the Jacobian matrix
 \item LU factorization of the Jacobian matrix
 \item CGS solve (or refine) for the correction $\delta\vx$
 \item Update $\vx$
-\item recompute the RHS, $\vF(\vx_k)$ and the jacobian matrix
+\item recompute the RHS, $\vF(\vx_k)$ and the Jacobian matrix
 \item Attempt a Conjugate Gradient Squared (CGS) solution to derive the new
 $\delta\vx$ using the former LU matrices as a preconditionner. Namely,
 if $L_k$ and $U_k$ are the factors of $\tens J_k$, the $k+1$ equation is
@@ -819,3 +1064,49 @@ arguments and file input/output.
 \end{itemize} 
 
 
+\section{Heading to time evolution}
+
+\subsection{Simple scheme for hydrogen burning}
+
+During hydrogen burning, heat is basically produced by the transformation of
+protons into alpha particles ($^4$He nuclei) and thus, not to bother with
+the nuclear reaction network, we can write
+
+\[ \dnt{X} = -\frac{4m_p\eps}{Q}\]
+where $m_p$ is the proton mass, and 
+
+\[ Q= (4m_p-m_{\rm He})c^2 = 4.3\times10^{-12}\; {\rm J}\]
+is the energy released by the transformation of the 4
+protons\footnote{$\eps/Q$ is the rate of He generation per unit mass and
+$4\eps/Q$ the number of protons that disappear per unit mass and time.
+Thus $4m_H\eps/Q$ is the number of kg of H that disappear per kg of
+matter and per second; this is precisely $\dot{X}$.}. We thus deduced
+the discretized time evolution for $\ln X$ during $\Delta t$, namely
+
+\beq \ln X + \frac{4m_p\eps\Delta t}{QX} = \ln X_{n-1}\eeqn{varlnX}
+where the LHS variables refer to the time-step $n$. The variational form for
+solving \eq{varlnX} is
+
+\beq \delta\ln X + \frac{4m_p\eps\Delta t}{QX}\lc
+\lp\frac{\partial\ln\eps}{\partial\ln T}\rp\delta\ln T +
+\lp\frac{\partial\ln\eps}{\partial\ln\rho}\rp\delta\ln \rho +
+\lp\frac{\partial\ln\eps}{\partial\ln X}-1\rp\delta\ln X\rc = RHS
+\eeq
+where
+
+\[ RHS = \ln X_{n-1} -\lp\ln X + \frac{4m_p\eps\Delta t}{QX}\rp\]
+we note that when the CNO-cycle dominates the third term in $[...]$ can be
+neglected. Indeed, $\eps = \eps_{\rm pp}+\eps_{\rm cno}$ and $\eps_{\rm
+pp}\propto X^2$ while $\eps_{\rm cno}\propto X$, it follows that
+
+\[ \frac{\partial\ln\eps}{\partial\ln X}-1 = \frac{\eps_{\rm pp}}{\eps}\]
+which can be neglected at high temperature.
+
+So as a first step and for early-type stars we adopt
+
+\beq
+\delta\ln X + \frac{4m_p\eps\Delta t}{QX}\lc
+\lp\frac{\partial\ln\eps}{\partial\ln T}\rp\delta\ln T +
+\lp\frac{\partial\ln\eps}{\partial\ln\rho}\rp\delta\ln \rho
+\rc = RHS
+\eeq

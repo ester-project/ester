@@ -97,8 +97,11 @@ stellar model to be calculated (see below).
 \section{Default values}
 
 Default values to be used by {\tt star1d} or {\tt star2d} may be set up
-with the files {\tt \$prefix/share/ester/config/1d\_default.par} and {\tt
-\$prefix/share/ester/config/2d\_default.par}.
+with the files 
+\begin{itemize}
+\item[-]{\tt \$prefix/share/ester/config/1d\_default.par} 
+\item[-]{\tt \$prefix/share/ester/config/2d\_default.par}.
+\end{itemize}
 
 In the distribution of ESTER, the proposed default values are such that
 the star is divided in 8 domains with 30 points in each domains. Opacities
@@ -333,7 +336,7 @@ of orthogonal polynomials in the ``radial" ($\zeta$) and ``horizontal"
 $\theta$ directions, for instance
 
 \[\rho(\zeta,\theta)=
-\sum_{i=0}^{n_r-1}\sum_{j=0}^{n_\theta-1}\rho_{ij}T_i(\zeta)P_j(\theta)\]
+\sum_{i=0}^{n_r-1}\sum_{j=0}^{n_\theta-1}\rho_{ij}T_i(\zeta)P_j(\cos\theta)\]
 where $T_i$ and $P_j$ are Chebyshev and Legendre polynomial
 respectively.
 When $n_r$ and $n_\theta$ are high enough, the spectral representation
@@ -448,33 +451,33 @@ surff&Parameter surff (see above)&*&*\\
 \hline
 conv&\# of convective domains&*&*\\
 \hline
-Omega&Angular velocity at the equator&&*\\
+Omega&Angular velocity at the equator (rd/s)&&*\\
 \hline
-Omega\_bk&Angular velocity at the equator in units of the critical velocity&&*\\
+Omegac&Critical angular velocity $\Omega_c=\sqrt{\frac{GM}{R_e^3}}$ (rd/s)&&*\\
 \hline
-Omegac&Critical velocity $\Omega_c=\sqrt{\frac{GM}{R_e^3}}$&&*\\
+Omega\_bk& $\Omega/\Omega_c$   &&*\\
 \hline
-X&Hydrogen abundance&*&*\\
+X&Hydrogen initial abundance&*&*\\
 \hline
 Z&Metal abundance&*&*\\
 \hline
-Xc&Fraction of X at the convective core&*&*\\
+Xc&Fraction of X in the convective core&*&*\\
 \hline
-rhoc&Central density&*&*\\
+rhoc&Central density (g/cm$^3$)&*&*\\
 \hline
-Tc&Central temperature&*&*\\
+Tc&Central temperature (K)&*&*\\
 \hline
-pc&Central pressure&*&*\\
+pc&Central pressure (cgs)&*&*\\
 \hline
-M&Mass&*&*\\
+M&Mass (grams)&*&*\\
 \hline
-R&(Polar) Radius&*&*\\
+R&(Polar) Radius (cm)&*&*\\
 \hline
-Rp&Polar radius&&*\\
+Rp&Polar radius (cm)&&*\\
 \hline
-Re&Equatorial radius&&*\\
+Re&Equatorial radius (cm)&&*\\
 \hline
-L&Luminosity&*&*\\
+L&Luminosity (erg/s)&*&*\\
 \hline
 M/M\_SUN&Mass in solar units&*&*\\
 \hline
@@ -486,11 +489,23 @@ Re/R\_SUN&Equatorial radius in solar units&&*\\
 \hline
 L/L\_SUN&Luminosity in solar units&*&*\\
 \hline
-r&Radius&*&*\\
+r&Radius (non-dimensional) &*&*\\
 \hline
-z&Radial variable&*&*\\
+rt& $\partial_\theta r$ (non-dimensional) &*&*\\
 \hline
-th&Colatitude&&*\\
+rz& $\partial_\zeta r$ (non-dimensional) &*&*\\
+\hline
+rzt& $\partial_{\zeta\theta} r$ (non-dimensional) &*&*\\
+\hline
+rzz& $\partial_{\zeta\zeta} r$ (non-dimensional) &*&*\\
+\hline
+gzz& $g_{\zeta\zeta}$ (non-dimensional) &*&*\\
+\hline
+gzt& $g_{\zeta\theta}$ (non-dimensional) &*&*\\
+\hline
+z&Radial variable (non-dimensional)&*&*\\
+\hline
+th&Colatitude (rd) (2D grid) &&*\\
 \hline
 rex&External radius&&*\\
 \hline
@@ -498,23 +513,23 @@ phi&Gravitational potential&*&*\\
 \hline
 phiex&Gravitational potential of the external domain&&*\\
 \hline
-rho&Density&*&*\\
+rho&Density (non-dimensional)&*&*\\
 \hline
-p&Pressure&*&*\\
+p&Pressure (non-dimensional)&*&*\\
 \hline
-T&Temperature&*&*\\
+T&Temperature (non-dimensional)&*&*\\
 \hline
-w&Angular velocity&&*\\
+w&Angular velocity (rd/s)&&*\\
 \hline
 G&Stream function for the meridional circulation&&*\\
 \hline
-Xr&Hydrogen abundance $X(r,\theta)$&*&*\\
+Xr&Hydrogen abundance $X(r,\theta)$ not in use (yet) &*&*\\
 \hline
 N2&Squared Brunt-V\"ais\"al\"a frequency (in rd$^2$/s$^2$)&*&*\\
 \hline
 opa&Type of opacity&*&*\\
 \hline
-opa.k&Rosseland mean opacity&*&*\\
+opa.k&Rosseland mean opacity (cm$^2$/g) &*&*\\
 \hline
 opa.xi&Thermal conductivity ($\chi$)&*&*\\
 \hline
@@ -526,13 +541,13 @@ eos&Type of equation of state&*&*\\
 \hline
 eos.G1&$\Gamma_1$&*&*\\
 \hline
-eos.cp&$c_p$&*&*\\
+eos.cp&$c_p$ (cgs) &*&*\\
 \hline
 eos.del\_ad&$\nabla_{ad}$&*&*\\
 \hline
 eos.G3\_1&$\Gamma_3-1$&*&*\\
 \hline
-eos.cv&$c_v$&*&*\\
+eos.cv&$c_v$ (cgs)&*&*\\
 \hline
 eos.prad&Radiation pressure&*&*\\
 \hline
@@ -542,15 +557,15 @@ eos.chi\_rho&$\chi_\rho=\left(\frac{\partial\log p}{\partial\log\rho}\right)_{T,
 \hline
 eos.d&$d=\frac{\chi_T}{\chi_\rho}=-\left(\frac{\partial\log\rho}{\partial\log T}\right)_{p,\mu}$&*&*\\
 \hline
-nuc.eps&Energy generation rate per unit mass&*&*\\
+nuc.eps&Energy generation rate per unit mass (cgs)&*&*\\
 \hline
 nuc.pp&Energy generation rate per unit mass (pp-chain)&*&*\\
 \hline
 nuc.cno&Energy generation rate per unit mass (CNO cycle)&*&*\\
 \hline
-Teff&Effective temperature at the surface $T_\mathrm{eff}(\theta)$&*&*\\
+Teff&Surface effective temperature $T_\mathrm{eff}(\theta)$ (Kelvin) &*&*\\
 \hline
-gsup&Effective gravity at the surface $g_\mathrm{eff}(\theta)$&*&*\\
+gsup&Surface effective gravity surface $g_\mathrm{eff}(\theta)$ (cm/s$^2$) &*&*\\
 \hline
 D&Radial differentiation matrix $\frac{\partial}{\partial\zeta}$ for 2D models,
 $\frac{\mathrm{d}}{\mathrm{d}r}$ for 1D models&*&*\\
@@ -665,29 +680,41 @@ Pressure:
 
 \subsection{Using ESTER Native format}
 
-A basic python module for reading the models is included in the
-distribution. It is located in {\tt ester/python/star.py}. At the moment
-it only works for models calculated using {\tt ester 2d}. The variables in
-the models are defined as \emph{numpy} arrays. Here is a little example:
+A basic interface python module for reading the models is included in
+the distribution. It is located in {\tt ester/python/}. The interface
+between the C/C++ and python variables is based on SWIG. The C++.variables
+of ESTER are made visible using the interface file \texttt{ester.in},
+which can be modified by the (advanced) user if necessary. In principles
+all fields have been made available. If the \texttt{ester.in} file
+is modified then a run of \texttt{make install} in the \texttt{build}
+directory is necessary.
+
+The variables in the models are defined as \emph{numpy} arrays. Here is
+a little example extracted from the postprocessing directory where various
+python scripts are available:
 
 \begin{minted}{python}
 #---------------------------------------------------------------------
 import sys
-sys.path.append('path_to/ester/python') # include the full path to the module
+from ester import *      # Loads the module
+import matplotlib.pyplot as plt
+import numpy as np
 
-from star import *      # Loads the module
-
-A=star2d('model_file')  # Loads a model 
+A=star1d('model_file')  # Loads a model 
+# or A=star2d('model_file') if you use a 2D-model
 
 print A.p[0,0]          # Prints the central pressure
 
-A.draw(A.w)             # Makes a plot of the differential rotation
+plt.plot(A.r[:],np.log10(A.rho[:]))
+
 show()                  # Needed in non-interactive mode of matplotlib
 #---------------------------------------------------------------------
 \end{minted}
 
-Note that ``dotted variables'' like \verb|opa.k| are accessed via
-\verb|A.opa_k| under python.
+Other examples are availble, especially meridional cuts like the
+differential rotation (see \texttt{P\_rot.py}). Note that ``dotted
+variables'' like \verb|opa.k| are accessed via \verb|A.opa_k| under
+python.
 
 \subsection{Using HDF5}
 If you installed ESTER with

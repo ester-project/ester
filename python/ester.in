@@ -57,6 +57,10 @@ class star2d:
         self.nth = self._s.nth
         self.nex = self._s.nex
         self.ndomains = self._s.ndomains
+        self.npts    = []
+        tmp = _wrapper.intArray_frompointer(self._s.map.gl.npts)
+        for i in range(0, self.ndomains):
+            self.npts.append(tmp[i])
 
         self.opa = self._s.opa.name
         self.eos = self._s.eos.name
@@ -138,14 +142,24 @@ class star2d:
 	self.Dt		= _mat_to_numpy(self._s.Dt) #theta derivative
         self.r          = _mat_to_numpy(self._s.r)
         self.rt         = _np.dot(self.r, self.Dt)
+        self.rz         = _mat_to_numpy(self._s.map.rz)
+        self.rzz        = _mat_to_numpy(self._s.map.rzz)
+        self.rzt        = _mat_to_numpy(self._s.map.rzt)
+        self.gzz        = _mat_to_numpy(self._s.map.gzz)
+        self.gzt        = _mat_to_numpy(self._s.map.gzt)
         if interpolate:
             self.r          = self.interp(self.r)
             self.rt         = self.interp(self.rt)
+            self.rz         = self.interp(self.rz)
+            self.rzz        = self.interp(self.rzz)
+            self.rzt        = self.interp(self.rzt)
+            self.gzz        = self.interp(self.gzz)
+            self.gzt        = self.interp(self.gzt)
         self.th         = _np.zeros(shape=(self.nth+2))
         self.th[1:self.nth+1] = _mat_to_numpy(self._s.th)
         self.th[0] = _np.pi/2
         self.th         = _np.ones((self.nr, 1)) * self.th
-        self.r          = self.r * self.R
+#       self.r          = self.r * self.R
         self.Rp         = self.R
         self.Re         = _mat_to_numpy(
                 self._s.map.leg.eval_00(self._s.r.row(self.nr-1), _np.pi/2))[0, 0]*self.R
@@ -181,10 +195,24 @@ class star2d:
         tp = _wrapper.zeros(self.nth, 1)
         self._s.map.leg.eval_00(ones, 0, tp)
         self.Tp     = _mat_to_numpy(tp)
+        self.P_00   = _mat_to_numpy(self._s.map.leg.P_00).transpose()
+        self.P_01   = _mat_to_numpy(self._s.map.leg.P_01).transpose()
+        self.P_10   = _mat_to_numpy(self._s.map.leg.P_10).transpose()
+        self.P_11   = _mat_to_numpy(self._s.map.leg.P_11).transpose()
+        self.P      = _mat_to_numpy(self._s.map.gl.P.full_matrix())
 
     def apparent_luminosity(self, angle):
 # use of the C++ function apparent_luminosity of the ester library
         return self._s.apparent_luminosity(float(angle)/180*_np.pi)/L_SUN
+
+    def leg_eval_matrix(self, theta):
+        """
+        this function return a matrix to be used to evaluate at the given
+        colatitude theta
+        """
+        m = _wrapper.matrix()
+        self._s.map.leg.eval_00(_wrapper.ones(1, self.nth), theta, m)
+        return _mat_to_numpy(m)
 
 class star1d(star2d):
     def __init__(self, model):

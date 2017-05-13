@@ -17,6 +17,8 @@
 
 #define PRES T
 #define LOG_PRES "log_T"
+//#define PRES p
+//#define LOG_PRES "log_p"
 #define T_CONSTANT_DOMAINS
 //#define PHOTOSPHERE 1
 //#define KINEMATIC_VISC

@@ -124,6 +124,40 @@ def doubleArray_frompointer(t):
     return _ester_wrap.doubleArray_frompointer(t)
 doubleArray_frompointer = _ester_wrap.doubleArray_frompointer
 
+class intArray(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, intArray, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, intArray, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, nelements):
+        this = _ester_wrap.new_intArray(nelements)
+        try:
+            self.this.append(this)
+        except:
+            self.this = this
+    __swig_destroy__ = _ester_wrap.delete_intArray
+    __del__ = lambda self: None
+
+    def __getitem__(self, index):
+        return _ester_wrap.intArray___getitem__(self, index)
+
+    def __setitem__(self, index, value):
+        return _ester_wrap.intArray___setitem__(self, index, value)
+
+    def cast(self):
+        return _ester_wrap.intArray_cast(self)
+    __swig_getmethods__["frompointer"] = lambda x: _ester_wrap.intArray_frompointer
+    if _newclass:
+        frompointer = staticmethod(_ester_wrap.intArray_frompointer)
+intArray_swigregister = _ester_wrap.intArray_swigregister
+intArray_swigregister(intArray)
+
+def intArray_frompointer(t):
+    return _ester_wrap.intArray_frompointer(t)
+intArray_frompointer = _ester_wrap.intArray_frompointer
+
 class matrix(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, matrix, name, value)
