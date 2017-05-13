@@ -85,6 +85,7 @@ void star1d::register_variables(solver *op) {
 	op->regvar_dep("nuc.eps");
 // Evolution of Xh
 	op->regvar("lnXh");
+	//op->regvar("lnX_av");
 
 }
 
@@ -333,9 +334,15 @@ void star1d::solve_pressure(solver *op) {
 //Evolution Xh --------------------------------------
 void star1d::solve_Xh(solver *op) {
     DEBUG_FUNCNAME;
+    int n;
 
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
     double factor=4*HYDROGEN_MASS/Qmc2*MYR*dt;
+    //for(n=0;n<ndomains;n++) {
+        //op->add_d(n,"lnXh","lnXh",ones(nr,1));
+        //op->add_d(n,"lnXh","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
+        //op->add_d(n,"lnXh","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
+    //}
         op->add_d("lnXh","lnXh",ones(nr,1));
         op->add_d("lnXh","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
         op->add_d("lnXh","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
