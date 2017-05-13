@@ -36,7 +36,7 @@ solver *star1d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 	
-	nvar=28; // one more variable added (Xh & lnXh)
+	nvar=28; // two more variables added (lnXh & lnX_core)
 	
 	op=new solver();
 	op->init(ndomains,nvar+nvar_add,"full");
@@ -85,7 +85,7 @@ void star1d::register_variables(solver *op) {
 	op->regvar_dep("nuc.eps");
 // Evolution of Xh
 	op->regvar("lnXh");
-	//op->regvar("lnX_av");
+//	op->regvar("lnX_core");
 
 }
 
@@ -334,21 +334,54 @@ void star1d::solve_pressure(solver *op) {
 //Evolution Xh --------------------------------------
 void star1d::solve_Xh(solver *op) {
     DEBUG_FUNCNAME;
-    int n;
 
+    double L_core;
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
     double factor=4*HYDROGEN_MASS/Qmc2*MYR*dt;
-    //for(n=0;n<ndomains;n++) {
-        //op->add_d(n,"lnXh","lnXh",ones(nr,1));
-        //op->add_d(n,"lnXh","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
-        //op->add_d(n,"lnXh","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
-    //}
-        op->add_d("lnXh","lnXh",ones(nr,1));
-        op->add_d("lnXh","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
-        op->add_d("lnXh","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
+    printf("conv = %d ecco\n",conv);
+    int n,j0,ndom,n_core;
+
+// Core parameters
+    double rcc=Rcore()(0);
+    n_core=0;
+    for (int i=0; i<conv; i++) {
+        n_core += map.gl.npts[i]; // determine the number of points in the core
+    }
+    matrix &rz = map.rz;  // un alias
+    printf("AVG comp: (n_core: %d)\n", n_core);
+// compute Average X in core, and total eps in core
+    if (n_core) {
+    X_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (Xh*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
+    L_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (nuc.eps*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
+    double Volc = ((map.gl.I.block(0, 0, 0, n_core-1)), (r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
+    X_core=X_core/Volc;
+    printf("X_core %lf\n", X_core);
+    printf("rcc %lf\n", rcc);
+    }
+
+    j0=0; 
+    for(n=0;n<ndomains;n++) {
+        ndom=map.gl.npts[n];
+        op->add_d(n,"lnXh","lnXh",ones(ndom,1));
+        op->add_d(n,"lnXh","nuc.eps",factor/Xh.block(j0,j0+ndom-1,0,0)); // CNO case only
+        j0+=ndom;
+                            }
+/*
+        if (n<conv) {
+           double fact=3*factor/X_core/rcc/rcc/rcc;
+           op->bc_bot2_add_d(n,"lnX_core","lnX_core",ones(ndom,1));
+           op->bc_bot2_add_li(n,"lnX_core","nuc.eps",fact*ones(1,1),map.gl.I.block(0,0,j0,j0+ndom-1),(r*r).block(j0,j0+ndom-1,0,0));
+           op->bc_bot2_add_li(n,"lnX_core","r",fact*ones(1,1),map.gl.I.block(0,0,j0,j0+ndom-1),(2*r*nuc.eps).block(j0,j0+ndom-1,0,0));
+           op->bc_bot2_add_li(n,"lnX_core","rz",fact*ones(1,1),map.gl.I.block(0,0,j0,j0+ndom-1),(r*r*nuc.eps).block(j0,j0+ndom-1,0,0));
+                   }
+        j0+=ndom;
+    }
+*/
 
     matrix rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh;
     op->set_rhs("lnXh",rhs);
+//    double rhs_lnX_core=log(X_core_prec)-log(X_core)-3*factor/X_core/rcc/rcc/rcc*L_core;
+//    op->set_rhs("lnX_core",rhs_lnX_core*ones(1,1));
 
 }
 //Evolution Xh end-----------------------------------
