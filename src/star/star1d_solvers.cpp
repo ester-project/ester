@@ -33,7 +33,7 @@ solver *star1d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 	
-	nvar=28; // two more variables added (lnXh & lnX_core)
+	nvar=29; // two more variables added (lnXh & lnX_core)
 	
 	op=new solver();
 	op->init(ndomains,nvar+nvar_add,"full");
@@ -81,7 +81,7 @@ void star1d::register_variables(solver *op) {
 	op->regvar_dep("nuc.eps");
 // Evolution of Xh
 	op->regvar("lnXh");
-//	op->regvar("lnX_core");
+  	op->regvar("X_core");
 
 }
 
@@ -133,7 +133,7 @@ double star1d::solve(solver *op) {
 	h=1;
 	q=config.newton_dmax;
 	
-	matrix dphi,dp,dT,dXh,dpc,dTc,dRi;
+	matrix dphi,dp,dT,dXh,dpc,dTc,dRi,dX_core;
 	
 	dphi=op->get_var("Phi");
 	err=max(abs(dphi/phi));
@@ -168,6 +168,13 @@ double star1d::solve(solver *op) {
 	T+=h*dT*T;
 // Evolution of Xh, dXh is the variation on ln(Xh) assumed to be small
 	Xh+=h*dXh*Xh;
+// Compute dX_core
+	dX_core=op->get_var("X_core");	
+	err2=max(abs(dX_core));err=err2>err?err2:err;
+	while(exist(abs(h*dX_core)>q)) h/=2;
+// End of dXh computation
+
+	X_core+=h*dX_core(0);
 
 	pc*=exp(h*dpc(0));
 	Tc*=exp(h*dTc(0));
@@ -330,7 +337,6 @@ void star1d::solve_pressure(solver *op) {
 void star1d::solve_Xh(solver *op) {
     DEBUG_FUNCNAME;
 
-    double L_core;
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
     double factor=4*HYDROGEN_MASS/Qmc2*MYR*dt;
     printf("conv = %d ecco\n",conv);
@@ -346,12 +352,11 @@ void star1d::solve_Xh(solver *op) {
     printf("AVG comp: (n_core: %d)\n", n_core);
 // compute Average X in core, and total eps in core
     if (n_core) {
-    X_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (Xh*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
-    L_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (nuc.eps*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
-    double Volc = ((map.gl.I.block(0, 0, 0, n_core-1)), (r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
-    X_core=X_core/Volc;
+    X_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (Xh*rho*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
+    double M_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (rho*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
+    X_core=X_core/M_core;
     printf("X_core %lf\n", X_core);
-    printf("rcc %lf\n", rcc);
+    printf("rcc/R %lf\n", rcc/R);
     }
 
     j0=0; 
@@ -359,24 +364,27 @@ void star1d::solve_Xh(solver *op) {
         ndom=map.gl.npts[n];
         op->add_d(n,"lnXh","lnXh",ones(ndom,1));
         op->add_d(n,"lnXh","nuc.eps",factor/Xh.block(j0,j0+ndom-1,0,0)); // CNO case only
-        j0+=ndom;
-                            }
-/*
+//      j0+=ndom;
+//                          }
+
         if (n<conv) {
-           double fact=3*factor/X_core/rcc/rcc/rcc;
-           op->bc_bot2_add_d(n,"lnX_core","lnX_core",ones(ndom,1));
-           op->bc_bot2_add_li(n,"lnX_core","nuc.eps",fact*ones(1,1),map.gl.I.block(0,0,j0,j0+ndom-1),(r*r).block(j0,j0+ndom-1,0,0));
-           op->bc_bot2_add_li(n,"lnX_core","r",fact*ones(1,1),map.gl.I.block(0,0,j0,j0+ndom-1),(2*r*nuc.eps).block(j0,j0+ndom-1,0,0));
-           op->bc_bot2_add_li(n,"lnX_core","rz",fact*ones(1,1),map.gl.I.block(0,0,j0,j0+ndom-1),(r*r*nuc.eps).block(j0,j0+ndom-1,0,0));
+          double L_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (rho*nuc.eps*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
+          double M_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (rho*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
+          double fact=factor/M_core;
+          op->bc_bot2_add_d(n,"X_core","X_core",ones(ndom,1));
+          op->bc_bot2_add_li(n,"X_core","rho",fact*ones(1,1),map.gl.I.block(0,0,j0,j0+ndom-1),(nuc.eps*r*r*rz).block(j0,j0+ndom-1,0,0));
+          op->bc_bot2_add_li(n,"X_core","nuc.eps",fact*ones(1,1),map.gl.I.block(0,0,j0,j0+ndom-1),(rho*r*r*rz).block(j0,j0+ndom-1,0,0));
+          op->bc_bot2_add_li(n,"X_core","r",fact*ones(1,1),map.gl.I.block(0,0,j0,j0+ndom-1),(2*r*rz*rho*nuc.eps).block(j0,j0+ndom-1,0,0));
+          op->bc_bot2_add_li(n,"X_core","rz",fact*ones(1,1),map.gl.I.block(0,0,j0,j0+ndom-1),(r*r*rho*nuc.eps).block(j0,j0+ndom-1,0,0));
+          matrix rhs_Xc=(X_core_prec-X_core-factor/M_core*L_core)*ones(1,1);
+          op->set_rhs("X_core",rhs_Xc);
                    }
         j0+=ndom;
     }
-*/
+//*/
 
     matrix rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh;
     op->set_rhs("lnXh",rhs);
-//    double rhs_lnX_core=log(X_core_prec)-log(X_core)-3*factor/X_core/rcc/rcc/rcc*L_core;
-//    op->set_rhs("lnX_core",rhs_lnX_core*ones(1,1));
 
 }
 //Evolution Xh end-----------------------------------
