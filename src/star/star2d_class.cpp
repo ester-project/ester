@@ -595,7 +595,9 @@ int star2d::read(const char *input_file, int dim) {
     fp.read("p",&p);
     fp.read("T",&T);
     fp.read("Xh",&Xh);
+    fp.read("X_core",&X_core);
     Xh_prec=Xh; // new
+    X_core_prec=X_core; // new
     if(fp.read("phiex",&phiex)) phiex=zeros(nex,nth);
     fp.read("map.R",&map.R);
     if(map.R.nrows()<map.ndomains+1) {
@@ -919,6 +921,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
     }
     Xh_prec=Xh;
+    X_core_prec=X_core;
     printf("Appel init_comp dans init\n");
     init_comp();
     fill();
