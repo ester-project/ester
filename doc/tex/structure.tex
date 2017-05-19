@@ -1110,3 +1110,19 @@ So as a first step and for early-type stars we adopt
 \lp\frac{\partial\ln\eps}{\partial\ln\rho}\rp\delta\ln \rho
 \rc = RHS
 \eeq
+
+In the convective core, we assume a uniform distribution of $X$, namely
+
+\[ \Xb = \frac{1}{M_{\rm core}}\intvol X\rho dV\]
+Its evolution is described (basically) by
+
+\beq \dnt{\Xb} = -\frac{4m_p}{Q}\frac{L_{\rm core}}{M_{\rm core}}\eeq
+so that we need to solve
+
+\[ \Xb + \frac{4m_p}{Q}\frac{L_{\rm core}}{M_{\rm core}} = \Xb_{n-1}\]
+As a first step, we solve for a  variational formulation neglecting the core
+mass variation, namely
+
+\[ \delta\Xb + \frac{4m_p}{QM_{\rm core}}\int_0^{\zeta_c} \delta(\rho\eps r^2r_\zeta)d\zeta
+= \Xb_{n-1} -\lp\Xb + \frac{4m_p}{Q}\frac{L_{\rm core}}{M_{\rm core}}\rp\]
+in 1D.
