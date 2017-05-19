@@ -33,7 +33,7 @@ solver *star1d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 	
-	nvar=29; // two more variables added (lnXh & lnX_core)
+	nvar=28; // one more variable added (lnXh)
 	
 	op=new solver();
 	op->init(ndomains,nvar+nvar_add,"full");
@@ -81,7 +81,6 @@ void star1d::register_variables(solver *op) {
 	op->regvar_dep("nuc.eps");
 // Evolution of Xh
 	op->regvar("lnXh");
-  	op->regvar("X_core");
 
 }
 
@@ -133,7 +132,7 @@ double star1d::solve(solver *op) {
 	h=1;
 	q=config.newton_dmax;
 	
-	matrix dphi,dp,dT,dXh,dpc,dTc,dRi,dX_core;
+	matrix dphi,dp,dT,dXh,dpc,dTc,dRi;
 	
 	dphi=op->get_var("Phi");
 	err=max(abs(dphi/phi));
@@ -168,13 +167,6 @@ double star1d::solve(solver *op) {
 	T+=h*dT*T;
 // Evolution of Xh, dXh is the variation on ln(Xh) assumed to be small
 	Xh+=h*dXh*Xh;
-// Compute dX_core
-	dX_core=op->get_var("X_core");	
-	err2=max(abs(dX_core));err=err2>err?err2:err;
-	while(exist(abs(h*dX_core)>q)) h/=2;
-// End of dXh computation
-
-	X_core+=h*dX_core(0);
 
 	pc*=exp(h*dpc(0));
 	Tc*=exp(h*dTc(0));
@@ -341,6 +333,7 @@ void star1d::solve_Xh(solver *op) {
     double factor=4*HYDROGEN_MASS/Qmc2*MYR*dt;
     printf("conv = %d ecco\n",conv);
     int n,j0,ndom,n_core;
+    matrix toto,titi,the_block;
 
 // Core parameters
     double rcc=Rcore()(0);
@@ -360,31 +353,40 @@ void star1d::solve_Xh(solver *op) {
     }
 
     j0=0; 
+    matrix rhs = zeros(nr, 1);
     for(n=0;n<ndomains;n++) {
         ndom=map.gl.npts[n];
-        op->add_d(n,"lnXh","lnXh",ones(ndom,1));
-        op->add_d(n,"lnXh","nuc.eps",factor/Xh.block(j0,j0+ndom-1,0,0)); // CNO case only
-//      j0+=ndom;
-//                          }
-
         if (n<conv) {
           double L_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (rho*nuc.eps*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
           double M_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (rho*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
           double fact=factor/M_core;
-          op->bc_bot2_add_d(n,"X_core","X_core",ones(ndom,1));
-          op->bc_bot2_add_li(n,"X_core","rho",fact*ones(1,1),map.gl.I.block(0,0,j0,j0+ndom-1),(nuc.eps*r*r*rz).block(j0,j0+ndom-1,0,0));
-          op->bc_bot2_add_li(n,"X_core","nuc.eps",fact*ones(1,1),map.gl.I.block(0,0,j0,j0+ndom-1),(rho*r*r*rz).block(j0,j0+ndom-1,0,0));
-          op->bc_bot2_add_li(n,"X_core","r",fact*ones(1,1),map.gl.I.block(0,0,j0,j0+ndom-1),(2*r*rz*rho*nuc.eps).block(j0,j0+ndom-1,0,0));
-          op->bc_bot2_add_li(n,"X_core","rz",fact*ones(1,1),map.gl.I.block(0,0,j0,j0+ndom-1),(r*r*rho*nuc.eps).block(j0,j0+ndom-1,0,0));
-          matrix rhs_Xc=(X_core_prec-X_core-factor/M_core*L_core)*ones(1,1);
-          op->set_rhs("X_core",rhs_Xc);
-                   }
+          op->add_d(n,"lnXh","lnXh",ones(ndom,1));
+	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(nuc.eps*r*r*rz).transpose().block(0,0,j0,j0+ndom-1);
+          titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
+          op->add_d(n,"lnXh","rho",titi);
+	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(rho*r*r*rz).transpose().block(0,0,j0,j0+ndom-1);
+          titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
+          op->add_d(n,"lnXh","nuc.eps",titi);
+	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(2*rho*nuc.eps*r*rz).transpose().block(0,0,j0,j0+ndom-1);
+          titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
+          op->add_d(n,"lnXh","r",titi);
+	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(rho*nuc.eps*r*r).transpose().block(0,0,j0,j0+ndom-1);
+          titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
+          op->add_d(n,"lnXh","rz",titi);
+          printf("titi rows %d\n",titi.nrows());
+          printf("titi col %d\n",titi.ncols());
+          printf("did the job\n");
+          the_block=log(Xh_prec.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*L_core/M_core/Xh.block(j0,j0+ndom-1,0,0);
+          rhs.setblock(j0,j0+ndom-1,0,0,the_block);
+        } else {
+           op->add_d(n,"lnXh","lnXh",ones(ndom,1));
+           op->add_d(n,"lnXh","nuc.eps",factor/Xh.block(j0,j0+ndom-1,0,0)); // CNO case only
+           the_block=log(Xh_prec.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*nuc.eps.block(j0,j0+ndom-1,0,0)/Xh.block(j0,j0+ndom-1,0,0);
+           rhs.setblock(j0,j0+ndom-1,0,0,the_block);
+        }
         j0+=ndom;
     }
-//*/
-
-    matrix rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh;
-    op->set_rhs("lnXh",rhs);
+                op->set_rhs("lnXh",rhs);
 
 }
 //Evolution Xh end-----------------------------------
