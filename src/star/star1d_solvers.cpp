@@ -362,8 +362,8 @@ void star1d::solve_Xh(solver *op) {
           double fact=factor/M_core;
           op->add_d(n,"lnXh","lnXh",ones(ndom,1));
 	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(nuc.eps*r*r*rz).transpose().block(0,0,j0,j0+ndom-1);
- //         titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
-  //        op->add_d(n,"lnXh","rho",titi);
+//        titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
+//        op->add_d(n,"lnXh","rho",titi);
 //	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(rho*r*r*rz).transpose().block(0,0,j0,j0+ndom-1);
  //         titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
   //        op->add_d(n,"lnXh","nuc.eps",titi);
