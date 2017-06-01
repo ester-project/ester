@@ -29,7 +29,8 @@ for a compressible, constant viscosity fluid, and of the heat flux
 
 \begin{equation} \vF = -\khi_r\na T -\frac{\khi_{\rm turb}T}{{\cal R}_M}\na s\end{equation}
 where $\khi_{\rm turb}$ is the turbulent diffusion of heat and $s$ the
-entropy.
+entropy. $\khi_r$ is the radiative conductivity (usually dominating over
+the collision one).
 
 This set of equations is completed by boundary conditions (discussed
 below).
@@ -132,12 +133,12 @@ where
 \begin{equation} \pi_c = \frac{4\pi G\rho_c^2 R^2}{P_c}\label{picdef}\end{equation}
 Energy equation can be written
 
-\begin{equation} \Delta T + \na\ln\chi_*\cdot\na T +
-\Lambda\rho\frac{\eps_*}{\chi_*} = 0\end{equation}
+\begin{equation} \Delta T + \na\ln\chi_r\cdot\na T +
+\Lambda\rho\frac{\eps_*}{\chi_r} = 0\end{equation}
 where
 
 \begin{equation} \Lambda = \frac{\rho_c R^2}{T_c}\end{equation}
-is a dimensional constant since $\eps_*$ and $\chi_*$ are dimensional. 
+is a dimensional constant since $\eps_*$ and $\chi_r$ are dimensional. 
 
 The momentum equation leads to
 
@@ -473,10 +474,10 @@ get:
 \kappa\frac{\partial\ln\kappa}{\partial\ln T}\delta\ln T_c\]
 For radiative conductivity, its expression
 
-\[ \chi = \frac{16\sigma T^3}{3\rho\kappa}\]
+\[ \chi_r = \frac{16\sigma T^3}{3\rho\kappa}\]
 leads to the following contribution
 
-\[ \frac{\delta \chi}{\chi} = 3\delta\ln T+3\delta\ln T_c
+\[ \frac{\delta \chi_r}{\chi_r} = 3\delta\ln T+3\delta\ln T_c
 -\frac{1}{\rho}\delta\rho - \delta\ln\rho_c - \frac{1}{\kappa}\delta\kappa\]
 where we took into account that $\rho$ and $T$ are non-dimensional.
 
@@ -746,20 +747,20 @@ with
 
 Then we introduce
 
-\[ \frad = -\chi_*\vE^\zeta\cdot\na T\]
+\[ \frad = -\chi_r\vE^\zeta\cdot\na T\]
 so the projection of the radiative flux on $\vE^\zeta$, the normal
-direction of the $\zeta=\cst$ surfaces ($\chi_*$ is the dimensional thermal
-conductivity). The basic property of this
+direction of the $\zeta=\cst$ surfaces ($\chi_r$ is the dimensional thermal
+radiative conductivity). The basic property of this
 scalar quantity is that it gives the radiative luminosity when
 integrated over a surface, namely
 
 \[ L= \intsur \frad 2\pi r^2r_\zeta\sth d\theta\]
 Explicit expression of $\frad$  (a comfort equation, see~\ref{comf_eq}) is
 
-\[ \frad = -\chi\lp\gzz\partial_\zeta T + \gzt\partial_\theta T \rp\]
+\[ \frad = -\chi_r\lp\gzz\partial_\zeta T + \gzt\partial_\theta T \rp\]
 so that the functional derivative is given by
 
-\[ \delta\frad +\frac{\frad}{\chi}\delta\chi +\chi\lp
+\[ \delta\frad +\frac{\frad}{\chi_r}\delta\chi_r +\chi_r\lp
 \gzz\partial_\zeta\delta T + \gzt\partial_\theta\delta T +
 \delta\gzz\partial_\zeta T + \delta\gzt\partial_\theta T\rp = 0\]
 where we have
@@ -778,8 +779,8 @@ and of course {\tt qconv+qrad=1} $\forall \vr$.
 
 Hence, the temperature equation can be written
 
-\beq q_{\rm conv}(\vn\cdot\na s) +  q_{\rm rad}\lp\frac{\Div(\chi_*\na
-T)}{\chi_*} + \Lambda\rho\frac{\eps_*}{\chi_*}\rp = 0\eeqn{eq_temp}
+\beq q_{\rm conv}(\vn\cdot\na s) +  q_{\rm rad}\lp\frac{\Div(\chi_r\na
+T)}{\chi_r} + \Lambda\rho\frac{\eps_*}{\chi_r}\rp = 0\eeqn{eq_temp}
 where $\vn$ is the unit vector opposite to local effective gravity. Note
 that this expression of the temperature equation assumes that the
 temperature profile of the convective region is such that entropy is
