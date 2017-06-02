@@ -38,34 +38,24 @@ void star2d::fill() {
 
 void star2d::init_comp() {
 
-	printf("start of star2d::init_comp\n"); //to be modified
-	comp=initial_composition(X0,Z0)*ones(nr,nth);
+        
+        if (dt == 0.) {
+	 comp=initial_composition(X0,Z0)*ones(nr,nth);
+        } else {
+        comp["H"]=Xh;
+        comp["He4"]=ones(nr,nth)-Xh-Z0*ones(nr,nth);
+        }
+	printf("in init_comp conv= %d\n",conv); //to be modified
 
 	if(!conv) return;
 
-    int n = 0;
+    int n = 0; // Count the number of point in the core
     for (int i=0; i<conv; i++) {
         n += map.gl.npts[i];
     }
 
-    //matrix &rz = map.rz;
-    printf("in init_comp: (n= %d)\n", n);
-/*
-    comp.setblock(0, n-1, 0, 0, initial_composition(Xh0, Z0)*ones(n, nth));
-*/
-
-//    for (int i=n; i<nr; i++) {
-        //comp.setblock(i, i, 0, 0, initial_composition(comp["H"](i, 0), Z0)*ones(1, nth));
-    //}
-    // Xh.setblock(0, n-1, 0, 0, comp["H"].block(0, n-1, 0, 0));
-
-//#if 0
     if(stratified_comp == 0) {
         //comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
-        //comp.setblock(0,-1,0,-1,Xh);
-        comp.X()=Xh;
-        comp.Z()=Z0*ones(nr,nth);
-        printf("comp.X initialized\n");
     }
     else {
         comp.setblock(0, n-1, 0, -1,

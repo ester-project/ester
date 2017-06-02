@@ -94,6 +94,7 @@ double star1d::solve(solver *op) {
 	matrix rho0;
 	double err,err2;
 	
+	printf("************start of star1d::solve\n");
 	check_map();
 	
 	op->reset();
@@ -184,6 +185,7 @@ double star1d::solve(solver *op) {
 	
 	err2=max(abs(rho-rho0));err=err2>err?err2:err;
 	
+	printf("************End of star1d::solve\n");
 	return err;
 
 }
@@ -336,7 +338,7 @@ void star1d::solve_Xh(solver *op) {
 
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
     double factor=4*HYDROGEN_MASS/Qmc2*MYR*dt;
-    printf("conv = %d ecco\n",conv);
+    printf("======Start of solve_Xh, number of doms in CC = %d\n",conv);
     int n,j0,ndom,n_core;
     matrix toto,titi,the_block;
 
@@ -347,7 +349,7 @@ void star1d::solve_Xh(solver *op) {
         n_core += map.gl.npts[i]; // determine the number of points in the core
     }
     matrix &rz = map.rz;  // un alias
-    printf("AVG comp: (n_core: %d)\n", n_core);
+    //printf("AVG comp: (n_core: %d)\n", n_core);
 // compute Average X in core, and total eps in core
     if (n_core) {
     X_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (Xh*rho*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
@@ -364,11 +366,11 @@ void star1d::solve_Xh(solver *op) {
         if (n<conv) {
           double L_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (rho*nuc.eps*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
           double M_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (rho*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
-          double fact=factor/M_core;
+//          double fact=factor/M_core;
           op->add_d(n,"lnXh","lnXh",ones(ndom,1));
 	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(nuc.eps*r*r*rz).transpose().block(0,0,j0,j0+ndom-1);
- //         titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
-  //        op->add_d(n,"lnXh","rho",titi);
+//        titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
+//        op->add_d(n,"lnXh","rho",titi);
 //	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(rho*r*r*rz).transpose().block(0,0,j0,j0+ndom-1);
  //         titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
   //        op->add_d(n,"lnXh","nuc.eps",titi);
@@ -378,9 +380,8 @@ void star1d::solve_Xh(solver *op) {
 //	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(rho*nuc.eps*r*r).transpose().block(0,0,j0,j0+ndom-1);
  //         titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
   //        op->add_d(n,"lnXh","rz",titi);
-          printf("toto rows %d\n",toto.nrows());
-          printf("toto col %d\n",toto.ncols());
-          printf("did the job\n");
+//        printf("toto rows %d\n",toto.nrows());
+//        printf("toto col %d\n",toto.ncols());
           the_block=log(Xh_prec.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*L_core/M_core/Xh.block(j0,j0+ndom-1,0,0);
           rhs.setblock(j0,j0+ndom-1,0,0,the_block);
         } else {
@@ -391,7 +392,13 @@ void star1d::solve_Xh(solver *op) {
         }
         j0+=ndom;
     }
+FILE *fic=fopen("toto.txt", "a");
+for (int k=0;k<nr;k++) fprintf(fic,"%e\n",Xh(k,0));
+fclose(fic);
+
+         // for (int k=0;k<nr;k++) printf("xh %e\n",Xh(k,0));
                 op->set_rhs("lnXh",rhs);
+          printf("======End solve-Xh\n");
 
 }
 //Evolution Xh end-----------------------------------
