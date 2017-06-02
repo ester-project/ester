@@ -53,8 +53,24 @@ void star2d::init_comp() {
         n += map.gl.npts[i];
     }
 
+    //matrix &rz = map.rz;
+    printf("in init_comp: (n= %d)\n", n);
+/*
+    comp.setblock(0, n-1, 0, 0, initial_composition(Xh0, Z0)*ones(n, nth));
+*/
+
+//    for (int i=n; i<nr; i++) {
+        //comp.setblock(i, i, 0, 0, initial_composition(comp["H"](i, 0), Z0)*ones(1, nth));
+    //}
+    // Xh.setblock(0, n-1, 0, 0, comp["H"].block(0, n-1, 0, 0));
+
+//#if 0
     if(stratified_comp == 0) {
         //comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
+        //comp.setblock(0,-1,0,-1,Xh);
+        comp.X()=Xh;
+        comp.Z()=Z0*ones(nr,nth);
+        printf("comp.X initialized\n");
     }
     else {
         comp.setblock(0, n-1, 0, -1,
