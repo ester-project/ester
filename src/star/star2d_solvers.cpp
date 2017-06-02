@@ -37,8 +37,14 @@ void star2d::fill() {
 void star2d::init_comp() {
 // Update the object comp
 
-	printf("start of star2d::init_comp\n"); //to be modified
-	comp=initial_composition(X0,Z0)*ones(nr,nth);
+        
+        if (dt == 0.) {
+	 comp=initial_composition(X0,Z0)*ones(nr,nth);
+        } else {
+        comp["H"]=Xh;
+        comp["He4"]=ones(nr,nth)-Xh-Z0*ones(nr,nth);
+        }
+	printf("in init_comp conv= %d\n",conv); //to be modified
 
 	if(!conv) return;
 
@@ -48,8 +54,7 @@ void star2d::init_comp() {
     }
 
     if(stratified_comp == 0) {
-        comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
-        comp["H"]=Xh;
+        //comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
     }
     else {
         comp.setblock(0, n-1, 0, -1,

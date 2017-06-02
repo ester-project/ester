@@ -166,7 +166,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 	int i,k,change_grid=0;
 	matrix Tr;
 
-        printf("je suis dans star1d::init au debut\n");
+        printf("----Start of star1d::init in star1d_class\n");
 	sprintf(default_params,"%s/ester/1d_default.par", ESTER_DATADIR);
 
 	if(*input_file) {
@@ -200,7 +200,6 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		change_grid=0;
 	}
 	
-        printf("je suis dans star1d::init au milieu\n");
 	if(*param_file) {
 		if(!fp.open(param_file)) { 
 			printf("Can't open parameters file %s\n",param_file);
@@ -252,6 +251,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 			remap(map_new.ndomains,map_new.gl.npts,map_new.nt,map_new.nex);
 		}
 	} else {
+        printf("I set Xh=X0 in star1d::init of star1d_class\n");
 		map.leg.npts=1;
 		map.init();
 		T=1-0.5*r*r;
@@ -259,7 +259,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		phi=-T;
 		Xh=X0*ones(nr,1);
 		Xh_prec=Xh;
-		X_core_prec=X_core;
+		//X_core_prec=X_core;
 		G=0*T;
 		w=0*T;
 		conv=0;
@@ -268,10 +268,10 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		phiex=zeros(map.nex,map.nt);
 	}
 	
-        printf("je suis dans star1d::init avant init_comp\n");
 	init_comp();
 	fill();
 	
+        printf("------Finish star1d::init of star1d_class\n");
 	return 0;
 }
 
