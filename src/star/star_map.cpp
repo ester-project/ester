@@ -309,13 +309,15 @@ void star2d::check_map() {
 
 int star2d::check_convec(double &p_cc,matrix &Rcc) {
     DEBUG_FUNCNAME;
-    if(!core_convec) return 0;
+    printf("++++ Start of CHECK_CONVEC\n");
+    if(!core_convec) return 0; // core_covec: input param to disable CC
 
     if(conv) {
         int j=0;
         for(int n=0;n<conv;n++) j+=map.gl.npts[n];
         if(z(j)<min_core_size) {
-            if(config.verbose) printf("Size(convective core) < min_core_size. Removing...\n");
+        //    if(config.verbose)
+          printf("Size(convective core) < min_core_size. Removing...\n");
             return 0;
         } else return conv;
     }
@@ -336,7 +338,8 @@ int star2d::check_convec(double &p_cc,matrix &Rcc) {
     schw.setrow(0,-(D.row(0),schw)/D(0,0));
     if(map.leg.eval_00(schw.row(i),0)(0)>=0) return 0;
 
-    if(config.verbose) printf("Found convective core\n");
+    //if(config.verbose)
+      printf("Found convective core in check_convec\n");
     if(ndomains==1) {
         fprintf(stderr,"Warning: At least 2 domains are needed to deal with core convection\n");
     }
