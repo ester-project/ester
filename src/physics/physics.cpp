@@ -26,7 +26,7 @@ int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos) {
 		
 	int error=0;
-	
+//        printf("in eos_cal X(0) %lf\n",X);	
 	if(!strcmp(eos.name,"ideal"))
 		error=eos_ideal(X,Z,T,p,rho,eos);
 	else if(!strcmp(eos.name,"ideal+rad"))

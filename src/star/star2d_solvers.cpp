@@ -48,16 +48,10 @@ void star2d::init_comp() {
         n += map.gl.npts[i];
     }
 
-    matrix &rz = map.rz;
+    //matrix &rz = map.rz;
+    printf("in init_comp: (n= %d)\n", n);
 /*
-    printf("AVG comp: (n: %d)\n", n);
-    double Xh0 = ((map.gl.I.block(0, 0, 0, n-1)),
-            (Xh*r*r*rz).block(0, n-1, 0, 0),
-            (map.leg.I_00))(0);
-    double Volc = ((map.gl.I.block(0, 0, 0, n-1)), (r*r*rz).block(0, n-1, 0, 0),
-            (map.leg.I_00))(0);
-    printf("%lf\n", Xh0/Volc);
-	comp.setblock(0, n-1, 0, 0, initial_composition(Xh0/Volc, Z0)*ones(n, nth));
+    comp.setblock(0, n-1, 0, 0, initial_composition(Xh0, Z0)*ones(n, nth));
 */
 
 //    for (int i=n; i<nr; i++) {
@@ -67,7 +61,11 @@ void star2d::init_comp() {
 
 //#if 0
     if(stratified_comp == 0) {
-        comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
+        //comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
+        //comp.setblock(0,-1,0,-1,Xh);
+        comp.X()=Xh;
+        comp.Z()=Z0*ones(nr,nth);
+        printf("comp.X initialized\n");
     }
     else {
         comp.setblock(0, n-1, 0, -1,
