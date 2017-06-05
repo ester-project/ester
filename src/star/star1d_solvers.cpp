@@ -356,6 +356,7 @@ void star1d::solve_Xh(solver *op) {
 
     j0=0; 
     matrix rhs = zeros(nr, 1);
+FILE *fic=fopen("toto.txt", "a");
     for(n=0;n<ndomains;n++) {
         ndom=map.gl.npts[n];
         if (n<conv) {
@@ -382,13 +383,13 @@ void star1d::solve_Xh(solver *op) {
         } else {
            op->add_d(n,"lnXh","lnXh",ones(ndom,1));
            op->add_d(n,"lnXh","nuc.eps",factor/Xh.block(j0,j0+ndom-1,0,0)); // CNO case only
-           the_block=log(Xh_prec.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*nuc.eps.block(j0,j0+ndom-1,0,0)/Xh.block(j0,j0+ndom-1,0,0);
+           //printf("D col %d\n",D.block(n).ncols());
+           the_block=log(Xh_prec.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*nuc.eps.block(j0,j0+ndom-1,0,0)/Xh.block(j0,j0+ndom-1,0,0)-0*(r.block(j0,j0+ndom-1,0,0)-r_prec.block(j0,j0+ndom-1,0,0))*(D.block(n).row(0),log(Xh.block(j0,j0+ndom-1,0,0)));
+           for (int k=j0;k<j0+ndom;k++) fprintf(fic,"%e\n",r_prec(k,0));
            rhs.setblock(j0,j0+ndom-1,0,0,the_block);
         }
         j0+=ndom;
     }
-FILE *fic=fopen("toto.txt", "a");
-for (int k=0;k<nr;k++) fprintf(fic,"%e\n",Xh(k,0));
 fclose(fic);
 
          // for (int k=0;k<nr;k++) printf("xh %e\n",Xh(k,0));
