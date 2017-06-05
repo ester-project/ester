@@ -36,7 +36,7 @@ class star2d {
   	const int &nr,&nth,&nex,&ndomains;
 	const matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
 	const matrix_block_diag &D;
-    matrix rho,phi,p,T,Xh,Xh_prec;
+    matrix rho,phi,p,T,Xh,Xh_prec,r_prec;
     matrix phiex;
 	matrix vr,vt,G,w;
 	composition_map comp; 

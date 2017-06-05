@@ -268,6 +268,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		phi=-T;
 		Xh=X0*ones(nr,1);
 		Xh_prec=Xh;
+		r_prec=r;
 		//X_core_prec=X_core;
 		G=0*T;
 		w=0*T;
