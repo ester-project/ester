@@ -167,7 +167,9 @@ double star1d::solve(solver *op) {
 	p+=h*dp*p;
 	T+=h*dT*T;
 // Evolution of Xh, dXh is the variation on ln(Xh) assumed to be small
+        //matrix Xh_prec_interp=this->map.gl.eval(Xh_prec,r); // interpol sur la nlle grille
 	Xh+=h*dXh*Xh;
+	//Xh=Xh_prec_interp*(1.+h*dXh);
 
 	pc*=exp(h*dpc(0));
 	Tc*=exp(h*dTc(0));
@@ -356,6 +358,7 @@ void star1d::solve_Xh(solver *op) {
 
     j0=0; 
     matrix rhs = zeros(nr, 1);
+    matrix Xh_prec_interp=Xh_prec;//this->map.gl.eval(Xh_prec,r); // interpol sur la nlle grille
 FILE *fic=fopen("toto.txt", "a");
     for(n=0;n<ndomains;n++) {
         ndom=map.gl.npts[n];
@@ -378,16 +381,18 @@ FILE *fic=fopen("toto.txt", "a");
   //        op->add_d(n,"lnXh","rz",titi);
 //        printf("toto rows %d\n",toto.nrows());
 //        printf("toto col %d\n",toto.ncols());
-          the_block=log(Xh_prec.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*L_core/M_core/Xh.block(j0,j0+ndom-1,0,0);
+          the_block=log(Xh_prec_interp.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*L_core/M_core/Xh.block(j0,j0+ndom-1,0,0);
           rhs.setblock(j0,j0+ndom-1,0,0,the_block);
         } else {
            op->add_d(n,"lnXh","lnXh",ones(ndom,1));
            op->add_d(n,"lnXh","nuc.eps",factor/Xh.block(j0,j0+ndom-1,0,0)); // CNO case only
            //printf("D col %d\n",D.block(n).ncols());
-           the_block=log(Xh_prec.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*nuc.eps.block(j0,j0+ndom-1,0,0)/Xh.block(j0,j0+ndom-1,0,0)-0*(r.block(j0,j0+ndom-1,0,0)-r_prec.block(j0,j0+ndom-1,0,0))*(D.block(n).row(0),log(Xh.block(j0,j0+ndom-1,0,0)));
-           for (int k=j0;k<j0+ndom;k++) fprintf(fic,"%e\n",r_prec(k,0));
+           the_block=log(Xh_prec_interp.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*nuc.eps.block(j0,j0+ndom-1,0,0)/Xh.block(j0,j0+ndom-1,0,0)*
+
+//-0*(r.block(j0,j0+ndom-1,0,0)-r_prec.block(j0,j0+ndom-1,0,0))*(D.block(n),log(Xh.block(j0,j0+ndom-1,0,0)));
            rhs.setblock(j0,j0+ndom-1,0,0,the_block);
         }
+        for (int k=j0;k<j0+ndom;k++) fprintf(fic,"%d  %e %e %e\n",k,r(k,0),Xh(k,0),Xh_prec_interp(k,0));
         j0+=ndom;
     }
 fclose(fic);
