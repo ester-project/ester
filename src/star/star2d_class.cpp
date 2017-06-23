@@ -248,6 +248,8 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("w",&w);
     fp.write("G",&G);
     fp.write("comp",(matrix_map *)&comp);
+    fp.write("X_core",&X_core);
+    fp.write("M_core",&M_core);
 
     fp.close();
 
@@ -591,8 +593,13 @@ int star2d::read(const char *input_file, int dim) {
     fp.read("p",&p);
     fp.read("T",&T);
     fp.read("Xh",&Xh);
+    fp.read("X_core",&X_core);
+    fp.read("M_core",&M_core);
+
     Xh_prec=Xh; // new
     r_prec=r; // new
+    X_core_prec=X_core;
+    M_core_prec=M_core;
     conv=0; // added too
     if(fp.read("phiex",&phiex)) phiex=zeros(nex,nth);
     fp.read("map.R",&map.R);

@@ -167,9 +167,7 @@ double star1d::solve(solver *op) {
 	p+=h*dp*p;
 	T+=h*dT*T;
 // Evolution of Xh, dXh is the variation on ln(Xh) assumed to be small
-        //matrix Xh_prec_interp=this->map.gl.eval(Xh_prec,r); // interpol sur la nlle grille
 	Xh+=h*dXh*Xh;
-	//Xh=Xh_prec_interp*(1.+h*dXh);
 
 	pc*=exp(h*dpc(0));
 	Tc*=exp(h*dTc(0));
@@ -336,21 +334,20 @@ void star1d::solve_Xh(solver *op) {
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
     double factor=4*HYDROGEN_MASS/Qmc2*MYR*dt;
     printf("======Start of solve_Xh, number of doms in CC = %d\n",conv);
-    int n,j0,ndom,n_core;
+    int n,j0,ndom,nc;
     matrix toto,titi,the_block;
 
 // Core parameters
     double rcc=Rcore()(0);
-    n_core=0;
+    nc=0;
     for (int i=0; i<conv; i++) {
-        n_core += map.gl.npts[i]; // determine the number of points in the core
+        nc += map.gl.npts[i];
     }
     matrix &rz = map.rz;  // un alias
-    //printf("AVG comp: (n_core: %d)\n", n_core);
+    if (nc) { // nc = nb of grid points in core
 // compute Average X in core, and total eps in core
-    if (n_core) {
-    X_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (Xh*rho*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
-    double M_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (rho*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
+    X_core = ((map.gl.I.block(0, 0, 0, nc-1)), (Xh*rho*r*r*rz).block(0, nc-1, 0, 0), (map.leg.I_00))(0);
+    M_core = ((map.gl.I.block(0, 0, 0, nc-1)), (rho*r*r*rz).block(0, nc-1, 0, 0), (map.leg.I_00))(0);
     X_core=X_core/M_core;
     printf("X_core %lf\n", X_core);
     printf("rcc/R %lf\n", rcc/R);
@@ -358,16 +355,16 @@ void star1d::solve_Xh(solver *op) {
 
     j0=0; 
     matrix rhs = zeros(nr, 1);
-    matrix Xh_prec_interp=Xh_prec;//this->map.gl.eval(Xh_prec,r); // interpol sur la nlle grille
+    matrix Xh_prec_interp=this->map.gl.eval(Xh_prec,r); // interpol sur la nlle grille
 FILE *fic=fopen("toto.txt", "a");
     for(n=0;n<ndomains;n++) {
         ndom=map.gl.npts[n];
         if (n<conv) {
-          double L_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (rho*nuc.eps*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
-          double M_core = ((map.gl.I.block(0, 0, 0, n_core-1)), (rho*r*r*rz).block(0, n_core-1, 0, 0), (map.leg.I_00))(0);
-//          double fact=factor/M_core;
+          double L_core = ((map.gl.I.block(0, 0, 0, nc-1)), (rho*nuc.eps*r*r*rz).block(0, nc-1, 0, 0), (map.leg.I_00))(0);
+          M_core = ((map.gl.I.block(0, 0, 0, nc-1)), (rho*r*r*rz).block(0, nc-1, 0, 0), (map.leg.I_00))(0);
           op->add_d(n,"lnXh","lnXh",ones(ndom,1));
-	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(nuc.eps*r*r*rz).transpose().block(0,0,j0,j0+ndom-1);
+//          double fact=factor/M_core;
+//	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(nuc.eps*r*r*rz).transpose().block(0,0,j0,j0+ndom-1);
 //        titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
 //        op->add_d(n,"lnXh","rho",titi);
 //	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(rho*r*r*rz).transpose().block(0,0,j0,j0+ndom-1);
@@ -386,13 +383,24 @@ FILE *fic=fopen("toto.txt", "a");
         } else {
            op->add_d(n,"lnXh","lnXh",ones(ndom,1));
            op->add_d(n,"lnXh","nuc.eps",factor/Xh.block(j0,j0+ndom-1,0,0)); // CNO case only
-           //printf("D col %d\n",D.block(n).ncols());
-           the_block=log(Xh_prec_interp.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*nuc.eps.block(j0,j0+ndom-1,0,0)/Xh.block(j0,j0+ndom-1,0,0)*
+           
+           the_block=log(Xh_prec_interp.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*nuc.eps.block(j0,j0+ndom-1,0,0)/Xh.block(j0,j0+ndom-1,0,0);
 
-//-0*(r.block(j0,j0+ndom-1,0,0)-r_prec.block(j0,j0+ndom-1,0,0))*(D.block(n),log(Xh.block(j0,j0+ndom-1,0,0)));
+// Loop to care about the mixed hydrogen-helium layer above the core
+/*
+for (int i=j0;i<j0+ndom;i++) {
+          double Mb = ((map.gl.I.block(0, 0, 0, i)), (rho*r*r*rz).block(0, i, 0, 0), (map.leg.I_00))(0); // Mass(ball)
+           if ( Mb >= M_core && Mb <= M_core_prec ) {
+              the_block(i) = log(X_core)+(log(X_core_prec)-log(X_core))*(Mb-M_core)/(M_core_prec-M_core)-log(Xh(i));
+           } else {
+              the_block(i) = log(Xh_prec_interp(i))-log(Xh(i))-factor*nuc.eps(i)/Xh(i);
+           }
+
+}
+*/
            rhs.setblock(j0,j0+ndom-1,0,0,the_block);
         }
-        for (int k=j0;k<j0+ndom;k++) fprintf(fic,"%d  %e %e %e\n",k,r(k,0),Xh(k,0),Xh_prec_interp(k,0));
+        for (int k=j0;k<j0+ndom;k++) fprintf(fic,"%d %e %e %e %e\n",k,r(k,0),r_prec(k,0),Xh(k,0),Xh_prec_interp(k,0));
         j0+=ndom;
     }
 fclose(fic);

@@ -251,7 +251,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 			remap(map_new.ndomains,map_new.gl.npts,map_new.nt,map_new.nex);
 		}
 	} else {
-        printf("I set Xh=X0 in star1d::init of star1d_class\n");
+        printf("I start from scratch and set Xh=X0 in star1d::init of star1d_class\n");
 		map.leg.npts=1;
 		map.init();
 		T=1-0.5*r*r;
@@ -260,7 +260,10 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		Xh=X0*ones(nr,1);
 		Xh_prec=Xh;
 		r_prec=r;
-		//X_core_prec=X_core;
+		X_core=X0;
+		X_core_prec=X0;
+		M_core=0;
+		M_core_prec=0;
 		G=0*T;
 		w=0*T;
 		conv=0;
