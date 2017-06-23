@@ -41,7 +41,7 @@ class star2d {
 	matrix vr,vt,G,w;
 	composition_map comp; 
     double X0,Y0,Z0;
-    double X_core,X_core_prec;
+    double X_core,X_core_prec,M_core,M_core_prec;
     double R,M;
     double rhoc,Tc,pc;
     double Omega,Omega_bk,Omegac;

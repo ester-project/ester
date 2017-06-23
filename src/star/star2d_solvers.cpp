@@ -657,7 +657,7 @@ void star2d::solve_Xh(solver *op) {
         op->add_d("lnXh","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
         op->add_d("lnXh","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
 
-    matrix rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh - (r-r_prec)*(D,log(Xh));
+    matrix rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh;//- (r-r_prec)*(D,log(Xh));
     op->set_rhs("lnXh",rhs);
 	printf("End of solve_Xh\n");
 
