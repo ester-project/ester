@@ -35,7 +35,7 @@ int main(int argc,char *argv[]) {
 	matrix tt(config.maxit+1,1),error(config.maxit+1,1);
 
 	t_plot=0;
-	last_it=nit>=config.maxit;
+	last_it=nit>=config.maxit; // last_it=0 normally
 	op=A.init_solver();
 	if(config.verbose>2) op->verbose=1;
 	A.config.newton_dmax=config.newton_dmax;
