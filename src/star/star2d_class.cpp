@@ -600,7 +600,7 @@ int star2d::read(const char *input_file, int dim) {
     r_prec=r; // new
     X_core_prec=X_core;
     M_core_prec=M_core;
-    conv=0; // added too
+    //conv=0; // added too
     if(fp.read("phiex",&phiex)) phiex=zeros(nex,nth);
     fp.read("map.R",&map.R);
     if(map.R.nrows()<map.ndomains+1) {
