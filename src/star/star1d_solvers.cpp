@@ -352,9 +352,35 @@ void star1d::solve_Xh(solver *op) {
     printf("X_core %lf\n", X_core);
     printf("rcc/R %lf\n", rcc/R);
     }
+// End core parameters
+// Prepare mass coordinate
+
+
+	solver massSolver;
+        massSolver.init(map.ndomains, 1, "full");
+        massSolver.regvar("mass");
+        massSolver.set_nr(map.npts);
+
+        massSolver.add_l("mass", "mass", ones(nr, 1), D);
+        matrix rhs = 4 * PI * r * r * rho;
+
+        massSolver.bc_bot2_add_d(0, "mass", "mass", ones(1, 1));
+        rhs(0) = 0;
+        int jfirst = 0;
+        for(int i = 1; i < map.ndomains; i++) {
+                jfirst += map.gl.npts[i-1];
+                massSolver.bc_bot2_add_d(i, "mass", "mass", ones(1, 1));
+                massSolver.bc_bot1_add_d(i, "mass", "mass", -ones(1,1));
+                rhs(jfirst) = 0;
+        }
+        massSolver.set_rhs("mass", rhs);
+        massSolver.solve();
+        matrix mass = massSolver.get_var("mass");
+
+// Mass coordinate end
 
     j0=0; 
-    matrix rhs = zeros(nr, 1);
+    rhs = zeros(nr, 1);
     matrix Xh_prec_interp=this->map.gl.eval(Xh_prec,r); // interpol sur la nlle grille
 FILE *fic=fopen("toto.txt", "a");
     for(n=0;n<ndomains;n++) {
@@ -387,9 +413,10 @@ FILE *fic=fopen("toto.txt", "a");
            the_block=log(Xh_prec_interp.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*nuc.eps.block(j0,j0+ndom-1,0,0)/Xh.block(j0,j0+ndom-1,0,0);
 
 // Loop to care about the mixed hydrogen-helium layer above the core
-/*
+
 for (int i=j0;i<j0+ndom;i++) {
-          double Mb = ((map.gl.I.block(0, 0, 0, i)), (rho*r*r*rz).block(0, i, 0, 0), (map.leg.I_00))(0); // Mass(ball)
+          printf("i= %d\n",i);
+          double Mb = mass(i);
            if ( Mb >= M_core && Mb <= M_core_prec ) {
               the_block(i) = log(X_core)+(log(X_core_prec)-log(X_core))*(Mb-M_core)/(M_core_prec-M_core)-log(Xh(i));
            } else {
@@ -397,10 +424,10 @@ for (int i=j0;i<j0+ndom;i++) {
            }
 
 }
-*/
+
            rhs.setblock(j0,j0+ndom-1,0,0,the_block);
         }
-        for (int k=j0;k<j0+ndom;k++) fprintf(fic,"%d %e %e %e %e\n",k,r(k,0),r_prec(k,0),Xh(k,0),Xh_prec_interp(k,0));
+        for (int k=j0;k<j0+ndom;k++) fprintf(fic,"%d %e %e %e %e\n",k,r(k,0),mass(k,0),Xh(k,0),rz(k,0));
         j0+=ndom;
     }
 fclose(fic);
@@ -943,6 +970,34 @@ void star1d::check_jacobian(solver *op,const char *eqn) {
     delete [] y;
 }
 
+matrix calcMass(star1d &a) {
+
+        solver massSolver;
+        massSolver.init(a.map.ndomains, 1, "full");
+        massSolver.regvar("mass");
+        massSolver.set_nr(a.map.npts);
+
+        massSolver.add_l("mass", "mass", ones(a.nr, 1), a.D);
+        matrix rhs = 4 * PI * a.r * a.r * a.rho;
+
+        massSolver.bc_bot2_add_d(0, "mass", "mass", ones(1, 1));
+        rhs(0) = 0;
+        int jfirst = 0;
+        for(int i = 1; i < a.ndomains; i++) {
+                jfirst += a.map.gl.npts[i-1];
+                massSolver.bc_bot2_add_d(i, "mass", "mass", ones(1, 1));
+                massSolver.bc_bot1_add_d(i, "mass", "mass", -ones(1,
+1));
+                rhs(jfirst) = 0;
+        }
+        massSolver.set_rhs("mass", rhs);
+        massSolver.solve();
+
+        matrix mass = massSolver.get_var("mass");
+
+        return mass;
+
+}
 
 
 
