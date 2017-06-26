@@ -338,6 +338,7 @@ void star1d::solve_Xh(solver *op) {
 
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
     double factor=4*HYDROGEN_MASS/Qmc2*MYR*dt;
+    double L_core;
     printf("======Start of solve_Xh, number of doms in CC = %d\n",conv);
     int n,j0,ndom,nc;
     matrix toto,titi,the_block;
@@ -351,23 +352,23 @@ void star1d::solve_Xh(solver *op) {
     matrix &rz = map.rz;  // un alias
     if (nc) { // nc = nb of grid points in core
 // compute Average X in core, and total eps in core
-    X_core = ((map.gl.I.block(0, 0, 0, nc-1)), (Xh*rho*r*r*rz).block(0, nc-1, 0, 0), (map.leg.I_00))(0);
-    M_core = ((map.gl.I.block(0, 0, 0, nc-1)), (rho*r*r*rz).block(0, nc-1, 0, 0), (map.leg.I_00))(0);
+    X_core = ((map.gl.I.block(0, 0, 0, nc-1)), (Xh*rho*r*r*rz).block(0, nc-1, 0, 0))(0);
+    M_core = ((map.gl.I.block(0, 0, 0, nc-1)), (rho*r*r*rz).block(0, nc-1, 0, 0))(0);
     X_core=X_core/M_core;
-    printf("X_core %lf\n", X_core);
-    printf("rcc/R %lf\n", rcc/R);
+    L_core = ((map.gl.I.block(0, 0, 0, nc-1)), (rho*nuc.eps*r*r*rz).block(0, nc-1, 0, 0))(0);
+    printf("X_core =  %lf, X_core_prec = %lf, rcc/R = %lf\n", X_core, X_core_prec, rcc/R);
     }
 // End core parameters
+
 // Prepare mass coordinate
-
-
 	solver massSolver;
         massSolver.init(map.ndomains, 1, "full");
         massSolver.regvar("mass");
         massSolver.set_nr(map.npts);
 
         massSolver.add_l("mass", "mass", ones(nr, 1), D);
-        matrix rhs = 4 * PI * r * r * rho;
+        //matrix rhs = 4 * PI * r * r * rho;
+        matrix rhs = r * r * rho;
 
         massSolver.bc_bot2_add_d(0, "mass", "mass", ones(1, 1));
         rhs(0) = 0;
@@ -381,69 +382,52 @@ void star1d::solve_Xh(solver *op) {
         massSolver.set_rhs("mass", rhs);
         massSolver.solve();
         matrix mass = massSolver.get_var("mass");
-
 // Mass coordinate end
 
     j0=0; 
     rhs = zeros(nr, 1);
-    matrix Xh_prec_interp=this->map.gl.eval(Xh_prec,r); // interpol sur la nlle grille
+    //matrix Xh_prec_interp=this->map.gl.eval(Xh_prec,r); // interpol sur la nlle grille
+    printf("max Xh_prec-Xh %e\n",max(abs(Xh_prec-Xh)));
 FILE *fic=fopen("toto.txt", "a");
     for(n=0;n<ndomains;n++) {
         ndom=map.gl.npts[n];
         if (n<conv) {
-          double L_core = ((map.gl.I.block(0, 0, 0, nc-1)), (rho*nuc.eps*r*r*rz).block(0, nc-1, 0, 0), (map.leg.I_00))(0);
-          M_core = ((map.gl.I.block(0, 0, 0, nc-1)), (rho*r*r*rz).block(0, nc-1, 0, 0), (map.leg.I_00))(0);
           op->add_d(n,"lnXh","lnXh",ones(ndom,1));
-//          double fact=factor/M_core;
-//	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(nuc.eps*r*r*rz).transpose().block(0,0,j0,j0+ndom-1);
-//        titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
-//        op->add_d(n,"lnXh","rho",titi);
-//	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(rho*r*r*rz).transpose().block(0,0,j0,j0+ndom-1);
- //         titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
-  //        op->add_d(n,"lnXh","nuc.eps",titi);
-//	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(2*rho*nuc.eps*r*rz).transpose().block(0,0,j0,j0+ndom-1);
- //         titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
-  //        op->add_d(n,"lnXh","r",titi);
-//	  toto=map.gl.I.block(0,0,j0,j0+ndom-1)*(rho*nuc.eps*r*r).transpose().block(0,0,j0,j0+ndom-1);
- //         titi=(fact/Xh.block(j0,j0+ndom-1,0,0),toto);
-  //        op->add_d(n,"lnXh","rz",titi);
-//        printf("toto rows %d\n",toto.nrows());
-//        printf("toto col %d\n",toto.ncols());
-          the_block=log(Xh_prec_interp.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*L_core/M_core/Xh.block(j0,j0+ndom-1,0,0);
-          rhs.setblock(j0,j0+ndom-1,0,0,the_block);
+          the_block=log(Xh_prec.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*L_core/M_core/Xh.block(j0,j0+ndom-1,0,0);
         } else {
            op->add_d(n,"lnXh","lnXh",ones(ndom,1));
            op->add_d(n,"lnXh","nuc.eps",factor/Xh.block(j0,j0+ndom-1,0,0)); // CNO case only
            
-           the_block=log(Xh_prec_interp.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*nuc.eps.block(j0,j0+ndom-1,0,0)/Xh.block(j0,j0+ndom-1,0,0);
+           the_block=log(Xh_prec.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*nuc.eps.block(j0,j0+ndom-1,0,0)/Xh.block(j0,j0+ndom-1,0,0);
 
 // Loop to care about the mixed hydrogen-helium layer above the core
 
 for (int i=j0;i<j0+ndom;i++) {
-          printf("i= %d\n",i);
           double Mb = mass(i);
            if ( Mb >= M_core && Mb <= M_core_prec ) {
-              the_block(i) = log(X_core)+(log(X_core_prec)-log(X_core))*(Mb-M_core)/(M_core_prec-M_core)-log(Xh(i));
-           } else {
-              the_block(i) = log(Xh_prec_interp(i))-log(Xh(i))-factor*nuc.eps(i)/Xh(i);
+printf("in  %d, m(i) %e, M_core %e, M_core_prec  %e\n",i,Mb,M_core,M_core_prec);
+              the_block(i-j0) = log(X_core+(X_core_prec-X_core)*(Mb-M_core)/(M_core_prec-M_core))-log(Xh(i));
+           } else if (Mb < M_core) {
+             printf("should not be the case i= %d, Mb = %lf, Mcore= %lf\n",i,Mb,M_core);
+           } else if (Mb > M_core_prec) {
+              the_block(i-j0) = log(Xh_prec(i))-log(Xh(i))-factor*nuc.eps(i)/Xh(i);
            }
+                             }
 
-}
 
-           rhs.setblock(j0,j0+ndom-1,0,0,the_block);
         }
+           rhs.setblock(j0,j0+ndom-1,0,0,the_block);
         for (int k=j0;k<j0+ndom;k++) fprintf(fic,"%d %e %e %e %e\n",k,r(k,0),mass(k,0),Xh(k,0),rz(k,0));
         j0+=ndom;
-    }
+    } // end of loop on domains
 fclose(fic);
 
          // for (int k=0;k<nr;k++) printf("xh %e\n",Xh(k,0));
                 op->set_rhs("lnXh",rhs);
           printf("======End solve-Xh\n");
 
-}
 //Evolution Xh end-----------------------------------
-
+}
 
 void star1d::solve_temp(solver *op) {
     DEBUG_FUNCNAME;
