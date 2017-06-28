@@ -332,7 +332,7 @@ void star1d::solve_Xh(solver *op) {
     DEBUG_FUNCNAME;
 
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
-    double factor=4*HYDROGEN_MASS/Qmc2*MYR*dt;
+    double factor=4*HYDROGEN_MASS/Qmc2*MYR*dtime;
     double L_core;
     printf("======Start of solve_Xh, number of doms in CC = %d\n",conv);
     int n,j0,ndom,nc;
@@ -378,11 +378,13 @@ void star1d::solve_Xh(solver *op) {
         massSolver.solve();
         matrix mass = massSolver.get_var("mass");
 // Mass coordinate end
+    //double mc0=0.2396*mass(nr-1);
+    //printf("mc0 %e\n",mc0);
 
     j0=0; 
     rhs = zeros(nr, 1);
     //matrix Xh_prec_interp=this->map.gl.eval(Xh_prec,r); // interpol sur la nlle grille
-    printf("max Xh_prec-Xh %e\n",max(abs(Xh_prec-Xh)));
+    //printf("max Xh_prec-Xh %e\n",max(abs(Xh_prec-Xh)));
 FILE *fic=fopen("toto.txt", "a");
     for(n=0;n<ndomains;n++) {
         ndom=map.gl.npts[n];
@@ -396,19 +398,21 @@ FILE *fic=fopen("toto.txt", "a");
            the_block=log(Xh_prec.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*nuc.eps.block(j0,j0+ndom-1,0,0)/Xh.block(j0,j0+ndom-1,0,0);
 
 // Loop to care about the mixed hydrogen-helium layer above the core
-
+///*
+if (time > 0.0) {
 for (int i=j0;i<j0+ndom;i++) {
           double Mb = mass(i);
            if ( Mb >= M_core && Mb <= M_core_prec ) {
-printf("in  %d, m(i) %e, M_core %e, M_core_prec  %e\n",i,Mb,M_core,M_core_prec);
+//printf("in  %d, m(i) %e, M_core %e, M_core_prec  %e\n",i,Mb,M_core,M_core_prec);
               the_block(i-j0) = log(X_core+(X_core_prec-X_core)*(Mb-M_core)/(M_core_prec-M_core))-log(Xh(i));
            } else if (Mb < M_core) {
-             printf("should not be the case i= %d, Mb = %lf, Mcore= %lf\n",i,Mb,M_core);
+             //printf("should not be the case i= %d, Mb = %lf, Mcore= %lf\n",i,Mb,M_core);
            } else if (Mb > M_core_prec) {
               the_block(i-j0) = log(Xh_prec(i))-log(Xh(i))-factor*nuc.eps(i)/Xh(i);
            }
                              }
-
+               }
+//*/
 
         }
            rhs.setblock(j0,j0+ndom-1,0,0,the_block);

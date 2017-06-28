@@ -575,7 +575,8 @@ First, define a new object:
 		
 Initialize solver:
 	
-	-->	rk.init(nvar,method);
+	-->	rk.init(nvar,method); // nvar = nb de variable avec deirvee temp. explicite
+				      // methode string = cidessous ==> sdirk2,3 ou 4.
 		
 Where nvar is the number of variables an method can be:
 
@@ -589,7 +590,7 @@ Where nvar is the number of variables an method can be:
 		
 Register variables:
 	
-	-->	rk.regvar("u",u0);
+	-->	rk.regvar("u",u0); u0 =valeur initial de u
 	-->	rk.regvar("v",v0);
 	-->	...
 	
@@ -600,13 +601,14 @@ For ESDIRK methods, the initial value of the temporal derivative is also needed:
 	-->		rk.set_initial_derivative("v",dv0);
 	-->		...}
 
-Set the time step:
+Set the time step 'h':
 
 	-->	rk.set_step(h);
 	
-Start main loop:
+Start main loop (time loop):
 	--> int state;
-	--> while((state=rk.solve(t0,t1))!=RK_END) {
+	--> while((state=rk.solve(t0,t1))!=RK_END) { // t0 = t initial, t1=t_final
+state est l'état du solveur 0, 1 ou 2 cf +haut (etat final, step done, intermediate step)
 	-->		double delta,t;
 	-->		matrix u0,v0,...;
 	-->		delta=rk.get_delta();
