@@ -31,6 +31,7 @@ int main(int argc,char *argv[]) {
     }
 
 	nit=0;
+        A.time+=A.dtime;
 	
 	matrix tt(config.maxit+1,1),error(config.maxit+1,1);
 

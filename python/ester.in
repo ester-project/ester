@@ -74,6 +74,7 @@ class star2d:
         self.P_po       = _mat_to_numpy(P_po)
 
         self.R          = self._s.R
+        self.time       = self._s.time
         self.z          = _mat_to_numpy(self._s.z)
 
         self.G          = _mat_to_numpy(self._s.G)

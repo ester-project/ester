@@ -39,7 +39,7 @@ void star2d::fill() {
 void star2d::init_comp() {
 
         
-        if (dt == 0.) {
+        if (time == 0.) {
 	 comp=initial_composition(X0,Z0)*ones(nr,nth);
         } else {
         comp["H"]=Xh;
@@ -652,7 +652,7 @@ void star2d::solve_Xh(solver *op) {
 
 	printf("Start of solve_Xh\n");
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
-    double factor=4*HYDROGEN_MASS/Qmc2*MYR*dt;
+    double factor=4*HYDROGEN_MASS/Qmc2*MYR*dtime;
         op->add_d("lnXh","lnXh",ones(nr,nth));
         op->add_d("lnXh","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
         op->add_d("lnXh","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);

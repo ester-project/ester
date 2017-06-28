@@ -281,6 +281,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		phiex=zeros(map.nex,map.nt);
 	}
 	
+                printf("time %e dtime %e \n",time,dtime);
 	init_comp();
 	fill();
 	

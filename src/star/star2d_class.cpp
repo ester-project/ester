@@ -251,6 +251,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("comp",(matrix_map *)&comp);
     fp.write("X_core",&X_core);
     fp.write("M_core",&M_core);
+    fp.write("time",&time);
 
     fp.close();
 
@@ -599,6 +600,7 @@ int star2d::read(const char *input_file, int dim) {
     fp.read("Xh",&Xh);
     fp.read("X_core",&X_core);
     fp.read("M_core",&M_core);
+    fp.read("time",&time);
 
     Xh_prec=Xh; // new
     r_prec=r; // new
@@ -924,6 +926,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         G=zeros(nr,nth);
         Xh=X0*ones(nr,nth);
         conv=0;
+        time=0.;
         domain_type.resize(ndomains);
         for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
     }
@@ -1100,9 +1103,9 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
         if(val==NULL) return 2;
         env_convec=atoi(val);
     }
-    else if(!strcmp(arg,"dt")) { // dt added
+    else if(!strcmp(arg,"dtime")) { // dt added
         if(val==NULL) return 2;
-        dt=atof(val);
+        dtime=atof(val);
     }
     else if(!strcmp(arg,"min_core_size")) {
         if(val==NULL) return 2;
