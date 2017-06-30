@@ -3,6 +3,7 @@
 #include "mapping.h"
 #include <stdlib.h>
 
+// Define the remapper class
 remapper::remapper(const mapping &map_in) {
 
 	map=map_in;
@@ -77,6 +78,8 @@ void remapper::set_R(const matrix &Rin) {
 
 }
 
+// the position of the interface numero "idom_old" is the same as the position of the
+// interface numero idom_new
 void remapper::set_fixed(int idom_new,int idom_old) {
 
 	fixed[idom_new]=idom_old;
@@ -87,12 +90,14 @@ void remapper::set_fixed(int idom_new,int idom_old) {
 
 }
 
+// mode = Bonazzola ou linear
 void remapper::set_mode(int mode_new) {
 
 	mode=mode_new;
 
 }
 
+// get the new mapping...
 mapping remapper::get_map() {
 
 	if (!remapped) remap();
@@ -100,7 +105,14 @@ mapping remapper::get_map() {
 
 }
 
+// interpolate "y" on the new mapping
+// remapper toto(map) // map is the old mapping
+// toto.set_npts(new_npts)
+// comp=toto.interp(comp)
+// parity == equatorial symmetry  (00, 01, 10, 11)
+
 matrix_map remapper::interp(const matrix_map &y,int parity) {
+// for the class of matrix_map objects (only the chemical at the moment)
 
 	matrix_map::const_iterator it;
 	matrix_map ynew;
@@ -111,6 +123,7 @@ matrix_map remapper::interp(const matrix_map &y,int parity) {
 }
 
 matrix remapper::interp(const matrix &y,int parity) {
+// same as above but for matrices
 
 	if (!remapped) remap();
 
@@ -163,6 +176,7 @@ matrix remapper::interp_ex(const matrix &y,int parity) {
 
 }
 
+// low level remapper used by star2d remap
 void remapper::remap() {
 
 	if(ndomains!=map.ndomains&&!changed_npts) {
