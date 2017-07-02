@@ -33,7 +33,7 @@ solver *star1d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 	
-	nvar=28; // one more variable added (lnXh)
+	nvar=29; // one more variable added (lnXh)
 	
 	op=new solver();
 	op->init(ndomains,nvar+nvar_add,"full");
@@ -81,12 +81,13 @@ void star1d::register_variables(solver *op) {
 	op->regvar_dep("nuc.eps");
 // Evolution of Xh
 	op->regvar("lnXh");
+	op->regvar("Vr");
 
 }
 
 double star1d::solve(solver *op) {
 	int info[5];
-	matrix rho0;
+	matrix rho_prec;
 	double err,err2;
 	
 	printf("************start of star1d::solve\n");
@@ -104,6 +105,7 @@ double star1d::solve(solver *op) {
 	solve_Teff(op);
 // Evolution of Xh
         solve_Xh(op);
+        solve_Vr(op);
 	
 	op->solve(info);
 	
@@ -133,7 +135,7 @@ double star1d::solve(solver *op) {
 	h=1;
 	q=config.newton_dmax;
 	
-	matrix dphi,dp,dT,dXh,dpc,dTc,dRi;
+	matrix dphi,dp,dT,dXh,dpc,dTc,dRi,dVr;
 	
 	dphi=op->get_var("Phi");
 	err=max(abs(dphi/phi));
@@ -150,7 +152,11 @@ double star1d::solve(solver *op) {
 	dXh=op->get_var("lnXh");	
 	err2=max(abs(dXh));err=err2>err?err2:err;
 	while(exist(abs(h*dXh)>q)) h/=2;
-// End of dXh computation
+// Compute dVr
+	dVr=op->get_var("Vr");	
+	err2=max(abs(dVr));err=err2>err?err2:err;
+	while(exist(abs(h*dVr)>q)) h/=2;
+// End of dVr computation
 
 	dpc=op->get_var("log_pc");	
 	err2=fabs(dpc(0)/pc);err=err2>err?err2:err;
@@ -168,17 +174,18 @@ double star1d::solve(solver *op) {
 	T+=h*dT*T;
 // Evolution of Xh, dXh is the variation on ln(Xh) assumed to be small
 	Xh+=h*dXh*Xh;
+	Vr+=h*dVr;
 
 	pc*=exp(h*dpc(0));
 	Tc*=exp(h*dTc(0));
 
 	err2=max(abs(dRi));err=err2>err?err2:err;
 	
-	rho0=rho;
+	rho_prec=rho;
 
 	fill();
 	
-	err2=max(abs(rho-rho0));err=err2>err?err2:err;
+	err2=max(abs(rho-rho_prec));err=err2>err?err2:err;
 	
 	printf("************End of star1d::solve\n");
 	return err;
@@ -332,14 +339,15 @@ void star1d::solve_Xh(solver *op) {
     DEBUG_FUNCNAME;
 
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
-    double factor=4*HYDROGEN_MASS/Qmc2*MYR*dtime;
-    double L_core;
+    double factor=4*HYDROGEN_MASS/Qmc2*MYR;
+    double L_core=0.;
     printf("======Start of solve_Xh, number of doms in CC = %d\n",conv);
     int n,j0,ndom,nc;
     matrix toto,titi,the_block;
 
 // Core parameters
     double rcc=Rcore()(0);
+    double Ed=1e-5;
     nc=0;
     for (int i=0; i<conv; i++) {
         nc += map.gl.npts[i];
@@ -355,79 +363,111 @@ void star1d::solve_Xh(solver *op) {
     }
 // End core parameters
 
-// Prepare mass coordinate
-	solver massSolver;
-        massSolver.init(map.ndomains, 1, "full");
-        massSolver.regvar("mass");
-        massSolver.set_nr(map.npts);
-
-        massSolver.add_l("mass", "mass", ones(nr, 1), D);
-        //matrix rhs = 4 * PI * r * r * rho;
-        matrix rhs = r * r * rho;
-
-        massSolver.bc_bot2_add_d(0, "mass", "mass", ones(1, 1));
-        rhs(0) = 0;
-        int jfirst = 0;
-        for(int i = 1; i < map.ndomains; i++) {
-                jfirst += map.gl.npts[i-1];
-                massSolver.bc_bot2_add_d(i, "mass", "mass", ones(1, 1));
-                massSolver.bc_bot1_add_d(i, "mass", "mass", -ones(1,1));
-                rhs(jfirst) = 0;
-        }
-        massSolver.set_rhs("mass", rhs);
-        massSolver.solve();
-        matrix mass = massSolver.get_var("mass");
-// Mass coordinate end
-    //double mc0=0.2396*mass(nr-1);
-    //printf("mc0 %e\n",mc0);
 
     j0=0; 
-    rhs = zeros(nr, 1);
-    //matrix Xh_prec_interp=this->map.gl.eval(Xh_prec,r); // interpol sur la nlle grille
-    //printf("max Xh_prec-Xh %e\n",max(abs(Xh_prec-Xh)));
-FILE *fic=fopen("toto.txt", "a");
-    for(n=0;n<ndomains;n++) {
+    matrix rhs;
+    matrix rhs_conv=-((log(Xh)-log(Xh0))/delta+factor*L_core/M_core/Xh);
+    symbolic S;
+    sym eq;
+    {
+    sym lnX=S.regvar("lnXh");
+    sym lnX0=S.regvar("lnXh0");
+    sym X=exp(lnX);
+    sym eps=S.regvar("nuc.eps");
+    sym r=S.var("r"); // because "r" created automatically with the symbolic object
+    eq=(lnX-lnX0)/delta-Ed/X*lap(X)+factor*eps;
+    }
+    S.set_value("lnXh",log(Xh));
+    S.set_value("lnXh0",log(Xh0));
+    S.set_value("nuc.eps",nuc.eps);
+    S.set_map(map);
+    eq.add(op,"lnXh","lnXh");
+    eq.add(op,"lnXh","nuc.eps");
+    eq.add(op,"lnXh","r");
+    rhs=-eq.eval();
+
+    for(n=0;n<conv;n++) {
         ndom=map.gl.npts[n];
-        if (n<conv) {
-          op->add_d(n,"lnXh","lnXh",ones(ndom,1));
-          the_block=log(Xh_prec.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*L_core/M_core/Xh.block(j0,j0+ndom-1,0,0);
-        } else {
-           op->add_d(n,"lnXh","lnXh",ones(ndom,1));
-           op->add_d(n,"lnXh","nuc.eps",factor/Xh.block(j0,j0+ndom-1,0,0)); // CNO case only
-           
-           the_block=log(Xh_prec.block(j0,j0+ndom-1,0,0))-log(Xh.block(j0,j0+ndom-1,0,0))-factor*nuc.eps.block(j0,j0+ndom-1,0,0)/Xh.block(j0,j0+ndom-1,0,0);
-
-// Loop to care about the mixed hydrogen-helium layer above the core
-///*
-if (time > 0.0) {
-for (int i=j0;i<j0+ndom;i++) {
-          double Mb = mass(i);
-           if ( Mb >= M_core && Mb <= M_core_prec ) {
-//printf("in  %d, m(i) %e, M_core %e, M_core_prec  %e\n",i,Mb,M_core,M_core_prec);
-              the_block(i-j0) = log(X_core+(X_core_prec-X_core)*(Mb-M_core)/(M_core_prec-M_core))-log(Xh(i));
-           } else if (Mb < M_core) {
-             //printf("should not be the case i= %d, Mb = %lf, Mcore= %lf\n",i,Mb,M_core);
-           } else if (Mb > M_core_prec) {
-              the_block(i-j0) = log(Xh_prec(i))-log(Xh(i))-factor*nuc.eps(i)/Xh(i);
-           }
-                             }
-               }
-//*/
-
-        }
-           rhs.setblock(j0,j0+ndom-1,0,0,the_block);
-        for (int k=j0;k<j0+ndom;k++) fprintf(fic,"%d %e %e %e %e\n",k,r(k,0),mass(k,0),Xh(k,0),rz(k,0));
-        j0+=ndom;
+          op->reset(n,"lnXh");
+          op->add_d(n,"lnXh","lnXh",ones(ndom,1)/delta);
+          the_block=rhs_conv.block(j0,j0+ndom-1,0,0);
+          rhs.setblock(j0,j0+ndom-1,0,0,the_block);
+          j0+=ndom;
     } // end of loop on domains
-fclose(fic);
 
-         // for (int k=0;k<nr;k++) printf("xh %e\n",Xh(k,0));
-                op->set_rhs("lnXh",rhs);
+//BC
+         op->bc_bot2_add_d(conv,"lnXh","lnXh",ones(1,1));
+         op->bc_bot1_add_d(conv,"lnXh","lnXh",-ones(1,1));
+         rhs(j0)=-log(Xh(j0))+log(Xh(j0-1));
+         op->bc_top1_add_d(ndomains-1,"lnXh","lnXh",ones(1,1));
+         rhs(-1)=-log(Xh(-1))+log(X0);
+
+//IC
+	 for(n=conv;n<ndomains-1;n++){
+           ndom=map.gl.npts[n];
+           j0+=ndom;
+           op->bc_top1_add_d(n,"lnXh","lnXh",ones(1,1));
+           op->bc_top2_add_d(n,"lnXh","lnXh",-ones(1,1));
+           rhs(j0-1) = -log(Xh(j0-1))+log(Xh(j0));
+           op->bc_bot1_add_l(n+1,"lnXh","lnXh",ones(1,1),map.D.block(n).row(-1));
+           op->bc_bot2_add_l(n+1,"lnXh","lnXh",-ones(1,1),map.D.block(n+1).row(0));
+           rhs(j0) = -(map.D,log(Xh))(j0-1)+(map.D,log(Xh))(j0);
+	 }
+
+
+          op->set_rhs("lnXh",rhs);
           printf("======End solve-Xh\n");
 
 //Evolution Xh end-----------------------------------
 }
 
+void star1d::solve_Vr(solver *op) {
+    DEBUG_FUNCNAME;
+
+    symbolic S;
+    sym eq;
+    {
+    sym rho=S.regvar("rho");
+    sym rho0=S.regvar("rho0");
+    //sym lnrhoc=S.regvar("log_rhoc");
+    //sym lnrhoc0=S.regvar("log_rhoc0");
+    sym Vr=S.regvar("Vr");
+    sym r=S.var("r"); // because "r" created automatically with the symbolic object
+    sym_vec rvec=grad(r);
+    //eq=(rho-rho0)/delta+rho*(lnrhoc-lnrhoc0)/delta+div(rho*Vr*rvec);
+    eq=(rho-rho0)/delta+div(rho*Vr*rvec);
+    }
+    S.set_value("Vr",Vr);
+    S.set_value("rho",rho);
+    S.set_value("rho0",rho0);
+    //S.set_value("log_rhoc",log(rhoc)*ones(1,1));
+    //S.set_value("log_rhoc0",log(rhoc0)*ones(1,1));
+    S.set_map(map);
+    eq.add(op,"Vr","Vr");
+    eq.add(op,"Vr","rho");
+    eq.add(op,"Vr","r");
+    //eq.add(op,"Vr","log_rhoc");
+    matrix rhs=-eq.eval();
+
+//BC
+         op->bc_bot2_add_d(0,"Vr","Vr",ones(1,1));
+         rhs(0)=-Vr(0);
+
+//IC
+	 int j0=0;
+         for(int n=1;n<ndomains;n++){
+           int ndom=map.gl.npts[n-1];
+           j0+=ndom;
+           op->bc_bot1_add_d(n,"Vr","Vr",ones(1,1));
+           op->bc_bot2_add_d(n,"Vr","Vr",-ones(1,1));
+           rhs(j0) = -Vr(j0-1)+Vr(j0);
+         }
+
+	op->set_rhs("Vr",rhs);
+
+
+
+}
 void star1d::solve_temp(solver *op) {
     int n,j0;
     matrix q;

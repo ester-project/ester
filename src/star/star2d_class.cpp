@@ -984,11 +984,14 @@ void star2d::interp(remapper *red) {
  	printf("Enter interp 6 in star2d_class\n");
     comp=red->interp(comp);
     phiex=red->interp_ex(phiex);
+ 	printf("Leave interp in star2d_class\n");
     fill(); // recompute the microphysic variables
 
 }
 
 extern bool dump_jac;
+
+
 int star2d::check_arg(char *arg,char *val,int *change_grid) {
     int err=0,i;
     char *tok;

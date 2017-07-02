@@ -36,7 +36,6 @@ void star2d::fill() {
 
 void star2d::init_comp() {
 // Update the object comp
-
         
         if (time == 0.) {
 	 comp=initial_composition(X0,Z0)*ones(nr,nth);
@@ -106,7 +105,6 @@ solver *star2d::init_solver(int nvar_add) {
 	nvar=34; // include Xh
 	op=new solver;
 	op->init(ndomains+1,nvar+nvar_add,"full");
-
 	op->maxit_ref=10;op->use_cgs=1;op->maxit_cgs=20;op->debug=0;
 	op->rel_tol=1e-12;op->abs_tol=1e-20;
 	register_variables(op);
@@ -164,7 +162,7 @@ void star2d::register_variables(solver *op) {
 /// internal structure.
 double star2d::solve(solver *op) {
 	int info[5];
-	matrix rho0;
+	matrix rho_prec;
 	double err,err2,h,dmax;
 
 	if(Omega==0 && Omega_bk != 0) {
@@ -174,10 +172,10 @@ double star2d::solve(solver *op) {
 
 	check_map();
 
-// Clear up the preceding equations (clear up is not necessary
-// if the system is linear) reset does not clear up the LU factorization
-// which can be reused:
-	op->reset();
+	op->reset(); // Clear up the preceding equations (clear up is not necessary
+		     // if the system is linear)
+		     // reset does not clear up the LU factorization which can be
+		     // reused
 
 	if(config.verbose) {printf("Writing equations...");fflush(stdout);}
 	solve_definitions(op);
@@ -193,8 +191,8 @@ double star2d::solve(solver *op) {
 	solve_Xh(op);
 	if(config.verbose) printf("Done\n");
 
-// Solving the system:
-	op->solve(info);
+	op->solve(info); // Solving the system
+	
 // Some output verbose ----------------------
 	if (config.verbose) {
 		if(info[2]) {
@@ -216,8 +214,7 @@ double star2d::solve(solver *op) {
 	}
 // End  output verbose ----------------------
 	h=1;
-// h : relaxation parameter for Newton solver: useful for the first
-// iterations
+// h : relaxation parameter for Newton solver: useful for the first iterations
 	dmax=config.newton_dmax;
 	
 	matrix dphi,dphiex,dp,dT,dXh,dpc,dTc;
@@ -265,18 +262,18 @@ double star2d::solve(solver *op) {
 	dRi=op->get_var("Ri");
 	update_map(h*dRi);
 	err2=max(abs(dRi));err=err2>err?err2:err;
-
-	rho0=rho;
-
+	
+	rho_prec=rho;
+	
     fill();
-
-	err2=max(abs(rho-rho0));err=err2>err?err2:err;
-
+	
+	err2=max(abs(rho-rho_prec));err=err2>err?err2:err;
+	
 	return err;
 
 }
 
-// Special treatment for updating R_i because we need
+// Spectial treatment for updating R_i because we need
 // a different relaxation parameter "h".
 
 void star2d::update_map(matrix dR) {
@@ -1040,8 +1037,8 @@ void star2d::solve_map(solver *op) {
 //for(n=1;n<=ndomains;n++) op->add_d(n,"Ri","Ri",ones(1,nth));op->set_rhs("Ri",rhs);return;
 	j0=map.gl.npts[0];
 	for(n=1;n<ndomains;n++) {
-		if(n==conv) {
-			symbolic S;
+		if(n==conv) { // at the surface of CC
+			symbolic S; // defined by grad(s).grad(p)=0
 			sym p_,s_,eq;
 			p_=S.regvar("p");
 			s_=S.regvar("s");
@@ -1055,16 +1052,23 @@ void star2d::solve_map(solver *op) {
 			eq.bc_bot2_add(op,n,"Ri","r",ones(1,nth));
 
 			rhs.setrow(n,-eq.eval().row(j0));
-		} else {
+		} else { // other domain boundaries
 			#ifdef T_CONSTANT_DOMAINS
 			map.leg.eval_00(map.leg.th,zeros(1,nth),TT);
+//TT impose the polar value
 			q=zeros(1,nth);
 			q(0,nth-1)=1;
+
 			matrix delta;
 			delta=zeros(1,map.gl.npts[n]);delta(0)=1;delta(-1)=-1;
 			op->bc_bot2_add_lr(n,"Ri",LOG_PRES,q,delta,TT);
+
 			delta=zeros(1,map.gl.npts[n-1]);delta(0)=1;delta(-1)=-1;
 			op->bc_bot1_add_lr(n,"Ri",LOG_PRES,-q,delta,TT);
+
+// Delta P the same in one domain and the next domain
+// log(PRES.row(j0+map.gl.npts[n]-1))-log(PRES.row(j0))
+// -log(PRES.row(j0-1))+log(PRES.row(j0-map.gl.npts[n-1])) =0
 			rhs.setrow(n,(log(PRES.row(j0+map.gl.npts[n]-1))-log(PRES.row(j0))
 			-log(PRES.row(j0-1))+log(PRES.row(j0-map.gl.npts[n-1])),TT));
 			op->bc_bot2_add_d(n,"Ri",LOG_PRES,(1-q));
@@ -1094,7 +1098,8 @@ void star2d::solve_map(solver *op) {
 	op->bc_bot1_add_r(n,"Ri","p",-(1-q),TT);
 	rhs.setrow(n,rhs.row(n)+(1-q)*(-p.row(-1)+(p.row(-1),TT)));
 	#else
-	// Photosphere
+	// Photosphere (with the trick to go from p=cst to p=g/kappa*(2/3) if
+	// PHOTOSPHERE defined and /=1
 	op->bc_bot1_add_d(n,"Ri","ps",-(1-q)*PHOTOSPHERE);
 	rhs.setrow(n,rhs.row(n)+(1-q)*PHOTOSPHERE*(-p.row(-1)+ps));
 	op->bc_bot1_add_r(n,"Ri","p",-(1-q)*(1.-PHOTOSPHERE),TT);

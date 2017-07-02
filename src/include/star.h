@@ -36,14 +36,14 @@ class star2d {
   	const int &nr,&nth,&nex,&ndomains;
 	const matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
 	const matrix_block_diag &D;
-    matrix rho,phi,p,T,Xh,Xh_prec,r_prec;
+    matrix rho,phi,p,T,Xh,Xh_prec,r_prec,Xh0,rho0,Vr;
     matrix phiex;
 	matrix vr,vt,G,w;
 	composition_map comp; 
     double X0,Y0,Z0;
     double X_core,X_core_prec,M_core,M_core_prec;
     double R,M;
-    double rhoc,Tc,pc;
+    double rhoc,rhoc0,Tc,pc;
     double Omega,Omega_bk,Omegac;
    	double Ekman;
   	opa_struct opa;
@@ -59,7 +59,7 @@ class star2d {
 	int env_convec;
 	int stratified_comp;
 	double min_core_size;
-	double dtime,time; // in Myrs
+	double dtime,time,delta; // in Myrs
 	std::vector<int> domain_type;
 	#define RADIATIVE 0
 	#define CORE 1
@@ -116,6 +116,7 @@ class star2d {
 	virtual void solve_definitions(solver *);
 	virtual void solve_atm(solver *);
 	virtual void solve_Xh(solver *);
+	//virtual void solve_Vr(solver *);
 	
 	virtual void update_map(matrix dR);
 	
@@ -197,6 +198,7 @@ class star1d : public star2d {
 	virtual void solve_Teff(solver *);
 	virtual void solve_gsup(solver *);
 	virtual void solve_Xh(solver *);
+	virtual void solve_Vr(solver *);
 	
 	virtual void update_map(matrix dR);
 

@@ -275,7 +275,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
                 printf("time %e dtime %e \n",time,dtime);
 	init_comp();
 	fill();
-	
+        Vr=zeros(nr,1);	
         printf("------Finish star1d::init of star1d_class\n");
 	return 0;
 }

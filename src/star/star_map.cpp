@@ -5,14 +5,14 @@ extern "C" {
 #include <stdlib.h>
 }
 // take a model and modify the resolution (nth, ndomains, number of
-// points in each domain)
+// points in each domain) 
 // object == remapper defined here
 // used to move from one grid to another
 // be careful of discontinuities that might fall in the middle of a
 // domain.
 
 void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
-    remapper red(map);  // declaration object of class remapper
+    remapper red(map); // declaration object of class remapper 
 
 	printf("Enter remap in star_map\n");
     red.set_ndomains(ndom_in);
@@ -20,10 +20,11 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
     red.set_nt(nth_in);
     red.set_nex(nex_in);
 
-    if(ndom_in!=ndomains)
+    if(ndom_in!=ndomains) 
         remap_domains(ndom_in,red); // the new R_i are now known
 
     map=red.get_map(); // update the mapping
+	printf("Enter remap 2 in star_map\n");
     interp(&red); // interpolate the variable on the new update
 
 	printf("Leave remap in star_map\n");
@@ -35,8 +36,8 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
 bool star2d::remap_domains(int ndom, remapper &red) {
     //	Count zones
     int nzones=1;
-    std::vector<int> index;
-    // Here look for interface between zones of different type.
+    std::vector<int> index;	
+// Here look for interface between zones of different type.
     for(int n=1,type=domain_type[0];n<ndomains;n++) {
         if(domain_type[n]!=type) {
             index.push_back(n-1);
@@ -44,11 +45,11 @@ bool star2d::remap_domains(int ndom, remapper &red) {
             type=domain_type[n];
         }
     }
-    // index == index of interface sepa. zone of diff type from center to
-    // surface
+// index == index of interface sepa. zone of diff type from center to
+// surface
     index.push_back(ndomains-1);
 
-    // zif = zeta of interfaces of all zones before remapping
+// zif = zeta of interfaces of all zones before remapping 
     matrix zif(nzones,nth);
     for(int n=0,j0=-1,izone=0;n<ndomains;n++) {
         j0+=map.gl.npts[n];
@@ -60,21 +61,22 @@ bool star2d::remap_domains(int ndom, remapper &red) {
 
     std::vector<int> index_new;
 
-    // test if interpolation necessary
+// test if interpolation necessary
     index_new=distribute_domains(ndom,zif,true);
 
-    // if nothing has changed return
+// if nothing has changed return
     if(index_new==index&&ndom==ndomains) return false;
 
-    // compute new indices of interfaces between zones and recompute the
-    // zeta of the new domains (zif)
+// compute new indices of interfaces between zones and recompute the zeta of the new
+// domains (zif)
     index_new=distribute_domains(ndom,zif);
 
+// Now that the zif are known we can recompute the radii R of the new domains inside
+// the zones
     red.set_R(zeros(1,nth).concatenate(map.zeta_to_r(zif)));
-    for(int n=0;n<nzones;n++)
-        // do not update the interface between zones:
-        red.set_fixed(index_new[n]+1,index[n]+1);
-    // Update domain_type (each domain is tagged with the zone type)
+    for(int n=0;n<nzones;n++) 
+        red.set_fixed(index_new[n]+1,index[n]+1); // do not update the interface between zones
+// Update domain_type (each domain is tagged with the zone type)
     std::vector<int> domain_type_new(ndom,0);
     for(int n=0,izone=0;n<ndom;n++) {
         domain_type_new[n]=domain_type[index[izone]];
@@ -91,7 +93,7 @@ bool star2d::remap_domains(int ndom, remapper &red) {
 }
 
 // if check_only 'True', return the indices of the zones interfaces
-// usually used with check_only "false"
+// usually used with check_only "false" to 
 std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only) const {
     matrix dlogT;
     int nzones=zif.nrows();
@@ -108,10 +110,8 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
         if(n) dlogT(n)+=log(map.gl.eval(PRES.col(-1),zif(n-1,-1))(0));
     }
 
-    // Distribute the domains (a limited number) into the different zones
-    // so as to decreases optimally the LogT jump between two following
-    // domains interfaces.
-
+// Distribute the domains (a limited number) into the different zones so as to
+// decreases optimally the LogT jump between two following domains interfaces.
 
     int ndomi[nzones]; // Number of domains in each zone
     for(int n=0;n<nzones;n++) ndomi[n]=1;
@@ -119,15 +119,16 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
     for(int n=nzones;n<ndom;n++) {
         double dTi=0;
         int k=0;
-        for(int i=0;i<nzones;i++)
+        for(int i=0;i<nzones;i++) {
             if(dlogT(i)/ndomi[i]>dTi) {
                 k=i;
                 dTi=dlogT(i)/ndomi[i];
             }
+        }
         ndomi[k]++;
     }
 
-    // Calculate the new indices of zone interfaces
+// Calculate the new indices of zone interfaces
     std::vector<int> index;
     index.resize(nzones);
 
@@ -141,7 +142,7 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
     index[nzones-1]=ndom-1;
     if(check_only) return index;
 
-    // Find new boundaries (ie the new zetai= zif_new) on the old zeta-grid
+// Find new boundaries (ie the new zetai= zif_new) on the old zeta-grid
     matrix zif_new(ndom,nth);
     matrix logTi(ndom-1,nth);
     matrix logT0,logT1(1,nth);
@@ -151,24 +152,22 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
         if(k==ndomi[izone]) {
             k=0;
             izone++;
-            // evaluate PRES on the interfaces bounding the domain:
-            for(int j=0;j<nth;j++) {
+            for(int j=0;j<nth;j++) { // evaluate PRES on the interfaces bounding the domain
                 logT0(j)=log(map.gl.eval(PRES.col(j),zif(izone-1,j))(0));
                 logT1(j)=log(map.gl.eval(PRES.col(j),zif(izone,j))(0));
             }
             logTi.setrow(n,logT0);
         } else {
-            // For the interfaces of domains inside the same zone attribute a value
-            // of the log(temperature) as a linear function of the domain rank
-            logTi.setrow(n,logT0+(logT1-logT0)*((double) k)/ndomi[izone]);
+// For the interfaces of domains inside the same zone attribute a value of the
+// log(temperature) as a linear function of the domain rank
+            logTi.setrow(n,logT0+(logT1-logT0)*((double) k)/ndomi[izone]);		
         }
     }
 
-    // A priori the "temperature" (in fact the variable PRES)  on the
-    // interfaces of zones is not constant; hence the interfaces of domains
-    // inside a zone have not a constant temperature.  But we like to have
-    // isothermal interfaces of domain inside a zone for (eg) numerical stability
-    // so the option ifdef....
+// A priori the "temperature" (in fact the variable PRES)  on the interfaces of zones is not constant; hence the
+// interfaces of domains inside a zone have not a constant temperature. But we like to
+// have isothermal interfaces of domain inside a zone for (eg) numerical stability so
+// the option ifdef....
 
 #ifdef T_CONSTANT_DOMAINS
     logTi=map.leg.eval_00(logTi,0)*ones(1,nth);
@@ -183,11 +182,9 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
 
 }
 
-// give a function logTi(theta) and find the associated zeta_i(theta_k)
-// of the surface
+// give a function logTi(theta) and find the associated zeta_i(theta_k) of the surface
 // PRES(zeta,theta_k)=logTi(theta_k)
 // the zeta_k(theta_k) are estimated with a Newton solver
-
 matrix star2d::find_boundaries(const matrix &logTi) const {
     matrix zi(logTi.nrows(),nth);
 
@@ -225,27 +222,24 @@ matrix star2d::find_boundaries(const matrix &logTi) const {
 }
 
 matrix star2d::distribute_domains(int ndom,int &conv_new,double p_cc) const {
-    // conv_new ==> output
-    // p_cc ==> input
-    // ndom ==> input
-    // called by check_map to redistribute domain when conv has changed (CC
-    // has appeared or disappeared)
+// conv_new ==> output
+// p_cc ==> input
+// ndom ==> input
+// called by check_map to redistribute domain when conv has changed (CC has appeared or
+// disappeared)
 
-    int j;
+        int j;
     double p_s;
 
     conv_new=conv;
     p_s=map.leg.eval_00(PRES.row(-1),0)(0);
-
-    // pcc=0 is default value at start  the core may exist or not (depend on
-    // conv)
-    if(p_cc==0) {
+    if(p_cc==0) { // pcc=0 is default value at start  the core may exist or not (depend on conv
         j=0;
         for(int n=0;n<conv;n++) j+=map.gl.npts[n];
-        p_cc=map.leg.eval_00(PRES.row(j),0)(0);
+        p_cc=map.leg.eval_00(PRES.row(j),0)(0); // p_cc=central pressure if no CC
     }
 
-    // Here star redistribute domains as in "distribute_domains(other arg...)"
+// Here star redistribute domains as in "distribute_domains(....)"
     double drad=(log(p_cc)-log(p_s));
     double dconv=(0.-log(p_cc));
     if(!conv) dconv=0;
@@ -270,7 +264,7 @@ matrix star2d::distribute_domains(int ndom,int &conv_new,double p_cc) const {
 }
 
 // First version of find_boundaries but still used in check_map
-// to do: could be replaced by the new find_boundaries...???
+// to do could be replaced by the new find_boundaries...?
 // Find iso "PRES" from the value of pif(idom)
 // pif = input param
 
@@ -317,14 +311,13 @@ void star2d::check_map() {
     int conv_new;
     remapper *red;
 
-    if(check_convec(pcc,Rcc)!=conv) {
-        // does the following if a CC appears or disappears
+    if(check_convec(pcc,Rcc)!=conv) { // does the following if CC appears or disappears
         matrix R(ndomains+1,nth);
         red=new remapper(map);
         if(conv) { // CC has disappeared !
             conv=0;
             for(int n=0;n<ndomains;n++) {
-                if(n<conv) domain_type[n]=CORE; //unnecessary
+                if(n<conv) domain_type[n]=CORE; // unnecessary
                 else domain_type[n]=RADIATIVE; // always true
             }
             pif=distribute_domains(ndomains,conv_new);
@@ -343,15 +336,14 @@ void star2d::check_map() {
             R.setrow(conv,Rcc);
             red->set_R(R);
         }
-    } else {
-        // Check if domain boundaries still verify the rule of not more than
-        // factor "10" of PRES between two domain boundaries
-        // called after one Newton iteration
+    } else { // Check if domain boundaries still verify the rule of not more than
+// factor "10" of PRES between two domain boundaries
+// called after one Newton iteration
         red=new remapper(map);
         if(!remap_domains(ndomains,*red)) {delete red;return;}
     }
     if(config.verbose) {printf("Remapping...");fflush(stdout);}
-    // Install the new mapping and do interpolation for this mapping
+// Install the new mapping and do interpolation for this mapping
     map=red->get_map();
     interp(red);
     delete red;
@@ -359,9 +351,8 @@ void star2d::check_map() {
 
 }
 
-// check_convec detects the appearance of a convective core but is not
-// used to move the core boundary
-
+// check_convec detects the appearance of a convective core but is not used
+// to move the core boundary
 int star2d::check_convec(double &p_cc,matrix &Rcc) {
     if(!core_convec) return 0; // core_covec: input param to disable CC
 
@@ -374,11 +365,10 @@ int star2d::check_convec(double &p_cc,matrix &Rcc) {
             return 0;
         } else return conv;
     }
-    // else
+    // else if no CC at calling check_convec
     int i=0;
     while(z(i)<1.05*min_core_size) i++;
-    // "i" is the first grid point where Schwarzschild is tested (to avoid
-    // too small cores)
+// "i" is the first grid point where Schwarzschild is tested (to avoid too small cores)
     matrix schw;
     // Schwarzschild criterion
     // schw = -(grad P).(grad s)
@@ -391,8 +381,8 @@ int star2d::check_convec(double &p_cc,matrix &Rcc) {
     schw=schw/r/r;
     schw.setrow(0,zeros(1,nth));
     schw.setrow(0,-(D.row(0),schw)/D(0,0));
-    if(map.leg.eval_00(schw.row(i),0)(0)>=0) return 0;
-    // if Sch > 0 no CC (or CC too small) and return
+    if(map.leg.eval_00(schw.row(i),0)(0)>=0) return 0; 
+// if Sch > 0 no CC (or CC too small) and return
 
     //if(config.verbose)
       printf("Found convective core in check_convec\n");
@@ -418,12 +408,10 @@ int star2d::check_convec(double &p_cc,matrix &Rcc) {
             zi+=dzi;
         }
         Rcc(j)=map.gl.eval(r.col(j),zi,TT)(0); // R(theta) of the CC
-        pcore(j)=(TT,PRES.col(j))(0); // PRES on R_CC(theta)
+        pcore(j)=(TT,PRES.col(j))(0);  // PRES on R_CC(theta)
     }
 
-    p_cc=map.leg.eval_00(pcore,0)(0); // p_cc=PRES at theta=0
+    p_cc=map.leg.eval_00(pcore,0)(0); // p_cc PRES at theta=0
     return 1;
 
 }
-
-
