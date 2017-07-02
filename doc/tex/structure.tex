@@ -1065,10 +1065,11 @@ arguments and file input/output.
 \end{itemize} 
 
 
-\section{Heading to time evolution}
+\section{Heading towards time evolution}
 
 \subsection{Simple scheme for hydrogen burning}
 
+\subsubsection{Step 1}
 During hydrogen burning, heat is basically produced by the transformation of
 protons into alpha particles ($^4$He nuclei) and thus, not to bother with
 the nuclear reaction network, we can write
@@ -1127,3 +1128,52 @@ mass variation, namely
 \[ \delta\Xb + \frac{4m_p}{QM_{\rm core}}\int_0^{\zeta_c} \delta(\rho\eps r^2r_\zeta)d\zeta
 = \Xb_{n-1} -\lp\Xb + \frac{4m_p}{Q}\frac{L_{\rm core}}{M_{\rm core}}\rp\]
 in 1D.
+
+\subsubsection{Some numerical values for orders of magnitude}
+
+Simplifying the expression given by \cite{KWW12}, we take 
+
+\[ \eps_{\rm CNO} = 8.24\, 10^{25} \rho X X_{\rm CNO} T_9^{-2/3}
+e^{-15.231/T_9^{1/3}}\; {\rm cgs}\]
+Let's take $X_{\rm CNO}\simeq Z/2 \simeq 0.01$, $X=0.7$,
+$T_c=2.76\times10^7$K, $\rho_c=21.3$~g/cm$^3$ (from a 1D ESTER model of
+a 5\msun\ ZAMS star). Then,
+
+\[ \eps_c = 1.74\times10^4\; {\rm erg/s/g}\]
+Hence, if $\Delta t=1$Myr, then
+
+\[ \frac{4m_p\eps_c\Delta t}{Q} = 0.085\]
+So the decrease is a little more than 10\% (of 0.7) every million years
+for this star.
+
+
+\subsubsection{Step 2}
+
+While the star consumes its hydrogen it shrinks thus generating a
+quasi-steady flow towards the center (if no rotation). Let's consider
+this case first. 
+
+In the Euler formulation (unlike lagrangian) we have to include the
+velocity field
+
+\beq \dt{X}+\vv\cdot\na X = -f \eps \eeq
+1D-case:
+
+\beq \dt{X}+V_r\dr{X} = -f\eps\eeq
+If we discretize in time
+
+\beq X_{n+1}-X_n + \Delta t V_r \dr{X_{n+1/2}} + f\eps = 0 \eeq
+In 1D, $V_r$ is just the motion of the mass-coordinate. In ESTER,
+mass-coordinate does not exist, domains are attached either to
+pressure or temperature, not to mass. We need the radial velocity that
+insures mass-conservation:
+
+\[ \dt{\rho}+\Div\rho\vv=0 \quad \impl \quad v_r=-\frac{1}{r^2\rho}\dt{}
+\int_0^rr^2\rho dr\]
+or
+
+\[ v_r(r) = -\frac{1}{4\pi r^2\rho}\lp\dt{M}\rp_r\]
+So to estimate $v_r$ we need to evaluate the mass function $M(r,t)$ at
+successive times. So if $\Delta M = M'(r_i)-M(r_i)$ then
+
+\[ v_r(r) = -\frac{1}{4\pi r^2\rho}\frac{\Delta M}{\Delta t}\]

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <cmath>
 
+// defintion of mapping class
 mapping::mapping() : nr(gl.N), nt(leg.npts), ndomains(gl.ndomains),
     npts(gl.npts), eta(eta_), D(gl.D), z(gl.x), th(leg.th), Dt(leg.D_00), Dt2(leg.D2_00),
     Dt_11(leg.D_11), Dt2_11(leg.D2_11), Dt_01(leg.D_01), Dt2_01(leg.D2_01),
@@ -26,7 +27,7 @@ mapping::mapping(const mapping &map) : nr(gl.N), nt(leg.npts),
     Dt2_11(leg.D2_11), Dt_01(leg.D_01), Dt2_01(leg.D2_01), Dt_10(leg.D_10),
     Dt2_10(leg.D2_10), I(gl.I), It(leg.I_00), ex(this), nex(ex.gl.N) {
 
-	copy(map);
+	copy(map); // copy constructor
 }
 
 void mapping::copy(const mapping &map) {
@@ -221,6 +222,8 @@ int mapping::remap() {
 
 	ex.D=ex.gl.D*eta(-1)/ex.z/ex.z;
 	
+// check that rz always positive otherwise warning!
+// used in update_map to control the relaxation param.
 	if(exist(rz<0)||exist(ex.rz<0)) {
 		ester_warn("(mapping) Found rz<0");
 		return 1;
@@ -252,9 +255,9 @@ matrix mapping::dt2(const matrix &a) const {
 
 matrix mapping::stream(const matrix &Fz,matrix &Ft) const {
 
-	// Calculates the stream function of the divergenceless vector field whose
-	// zeta-contravariant component is Fz (for Fz even at pole and equator).
-	// Returns also the theta-contravariant component Ft
+// Calculates the stream function of the divergenceless vector field whose
+// zeta-contravariant component is Fz (for Fz even at pole and equator).
+// Returns also the theta-contravariant component Ft
 	
 	matrix f;
 	
@@ -327,6 +330,7 @@ matrix mapping::eval(const matrix &y,const matrix &ri, const matrix &thi,int par
 
 }
 
+// compute r for all zeta values
 matrix mapping::zeta_to_r(const matrix &z) const {
 	matrix rr(z.nrows(),z.ncols());
 	
