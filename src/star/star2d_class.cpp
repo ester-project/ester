@@ -895,6 +895,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     return 0;
 }
 
+// used when computing a 2D model from a 1D model
 void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
     DEBUG_FUNCNAME;
         matrix thd;
@@ -939,7 +940,7 @@ void star2d::interp(remapper *red) {
     G=red->interp(G,11);
     comp=red->interp(comp);
     phiex=red->interp_ex(phiex);
-    fill();
+    fill(); // recompute the microphysic variables
 
 }
 
@@ -1071,6 +1072,7 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
     return err;
 }
 
+// dump_info used by 'ester info'
 void star2d::dump_info() {
     DEBUG_FUNCNAME;
     printf("ESTER 2d model file");

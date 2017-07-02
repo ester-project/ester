@@ -36,11 +36,13 @@ void star2d::fill() {
 }
 
 void star2d::init_comp() {
+// Update the object comp
 
 	comp=initial_composition(X0,Z0)*ones(nr,nth);
 
 	if(!conv) return;
 
+// Count the number of point in the core:
     int n = 0;
     for (int i=0; i<conv; i++) {
         n += map.gl.npts[i];
@@ -152,6 +154,9 @@ double star2d::solve(solver *op) {
 
 	check_map();
 
+// Clear up the preceding equations (clear up is not necessary
+// if the system is linear) reset does not clear up the LU factorization
+// which can be reused:
 	op->reset();
 
 	if(config.verbose) {printf("Writing equations...");fflush(stdout);}
@@ -167,8 +172,10 @@ double star2d::solve(solver *op) {
 	solve_Teff(op);
 	if(config.verbose) printf("Done\n");
 
+// Solving the system:
 	op->solve(info);
 	
+// Some output verbose ----------------------
 	if (config.verbose) {
 		if(info[2]) {
 			printf("CGS Iteration: ");
@@ -187,8 +194,11 @@ double star2d::solve(solver *op) {
 				printf("Not converged (Error %d)\n",info[3]);
 		}
 	}
+// End  output verbose ----------------------
 	
 	h=1;
+// h : relaxation parameter for Newton solver: useful for the first
+// iterations
 	dmax=config.newton_dmax;
 	
 	matrix dphi,dphiex,dp,dT,dpc,dTc;
@@ -237,6 +247,9 @@ double star2d::solve(solver *op) {
 	return err;
 
 }
+
+// Special treatment for updating R_i because we need
+// a different relaxation parameter "h".
 
 void star2d::update_map(matrix dR) {
     DEBUG_FUNCNAME;
