@@ -6,7 +6,7 @@ BUILT_SOURCES	= main/read_config.cpp
 AM_CPPFLAGS = -I$(srcdir)/include
 AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam_nuc
 
-bin_PROGRAMS		= star1d star2d version star_evol ester_info gen_output
+bin_PROGRAMS		= star1d star2d version star_evol ester_info gen_output evol1d
 
 star1d_LDADD		= libester.la
 star2d_LDADD		= libester.la
@@ -14,8 +14,10 @@ gen_output_LDADD	= libester.la physics/libnuc_cesam.la
 version_LDADD		= libester.la
 star_evol_LDADD		= libester.la
 ester_info_LDADD	= libester.la
+evol1d_LDADD    	= libester.la
 
 
+evol1d_SOURCES		= main/evol1d.cpp main/read_config.cpp
 star1d_SOURCES		= main/star1d.cpp main/read_config.cpp
 star2d_SOURCES		= main/star2d.cpp main/read_config.cpp
 star_evol_SOURCES	= main/star_evol.cpp main/read_config.cpp
