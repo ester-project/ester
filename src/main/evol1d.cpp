@@ -48,21 +48,26 @@ int main(int argc,char *argv[]) {
 		A.env_convec=0;
 	}
 	SDIRK_solver rk;
-        rk.init(3, "sdirk3");
+        rk.init(4, "sdirk3"); // 4=nb of variable, here X, rho, lnrho_c, r
         rk.regvar("X", A.Xh);
         rk.regvar("rho", A.rho);
         rk.regvar("log_rhoc", log(A.rhoc)*ones(1,1));
+        rk.regvar("r", A.r); // new
 
         rk.set_step(A.dtime);
 
+// Start time loop
         int state;
-        while((state = rk.solve(0.,20.)) != RK_END) {
+        while((state = rk.solve(0.,3.)) != RK_END) {
                 A.delta = rk.get_delta();
                 A.time = rk.get_t();
+                A.r0 = rk.get_var("r"); // new
                 A.Xh0 = rk.get_var("X");
                 A.rho0 = rk.get_var("rho");
                 A.rhoc0 = exp(rk.get_var("log_rhoc")(0));
 
+// Start Newton's iterations
+	printf("time is %e \n",A.time);
         last_it=0;
 	err=1;
 	nit=0;
@@ -92,12 +97,14 @@ int main(int argc,char *argv[]) {
 		}
 
 	}
+	printf("Newton iteration finished %e \n",A.time);
+                rk.set_var("r",A.r); //new
                 rk.set_var("X",A.Xh);
                 rk.set_var("rho",A.rho);
                 rk.set_var("log_rhoc",log(A.rhoc)*ones(1,1));
                 if(state == RK_STEP) {
 			//fig->axis(0.,1.,0.6,0.71);
-                        fig->plot(A.r, A.Vr);
+                        fig->plot(A.r, A.Wr);
                         fig->hold(1);
                         printf("t = %f  \n", A.time );
                 }
@@ -122,4 +129,3 @@ int main(int argc,char *argv[]) {
 		printf("%2.2f seconds\n",t.value());	
 	return 0;
 }
-

@@ -51,6 +51,7 @@ void star2d::copy(const star2d &A) {
     p=A.p;
     T=A.T;
     Xh=A.Xh;
+    Wr=A.Wr;
     rho=A.rho;
     comp=A.comp;
 
@@ -190,6 +191,7 @@ void star2d::hdf5_write(const char *filename) const {
     fields["N2"] = N2();
     fields["nuc.eps"] = nuc.eps;
     fields["Xh"] = Xh;
+    fields["Wr"] = Wr;
 
     for (matrix_map::iterator it=fields.begin(); it!=fields.end(); ++it) {
         write_field(star, it->first.c_str(), it->second);
@@ -244,6 +246,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("p",&p);
     fp.write("T",&T);
     fp.write("Xh",&Xh);
+    fp.write("Wr",&Wr);
     fp.write("phiex",&phiex);
     fp.write("map.R",&map.R);
     fp.write("w",&w);
@@ -449,6 +452,11 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         Xh = zeros(nr, nth);
         exit(EXIT_FAILURE);
     }
+    if (read_field(star, "Wr", Wr)) {
+        ester_err("Could not read field 'Wr' from file `%s'", input_file);
+        Wr = zeros(nr, nth);
+        exit(EXIT_FAILURE);
+    }
     if (read_field(star, "T", T)) {
         ester_err("Could not read field 'T' from file `%s'", input_file);
         T = zeros(nr, nth);
@@ -477,6 +485,10 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     if (read_field(star, "Xh", Xh)) {
         ester_warn("Could not read field 'Xh' from file `%s'", input_file);
         Xh = zeros(nr, nth);
+    }
+    if (read_field(star, "Wr", Wr)) {
+        ester_warn("Could not read field 'Wr' from file `%s'", input_file);
+        Wr = zeros(nr, nth);
     }
     if (read_field(star, "X", comp["H"])) {
         ester_warn("Could not read field 'X' from file `%s'", input_file);
@@ -598,12 +610,12 @@ int star2d::read(const char *input_file, int dim) {
     fp.read("p",&p);
     fp.read("T",&T);
     fp.read("Xh",&Xh);
+    fp.read("Wr",&Wr);
     fp.read("X_core",&X_core);
     fp.read("M_core",&M_core);
     fp.read("time",&time);
 
     Xh_prec=Xh; // new
-    r_prec=r; // new
     X_core_prec=X_core;
     M_core_prec=M_core;
     //conv=0; // added too
@@ -925,13 +937,13 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         w=zeros(nr,nth);
         G=zeros(nr,nth);
         Xh=X0*ones(nr,nth);
+        Wr=zeros(nr,nth);
         conv=0;
         time=0.;
         domain_type.resize(ndomains);
         for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
     }
     Xh_prec=Xh;
-    r_prec=r;
     conv=0;
     printf("Appel init_comp dans init\n");
     init_comp();
@@ -987,6 +999,7 @@ void star2d::interp(remapper *red) {
  	printf("Enter interp 2 in star2d_class\n");
  	printf("Xh size: %dx%d\n", Xh.nrows(), Xh.ncols());
     Xh=red->interp(Xh);
+    Wr=red->interp(Wr);
  	printf("Enter interp 3 in star2d_class\n");
     w=red->interp(w);
  	printf("Enter interp 5 in star2d_class\n");

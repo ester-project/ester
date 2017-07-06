@@ -45,7 +45,7 @@ void star2d::init_comp() {
         comp["H"]=Xh;
         comp["He4"]=ones(nr,nth)-Xh-Z0*ones(nr,nth);
         }
-	printf("in init_comp conv= %d\n",conv); //to be modified
+//	printf("in init_comp conv= %d\n",conv); //to be modified
 
 	if(!conv) return;
 
@@ -267,7 +267,7 @@ double star2d::solve(solver *op) {
 
 }
 
-// Spectial treatment for updating R_i because we need
+// Special treatment for updating R_i because we need
 // a different relaxation parameter "h".
 
 void star2d::update_map(matrix dR) {
@@ -665,7 +665,7 @@ void star2d::solve_Xh(solver *op) {
         op->add_d("lnXh","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
         op->add_d("lnXh","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
 
-    matrix rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh;//- (r-r_prec)*(D,log(Xh));
+    matrix rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh;
     op->set_rhs("lnXh",rhs);
 	printf("End of solve_Xh\n");
 
