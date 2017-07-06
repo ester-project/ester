@@ -354,6 +354,7 @@ void star2d::check_map() {
 // check_convec detects the appearance of a convective core but is not used
 // to move the core boundary
 int star2d::check_convec(double &p_cc,matrix &Rcc) {
+//    printf("++++ Start of CHECK_CONVEC\n");
     if(!core_convec) return 0; // core_covec: input param to disable CC
 
     if(conv) {

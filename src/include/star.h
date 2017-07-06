@@ -36,7 +36,7 @@ class star2d {
   	const int &nr,&nth,&nex,&ndomains;
 	const matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
 	const matrix_block_diag &D;
-    matrix rho,phi,p,T,Xh,Xh_prec,r_prec,Xh0,rho0,Vr;
+    matrix rho,phi,p,T,Xh,Xh_prec,Xh0,rho0,Wr,r0;
     matrix phiex;
 	matrix vr,vt,G,w;
 	composition_map comp; 
@@ -116,7 +116,7 @@ class star2d {
 	virtual void solve_definitions(solver *);
 	virtual void solve_atm(solver *);
 	virtual void solve_Xh(solver *);
-	//virtual void solve_Vr(solver *);
+	//virtual void solve_Wr(solver *);
 	
 	virtual void update_map(matrix dR);
 	
@@ -198,7 +198,7 @@ class star1d : public star2d {
 	virtual void solve_Teff(solver *);
 	virtual void solve_gsup(solver *);
 	virtual void solve_Xh(solver *);
-	virtual void solve_Vr(solver *);
+	virtual void solve_Wr(solver *);
 	
 	virtual void update_map(matrix dR);
 
