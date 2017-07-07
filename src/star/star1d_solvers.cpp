@@ -34,7 +34,7 @@ solver *star1d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 	
-	nvar=29; // two more variable added (lnXh and Wr)
+	nvar=29; // two more variables added (lnXh and Wr)
 	
 	op=new solver();
 	op->init(ndomains,nvar+nvar_add,"full");
@@ -356,13 +356,12 @@ void star1d::solve_Xh(solver *op) {
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
     double factor=4*HYDROGEN_MASS/Qmc2*MYR;
     double L_core=0.;
-//    printf("======Start of solve_Xh, number of doms in CC = %d\n",conv);
     int n,j0,ndom,nc;
-    matrix toto,titi,the_block;
+    matrix the_block;
 
 // Core parameters
 //    double rcc=Rcore()(0);
-    double Ed=1e-5;
+    double Ed=1e-6;
     nc=0;
     for (int i=0; i<conv; i++) {
         nc += map.gl.npts[i];
@@ -381,9 +380,12 @@ void star1d::solve_Xh(solver *op) {
 
     j0=0; 
     matrix rhs;
-    symbolic S;
-    sym eq;
-    {
+    static symbolic S;
+    static sym eq;
+    static bool sym_inited = false;
+    if (!sym_inited) {
+// Do it only the first time the function is called
+// If factor or Ed change, this should be recalculated
     sym lnX=S.regvar("lnXh");
     sym lnX0=S.regvar("lnXh0");
     sym X=exp(lnX);
@@ -391,20 +393,29 @@ void star1d::solve_Xh(solver *op) {
     sym rho=S.regvar("rho"); //new
     sym rhovr=S.regvar("Wr"); //new
     sym r0=S.regvar("r0");
-    sym r=S.var("r"); // not regvar because "r" created automatically with the symbolic object
-    eq=(lnX-lnX0)/delta-Ed/X*lap(X)+factor*eps/X+(rhovr/rho+(r-r0)/delta)*Dz(lnX); //news
+    sym r=S.r;//S.var("r"); // not regvar because "r" created automatically with the symbolic object
+    sym drdt = (r-r0)/delta;
+    sym lnR=S.regvar("log_R");
+    sym lnR0=S.regvar("log_R0");
+    sym dlnRdt = (lnR-lnR0)/delta;
+    sym dlnXdt = (lnX-lnX0)/delta - (drdt+r*dlnRdt)/S.rz*Dz(lnX);
+    eq=dlnXdt-Ed/X*lap(X)+factor*eps/X+rhovr/rho*Dz(lnX); //news
+    sym_inited = true;
     }
     S.set_value("lnXh",log(Xh));
     S.set_value("lnXh0",log(Xh0));
     S.set_value("nuc.eps",nuc.eps);
     S.set_value("Wr",Wr); //new
     S.set_value("r0",r0); //new
+    S.set_value("log_R",log(R)*ones(1,1)); //new
+    S.set_value("log_R0",log(R0)*ones(1,1)); //new
     S.set_value("rho",rho); //new
     S.set_map(map);
     eq.add(op,"lnXh","lnXh");
     eq.add(op,"lnXh","nuc.eps");
     eq.add(op,"lnXh","r");
     eq.add(op,"lnXh","Wr"); //new
+    eq.add(op,"lnXh","log_R"); //new
     rhs=-eq.eval();
 
 // Take care of the CC domains
@@ -441,7 +452,6 @@ void star1d::solve_Xh(solver *op) {
 
 
           op->set_rhs("lnXh",rhs);
-    //      printf("======End solve-Xh\n");
 
 //Evolution Xh end-----------------------------------
 }
@@ -449,36 +459,35 @@ void star1d::solve_Xh(solver *op) {
 void star1d::solve_Wr(solver *op) {
     DEBUG_FUNCNAME;
 
-/*
-// programmation a la main avec Vr=Wr comme variable; now obsolete
-	op->add_d("Wr","rho",ones(nr,1)/delta);
-	op->add_li("Wr","rho",ones(nr,1),D,Wr);
-	op->add_d("Wr","rho",2*ones(nr,1)*Wr/r);
-	op->add_li("Wr","Wr",ones(nr,1),D,rho);
-	op->add_d("Wr","Wr",2*ones(nr,1)*rho/r);
-        matrix rhs=-(rho-rho0)/delta-(D,rho*Wr)-2*rho*Wr/r;
-*/
-
 // programmation en langage symbolique
-    symbolic S;
-    sym eq;
-    {
+    static symbolic S;
+    static sym eq;
+    static bool sym_inited = false;
+    if (!sym_inited) { // Do it only the first time the function is called
     sym rho=S.regvar("rho");
     sym rho0=S.regvar("rho0");
     sym lnrhoc=S.regvar("log_rhoc");
     sym lnrhoc0=S.regvar("log_rhoc0");
 // We use Wr=rho*Vr as the velocity variable. The use of Vr
-// leads to huge errors and no convergence.
+// leads to huge Newton corrections and no convergence.
     sym Wr=S.regvar("Wr");
+    sym lnR=S.regvar("log_R");
+    sym lnR0=S.regvar("log_R0");
     sym r0=S.regvar("r0");
-    sym r=S.var("r"); // because "r" created automatically with the symbolic object
+    sym r=S.r; // because "r" is created automatically with the symbolic object
     sym_vec rvec=grad(r);
-    eq=(rho-rho0)/delta+rho*(lnrhoc-lnrhoc0)/delta+(r-r0)/delta*Dz(rho)+div(Wr*rvec);
+    sym drdt = (r-r0)/delta;
+    sym dlnRdt = (lnR-lnR0)/delta;
+    sym drhodt = (rho-rho0)/delta - (drdt+r*dlnRdt)*Dz(rho)/S.rz;
+    eq=drhodt+rho*(lnrhoc-lnrhoc0)/delta+div(Wr*rvec);
+    sym_inited=true;
     }
     S.set_value("Wr",Wr);
     S.set_value("rho",rho);
     S.set_value("rho0",rho0);
     S.set_value("r0",r0);
+    S.set_value("log_R",log(R)*ones(1,1));
+    S.set_value("log_R0",log(R0)*ones(1,1));
     S.set_value("log_rhoc",log(rhoc)*ones(1,1));
     S.set_value("log_rhoc0",log(rhoc0)*ones(1,1));
     S.set_map(map);
@@ -486,6 +495,7 @@ void star1d::solve_Wr(solver *op) {
     eq.add(op,"Wr","rho");
     eq.add(op,"Wr","r");
     eq.add(op,"Wr","log_rhoc");
+    eq.add(op,"Wr","log_R");
     matrix rhs=-eq.eval();
 
 

@@ -42,7 +42,7 @@ class star2d {
 	composition_map comp; 
     double X0,Y0,Z0;
     double X_core,X_core_prec,M_core,M_core_prec;
-    double R,M;
+    double R,M,R0;
     double rhoc,rhoc0,Tc,pc;
     double Omega,Omega_bk,Omegac;
    	double Ekman;
