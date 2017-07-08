@@ -95,7 +95,7 @@ double star1d::solve(solver *op) {
 	matrix rho_prec;
 	double err,err2;
 	
-	//printf("************start of star1d::solve\n");
+//	printf("************start of star1d::solve\n");
 	check_map();
 	
 	op->reset();
@@ -206,7 +206,6 @@ FILE *fic=fopen("err.txt", "a");
 	err2=max(abs(rho-rho_prec));err=err2>err?err2:err;
 	
 fclose(fic);
-	//printf("************End of star1d::solve\n");
 	return err;
 
 }
@@ -364,7 +363,6 @@ void star1d::solve_Xh(solver *op) {
     matrix the_block;
 
 // Core parameters
-//    double rcc=Rcore()(0);
     double Ed=1e-6;
     nc=0;
     for (int i=0; i<conv; i++) {
@@ -377,12 +375,10 @@ void star1d::solve_Xh(solver *op) {
     M_core = ((map.gl.I.block(0, 0, 0, nc-1)), (rho*r*r*rz).block(0, nc-1, 0, 0))(0);
     X_core=X_core/M_core;
     L_core = ((map.gl.I.block(0, 0, 0, nc-1)), (rho*nuc.eps*r*r*rz).block(0, nc-1, 0, 0))(0);
-    //printf("X_core =  %lf, X_core_prec = %lf, rcc/R = %lf\n", X_core, X_core_prec, rcc/R);
     }
 // End core parameters
 
 
-    j0=0; 
     matrix rhs;
     static symbolic S;
     static sym eq;
@@ -390,30 +386,36 @@ void star1d::solve_Xh(solver *op) {
     if (!sym_inited) {
 // Do it only the first time the function is called
 // If factor or Ed change, this should be recalculated
-    sym lnX=S.regvar("lnXh");
-    sym lnX0=S.regvar("lnXh0");
-    sym X=exp(lnX);
-    sym eps=S.regvar("nuc.eps");
-    sym rho=S.regvar("rho"); //new
-    sym rhovr=S.regvar("Wr"); //new
-    sym r0=S.regvar("r0");
-    sym r=S.r;//S.var("r"); // not regvar because "r" created automatically with the symbolic object
-    sym drdt = (r-r0)/delta;
-    sym lnR=S.regvar("log_R");
-    sym lnR0=S.regvar("log_R0");
-    sym dlnRdt = (lnR-lnR0)/delta;
-    sym dlnXdt = (lnX-lnX0)/delta - (drdt+r*dlnRdt)/S.rz*Dz(lnX);
-    eq=dlnXdt-Ed/X*lap(X)+factor*eps/X+rhovr/rho*Dz(lnX); //news
-    sym_inited = true;
-    }
+       sym lnX=S.regvar("lnXh");
+       sym X=exp(lnX);
+       sym eps=S.regvar("nuc.eps");
+       sym rho=S.regvar("rho"); //new
+       sym rhovr=S.regvar("Wr"); //new
+       sym r=S.r;// because "r" created automatically with the symbolic object
+       sym lnR=S.regvar("log_R");
+       if (delta != 0.) {
+          sym r0=S.regvar("r0");
+          sym lnX0=S.regvar("lnXh0");
+          sym drdt = (r-r0)/delta;
+          sym lnR0=S.regvar("log_R0");
+          sym dlnRdt = (lnR-lnR0)/delta;
+          sym dlnXdt = (lnX-lnX0)/delta - (drdt+r*dlnRdt)/S.rz*Dz(lnX);
+          eq=dlnXdt-Ed/X*lap(X)+factor*eps/X+rhovr/rho*Dz(lnX); //news
+                        } else {
+          eq=-lap(X);//+factor*eps/X+rhovr/rho*Dz(lnX);
+                               }
+       sym_inited = true;
+                       }
     S.set_value("lnXh",log(Xh));
-    S.set_value("lnXh0",log(Xh0));
     S.set_value("nuc.eps",nuc.eps);
     S.set_value("Wr",Wr); //new
-    S.set_value("r0",r0); //new
-    S.set_value("log_R",log(R)*ones(1,1)); //new
-    S.set_value("log_R0",log(R0)*ones(1,1)); //new
     S.set_value("rho",rho); //new
+    S.set_value("log_R",log(R)*ones(1,1)); //new
+    if (delta != 0.) {
+       S.set_value("lnXh0",log(Xh0));
+       S.set_value("r0",r0); //new
+       S.set_value("log_R0",log(R0)*ones(1,1)); //new
+                     }
     S.set_map(map);
     eq.add(op,"lnXh","lnXh");
     eq.add(op,"lnXh","nuc.eps");
@@ -422,41 +424,55 @@ void star1d::solve_Xh(solver *op) {
     eq.add(op,"lnXh","log_R"); //new
     rhs=-eq.eval();
 
-// Take care of the CC domains
+if (delta != 0.) { // unsteady case  ************************************
     matrix rhs_conv=-((log(Xh)-log(Xh0))/delta+factor*L_core/M_core/Xh);
-    for(n=0;n<conv;n++) {
+    j0=0; 
+    for(n=0;n<conv;n++) { // Take care of the CC domains
         ndom=map.gl.npts[n];
           op->reset(n,"lnXh");
           op->add_d(n,"lnXh","lnXh",ones(ndom,1)/delta);
           the_block=rhs_conv.block(j0,j0+ndom-1,0,0);
           rhs.setblock(j0,j0+ndom-1,0,0,the_block);
           j0+=ndom;
-    }
-// end of loop on CC domains
+    } // end of loop on CC domains
 
 //BC: continuity of lnXh at the core boundary
-         op->bc_bot2_add_d(conv,"lnXh","lnXh",ones(1,1));
-         op->bc_bot1_add_d(conv,"lnXh","lnXh",-ones(1,1));
-         rhs(j0)=-log(Xh(j0))+log(Xh(j0-1));
-// at the stellar surface Xh=X0:
-         op->bc_top1_add_d(ndomains-1,"lnXh","lnXh",ones(1,1));
-         rhs(-1)=-log(Xh(-1))+log(X0);
+     op->bc_bot2_add_d(conv,"lnXh","lnXh",ones(1,1));
+     op->bc_bot1_add_d(conv,"lnXh","lnXh",-ones(1,1));
+     rhs(j0)=-log(Xh(j0))+log(Xh(j0-1));
 
 //IC: continuity of lnXh and continuity of its derivative
-	 for(n=conv;n<ndomains-1;n++){
-           ndom=map.gl.npts[n];
-           j0+=ndom;
-           op->bc_top1_add_d(n,"lnXh","lnXh",ones(1,1));
-           op->bc_top2_add_d(n,"lnXh","lnXh",-ones(1,1));
-           rhs(j0-1) = -log(Xh(j0-1))+log(Xh(j0));
-           op->bc_bot1_add_l(n+1,"lnXh","lnXh",ones(1,1),map.D.block(n).row(-1));
-           op->bc_bot2_add_l(n+1,"lnXh","lnXh",-ones(1,1),map.D.block(n+1).row(0));
-           rhs(j0) = -(map.D,log(Xh))(j0-1)+(map.D,log(Xh))(j0);
-	 }
+ for(n=conv;n<ndomains-1;n++){
+    ndom=map.gl.npts[n];
+    j0+=ndom;
+    op->bc_top1_add_d(n,"lnXh","lnXh",ones(1,1));
+    op->bc_top2_add_d(n,"lnXh","lnXh",-ones(1,1));
+    rhs(j0-1) = -log(Xh(j0-1))+log(Xh(j0));
+    op->bc_bot1_add_l(n+1,"lnXh","lnXh",ones(1,1),map.D.block(n).row(-1));
+    op->bc_bot2_add_l(n+1,"lnXh","lnXh",-ones(1,1),map.D.block(n+1).row(0));
+    rhs(j0) = -(map.D,log(Xh))(j0-1)+(map.D,log(Xh))(j0);
+	                     }
+                 } else { // the steady case *******************************
+     j0=0; 
+     op->bc_bot2_add_l(0,"lnXh","lnXh",ones(1,1),map.D.block(0).row(0));
+     rhs(0) = -(map.D,log(Xh))(0);
+     for(n=0;n<ndomains-1;n++){
+        ndom=map.gl.npts[n];
+        j0+=ndom;
+        op->bc_top1_add_d(n,"lnXh","lnXh",ones(1,1));
+        op->bc_top2_add_d(n,"lnXh","lnXh",-ones(1,1));
+        rhs(j0-1) = -log(Xh(j0-1))+log(Xh(j0));
+        op->bc_bot1_add_l(n+1,"lnXh","lnXh",ones(1,1),map.D.block(n).row(-1));
+        op->bc_bot2_add_l(n+1,"lnXh","lnXh",-ones(1,1),map.D.block(n+1).row(0));
+        rhs(j0) = -(map.D,log(Xh))(j0-1)+(map.D,log(Xh))(j0);
+                                 }
+                        }
+// Whatever the case, at the stellar surface Xh=X0:
+     op->bc_top1_add_d(ndomains-1,"lnXh","lnXh",ones(1,1));
+     rhs(-1)=-log(Xh(-1))+log(X0);
 
 
-          op->set_rhs("lnXh",rhs);
-
+  op->set_rhs("lnXh",rhs);
 //Evolution Xh end-----------------------------------
 }
 
@@ -469,32 +485,39 @@ void star1d::solve_Wr(solver *op) {
     static bool sym_inited = false;
     if (!sym_inited) { // Do it only the first time the function is called
     sym rho=S.regvar("rho");
-    sym rho0=S.regvar("rho0");
     sym lnrhoc=S.regvar("log_rhoc");
-    sym lnrhoc0=S.regvar("log_rhoc0");
 // We use Wr=rho*Vr as the velocity variable. The use of Vr
 // leads to huge Newton corrections and no convergence.
     sym Wr=S.regvar("Wr");
     sym lnR=S.regvar("log_R");
-    sym lnR0=S.regvar("log_R0");
-    sym r0=S.regvar("r0");
     sym r=S.r; // because "r" is created automatically with the symbolic object
     sym_vec rvec=grad(r);
-    sym drdt = (r-r0)/delta;
-    sym dlnRdt = (lnR-lnR0)/delta;
-    sym drhodt = (rho-rho0)/delta - (drdt+r*dlnRdt)*Dz(rho)/S.rz;
-    eq=drhodt+rho*(lnrhoc-lnrhoc0)/delta+div(Wr*rvec);
+    if (delta != 0.) {
+       sym rho0=S.regvar("rho0");
+       sym lnrhoc0=S.regvar("log_rhoc0");
+       sym lnR0=S.regvar("log_R0");
+       sym r0=S.regvar("r0");
+       sym drdt = (r-r0)/delta;
+       sym dlnRdt = (lnR-lnR0)/delta;
+       sym drhodt = (rho-rho0)/delta - (drdt+r*dlnRdt)*Dz(rho)/S.rz;
+       eq=drhodt+rho*(lnrhoc-lnrhoc0)/delta+div(Wr*rvec);
+                     } else {
+       eq=div(Wr*rvec);
+                     }
+
     sym_inited=true;
     }
     S.set_value("Wr",Wr);
     S.set_value("rho",rho);
-    S.set_value("rho0",rho0);
-    S.set_value("r0",r0);
     S.set_value("log_R",log(R)*ones(1,1));
-    S.set_value("log_R0",log(R0)*ones(1,1));
     S.set_value("log_rhoc",log(rhoc)*ones(1,1));
-    S.set_value("log_rhoc0",log(rhoc0)*ones(1,1));
     S.set_map(map);
+    if (delta != 0.) {
+       S.set_value("log_R0",log(R0)*ones(1,1));
+       S.set_value("log_rhoc0",log(rhoc0)*ones(1,1));
+       S.set_value("rho0",rho0);
+       S.set_value("r0",r0);
+                     }
     eq.add(op,"Wr","Wr");
     eq.add(op,"Wr","rho");
     eq.add(op,"Wr","r");

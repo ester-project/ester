@@ -175,11 +175,11 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 	int i,k,change_grid=0;
 	matrix Tr;
 
-        printf("----Start of star1d::init in star1d_class\n");
+        //printf("----Start of star1d::init in star1d_class\n");
 	sprintf(default_params,"%s/ester/1d_default.par", ESTER_DATADIR);
 
 	if(*input_file) {
-                printf("*input_file true in star1d::init\n");
+                //printf("*input_file true in star1d::init\n");
 		if(read(input_file, 1)) {
 			printf("Error reading input file: %s\n",input_file);
 			return 1;
@@ -278,13 +278,13 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		domain_type.resize(ndomains);
 		for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
 		phiex=zeros(map.nex,map.nt);
+                Wr=zeros(nr,1);	// initialize radial mass flux Wr=rho*Vr
 	}
 	
-                printf("time %e dtime %e \n",time,dtime);
+//                printf("time %e dtime %e \n",time,dtime);
 	init_comp();
 	fill();
         Wr=zeros(nr,1);	// initialize radial mass flux Wr=rho*Vr
-        printf("------Finish star1d::init of star1d_class\n");
 	return 0;
 }
 

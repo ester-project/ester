@@ -1,3 +1,14 @@
+/* Usage: First build the initial model with:
+ester 1d -M 5 -o M5_initial, for the evolution of a 5Msun star
+
+then
+
+evol1d -i M5_initial -dtime 1 -o M5ev + all needed options (-noplot..)
+
+which generates files every 1 Myr: M5ev_0001, M5ev_0002, etc
+
+*/
+
 #include "ester-config.h"
 #include "utils.h"
 #include "star.h"
@@ -12,7 +23,6 @@ int main(int argc,char *argv[]) {
 	int nit,last_it;
 	double err;
 	tiempo t;
-	double t_plot;
 	configuration config(argc,argv);
 	figure *fig = NULL;
 	
@@ -33,7 +43,6 @@ int main(int argc,char *argv[]) {
 	
 	matrix tt(config.maxit+1,1),error(config.maxit+1,1);
 
-	t_plot=0;
 	//last_it=nit>=config.maxit; // last_it=0 normally
 	op=A.init_solver();
 	if(config.verbose>2) op->verbose=1;
@@ -62,7 +71,7 @@ int main(int argc,char *argv[]) {
         int n_step=0;
         char outfile[256];
 
-        while((state = rk.solve(0.,100.)) != RK_END) {
+        while((state = rk.solve(0.,5.)) != RK_END) {
                 A.delta = rk.get_delta();
                 A.time = rk.get_t();
                 A.r0 = rk.get_var("r"); // new
@@ -72,7 +81,6 @@ int main(int argc,char *argv[]) {
                 A.R0 = exp(rk.get_var("log_R")(0));
 
 // Start Newton's iterations
-	printf("time is %e \n",A.time);
         last_it=0;
 	err=1;
 	nit=0;
@@ -89,20 +97,11 @@ int main(int argc,char *argv[]) {
 		error(nit-1)=err;
 		last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit;
 		if(config.verbose) {
-			printf("it=%d err=%e\n",nit,err);
-			
-	//		if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
-	//			fig->semilogy(error.block(0,nit-1,0,0));
-	//			fig->label("Iteration number","Relative error","");
-	//			A.spectrum(fig,A.rho);
-	//			fig->label("Density (normalized spectrum)","","");
-	//			t_plot=tt(nit-1);
-			//}
-
+			//printf("it=%d err=%e\n",nit,err);
 		}
 
 	}
-	printf("Newton iteration finished %e \n",A.time);
+printf("Newton iteration finished it=%d err=%e time=%e\n",nit,err,A.time);
                 rk.set_var("r",A.r); //new
                 rk.set_var("X",A.Xh);
                 rk.set_var("rho",A.rho);
@@ -112,7 +111,7 @@ int main(int argc,char *argv[]) {
 			//fig->axis(0.,1.,0.6,0.71);
                         fig->plot(A.r, A.Wr);
                         fig->hold(1);
-                        printf("t = %f  \n", A.time );
+                //        printf("t = %f  \n", A.time );
 			n_step++;
                 	sprintf(outfile,"%s_%04d",config.output_file,n_step);
                 	A.write(outfile,config.output_mode);
