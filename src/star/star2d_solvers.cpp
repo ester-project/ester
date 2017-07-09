@@ -10,7 +10,6 @@
 /// flatness, scaled keplerian angular velocity
 void star2d::fill() {
     DEBUG_FUNCNAME;
-	printf("start of star2d::fill\n");
 	Y0=1.-X0-Z0;
 	init_comp();
 	
@@ -181,7 +180,7 @@ double star2d::solve(solver *op) {
 	solve_atm(op);
 	solve_gsup(op);
 	solve_Teff(op);
-	solve_Xh(op);
+  	solve_Xh(op);
 	if(config.verbose) printf("Done\n");
 
 	op->solve(info); // Solving the system
@@ -210,34 +209,36 @@ double star2d::solve(solver *op) {
 	h=1;
 // h : relaxation parameter for Newton solver: useful for the first iterations
 	dmax=config.newton_dmax;
-	
 	matrix dphi,dphiex,dp,dT,dXh,dpc,dTc;
+FILE *fic=fopen("err2d.txt", "a");
+	
 	dphi=op->get_var("Phi").block(0,nr-1,0,-1);
 	dphiex=op->get_var("Phi").block(nr,nr+nex-1,0,-1);
 	err=max(abs(dphi/phi));
-	//printf("err(phi)=%e\n",err);
+fprintf(fic,"err phi = %e\n",err);
+
 	dp=op->get_var("p");
 	err2=max(abs(dp/p));err=err2>err?err2:err;
 	while(exist(abs(h*dp/p)>dmax)) h/=2;
-	//printf("err(p)=%e\n",err2);
+fprintf(fic,"err P = %e\n",err2);
 	dT=op->get_var("T");
 	err2=max(abs(dT/T));err=err2>err?err2:err;
 	while(exist(abs(h*dT/T)>dmax)) h/=2;
-	//printf("err(T)=%e\n",err2);
+fprintf(fic,"err T = %e\n",err2);
 // Compute dXh
 	dXh=op->get_var("lnXh");
 	err2=max(abs(dXh));err=err2>err?err2:err;
 	while(exist(abs(h*dXh)>dmax)) h/=2;
-	//printf("err(Xh)=%e\n",err2);
+fprintf(fic,"err Xh = %e\n",err2);
 // End compute dXh
 	dpc=op->get_var("log_pc");
 	err2=fabs(dpc(0));err=err2>err?err2:err;
 	while(fabs(h*dpc(0))>dmax) h/=2;
-	//printf("err(pc)=%e\n",err2);
+fprintf(fic,"err Pc = %e\n",err2);
 	dTc=op->get_var("log_Tc");
 	err2=fabs(dTc(0));err=err2>err?err2:err;
 	while(fabs(h*dTc(0))>dmax) h/=2;
-	//printf("err(Tc)=%e\n",err2);
+fprintf(fic,"err Tc = %e\n",err2);
 
 	phi+=h*dphi;
 	phiex+=h*dphiex;
@@ -658,7 +659,6 @@ void star2d::solve_mov(solver *op) {
 void star2d::solve_Xh(solver *op) {
     DEBUG_FUNCNAME;
 
-	printf("Start of solve_Xh\n");
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
     double factor=4*HYDROGEN_MASS/Qmc2*MYR*dtime;
         op->add_d("lnXh","lnXh",ones(nr,nth));
@@ -667,7 +667,6 @@ void star2d::solve_Xh(solver *op) {
 
     matrix rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh;
     op->set_rhs("lnXh",rhs);
-	printf("End of solve_Xh\n");
 
 }
 //Evolution Xh end-----------------------------------
