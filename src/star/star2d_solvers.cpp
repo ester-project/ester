@@ -65,11 +65,8 @@ void star2d::init_comp() {
 
 //#if 0
     if(stratified_comp == 0) {
-        //comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
-        //comp.setblock(0,-1,0,-1,Xh);
-        comp.X()=Xh;
-        comp.Z()=Z0*ones(nr,nth);
-        printf("comp.X initialized\n");
+  	printf("I USE THIS comp   done\n");
+        comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
     }
     else {
         comp.setblock(0, n-1, 0, -1,
@@ -237,6 +234,7 @@ fprintf(fic,"err T = %e\n",err2);
 	err2=max(abs(dXh));err=err2>err?err2:err;
 	while(exist(abs(h*dXh)>dmax)) h/=2;
 fprintf(fic,"err Xh = %e\n",err2);
+//for (int k=0;k<nr;k++) fprintf(fic,"%d %e \n",k,Xh(k,0));
 // End compute dXh
 	dpc=op->get_var("log_pc");
 	err2=fabs(dpc(0));err=err2>err?err2:err;
