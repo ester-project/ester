@@ -43,7 +43,6 @@ void star2d::init_comp() {
         comp["H"]=Xh;
         comp["He4"]=ones(nr,nth)-Xh-Z0*ones(nr,nth);
         }
-//	printf("in init_comp conv= %d\n",conv); //to be modified
 
 	if(!conv) return;
 
@@ -65,7 +64,6 @@ void star2d::init_comp() {
 
 //#if 0
     if(stratified_comp == 0) {
-  	printf("I USE THIS comp   done\n");
         comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
     }
     else {
