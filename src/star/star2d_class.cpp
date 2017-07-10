@@ -999,7 +999,7 @@ void star2d::interp(remapper *red) {
  	printf("Enter interp 2 in star2d_class\n");
  	printf("Xh size: %dx%d\n", Xh.nrows(), Xh.ncols());
     Xh=red->interp(Xh);
-    Wr=red->interp(Wr);
+//    Wr=red->interp(Wr);
  	printf("Enter interp 3 in star2d_class\n");
     w=red->interp(w);
  	printf("Enter interp 5 in star2d_class\n");
