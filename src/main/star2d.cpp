@@ -24,7 +24,7 @@ int main(int argc,char *argv[]) {
 	signal(SIGINT,sig_handler);
 	
 	t.start();
-    printf("je suis au debut\n");
+        printf("Start of star2d\n");
 		
 	if(config.verbose) {
 		fig=new figure(config.plot_device);
@@ -34,12 +34,12 @@ int main(int argc,char *argv[]) {
 	star2d A;
 	solver *op;
 	
-    printf("je suis au debut apres star2d A\n");
+        printf("In main: call init for initialization\n");
 	if(A.init(config.input_file,config.param_file,argc,argv)) {
         ester_err("Could not initialize star");
         return 1;
     }
-    printf("et la?\n");
+        printf("In main: End initialization\n");
 	
 	nit=0;
 	
@@ -47,20 +47,20 @@ int main(int argc,char *argv[]) {
 
 	t_plot=0;
 	last_it=nit>=config.maxit;
-    printf("je suis au debut avant init_solver\n");
+        printf("In main: call init_solver\n");
 	op=A.init_solver();
-    printf("je suis au debut apres init_solver\n");
 	if(config.verbose>2) op->verbose=1;
 	A.config.newton_dmax=config.newton_dmax;
-	if(config.verbose>1) A.config.verbose=1;
+	//if(config.verbose>1) A.config.verbose=1;
+	if(config.verbose>1) A.config.verbose=config.verbose;
 	
-	// If no input file, ignore core convection until the model starts to converge
+// If no input file, ignore core convection until the model starts to converge
 	int core_convec_set=A.core_convec;
 	if(*config.input_file==0) {
 		A.core_convec=0;
 	}
 	
-    printf("je suis au debut\n");
+    printf("In main: Start Newton iterations\n");
     while(!last_it) {
         if (A.config.dump_iter) {
             char *filename = NULL;

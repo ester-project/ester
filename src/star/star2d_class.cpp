@@ -602,6 +602,7 @@ int star2d::read(const char *input_file, int dim) {
     if(fp.read("stratified_comp",&stratified_comp)) stratified_comp = 0;
 
     map.init();
+	if (config.verbose == 55) printf("Reading the fields phi,p,T,Xh...\n");
     fp.read("phi",&phi);
     fp.read("p",&p);
     fp.read("T",&T);
@@ -799,15 +800,15 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     diff_leg leg_new;
     matrix Tr,m0;
 
-	printf("Enter init in star2d_class\n");
+    if (config.verbose == 55) printf(" Enter init in star2d_class\n");
     sprintf(default_params,"%s/ester/1d_default.par", ESTER_DATADIR);
 
     if(input_file != NULL) {
-	printf("Enter 2 init in star2d_class\n");
+	if (config.verbose == 55) printf("  There is an input file\n");
         if (read(input_file)) {
- 	    printf("Enter 3 init in star2d_class\n");
+ 	    if (config.verbose == 55) printf("  I shall read the input file\n");
             if(!in1d.read(input_file)) {
- 	      printf("Enter 4 init in star2d_class\n");
+ 	      if (config.verbose == 55) printf("   The file is 1d\n");
                 if(*param_file) {
  	      printf("Enter 5 init in star2d_class\n");
                     if(fp.open(param_file)) {
@@ -819,17 +820,15 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
                         fp.close();
                     }
                 }
- 	      printf("Enter 7 init in star2d_class\n");
                 cmd.open(argc,argv);
- 	      printf("Enter 8 init in star2d_class\n");
+ 	        if (config.verbose == 55) printf("   There are also input arguments\n");
                 while(cmd.get(arg,val)) {
                     if(!strcmp(arg,"nth")&&val) nt=atoi(val);
                     if(!strcmp(arg,"nex")&&val) next=atoi(val);
                 }
                 cmd.close();
- 	      printf("Enter 9 init in star2d_class\n");
+ 	        if (config.verbose == 55) printf(" Call init1d ------------------- \n");
                 init1d(in1d, nt, next);
- 	      printf("Enter 10 init in star2d_class\n");
             } else {
                 ester_err("Error reading input file: %s", input_file);
                 return 1;
@@ -906,7 +905,9 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     }
 
     if (*input_file) {
+	if (config.verbose == 55) printf(" *input_file True in init\n");
         if(change_grid) {
+	    if (config.verbose == 55) printf("   Change_grid is True\n");
             mapping map_new;
             map_new=map;
             map=map0;
@@ -937,9 +938,9 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     }
     Xh_prec=Xh;
     //conv=0;
-    printf("Appel init_comp dans init\n");
     init_comp();
     fill();
+    if (config.verbose == 55) printf("  init of star2d_class finished\n");
     return 0;
 }
 
@@ -950,7 +951,6 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
     int k;
     file_parser fp;
 
- 	      printf("Enter init1d in star2d_class\n");
     sprintf(default_params,"%s/config/2d_default.par",ESTER_DATADIR);
 
     *this=A;
@@ -972,32 +972,31 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
     if(npts_th==-1) npts_th=8;
     if(npts_ex==-1) npts_ex=8;
 
- 	      printf("Enter init1d  remap in star2d_class\n");
-
+    if (config.verbose == 55) printf("    call remap in init1d of star2d_class\n");
     remap(ndomains,map.gl.npts,npts_th,npts_ex);
- 	      printf("Enter init1d  after remap in star2d_class\n");
 
     fill();
 
+    if (config.verbose == 55) printf(" init1d  END -------------------\n");
 }
 
 void star2d::interp(remapper *red) {
- 	printf("Enter interp in star2d_class\n");
+    DEBUG_FUNCNAME;
+ 	if (config.verbose == 55) printf("     Enter interp in star2d_class\n");
         p=red->interp(p);
     phi=red->interp(phi);
     T=red->interp(T);
- 	printf("Enter interp 2 in star2d_class\n");
- 	printf("Xh size: %dx%d\n", Xh.nrows(), Xh.ncols());
+// 	printf("Enter interp 2 in star2d_class\n");
+ 	printf("     In interp, Xh size: %dx%d\n", Xh.nrows(), Xh.ncols());
     Xh=red->interp(Xh);
 //    Wr=red->interp(Wr);
- 	printf("Enter interp 3 in star2d_class\n");
+// 	printf("Enter interp 3 in star2d_class\n");
     w=red->interp(w);
- 	printf("Enter interp 5 in star2d_class\n");
+// 	printf("Enter interp 5 in star2d_class\n");
     G=red->interp(G,11);
- 	printf("Enter interp 6 in star2d_class\n");
+// 	printf("Enter interp 6 in star2d_class\n");
     comp=red->interp(comp);
     phiex=red->interp_ex(phiex);
- 	printf("Leave interp in star2d_class\n");
     fill(); // recompute the microphysic variables
 
 }

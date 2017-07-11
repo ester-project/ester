@@ -70,7 +70,7 @@ int configuration::check_arg(const char *arg,const char *val) {
 	else if(!strcmp(arg,"verbose")) {
 		if(val==NULL) return 2;
 		verbose=atoi(val);
-		verbose=verbose>4?4:verbose;
+		verbose=verbose>4?55:verbose;
 		verbose=verbose<0?0:verbose;
 	}
 	else if(!strcmp(arg,"o")||!strcmp(arg,"output_file")) {

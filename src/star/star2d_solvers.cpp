@@ -37,6 +37,7 @@ void star2d::fill() {
 void star2d::init_comp() {
 // Update the object comp
         
+     if (config.verbose == 55) printf("      2d-init_comp called\n");
         if (time == 0.) {
 	 comp=initial_composition(X0,Z0)*ones(nr,nth);
         } else {
@@ -64,7 +65,7 @@ void star2d::init_comp() {
 
 //#if 0
     if(stratified_comp == 0) {
-        comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
+     //   comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
     }
     else {
         comp.setblock(0, n-1, 0, -1,
@@ -96,14 +97,14 @@ solver *star2d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 	
-        printf("Me voila dans init_solver of star2d\n");
 	nvar=34; // include Xh
 	op=new solver;
 	op->init(ndomains+1,nvar+nvar_add,"full");
 	op->maxit_ref=10;op->use_cgs=1;op->maxit_cgs=20;op->debug=0;
 	op->rel_tol=1e-12;op->abs_tol=1e-20;
 	register_variables(op);
-
+        printf("   2d-init_solver ended with %d registered variables\n",nvar);
+	
 	return op;
 }
 
