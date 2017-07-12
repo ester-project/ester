@@ -994,15 +994,12 @@ void star2d::interp(remapper *red) {
         p=red->interp(p);
     phi=red->interp(phi);
     T=red->interp(T);
-// 	printf("Enter interp 2 in star2d_class\n");
- 	printf("     In interp, Xh size: %dx%d\n", Xh.nrows(), Xh.ncols());
     Xh=red->interp(Xh);
-//    Wr=red->interp(Wr);
-// 	printf("Enter interp 3 in star2d_class\n");
+    Xh_prec=Xh;
+    Wr=red->interp(Wr); // necessary for output
+ 	printf("     In interp, Xh size: %dx%d\n", Xh.nrows(), Xh.ncols());
     w=red->interp(w);
-// 	printf("Enter interp 5 in star2d_class\n");
     G=red->interp(G,11);
-// 	printf("Enter interp 6 in star2d_class\n");
     comp=red->interp(comp);
     phiex=red->interp_ex(phiex);
     fill(); // recompute the microphysic variables
