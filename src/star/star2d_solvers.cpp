@@ -658,16 +658,80 @@ void star2d::solve_mov(solver *op) {
 //Evolution Xh --------------------------------------
 void star2d::solve_Xh(solver *op) {
     DEBUG_FUNCNAME;
+// Solve_Xh solves the time-diffusion equation for Xh, for a single
+// time-step and a weak diffusion. Namely, we solve:
+// D*lap(x) -(X-X_prec) = 0
+// where Xh_prec is the initial 1D-field
+// Allows to compute 2D-models from 1D-evolved models.
+
+
+
+/*   FOR LATER USE.................
 
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
-    double factor=4*HYDROGEN_MASS/Qmc2*MYR*dtime;
-        op->add_d("lnXh","lnXh",ones(nr,nth));
-        op->add_d("lnXh","log_T",factor*nuc.eps/Xh*nuc.dlneps_lnT);
-        op->add_d("lnXh","rho",factor*nuc.eps/Xh*nuc.dlneps_lnrho/rho);
+    double factor=4*HYDROGEN_MASS/Qmc2*MYR;
+// Core parameters
+    int nc=0;
+    for (int i=0; i<conv; i++) {
+        nc += map.gl.npts[i];
+    }
+    matrix &rz = map.rz;  // un alias
+    if (nc) { // nc = nb of grid points in core
+// compute Average X in core, and total eps in core
+    X_core = ((map.gl.I.block(0, 0, 0, nc-1)), (Xh*rho*r*r*rz).block(0, nc-1, 0, -1),map.leg.I_00)(0);
+    M_core = ((map.gl.I.block(0, 0, 0, nc-1)), (rho*r*r*rz).block(0, nc-1, 0, -1),map.leg.I_00)(0);
+    X_core=X_core/M_core;
+//    L_core = ((map.gl.I.block(0, 0, 0, nc-1)), (rho*nuc.eps*r*r*rz).block(0, nc-1, 0, -1),map.leg.I_00)(0);
+    }
+// End core parameters
+*/
+    matrix rhs;
+    double Ed=1e-06;
+    static symbolic S;
+    static sym eq;
+    static bool sym_inited = false;
+    if (!sym_inited) {
+// Do it only the first time the function is called
+// If factor or Ed change, this should be recalculated
+       sym lnX=S.regvar("lnXh");
+       sym Xh0=S.regvar("Xh0");
+       sym X=exp(lnX);
+       sym r=S.r;// because "r" created automatically with the symbolic object
+       sym lnR=S.regvar("log_R");
+       eq=-Ed*lap(X)+X-Xh0;
+       sym_inited = true;
+                       }
+    S.set_value("lnXh",log(Xh));
+    S.set_value("Xh0",Xh_prec);
+    S.set_value("log_R",log(R)*ones(1,nth)); //new
+    S.set_map(map);
+    eq.add(op,"lnXh","lnXh");
+    eq.add(op,"lnXh","r");
+    eq.add(op,"lnXh","log_R"); //new
+    rhs=-eq.eval(); //+Xh_prec;
 
-    matrix rhs=log(Xh_prec)-log(Xh)-factor*nuc.eps/Xh;
-    op->set_rhs("lnXh",rhs);
+// BC and IC
+     int j0=0;
+     op->bc_bot2_add_l(0,"lnXh","lnXh",ones(1,nth),map.D.block(0).row(0));
+     rhs.setrow(0,-(map.D,log(Xh)).row(0));
 
+     for(int n=0;n<ndomains-1;n++){
+        int ndom=map.gl.npts[n];
+        j0+=ndom;
+        op->bc_top1_add_d(n,"lnXh","lnXh",ones(1,nth));
+        op->bc_top2_add_d(n,"lnXh","lnXh",-ones(1,nth));
+        rhs.setrow(j0-1,-log(Xh.row(j0-1))+log(Xh.row(j0)));
+
+        op->bc_bot1_add_l(n+1,"lnXh","lnXh",ones(1,nth),map.D.block(n).row(-1));
+        op->bc_bot2_add_l(n+1,"lnXh","lnXh",-ones(1,nth),map.D.block(n+1).row(0));
+        rhs.setrow(j0, -(map.D,log(Xh)).row(j0-1)+(map.D,log(Xh)).row(j0));
+                                 }
+// Whatever the case, at the stellar surface Xh=X0:
+     op->bc_top1_add_d(ndomains-1,"lnXh","lnXh",ones(1,nth));
+     rhs.setrow(-1,-log(Xh.row(-1))+log(X0));
+
+
+  op->set_rhs("lnXh",rhs);
 }
 //Evolution Xh end-----------------------------------
 
