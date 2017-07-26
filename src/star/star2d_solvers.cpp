@@ -847,15 +847,15 @@ void star2d::solve_temp(solver *op) {
 		}
 		
 		if(n<conv) {
-        // Inside the convective core Lambda is continuous...
+        // Inside the convective core Lambda is continuous. Imposed on top of the domains
 			op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
 			op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
-		} else if(n==conv) {
-			if(n==0) { // There is a central core
+		} else if(n==conv) { // In the first domain above the CC
+			if(n==0) { // There is no central core
 				map.leg.eval_00(th,PI/2,q);
 				op->bc_bot2_add_lr(n,"Lambda","T",ones(1,1),D.block(0).row(0),q);
 				rhs_Lambda(0)=-((D,T).row(0),q)(0);
-			} else { // The upper domain in the CC is not the central domain
+			} else { // The domain above the CC is not the central domain
                                  // The Lambda eqn says that the total radiative flux is the luminosity at the boundary
 				op->bc_bot2_add_ri(n,"Lambda","Frad",2*PI*ones(1,1),map.leg.I_00,(r*r*rz).row(j0));
 				op->bc_bot2_add_ri(n,"Lambda","r",2*PI*ones(1,1),map.leg.I_00,(Frad*2*r*rz).row(j0));
@@ -863,8 +863,7 @@ void star2d::solve_temp(solver *op) {
 				op->bc_bot1_add_d(n,"Lambda","lum",-ones(1,1));
 				rhs_Lambda(n)=-2*PI*(Frad.row(j0)*(r*r*rz).row(j0),map.leg.I_00)(0)+lum(n-1);
 			}
-		} else {
-        // Outside the convective core Lambda is continuous...
+		} else { // In all other domains continuity of Lambda is imposed at the bottom of the domain
 			op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
 			op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
 		}
