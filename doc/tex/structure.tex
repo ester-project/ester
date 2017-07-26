@@ -803,9 +803,67 @@ continuity of $\frad$ (provided there is no chemical jump) since our
 mapping insures the continuity of $\rz$. In the last domain the boundary
 condition imposes that $T=T_s$.
 
+The implementation of the boundary and interface conditions is a bit
+tricky especially if convective layers appear in the middle. If we follow
+the propagation of the information (a bit strange for an elliptic equation
+like the temperature one!), at the bottom of radiative layer lying above
+a convective layer, the temperature gradient is actually only defined
+by the total flux (if the boundary between radiative and convective
+zones is allowed to move then the temperature gradient converges to the
+adiabatic one). This is of course the 1D-picture. It is summarized by
+the two tables that present two explicit cases.
 
+\begin{table}
+\begin{tabular}{|*{10}{l|}}
+\hline
+\multicolumn{3}{|c|}{Convective} & \multicolumn{3}{c|}{Radiative} &
+\multicolumn{2}{c|}{Convective} &
+\multicolumn{2}{c|}{radiative} \\
+\hline
+T=1\hspace*{4mm} & T\hspace*{4mm}  & T\hspace*{4mm}  & T\hspace*{4mm}
+$\partial$ T & T\hspace*{4mm} $\partial$ T & T\hspace*{4mm}
+& T\hspace*{4mm}  & T\hspace*{4mm}  & T\hspace*{4mm} $\partial$ T &
+T\hspace*{4mm}  T=T$_s$ \\
+\hline
+F=0\hspace*{4mm}$\Lambda$ & \hspace*{4mm} $\Lambda$ & \hspace*{4mm}
+$\Lambda$ & F\hspace*{4mm}  & $\Lambda$\hspace*{4mm}
+& $\Lambda$\hspace*{4mm} & $\Lambda$\hspace*{4mm}  &
+$\Lambda$\hspace*{4mm}$\Lambda$ & F\hspace*{4mm} &
+$\Lambda$\hspace*{4mm}  \\
+\hline
+\end{tabular}
 
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\begin{tabular}{|*{10}{l|}}
+\hline
+\multicolumn{3}{|c|}{Radiative} & \multicolumn{3}{c|}{Convective} &
+\multicolumn{4}{c|}{Radiative} \\
+\hline
+T=1\hspace*{4mm} $\partial$ T& T\hspace*{4mm} $\partial$ T &
+T\hspace*{4mm} & T\hspace*{4mm} & T\hspace*{4mm} & T\hspace*{4mm}
+& T\hspace*{4mm} $\partial$ T& T\hspace*{4mm} $\partial$ T&
+T\hspace*{4mm} $\partial$ T & T\hspace*{5mm}  T=T$_s$ \\
+\hline
+F=0\hfill$\Lambda$ & \hfill$\Lambda$ & \hfill $\Lambda$ & \hfill
+$\Lambda$ & \hfill$\Lambda$
+& \hfill$\Lambda$ & F\hfill  & $\Lambda$\hfill & $\Lambda$\hfill &
+$\Lambda$\hfill  \\
+\hline
+\end{tabular}
+\caption[]{Two tables showing the way boundary and interface conditions
+are imposed in the different domains. The left position of a symbol
+means the continuity is imposed at the bottom of the domain, right is
+for Top. $\Lambda$ is for the continuity of the $\Lambda$ constant,
+while $F$ means that $L=\intsur F_{\rm rad}dS$. $T$ and $\partial T$ are
+for the continuity of $T$ and heat flux.}
+\end{table}
 
+In 2d the problem is more delicate and we are not able to impose an
+arbitrary position to the convection zone, otherwise we cannot
+distribute the flux in latitude (to be checked!)...
 
 \subsubsection{$\bullet$ \bf Surface effective gravity {\tt solve\_gsup}}
 
