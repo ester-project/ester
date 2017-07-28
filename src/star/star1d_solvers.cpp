@@ -546,7 +546,7 @@ void star1d::solve_Wr(solver *op) {
 
 void star1d::solve_temp(solver *op) {
     DEBUG_FUNCNAME;
-	int n,j0;
+	int n,j0,j1,ndom;
 	matrix q;
 	char eqn[8];
 	
@@ -569,23 +569,24 @@ void star1d::solve_temp(solver *op) {
 	rhs_lum=zeros(ndomains,1);
 	j0=0;
 	for(n=0;n<ndomains;n++) {
+		ndom=map.gl.npts[n];
+		j1=j0+ndom-1;
 		op->bc_bot2_add_d(n,"lum","lum",ones(1,1));
-		op->bc_bot2_add_li(n,"lum","rho",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(r*r*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,0));
-		op->bc_bot2_add_li(n,"lum","nuc.eps",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(r*r*rho).block(j0,j0+map.gl.npts[n]-1,0,0));
-		op->bc_bot2_add_d(n,"lum","Lambda",-4*PI*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(rho*nuc.eps*r*r).block(j0,j0+map.gl.npts[n]-1,0,0)));
+		op->bc_bot2_add_li(n,"lum","rho",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*nuc.eps).block(j0,j1,0,0));
+		op->bc_bot2_add_li(n,"lum","nuc.eps",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*rho).block(j0,j1,0,0));
+		op->bc_bot2_add_d(n,"lum","Lambda",-4*PI*(map.gl.I.block(0,0,j0,j1),(rho*nuc.eps*r*r).block(j0,j1,0,0)));
 		//r (rz)
-		op->bc_bot2_add_li(n,"lum","r",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(2*r*rho*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,0));
-		op->bc_bot2_add_li(n,"lum","rz",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(r*r*rho*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,0));
+		op->bc_bot2_add_li(n,"lum","r",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j1),(2*r*rho*nuc.eps).block(j0,j1,0,0));
+		op->bc_bot2_add_li(n,"lum","rz",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*rho*nuc.eps).block(j0,j1,0,0));
 			
 		if(n) op->bc_bot1_add_d(n,"lum","lum",-ones(1,1));
-		j0+=map.gl.npts[n];
+		j0+=ndom;
 	}
 	op->set_rhs("lum",rhs_lum);
 	
 	//Frad
 	
 	matrix rhs_Frad,Frad;
-	int j1;
 	
 	Frad=-opa.xi*(D,T);
 	rhs_Frad=zeros(ndomains*2-1,1);
@@ -619,9 +620,16 @@ void star1d::solve_temp(solver *op) {
 	qcore=qenv;
 	j0=0;
 	for(n=0;n<ndomains;n++) {
-		if(n<conv) qcore.setblock(j0,j0+map.gl.npts[n]-1,0,0,ones(map.gl.npts[n],1));
-		else qenv.setblock(j0,j0+map.gl.npts[n]-1,0,0,ones(map.gl.npts[n],1));
-		j0+=map.gl.npts[n];
+		ndom=map.gl.npts[n];
+		j1=j0+ndom-1;
+		if(n<conv) {
+                    qcore.setblock(j0,j1,0,0,ones(ndom,1));
+                } else if (n==ndomains-2) {
+                //qenv.setblock(j0,j1,0,0,ones(ndom,1));
+                qcore.setblock(j0,j1,0,0,ones(ndom,1));
+                }
+		else qenv.setblock(j0,j1,0,0,ones(ndom,1));
+		j0+=ndom;
 	}
 	
 	
@@ -690,6 +698,8 @@ void star1d::solve_temp(solver *op) {
 	
 	j0=0;
 	for(n=0;n<ndomains;n++) {
+		ndom=map.gl.npts[n];
+		j1=j0+ndom-1;
 		if(!n) {
 			op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
 			rhs_T(j0)=1-T(j0);
@@ -699,24 +709,31 @@ void star1d::solve_temp(solver *op) {
 			rhs_T(j0)=-T(j0)+T(j0-1);
 		}
 		if(n>=conv) {
-			if(n<ndomains-1) {
+			//if(n<ndomains-1) {
+			if(n<ndomains-3) {
 				op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
 				op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
-				op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j0+map.gl.npts[n]-1));
-				op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j0+map.gl.npts[n]));
+				op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
+				op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
+				//op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j0+map.gl.npts[n]-1));
+				//op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j0+map.gl.npts[n]));
 				
-				rhs_T(j0+map.gl.npts[n]-1)=-(D,T)(j0+map.gl.npts[n]-1)+(D,T)(j0+map.gl.npts[n]);
-			} else {
+				//rhs_T(j0+map.gl.npts[n]-1)=-(D,T)(j0+map.gl.npts[n]-1)+(D,T)(j0+map.gl.npts[n]);
+				rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+			//} else {
+			} else if (n==ndomains-1) {
 				op->bc_top1_add_d(n,eqn,"T",ones(1,1));
 				op->bc_top1_add_d(n,eqn,"Ts",-ones(1,1));
 				rhs_T(-1)=Ts(0)-T(-1);
 			}
 		}
 		
-		if(n<conv) {
+		//if(n<conv) {
+		if(n<conv || n==ndomains-2) {
 			op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
 			op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
-		} else if(n==conv) {
+		//} else if(n==conv) {
+		} else if(n==conv || n==ndomains-1) {
 			if(!n) {
 				op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
 				rhs_Lambda(0)=-(D,T)(0);
