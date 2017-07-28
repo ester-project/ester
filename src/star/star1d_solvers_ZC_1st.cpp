@@ -624,9 +624,9 @@ void star1d::solve_temp(solver *op) {
 		j1=j0+ndom-1;
 		if(n<conv) {
                     qcore.setblock(j0,j1,0,0,ones(ndom,1));
-                } else if (n==5 && core_convec==1) { // new
-                qenv.setblock(j0,j1,0,0,ones(ndom,1));
-                //qcore.setblock(j0,j1,0,0,ones(ndom,1));
+                } else if (n==5 && core_convec==1) {
+                //qenv.setblock(j0,j1,0,0,ones(ndom,1));
+                qcore.setblock(j0,j1,0,0,ones(ndom,1));
                 }
 		else qenv.setblock(j0,j1,0,0,ones(ndom,1));
 		j0+=ndom;
@@ -710,7 +710,7 @@ void star1d::solve_temp(solver *op) {
 			rhs_T(j0)=-T(j0)+T(j0-1);
 		}
 		if(n>=conv) {
-                     //if (core_convec == 0) { //new
+                     if (core_convec == 0) {
 			if(n<ndomains-1) {
 				op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
 				op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
@@ -726,7 +726,7 @@ void star1d::solve_temp(solver *op) {
 				op->bc_top1_add_d(n,eqn,"Ts",-ones(1,1));
 				rhs_T(-1)=Ts(0)-T(-1);
 			}
-/*                     } else { // avec core convection
+                     } else { // avec core convection
 			if(n<ndomains-1 && n!=4 && n!=5) {
 			     op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
                              op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
@@ -739,14 +739,13 @@ void star1d::solve_temp(solver *op) {
                                 rhs_T(-1)=Ts(0)-T(-1);
                         }
                      }
-*/
 		}
 	//Continuity of Lambda	
 		if(n<conv) {
 			op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
 			op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
-		} else if(n==conv) {
-		//} else if(n==conv || (n==6 && core_convec == 1) ) { //new
+		//} else if(n==conv) {
+		} else if(n==conv || (n==6 && core_convec == 1) ) {
 			if(!n) {
 				op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
 				rhs_Lambda(0)=-(D,T)(0);
@@ -756,14 +755,12 @@ void star1d::solve_temp(solver *op) {
 				op->bc_bot1_add_d(n,"Lambda","lum",-ones(1,1));
 				rhs_Lambda(n)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
 			}
-/*
-		} else if(n==5 && core_convec == 1 ) { //new
+		} else if(n==5 && core_convec == 1 ) {
+		  printf("verification\n");
 			op->bc_top1_add_d(n,eqn,"Lambda",ones(1,1));
 			op->bc_top2_add_d(n,eqn,"Lambda",-ones(1,1));
-                                rhs_T(j1)=0.;
 			op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
 			op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
-*/
 		} else {
 			op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
 			op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));

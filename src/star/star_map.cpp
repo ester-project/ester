@@ -362,9 +362,9 @@ void star2d::check_map() {
 // to move the core boundary
 int star2d::check_convec(double &p_cc,matrix &Rcc) {
     DEBUG_FUNCNAME;
-//    printf("++++ Start of CHECK_CONVEC\n");
     if(!core_convec) return 0; // core_covec: input param to disable CC
 
+    //printf("++++ Start of CHECK_CONVEC, core_convec = %d\n",core_convec);
     if(conv) {
         int j=0;
         for(int n=0;n<conv;n++) j+=map.gl.npts[n]; // number of grid in CC
