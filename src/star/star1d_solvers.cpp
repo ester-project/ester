@@ -541,14 +541,87 @@ void star1d::solve_Wr(solver *op) {
 
 
 void star1d::solve_temp(solver *op) {
-    int n,j0;
-    matrix q;
-    char eqn[8];
+    DEBUG_FUNCNAME;
+	int n,j0,j1,ndom;
+	matrix q;
+	char eqn[8];
+	
+	op->add_d("T","log_T",T);
+	strcpy(eqn,"log_T");
+	
+	//Luminosity
 
     op->add_d("T","log_T",T);
     strcpy(eqn,"log_T");
 
-    //Luminosity
+	rhs_lum=zeros(ndomains,1);
+	j0=0;
+	for(n=0;n<ndomains;n++) {
+		ndom=map.gl.npts[n];
+		j1=j0+ndom-1;
+		op->bc_bot2_add_d(n,"lum","lum",ones(1,1));
+		op->bc_bot2_add_li(n,"lum","rho",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*nuc.eps).block(j0,j1,0,0));
+		op->bc_bot2_add_li(n,"lum","nuc.eps",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*rho).block(j0,j1,0,0));
+		op->bc_bot2_add_d(n,"lum","Lambda",-4*PI*(map.gl.I.block(0,0,j0,j1),(rho*nuc.eps*r*r).block(j0,j1,0,0)));
+		//r (rz)
+		op->bc_bot2_add_li(n,"lum","r",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j1),(2*r*rho*nuc.eps).block(j0,j1,0,0));
+		op->bc_bot2_add_li(n,"lum","rz",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*rho*nuc.eps).block(j0,j1,0,0));
+			
+		if(n) op->bc_bot1_add_d(n,"lum","lum",-ones(1,1));
+		j0+=ndom;
+	}
+	op->set_rhs("lum",rhs_lum);
+	
+	//Frad
+	
+	matrix rhs_Frad,Frad;
+	
+	Frad=-opa.xi*(D,T);
+	rhs_Frad=zeros(ndomains*2-1,1);
+	j0=0;
+	for(n=0;n<ndomains;n++) {
+		j1=j0+map.gl.npts[n]-1;
+		
+		if(n) op->bc_bot2_add_d(n,"Frad","Frad",ones(1,1));
+		op->bc_top1_add_d(n,"Frad","Frad",ones(1,1));
+		
+		if(n) op->bc_bot2_add_l(n,"Frad","T",opa.xi.row(j0),D.block(n).row(0));
+		op->bc_top1_add_l(n,"Frad","T",opa.xi.row(j1),D.block(n).row(-1));
+				
+		if(n) op->bc_bot2_add_d(n,"Frad","opa.xi",(D,T).row(j0));
+		op->bc_top1_add_d(n,"Frad","opa.xi",(D,T).row(j1));
+		
+		if(n) op->bc_bot2_add_d(n,"Frad","rz",Frad.row(j0));
+		op->bc_top1_add_d(n,"Frad","rz",Frad.row(j1));
+	
+		j0=j1+1;
+	}
+	op->set_rhs("Frad",rhs_Frad);
+	
+	
+	//Temperature
+	
+	matrix rhs_T,rhs_Lambda;
+	matrix qcore,qenv;
+	
+	qenv=zeros(nr,1);
+	qcore=qenv;
+	j0=0;
+	for(n=0;n<ndomains;n++) {
+		ndom=map.gl.npts[n];
+		j1=j0+ndom-1;
+		if(n<conv) {
+                    qcore.setblock(j0,j1,0,0,ones(ndom,1));
+                } else if (n==ndomains-2) {
+                //qenv.setblock(j0,j1,0,0,ones(ndom,1));
+                qcore.setblock(j0,j1,0,0,ones(ndom,1));
+                }
+		else qenv.setblock(j0,j1,0,0,ones(ndom,1));
+		j0+=ndom;
+	}
+	
+	
+	rhs_T=zeros(nr,1);
 
     matrix rhs_lum,lum;
 
@@ -735,6 +808,107 @@ void star1d::solve_temp(solver *op) {
     op->set_rhs(eqn,rhs_T);
     op->set_rhs("Lambda",rhs_Lambda);
 
+	
+	op->add_d(eqn,"nuc.eps",qenv*Lambda*rho/opa.xi);
+	op->add_d(eqn,"rho",qenv*Lambda*nuc.eps/opa.xi);	
+	op->add_d(eqn,"Lambda",qenv*rho*nuc.eps/opa.xi);
+	op->add_d(eqn,"opa.xi",-qenv*Lambda*rho*nuc.eps/opa.xi/opa.xi);
+	rhs_T+=-qenv*Lambda*rho*nuc.eps/opa.xi;
+	
+	
+	//Convection
+	
+	/*if(env_convec) {
+		sym kc_,rho_,s_;
+		sym div_Fconv;
+		
+		kc_=S.regvar("kc");
+		rho_=S.regvar("rho");
+		s_=S.regvar("s");
+		S.set_value("kc",kconv());
+		S.set_value("rho",rho);
+		S.set_value("s",entropy());
+		
+		div_Fconv=-div(-rho_*T_*grad(s_)*kc_)/xi_;
+		
+		div_Fconv.add(op,eqn,"T",qenv);
+		div_Fconv.add(op,eqn,"rho",qenv);
+		div_Fconv.add(op,eqn,"s",qenv);
+		div_Fconv.add(op,eqn,"r",qenv);
+		div_Fconv.add(op,eqn,"opa.xi",qenv);
+		
+		add_kconv(op,eqn,div_Fconv.jacobian("kc",0,0).eval()*qenv);
+		add_dkconv_dz(op,eqn,div_Fconv.jacobian("kc",1,0).eval()*qenv);
+		
+		rhs_T-=div_Fconv.eval()*qenv;
+		
+	}*/
+	
+	//Core convection
+	op->add_l(eqn,"s",qcore,D);
+	//rhs_T+=-qcore*(D,eos.s);
+	rhs_T+=-qcore*(D,entropy());
+	
+	rhs_Lambda=zeros(ndomains,1);
+	
+	j0=0;
+	for(n=0;n<ndomains;n++) {
+		ndom=map.gl.npts[n];
+		j1=j0+ndom-1;
+		if(!n) {
+			op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
+			rhs_T(j0)=1-T(j0);
+		} else {
+			op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
+			op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
+			rhs_T(j0)=-T(j0)+T(j0-1);
+		}
+		if(n>=conv) {
+			//if(n<ndomains-1) {
+			if(n<ndomains-3) {
+				op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+				op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+				op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
+				op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
+				//op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j0+map.gl.npts[n]-1));
+				//op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j0+map.gl.npts[n]));
+				
+				//rhs_T(j0+map.gl.npts[n]-1)=-(D,T)(j0+map.gl.npts[n]-1)+(D,T)(j0+map.gl.npts[n]);
+				rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+			//} else {
+			} else if (n==ndomains-1) {
+				op->bc_top1_add_d(n,eqn,"T",ones(1,1));
+				op->bc_top1_add_d(n,eqn,"Ts",-ones(1,1));
+				rhs_T(-1)=Ts(0)-T(-1);
+			}
+		}
+		
+		//if(n<conv) {
+		if(n<conv || n==ndomains-2) {
+			op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
+			op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
+		//} else if(n==conv) {
+		} else if(n==conv || n==ndomains-1) {
+			if(!n) {
+				op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
+				rhs_Lambda(0)=-(D,T)(0);
+			} else {
+				op->bc_bot2_add_d(n,"Lambda","Frad",4*PI*(r*r).row(j0));
+				op->bc_bot2_add_d(n,"Lambda","r",4*PI*(Frad*2*r).row(j0));
+				op->bc_bot1_add_d(n,"Lambda","lum",-ones(1,1));
+				rhs_Lambda(n)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
+			}
+		} else {
+			op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
+			op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
+		}
+		
+		j0+=map.gl.npts[n];
+	}
+	
+	op->set_rhs(eqn,rhs_T);
+	op->set_rhs("Lambda",rhs_Lambda);
+	
 }
 
 

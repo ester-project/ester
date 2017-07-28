@@ -217,6 +217,16 @@ class star2d:
         self._s.map.leg.eval_00(_wrapper.ones(1, self.nth), theta, m)
         return _mat_to_numpy(m)
 
+    def leg_eval_matrix_antisym(self, theta):
+        """
+        this function returns a matrix to be used to evaluate a
+        derivative at the given colatitude theta
+        """
+        m = _wrapper.matrix()
+        self._s.map.leg.eval_11(_wrapper.ones(1, self.nth), theta, m)
+        return _mat_to_numpy(m)
+
+
 class star1d(star2d):
     def __init__(self, model):
         self._s = _wrapper.star1d()
