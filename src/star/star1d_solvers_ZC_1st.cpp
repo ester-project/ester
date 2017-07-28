@@ -546,7 +546,7 @@ void star1d::solve_Wr(solver *op) {
 
 void star1d::solve_temp(solver *op) {
     DEBUG_FUNCNAME;
-	int n,j0,j1,ndom;
+	int n,j0,j1,ndom,iconv;
 	matrix q;
 	char eqn[8];
 	
@@ -619,12 +619,13 @@ void star1d::solve_temp(solver *op) {
 	qenv=zeros(nr,1);
 	qcore=qenv;
 	j0=0;
+        iconv=5;
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
 		j1=j0+ndom-1;
 		if(n<conv) {
                     qcore.setblock(j0,j1,0,0,ones(ndom,1));
-                } else if (n==5 && core_convec==1) {
+                } else if (n==iconv && core_convec==1) {
                 //qenv.setblock(j0,j1,0,0,ones(ndom,1));
                 qcore.setblock(j0,j1,0,0,ones(ndom,1));
                 }
@@ -727,7 +728,7 @@ void star1d::solve_temp(solver *op) {
 				rhs_T(-1)=Ts(0)-T(-1);
 			}
                      } else { // avec core convection
-			if(n<ndomains-1 && n!=4 && n!=5) {
+			if(n<ndomains-1 && n!=iconv-1 && n!=iconv) {
 			     op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
                              op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
                              op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
@@ -745,7 +746,7 @@ void star1d::solve_temp(solver *op) {
 			op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
 			op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
 		//} else if(n==conv) {
-		} else if(n==conv || (n==6 && core_convec == 1) ) {
+		} else if(n==conv || (n==iconv+1 && core_convec == 1) ) {
 			if(!n) {
 				op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
 				rhs_Lambda(0)=-(D,T)(0);
@@ -755,8 +756,7 @@ void star1d::solve_temp(solver *op) {
 				op->bc_bot1_add_d(n,"Lambda","lum",-ones(1,1));
 				rhs_Lambda(n)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
 			}
-		} else if(n==5 && core_convec == 1 ) {
-		  printf("verification\n");
+		} else if(n==iconv && core_convec == 1 ) {
 			op->bc_top1_add_d(n,eqn,"Lambda",ones(1,1));
 			op->bc_top2_add_d(n,eqn,"Lambda",-ones(1,1));
 			op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
