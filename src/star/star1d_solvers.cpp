@@ -879,10 +879,6 @@ void star1d::solve_temp(solver *op) {
 				op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
 				op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
 				op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
-				//op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j0+map.gl.npts[n]-1));
-				//op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j0+map.gl.npts[n]));
-				
-				//rhs_T(j0+map.gl.npts[n]-1)=-(D,T)(j0+map.gl.npts[n]-1)+(D,T)(j0+map.gl.npts[n]);
 				rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
 			} else {
 				op->bc_top1_add_d(n,eqn,"T",ones(1,1));
@@ -890,7 +886,6 @@ void star1d::solve_temp(solver *op) {
 				rhs_T(-1)=Ts(0)-T(-1);
 			}
                      } else { // avec core convection
-			//if(n<ndomains-1 && n!=iconv-1 && n!=iconv) {
 			if(n<ndomains-1 && n!=iconv) { // cond. on DT suppressed in CZ only.
 			     op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
                              op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
@@ -905,24 +900,27 @@ void star1d::solve_temp(solver *op) {
                      }
 		}
 
-//Continuity of Lambda	
-		if(n<conv) { // conv= number of domains in convective core
-			op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
-			op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
-		//} else if(n==conv) {
-		} else if(n==conv) { // || (n==iconv+1 && core_convec == 1) ) { // case rad. dom. above CZ
-			if(!n) { // if conv=0 ie radiative core
-				op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
-				rhs_Lambda(0)=-(D,T)(0);
-			} else { // there is convection: up grad T fixed by luminosity.
-				op->bc_bot2_add_d(n,"Lambda","Frad",4*PI*(r*r).row(j0));
-				op->bc_bot2_add_d(n,"Lambda","r",4*PI*(Frad*2*r).row(j0));
-				op->bc_bot1_add_d(n,"Lambda","lum",-ones(1,1));
-				rhs_Lambda(n)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
-			}
-		} else if(n==iconv && core_convec == 1 ) {
-			op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
-			op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
+//Continuity of Lambda	: applied on bottom of domains except in a CC
+                if(n<conv) {        // conv= number of domains in convective core
+                        op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
+                        op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
+                } else if(n==conv) {     // n=conv first rad. domain above CC
+                        if(!n) {
+                                op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
+                                rhs_Lambda(0)=-(D,T)(0);
+                        } else {
+                                op->bc_bot2_add_d(n,"Lambda","Frad",4*PI*(r*r).row(j0));
+                                op->bc_bot2_add_d(n,"Lambda","r",4*PI*(Frad*2*r).row(j0));
+                                op->bc_bot1_add_d(n,"Lambda","lum",-ones(1,1));
+                                rhs_Lambda(n)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
+                        }
+                } else {
+                        op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
+                        op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
+                }
+
+// Special case induced by convective domains
+		if(n==iconv && core_convec == 1 ) {
 			op->bc_top2_add_d(n,eqn,"T",ones(1,1)); // continuity of T top of CZ needed
 			op->bc_top1_add_d(n,eqn,"T",-ones(1,1));
 			rhs_T(j1)=T(j1)-T(j1+1);
@@ -931,13 +929,7 @@ void star1d::solve_temp(solver *op) {
 			op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
 			op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
 			rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
-			op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
-			op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
-		} else {
-			op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
-			op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
 		}
-		
 		j0+=map.gl.npts[n];
 	}
 	
