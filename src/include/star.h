@@ -150,7 +150,11 @@ class star2d {
 	virtual matrix distribute_domains(int ndomains,int &conv_new,double p_cc=0) const;
 	virtual matrix find_boundaries_old(matrix pif) const;
 	virtual void check_map();
-	virtual int check_convec(double &p_cc,matrix &Rcc);
+	virtual int check_CC(double &p_cc,matrix &Rcc);
+        matrix solve_temp_rad();
+        int find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter);
+        matrix new_distribute_domains(int ndom,matrix p_inter,std::vector<int> zone_type);
+
 	
 	void draw(figure *,const matrix &,int parity=0) const;
 	void drawi(figure *,const matrix &,int sr,int st,int parity=0) const;

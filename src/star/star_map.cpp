@@ -100,6 +100,7 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
     matrix dlogT;
     int nzones=zif.nrows();
 
+//printf("Start distribute domains with check_only, nzones = %d check = %d\n",nzones,check_only);
     if(nzones>ndom) {
         fprintf(stderr,"Error: At least %d domains are needed for this model\n",nzones);
         exit(1);
@@ -113,7 +114,7 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
     }
 
 // Distribute the domains (a limited number) into the different zones so as to
-// decreases optimally the LogT jump between two following domains interfaces.
+// decrease optimally the LogT jump between two following domains interfaces.
 
     int ndomi[nzones]; // Number of domains in each zone
     for(int n=0;n<nzones;n++) ndomi[n]=1;
@@ -143,6 +144,7 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
     }
     index[nzones-1]=ndom-1;
     if(check_only) return index;
+// END OF PART check_only = .true.
 
 // Find new boundaries (ie the new zetai= zif_new) on the old zeta-grid
     matrix zif_new(ndom,nth);
@@ -232,10 +234,11 @@ matrix star2d::distribute_domains(int ndom,int &conv_new,double p_cc) const {
 // disappeared)
 
     DEBUG_FUNCNAME;
-        int j;
+        int j,ndc;
     double p_s;
+    matrix pif(ndom,1); // pressure at domain interfaces
 
-    conv_new=conv;
+printf("Start distribute domains with conv\n");
     p_s=map.leg.eval_00(PRES.row(-1),0)(0);
     if(p_cc==0) { // pcc=0 is default value at start  the core may exist or not (depend on conv
         j=0;
@@ -243,11 +246,15 @@ matrix star2d::distribute_domains(int ndom,int &conv_new,double p_cc) const {
         p_cc=map.leg.eval_00(PRES.row(j),0)(0); // p_cc=central pressure if no CC
     }
 
+/*
 // Here star redistribute domains as in "distribute_domains(....)"
+    conv_new=conv;
     double drad=(log(p_cc)-log(p_s));
     double dconv=(0.-log(p_cc));
     if(!conv) dconv=0;
-    conv_new=conv==0?0:1;
+    //conv_new=conv==0?0:1;
+    conv_new=1;
+    if (conv == 0) conv_new=0;
     for(int n=1+conv_new;n<ndom;n++) {
         if(dconv>drad) {
             conv_new++;
@@ -256,13 +263,87 @@ matrix star2d::distribute_domains(int ndom,int &conv_new,double p_cc) const {
             drad=(log(p_cc)-log(p_s))/(n+1-conv_new);
     }
 
-    matrix pif(ndom,1); // pressure at domain interfaces
     for(int n=0;n<conv_new;n++) {
         pif(n)=exp(-(n+1)*dconv);
     }
     for(int n=0;n<ndom-conv_new;n++) {
         pif(n+conv_new)=exp(log(p_cc)-(n+1)*drad);
     }
+FILE *fic=fopen("pif.txt", "a");
+fprintf(fic,"p_cc %e p_s= %e\n",p_cc,p_s);
+for (int k=0;k<ndom;k++) fprintf(fic,"%d %e \n",k,pif(k));
+*/
+	if (conv == 0) {
+           for(int n=0;n<ndom;n++) pif(n)=exp((n+1)*log(p_s)/ndom);
+        } else {
+           ndc=round(ndom*log(p_cc)/log(p_s));
+           if (ndc == 0) {ndc=1; printf("ndc\n");}
+           for(int n=0;n<ndc;n++) pif(n)=exp((n+1)*log(p_cc)/ndc);
+           double a=log(p_s/p_cc)/(ndom-ndc);
+	   double b=log(p_cc)-a*(ndc-1);
+ 	   for(int n=ndc;n<ndom;n++) pif(n)=exp(a*n+b);
+	}
+conv_new=ndc;
+printf("conv_new = %d ",ndc);
+printf("of round = %e\n",ndom*log(p_cc)/log(p_s));
+
+    return pif;
+}
+
+matrix star2d::new_distribute_domains(int ndom,matrix p_inter,std::vector<int> zone_type) {
+// ndom ==> input
+// called by check_map to redistribute domain when conv has changed (CC has appeared or
+// disappeared)
+
+    DEBUG_FUNCNAME;
+    double a,b,p_s;
+    matrix pif(ndom,1); // pressure at domain interfaces
+    int nzones=zone_type.size();
+    int ndz,ndom_sugg,ndzf;
+
+FILE *fic=fopen("pif.txt", "a");
+printf("Start new distribute domains \n");
+printf("nzones =  %d \n",nzones);
+printf("p_inter nrows %d \n",p_inter.nrows());
+printf("p_inter ncols %d \n",p_inter.ncols());
+printf("p_inter(nzones-1) %e \n",p_inter(nzones-1));
+
+    p_s=map.leg.eval_00(PRES.row(-1),0)(0);
+fprintf(fic,"p_s= %e\n",p_s);
+
+	if (conv == 0) {
+           for(int n=0;n<ndom;n++) pif(n)=exp((n+1)*log(p_s)/ndom);
+        } else { // convection is now taken into account
+
+// 1 first zone : center -- first interface
+           ndz = round(ndom*log(p_inter(0))/log(p_s)); // because p_c=1.
+printf("ndz=%d ndom*log... =%e \n",ndz,ndom*log(p_inter(0))/log(p_s));
+           a=log(p_inter(0))/ndz; b=a;
+ 	   for(int k=0;k<ndz;k++) pif(k)=exp(a*k+b);
+printf("ndz=%d\n",ndz);
+for (int k=0;k<ndom;k++) fprintf(fic,"%d %e \n",k,pif(k));
+
+	   int jfirst=ndz;
+           for(int n=0;n<nzones-1;n++) {
+            ndz = round(ndom*log(p_inter(n+1)/p_inter(n))/log(p_s));
+            ndzf = floor(ndom*log(p_inter(n+1)/p_inter(n))/log(p_s));
+            if (ndzf !=0) ndz=ndzf;
+printf("n= %d, ndz=%d ndom*log... =%e \n",n,ndz,ndom*log(p_inter(n+1)/p_inter(n))/log(p_s));
+            if (ndz == 0) {
+             printf("ndz = %e\n",ndom*log(p_inter(n+1)/p_inter(n))/log(p_s));
+             printf("There is a too thin domain; increase ndomains\n");
+             ndom_sugg=0.5*log(p_s)/log(p_inter(n+1)/p_inter(n));
+             printf("Suggested value = %d\n",ndom_sugg);
+            }
+           	a=log(p_inter(n+1)/p_inter(n))/ndz;
+	   	b=log(p_inter(n));
+printf("jfirst= %d, a=%e, b=%e\n",jfirst,a,b);
+ 	   	for(int k=0;k<ndz;k++) pif(k+jfirst)=exp(a*k+b);
+for (int k=0;k<ndz;k++) fprintf(fic,"%d %e \n",k,pif(k+jfirst));
+ 	        jfirst=jfirst+ndz;
+
+	   } // endfor
+	}
 
     return pif;
 }
@@ -312,55 +393,71 @@ matrix star2d::find_boundaries_old(matrix pif) const {
 }
 
 void star2d::check_map() {
-    DEBUG_FUNCNAME;
-        double pcc;
-    matrix Rcc,pif;
-    int conv_new;
-    remapper *red;
+	DEBUG_FUNCNAME;
+	double pcc;
+	matrix Rcc,pif, R_inter,p_inter;
+	std::vector <int> zone_type;
+	int conv_new;
+	remapper *red;
+		matrix R(ndomains+1,nth);
 
-    if(check_convec(pcc,Rcc)!=conv) { // does the following if CC appears or disappears
-        matrix R(ndomains+1,nth);
-        red=new remapper(map);
-        if(conv) { // CC has disappeared !
-            conv=0;
-            for(int n=0;n<ndomains;n++) {
-                if(n<conv) domain_type[n]=CORE; // unnecessary
-                else domain_type[n]=RADIATIVE; // always true
-            }
-            pif=distribute_domains(ndomains,conv_new);
-            R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0)));
-            red->set_R(R);
-            domain_type.resize(ndomains);
-        } else { // There is a CC that has been discovered by check_conv
-            conv=1;
-            pif=distribute_domains(ndomains,conv_new,pcc);
-            conv=conv_new; // conv_new may be higher than 1 if big core!
-            for(int n=0;n<ndomains;n++) {
-                if(n<conv) domain_type[n]=CORE;
-                else domain_type[n]=RADIATIVE;
-            }
-            R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0))); 
-            R.setrow(conv,Rcc);
-            red->set_R(R);
-        }
-    } else { // Check if domain boundaries still verify the rule of not more than
+	if(check_CC(pcc,Rcc)!=conv) { // does the following if CC appears or disappears
+		red=new remapper(map);
+		if(conv) { // CC has disappeared !
+			conv=0;
+			for(int n=0;n<ndomains;n++) {
+				if(n<conv) domain_type[n]=CORE; // unnecessary
+				else domain_type[n]=RADIATIVE; // always true
+			}
+			pif=distribute_domains(ndomains,conv_new);
+			R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0)));
+			red->set_R(R);
+			domain_type.resize(ndomains);
+		} else { // There is a CC that has been discovered by check_conv
+			conv=1;
+			pif=distribute_domains(ndomains,conv_new,pcc);
+			conv=conv_new; // conv_new may be higher than 1 if big core!
+			for(int n=0;n<ndomains;n++) {
+				if(n<conv) domain_type[n]=CORE;
+				else domain_type[n]=RADIATIVE;
+			}
+			R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0))); 
+			R.setrow(conv,Rcc);
+			red->set_R(R);
+		}
+	} else {
+// Check if domain boundaries still verify the rule of not more than
 // factor "10" of PRES between two domain boundaries
 // called after one Newton iteration
-        red=new remapper(map);
-        if(!remap_domains(ndomains,*red)) {delete red;return;}
-    }
-    if(config.verbose) {printf("Remapping...");fflush(stdout);}
-// Install the new mapping and do interpolation for this mapping
-    map=red->get_map();
-    interp(red);
-    delete red;
-    if(config.verbose) printf("Done\n");
+		red=new remapper(map);
+		//printf("call remap_domains\n");
+		if(!remap_domains(ndomains,*red)) {delete red;return;} 
+// If remap_domain false (no remapping needed) then returns
+// If remapping true do interp below
+// note that remap_domain call distribute_domain(with check option)
+	}
+
+	// New stuf to program....
+	find_zones(R_inter, zone_type, p_inter);
+	pif=new_distribute_domains(ndomains,p_inter,zone_type);
+	R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0)));
+	red->set_R(R);
+
+
+	if(config.verbose) {printf("Remapping...");fflush(stdout);}
+	// Install the new mapping and do interpolation for this mapping
+	map=red->get_map();
+	interp(red);
+	delete red;
+	if(config.verbose) printf("Done\n");
 
 }
 
-// check_convec detects the appearance of a convective core but is not used
+// check_CC detects the appearance of a convective core but is not used
 // to move the core boundary
-int star2d::check_convec(double &p_cc,matrix &Rcc) {
+// Recall: conv = nb of domains in CC
+
+int star2d::check_CC(double &p_cc,matrix &Rcc) {
     DEBUG_FUNCNAME;
     if(!core_convec) return 0; // core_covec: input param to disable CC
 
@@ -374,7 +471,7 @@ int star2d::check_convec(double &p_cc,matrix &Rcc) {
             return 0;
         } else return conv;
     }
-    // else if no CC at calling check_convec
+    // else if no CC at calling check_CC
     int i=0;
     while(z(i)<1.05*min_core_size) i++;
 // "i" is the first grid point where Schwarzschild is tested (to avoid too small cores)
@@ -394,7 +491,7 @@ int star2d::check_convec(double &p_cc,matrix &Rcc) {
 // if Sch > 0 no CC (or CC too small) and return
 
     //if(config.verbose)
-      printf("Found convective core in check_convec\n");
+      printf("Found convective core with check_CC\n");
     if(ndomains==1) {
         fprintf(stderr,"Warning: At least 2 domains are needed to deal with core convection\n");
     }
@@ -412,7 +509,7 @@ int star2d::check_convec(double &p_cc,matrix &Rcc) {
         while(fin<3) {
             schwi=map.gl.eval(schw.col(j),zi,TT)(0);
             dschwi=(TT,dschw.col(j))(0);
-            dzi=-schwi/dschwi;
+            dzi=-schwi/dschwi;  // Newton method to find the place of the CC-RZ boundary
             if(fabs(dzi)<1e-9) fin++;
             zi+=dzi;
         }
@@ -423,4 +520,135 @@ int star2d::check_convec(double &p_cc,matrix &Rcc) {
     p_cc=map.leg.eval_00(pcore,0)(0); // p_cc PRES at theta=0
     return 1;
 
+}
+
+matrix star2d::solve_temp_rad() {
+    symbolic S;
+    S.set_map(map);
+
+    sym t = S.regvar("T");
+    sym xi = S.regvar("xi");
+    sym eq = div(xi*grad(t))/xi;
+    S.set_value("xi", this->opa.xi);
+
+    solver op;
+    op.init(map.ndomains, 1, "full");
+    op.regvar("T");
+    op.set_nr(this->map.npts);
+
+    eq.add(&op, "T", "T");
+
+    matrix rhs = -this->Lambda * this->rho * (this->nuc.eps / this->opa.xi);
+
+    op.bc_bot2_add_l(0, "T", "T", ones(1, this->nth), this->map.D.block(0).row(0));
+    rhs.setrow(0, zeros(1, this->nth));
+
+    int ir = this->map.npts[0];
+    for (int n=1; n<ndomains; n++) {
+        op.bc_top1_add_d(n-1, "T", "T", ones(1, this->nth));
+        op.bc_top2_add_d(n-1, "T", "T", -ones(1, this->nth));
+        rhs.setrow(ir-1, zeros(1, this->nth));
+
+        op.bc_bot1_add_l(n, "T", "T", ones(1, this->nth), this->map.D.block(n-1).row(-1));
+        op.bc_bot2_add_l(n, "T", "T", -ones(1, this->nth), this->map.D.block(n).row(0));
+        rhs.setrow(ir, zeros(1, this->nth));
+        ir += this->map.npts[n];
+    }
+
+    op.bc_top1_add_d(ndomains-1, "T", "T", ones(1, this->nth));
+    rhs.setrow(-1, this->T.row(-1));
+
+    op.set_rhs("T", rhs);
+
+    op.solve();
+
+    return op.get_var("T");
+}
+
+int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter) {
+    int n = 1;
+    matrix schw, dschw;
+
+    matrix T_schw = solve_temp_rad();
+
+#if 0
+    FILE *temp_file = fopen("temp.txt", "w");
+    for (int i=0; i<this->nr; i++) {
+        for (int j=0; j<this->nth; j++) {
+            fprintf(temp_file, "%e %d %e %e\n", r(i, j), j, T_schw(i, j), this->T(i, j));
+        }
+    }
+    fclose(temp_file);
+#endif
+
+    schw = -(map.gzz*(D, p)+map.gzt*(p, Dt))*((D, log(T_schw))-eos.del_ad*(D, log(p))) -
+        (map.gzt*(D, p)+map.gtt*(p, Dt))*((log(T_schw), Dt)-eos.del_ad*(log(p), Dt));
+    schw.setrow(0, zeros(1, nth));
+    schw = schw/r/r;
+    schw.setrow(0, zeros(1, nth));
+    schw.setrow(0, -(D.row(0), schw)/D(0, 0));
+
+    dschw = (D, schw);
+
+    for (int i=1; i<this->nr; i++) {
+        if (schw(i-1, -1) * schw(i, -1) < 0) {
+            n++;
+        }
+    }
+
+    r_inter = zeros(n, this->nth);
+    p_inter = zeros(n, this->nth);
+    n = 0;
+    double last_zi = 0.0;
+    for (int i=1; i<this->nr; i++) {
+        if (schw(i-1, -1) * schw(i, -1) < 0) {
+            matrix TT;
+            double dzi, schwi, dschwi;
+            for (int j=0; j<this->nth; j++) {
+                int end = 0, done = 0;
+                double zi = this->z(i-1);
+                while (end < 3 && done++ < 100) {
+                    schwi = map.gl.eval(schw.col(j), zi, TT)(0);
+                    dschwi = (TT, dschw.col(j))(0);
+                    dzi = -schwi/dschwi;
+                    if (fabs(schwi) < 1e-9) {
+                        end = 3;
+                    }
+                    else {
+                        if (fabs(dzi) < 1e-9) end++;
+                        zi += dzi;
+                    }
+                }
+                r_inter(n, j) = map.gl.eval(r.col(j), zi)(0);
+                p_inter(n, j) = map.gl.eval(PRES.col(j), zi)(0);
+                last_zi = zi;
+            }
+            n++;
+        }
+    }
+    r_inter.setrow(-1, this->z(-1) * ones(1, this->nth));
+    p_inter.setrow(-1, this->PRES(-1) * ones(1, this->nth));
+
+    std::cout << "CONV: " << CONVECTIVE << ", ";
+    std::cout << "RAD: " << RADIATIVE << "\n";
+
+    last_zi = 0.0;
+    zone_type = std::vector<int>(n+1);
+    for (int i=0; i<n+1; i++) {
+        double mid_zone = (last_zi+r_inter(i, 0))/2.0;
+        double schwi = map.gl.eval(schw, mid_zone)(0);
+        if (schwi < 0) {
+            zone_type[i] = CONVECTIVE;
+        }
+        else {
+            zone_type[i] = RADIATIVE;
+        }
+        printf("ZONE: [%e, %e]: convection (schw: %e): %d\n",
+                last_zi, r_inter(i, 0),
+                schwi,
+                zone_type[i]);
+        last_zi = r_inter(i, 0);
+    }
+
+    return n+1; // n+1 is the number of zones
 }

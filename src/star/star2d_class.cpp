@@ -918,6 +918,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
             mapping map_new;
             map_new=map;
             map=map0;
+		printf("I call remap in init\n");
             remap(map_new.ndomains,map_new.gl.npts,map_new.nt,map_new.nex);
         } 
         if(version.rev<=71) { // Force remapping for old files

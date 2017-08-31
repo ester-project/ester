@@ -764,7 +764,7 @@ void star1d::solve_temp(solver *op) {
                         op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
                 }
 
-// Special case induced by convective domains
+// Special case induced by convective domains other than the core
 		if(n==iconv && core_convec == 1 ) {
 			op->bc_top2_add_d(n,eqn,"T",ones(1,1)); // continuity of T top of CZ needed
 			op->bc_top1_add_d(n,eqn,"T",-ones(1,1));
@@ -775,7 +775,7 @@ void star1d::solve_temp(solver *op) {
 			op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
 			rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
 		}
-		j0+=map.gl.npts[n];
+		j0+=ndom;
 	}
 	
 	op->set_rhs(eqn,rhs_T);
@@ -855,7 +855,7 @@ void star1d::solve_dim(solver *op) {
 
 void star1d::solve_map(solver *op) {
     DEBUG_FUNCNAME;
-	int n,j0;
+	int n,j0,j1,ndom;
 	matrix rhs;
 	
 	rhs=zeros(ndomains,1);
@@ -869,16 +869,18 @@ void star1d::solve_map(solver *op) {
 	rhs=zeros(ndomains,1);
 	j0=0;
 	for(n=0;n<ndomains;n++) {
-		if(!n) op->add_d(n,"Ri","Ri",ones(1,1));
+		ndom=map.gl.npts[n];
+		if(n==0) op->add_d(n,"Ri","Ri",ones(1,1));
 		else {
 			matrix delta;
-			delta=zeros(1,map.gl.npts[n]);delta(0)=1;delta(-1)=-1;
+			j1=j0+ndom-1;
+			delta=zeros(1,map.gl.npts[n]); delta(0)=1;delta(-1)=-1;
 			op->bc_bot2_add_l(n,"Ri",LOG_PRES,ones(1,1),delta);
-			delta=zeros(1,map.gl.npts[n-1]);delta(0)=1;delta(-1)=-1;
+			delta=zeros(1,map.gl.npts[n-1]); delta(0)=1;delta(-1)=-1;
 			op->bc_bot1_add_l(n,"Ri",LOG_PRES,-ones(1,1),delta);
-			rhs(n)=log(PRES(j0+map.gl.npts[n]-1))-log(PRES(j0))-log(PRES(j0-1))+log(PRES(j0-map.gl.npts[n-1]));
+			rhs(n)=log(PRES(j1))-log(PRES(j0))-log(PRES(j0-1))+log(PRES(j0-map.gl.npts[n-1]));
 		}
-		j0+=map.gl.npts[n];
+		j0+=ndom;
 	}
 	
 	if(conv) {
