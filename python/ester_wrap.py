@@ -1760,8 +1760,8 @@ class star2d(_object):
     def check_map(self):
         return _ester_wrap.star2d_check_map(self)
 
-    def check_convec(self, p_cc, Rcc):
-        return _ester_wrap.star2d_check_convec(self, p_cc, Rcc)
+    def check_CC(self, p_cc, Rcc):
+        return _ester_wrap.star2d_check_CC(self, p_cc, Rcc)
 
     def draw(self, arg2, arg3, parity=0):
         return _ester_wrap.star2d_draw(self, arg2, arg3, parity)
