@@ -60,6 +60,7 @@ class star2d {
 	int stratified_comp;
 	double min_core_size;
 	double dtime,time,delta; // in Myrs
+	std::vector<int> izif; // index (<= ndomains) of zones interfaces
 	std::vector<int> domain_type;
 	#define RADIATIVE 0
 	#define CORE 1

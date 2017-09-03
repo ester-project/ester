@@ -292,11 +292,9 @@ matrix star2d::new_distribute_domains(int ndom,matrix p_inter,std::vector<int> z
 // disappeared)
 
     DEBUG_FUNCNAME;
-    double a,b,p_s;
+    double p_s;
     matrix pif(ndom,1); // pressure at domain interfaces
     int nzones=zone_type.size();
-    int ndz,ndom_sugg,ndzf;
-
 FILE *fic=fopen("pif.txt", "a");
 printf("Start new distribute domains \n");
 printf("nzones =  %d \n",nzones);
@@ -307,39 +305,79 @@ printf("p_inter(nzones-1) %e \n",p_inter(nzones-1));
     p_s=map.leg.eval_00(PRES.row(-1),0)(0);
 fprintf(fic,"p_s= %e\n",p_s);
 
-	if (conv == 0) {
+	if (conv == 0) { // Purely radiative case
            for(int n=0;n<ndom;n++) pif(n)=exp((n+1)*log(p_s)/ndom);
         } else { // convection is now taken into account
 
-// 1 first zone : center -- first interface
-           ndz = round(ndom*log(p_inter(0))/log(p_s)); // because p_c=1.
-printf("ndz=%d ndom*log... =%e \n",ndz,ndom*log(p_inter(0))/log(p_s));
-           a=log(p_inter(0))/ndz; b=a;
- 	   for(int k=0;k<ndz;k++) pif(k)=exp(a*k+b);
-printf("ndz=%d\n",ndz);
-for (int k=0;k<ndom;k++) fprintf(fic,"%d %e \n",k,pif(k));
+// We attribute one domain to each zone and then distribute other domains
+// so as to minimize the "PRES" jump
+// 1/ Check there is enough domains
+	if ( ndom < nzones ) printf("Stop not enough domains!!");
+	if ( ndom == nzones ) {
+         printf("Likely not enough domains, but I try");
+        } else { // This is the general case
+		matrix dlog(nzones,1);
+		int ndom_left=ndom-nzones;
+		int iz,izmax,k,ki,ndom_check;
+		double dlogmax;
+		std::vector <int> ndz,lifi;
+               	izif.clear(); 
+		for (int k=0;k<nzones;k++) {ndz.push_back(1);izif.push_back(1);}
+		//for (int k=0;k<nzones;k++) {ndz.push_back(1);lifi.push_back(1);}
+		for (iz=0; iz<nzones; iz++) {
+                 if (iz==0) { dlog(iz)=fabs(log(p_inter(0)));
+			} else {
+			    dlog(iz)=fabs(log(p_inter(iz)/p_inter(iz-1))) ;
+			}
+		}
+//for (int k=0;k<nzones;k++) fprintf(fic,"%d %e \n",k,dlog(k));
+// insert an additional domain where the PRES drop is max.
+	while (ndom_left >=1) {
+		ndom_left=ndom_left-1;
+                dlogmax=max(dlog);
+		izmax=99;
+                for (iz=0; iz<nzones; iz++) {
+                    if (fabs(dlog(iz)-dlogmax)<1e-15) izmax=iz;
+                }
+		if (izmax==99) printf("izmax = %d, ndom_left= %d\n",izmax,ndom_left);
+                dlog(izmax)=dlog(izmax)*ndz[izmax]/(ndz[izmax]+1);
+		ndz[izmax]=ndz[izmax]+1;
+        }             
+for (int k=0;k<nzones;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
+// check total number of domains
+		ndom_check=0;
+		for (iz=0; iz<nzones;iz++) ndom_check=ndom_check+ndz[iz];
+		printf("ndom_check = %d\n",ndom_check);
+		if (ndom_check != ndom) {
+    			std::cerr << "ERROR: ndoms do not match in new_distrib...\n";
+    			std::terminate();
+		}
+// Now each zone has the optimal number of domains. Let's compute the pif
+// with a law of the form exp(a*k+b)
+		for (k=0;k<ndz[0];k++) pif(k)=exp((k+1)*log(p_inter(0))/ndz[0]);
+		ki=ndz[0]-1;
+                izif[0]=ki;
+			printf("izif (%d) = %d\n",0,ki);
+		for (iz=1; iz<nzones; iz++) {
+			for (k=ki;k<ki+ndz[iz];k++) {
+				double a=log(p_inter(iz)/p_inter(iz-1))/ndz[iz];
+				pif(k)=exp(a*(k-ki)+log(p_inter(iz-1)));
+			}
+ 			ki=ki+ndz[iz];
+			izif[iz]=ki;
+			printf("izif (%d) = %d\n",iz,ki);
+		}
+// last interface is the surface and not account by the foregoing algo
+		pif(ndom-1)=p_inter(nzones-1);
 
-	   int jfirst=ndz;
-           for(int n=0;n<nzones-1;n++) {
-            ndz = round(ndom*log(p_inter(n+1)/p_inter(n))/log(p_s));
-            ndzf = floor(ndom*log(p_inter(n+1)/p_inter(n))/log(p_s));
-            if (ndzf !=0) ndz=ndzf;
-printf("n= %d, ndz=%d ndom*log... =%e \n",n,ndz,ndom*log(p_inter(n+1)/p_inter(n))/log(p_s));
-            if (ndz == 0) {
-             printf("ndz = %e\n",ndom*log(p_inter(n+1)/p_inter(n))/log(p_s));
-             printf("There is a too thin domain; increase ndomains\n");
-             ndom_sugg=0.5*log(p_s)/log(p_inter(n+1)/p_inter(n));
-             printf("Suggested value = %d\n",ndom_sugg);
-            }
-           	a=log(p_inter(n+1)/p_inter(n))/ndz;
-	   	b=log(p_inter(n));
-printf("jfirst= %d, a=%e, b=%e\n",jfirst,a,b);
- 	   	for(int k=0;k<ndz;k++) pif(k+jfirst)=exp(a*k+b);
-for (int k=0;k<ndz;k++) fprintf(fic,"%d %e \n",k,pif(k+jfirst));
- 	        jfirst=jfirst+ndz;
+// Finally we need the index of the interfaces between the zones once the
+// domains have been distributed.
 
-	   } // endfor
+for (int k=0;k<nzones;k++) fprintf(fic,"k= %d p_inter %e \n",k,p_inter(k));
+for (int k=0;k<ndomains;k++) fprintf(fic,"k= %d pif %e \n",k,pif(k));
+exit(0);
 	}
+}
 
     return pif;
 }
