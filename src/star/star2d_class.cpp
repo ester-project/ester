@@ -86,6 +86,7 @@ void star2d::copy(const star2d &A) {
     min_core_size=A.min_core_size;
 
     domain_type=A.domain_type;
+    izif=A.izif;
 
 }
 

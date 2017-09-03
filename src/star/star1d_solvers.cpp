@@ -884,6 +884,11 @@ void star1d::solve_map(solver *op) {
 	}
 	
 	if(conv) {
+// when conv/=0 the code is ready to take into account convective zones.
+//		printf("izif(0) %d \n",izif[0]);
+//		printf("izif(1) %d \n",izif[1]);
+//		printf("izif(2) %d \n",izif[2]);
+
 		for(n=0,j0=0;n<conv;n++) j0+=map.gl.npts[n];
 		n=conv;
 		op->reset(n,"Ri");
