@@ -57,7 +57,7 @@ int main(int argc,char *argv[]) {
 		A.env_convec=0;
 	}
 	SDIRK_solver rk;
-        rk.init(5, "sdirk3"); // 4=nb of variable, here X, rho, lnrho_c, r, logR
+        rk.init(5, "sdirk3"); // 5=nb of variable, here X, rho, lnrho_c, r, logR
         rk.regvar("X", A.Xh);
         rk.regvar("rho", A.rho);
         rk.regvar("log_rhoc", log(A.rhoc)*ones(1,1));
@@ -71,7 +71,7 @@ int main(int argc,char *argv[]) {
         int n_step=0;
         char outfile[256];
 
-        while((state = rk.solve(0.,5.)) != RK_END) {
+        while((state = rk.solve(0.,5.)) != RK_END) { // 5.=t_max in Myrs
                 A.delta = rk.get_delta();
                 A.time = rk.get_t();
                 A.r0 = rk.get_var("r"); // new
