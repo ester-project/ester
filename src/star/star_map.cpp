@@ -375,7 +375,7 @@ for (int k=0;k<nzones;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 
 for (int k=0;k<nzones;k++) fprintf(fic,"k= %d p_inter %e \n",k,p_inter(k));
 for (int k=0;k<ndomains;k++) fprintf(fic,"k= %d pif %e \n",k,pif(k));
-exit(0);
+//exit(0);
 	}
 }
 
@@ -470,10 +470,10 @@ void star2d::check_map() {
 	}
 
 	// New stuf to program....
-	find_zones(R_inter, zone_type, p_inter);
-	pif=new_distribute_domains(ndomains,p_inter,zone_type);
-	R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0)));
-	red->set_R(R);
+	//find_zones(R_inter, zone_type, p_inter);
+	//pif=new_distribute_domains(ndomains,p_inter,zone_type);
+	//R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0)));
+	//red->set_R(R);
 
 
 	if(config.verbose) {printf("Remapping...");fflush(stdout);}

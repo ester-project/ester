@@ -270,11 +270,14 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
 		phiex=zeros(map.nex,map.nt);
                 Wr=zeros(nr,1);	// initialize radial mass flux Wr=rho*Vr
+        printf("I start from scratch end of the else\n");
 	}
 	
-//                printf("time %e dtime %e \n",time,dtime);
+        //printf("juste after else \n");
 	init_comp();
+        //printf("juste after init_comp \n");
 	fill();
+        //printf("juste after fill \n");
         Wr=zeros(nr,1);	// initialize radial mass flux Wr=rho*Vr
 	return 0;
 }

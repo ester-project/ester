@@ -48,9 +48,12 @@ int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
 		nuc_struct &nuc) {
 		
 	int error=0;
+        //printf("start of nuc_calc \n");	
 	
 	if(!strcmp(nuc.name,"simple")) {
+        //printf("nuc_calc 1\n");	
 		error=nuc_simple(X,T,rho,nuc);
+        //printf("nuc_calc 2\n");	
 	} else if(!strcmp(nuc.name,"cesam")) {
 		error=nuc_cesam(X,T,rho,nuc);
     } else {

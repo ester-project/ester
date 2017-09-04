@@ -6,9 +6,12 @@ int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,nuc
 
 	matrix T9;
 	double C,N,XCNO;
+	//printf("start of nuc_simple comp.Z()(-1) %e\n",comp.Z()(-1));
 	double Z=comp.Z()(-1);
+	//printf("nuc_simple 1\n");
 	matrix X(comp.X());
 	
+	//printf("star of nuc_simple\n");
 	T9=T/1e9;
 	C=0.173285;
 	N=0.053152;
