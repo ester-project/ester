@@ -625,7 +625,7 @@ void star1d::solve_temp(solver *op) {
 	qenv=zeros(nr,1);
 	qcore=qenv;
 	j0=0;
-        iconv=6;
+        iconv=4;
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
 		j1=j0+ndom-1;
@@ -717,6 +717,7 @@ void star1d::solve_temp(solver *op) {
 			op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
 			rhs_T(j0)=-T(j0)+T(j0-1);
 		}
+// impose continuity of n.gradT via top conditions except in the convective layer
 		if(n>=conv) {
                      if (core_convec == 0) {
 			if(n<ndomains-1) {
@@ -731,7 +732,7 @@ void star1d::solve_temp(solver *op) {
 				rhs_T(-1)=Ts(0)-T(-1);
 			}
                      } else { // avec core convection
-			if(n<ndomains-1 && n!=iconv) { // cond. on DT suppressed in CZ only.
+			if(n<ndomains-1 && n!=iconv) { // cond. on n.gradT suppressed in CZ only.
 			     op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
                              op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
                              op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
