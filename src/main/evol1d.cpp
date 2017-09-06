@@ -71,7 +71,7 @@ int main(int argc,char *argv[]) {
         int n_step=0;
         char outfile[256];
 
-        while((state = rk.solve(0.,5.)) != RK_END) { // 5.=t_max in Myrs
+        while((state = rk.solve(0.,A.time_max)) != RK_END) { // time_max=maximum time of integration in Myrs
                 A.delta = rk.get_delta();
                 A.time = rk.get_t();
                 A.r0 = rk.get_var("r"); // new
@@ -101,7 +101,7 @@ int main(int argc,char *argv[]) {
 		}
 
 	}
-printf("Newton iteration finished it=%d err=%e time=%e\n",nit,err,A.time);
+printf("Newton iteration ended it=%d err=%e time=%e Xc=%e\n",nit,err,A.time,A.Xh(0,0));
                 rk.set_var("r",A.r); //new
                 rk.set_var("X",A.Xh);
                 rk.set_var("rho",A.rho);

@@ -270,8 +270,16 @@ c
 
       if(nre .lt. 6) go to 65
 c
-      if((izi .eq. 0) .and. (z+xh-1.e-6 .gt. 1 )) go to 61
-      if((izi .ne. 0) .and. (zval+xh-1.e-6 .gt. 1 )) go to 61
+c     if((izi .eq. 0) .and. (z+xh-1.e-6 .gt. 1 )) go to 61
+      if((izi .eq. 0) .and. (z+xh-1.e-6 .gt. 1 )) then
+        print*,'z+xh-1.e-6 =',z+xh-1.e-6
+        go to 61
+      endif
+c     if((izi .ne. 0) .and. (zval+xh-1.e-6 .gt. 1 )) go to 61
+      if((izi .ne. 0) .and. (zval+xh-1.e-6 .gt. 1 )) then
+        print*,'zval+xh-1.e-6 =',zval+xh-1.e-6
+        go to 61
+      endif
       xxh=xh
       xxi=xh
       t6i=t6

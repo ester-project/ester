@@ -1117,6 +1117,10 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
         if(val==NULL) return 2;
         dtime=atof(val);
     }
+    else if(!strcmp(arg,"time_max")) { // maximum time in Myrs
+        if(val==NULL) return 2;
+        time_max=atof(val);
+    }
     else if(!strcmp(arg,"min_core_size")) {
         if(val==NULL) return 2;
         min_core_size=atof(val);

@@ -59,7 +59,7 @@ class star2d {
 	int env_convec;
 	int stratified_comp;
 	double min_core_size;
-	double dtime,time,delta; // in Myrs
+	double dtime,time,time_max,delta; // all times are in Myrs
 	std::vector<int> domain_type;
 	#define RADIATIVE 0
 	#define CORE 1
