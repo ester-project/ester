@@ -60,6 +60,7 @@ class star2d {
 	int stratified_comp;
 	double min_core_size;
 	double dtime,time,time_max,delta; // all times are in Myrs
+	int nstep_done;
 	std::vector<int> domain_type;
 	#define RADIATIVE 0
 	#define CORE 1

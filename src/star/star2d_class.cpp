@@ -1118,8 +1118,13 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
         dtime=atof(val);
     }
     else if(!strcmp(arg,"time_max")) { // maximum time in Myrs
-        if(val==NULL) return 2;
+        if(val==NULL) {time_max=2e4; return 2;} // if no max entered time_max=20Gyrs
+        //if(val==NULL) return 2; // if no max entered time_max=20Gyrs
         time_max=atof(val);
+    }
+    else if(!strcmp(arg,"nstep")) { // for a restart number of time step done
+        if(val==NULL) {nstep_done=0; return 2;}
+        nstep_done=atof(val);
     }
     else if(!strcmp(arg,"min_core_size")) {
         if(val==NULL) return 2;

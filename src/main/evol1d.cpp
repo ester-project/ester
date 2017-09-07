@@ -3,7 +3,9 @@ ester 1d -M 5 -o M5_initial, for the evolution of a 5Msun star
 
 then
 
-evol1d -i M5_initial -dtime 1 -o M5ev + all needed options (-noplot..)
+evol1d -i M5_initial -dtime 1 -time_max 50 -o M5ev 
+                         + all needed options (-noplot..)
+if no time_max given the limit is 20Gyrs
 
 which generates files every 1 Myr: M5ev_0001, M5ev_0002, etc
 
@@ -21,7 +23,7 @@ which generates files every 1 Myr: M5ev_0001, M5ev_0002, etc
 int main(int argc,char *argv[]) {
 
 	int nit,last_it;
-	double err;
+	double err,t0,tmax;
 	tiempo t;
 	configuration config(argc,argv);
 	figure *fig = NULL;
@@ -40,7 +42,9 @@ int main(int argc,char *argv[]) {
         return 1;
     }
 
-	
+	t0=A.time; // input of starting time in Myrs
+        tmax=A.time_max;
+	printf("tmax = %e\n",tmax);
 	matrix tt(config.maxit+1,1),error(config.maxit+1,1);
 
 	//last_it=nit>=config.maxit; // last_it=0 normally
@@ -68,10 +72,10 @@ int main(int argc,char *argv[]) {
 
 // Start time loop
         int state;
-        int n_step=0;
+        int n_step=A.nstep_done;
         char outfile[256];
 
-        while((state = rk.solve(0.,A.time_max)) != RK_END) { // time_max=maximum time of integration in Myrs
+        while((state = rk.solve(t0,tmax)) != RK_END) { // tmax=maximum time of integration in Myrs
                 A.delta = rk.get_delta();
                 A.time = rk.get_t();
                 A.r0 = rk.get_var("r"); // new
