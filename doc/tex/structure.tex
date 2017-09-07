@@ -741,7 +741,7 @@ with
 \tt L &\equiv&\tt map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1)\nonumber\\
 \tt R &\equiv&\tt map.leg.I_{00}\nonumber\\
 \tt I &\equiv&\tt
-(r*r*rz*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,-1))\nonumber 
+(r*r*rz*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,-1))\label{insexamp}
 \end{eqnarray}
 
 
@@ -773,8 +773,9 @@ where we have
 Then we introduce the masks of the convective zones (CZ) {\tt qconv} and
 of the radiative zones (RZ) {\tt qrad}.
 
-\[ {\tt qconv}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm CZ}\]
-\[ {\tt qrad}(\vr) = 1 \qquad {\rm if}\quad \vr \in {\rm RZ}\]
+\begin{eqnarray} {\tt qconv}(\vr) &=& 1 \qquad {\rm if}\quad \vr \in {\rm CZ}\nonumber \\
+{\tt qrad}(\vr) &=& 1 \qquad {\rm if}\quad \vr \in {\rm RZ} \nonumber
+\end{eqnarray}
 and of course {\tt qconv+qrad=1} $\forall \vr$.
 
 Hence, the temperature equation can be written
@@ -1061,10 +1062,12 @@ surf})=0$, so the dot is just a "1".
 
 Meaning of the symbols (but see also Fig.~\ref{matp}):
 \begin{itemize}
+\item $d\equiv$ diagonal $\equiv$ essentially multiplication by a
+function of $(\zeta,\theta)$.
 \item $\ell\equiv$ left operator $\equiv$ Operator on the radial grid
 \item $r\equiv$ right operator $\equiv$ Operator on the $\theta$-grid
-\item $d\equiv$ both $\equiv$ Operator on the $\zeta,\theta$-grid, namely multiplication by a
-function of $(\zeta,\theta)$.
+\item $i\equiv$ inside $\equiv$ multiplication inside the operator, namely before
+applying the operator (see \eq{insexamp})
 \item $ex\equiv$ concerning the exterior (vacuum) domain.
 
 \item $1$ and $2$: If we consider the $n$th domain, interface conditions with the $n-1$-th
