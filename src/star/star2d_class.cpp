@@ -25,6 +25,8 @@ star2d::star2d() : nr(map.gl.N), nth(map.leg.npts), nex(map.ex.gl.N),
     version.svn=0;
     stratified_comp = 0;
     config.dump_iter = 0;
+    time_max=2e4;
+    nstep_done=0;
 }
 
 star2d::~star2d() {
@@ -86,6 +88,10 @@ void star2d::copy(const star2d &A) {
     min_core_size=A.min_core_size;
 
     domain_type=A.domain_type;
+    time_max=A.time_max;
+    time=A.time;
+    dtime=A.dtime;
+    nstep_done=A.nstep_done;
 
 }
 
@@ -1118,12 +1124,11 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
         dtime=atof(val);
     }
     else if(!strcmp(arg,"time_max")) { // maximum time in Myrs
-        if(val==NULL) {time_max=2e4; return 2;} // if no max entered time_max=20Gyrs
-        //if(val==NULL) return 2; // if no max entered time_max=20Gyrs
+        if(val==NULL)  return 2;
         time_max=atof(val);
     }
     else if(!strcmp(arg,"nstep")) { // for a restart number of time step done
-        if(val==NULL) {nstep_done=0; return 2;}
+        if(val==NULL)  return 2;
         nstep_done=atof(val);
     }
     else if(!strcmp(arg,"min_core_size")) {

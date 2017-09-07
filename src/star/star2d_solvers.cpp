@@ -44,6 +44,7 @@ void star2d::init_comp() {
         } else {
         comp["H"]=Xh;
         comp["He4"]=ones(nr,nth)-Xh-Z0*ones(nr,nth);
+        comp["He3"]=zeros(nr,nth);
         }
 
 	if(!conv) return;
