@@ -290,7 +290,7 @@ printf("of round = %e\n",ndom*log(p_cc)/log(p_s));
     return pif;
 }
 
-matrix star2d::new_distribute_domains(int ndom,matrix p_inter,std::vector<int> zone_type) {
+matrix star2d::new_distribute_domains(int ndom,matrix p_inter) { //,std::vector<int> zone_type) {
 // ndom ==> input
 // called by check_map to redistribute domain when conv has changed (CC has appeared or
 // disappeared)
@@ -325,7 +325,7 @@ fprintf(fic,"p_s= %e\n",p_s);
 		int iz,izmax,k,ki,ndom_check;
 		double dlogmax;
 		std::vector <int> ndz,lifi;
-               	izif.clear(); 
+               	izif.clear(); // izif = index of zones interfaces
 		for (int k=0;k<nzones;k++) {ndz.push_back(1);izif.push_back(1);}
 		//for (int k=0;k<nzones;k++) {ndz.push_back(1);lifi.push_back(1);}
 		for (iz=0; iz<nzones; iz++) {
@@ -434,7 +434,7 @@ void star2d::check_map() {
 	DEBUG_FUNCNAME;
 	double pcc;
 	matrix Rcc,pif, R_inter,p_inter;
-	std::vector <int> zone_type;
+//	std::vector <int> zone_type;
 	int conv_new;
 	remapper *red;
 		matrix R(ndomains+1,nth);
@@ -477,9 +477,10 @@ void star2d::check_map() {
 
 	// New stuf to program....
 	//find_zones(R_inter, zone_type, p_inter);
-	//pif=new_distribute_domains(ndomains,p_inter,zone_type);
-	//R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0)));
-	//red->set_R(R);
+	find_zones(R_inter, p_inter);
+	pif=new_distribute_domains(ndomains,p_inter); //,zone_type);
+	R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0)));
+	red->set_R(R);
 
 
 	if(config.verbose) {printf("Remapping...");fflush(stdout);}
@@ -603,7 +604,8 @@ matrix star2d::solve_temp_rad() {
     return op.get_var("T");
 }
 
-int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter) {
+//int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter) {
+int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     int n = 1;
     matrix schw, dschw;
 
