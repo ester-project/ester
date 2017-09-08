@@ -259,6 +259,11 @@ public:
 	void reset(int iblock,int ieq);
 	void reset(int iblock,const char *eq_name);
 	void reset(const char *eq_name);
+// New stuff from Paco to reset BC and IC
+	void reset_bc_bot(int iblock, int ieq);
+	void reset_bc_top(int iblock, int ieq);
+	void reset_bc_bot(int iblock, const char *eq_name);
+	void reset_bc_top(int iblock, const char *eq_name);
 	void regvar(const char *var_name,int dependent=0);
 	inline void regvar_dep(const char *var_name) {regvar(var_name,1);}
 	int get_nvar();

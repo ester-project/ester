@@ -2122,5 +2122,28 @@ void solver::solve_dep() {
     delete [] x;
 }
 
+// New stuff to reset boundary and interface conditions
+
+void solver::reset_bc_bot(int iblock, int ieq) {
+
+	sync=0;
+	if(iblock) bc_bot1[iblock].reset(ieq);
+	bc_bot2[iblock].reset(ieq);
+}
+
+void solver::reset_bc_top(int iblock, int ieq) {
+
+	sync=0;
+	bc_top1[iblock].reset(ieq);
+	if(iblock<nb-1) bc_top2[iblock].reset(ieq);
+}
+
+void solver::reset_bc_bot(int iblock,const char *eq_name) {
+	reset_bc_bot(iblock, get_id(eq_name));
+}
+
+void solver::reset_bc_top(int iblock,const char *eq_name) {
+	reset_bc_top(iblock, get_id(eq_name));
+}
 
 

@@ -62,6 +62,7 @@ class star2d {
 	double dtime,time,delta; // in Myrs
 	std::vector<int> izif; // index (<= ndomains) of zones interfaces
 	std::vector<int> domain_type;
+	std::vector<int> zone_type;
 	#define RADIATIVE 0
 	#define CORE 1
 	#define CONVECTIVE 2
@@ -153,8 +154,10 @@ class star2d {
 	virtual void check_map();
 	virtual int check_CC(double &p_cc,matrix &Rcc);
         matrix solve_temp_rad();
-        int find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter);
-        matrix new_distribute_domains(int ndom,matrix p_inter,std::vector<int> zone_type);
+        //int find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter);
+        int find_zones(matrix& r_inter, matrix& p_inter);
+        //matrix new_distribute_domains(int ndom,matrix p_inter,std::vector<int> zone_type);
+        matrix new_distribute_domains(int ndom,matrix p_inter);
 
 	
 	void draw(figure *,const matrix &,int parity=0) const;

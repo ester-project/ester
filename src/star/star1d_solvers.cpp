@@ -613,7 +613,8 @@ void star1d::solve_temp(solver *op) {
 	qenv=zeros(nr,1);
 	qcore=qenv;
 	j0=0;
-        iconv=4;
+	iconv=0;
+        if (core_convec !=0) iconv=izif[2]; // Take care of the first convective layer above CC
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
 		j1=j0+ndom-1;
@@ -863,15 +864,31 @@ void star1d::solve_temp(solver *op) {
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
 		j1=j0+ndom-1;
-// impose continuity of T via bottom conditions
-		if(!n) {
-			op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
-			rhs_T(j0)=1.-T(j0);
-		} else {
+// impose continuity of T via bottom conditions except in the iconv+1 domain
+                if(n==0) {
+                        op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
+                        rhs_T(j0)=1.-T(j0);
+                }
+              if (core_convec ==0) {
+		if(n!=0) {
 			op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
 			op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
 			rhs_T(j0)=-T(j0)+T(j0-1);
-		}
+		         }
+	       } else { // core convection
+                 if (n != iconv+1 && n !=0) {
+                        op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
+                        op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
+                        rhs_T(j0)=-T(j0)+T(j0-1);
+		} else if (n==iconv+1 ) { // case rad. dom. above CZ
+			op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
+			op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
+			op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
+			rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
+               }
+              }
+
+
 // impose continuity of n.gradT via top conditions except in the convective layer
 		if(n>=conv) {
                      if (core_convec == 0) {
@@ -925,12 +942,12 @@ void star1d::solve_temp(solver *op) {
 			op->bc_top2_add_d(n,eqn,"T",ones(1,1)); // continuity of T top of CZ needed
 			op->bc_top1_add_d(n,eqn,"T",-ones(1,1));
 			rhs_T(j1)=T(j1)-T(j1+1);
-		} else if(n==iconv+1 && core_convec == 1) { // case rad. dom. above CZ
-			op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
-			op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
-			op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
-			rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
-		}
+		}// else if(n==iconv+1 && core_convec == 1) { // case rad. dom. above CZ
+		//	op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
+		//	op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
+		//	op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
+		//	rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
+		//}
 		j0+=ndom;
 	}
 	
@@ -1039,11 +1056,15 @@ void star1d::solve_map(solver *op) {
 	}
 	
 	if(conv) {
-// when conv/=0 the code is ready to take into account convective zones.
-//		printf("izif(0) %d \n",izif[0]);
-//		printf("izif(1) %d \n",izif[1]);
-//		printf("izif(2) %d \n",izif[2]);
+/* when conv/=0 the code is ready to take into account convective zones.
+		printf("in solve_map\n");
+		printf("izif(0) %d \n",izif[0]);
+		printf("izif(1) %d \n",izif[1]);
+		printf("izif(2) %d \n",izif[2]);
+OK verified*/
 
+// Take care of the CC-RZ interface located at interface number "conv"
+// j0 is the radial index of this interface
 		for(n=0,j0=0;n<conv;n++) j0+=map.gl.npts[n];
 		n=conv;
 		op->reset(n,"Ri");
@@ -1062,6 +1083,22 @@ void star1d::solve_map(solver *op) {
 		eq.bc_bot2_add(op,n,"Ri","r",ones(1,nth));
 			
 		rhs(n)=-eq.eval()(j0);	
+
+// Take care of convective layers
+// number of zones=number of interface+1 (the surface)
+		int nzones=zone_type.size();
+		//printf("in solve_map nzones=%d\n",nzones);
+
+		for (int iz=1;iz<nzones-1;iz++) {
+		        for(n=0,j0=0;n<izif[iz]+1;n++) j0+=map.gl.npts[n];
+			n=izif[iz]+1; // on les gere comme des CL bottom du domaine au dessus
+			eq.bc_bot2_add(op,n,"Ri","p",ones(1,nth));
+			eq.bc_bot2_add(op,n,"Ri","s",ones(1,nth));
+			eq.bc_bot2_add(op,n,"Ri","r",ones(1,nth));
+		        rhs(n)=-eq.eval()(j0);	
+					  }
+
+
 	}
 	op->set_rhs("Ri",rhs);
 }
