@@ -833,15 +833,15 @@ void star2d::solve_temp(solver *op) {
 // Temperature field
 	
 	matrix rhs_T,rhs_Lambda;
-	matrix TT,qcore,qenv;
+	matrix TT,qconv,qrad;
 	
-	qenv=zeros(nr,nth);
-	qcore=qenv;
+	qrad=zeros(nr,nth);
+	qconv=qrad;
 	j0=0;
 // define the grid-points belonging to the core
 	for(n=0;n<ndomains;n++) {
-		if(n<conv) qcore.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth));
-		else qenv.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth));
+		if(n<conv) qconv.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth));
+		else qrad.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth));
 		j0+=map.gl.npts[n];
 	}
 	
@@ -867,18 +867,18 @@ void star2d::solve_temp(solver *op) {
 // Recall eqn is log_T
 	div_Frad=-div(-xi_*grad(T_))/xi_;
 	
-	div_Frad.add(op,eqn,"T",qenv);
-	div_Frad.add(op,eqn,"opa.xi",qenv);
-	div_Frad.add(op,eqn,"r",qenv);
-	rhs_T-=div_Frad.eval()*qenv;
+	div_Frad.add(op,eqn,"T",qrad);
+	div_Frad.add(op,eqn,"opa.xi",qrad);
+	div_Frad.add(op,eqn,"r",qrad);
+	rhs_T-=div_Frad.eval()*qrad;
 
 // Explicit the expression of the functional derivative of the 
 // temperature equation	
-	op->add_d(eqn,"nuc.eps",qenv*Lambda*rho/opa.xi);
-	op->add_d(eqn,"rho",qenv*Lambda*nuc.eps/opa.xi);	
-	op->add_d(eqn,"Lambda",qenv*rho*nuc.eps/opa.xi);
-	op->add_d(eqn,"opa.xi",-qenv*Lambda*rho*nuc.eps/opa.xi/opa.xi);
-	rhs_T+=-qenv*Lambda*rho*nuc.eps/opa.xi;
+	op->add_d(eqn,"nuc.eps",qrad*Lambda*rho/opa.xi);
+	op->add_d(eqn,"rho",qrad*Lambda*nuc.eps/opa.xi);	
+	op->add_d(eqn,"Lambda",qrad*rho*nuc.eps/opa.xi);
+	op->add_d(eqn,"opa.xi",-qrad*Lambda*rho*nuc.eps/opa.xi/opa.xi);
+	rhs_T+=-qrad*Lambda*rho*nuc.eps/opa.xi;
 	
 	// Advection
 	/*
@@ -889,14 +889,14 @@ void star2d::solve_temp(solver *op) {
 	rhov_=curl(G_*phivec);
 	adv=-T_*(rhov_,grad(s_))/xi_;
 	
-	adv.add(op,eqn,"T",qenv*Ekman*sqrt(rhoc*pc)*R);
-	adv.add(op,eqn,"s",qenv*Ekman*sqrt(rhoc*pc)*R);
-	adv.add(op,eqn,"G",qenv*Ekman*sqrt(rhoc*pc)*R);
-	adv.add(op,eqn,"opa.xi",qenv*Ekman*sqrt(rhoc*pc)*R);
+	adv.add(op,eqn,"T",qrad*Ekman*sqrt(rhoc*pc)*R);
+	adv.add(op,eqn,"s",qrad*Ekman*sqrt(rhoc*pc)*R);
+	adv.add(op,eqn,"G",qrad*Ekman*sqrt(rhoc*pc)*R);
+	adv.add(op,eqn,"opa.xi",qrad*Ekman*sqrt(rhoc*pc)*R);
 	
 	matrix advec;
 	
-	advec=qenv*Ekman*sqrt(rhoc*pc)*R*adv.eval();
+	advec=qrad*Ekman*sqrt(rhoc*pc)*R*adv.eval();
 	
 	op->add_d(eqn,"log_R",advec);
 	op->add_d(eqn,"log_pc",0.5*advec);
@@ -905,9 +905,9 @@ void star2d::solve_temp(solver *op) {
 	*/
 
 //Core convection, equation ds/dzeta=0
-	op->add_l(eqn,"s",qcore,D);
-	//rhs_T+=-qcore*(D,eos.s);
-	rhs_T+=-qcore*(D,entropy());
+	op->add_l(eqn,"s",qconv,D);
+	//rhs_T+=-qconv*(D,eos.s);
+	rhs_T+=-qconv*(D,entropy());
 	
 	rhs_Lambda=zeros(ndomains,1);
 	

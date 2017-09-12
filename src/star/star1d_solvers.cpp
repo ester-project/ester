@@ -630,10 +630,10 @@ void star1d::solve_temp(solver *op) {
 	//Temperature
 	
 	matrix rhs_T,rhs_Lambda;
-	matrix qcore,qenv;
+	matrix qconv,qrad;
 	
-	qenv=zeros(nr,1);
-	qcore=qenv;
+	qrad=zeros(nr,1);
+	qconv=qrad;
 	j0=0;
 	iconv=0;
 	printf("in solve temp core_convec = %d\n",core_convec);
@@ -643,12 +643,12 @@ void star1d::solve_temp(solver *op) {
 		ndom=map.gl.npts[n];
 		j1=j0+ndom-1;
 		if(n<conv) {
-                    qcore.setblock(j0,j1,0,0,ones(ndom,1));
+                    qconv.setblock(j0,j1,0,0,ones(ndom,1));
                 } else if (n==iconv && core_convec==1) {
-                //qenv.setblock(j0,j1,0,0,ones(ndom,1));
-                qcore.setblock(j0,j1,0,0,ones(ndom,1));
+                //qrad.setblock(j0,j1,0,0,ones(ndom,1));
+                qconv.setblock(j0,j1,0,0,ones(ndom,1));
                 }
-		else qenv.setblock(j0,j1,0,0,ones(ndom,1));
+		else qrad.setblock(j0,j1,0,0,ones(ndom,1));
 		j0+=ndom;
 	}
 	
@@ -668,17 +668,17 @@ void star1d::solve_temp(solver *op) {
 
 	div_Frad=-div(-xi_*grad(T_))/xi_;
 	
-	div_Frad.add(op,eqn,"T",qenv);
-	div_Frad.add(op,eqn,"opa.xi",qenv);
-	div_Frad.add(op,eqn,"r",qenv);
-	rhs_T-=div_Frad.eval()*qenv;
+	div_Frad.add(op,eqn,"T",qrad);
+	div_Frad.add(op,eqn,"opa.xi",qrad);
+	div_Frad.add(op,eqn,"r",qrad);
+	rhs_T-=div_Frad.eval()*qrad;
 
 	
-	op->add_d(eqn,"nuc.eps",qenv*Lambda*rho/opa.xi);
-	op->add_d(eqn,"rho",qenv*Lambda*nuc.eps/opa.xi);	
-	op->add_d(eqn,"Lambda",qenv*rho*nuc.eps/opa.xi);
-	op->add_d(eqn,"opa.xi",-qenv*Lambda*rho*nuc.eps/opa.xi/opa.xi);
-	rhs_T+=-qenv*Lambda*rho*nuc.eps/opa.xi;
+	op->add_d(eqn,"nuc.eps",qrad*Lambda*rho/opa.xi);
+	op->add_d(eqn,"rho",qrad*Lambda*nuc.eps/opa.xi);	
+	op->add_d(eqn,"Lambda",qrad*rho*nuc.eps/opa.xi);
+	op->add_d(eqn,"opa.xi",-qrad*Lambda*rho*nuc.eps/opa.xi/opa.xi);
+	rhs_T+=-qrad*Lambda*rho*nuc.eps/opa.xi;
 	
 	
 	//Convection
@@ -696,23 +696,23 @@ void star1d::solve_temp(solver *op) {
 		
 		div_Fconv=-div(-rho_*T_*grad(s_)*kc_)/xi_;
 		
-		div_Fconv.add(op,eqn,"T",qenv);
-		div_Fconv.add(op,eqn,"rho",qenv);
-		div_Fconv.add(op,eqn,"s",qenv);
-		div_Fconv.add(op,eqn,"r",qenv);
-		div_Fconv.add(op,eqn,"opa.xi",qenv);
+		div_Fconv.add(op,eqn,"T",qrad);
+		div_Fconv.add(op,eqn,"rho",qrad);
+		div_Fconv.add(op,eqn,"s",qrad);
+		div_Fconv.add(op,eqn,"r",qrad);
+		div_Fconv.add(op,eqn,"opa.xi",qrad);
 		
-		add_kconv(op,eqn,div_Fconv.jacobian("kc",0,0).eval()*qenv);
-		add_dkconv_dz(op,eqn,div_Fconv.jacobian("kc",1,0).eval()*qenv);
+		add_kconv(op,eqn,div_Fconv.jacobian("kc",0,0).eval()*qrad);
+		add_dkconv_dz(op,eqn,div_Fconv.jacobian("kc",1,0).eval()*qrad);
 		
-		rhs_T-=div_Fconv.eval()*qenv;
+		rhs_T-=div_Fconv.eval()*qrad;
 		
 	}*/
 	
 	//Core convection
-	op->add_l(eqn,"s",qcore,D);
-	//rhs_T+=-qcore*(D,eos.s);
-	rhs_T+=-qcore*(D,entropy());
+	op->add_l(eqn,"s",qconv,D);
+	//rhs_T+=-qconv*(D,eos.s);
+	rhs_T+=-qconv*(D,entropy());
 	
 	rhs_Lambda=zeros(ndomains,1);
 	
