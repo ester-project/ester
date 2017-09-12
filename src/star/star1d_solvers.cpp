@@ -636,8 +636,8 @@ void star1d::solve_temp(solver *op) {
 	qconv=qrad;
 	j0=0;
 	iconv=0;
-	printf("in solve temp core_convec = %d\n",core_convec);
-	printf("in solve temp izif[2] = %d\n",izif[2]);
+	//printf("in solve temp core_convec = %d\n",core_convec);
+	//printf("in solve temp izif[2] = %d\n",izif[2]);
         if (core_convec !=0) iconv=izif[2]; // Take care of the first convective layer above CC
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
