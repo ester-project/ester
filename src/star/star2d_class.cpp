@@ -223,6 +223,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("Xc",&Xc);
     fp.write("conv",&conv);
     fp.write("domain_type",&domain_type[0],ndomains);
+    fp.write("izif",&izif[0],ndomains);
     fp.write("surff",&surff);
     fp.write("Tc",&Tc);
     fp.write("pc",&pc);
@@ -368,6 +369,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
 
     domain_type.resize(ndomains);
+    izif.resize(ndomains);
     if (read_attr(star, "domain_type", &domain_type[0])) {
         for (int n=0; n<ndomains; n++) {
             if (n < conv) domain_type[n] = CORE;
@@ -581,6 +583,8 @@ int star2d::read(const char *input_file, int dim) {
     fp.read("Xc",&Xc);
     fp.read("conv",&conv);
     domain_type.resize(ndomains);
+    izif.resize(ndomains);
+    fp.read("izif",&izif[0]);
     if(fp.read("domain_type",&domain_type[0])) {
         for(int n=0;n<ndomains;n++) {
             if(n<conv) domain_type[n]=CORE;
@@ -780,6 +784,7 @@ int star2d::read_old(const char *input_file){
     version.rev=0;
     version.svn=1;
     domain_type.resize(ndomains);
+    izif.resize(ndomains);
     for(int n=0;n<ndomains;n++) {
         if(n<conv) domain_type[n]=CORE;
         else domain_type[n]=RADIATIVE;
@@ -936,6 +941,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         conv=0;
         time=0.;
         domain_type.resize(ndomains);
+        izif.resize(ndomains);
         for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
     }
     Xh_prec=Xh;

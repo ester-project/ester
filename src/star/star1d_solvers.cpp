@@ -91,24 +91,33 @@ double star1d::solve(solver *op) {
 	matrix rho_prec;
 	double err,err2;
 	
-//	printf("************start of star1d::solve\n");
+	printf("**********  start of star1d::solve\n");
 	check_map();
 	
 	op->reset();
+	if (config.verbose == 19) printf("solve : check_map done\n");
 	solve_definitions(op);
+	if (config.verbose == 19) printf("solve : check_map done\n");
 	solve_poisson(op);
+	if (config.verbose == 19) printf("solve : check_map done\n");
 	solve_pressure(op);
+	if (config.verbose == 19) printf("solve : check_map done\n");
 	solve_temp(op);
+	if (config.verbose == 19) printf("solve : temp done\n");
 	solve_atm(op);
 	solve_dim(op);
 	solve_map(op);
 	solve_gsup(op);
 	solve_Teff(op);
+	if (config.verbose == 19) printf("solve : Teff done\n");
 // Evolution of Xh
         solve_Xh(op);
+	if (config.verbose == 19) printf("solve : Xh done\n");
         solve_Wr(op);
+	if (config.verbose == 19) printf("solve : Wr done\n");
 	
 	op->solve(info);
+	if (config.verbose == 19) printf("solve : solve done\n");
 	
 // Some output verbose ----------------------
 	if (config.verbose) {
@@ -548,6 +557,7 @@ void star1d::solve_Wr(solver *op) {
 
 void star1d::solve_temp(solver *op) {
     DEBUG_FUNCNAME;
+	if (config.verbose == 19) printf("in solve temp start \n");
 	int n,j0,j1,ndom,iconv;
 	matrix q;
 	char eqn[8];
@@ -614,6 +624,8 @@ void star1d::solve_temp(solver *op) {
 	qcore=qenv;
 	j0=0;
 	iconv=0;
+	printf("in solve temp core_convec = %d\n",core_convec);
+	printf("in solve temp izif[2] = %d\n",izif[2]);
         if (core_convec !=0) iconv=izif[2]; // Take care of the first convective layer above CC
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
