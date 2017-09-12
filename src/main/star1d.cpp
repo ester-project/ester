@@ -29,6 +29,8 @@ int main(int argc,char *argv[]) {
         ester_err("Could not initialize star");
         return 1;
     }
+        //A.config.verbose=config.verbose;
+	printf("verbose= %d\n",A.config.verbose);
 
 	nit=0;
         A.time+=A.dtime;
@@ -50,6 +52,7 @@ int main(int argc,char *argv[]) {
 		A.env_convec=0;
 	}
 	err=1;
+	printf("core_convec_set = %d env_convec_set=%d\n",core_convec_set,env_convec_set);
 	while(!last_it) {
 		if(err<0.1&&!*config.input_file) {
 			A.core_convec=core_convec_set;

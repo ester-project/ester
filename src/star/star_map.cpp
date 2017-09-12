@@ -277,7 +277,7 @@ for (int k=0;k<ndom;k++) fprintf(fic,"%d %e \n",k,pif(k));
            for(int n=0;n<ndom;n++) pif(n)=exp((n+1)*log(p_s)/ndom);
         } else {
            ndc=round(ndom*log(p_cc)/log(p_s));
-           if (ndc == 0) {ndc=1; printf("ndc\n");}
+           if (ndc == 0) {ndc=1; printf("ndc = %d\n",ndc);}
            for(int n=0;n<ndc;n++) pif(n)=exp((n+1)*log(p_cc)/ndc);
            double a=log(p_s/p_cc)/(ndom-ndc);
 	   double b=log(p_cc)-a*(ndc-1);
@@ -325,9 +325,10 @@ fprintf(fic,"p_s= %e\n",p_s);
 		int iz,izmax,k,ki,ndom_check;
 		double dlogmax;
 		std::vector <int> ndz,lifi;
-               	izif.clear(); // izif = index of zones interfaces
-		for (int k=0;k<nzones;k++) {ndz.push_back(1);izif.push_back(1);}
-		//for (int k=0;k<nzones;k++) {ndz.push_back(1);lifi.push_back(1);}
+               	//izif.clear(); // izif = index of zones interfaces
+		for (int k=0;k<nzones;k++) {ndz.push_back(1);izif[k]=1;}
+	//for (int k=0;k<nzones;k++) {ndz.push_back(1);izif.push_back(1);}
+	//for (int k=0;k<nzones;k++) {ndz.push_back(1);lifi.push_back(1);}
 		for (iz=0; iz<nzones; iz++) {
                  if (iz==0) { dlog(iz)=fabs(log(p_inter(0)));
 			} else {
@@ -438,7 +439,7 @@ void star2d::check_map() {
 	int conv_new;
 	remapper *red;
 		matrix R(ndomains+1,nth);
-
+	printf("Start of check_map conv=%d core_convec=%d\n",conv,core_convec);
 	if(check_CC(pcc,Rcc)!=conv) { // does the following if CC appears or disappears
 		red=new remapper(map);
 		if(conv) { // CC has disappeared !
@@ -451,6 +452,7 @@ void star2d::check_map() {
 			R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0)));
 			red->set_R(R);
 			domain_type.resize(ndomains);
+			izif.resize(ndomains);
 		} else { // There is a CC that has been discovered by check_conv
 			conv=1;
 			pif=distribute_domains(ndomains,conv_new,pcc);
@@ -469,7 +471,8 @@ void star2d::check_map() {
 // called after one Newton iteration
 		red=new remapper(map);
 		//printf("call remap_domains\n");
-		if(!remap_domains(ndomains,*red)) {delete red;return;} 
+		if(!remap_domains(ndomains,*red)) {delete red;return;} //WARNING : prevents from
+									//searching new CZ
 // If remap_domain false (no remapping needed) then returns
 // If remapping true do interp below
 // note that remap_domain call distribute_domain(with check option)
@@ -477,6 +480,7 @@ void star2d::check_map() {
 
 	// New stuf to program....
 	//find_zones(R_inter, zone_type, p_inter);
+	//if (core_convec == 0) return;
 	find_zones(R_inter, p_inter);
 	pif=new_distribute_domains(ndomains,p_inter); //,zone_type);
 	R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0)));
@@ -498,9 +502,10 @@ void star2d::check_map() {
 
 int star2d::check_CC(double &p_cc,matrix &Rcc) {
     DEBUG_FUNCNAME;
+	
+    printf("++++ Start of CHECK_CONVEC, core_convec = %d\n",core_convec);
     if(!core_convec) return 0; // core_covec: input param to disable CC
 
-    //printf("++++ Start of CHECK_CONVEC, core_convec = %d\n",core_convec);
     if(conv) {
         int j=0;
         for(int n=0;n<conv;n++) j+=map.gl.npts[n]; // number of grid in CC
@@ -620,6 +625,7 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     }
     fclose(temp_file);
 #endif
+	printf("Start of find zone\n");
 
     schw = -(map.gzz*(D, p)+map.gzt*(p, Dt))*((D, log(T_schw))-eos.del_ad*(D, log(p))) -
         (map.gzt*(D, p)+map.gtt*(p, Dt))*((log(T_schw), Dt)-eos.del_ad*(log(p), Dt));
@@ -689,6 +695,6 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
                 zone_type[i]);
         last_zi = r_inter(i, 0);
     }
-
+	printf("In find_zones n+1=%d\n",n+1);
     return n+1; // n+1 is the number of zones
 }

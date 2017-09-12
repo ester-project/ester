@@ -170,6 +170,7 @@ class star2d:
         self.Dt         = _mat_to_numpy(self._s.Dt)
         self.Dt2        = _mat_to_numpy(self._s.Dt2)
         self.xif        = _double_to_numpy(self._s.map.gl.xif, self.ndomains+1, 1)
+        self.core_convec      = self._s.core_convec
         self._surff      = self._s.surff
         self.Omega_bk   = self._s.Omega_bk
         self.Omega      = self._s.Omega

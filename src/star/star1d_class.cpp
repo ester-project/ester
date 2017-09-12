@@ -151,6 +151,7 @@ int star1d::read_old(const char *input_file) {
 	version.svn=1;
     version.name = std::string("0.0 svn 1");
 	domain_type.resize(ndomains);
+	izif.resize(ndomains);
 	for(int n=0;n<ndomains;n++) {
 		if(n<conv) domain_type[n]=CORE;
 		else domain_type[n]=RADIATIVE;
@@ -276,6 +277,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		w=0*T;
 		conv=0;
 		domain_type.resize(ndomains);
+		izif.resize(ndomains);
 		for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
 		phiex=zeros(map.nex,map.nt);
                 Wr=zeros(nr,1);	// initialize radial mass flux Wr=rho*Vr
@@ -357,7 +359,7 @@ void star1d::dump_info() {
 	printf("\tAtmosphere = %s\n",atm.name);
 	printf("\tsurff = %e\n",surff);
 	printf("\tcore_convec = %d\n",core_convec);
-	printf("\tenv_convec = %d\n",core_convec);
+	printf("\tenv_convec = %d\n",env_convec);
 	printf("\tmin_core_size = %e\n",min_core_size);
 	printf("\n");
 	
