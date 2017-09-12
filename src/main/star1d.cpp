@@ -9,23 +9,23 @@
 
 int main(int argc,char *argv[]) {
 
-    int nit,last_it;
-    double err;
-    tiempo t;
-    double t_plot;
-    configuration config(argc,argv);
-    figure *fig = NULL;
-
-    t.start();
-    if(config.verbose) {
-        fig=new figure(config.plot_device);
-        fig->subplot(2,1);
-    }
-
-    star1d A;
-    solver *op;
-
-    if(A.init(config.input_file,config.param_file,argc,argv)) {
+	int nit,last_it;
+	//double err;
+	tiempo t;
+	double t_plot;
+	configuration config(argc,argv);
+	figure *fig = NULL;
+	
+	t.start();
+	if(config.verbose) {
+		fig=new figure(config.plot_device);
+		fig->subplot(2,1);
+	}
+	
+	star1d A;
+	solver *op;
+	
+	if(A.init(config.input_file,config.param_file,argc,argv)) {
         ester_err("Could not initialize star");
         return 1;
     }
@@ -51,22 +51,22 @@ int main(int argc,char *argv[]) {
 		A.core_convec=0;
 		A.env_convec=0;
 	}
-	err=1;
+	A.global_err=1;
 	printf("core_convec_set = %d env_convec_set=%d\n",core_convec_set,env_convec_set);
 	while(!last_it) {
-		if(err<0.1&&!*config.input_file) {
+		if(A.global_err<0.1&&!*config.input_file) { // global_err<0.1 and no input file
 			A.core_convec=core_convec_set;
 			A.env_convec=env_convec_set;
 		}
 		nit++;
 		//A.check_jacobian(op,"log_T");exit(0);
-		err=A.solve(op);
+		A.global_err=A.solve(op);
 		
 		tt(nit-1)=t.value();
-		error(nit-1)=err;
-		last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit;
+		error(nit-1)=A.global_err;
+		last_it=(A.global_err<config.tol&&nit>=config.minit)||nit>=config.maxit;
 		if(config.verbose) {
-			printf("it=%d err=%e\n",nit,err);
+			printf("it=%d err=%e\n",nit,A.global_err);
 			
 			if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
 				fig->semilogy(error.block(0,nit-1,0,0));
