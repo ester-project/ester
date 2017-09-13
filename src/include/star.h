@@ -160,7 +160,7 @@ class star2d {
         int find_zones(matrix& r_inter, matrix& p_inter);
         //matrix new_distribute_domains(int ndom,matrix p_inter,std::vector<int> zone_type);
         matrix new_distribute_domains(int ndom,matrix p_inter);
-        //matrix New_distribute_domains(int ndom,matrix p_inter);
+        matrix New_distribute_domains(int ndom,matrix p_inter);
 
 	
 	void draw(figure *,const matrix &,int parity=0) const;
@@ -203,6 +203,7 @@ class star1d : public star2d {
 	virtual void solve_poisson(solver *);
 	virtual void solve_pressure(solver *);
 	virtual void solve_temp(solver *);
+	virtual void new_solve_temp(solver *);
 	virtual void solve_dim(solver *);
 	virtual void solve_map(solver *);
 	virtual void solve_definitions(solver *);
