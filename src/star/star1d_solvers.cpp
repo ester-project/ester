@@ -97,6 +97,7 @@ double star1d::solve(solver *op) {
 	
 	printf("**********  start of star1d::solve\n");
 	check_map();
+	//new_check_map();
 	
 	op->reset();
 	if (config.verbose == 19) printf("solve : check_map done\n");
@@ -563,8 +564,9 @@ void star1d::solve_temp(solver *op) {
     DEBUG_FUNCNAME;
 	if (config.verbose == 19) printf("in solve temp start \n");
 	int n,j0,j1,ndom,iconv;
-	matrix q;
+	//matrix q;
 	char eqn[8];
+	double fact;
 	
 	op->add_d("T","log_T",T);
 	strcpy(eqn,"log_T");
@@ -575,11 +577,15 @@ void star1d::solve_temp(solver *op) {
 	
 	lum=zeros(ndomains,1);
 	j0=0;
+        fact=4*PI*Lambda;
 	for(n=0;n<ndomains;n++) {
-		if(n) lum(n)=lum(n-1);
-		lum(n)+=4*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),
-			(rho*nuc.eps*r*r).block(j0,j0+map.gl.npts[n]-1,0,0))(0);
-		j0+=map.gl.npts[n];
+	   ndom=map.gl.npts[n];
+	   j1=j0+ndom-1;
+	   if(n) lum(n)=lum(n-1);
+	   lum(n)+=fact*(map.gl.I.block(0,0,j0,j1),(rho*nuc.eps*r*r).block(j0,j1,0,0))(0);
+		//lum(n)+=4*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),
+			//(rho*nuc.eps*r*r).block(j0,j0+map.gl.npts[n]-1,0,0))(0);
+	   j0+=ndom;
 	}
 
 	rhs_lum=zeros(ndomains,1);
@@ -588,12 +594,12 @@ void star1d::solve_temp(solver *op) {
 		ndom=map.gl.npts[n];
 		j1=j0+ndom-1;
 		op->bc_bot2_add_d(n,"lum","lum",ones(1,1));
-		op->bc_bot2_add_li(n,"lum","rho",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*nuc.eps).block(j0,j1,0,0));
-		op->bc_bot2_add_li(n,"lum","nuc.eps",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*rho).block(j0,j1,0,0));
+		op->bc_bot2_add_li(n,"lum","rho",-fact*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*nuc.eps).block(j0,j1,0,0));
+		op->bc_bot2_add_li(n,"lum","nuc.eps",-fact*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*rho).block(j0,j1,0,0));
 		op->bc_bot2_add_d(n,"lum","Lambda",-4*PI*(map.gl.I.block(0,0,j0,j1),(rho*nuc.eps*r*r).block(j0,j1,0,0)));
 		//r (rz)
-		op->bc_bot2_add_li(n,"lum","r",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j1),(2*r*rho*nuc.eps).block(j0,j1,0,0));
-		op->bc_bot2_add_li(n,"lum","rz",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*rho*nuc.eps).block(j0,j1,0,0));
+		op->bc_bot2_add_li(n,"lum","r",-fact*ones(1,1),map.gl.I.block(0,0,j0,j1),(2*r*rho*nuc.eps).block(j0,j1,0,0));
+		op->bc_bot2_add_li(n,"lum","rz",-fact*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*rho*nuc.eps).block(j0,j1,0,0));
 			
 		if(n) op->bc_bot1_add_d(n,"lum","lum",-ones(1,1));
 		j0+=ndom;
@@ -812,6 +818,224 @@ void star1d::solve_temp(solver *op) {
 	op->set_rhs("Lambda",rhs_Lambda);
 	
 }
+
+void star1d::new_solve_temp(solver *op) {
+    DEBUG_FUNCNAME;
+	if (config.verbose == 19) printf("in solve temp start \n");
+	int n,j0,j1,ndom,iconv;
+	matrix q;
+	char eqn[8];
+	double fact;
+	
+	op->add_d("T","log_T",T);
+	strcpy(eqn,"log_T");
+	
+	//Luminosity
+
+	matrix rhs_lum,lum;
+	
+	lum=zeros(ndomains,1);
+	j0=0;
+	for(n=0;n<ndomains;n++) {
+		if(n) lum(n)=lum(n-1);
+		lum(n)+=4*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),
+			(rho*nuc.eps*r*r).block(j0,j0+map.gl.npts[n]-1,0,0))(0);
+		j0+=map.gl.npts[n];
+	}
+
+	rhs_lum=zeros(ndomains,1);
+	j0=0;
+	fact=4*PI*Lambda;
+	for(n=0;n<ndomains;n++) {
+		ndom=map.gl.npts[n];
+		j1=j0+ndom-1;
+		op->bc_bot2_add_d(n,"lum","lum",ones(1,1));
+		op->bc_bot2_add_li(n,"lum","rho",-fact*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*nuc.eps).block(j0,j1,0,0));
+		op->bc_bot2_add_li(n,"lum","nuc.eps",-fact*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*rho).block(j0,j1,0,0));
+		op->bc_bot2_add_d(n,"lum","Lambda",-4*PI*(map.gl.I.block(0,0,j0,j1),(rho*nuc.eps*r*r).block(j0,j1,0,0)));
+		//r (rz)
+		op->bc_bot2_add_li(n,"lum","r",-fact*ones(1,1),map.gl.I.block(0,0,j0,j1),(2*r*rho*nuc.eps).block(j0,j1,0,0));
+		op->bc_bot2_add_li(n,"lum","rz",-fact*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*rho*nuc.eps).block(j0,j1,0,0));
+			
+		if(n) op->bc_bot1_add_d(n,"lum","lum",-ones(1,1));
+		j0+=ndom;
+	}
+	op->set_rhs("lum",rhs_lum);
+	
+	//Frad
+	
+	matrix rhs_Frad,Frad;
+	
+	Frad=-opa.xi*(D,T);
+	rhs_Frad=zeros(ndomains*2-1,1);
+	j0=0;
+	for(n=0;n<ndomains;n++) {
+		j1=j0+map.gl.npts[n]-1;
+		
+		if(n) op->bc_bot2_add_d(n,"Frad","Frad",ones(1,1));
+		op->bc_top1_add_d(n,"Frad","Frad",ones(1,1));
+		
+		if(n) op->bc_bot2_add_l(n,"Frad","T",opa.xi.row(j0),D.block(n).row(0));
+		op->bc_top1_add_l(n,"Frad","T",opa.xi.row(j1),D.block(n).row(-1));
+				
+		if(n) op->bc_bot2_add_d(n,"Frad","opa.xi",(D,T).row(j0));
+		op->bc_top1_add_d(n,"Frad","opa.xi",(D,T).row(j1));
+		
+		if(n) op->bc_bot2_add_d(n,"Frad","rz",Frad.row(j0));
+		op->bc_top1_add_d(n,"Frad","rz",Frad.row(j1));
+	
+		j0=j1+1;
+	}
+	op->set_rhs("Frad",rhs_Frad);
+	
+	//Temperature
+	
+	matrix rhs_T,rhs_Lambda;
+	matrix qconv,qrad;
+	
+	qrad=zeros(nr,1);
+	qconv=qrad;
+	j0=0;
+	iconv=0;
+        if (core_convec !=0) iconv=izif[2]; // Take care of the first convective layer above CC
+	for(n=0;n<ndomains;n++) {
+		ndom=map.gl.npts[n];
+		j1=j0+ndom-1;
+		if(n<conv) {
+                    qconv.setblock(j0,j1,0,0,ones(ndom,1));
+                } else if (n==iconv && core_convec==1) {
+                //qrad.setblock(j0,j1,0,0,ones(ndom,1));
+                qconv.setblock(j0,j1,0,0,ones(ndom,1));
+                }
+		else qrad.setblock(j0,j1,0,0,ones(ndom,1));
+		j0+=ndom;
+	}
+	
+	
+	rhs_T=zeros(nr,1);
+
+	symbolic S;
+	sym T_,xi_;
+	sym div_Frad;
+	
+	S.set_map(map);
+	
+	T_=S.regvar("T");
+	xi_=S.regvar("opa.xi");
+	S.set_value("T",T);
+	S.set_value("opa.xi",opa.xi);
+
+	div_Frad=-div(-xi_*grad(T_))/xi_;
+	
+	div_Frad.add(op,eqn,"T",qrad);
+	div_Frad.add(op,eqn,"opa.xi",qrad);
+	div_Frad.add(op,eqn,"r",qrad);
+	rhs_T-=div_Frad.eval()*qrad;
+
+	
+	op->add_d(eqn,"nuc.eps",qrad*Lambda*rho/opa.xi);
+	op->add_d(eqn,"rho",qrad*Lambda*nuc.eps/opa.xi);	
+	op->add_d(eqn,"Lambda",qrad*rho*nuc.eps/opa.xi);
+	op->add_d(eqn,"opa.xi",-qrad*Lambda*rho*nuc.eps/opa.xi/opa.xi);
+	rhs_T+=-qrad*Lambda*rho*nuc.eps/opa.xi;
+	
+	
+	//Core convection
+	op->add_l(eqn,"s",qconv,D);
+	rhs_T+=-qconv*(D,entropy());
+	
+	rhs_Lambda=zeros(ndomains,1);
+	
+	j0=0;
+	for(n=0;n<ndomains;n++) {
+		ndom=map.gl.npts[n];
+		j1=j0+ndom-1;
+// impose continuity of T via bottom conditions except in the iconv+1 domain
+                if(n==0) {
+                        op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
+                        rhs_T(j0)=1.-T(j0);
+                }
+              if (core_convec ==0) {
+		if(n!=0) {
+			op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
+			op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
+			rhs_T(j0)=-T(j0)+T(j0-1);
+		         }
+	       } else { // core convection
+                 if (n != iconv+1 && n !=0) {
+                        op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
+                        op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
+                        rhs_T(j0)=-T(j0)+T(j0-1);
+		} else if (n==iconv+1 ) { // case rad. dom. above CZ
+			op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
+			op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
+			op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
+			rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
+               }
+              }
+
+
+// impose continuity of n.gradT via top conditions except in the convective layer
+		if(n>=conv) {
+                     if (core_convec == 0) {
+			if(n<ndomains-1) {
+				op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+				op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+				op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
+				op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
+				rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+			} else {
+				op->bc_top1_add_d(n,eqn,"T",ones(1,1));
+				op->bc_top1_add_d(n,eqn,"Ts",-ones(1,1));
+				rhs_T(-1)=Ts(0)-T(-1);
+			}
+                     } else { // avec core convection
+			if(n<ndomains-1 && n!=iconv) { // cond. on n.gradT suppressed in CZ only.
+			     op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+                             op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+                             op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
+                             op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
+                             rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+			} else if (n==ndomains-1) {
+                                op->bc_top1_add_d(n,eqn,"T",ones(1,1));
+                                op->bc_top1_add_d(n,eqn,"Ts",-ones(1,1));
+                                rhs_T(-1)=Ts(0)-T(-1);
+                        }
+                     }
+		}
+
+//Continuity of Lambda	: applied on bottom of domains except in a CC
+                if(n<conv) {        // conv= number of domains in convective core
+                        op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
+                        op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
+                } else if(n==conv) {     // n=conv first rad. domain above CC
+                        if(!n) {
+                                op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
+                                rhs_Lambda(0)=-(D,T)(0);
+                        } else {
+                                op->bc_bot2_add_d(n,"Lambda","Frad",4*PI*(r*r).row(j0));
+                                op->bc_bot2_add_d(n,"Lambda","r",4*PI*(Frad*2*r).row(j0));
+                                op->bc_bot1_add_d(n,"Lambda","lum",-ones(1,1));
+                                rhs_Lambda(n)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
+                        }
+                } else {
+                        op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
+                        op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
+                }
+
+// Special case induced by convective domains other than the core
+		if(n==iconv && core_convec == 1 ) {
+			op->bc_top2_add_d(n,eqn,"T",ones(1,1)); // continuity of T top of CZ needed
+			op->bc_top1_add_d(n,eqn,"T",-ones(1,1));
+			rhs_T(j1)=T(j1)-T(j1+1);
+		}
+		j0+=ndom;
+	}
+	
+	op->set_rhs(eqn,rhs_T);
+	op->set_rhs("Lambda",rhs_Lambda);
+}
+//--------------------------END of NEW_solve_temp-------------------------------------------------
 
 
 void star1d::solve_dim(solver *op) {

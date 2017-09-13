@@ -54,10 +54,12 @@ int main(int argc,char *argv[]) {
 	A.global_err=1;
 	printf("core_convec_set = %d env_convec_set=%d\n",core_convec_set,env_convec_set);
 	while(!last_it) {
-		if(A.global_err<0.1&&!*config.input_file) { // global_err<0.1 and no input file
+///*
+		if(A.global_err<0.01&&!*config.input_file) { // global_err<0.1 and no input file
 			A.core_convec=core_convec_set;
 			A.env_convec=env_convec_set;
 		}
+//*/
 		nit++;
 		//A.check_jacobian(op,"log_T");exit(0);
 		A.global_err=A.solve(op);
