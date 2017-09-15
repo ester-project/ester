@@ -983,7 +983,9 @@ FILE *ficb=fopen("rhs_T.txt", "a");
 	
 	op->set_rhs(eqn,rhs_T);
 	op->set_rhs("Lambda",rhs_Lambda);
+fprintf(fic," it = %d\n",glit);
 for (int k=0;k<ndomains;k++) fprintf(fic,"RHS lambda %d, %e \n",k,rhs_Lambda(k));
+fprintf(ficb," it = %d\n",glit);
 for (int k=0;k<nr;k++) fprintf(ficb,"RHS T %d, %e \n",k,rhs_T(k));
 fprintf(ficb,"RHS T END\n");
 fclose(ficb);
@@ -1081,6 +1083,7 @@ FILE *ficb=fopen("new_rhs_T.txt", "a");
 		j0+=ndom;
 	}
 FILE *qfic=fopen("new_q.txt", "a");
+fprintf(qfic," it = %d\n",glit);
 for (int k=0;k<nr;k++) fprintf(qfic,"%d qrad=%e qconv=%e\n",k,qrad(k),qconv(k));
 fclose(qfic);
 	
@@ -1190,7 +1193,7 @@ fclose(qfic);
                            op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
 			} else { // the preceding domain is radiative hence
 			// we apply continuity of T at bottom and of DT at top
-			   printf("Radiative n= %d\n",n);
+			   //printf("Radiative n= %d\n",n);
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
                            rhs_T(j0)=-T(j0)+T(j0-1);
@@ -1232,8 +1235,10 @@ fclose(qfic);
 if (domain_type[0] == CORE) printf("j0=%d,j1=%d, %e, %e\n",j0,j1,rhs_T(j0),rhs_T(j1));
 		j0+=ndom;
 	}  // End of loop on domains rank
+fprintf(ficb," it = %d\n",glit);
 for (int k=0;k<nr;k++) fprintf(ficb,"RHS T %d, %e \n",k,rhs_T(k));
 fprintf(ficb,"RHS T END\n");
+fprintf(fic," it = %d\n",glit);
 for (int k=0;k<ndomains;k++) fprintf(fic,"RHS lambda %d, %e \n",k,rhs_Lambda(k));
 fclose(ficb);
 fclose(fic);
@@ -1344,6 +1349,7 @@ void star1d::solve_map(solver *op) {
 		j0+=ndom;
 	}
 	
+	printf("In solve_map conv=%d\n",conv);
 	if(conv) {
 /* when conv/=0 the code is ready to take into account convective zones.
 		printf("in solve_map\n");
