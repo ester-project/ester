@@ -10,9 +10,11 @@ void star2d::new_check_map() {
         matrix pif,R_inter,p_inter;
         remapper *red;
         matrix R(ndomains+1,nth);
-        printf("Start of new_check_map\n");
+	R=zeros(ndomains+1,nth);
+        //printf("Start of new_check_map\n");
 
 	if (global_err < 0.01) { // look for new convective regions and eventually remap the star
+FILE *fic=fopen("new_R.txt", "a");
 	   // Find the zone boundaries and the associated pressures
 	   // and output zone_type as global var.
 	   find_zones(R_inter, p_inter);
@@ -27,6 +29,8 @@ void star2d::new_check_map() {
 	// Install the new mapping and do interpolation for this mapping
 	   map=red->get_map(); // generate r,r_z,...
 	   interp(red);
+for (int k=0;k<=ndomains;k++) fprintf(fic,"k= %d R= %e \n",k,R(k,0));
+fclose(fic);
 	   delete red;
 	} else return; // else do nothing
 }
@@ -39,7 +43,7 @@ matrix star2d::New_distribute_domains(int ndom,matrix p_inter) {
     double p_s;
     matrix pif(ndom,1); // pressure at domain interfaces
     int nzones=zone_type.size(); // zone_type is initialized by find_zones
-FILE *fic=fopen("pif.txt", "a");
+FILE *fic=fopen("New_pif.txt", "a");
 printf("Start NEW distribute domains \n");
 printf("nzones =  %d \n",nzones);
 printf("p_inter nrows %d \n",p_inter.nrows());
@@ -131,7 +135,7 @@ for (int k=0;k<nzones;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 
 for (int k=0;k<nzones;k++) fprintf(fic,"k= %d p_inter %e \n",k,p_inter(k));
 for (int k=0;k<ndomains;k++) fprintf(fic,"k= %d pif %e \n",k,pif(k));
-//exit(0);
+fclose(fic);
 	}
 }
 
@@ -426,7 +430,7 @@ printf("of round = %e\n",ndom*log(p_cc)/log(p_s));
     return pif;
 }
 
-matrix star2d::new_distribute_domains(int ndom,matrix p_inter) { //,std::vector<int> zone_type) {
+matrix star2d::new_distribute_domains(int ndom,matrix p_inter) { //,std::vector<int> zone_type) 
 // ndom ==> input
 // called by check_map to redistribute domain when conv has changed (CC has appeared or
 // disappeared)
@@ -526,7 +530,7 @@ for (int k=0;k<nzones;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 
 for (int k=0;k<nzones;k++) fprintf(fic,"k= %d p_inter %e \n",k,p_inter(k));
 for (int k=0;k<ndomains;k++) fprintf(fic,"k= %d pif %e \n",k,pif(k));
-//exit(0);
+fclose(fic);
 	}
 }
 
@@ -583,7 +587,8 @@ void star2d::check_map() {
 	int conv_new;
 	remapper *red;
 		matrix R(ndomains+1,nth);
-	printf("Start of check_map conv=%d core_convec=%d\n",conv,core_convec);
+//	printf("Start of check_map conv=%d core_convec=%d\n",conv,core_convec);
+FILE *fic=fopen("R.txt", "a");
 	if(check_CC(pcc,Rcc)!=conv) { // does the following if CC appears or disappears
 		red=new remapper(map);
 		if(conv) { // CC has disappeared !
@@ -598,6 +603,7 @@ void star2d::check_map() {
 			domain_type.resize(ndomains);
 			izif.resize(ndomains);
 		} else { // There is a CC that has been discovered by check_conv
+		     printf("CORE appeared pcc= %e\n",pcc);
 			conv=1;
 			pif=distribute_domains(ndomains,conv_new,pcc);
 			conv=conv_new; // conv_new may be higher than 1 if big core!
@@ -635,6 +641,8 @@ void star2d::check_map() {
 	// Install the new mapping and do interpolation for this mapping
 	map=red->get_map();
 	interp(red);
+for (int k=0;k<=ndomains;k++) fprintf(fic,"k= %d R= %e \n",k,R(k,0));
+fclose(fic);
 	delete red;
 	if(config.verbose) printf("Done\n");
 
@@ -827,10 +835,11 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     for (int i=0; i<n+1; i++) {
         double mid_zone = (last_zi+r_inter(i, 0))/2.0;
         double schwi = map.gl.eval(schw, mid_zone)(0);
-        if (schwi < 0) {
+        if (schwi < 0 && last_zi <=1e-5) {
+            zone_type[i] = CORE;
+        } else if (schwi < 0 && last_zi >1e-5) {
             zone_type[i] = CONVECTIVE;
-        }
-        else {
+        } else {
             zone_type[i] = RADIATIVE;
         }
         printf("ZONE: [%e, %e]: convection (schw: %e): %d\n",
