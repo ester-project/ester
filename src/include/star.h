@@ -60,6 +60,7 @@ class star2d {
 	int stratified_comp;
 	double min_core_size;
 	double global_err;
+	int glit; // global view of iteration number
 	double dtime,time,delta; // in Myrs
 	std::vector<int> izif; // index (<= ndomains) of zones interfaces
 	std::vector<int> domain_type;

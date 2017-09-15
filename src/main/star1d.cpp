@@ -52,6 +52,7 @@ int main(int argc,char *argv[]) {
 		A.env_convec=0;
 	}
 	A.global_err=1;
+	A.glit=0;
 	printf("core_convec_set = %d env_convec_set=%d\n",core_convec_set,env_convec_set);
 	while(!last_it) {
 ///*
@@ -61,6 +62,7 @@ int main(int argc,char *argv[]) {
 		}
 //*/
 		nit++;
+		A.glit++;
 		//A.check_jacobian(op,"log_T");exit(0);
 		A.global_err=A.solve(op);
 		
