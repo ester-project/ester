@@ -79,6 +79,7 @@ int main(int argc,char *argv[]) {
 			}
 
 		}
+  	if (nit > 62) exit(0);
 	}
 	if(config.verbose) {
 		printf("Mass=%3.3f Msun  Radius=%3.3f Rsun  Luminosity=%3.3f Lsun  Teff=%1.1f K\n",
