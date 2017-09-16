@@ -1,0 +1,44 @@
+Declare A comme star1d et *op de type solver
+initialisation à partir de input_file, param_file, argc ou argv
+(cf star1d_class, si OK return 0)
+
+op=A.init_solver
+core_convec et env_convec mis à 0 si pas de fichier lu.
+
+boucle: !last_it est vrai sauf si on dépasse le nb d'iteration autorisée
+ou que l'erreur est sous le seuil imposé.
+
+err=solve(op)
+
+resout:
+	check_map()==> check_convec:
+si noyau convectif present:
+    trop petit renvoie 0
+    sinon renvoie 1
+si pas de noyau convectif:
+   test le schw à partir du centre :
+     si rien detecté renvoie 0
+     si détecté renvoie 1 avec P_cc et R_cc(theta)
+ conv=nb de domaines dans CC;
+
+        op->reset();
+        solve_definitions(op);
+        solve_poisson(op);
+        solve_pressure(op);
+        solve_temp(op);
+        solve_atm(op);
+        solve_dim(op);
+        solve_map(op);
+        solve_gsup(op);
+        solve_Teff(op);
+        solve_Xh(op);
+
+        op->solve(info); info=indic du solveur CGS ou LU
+
+Extraction des Delta (Xh,pc...)
+MAJ des variables (Xh, pc,...)
+MAJ du mapping
+stockage de rho pour eval erreur
+fill ==> MAJ de la microphysique
+------------- End solve ----------------
+
