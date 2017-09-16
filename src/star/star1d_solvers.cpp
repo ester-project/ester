@@ -991,7 +991,6 @@ fclose(qfic);
 			   printf("Warning! last domain is not radiative: I stop\n");
 			   exit(0);
 			}
-			   printf("RADIATIVE n= %d\n",n);
 			if (domain_type[n-1] == CONVECTIVE) {
                            printf("LAST DOM CASE: CONVECTIVE n= %d RAD %d\n",n-1,n);
                            op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
@@ -1069,7 +1068,7 @@ fclose(qfic);
                            }
 		       }
 		} // End of options on n==0, n==ndomains-1, else
-if (domain_type[0] == CORE) printf("j0=%d,j1=%d, %e, %e\n",j0,j1,rhs_T(j0),rhs_T(j1));
+//if (domain_type[0] == CORE) printf("j0=%d,j1=%d, %e, %e\n",j0,j1,rhs_T(j0),rhs_T(j1));
 		j0+=ndom;
 	}  // End of loop on domains rank
 fprintf(ficb," it = %d\n",glit);
@@ -1187,8 +1186,11 @@ void star1d::solve_map(solver *op) {
 		j0+=ndom;
 	}
 	
-	printf("In solve_map conv=%d\n",conv);
-	if(conv) {
+//	printf("In solve_map conv=%d\n",conv);
+		int nzones=zone_type.size();
+		//printf("in solve_map nzones=%d\n",nzones);
+	if(nzones>1) {
+	//if(conv)
 /* when conv/=0 the code is ready to take into account convective zones.
 		printf("in solve_map\n");
 		printf("izif(0) %d \n",izif[0]);
@@ -1198,9 +1200,8 @@ OK verified*/
 
 // Take care of the CC-RZ interface located at interface number "conv"
 // j0 is the radial index of this interface
-		for(n=0,j0=0;n<conv;n++) j0+=map.gl.npts[n];
-		n=conv;
-		op->reset(n,"Ri");
+		//for(n=0,j0=0;n<conv;n++) j0+=map.gl.npts[n];
+		//n=conv;
 		
 		symbolic S;
 		sym p_,s_,eq;
@@ -1211,27 +1212,25 @@ OK verified*/
 		S.set_value("s",entropy());
 	
 		eq=(grad(p_),grad(s_))/S.r/S.r;
+		/*
 		eq.bc_bot2_add(op,n,"Ri","p",ones(1,nth));
 		eq.bc_bot2_add(op,n,"Ri","s",ones(1,nth));
 		eq.bc_bot2_add(op,n,"Ri","r",ones(1,nth));
 			
 		rhs(n)=-eq.eval()(j0);	
-
+		*/
 // Take care of convective layers
 // number of zones=number of interface+1 (the surface)
-		int nzones=zone_type.size();
-		//printf("in solve_map nzones=%d\n",nzones);
 
 		for (int iz=1;iz<nzones-1;iz++) {
 		        for(n=0,j0=0;n<izif[iz]+1;n++) j0+=map.gl.npts[n];
 			n=izif[iz]+1; // on les gere comme des CL bottom du domaine au dessus
+		        op->reset(n,"Ri");
 			eq.bc_bot2_add(op,n,"Ri","p",ones(1,nth));
 			eq.bc_bot2_add(op,n,"Ri","s",ones(1,nth));
 			eq.bc_bot2_add(op,n,"Ri","r",ones(1,nth));
 		        rhs(n)=-eq.eval()(j0);	
-					  }
-
-
+		}
 	}
 	op->set_rhs("Ri",rhs);
 }

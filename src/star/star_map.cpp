@@ -12,12 +12,22 @@ void star2d::new_check_map() {
         matrix R(ndomains+1,nth);
 	R=zeros(ndomains+1,nth);
         //printf("Start of new_check_map\n");
+	if (glit == 1) {
+                zone_type = std::vector<int>(1);
+		//printf("nzones = %d\n",zone_type.size());
+	}
 
 	if (global_err < 0.01) { // look for new convective regions and eventually remap the star
 FILE *fic=fopen("new_R.txt", "a");
 	   // Find the zone boundaries and the associated pressures
 	   // and output zone_type as global var.
+	   int nzones_av=zone_type.size();
 	   find_zones(R_inter, p_inter);
+	   int nzones_ap=zone_type.size();
+	   if (nzones_av == nzones_ap) {
+		printf("Number of zones unchanged: do nothing\n");
+		return;
+	   }
 	   // Redistribute the domains and output izif (index of zone interface)
 	   // as a global var.
 	   pif=New_distribute_domains(ndomains,p_inter);
