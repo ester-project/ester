@@ -1145,7 +1145,7 @@ fclose(qfic);
                            rhs_Lambda(0)=-(D,T)(0);
 			}
 			if (domain_type[n] == CORE) {
-			   printf("CORE n= %d\n",n);
+			   //printf("CORE n= %d\n",n);
                            op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
                            op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
 			}
@@ -1155,7 +1155,7 @@ fclose(qfic);
 			   exit(0);
 			}
 			if (domain_type[n-1] == CONVECTIVE) {
-                           printf("LAST DOM CASE: CONVECTIVE n= %d RAD %d\n",n-1,n);
+                           //printf("LAST DOM CASE: CONVECTIVE n= %d RAD %d\n",n-1,n);
                            op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
                            op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
                            op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
@@ -1174,7 +1174,7 @@ fclose(qfic);
 	               // We first care of radiative domains
 		       if (domain_type[n] == RADIATIVE) {
 			if (domain_type[n-1] == CORE) {
-			   printf("CORE n= %d RAD n= %d\n",n-1,n);
+			   //printf("CORE n= %d RAD n= %d\n",n-1,n);
                            op->bc_bot2_add_d(n,"Lambda","Frad",4*PI*(r*r).row(j0));
                            op->bc_bot2_add_d(n,"Lambda","r",4*PI*(Frad*2*r).row(j0));
                            op->bc_bot1_add_d(n,"Lambda","lum",-ones(1,1));
@@ -1214,7 +1214,7 @@ fclose(qfic);
                            op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
                            op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
 		       } else if (domain_type[n] == CONVECTIVE) {
-			   printf("CONVECTIVE n= %d\n",n);
+			   //printf("CONVECTIVE n= %d\n",n);
 			// Continuity of T bottom
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
@@ -1223,7 +1223,7 @@ fclose(qfic);
                            op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                            op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
 			   if (domain_type[n+1] == RADIATIVE) {
-			   printf("LAST CONVECTIVE n= %d\n",n);
+			   //printf("LAST CONVECTIVE n= %d\n",n);
 			// continuity of T top of CZ needed if last convective domain
 			      op->bc_top2_add_d(n,eqn,"T",ones(1,1));
 			      op->bc_top1_add_d(n,eqn,"T",-ones(1,1));

@@ -771,9 +771,10 @@ matrix star2d::solve_temp_rad() {
     return op.get_var("T");
 }
 
-//int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter) {
+//int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter)
 int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     int n = 1;
+    std::vector<int> zone_type_bis;	
     matrix schw, dschw;
 
     matrix T_schw = solve_temp_rad();
@@ -858,6 +859,35 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
                 zone_type[i]);
         last_zi = r_inter(i, 0);
     }
+// Check if there are contiguous zones and suppress them if true
+	int nsz=0;
+	redo:
 	printf("In find_zones n+1=%d\n",n+1);
+	int flag=0;
+	for (int iz=0;iz<n;iz++){
+		if (zone_type[iz]==zone_type[iz+1]) {
+		printf("iz =%d flag=%d\n",iz,flag);
+		  for (int k=iz;k<n;k++) {
+		    r_inter(k,0)=r_inter(k+1,0);
+		    p_inter(k,0)=p_inter(k+1,0);
+		    zone_type[k]=zone_type[k+1];
+		  }
+		  nsz++; // increase the number of suppressed zones
+		  flag=1;
+		  goto exit_loop;
+		}
+         }
+	exit_loop:
+for (int i=0; i<n+1;i++) printf("i=%d, zone_type=%d\n",i,zone_type[i]);
+	if (flag) {
+	   n=n-1; // reduce the number of zones
+	   goto redo; // and check again
+	}
+	printf("In find_zones nsz=%d \n",nsz);
+	printf("In find_zones n+1=%d after reduction\n",n+1);
+	//for (int i=0;i<n+1;i++) zone_type_bis[i]=zone_type[i];
+        //zone_type = std::vector<int>(n+1);
+	//for (int i=0;i<n+1;i++) zone_type[i]=zone_type_bis[i];
+
     return n+1; // n+1 is the number of zones
 }
