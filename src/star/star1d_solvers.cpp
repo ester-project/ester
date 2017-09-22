@@ -990,6 +990,18 @@ for (int k=0;k<nr;k++) fprintf(ficb,"RHS T %d, %e \n",k,rhs_T(k));
 fprintf(ficb,"RHS T END\n");
 fclose(ficb);
 fclose(fic);
+//print schwi in solve_temp
+    matrix schw;
+
+    schw=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
+        -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
+    schw.setrow(0,zeros(1,nth));
+    schw=schw/r/r;
+    schw.setrow(0,zeros(1,nth));
+    schw.setrow(0,-(D.row(0),schw)/D(0,0));
+    FILE *ficsch=fopen("Schwi.txt", "a");
+    for (int k=0;k<nr;k++) fprintf(ficsch,"i= %d schwi= %e \n",k,schw(k,-1));
+    fclose(ficsch);
 	
 }
 
@@ -1241,6 +1253,18 @@ fprintf(fic," it = %d\n",glit);
 for (int k=0;k<ndomains;k++) fprintf(fic,"RHS lambda %d, %e \n",k,rhs_Lambda(k));
 fclose(ficb);
 fclose(fic);
+
+    matrix schw;
+
+    schw=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
+        -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
+    schw.setrow(0,zeros(1,nth));
+    schw=schw/r/r;
+    schw.setrow(0,zeros(1,nth));
+    schw.setrow(0,-(D.row(0),schw)/D(0,0));
+    FILE *ficsch=fopen("nSchwi.txt", "a");
+    for (int k=0;k<nr;k++) fprintf(ficsch,"i= %d schwi= %e \n",k,schw(k,-1));
+    fclose(ficsch);
 
 	
 	op->set_rhs(eqn,rhs_T);
