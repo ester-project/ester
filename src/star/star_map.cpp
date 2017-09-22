@@ -14,11 +14,9 @@ void star2d::new_check_map() {
         //printf("Start of new_check_map\n");
 	if (glit == 1) { // At first iteration set the number of zone_type to 1
                 zone_type = std::vector<int>(1);
-		//printf("nzones = %d\n",zone_type.size());
 	}
 
 	if (global_err < 0.01) { // look for new convective regions and eventually remap the star
-FILE *fic=fopen("new_R.txt", "a");
 	   // Find the zone boundaries and the associated pressures
 	   // and output zone_type as global var.
 	   int nzones_av=zone_type.size();
@@ -39,6 +37,7 @@ FILE *fic=fopen("new_R.txt", "a");
 	// Install the new mapping and do interpolation for this mapping
 	   map=red->get_map(); // generate r,r_z,...
 	   interp(red);
+FILE *fic=fopen("new_R.txt", "a");
 for (int k=0;k<=ndomains;k++) fprintf(fic,"k= %d R= %e \n",k,R(k,0));
 fclose(fic);
 	   delete red;
@@ -794,11 +793,13 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 	printf("Start of find zone\n");
 
 
-    /*schw=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
+// Paco's version (Michel inclined!!)
+    schw=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
         -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
-*/
-    schw = -(map.gzz*(D, p)+map.gzt*(p, Dt))*((D, log(T_schw))-eos.del_ad*(D, log(p))) -
-        (map.gzt*(D, p)+map.gtt*(p, Dt))*((log(T_schw), Dt)-eos.del_ad*(log(p), Dt));
+
+// Bertrand version
+//    schw = -(map.gzz*(D, p)+map.gzt*(p, Dt))*((D, log(T_schw))-eos.del_ad*(D, log(p))) -
+//        (map.gzt*(D, p)+map.gtt*(p, Dt))*((log(T_schw), Dt)-eos.del_ad*(log(p), Dt));
     schw.setrow(0, zeros(1, nth));
     schw = schw/r/r;
     schw.setrow(0, zeros(1, nth));
@@ -896,11 +897,10 @@ for (int i=0; i<n+1;i++) printf("i=%d, zone_type=%d\n",i,zone_type[i]);
 	}
 	printf("In find_zones nsz=%d \n",nsz);
 	printf("In find_zones n+1=%d after reduction\n",n+1);
-        std::vector<int> zone_type_bis(n+1);	
-	for (int i=0;i<n+1;i++) zone_type_bis[i]=zone_type[i];
+        //std::vector<int> zone_type_bis(n+1);	
+	//for (int i=0;i<n+1;i++) zone_type_bis[i]=zone_type[i];
 	zone_type.resize(n+1);
-	//for (int k=0;k<n+1;k++) {zone_type.push_back(1);}
-	for (int i=0;i<n+1;i++) zone_type[i]=zone_type_bis[i];
+	//for (int i=0;i<n+1;i++) zone_type[i]=zone_type_bis[i];
 
     return n+1; // n+1 is the number of zones
 }
