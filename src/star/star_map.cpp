@@ -12,7 +12,7 @@ void star2d::new_check_map() {
         matrix R(ndomains+1,nth);
 	R=zeros(ndomains+1,nth);
         //printf("Start of new_check_map\n");
-	if (glit == 1) {
+	if (glit == 1) { // At first iteration set the number of zone_type to 1
                 zone_type = std::vector<int>(1);
 		//printf("nzones = %d\n",zone_type.size());
 	}
@@ -699,6 +699,10 @@ if (config.verbose == 19) printf("++++ Start of CHECK_CONVEC, core_convec = %d\n
     schw=schw/r/r;
     schw.setrow(0,zeros(1,nth));
     schw.setrow(0,-(D.row(0),schw)/D(0,0));
+    FILE *fic = fopen("old_schwi.txt", "a");
+    for (int k=0;k<nr;k++) fprintf(fic,"i= %d schwi= %e \n",k,schw(k,-1));
+    fclose(fic);
+
     if(map.leg.eval_00(schw.row(i),0)(0)>=0) return 0; 
 // if Sch > 0 no CC (or CC too small) and return
 
@@ -780,7 +784,6 @@ matrix star2d::solve_temp_rad() {
 //int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter)
 int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     int n = 1;
-    std::vector<int> zone_type_bis;	
     matrix schw, dschw;
 
     matrix T_schw = solve_temp_rad();
@@ -796,6 +799,10 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 #endif
 	printf("Start of find zone\n");
 
+
+    /*schw=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
+        -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
+*/
     schw = -(map.gzz*(D, p)+map.gzt*(p, Dt))*((D, log(T_schw))-eos.del_ad*(D, log(p))) -
         (map.gzt*(D, p)+map.gtt*(p, Dt))*((log(T_schw), Dt)-eos.del_ad*(log(p), Dt));
     schw.setrow(0, zeros(1, nth));
@@ -804,6 +811,10 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     schw.setrow(0, -(D.row(0), schw)/D(0, 0));
 
     dschw = (D, schw);
+
+    FILE *fic = fopen("schwi.txt", "a");
+    for (int k=0;k<nr;k++) fprintf(fic,"i= %d schwi= %e \n",k,schw(k,-1));
+    fclose(fic);
 
     for (int i=1; i<this->nr; i++) {
         if (schw(i-1, -1) * schw(i, -1) < 0) {
@@ -891,9 +902,11 @@ for (int i=0; i<n+1;i++) printf("i=%d, zone_type=%d\n",i,zone_type[i]);
 	}
 	printf("In find_zones nsz=%d \n",nsz);
 	printf("In find_zones n+1=%d after reduction\n",n+1);
-	//for (int i=0;i<n+1;i++) zone_type_bis[i]=zone_type[i];
-        //zone_type = std::vector<int>(n+1);
-	//for (int i=0;i<n+1;i++) zone_type[i]=zone_type_bis[i];
+        std::vector<int> zone_type_bis(n+1);	
+	for (int i=0;i<n+1;i++) zone_type_bis[i]=zone_type[i];
+	zone_type.resize(n+1);
+	//for (int k=0;k<n+1;k++) {zone_type.push_back(1);}
+	for (int i=0;i<n+1;i++) zone_type[i]=zone_type_bis[i];
 
     return n+1; // n+1 is the number of zones
 }
