@@ -1263,6 +1263,7 @@ fclose(fic);
     schw.setrow(0,zeros(1,nth));
     schw.setrow(0,-(D.row(0),schw)/D(0,0));
     FILE *ficsch=fopen("nSchwi.txt", "a");
+    fprintf(ficsch," it = %d\n",glit);
     for (int k=0;k<nr;k++) fprintf(ficsch,"i= %d schwi= %e \n",k,schw(k,-1));
     fclose(ficsch);
 
