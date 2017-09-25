@@ -12,7 +12,9 @@ void star2d::new_check_map() {
         matrix R(ndomains+1,nth);
 	R=zeros(ndomains+1,nth);
         //printf("Start of new_check_map\n");
-	if (glit == 1) { // At first iteration set the number of zone_type to 1
+	//if (glit == 1 && *config.input_file==0) {
+	if (glit == 1) {
+// At first iteration set the number of zone_type to 1
                 zone_type = std::vector<int>(1);
 	}
 
