@@ -11,9 +11,9 @@ void star2d::new_check_map() {
         remapper *red;
         matrix R(ndomains+1,nth);
 	R=zeros(ndomains+1,nth);
-        //printf("Start of new_check_map\n");
-	//if (glit == 1 && *config.input_file==0) {
-	if (glit == 1) {
+//printf("new_check_map config.input_file=%d\n",config.input_file);
+//for (int n=0;n<ndomains;n++) printf("domain_type[%d] = %d\n",n,domain_type[n]);
+	if (glit == 1 && config.input_file==0) {
 // At first iteration set the number of zone_type to 1
                 zone_type = std::vector<int>(1);
 	}

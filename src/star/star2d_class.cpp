@@ -139,6 +139,9 @@ void star2d::hdf5_write(const char *filename) const {
     write_attr(star, "nex",         integer,    &map.ex.gl.npts[0]);
     write_attr(star, "conv",        integer,    &conv);
     write_attr(star, "domain_type", integer,    domain_type.data(), map.ndomains);
+ 	int nzones=zone_type.size();
+    write_attr(star, "nzones",      integer,    &nzones);
+    write_attr(star, "zone_type",   integer,    zone_type.data(), zone_type.size());
     write_attr(star, "core_convec", integer,    &core_convec);
     write_attr(star, "env_convec",  integer,    &env_convec);
     write_attr(star, "stratified_comp", integer, &stratified_comp);
@@ -184,6 +187,7 @@ void star2d::hdf5_write(const char *filename) const {
     fields["R"] = map.R;
     fields["p"] = p;
     fields["T"] = T;
+    fields["s"] = entropy();
     fields["G"] = G;
     fields["w"] = w;
     fields["X"] = comp.X();
@@ -371,11 +375,26 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     domain_type.resize(ndomains);
     izif.resize(ndomains);
     if (read_attr(star, "domain_type", &domain_type[0])) {
+        ester_err("Could not read 'domain_type' from file `%s'", input_file);
+	printf("I use the old setup\n");
         for (int n=0; n<ndomains; n++) {
             if (n < conv) domain_type[n] = CORE;
             else domain_type[n] = RADIATIVE;
         }
     }
+    int nzones;
+    if (read_attr(star, "nzones", &nzones)) {
+        ester_err("Could not read 'nzones' from file `%s'", input_file);
+        exit(EXIT_FAILURE);
+    }
+	zone_type.resize(nzones);
+    if (read_attr(star, "zone_type", &zone_type[0])) {
+        ester_err("Could not read 'zone_type' from file `%s'", input_file);
+        exit(EXIT_FAILURE);
+    }
+for (int k=0;k<nzones;k++) printf("in hdf5_read n=  %d, %d \n",k,zone_type[k]);
+
+
     if (read_attr(star, "surff", &surff)) {
         ester_warn("Could not read 'surff' from file `%s'", input_file);
     }
