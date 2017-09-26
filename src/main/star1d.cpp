@@ -53,7 +53,10 @@ int main(int argc,char *argv[]) {
 	}
 	A.global_err=1;
 	A.glit=0;
-	printf("core_convec_set = %d env_convec_set=%d\n",core_convec_set,env_convec_set);
+	A.config.input_file=*config.input_file;
+	printf("check config.input_file= %d\n",A.config.input_file);
+
+	//printf("core_convec_set = %d env_convec_set=%d\n",core_convec_set,env_convec_set);
 	while(!last_it) {
 ///*
 		if(A.global_err<0.01&&!*config.input_file) { // global_err<0.1 and no input file
@@ -81,7 +84,8 @@ int main(int argc,char *argv[]) {
 			}
 
 		}
-  	if (nit > 100) exit(0);
+  	if (nit > 3) exit(0);
+  	//if (nit > 100) exit(0);
 	}
 	if(config.verbose) {
 		printf("Mass=%3.3f Msun  Radius=%3.3f Rsun  Luminosity=%3.3f Lsun  Teff=%1.1f K\n",

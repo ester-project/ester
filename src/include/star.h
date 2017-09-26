@@ -87,6 +87,7 @@ class star2d {
 		double newton_dmax;
 		int verbose;
 		int dump_iter;
+		int input_file;
 	} config;
 	
 	virtual void opacity();

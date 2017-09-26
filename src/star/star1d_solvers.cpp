@@ -89,6 +89,7 @@ void star1d::register_variables(solver *op) {
 
 }
 
+FILE *RHS;
 double star1d::solve(solver *op) {
     DEBUG_FUNCNAME;
 	int info[5];
@@ -97,6 +98,8 @@ double star1d::solve(solver *op) {
 	
 //	printf("**********  start of star1d::solve\n");
 	//check_map();
+	RHS=fopen("all_rhs.txt","a");
+
 	new_check_map();
 	
 	op->reset();
@@ -125,6 +128,7 @@ double star1d::solve(solver *op) {
 	op->solve(info);
 	if (config.verbose == 19) printf("solve : solve done\n");
 	
+fclose(RHS);
 // Some output verbose ----------------------
 	if (config.verbose) {
 		if(info[2]) {
@@ -367,6 +371,12 @@ void star1d::solve_pressure(solver *op) {
 	}
 	op->set_rhs(eqn,rhs_p);
 	op->set_rhs("pi_c",rhs_pi_c);
+
+//FILE *ficp=fopen("new_rhs_P.txt", "a");
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<nr;k++) fprintf(RHS,"RHS P %d, %e \n",k,rhs_p(k));
+fprintf(RHS,"RHS P END\n");
+//fclose(ficp);
 }
 
 //Evolution Xh --------------------------------------
@@ -489,6 +499,9 @@ if (delta != 0.) { // unsteady case  ************************************
      op->bc_top1_add_d(ndomains-1,"lnXh","lnXh",ones(1,1));
      rhs(-1)=-log(Xh(-1))+log(X0);
 
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<nr;k++) fprintf(RHS,"RHS Xh %d, %e \n",k,rhs(k));
+fprintf(RHS,"RHS Xh END\n");
 
   op->set_rhs("lnXh",rhs);
 //Evolution Xh end-----------------------------------
@@ -558,6 +571,9 @@ void star1d::solve_Wr(solver *op) {
            rhs(j0) = -Wr(j0-1)+Wr(j0);
          }
 
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<nr;k++) fprintf(RHS,"RHS Wr %d, %e \n",k,rhs(k));
+fprintf(RHS,"RHS Wr END\n");
 	op->set_rhs("Wr",rhs);
 }
 
@@ -850,7 +866,6 @@ void star1d::new_solve_temp(solver *op) {
 	double fact;
 	
 FILE *fic=fopen("new_rhs_lamb.txt", "a");
-FILE *ficb=fopen("new_rhs_T.txt", "a");
 	op->add_d("T","log_T",T);
 	strcpy(eqn,"log_T");
 	
@@ -933,6 +948,7 @@ FILE *ficb=fopen("new_rhs_T.txt", "a");
 	}
 FILE *qfic=fopen("new_q.txt", "a");
 fprintf(qfic," it = %d\n",glit);
+for (int k=0;k<ndomains;k++) fprintf(qfic,"%d dom_type=%d\n",k,domain_type[k]);
 for (int k=0;k<nr;k++) fprintf(qfic,"%d qrad=%e qconv=%e\n",k,qrad(k),qconv(k));
 fclose(qfic);
 	
@@ -1023,11 +1039,11 @@ fclose(qfic);
 	               // We first care of radiative domains
 		       if (domain_type[n] == RADIATIVE) {
 			if (domain_type[n-1] == CORE) {
-			   //printf("CORE n= %d RAD n= %d\n",n-1,n);
                            op->bc_bot2_add_d(n,"Lambda","Frad",4*PI*(r*r).row(j0));
                            op->bc_bot2_add_d(n,"Lambda","r",4*PI*(Frad*2*r).row(j0));
                            op->bc_bot1_add_d(n,"Lambda","lum",-ones(1,1));
                            rhs_Lambda(n)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
+			   //printf("CORE n= %d lum n-1= %e, rhs_L=%e\n",n-1,lum(n-1),rhs_Lambda(n));
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
                            rhs_T(j0)=-T(j0)+T(j0-1);
@@ -1083,11 +1099,12 @@ fclose(qfic);
 //if (domain_type[0] == CORE) printf("j0=%d,j1=%d, %e, %e\n",j0,j1,rhs_T(j0),rhs_T(j1));
 		j0+=ndom;
 	}  // End of loop on domains rank
+FILE *ficb=fopen("new_rhs_T.txt", "a");
 fprintf(ficb," it = %d\n",glit);
 for (int k=0;k<nr;k++) fprintf(ficb,"RHS T %d, %e \n",k,rhs_T(k));
 fprintf(ficb,"RHS T END\n");
 fprintf(fic," it = %d\n",glit);
-for (int k=0;k<ndomains;k++) fprintf(fic,"RHS lambda %d, %e \n",k,rhs_Lambda(k));
+for (int k=0;k<ndomains;k++) fprintf(fic,"RHS lambda %d, %e \n",k,rhs_Lambda(k)/lum(k));
 fclose(ficb);
 fclose(fic);
 
@@ -1104,6 +1121,9 @@ fclose(fic);
     for (int k=0;k<nr;k++) fprintf(ficsch,"i= %d schwi= %e \n",k,schw(k,-1));
     fclose(ficsch);
 
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<nr;k++) fprintf(RHS,"RHS T %d, %e \n",k,rhs_T(k));
+fprintf(RHS,"RHS T END\n");
 	
 	op->set_rhs(eqn,rhs_T);
 	op->set_rhs("Lambda",rhs_Lambda);
@@ -1137,6 +1157,9 @@ void star1d::solve_dim(solver *op) {
 		op->add_d(n,"log_rhoc","log_Tc",-eos.d(0)*ones(1,1));
 	}
 
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS m %d, %e \n",k,rhs(k));
+fprintf(RHS,"RHS m END\n");
 	
 	rhs=zeros(ndomains,1);
 	for(n=0;n<ndomains;n++) {
@@ -1151,6 +1174,10 @@ void star1d::solve_dim(solver *op) {
 		}
 	}
 	op->set_rhs("log_pc",rhs);
+
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS log_pc %d, %e \n",k,rhs(k));
+fprintf(RHS,"RHS log_pc END\n");
 	
 	rhs=zeros(ndomains,1);
 	for(n=0;n<ndomains;n++) {
@@ -1166,6 +1193,10 @@ void star1d::solve_dim(solver *op) {
 	}
 	op->set_rhs("log_Tc",rhs);
 	
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS log_Tc %d, %e \n",k,rhs(k));
+fprintf(RHS,"RHS log_Tc END\n");
+
 	rhs=zeros(ndomains,1);
 	for(n=0;n<ndomains;n++) {
 		if(n==ndomains-1) {
@@ -1179,6 +1210,9 @@ void star1d::solve_dim(solver *op) {
 	}
 	op->set_rhs("log_R",rhs);
 	
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS log_R %d, %e \n",k,rhs(k));
+fprintf(RHS,"RHS R END\n");
 }
 
 void star1d::solve_map(solver *op) {
@@ -1193,6 +1227,10 @@ void star1d::solve_map(solver *op) {
 		if(n<ndomains-1) op->bc_top2_add_d(n,"dRi","Ri",-ones(1,1));
 	}	
 	op->set_rhs("dRi",rhs);
+	
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS dRi %d, %e \n",k,rhs(k));
+fprintf(RHS,"RHS dRi END\n");
 	
 	rhs=zeros(ndomains,1);
 	j0=0;
@@ -1210,6 +1248,10 @@ void star1d::solve_map(solver *op) {
 		}
 		j0+=ndom;
 	}
+	
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS Ri %d, %e \n",k,rhs(k));
+fprintf(RHS,"RHS R END\n");
 	
 //	printf("In solve_map conv=%d\n",conv);
 		int nzones=zone_type.size();
@@ -1235,6 +1277,12 @@ OK verified*/
 		S.set_map(map);
 		S.set_value("p",p);
 		S.set_value("s",entropy());
+
+	matrix ss=entropy();
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<nr;k++) fprintf(RHS,"entropy %d, %e \n",k,ss(k));
+fprintf(RHS,"Entropy END\n");
+	
 	
 		eq=(grad(p_),grad(s_))/S.r/S.r;
 		/*
@@ -1257,6 +1305,10 @@ OK verified*/
 		        rhs(n)=-eq.eval()(j0);	
 		}
 	}
+	
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS Ri %d, %e \n",k,rhs(k));
+fprintf(RHS,"RHS Ri END\n");
 	op->set_rhs("Ri",rhs);
 }
 
