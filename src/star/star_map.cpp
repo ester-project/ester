@@ -791,9 +791,9 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 
 #if 0
     FILE *temp_file = fopen("temp.txt", "w");
-    for (int i=0; i<this->nr; i++) {
-        for (int j=0; j<this->nth; j++) {
-            fprintf(temp_file, "%e %d %e %e\n", r(i, j), j, T_schw(i, j), this->T(i, j));
+    for (int i=0; i<nr; i++) {
+        for (int j=0; j<nth; j++) {
+            fprintf(temp_file, "%e %d %e %e\n", r(i, j), j, T_schw(i, j), T(i, j));
         }
     }
     fclose(temp_file);
@@ -806,8 +806,15 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 //        -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
 
 // Bertrand version
-    schw = -(map.gzz*(D, p)+map.gzt*(p, Dt))*((D, log(T_schw))-eos.del_ad*(D, log(p))) -
-        (map.gzt*(D, p)+map.gtt*(p, Dt))*((log(T_schw), Dt)-eos.del_ad*(log(p), Dt));
+//    schw = -(map.gzz*(D, p)+map.gzt*(p, Dt))*((D, log(T_schw))-eos.del_ad*(D, log(p))) -
+//        (map.gzt*(D, p)+map.gtt*(p, Dt))*((log(T_schw), Dt)-eos.del_ad*(log(p), Dt));
+    //schw = -((D, log(T_schw))-eos.del_ad*(D, log(p)));
+    schw = log(T_schw);
+
+    FILE *fic = fopen("schwi.txt", "a");
+    for (int k=0;k<nr;k++) fprintf(fic,"i= %d schw= %e T=%e, p=%e, na=%e, gzz=%e\n",k,schw(k,-1),T_schw(k,-1),p(k,-1),eos.del_ad(k,-1),map.gzz(k,-1));
+    fclose(fic);
+
     schw.setrow(0, zeros(1, nth));
     schw = schw/r/r;
     schw.setrow(0, zeros(1, nth));
@@ -815,27 +822,24 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 
     dschw = (D, schw);
 
-    FILE *fic = fopen("schwi.txt", "a");
-    for (int k=0;k<nr;k++) fprintf(fic,"i= %d schwi= %e \n",k,schw(k,-1));
-    fclose(fic);
 
-    for (int i=1; i<this->nr; i++) {
+    for (int i=1; i<nr; i++) {
         if (schw(i-1, -1) * schw(i, -1) < 0) {
             n++;
         }
     }
 
-    r_inter = zeros(n, this->nth);
-    p_inter = zeros(n, this->nth);
+    r_inter = zeros(n, nth);
+    p_inter = zeros(n, nth);
     n = 0;
     double last_zi = 0.0;
-    for (int i=1; i<this->nr; i++) {
+    for (int i=1; i<nr; i++) {
         if (schw(i-1, -1) * schw(i, -1) < 0) {
             matrix TT;
             double dzi, schwi, dschwi;
-            for (int j=0; j<this->nth; j++) {
+            for (int j=0; j<nth; j++) {
                 int end = 0, done = 0;
-                double zi = this->z(i-1);
+                double zi = z(i-1);
                 while (end < 3 && done++ < 100) {
                     schwi = map.gl.eval(schw.col(j), zi, TT)(0);
                     dschwi = (TT, dschw.col(j))(0);
@@ -855,8 +859,8 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
             n++;
         }
     }
-    r_inter.setrow(-1, this->z(-1) * ones(1, this->nth));
-    p_inter.setrow(-1, this->PRES(-1) * ones(1, this->nth));
+    r_inter.setrow(-1, z(-1) * ones(1, nth));
+    p_inter.setrow(-1, PRES(-1) * ones(1, nth));
 
     std::cout << "CONV: " << CONVECTIVE << ", ";
     std::cout << "RAD: " << RADIATIVE << "\n";

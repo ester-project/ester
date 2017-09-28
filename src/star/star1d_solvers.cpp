@@ -1233,8 +1233,11 @@ for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS dRi %d, %e \n",k,rhs(k));
 fprintf(RHS,"RHS dRi END\n");
 	
 	rhs=zeros(ndomains,1);
+	int nzones=zone_type.size();
+
 	j0=0;
 	for(n=0;n<ndomains;n++) {
+// place the domains radii "Ri" so as to equalize the PRES drop, between 2 adjacent domains
 		ndom=map.gl.npts[n];
 		if(n==0) op->add_d(n,"Ri","Ri",ones(1,1));
 		else {
@@ -1251,53 +1254,30 @@ fprintf(RHS,"RHS dRi END\n");
 	
 fprintf(RHS," it = %d\n",glit);
 for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS Ri %d, %e \n",k,rhs(k));
-fprintf(RHS,"RHS R END\n");
+fprintf(RHS,"RHS Ri END avec nzones=1\n");
 	
-//	printf("In solve_map conv=%d\n",conv);
-		int nzones=zone_type.size();
-		//printf("in solve_map nzones=%d\n",nzones);
+	//printf("in solve_map nzones=%d\n",nzones);
 	if(nzones>1) {
-	//if(conv)
-/* when conv/=0 the code is ready to take into account convective zones.
-		printf("in solve_map\n");
-		printf("izif(0) %d \n",izif[0]);
-		printf("izif(1) %d \n",izif[1]);
-		printf("izif(2) %d \n",izif[2]);
-OK verified*/
-
-// Take care of the CC-RZ interface located at interface number "conv"
-// j0 is the radial index of this interface
-		//for(n=0,j0=0;n<conv;n++) j0+=map.gl.npts[n];
-		//n=conv;
 		
 		symbolic S;
 		sym p_,s_,eq;
-		p_=S.regvar("p");
-		s_=S.regvar("s");
-		S.set_map(map);
-		S.set_value("p",p);
-		S.set_value("s",entropy());
+		p_=S.regvar("p"); s_=S.regvar("s");
+		S.set_map(map); S.set_value("p",p); S.set_value("s",entropy());
 
-	matrix ss=entropy();
+matrix ss=entropy();
 fprintf(RHS," it = %d\n",glit);
 for (int k=0;k<nr;k++) fprintf(RHS,"entropy %d, %e \n",k,ss(k));
 fprintf(RHS,"Entropy END\n");
 	
-	
 		eq=(grad(p_),grad(s_))/S.r/S.r;
-		/*
-		eq.bc_bot2_add(op,n,"Ri","p",ones(1,nth));
-		eq.bc_bot2_add(op,n,"Ri","s",ones(1,nth));
-		eq.bc_bot2_add(op,n,"Ri","r",ones(1,nth));
-			
-		rhs(n)=-eq.eval()(j0);	
-		*/
+	
 // Take care of convective layers
 // number of zones=number of interface+1 (the surface)
 
-		for (int iz=1;iz<nzones-1;iz++) {
+		for (int iz=0;iz<nzones-1;iz++) {
 		        for(n=0,j0=0;n<izif[iz]+1;n++) j0+=map.gl.npts[n];
 			n=izif[iz]+1; // on les gere comme des CL bottom du domaine au dessus
+//	printf("In solve_map n=%d\n",n);
 		        op->reset(n,"Ri");
 			eq.bc_bot2_add(op,n,"Ri","p",ones(1,nth));
 			eq.bc_bot2_add(op,n,"Ri","s",ones(1,nth));
