@@ -28,6 +28,14 @@ void star1d::fill() {
 
     Omega=0;Omega_bk=0;Ekman=0;Omegac=0;
 
+// for the output
+        schwarz=-(D,p)*((D,log(T))-eos.del_ad*(D,log(p)));
+	schwarz = schwarz/r/r;
+	schwarz.setrow(0, zeros(1, nth));
+        //printf("size of schwarz %d,%d\n",schwarz.nrows(),schwarz.ncols());
+
+
+
 }
 
 solver *star1d::init_solver(int nvar_add) {
@@ -1205,7 +1213,7 @@ fclose(qfic);
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
                            rhs_T(j0)=-T(j0)+T(j0-1);
 			} else if (domain_type[n-1] == CONVECTIVE) {
-			   printf("CONVECTIVE n= %d RAD %d\n",n-1,n);
+			   //printf("CONVECTIVE n= %d RAD %d\n",n-1,n);
 			   op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
 			   op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
 			   op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
