@@ -746,34 +746,36 @@ matrix star2d::solve_temp_rad() {
     sym t = S.regvar("T");
     sym xi = S.regvar("xi");
     sym eq = div(xi*grad(t))/xi;
-    S.set_value("xi", this->opa.xi);
+    S.set_value("xi", opa.xi);
 
     solver op;
     op.init(map.ndomains, 1, "full");
     op.regvar("T");
-    op.set_nr(this->map.npts);
+    op.set_nr(map.npts);
 
     eq.add(&op, "T", "T");
 
-    matrix rhs = -this->Lambda * this->rho * (this->nuc.eps / this->opa.xi);
+    matrix rhs = -Lambda * rho * (nuc.eps / opa.xi);
 
-    op.bc_bot2_add_l(0, "T", "T", ones(1, this->nth), this->map.D.block(0).row(0));
-    rhs.setrow(0, zeros(1, this->nth));
+    op.bc_bot2_add_l(0, "T", "T", ones(1, nth), map.D.block(0).row(0));
+    rhs.setrow(0, zeros(1, nth));
+    //op.bc_bot2_add_d(0, "T", "T", ones(1, nth));
+    //rhs.setrow(0, ones(1, nth));
 
-    int ir = this->map.npts[0];
+    int ir = map.npts[0];
     for (int n=1; n<ndomains; n++) {
-        op.bc_top1_add_d(n-1, "T", "T", ones(1, this->nth));
-        op.bc_top2_add_d(n-1, "T", "T", -ones(1, this->nth));
-        rhs.setrow(ir-1, zeros(1, this->nth));
+        op.bc_top1_add_d(n-1, "T", "T", ones(1, nth));
+        op.bc_top2_add_d(n-1, "T", "T", -ones(1, nth));
+        rhs.setrow(ir-1, zeros(1, nth));
 
-        op.bc_bot1_add_l(n, "T", "T", ones(1, this->nth), this->map.D.block(n-1).row(-1));
-        op.bc_bot2_add_l(n, "T", "T", -ones(1, this->nth), this->map.D.block(n).row(0));
-        rhs.setrow(ir, zeros(1, this->nth));
-        ir += this->map.npts[n];
+        op.bc_bot1_add_l(n, "T", "T", ones(1, nth), map.D.block(n-1).row(-1));
+        op.bc_bot2_add_l(n, "T", "T", -ones(1, nth), map.D.block(n).row(0));
+        rhs.setrow(ir, zeros(1, nth));
+        ir += map.npts[n];
     }
 
-    op.bc_top1_add_d(ndomains-1, "T", "T", ones(1, this->nth));
-    rhs.setrow(-1, this->T.row(-1));
+    op.bc_top1_add_d(ndomains-1, "T", "T", ones(1, nth));
+    rhs.setrow(-1, T.row(-1));
 
     op.set_rhs("T", rhs);
 
@@ -785,7 +787,7 @@ matrix star2d::solve_temp_rad() {
 //int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter)
 int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     int n = 1;
-    matrix schw, dschw;
+    matrix schw, dschw,bv2;
 
     matrix T_schw = solve_temp_rad();
 
@@ -798,33 +800,63 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     }
     fclose(temp_file);
 #endif
-	printf("Start of find zone\n");
+	printf("Start of find zone, min_core= %e\n",min_core_size);
 
+    int itest_sch=0;
+    while(r(itest_sch,-1)<1.05*min_core_size) itest_sch++;
+// "itest_sch" is the first grid point where Schwarzschild is tested (to avoid too small cores)
 
 // Paco's version
 //    schw=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
 //        -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
 
 // Bertrand version
-//    schw = -(map.gzz*(D, p)+map.gzt*(p, Dt))*((D, log(T_schw))-eos.del_ad*(D, log(p))) -
-//        (map.gzt*(D, p)+map.gtt*(p, Dt))*((log(T_schw), Dt)-eos.del_ad*(log(p), Dt));
-    //schw = -((D, log(T_schw))-eos.del_ad*(D, log(p)));
-    schw = log(T_schw);
+      //schw = -(map.gzz*(D, p)+map.gzt*(p, Dt))*((D, T_schw)/T_schw-eos.del_ad*(D, log(p))) -
+          //(map.gzt*(D, p)+map.gtt*(p, Dt))*((T_schw, Dt)/T_schw-eos.del_ad*(log(p), Dt));
+
+    //for (int k=0;k<nr;k++) fprintf(fic,"i= %d schw= %e T=%e, p=%e, na=%e, gzz=%e\n",k,schw(k,-1),T_schw(k,-1),p(k,-1),eos.del_ad(k,-1),map.gzz(k,-1));
+
+    //schw.setrow(0, zeros(1, nth));
+    //schw = schw/r/r;
+    //schw.setrow(0, zeros(1, nth));
+    //schw.setrow(0, -(D.row(0), schw)/D(0, 0));
+	//schwarz=schw;
+	////printf("size of schwarz %d,%d\n",schwarz.nrows(),schwarz.ncols());
+
+    //for (int k=0;k<nr;k++) fprintf(fic,"i= %d schw= %e T_schw=%e, T=%e\n",k,schw(k),T_schw(k),T(k));
+	bv2=(D,p)/p/eos.G1-(D,rho)/rho;
+	bv2(0)=0.;
+
+// filtrage chebyshev
+
+	matrix sp_bv2,bv2f;
+	sp_bv2=(map.gl.P,bv2);
+	int j0=0, n_filter=2;
+	for (int idom=0; idom< ndomains;idom++) {
+	   int ndom=map.gl.npts[idom];
+           int j1=j0+ndom-1;
+	   for (int n=j0+n_filter; n<=j1; n++) sp_bv2(n) = 0.;
+	   j0+=ndom;
+	}
+	bv2f = (map.gl.P1, sp_bv2); 
+// filtrage brutal
+    schw=bv2f;
+    for (int k=0;k<nr;k++) {
+	if (fabs(bv2f(k)) < 1.0e-3 ) schw(k)=-1e-3;
+    }
+
 
     FILE *fic = fopen("schwi.txt", "a");
-    for (int k=0;k<nr;k++) fprintf(fic,"i= %d schw= %e T=%e, p=%e, na=%e, gzz=%e\n",k,schw(k,-1),T_schw(k,-1),p(k,-1),eos.del_ad(k,-1),map.gzz(k,-1));
+	fprintf(fic,"it= %d\n",glit);
+    for (int k=0;k<nr;k++) fprintf(fic,"%d  %e %e %e\n",k,schw(k),bv2(k),bv2f(k));
+    //for (int k=0;k<nr;k++) fprintf(fic,"%d  %e \n",k,bv2(k));
     fclose(fic);
 
-    schw.setrow(0, zeros(1, nth));
-    schw = schw/r/r;
-    schw.setrow(0, zeros(1, nth));
-    schw.setrow(0, -(D.row(0), schw)/D(0, 0));
-
-    dschw = (D, schw);
+    //dschw = (D, schw);
 
 
-    for (int i=1; i<nr; i++) {
-        if (schw(i-1, -1) * schw(i, -1) < 0) {
+    for (int i=itest_sch; i<nr; i++) {
+        if (schw(i-1, -1) * schw(i, -1) < 0 ) {
             n++;
         }
     }
@@ -833,13 +865,14 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     p_inter = zeros(n, nth);
     n = 0;
     double last_zi = 0.0;
-    for (int i=1; i<nr; i++) {
-        if (schw(i-1, -1) * schw(i, -1) < 0) {
+    for (int i=itest_sch; i<nr; i++) {
+        if (schw(i-1, -1) * schw(i, -1) < 0 ) {
+            for (int j=0; j<nth; j++) {
+                double zi = z(i-1);
+		/*
             matrix TT;
             double dzi, schwi, dschwi;
-            for (int j=0; j<nth; j++) {
                 int end = 0, done = 0;
-                double zi = z(i-1);
                 while (end < 3 && done++ < 100) {
                     schwi = map.gl.eval(schw.col(j), zi, TT)(0);
                     dschwi = (TT, dschw.col(j))(0);
@@ -852,6 +885,9 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
                         zi += dzi;
                     }
                 }
+		*/
+// On abandonne la solution de Newton pour une simple interpolation
+		zi=z(i-1)-schw(i-1,-1)*(z(i)-z(i-1))/(schw(i,-1)-schw(i-1,-1));
                 r_inter(n, j) = map.gl.eval(r.col(j), zi)(0);
                 p_inter(n, j) = map.gl.eval(PRES.col(j), zi)(0);
                 last_zi = zi;

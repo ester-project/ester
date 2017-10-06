@@ -33,6 +33,13 @@ void star2d::fill() {
 	double eps=1.-1./map.leg.eval_00(r.row(-1),PI/2)(0);
 	Omegac=sqrt(pi_c*m/4/PI*(1-eps)*(1-eps)*(1-eps));
 
+// for the output
+	printf("size of schwarz %d,%d\n",schwarz.nrows(),schwarz.ncols());
+
+	schwarz=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
+        -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
+
+
 }
 
 void star2d::init_comp() {
