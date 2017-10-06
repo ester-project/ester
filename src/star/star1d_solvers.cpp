@@ -1023,17 +1023,21 @@ fclose(qfic);
                            op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
 			}
                 } else if (n==ndomains-1) { // care of the last domain
-			if (domain_type[n] != RADIATIVE) {
+			/*if (domain_type[n] != RADIATIVE) {
 			   printf("Warning! last domain is not radiative: I stop\n");
 			   exit(0);
-			}
-			if (domain_type[n-1] == CONVECTIVE) {
+			}*/
+			if (domain_type[n] == RADIATIVE && domain_type[n-1] == CONVECTIVE) {
                            //printf("LAST DOM CASE: CONVECTIVE n= %d RAD %d\n",n-1,n);
                            op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
                            op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
                            op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
                            rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
-                        } else if (domain_type[n-1] == RADIATIVE) {
+                        } else if (domain_type[n] == RADIATIVE && domain_type[n-1] == RADIATIVE) {
+                           op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
+                           op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
+                           rhs_T(j0)=-T(j0)+T(j0-1);
+                        } else if (domain_type[n] == CONVECTIVE ) {
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
                            rhs_T(j0)=-T(j0)+T(j0-1);
