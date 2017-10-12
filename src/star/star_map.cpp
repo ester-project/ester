@@ -138,7 +138,13 @@ for (int k=0;k<nzones;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 		for (iz=1; iz<nzones; iz++) {
 		  for(int n=izif[iz-1]+1;n<=izif[iz];n++) domain_type[n]=zone_type[iz];
 		}
-	for (int n=0;n<ndomains;n++) printf("domain_type[%d] = %d\n",n,domain_type[n]);
+// Compute the number of domains in the core
+	nd_core=0;
+	for (int n=0;n<ndomains;n++) {
+		printf("domain_type[%d] = %d\n",n,domain_type[n]);
+		if (domain_type[n] == CORE) nd_core++;
+	}
+		printf("nd_core=%d\n",nd_core);
 
 
 // Finally we need the index of the interfaces between the zones once the
@@ -948,7 +954,7 @@ printf("number of interf left %d \n",k);
 // Check if there are contiguous zones and suppress them if true
 	int nsz=0;
 	redo:
-	printf("In find_zones n+1=%d\n",n+1);
+	printf("In find_zones nb of zones = %d\n",n+1);
 	int flag=0;
 	for (int iz=0;iz<n;iz++){
 		if (zone_type[iz]==zone_type[iz+1]) {

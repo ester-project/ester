@@ -325,7 +325,7 @@ void star1d::dump_info() {
 	printf("\tX0=%.4f   Y0=%.4f   Z0=%.4f\n",X0,Y0,Z0);
 	printf("\n");
 	
-	if(conv==0) printf("No convective core\n\n");
+	if(nd_core==0) printf("No convective core\n\n");
 	else {
 		printf("Convective core:\n\n");
 		double mcc=Mcore();
