@@ -18,7 +18,7 @@ void star2d::new_check_map() {
                 zone_type = std::vector<int>(1);
 	}
 
-	if (global_err < 0.01) { // look for new convective regions and eventually remap the star
+	if (global_err < 0.1) { // look for new convective regions and eventually remap the star
 	   // Find the zone boundaries and the associated pressures
 	   // and output zone_type as global var.
 	   int nzones_av=zone_type.size();
@@ -785,16 +785,10 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 
     matrix T_schw = solve_temp_rad();
 
-#if 0
-    FILE *temp_file = fopen("temp.txt", "w");
-    for (int i=0; i<nr; i++) {
-        for (int j=0; j<nth; j++) {
-            fprintf(temp_file, "%e %d %e %e\n", r(i, j), j, T_schw(i, j), T(i, j));
-        }
-    }
-    fclose(temp_file);
-#endif
 	printf("Start of find zone, min_core= %e\n",min_core_size);
+	FILE *coco=fopen("les_z.txt", "w");
+	for (int i=0;i<nr;i++) fprintf(coco,"%d  %e\n",i,z(i));
+	fclose(coco);
 
     int itest_sch=0;
     while(r(itest_sch,-1)<1.05*min_core_size) itest_sch++;
@@ -843,59 +837,88 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     FILE *fic = fopen("schwi.txt", "a");
 	fprintf(fic,"it= %d\n",glit);
     for (int k=0;k<nr;k++) fprintf(fic,"%d  %e %e %e\n",k,schw(k),bv2(k),bv2f(k));
-    //for (int k=0;k<nr;k++) fprintf(fic,"%d  %e \n",k,bv2(k));
     fclose(fic);
 
     //dschw = (D, schw);
 
-
+	int nc=999,nl;
     for (int i=itest_sch; i<nr; i++) {
         if (schw(i-1, -1) * schw(i, -1) < 0 ) {
             n++;
+	    nc=i; // memo of the last sign change
         }
     }
+// We need to remove the outest convection zone (generally very thin)
+	nl=nc;
+	if (schw(nc,-1) < 0) {
+		n=n-1;
+		nl=nc-1;
+	}
+		
 
-    r_inter = zeros(n, nth);
-    p_inter = zeros(n, nth);
+                //double zi = z(i-1);
+    double last_zi = 0.0, zi;
+//    double before_last_zi = 0.0;
+    int j=0;
+    std::vector<double> les_zi(n+1);
+
+// premier passage: on repere...
     n = 0;
-    double last_zi = 0.0;
-    for (int i=itest_sch; i<nr; i++) {
+    for (int i=itest_sch; i<=nl; i++) {  // we stop the search at nc or nc-1
         if (schw(i-1, -1) * schw(i, -1) < 0 ) {
-            for (int j=0; j<nth; j++) {
-                double zi = z(i-1);
-		/*
-            matrix TT;
-            double dzi, schwi, dschwi;
-                int end = 0, done = 0;
-                while (end < 3 && done++ < 100) {
-                    schwi = map.gl.eval(schw.col(j), zi, TT)(0);
-                    dschwi = (TT, dschw.col(j))(0);
-                    dzi = -schwi/dschwi;
-                    if (fabs(schwi) < 1e-9) {
-                        end = 3;
-                    }
-                    else {
-                        if (fabs(dzi) < 1e-9) end++;
-                        zi += dzi;
-                    }
-                }
-		*/
-// On abandonne la solution de Newton pour une simple interpolation
+
 		zi=z(i-1)-schw(i-1,-1)*(z(i)-z(i-1))/(schw(i,-1)-schw(i-1,-1));
-                r_inter(n, j) = map.gl.eval(r.col(j), zi)(0);
-                p_inter(n, j) = map.gl.eval(PRES.col(j), zi)(0);
-                last_zi = zi;
-            }
-            n++;
+		les_zi[n]=zi;
+                n++;
         }
     }
+printf("n= %d\n",n);
+for (int i=0; i< n;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
+
+// Now we select the thick zones
+int is=0;
+for (int i=0; i< n;i++) {
+if (les_zi[i+1]-les_zi[i] < 0.01) {
+   les_zi[i+1]=0.;
+   les_zi[i]=0.;
+   is=is+2;
+   i++;
+   }
+}
+printf("number of interf suppressed %d \n",is);
+//for (int i=0; i< n;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
+
+// Now we count the number of interfaces left
+int k=0;
+std::vector<double> the_zi(n);
+
+for (int i=0; i< n;i++) {
+if (les_zi[i] !=0.) {
+	the_zi[k]=les_zi[i];
+	   k++;
+          }
+}
+printf("number of interf left %d \n",k);
+
+// Now we set the values of r_inter and p_inter
+    r_inter = zeros(k+1, nth);
+    p_inter = zeros(k+1, nth);
+    for (int i=0; i< k;i++) {
+	   zi=the_zi[i];
+           r_inter(i, j) = map.gl.eval(r.col(j), zi)(0);
+           p_inter(i, j) = map.gl.eval(PRES.col(j), zi)(0);
+     }
+
+// We add the surface as the last r_inter
     r_inter.setrow(-1, z(-1) * ones(1, nth));
     p_inter.setrow(-1, PRES(-1) * ones(1, nth));
+
 
     std::cout << "CONV: " << CONVECTIVE << ", ";
     std::cout << "RAD: " << RADIATIVE << "\n";
 
     last_zi = 0.0;
+    n=k;
     zone_type = std::vector<int>(n+1);
     for (int i=0; i<n+1; i++) {
         double mid_zone = (last_zi+r_inter(i, 0))/2.0;
@@ -907,12 +930,15 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
         } else {
             zone_type[i] = RADIATIVE;
         }
+	if (i==n) zone_type[i] = RADIATIVE; // the last zone is necessarily radiative
         printf("ZONE: [%e, %e]: convection (schw: %e): %d\n",
                 last_zi, r_inter(i, 0),
                 schwi,
                 zone_type[i]);
         last_zi = r_inter(i, 0);
     }
+//exit(0);
+
 // Check if there are contiguous zones and suppress them if true
 	int nsz=0;
 	redo:
