@@ -85,14 +85,17 @@ int main(int argc,char *argv[]) {
 
 		}
   	//if (nit > 3) exit(0);
-  	if (nit > 100) exit(0);
+  	if (nit > 200) exit(0);
 	}
 	if(config.verbose) {
 		printf("Mass=%3.3f Msun  Radius=%3.3f Rsun  Luminosity=%3.3f Lsun  Teff=%1.1f K\n",
 				A.M/M_SUN,A.R/R_SUN,A.luminosity()/L_SUN,A.Teff()(0));
 		printf("X=%3.3f (Xc/X=%3.3f) Z=%3.3f\n",A.X0,A.Xc,A.Z0);
 		printf("rhoc=%e Tc=%e pc=%e\n",A.rhoc,A.Tc,A.pc);
-		if(A.conv) printf("r_cz=%3.3f Rsun\n",*(A.map.gl.xif+A.conv)*A.R/R_SUN);
+		int jc=0;
+		for (int n=0;n<A.nd_core;n++) jc+=A.map.gl.npts[n];
+		if(A.nd_core != 0) printf("r_cz=%3.3f Rsun\n",(A.r(jc))*A.R/R_SUN);
+		//if(A.conv) printf("r_cz=%3.3f Rsun\n",*(A.map.gl.xif+A.conv)*A.R/R_SUN);
 	}
 	delete op;
 	A.write(config.output_file,config.output_mode);

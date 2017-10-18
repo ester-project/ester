@@ -138,10 +138,12 @@ void star2d::hdf5_write(const char *filename) const {
     write_attr(star, "nth",         integer,    &map.leg.npts);
     write_attr(star, "nex",         integer,    &map.ex.gl.npts[0]);
     write_attr(star, "conv",        integer,    &conv);
+    write_attr(star, "nd_core",     integer,    &nd_core);
     write_attr(star, "domain_type", integer,    domain_type.data(), map.ndomains);
  	int nzones=zone_type.size();
     write_attr(star, "nzones",      integer,    &nzones);
     write_attr(star, "zone_type",   integer,    zone_type.data(), zone_type.size());
+    write_attr(star, "izif",        integer,    izif.data(), izif.size());
     write_attr(star, "core_convec", integer,    &core_convec);
     write_attr(star, "env_convec",  integer,    &env_convec);
     write_attr(star, "stratified_comp", integer, &stratified_comp);
@@ -227,6 +229,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("Z0",&Z0);
     fp.write("Xc",&Xc);
     fp.write("conv",&conv);
+    fp.write("nd_core",&nd_core);
     fp.write("domain_type",&domain_type[0],ndomains);
     fp.write("izif",&izif[0],ndomains);
     fp.write("surff",&surff);
@@ -373,6 +376,10 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_err("Could not read 'conv' from file `%s'", input_file);
         exit(EXIT_FAILURE);
     }
+    if (read_attr(star, "nd_core", &nd_core)) {
+        ester_err("Could not read 'nd_core' from file `%s'", input_file);
+        exit(EXIT_FAILURE);
+    }
 
     domain_type.resize(ndomains);
     izif.resize(ndomains);
@@ -392,6 +399,11 @@ int star2d::hdf5_read(const char *input_file, int dim) {
 	zone_type.resize(nzones);
     if (read_attr(star, "zone_type", &zone_type[0])) {
         ester_err("Could not read 'zone_type' from file `%s'", input_file);
+        exit(EXIT_FAILURE);
+    }
+	izif.resize(nzones);
+    if (read_attr(star, "izif", &izif[0])) {
+        ester_err("Could not read 'izif' from file `%s'", input_file);
         exit(EXIT_FAILURE);
     }
 for (int k=0;k<nzones;k++) printf("in hdf5_read n=  %d, %d \n",k,zone_type[k]);
@@ -604,6 +616,7 @@ int star2d::read(const char *input_file, int dim) {
     if(fp.read("Z0",&Z0)) fp.read("Z",&Z0);
     fp.read("Xc",&Xc);
     fp.read("conv",&conv);
+    fp.read("nd_core",&nd_core);
     domain_type.resize(ndomains);
     izif.resize(ndomains);
     fp.read("izif",&izif[0]);
