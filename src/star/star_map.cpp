@@ -792,7 +792,8 @@ matrix star2d::solve_temp_rad() {
 
 //int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter)
 int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
-    int n = 1;
+    int n = 1, details=0;
+    double last_zi, zi;
     matrix schw, dschw,bv2;
 
     matrix T_schw = solve_temp_rad();
@@ -804,7 +805,9 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 
     int itest_sch=0;
     while(r(itest_sch,-1)<1.05*min_core_size) itest_sch++;
-// "itest_sch" is the first grid point where Schwarzschild is tested (to avoid too small cores)
+// "itest_sch" is the first grid point where Schwarzschild is tested
+// (to avoid too small cores)
+
 
 // Paco's version
 //    schw=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
@@ -824,11 +827,12 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 	////printf("size of schwarz %d,%d\n",schwarz.nrows(),schwarz.ncols());
 
     //for (int k=0;k<nr;k++) fprintf(fic,"i= %d schw= %e T_schw=%e, T=%e\n",k,schw(k),T_schw(k),T(k));
+
+// Compute the square of the BV frequency
 	bv2=(D,p)/p/eos.G1-(D,rho)/rho;
 	bv2(0)=0.;
 
 // filtrage chebyshev
-
 	matrix sp_bv2,bv2f;
 	sp_bv2=(map.gl.P,bv2);
 	int j0=0, n_filter=2;
@@ -839,6 +843,7 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 	   j0+=ndom;
 	}
 	bv2f = (map.gl.P1, sp_bv2); 
+
 // filtrage brutal
     schw=bv2f;
     for (int k=0;k<nr;k++) {
@@ -853,41 +858,48 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 
     //dschw = (D, schw);
 
-	int nc=999,nl;
+    int nc=999,nl;
     for (int i=itest_sch; i<nr; i++) {
         if (schw(i-1, -1) * schw(i, -1) < 0 ) {
             n++;
 	    nc=i; // memo of the last sign change
         }
     }
-// We need to remove the outest convection zone (generally very thin)
+// We need to remove the outest (surface) convection zone (generally very thin)
+// since we want models that terminate with a radiative zone
 	nl=nc;
-	if (schw(nc,-1) < 0) {
+	if (details) printf(" av. n= %d, nl=%d\n",n,nl);
+	if (schw(nr-1,-1) < 0) {
 		n=n-1;
 		nl=nc-1;
 	}
 		
+	if (details) printf(" ap. n= %d, nl=%d\n",n,nl);
 
-                //double zi = z(i-1);
-    double last_zi = 0.0, zi;
-//    double before_last_zi = 0.0;
     int j=0;
+
+// We introduce les_zi that are the zeta of the interfaces
+// We require that les_zi[0]=0. (center)
+// If there are n zones there are n+1 interfaces which encompass centre and
+// surface.
+
     std::vector<double> les_zi(n+1);
+    for (int i=0; i< n+1;i++) les_zi[i]=0.;
 
-// premier passage: on repere...
+// We first detect the number of true interfaces
     n = 0;
-    for (int i=itest_sch; i<=nl; i++) {  // we stop the search at nc or nc-1
+    for (int i=itest_sch; i<=nl; i++) {  // we stop the search at nl or nl-1
         if (schw(i-1, -1) * schw(i, -1) < 0 ) {
-
+                n++;
 		zi=z(i-1)-schw(i-1,-1)*(z(i)-z(i-1))/(schw(i,-1)-schw(i-1,-1));
 		les_zi[n]=zi;
-                n++;
         }
     }
-printf("n= %d\n",n);
-for (int i=0; i< n;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
+if (details) printf("n= %d\n",n);
+if (details) for (int i=0; i<n+1;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
 
-// Now we select the thick zones
+// Now we select the thick zones by removing the thin ones (less than
+// 1%)
 int is=0;
 for (int i=0; i< n;i++) {
 if (les_zi[i+1]-les_zi[i] < 0.01) {
@@ -897,22 +909,24 @@ if (les_zi[i+1]-les_zi[i] < 0.01) {
    i++;
    }
 }
-printf("number of interf suppressed %d \n",is);
-//for (int i=0; i< n;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
+if (details) printf("number of interf suppressed %d \n",is);
+if (details) for (int i=0; i< n;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
 
-// Now we count the number of interfaces left
+// Now we count the number of true interfaces left ==> k
+// and recollect their positions ==> the_zi
 int k=0;
 std::vector<double> the_zi(n);
 
-for (int i=0; i< n;i++) {
+for (int i=0; i< n+1;i++) {
 if (les_zi[i] !=0.) {
 	the_zi[k]=les_zi[i];
 	   k++;
           }
 }
-printf("number of interf left %d \n",k);
+if (details) printf("number of interf left %d \n",k);
 
 // Now we set the values of r_inter and p_inter
+// which include the true surface
     r_inter = zeros(k+1, nth);
     p_inter = zeros(k+1, nth);
     for (int i=0; i< k;i++) {
@@ -927,6 +941,7 @@ printf("number of interf left %d \n",k);
 
 
     std::cout << "CONV: " << CONVECTIVE << ", ";
+    std::cout << "CORE: " << CORE << ", ";
     std::cout << "RAD: " << RADIATIVE << "\n";
 
     last_zi = 0.0;
@@ -954,7 +969,7 @@ printf("number of interf left %d \n",k);
 // Check if there are contiguous zones and suppress them if true
 	int nsz=0;
 	redo:
-	printf("In find_zones nb of zones = %d\n",n+1);
+	if (details) printf("In find_zones nb of zones = %d\n",n+1);
 	int flag=0;
 	for (int iz=0;iz<n;iz++){
 		if (zone_type[iz]==zone_type[iz+1]) {
@@ -970,13 +985,13 @@ printf("number of interf left %d \n",k);
 		}
          }
 	exit_loop:
-for (int i=0; i<n+1;i++) printf("i=%d, zone_type=%d\n",i,zone_type[i]);
+if (details) for (int i=0; i<n+1;i++) printf("i=%d, zone_type=%d\n",i,zone_type[i]);
 	if (flag) {
 	   n=n-1; // reduce the number of zones
 	   goto redo; // and check again
 	}
-	printf("In find_zones nsz=%d \n",nsz);
-	printf("In find_zones n+1=%d after reduction\n",n+1);
+	//printf("In find_zones nsz=%d \n",nsz);
+	printf("End of find_zones: number of zones =%d \n",n+1);
         //std::vector<int> zone_type_bis(n+1);	
 	//for (int i=0;i<n+1;i++) zone_type_bis[i]=zone_type[i];
 	zone_type.resize(n+1);
