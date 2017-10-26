@@ -1443,7 +1443,8 @@ fprintf(RHS,"RHS dRi END\n");
 
 	j0=0;
 	for(n=0;n<ndomains;n++) {
-// place the domains radii "Ri" so as to equalize the PRES drop, between 2 adjacent domains
+// place the domains radii "Ri" so as to equalize the PRES drop,
+// between 2 adjacent domains
 		ndom=map.gl.npts[n];
 		if(n==0) op->add_d(n,"Ri","Ri",ones(1,1));
 		else {
