@@ -132,6 +132,8 @@ void star2d::hdf5_write(const char *filename) const {
     H5::PredType integer = H5::PredType::STD_I32LE;
     H5::PredType real    = H5::PredType::IEEE_F64LE;
 
+printf("start hdf5_write\n");
+
     write_attr(star, "ndomains",    integer,    &map.ndomains);
     write_attr(star, "nr",          integer,    &nr);
     write_attr(star, "npts",        integer,    map.gl.npts, map.ndomains);
@@ -139,11 +141,16 @@ void star2d::hdf5_write(const char *filename) const {
     write_attr(star, "nex",         integer,    &map.ex.gl.npts[0]);
     write_attr(star, "conv",        integer,    &conv);
     write_attr(star, "nd_core",     integer,    &nd_core);
+//printf("start hdf5_write 1\n");
     write_attr(star, "domain_type", integer,    domain_type.data(), map.ndomains);
+//printf("start hdf5_write 2\n");
  	int nzones=zone_type.size();
     write_attr(star, "nzones",      integer,    &nzones);
+printf("start hdf5_write nzones = %d \n",nzones);
     write_attr(star, "zone_type",   integer,    zone_type.data(), zone_type.size());
+printf("start hdf5_write 4\n");
     write_attr(star, "izif",        integer,    izif.data(), izif.size());
+printf("start hdf5_write 5\n");
     write_attr(star, "core_convec", integer,    &core_convec);
     write_attr(star, "env_convec",  integer,    &env_convec);
     write_attr(star, "stratified_comp", integer, &stratified_comp);
@@ -179,6 +186,7 @@ void star2d::hdf5_write(const char *filename) const {
     strtype = H5::StrType(H5::PredType::C_S1, strlen(atm.name)+1);
     write_attr(star, "atm.name", strtype, atm.name);
 
+printf("start hdf5_write 6\n");
     matrix_map fields;
     fields["r"] = r;
     fields["z"] = z;
@@ -394,11 +402,14 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_err("Could not read 'nzones' from file `%s'", input_file);
         exit(EXIT_FAILURE);
     }
+	printf("I read nzone= %d\n",nzones);
 	zone_type.resize(nzones);
     if (read_attr(star, "zone_type", &zone_type[0])) {
         ester_err("Could not read 'zone_type' from file `%s'", input_file);
         exit(EXIT_FAILURE);
     }
+for (int n=0;n<nzones;n++) printf("zone_type[%d] = %d\n",n,zone_type[n]);
+	printf("I read zone_type.size= %d\n",zone_type.size());
 	izif.resize(nzones);
     if (read_attr(star, "izif", &izif[0])) {
         ester_err("Could not read 'izif' from file `%s'", input_file);
@@ -469,8 +480,10 @@ for (int k=0;k<nzones;k++) printf("in hdf5_read n=  %d, %d \n",k,zone_type[k]);
         stratified_comp = 0;
     }
 
+	printf("I read 2 zone_type.size= %d\n",zone_type.size());
     map.init();
 
+	printf("I read 3 zone_type.size= %d\n",zone_type.size());
     if (read_field(star, "phi", phi)) {
         ester_err("Could not read field 'phi' from file `%s'", input_file);
         exit(EXIT_FAILURE);
@@ -503,9 +516,11 @@ for (int k=0;k<nzones;k++) printf("in hdf5_read n=  %d, %d \n",k,zone_type[k]);
         map.R = zeros(nr, nth);
         exit(EXIT_FAILURE);
     }
+	printf("I read 4 zone_type.size= %d\n",zone_type.size());
     if (map.R.nrows() < map.ndomains+1)
         map.R = zeros(1,nth).concatenate(map.R);
     map.remap();
+	printf("I read 5 zone_type.size= %d\n",zone_type.size());
     if (read_field(star, "w", w)) {
         ester_warn("Could not read field 'w' from file `%s'", input_file);
         w = zeros(nr, nth);
@@ -528,6 +543,7 @@ for (int k=0;k<nzones;k++) printf("in hdf5_read n=  %d, %d \n",k,zone_type[k]);
     }
 
     fill();
+	printf("I read 6 zone_type.size= %d\n",zone_type.size());
 
     return 0;
 #else
