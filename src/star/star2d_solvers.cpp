@@ -34,7 +34,7 @@ void star2d::fill() {
 	Omegac=sqrt(pi_c*m/4/PI*(1-eps)*(1-eps)*(1-eps));
 
 // for the output
-	printf("size of schwarz %d,%d\n",schwarz.nrows(),schwarz.ncols());
+//	printf("size of schwarz %d,%d\n",schwarz.nrows(),schwarz.ncols());
 
 	schwarz=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
         -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
@@ -170,7 +170,10 @@ double star2d::solve(solver *op) {
 		w=Omega*ones(nr,nth);
 	}
 
-	check_map();
+        printf("in solve zone_type.size= %d\n",zone_type.size());
+
+	//check_map();
+	new_check_map();
 
 	op->reset(); // Clear up the preceding equations (clear up is not necessary
 		     // if the system is linear)

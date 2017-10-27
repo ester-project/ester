@@ -59,6 +59,11 @@ int main(int argc,char *argv[]) {
 	if(*config.input_file==0) {
 		A.core_convec=0;
 	}
+	A.global_err=1;
+        A.glit=0;
+        A.config.input_file=*config.input_file;
+        printf("check config.input_file= %d\n",A.config.input_file);
+
 	
     printf("In main: Start Newton iterations\n");
     while(!last_it) {
@@ -73,12 +78,14 @@ int main(int argc,char *argv[]) {
         }
 
         nit++;
+        A.glit++;
 
 		if(err<0.1&&!*config.input_file) {
             A.core_convec=core_convec_set;
 		}
 		
-		err=A.solve(op);
+		A.global_err=A.solve(op);
+		err=A.global_err;
 
 		tt(nit-1)=t.value();
 		error(nit-1)=err;

@@ -10,6 +10,7 @@ void star2d::new_check_map() {
         matrix pif,R_inter,p_inter;
         remapper *red;
         matrix R(ndomains+1,nth);
+printf("new_check_map nzones =%d\n",zone_type.size());
 	R=zeros(ndomains+1,nth);
 //printf("new_check_map config.input_file=%d\n",config.input_file);
 //for (int n=0;n<ndomains;n++) printf("domain_type[%d] = %d\n",n,domain_type[n]);
@@ -22,6 +23,7 @@ void star2d::new_check_map() {
 	   // Find the zone boundaries and the associated pressures
 	   // and output zone_type as global var.
 	   int nzones_av=zone_type.size();
+printf("new_check_map nzones_av =%d\n",nzones_av);
 	   find_zones(R_inter, p_inter);
 	   int nzones_ap=zone_type.size();
 	   if (nzones_av == nzones_ap) {
@@ -171,6 +173,7 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
     DEBUG_FUNCNAME;
     remapper red(map); // declaration object of class remapper 
 
+printf("in remap nzones =%d\n",zone_type.size());
 	printf("    Enter remap in star_map\n");
     red.set_ndomains(ndom_in);
     red.set_npts(npts_in);
@@ -183,6 +186,7 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
     map=red.get_map(); // update the mapping
     interp(&red); // interpolate the variable on the new update
 
+printf("in remap nzones =%d\n",zone_type.size());
 	printf("    Leave remap in star_map\n");
 }
 
@@ -792,7 +796,7 @@ matrix star2d::solve_temp_rad() {
 
 //int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter)
 int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
-    int n = 1, details=0;
+    int n = 1, details=1;
     double last_zi, zi;
     matrix schw, dschw,bv2;
 
@@ -830,7 +834,7 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 
 // Compute the square of the BV frequency
 	bv2=(D,p)/p/eos.G1-(D,rho)/rho;
-	bv2(0)=0.;
+	bv2(0,-1)=0.;
 
 // filtrage chebyshev
 	matrix sp_bv2,bv2f;
@@ -839,7 +843,7 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 	for (int idom=0; idom< ndomains;idom++) {
 	   int ndom=map.gl.npts[idom];
            int j1=j0+ndom-1;
-	   for (int n=j0+n_filter; n<=j1; n++) sp_bv2(n) = 0.;
+	   for (int n=j0+n_filter; n<=j1; n++) sp_bv2(n,-1) = 0.;
 	   j0+=ndom;
 	}
 	bv2f = (map.gl.P1, sp_bv2); 
@@ -847,13 +851,14 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 // filtrage brutal
     schw=bv2f;
     for (int k=0;k<nr;k++) {
-	if (fabs(bv2f(k)) < 1.0e-3 ) schw(k)=-1e-3;
+	if (fabs(bv2f(k,-1)) < 1.0e-3 ) schw(k,-1)=-1e-3;
     }
+
 
 
     FILE *fic = fopen("schwi.txt", "a");
 	fprintf(fic,"it= %d\n",glit);
-    for (int k=0;k<nr;k++) fprintf(fic,"%d  %e %e %e\n",k,schw(k),bv2(k),bv2f(k));
+    for (int k=0;k<nr;k++) fprintf(fic,"%d  %e %e %e\n",k,schw(k,-1),bv2(k,-1),bv2f(k,-1));
     fclose(fic);
 
     //dschw = (D, schw);
@@ -876,7 +881,6 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 		
 	if (details) printf(" ap. n= %d, nl=%d\n",n,nl);
 
-    int j=0;
 
 // We introduce les_zi that are the zeta of the interfaces
 // We require that les_zi[0]=0. (center)
@@ -929,6 +933,7 @@ if (details) printf("number of interf left %d \n",k);
 // which include the true surface
     r_inter = zeros(k+1, nth);
     p_inter = zeros(k+1, nth);
+    int j=-1;
     for (int i=0; i< k;i++) {
 	   zi=the_zi[i];
            r_inter(i, j) = map.gl.eval(r.col(j), zi)(0);
@@ -948,7 +953,7 @@ if (details) printf("number of interf left %d \n",k);
     n=k;
     zone_type = std::vector<int>(n+1);
     for (int i=0; i<n+1; i++) {
-        double mid_zone = (last_zi+r_inter(i, 0))/2.0;
+        double mid_zone = (last_zi+r_inter(i, j))/2.0;
         double schwi = map.gl.eval(schw, mid_zone)(0);
         if (schwi < 0 && last_zi <=1e-5) {
             zone_type[i] = CORE;
@@ -959,10 +964,10 @@ if (details) printf("number of interf left %d \n",k);
         }
 	if (i==n) zone_type[i] = RADIATIVE; // the last zone is necessarily radiative
         printf("ZONE: [%e, %e]: convection (schw: %e): %d\n",
-                last_zi, r_inter(i, 0),
+                last_zi, r_inter(i, j),
                 schwi,
                 zone_type[i]);
-        last_zi = r_inter(i, 0);
+        last_zi = r_inter(i, j);
     }
 //exit(0);
 
@@ -975,8 +980,8 @@ if (details) printf("number of interf left %d \n",k);
 		if (zone_type[iz]==zone_type[iz+1]) {
 		printf("iz =%d flag=%d\n",iz,flag);
 		  for (int k=iz;k<n;k++) {
-		    r_inter(k,0)=r_inter(k+1,0);
-		    p_inter(k,0)=p_inter(k+1,0);
+		    r_inter(k,j)=r_inter(k+1,j);
+		    p_inter(k,j)=p_inter(k+1,j);
 		    zone_type[k]=zone_type[k+1];
 		  }
 		  nsz++; // increase the number of suppressed zones
