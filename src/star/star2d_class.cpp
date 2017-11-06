@@ -334,12 +334,12 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_err("Could not open '/star' in `%s'", input_file);
         exit(EXIT_FAILURE);
     }
-
     int ndoms;
     if (read_attr(star, "nth", &map.leg.npts)) {
         ester_err("could not read 'nth' from file `%s'", input_file);
         exit(EXIT_FAILURE);
     }
+	printf("start reading in hdf5_read= %d, =%d\n",map.leg.npts,dim);
     if ((map.leg.npts == 1 && dim == 2) || (map.leg.npts > 1 && dim == 1)) {
         return 1;
     }
@@ -559,9 +559,13 @@ int star2d::read(const char *input_file, int dim) {
     char tag[32];
     int ndom;
     INFILE fp;
-
-    // if input file ends with '.hdf5': read in hdf5 format
+	printf("star2d::read started\n");
+    // if input file ends with '.h5': read in hdf5 format
     if (isHDF5Name(input_file)) {
+	printf("Avant hdf5_read \n");
+    //    hdf5_read(input_file, dim);
+	//printf("After read 6 zone_type.size= %d\n",zone_type.size());
+	//return 0;
         return hdf5_read(input_file, dim);
     }
 
@@ -861,15 +865,21 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     diff_leg leg_new;
     matrix Tr,m0;
 
-    if (config.verbose == 55) printf(" Enter init in star2d_class\n");
+    //if (config.verbose == 55) printf(" Enter init in star2d_class\n");
+    printf(" Enter init in star2d_class\n");
     sprintf(default_params,"%s/ester/1d_default.par", ESTER_DATADIR);
 
     if(input_file != NULL) {
-	if (config.verbose == 55) printf("  There is an input file\n");
+	//if (config.verbose == 55) printf("  There is an input file\n");
+	printf("  There is an input file\n");
+	printf("before readinput_file nzones =%d\n",zone_type.size());
         if (read(input_file)) {
- 	    if (config.verbose == 55) printf("  I shall read the input file\n");
+ 	    //if (config.verbose == 55) printf("  I shall read the input file\n");
+ 	    printf("  I shall read the input file\n");
+	printf("after readinput_file nzones =%d\n",zone_type.size());
             if(!in1d.read(input_file)) {
- 	      if (config.verbose == 55) printf("   The file is 1d\n");
+ 	      //if (config.verbose == 55) printf("   The file is 1d\n");
+ 	      printf("   The file is 1d\n");
                 if(*param_file) {
  	      printf("Enter 5 init in star2d_class\n");
                     if(fp.open(param_file)) {
@@ -882,13 +892,15 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
                     }
                 }
                 cmd.open(argc,argv);
- 	        if (config.verbose == 55) printf("   There are also input arguments\n");
+	printf("after 2 readinput_file nzones =%d\n",zone_type.size());
+ 	        printf("   There are also input arguments\n");
                 while(cmd.get(arg,val)) {
                     if(!strcmp(arg,"nth")&&val) nt=atoi(val);		
                     if(!strcmp(arg,"nex")&&val) next=atoi(val);
                 }
                 cmd.close();
- 	        if (config.verbose == 55) printf(" Call init1d ------------------- \n");
+ 	        //if (config.verbose == 55) printf(" Call init1d ----- \n");
+ 	        printf(" Call init1d ------------------- \n");
                 init1d(in1d, nt, next);
             } else {
                 ester_err("Error reading input file: %s", input_file);
@@ -966,13 +978,13 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     }
 
     if (*input_file) {
-	if (config.verbose == 55) printf(" *input_file True in init\n");
+	printf(" *input_file True in init\n");
         if(change_grid) {
-	    if (config.verbose == 55) printf("   Change_grid is True\n");
+	    printf("   Change_grid is True\n");
             mapping map_new;
             map_new=map;
             map=map0;
-		printf("I call remap in init\n");
+	    printf("I call remap in init\n");
             remap(map_new.ndomains,map_new.gl.npts,map_new.nt,map_new.nex);
         } 
         if(version.rev<=71) { // Force remapping for old files
@@ -1003,7 +1015,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     //conv=0;
     init_comp();
     fill();
-    if (config.verbose == 55) printf("  init of star2d_class finished\n");
+    printf("  init of star2d_class finished\n");
     return 0;
 }
 
@@ -1037,6 +1049,9 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
     if(npts_ex==-1) npts_ex=8;
 
     if (config.verbose == 55) printf("    call remap in init1d of star2d_class\n");
+    printf("    call remap in init1d of star2d_class\n");
+	printf("in init1d nzones =%d\n",zone_type.size());
+
     remap(ndomains,map.gl.npts,npts_th,npts_ex);
 
     fill();
