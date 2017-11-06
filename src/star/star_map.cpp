@@ -170,9 +170,10 @@ fclose(fic);
 // domain.
 
 void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
+    DEBUG_FUNCNAME;
+printf("in remap nzones =%d\n",zone_type.size());
     remapper red(map); // declaration object of class remapper 
 
-printf("in remap nzones =%d\n",zone_type.size());
 	printf("    Enter remap in star_map\n");
     red.set_ndomains(ndom_in);
     red.set_npts(npts_in);
