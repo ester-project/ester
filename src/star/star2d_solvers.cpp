@@ -174,10 +174,14 @@ double star2d::solve(solver *op) {
 		w=Omega*ones(nr,nth);
 	}
 
-        printf("in solve zone_type.size= %d\n",zone_type.size());
+	/* int nzo=zone_type.size();
+        printf("in solve zone_type.size= %d\n",nzo);
+        printf("in solve TC = %e\n",Tc);
+	*/
 
 	//check_map();
 	new_check_map();
+	//exit(0);
 
 	op->reset(); // Clear up the preceding equations (clear up is not necessary
 		     // if the system is linear)

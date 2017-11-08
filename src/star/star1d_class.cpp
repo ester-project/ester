@@ -35,6 +35,7 @@ int star1d::read_old(const char *input_file) {
 	FILE *fp;
 	char tag[7],mode,*c;
 	int ndom,i;
+	printf("START read_old\n");
 	
 	if((fp=fopen(input_file,"rb")) == NULL) {
 		return 1;
@@ -156,6 +157,8 @@ int star1d::read_old(const char *input_file) {
 }
 
 int star1d::read(const char *input_file, int dim) {
+    DEBUG_FUNCNAME;
+    printf("star1d::read nzones=%d\n",nzones);
     return star2d::read(input_file, 1);
 }
 

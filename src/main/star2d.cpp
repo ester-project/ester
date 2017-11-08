@@ -39,7 +39,8 @@ int main(int argc,char *argv[]) {
         ester_err("Could not initialize star");
         return 1;
     }
-        printf("In main: End initialization\n");
+        printf("In main: End initialization I stop\n");
+	//exit(0);
 	
 	nit=0;
 	

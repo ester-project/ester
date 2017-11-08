@@ -60,7 +60,7 @@ double star2d::Lz() const {
 double star2d::Mcore() const {
 
 	//if(!conv) return 0;
-	printf("in MCORE %d\n",nd_core);
+	//printf("in MCORE %d\n",nd_core);
 	if(!nd_core) return 0;
 	int jcc=0;
 	//for(int n=0;n<conv;n++) jcc+=map.gl.npts[n];

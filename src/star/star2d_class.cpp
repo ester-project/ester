@@ -87,6 +87,9 @@ void star2d::copy(const star2d &A) {
 
     domain_type=A.domain_type;
     izif=A.izif;
+    zone_type=A.zone_type; // Absolutely necessary !!
+    nzones=A.nzones;	   // do not forget to copy !!
+    nd_core=A.nd_core;	   // do not forget to copy !!
 
 }
 
@@ -141,16 +144,11 @@ printf("start hdf5_write\n");
     write_attr(star, "nex",         integer,    &map.ex.gl.npts[0]);
     write_attr(star, "conv",        integer,    &conv);
     write_attr(star, "nd_core",     integer,    &nd_core);
-//printf("start hdf5_write 1\n");
     write_attr(star, "domain_type", integer,    domain_type.data(), map.ndomains);
-//printf("start hdf5_write 2\n");
- 	int nzones=zone_type.size();
-    write_attr(star, "nzones",      integer,    &nzones);
-printf("start hdf5_write nzones = %d \n",nzones);
-    write_attr(star, "zone_type",   integer,    zone_type.data(), zone_type.size());
-printf("start hdf5_write 4\n");
+    int nzo=zone_type.size();
+    write_attr(star, "nzones",      integer,    &nzo);
+    write_attr(star, "zone_type",   integer,    zone_type.data(), nzo);
     write_attr(star, "izif",        integer,    izif.data(), izif.size());
-printf("start hdf5_write 5\n");
     write_attr(star, "core_convec", integer,    &core_convec);
     write_attr(star, "env_convec",  integer,    &env_convec);
     write_attr(star, "stratified_comp", integer, &stratified_comp);
@@ -186,7 +184,6 @@ printf("start hdf5_write 5\n");
     strtype = H5::StrType(H5::PredType::C_S1, strlen(atm.name)+1);
     write_attr(star, "atm.name", strtype, atm.name);
 
-printf("start hdf5_write 6\n");
     matrix_map fields;
     fields["r"] = r;
     fields["z"] = z;
@@ -337,7 +334,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_err("could not read 'nth' from file `%s'", input_file);
         exit(EXIT_FAILURE);
     }
-	printf("start reading in hdf5_read= %d, =%d\n",map.leg.npts,dim);
+	printf("start reading in hdf5_read nth= %d, dim=%d\n",map.leg.npts,dim);
     if ((map.leg.npts == 1 && dim == 2) || (map.leg.npts > 1 && dim == 1)) {
         return 1;
     }
@@ -389,6 +386,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
 
     domain_type.resize(ndomains);
     izif.resize(ndomains);
+    zone_type.resize(ndomains);
     if (read_attr(star, "domain_type", &domain_type[0])) {
         ester_err("Could not read 'domain_type' from file `%s'", input_file);
 	printf("I use the old setup\n");
@@ -397,26 +395,21 @@ int star2d::hdf5_read(const char *input_file, int dim) {
             else domain_type[n] = RADIATIVE;
         }
     }
-    int nzones;
+//    int nzones;
     if (read_attr(star, "nzones", &nzones)) {
         ester_err("Could not read 'nzones' from file `%s'", input_file);
         exit(EXIT_FAILURE);
     }
-	printf("I read nzone= %d\n",nzones);
 	zone_type.resize(nzones);
     if (read_attr(star, "zone_type", &zone_type[0])) {
         ester_err("Could not read 'zone_type' from file `%s'", input_file);
         exit(EXIT_FAILURE);
     }
-for (int n=0;n<nzones;n++) printf("zone_type[%d] = %d\n",n,zone_type[n]);
-	printf("I read zone_type.size= %d\n",zone_type.size());
 	izif.resize(nzones);
     if (read_attr(star, "izif", &izif[0])) {
         ester_err("Could not read 'izif' from file `%s'", input_file);
         exit(EXIT_FAILURE);
     }
-for (int k=0;k<nzones;k++) printf("in hdf5_read n=  %d, %d \n",k,zone_type[k]);
-
 
     if (read_attr(star, "surff", &surff)) {
         ester_warn("Could not read 'surff' from file `%s'", input_file);
@@ -480,10 +473,8 @@ for (int k=0;k<nzones;k++) printf("in hdf5_read n=  %d, %d \n",k,zone_type[k]);
         stratified_comp = 0;
     }
 
-	printf("I read 2 zone_type.size= %d\n",zone_type.size());
     map.init();
 
-	printf("I read 3 zone_type.size= %d\n",zone_type.size());
     if (read_field(star, "phi", phi)) {
         ester_err("Could not read field 'phi' from file `%s'", input_file);
         exit(EXIT_FAILURE);
@@ -516,11 +507,9 @@ for (int k=0;k<nzones;k++) printf("in hdf5_read n=  %d, %d \n",k,zone_type[k]);
         map.R = zeros(nr, nth);
         exit(EXIT_FAILURE);
     }
-	printf("I read 4 zone_type.size= %d\n",zone_type.size());
     if (map.R.nrows() < map.ndomains+1)
         map.R = zeros(1,nth).concatenate(map.R);
     map.remap();
-	printf("I read 5 zone_type.size= %d\n",zone_type.size());
     if (read_field(star, "w", w)) {
         ester_warn("Could not read field 'w' from file `%s'", input_file);
         w = zeros(nr, nth);
@@ -543,7 +532,9 @@ for (int k=0;k<nzones;k++) printf("in hdf5_read n=  %d, %d \n",k,zone_type[k]);
     }
 
     fill();
-	printf("I read 6 zone_type.size= %d\n",zone_type.size());
+printf("I read 6 zone_type.size/nzones= %d\n",nzones);
+ 	      printf("in hdf5_read Tc=%e\n",Tc);
+for (int n=0;n<nzones;n++) printf("zone_type[%d] = %d\n",n,zone_type[n]);
 
     return 0;
 #else
@@ -559,10 +550,6 @@ int star2d::read(const char *input_file, int dim) {
 	printf("star2d::read started\n");
     // if input file ends with '.h5': read in hdf5 format
     if (isHDF5Name(input_file)) {
-	printf("Avant hdf5_read \n");
-    //    hdf5_read(input_file, dim);
-	//printf("After read 6 zone_type.size= %d\n",zone_type.size());
-	//return 0;
         return hdf5_read(input_file, dim);
     }
 
@@ -865,18 +852,15 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     if(input_file != NULL) {
 	//if (config.verbose == 55) printf("  There is an input file\n");
 	printf("  There is an input file\n");
-	printf("before readinput_file nzones =%d\n",zone_type.size());
         if (read(input_file)) {
  	    //if (config.verbose == 55) printf("  I shall read the input file\n");
  	    printf("  I shall read the input file\n");
-	printf("after readinput_file nzones =%d\n",zone_type.size());
             if(!in1d.read(input_file)) {
  	      //if (config.verbose == 55) printf("   The file is 1d\n");
- 	      printf("   The file is 1d\n");
+ 	      printf("THE FILE WAS 1d AND HAS BEEN READ nzones=%d\n",nzones);
+ 	      printf("Tc=%e\n",Tc);
                 if(*param_file) {
- 	      printf("Enter 5 init in star2d_class\n");
                     if(fp.open(param_file)) {
- 	      printf("Enter 6 init in star2d_class\n");
                         while((k=fp.get(arg,val))) {
                             if(!strcmp(arg,"nth")&&val) nt=atoi(val);
                             if(!strcmp(arg,"nex")&&val) next=atoi(val);
@@ -885,14 +869,11 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
                     }
                 }
                 cmd.open(argc,argv);
-	printf("after 2 readinput_file nzones =%d\n",zone_type.size());
- 	        printf("   There are also input arguments\n");
                 while(cmd.get(arg,val)) {
                     if(!strcmp(arg,"nth")&&val) nt=atoi(val);
                     if(!strcmp(arg,"nex")&&val) next=atoi(val);
                 }
                 cmd.close();
- 	        //if (config.verbose == 55) printf(" Call init1d ----- \n");
  	        printf(" Call init1d ------------------- \n");
                 init1d(in1d, nt, next);
             } else {
@@ -1021,7 +1002,7 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 
     sprintf(default_params,"%s/config/2d_default.par",ESTER_DATADIR);
 
-    *this=A;
+    *this=A; // mystere !!!
 
     phiex=phi(nr-1)/map.ex.r;
     Omega_bk=0;
@@ -1040,9 +1021,7 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
     if(npts_th==-1) npts_th=8;
     if(npts_ex==-1) npts_ex=8;
 
-    if (config.verbose == 55) printf("    call remap in init1d of star2d_class\n");
-    printf("    call remap in init1d of star2d_class\n");
-	printf("in init1d nzones =%d\n",zone_type.size());
+    if (config.verbose == 55) printf("call remap in init1d of star2d_class\n");
 
     remap(ndomains,map.gl.npts,npts_th,npts_ex);
 
