@@ -10,7 +10,6 @@ void star2d::new_check_map() {
         matrix pif,R_inter,p_inter;
         remapper *red;
         matrix R(ndomains+1,nth);
-printf("new_check_map nzones =%d\n",zone_type.size());
 	R=zeros(ndomains+1,nth);
 //printf("new_check_map config.input_file=%d\n",config.input_file);
 //for (int n=0;n<ndomains;n++) printf("domain_type[%d] = %d\n",n,domain_type[n]);
@@ -55,58 +54,57 @@ matrix star2d::New_distribute_domains(int ndom,matrix p_inter) {
     DEBUG_FUNCNAME;
     double p_s;
     matrix pif(ndom,1); // pressure at domain interfaces
-    int nzones=zone_type.size(); // zone_type is initialized by find_zones
+    int nzo=zone_type.size(); // zone_type is initialized by find_zones
 FILE *fic=fopen("New_pif.txt", "a");
 printf("Start NEW distribute domains \n");
-printf("nzones =  %d \n",nzones);
+printf("nzs =  %d \n",nzo);
 printf("p_inter nrows %d \n",p_inter.nrows());
 printf("p_inter ncols %d \n",p_inter.ncols());
-printf("p_inter(nzones-1) %e \n",p_inter(nzones-1));
+printf("p_inter(nzo-1) %e \n",p_inter(nzo-1));
 
     p_s=map.leg.eval_00(PRES.row(-1),0)(0);
 fprintf(fic,"p_s= %e\n",p_s);
 
-	if (nzones == 1) { // A single domain (purely radiative)
+	if (nzo == 1) { // A single domain (purely radiative)
            for(int n=0;n<ndom;n++) pif(n)=exp((n+1)*log(p_s)/ndom);
         } else { // convection is now taken into account
 
 // We attribute one domain to each zone and then distribute other domains
 // so as to minimize the "PRES" jump
 // 1/ Check there is enough domains
-	if ( ndom < nzones ) printf("Stop not enough domains!!");
-	if ( ndom == nzones ) {
+	if ( ndom < nzo ) printf("Stop not enough domains!!");
+	if ( ndom == nzo ) {
          printf("Likely not enough domains, but I try");
         } else { // This is the general case
-		matrix dlog(nzones,1);
-		int ndom_left=ndom-nzones;
+		matrix dlog(nzo,1);
+		int ndom_left=ndom-nzo;
 		int iz,izmax,k,ki,ndom_check;
 		double dlogmax;
 		std::vector <int> ndz,lifi;
-		for (int k=0;k<nzones;k++) {ndz.push_back(1);izif[k]=1;}
-		for (iz=0; iz<nzones; iz++) {
+		for (int k=0;k<nzo;k++) {ndz.push_back(1);izif[k]=1;}
+		for (iz=0; iz<nzo; iz++) {
                  if (iz==0) { dlog(iz)=fabs(log(p_inter(0)));
 			} else {
 			    dlog(iz)=fabs(log(p_inter(iz)/p_inter(iz-1))) ;
 			}
 		}
-//for (int k=0;k<nzones;k++) fprintf(fic,"%d %e \n",k,dlog(k));
 // insert an additional domain where the PRES drop is max.
 // until no domain is left!
 		while (ndom_left >=1) {
 		  ndom_left=ndom_left-1;
                   dlogmax=max(dlog);
 		  izmax=99;
-                  for (iz=0; iz<nzones; iz++) {
+                  for (iz=0; iz<nzo; iz++) {
                     if (fabs(dlog(iz)-dlogmax)<1e-15) izmax=iz;
                   }
 		  if (izmax==99) printf("izmax = %d, ndom_left= %d\n",izmax,ndom_left);
                   dlog(izmax)=dlog(izmax)*ndz[izmax]/(ndz[izmax]+1);
 		  ndz[izmax]=ndz[izmax]+1;
         	}             
-for (int k=0;k<nzones;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
+for (int k=0;k<nzo;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 // check total number of domains
 		ndom_check=0;
-		for (iz=0; iz<nzones;iz++) ndom_check=ndom_check+ndz[iz];
+		for (iz=0; iz<nzo;iz++) ndom_check=ndom_check+ndz[iz];
 		printf("ndom_check = %d\n",ndom_check);
 		if (ndom_check != ndom) {
     			std::cerr << "ERROR: ndoms do not match in new_distrib...\n";
@@ -121,7 +119,7 @@ for (int k=0;k<nzones;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
                 izif[0]=ki;
 		printf("izif (%d) = %d\n",0,ki);
            // First zone done
-		for (iz=1; iz<nzones; iz++) {
+		for (iz=1; iz<nzo; iz++) {
 			for (k=ki;k<ki+ndz[iz];k++) {
 				double a=log(p_inter(iz)/p_inter(iz-1))/ndz[iz];
 				pif(k)=exp(a*(k-ki)+log(p_inter(iz-1)));
@@ -132,12 +130,12 @@ for (int k=0;k<nzones;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 		}
            // All zones done
 // last interface is the surface and not account by the foregoing algo
-		pif(ndom-1)=p_inter(nzones-1);
+		pif(ndom-1)=p_inter(nzo-1);
 // Now we can tag each domain with its type
 		// First zone is special
 		for(int n=0;n<=izif[0];n++) domain_type[n] = zone_type[0];
 		// Other zones
-		for (iz=1; iz<nzones; iz++) {
+		for (iz=1; iz<nzo; iz++) {
 		  for(int n=izif[iz-1]+1;n<=izif[iz];n++) domain_type[n]=zone_type[iz];
 		}
 // Compute the number of domains in the core
@@ -152,7 +150,7 @@ for (int k=0;k<nzones;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 // Finally we need the index of the interfaces between the zones once the
 // domains have been distributed. These are stored in izif.
 
-for (int k=0;k<nzones;k++) fprintf(fic,"k= %d p_inter %e \n",k,p_inter(k));
+for (int k=0;k<nzo;k++) fprintf(fic,"k= %d p_inter %e \n",k,p_inter(k));
 for (int k=0;k<ndomains;k++) fprintf(fic,"k= %d pif %e \n",k,pif(k));
 fclose(fic);
 	}
@@ -171,7 +169,6 @@ fclose(fic);
 
 void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
     DEBUG_FUNCNAME;
-printf("in remap nzones =%d\n",zone_type.size());
     remapper red(map); // declaration object of class remapper 
 
 	printf("    Enter remap in star_map\n");
@@ -186,7 +183,6 @@ printf("in remap nzones =%d\n",zone_type.size());
     map=red.get_map(); // update the mapping
     interp(&red); // interpolate the variable on the new update
 
-printf("in remap nzones =%d\n",zone_type.size());
 	printf("    Leave remap in star_map\n");
 }
 
@@ -196,14 +192,14 @@ printf("in remap nzones =%d\n",zone_type.size());
 bool star2d::remap_domains(int ndom, remapper &red) {
     DEBUG_FUNCNAME;
     //	Count zones
-    int nzones=1;
+    int nzo=1;
     std::vector<int> index;	
 // Here look for interface between zones of different type.
 if (config.verbose == 19) printf("++++++ start of remap_domains\n");
     for(int n=1,type=domain_type[0];n<ndomains;n++) {
         if(domain_type[n]!=type) {
             index.push_back(n-1);
-            nzones++;
+            nzo++;
             type=domain_type[n];
         }
     }
@@ -212,7 +208,7 @@ if (config.verbose == 19) printf("++++++ start of remap_domains\n");
     index.push_back(ndomains-1);
 
 // zif = zeta of interfaces of all zones before remapping 
-    matrix zif(nzones,nth);
+    matrix zif(nzo,nth);
     for(int n=0,j0=-1,izone=0;n<ndomains;n++) {
         j0+=map.gl.npts[n];
         if(n==index[izone]) {
@@ -239,7 +235,7 @@ printf("++++++ remap_domains and redistribute domains\n");
 // Now that the zif are known we can recompute the radii R of the new domains inside
 // the zones
     red.set_R(zeros(1,nth).concatenate(map.zeta_to_r(zif)));
-    for(int n=0;n<nzones;n++) 
+    for(int n=0;n<nzo;n++) 
         red.set_fixed(index_new[n]+1,index[n]+1); // do not update the interface between zones
 // Update domain_type (each domain is tagged with the zone type)
     std::vector<int> domain_type_new(ndom,0);
@@ -263,17 +259,16 @@ printf("++++++ remap_domains end with redistributed domains\n");
 std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only) const {
     DEBUG_FUNCNAME;
     matrix dlogT;
-    int nzones=zif.nrows();
+    int nzo=zif.nrows();
 
-//printf("Start distribute domains with check_only, nzones = %d check = %d\n",nzones,check_only);
-    if(nzones>ndom) {
-        fprintf(stderr,"Error: At least %d domains are needed for this model\n",nzones);
+    if(nzo>ndom) {
+        fprintf(stderr,"Error: At least %d domains are needed for this model\n",nzo);
         exit(1);
     }
 
     // Calculate Delta(log(T)) in each zone at theta=0
-    dlogT.zero(nzones,1);
-    for(int n=0;n<nzones;n++) {
+    dlogT.zero(nzo,1);
+    for(int n=0;n<nzo;n++) {
         dlogT(n)=-log(map.gl.eval(PRES.col(-1),zif(n,-1))(0));
         if(n) dlogT(n)+=log(map.gl.eval(PRES.col(-1),zif(n-1,-1))(0));
     }
@@ -281,13 +276,13 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
 // Distribute the domains (a limited number) into the different zones so as to
 // decrease optimally the LogT jump between two following domains interfaces.
 
-    int ndomi[nzones]; // Number of domains in each zone
-    for(int n=0;n<nzones;n++) ndomi[n]=1;
+    int ndomi[nzo]; // Number of domains in each zone
+    for(int n=0;n<nzo;n++) ndomi[n]=1;
     // Distribute domains based on dlogT
-    for(int n=nzones;n<ndom;n++) {
+    for(int n=nzo;n<ndom;n++) {
         double dTi=0;
         int k=0;
-        for(int i=0;i<nzones;i++) {
+        for(int i=0;i<nzo;i++) {
             if(dlogT(i)/ndomi[i]>dTi) {
                 k=i; 
                 dTi=dlogT(i)/ndomi[i];
@@ -298,7 +293,7 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
 
 // Calculate the new indices of zone interfaces
     std::vector<int> index;
-    index.resize(nzones);
+    index.resize(nzo);
 
     for(int n=0,k=1,izone=0;n<ndom-1;n++,k++) {
         if(k==ndomi[izone]) {
@@ -307,7 +302,7 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
             izone++;
         }
     }
-    index[nzones-1]=ndom-1;
+    index[nzo-1]=ndom-1;
     if(check_only) return index;
 // END OF PART check_only = .true.
 
@@ -343,7 +338,7 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
 #endif
     zif_new.setblock(0,ndom-2,0,-1,find_boundaries(logTi));
 
-    for(int izone=0;izone<nzones;izone++) 
+    for(int izone=0;izone<nzo;izone++) 
         zif_new.setrow(index[izone],zif.row(izone));
 
     zif=zif_new;
@@ -463,13 +458,13 @@ matrix star2d::new_distribute_domains(int ndom,matrix p_inter) { //,std::vector<
     DEBUG_FUNCNAME;
     double p_s;
     matrix pif(ndom,1); // pressure at domain interfaces
-    int nzones=zone_type.size();
+    int nzo=zone_type.size();
 FILE *fic=fopen("pif.txt", "a");
 printf("Start new distribute domains \n");
-printf("nzones =  %d \n",nzones);
+printf("nzo =  %d \n",nzo);
 printf("p_inter nrows %d \n",p_inter.nrows());
 printf("p_inter ncols %d \n",p_inter.ncols());
-printf("p_inter(nzones-1) %e \n",p_inter(nzones-1));
+printf("p_inter(nzo-1) %e \n",p_inter(nzo-1));
 
     p_s=map.leg.eval_00(PRES.row(-1),0)(0);
 fprintf(fic,"p_s= %e\n",p_s);
@@ -481,43 +476,43 @@ fprintf(fic,"p_s= %e\n",p_s);
 // We attribute one domain to each zone and then distribute other domains
 // so as to minimize the "PRES" jump
 // 1/ Check there is enough domains
-	if ( ndom < nzones ) printf("Stop not enough domains!!");
-	if ( ndom == nzones ) {
+	if ( ndom < nzo ) printf("Stop not enough domains!!");
+	if ( ndom == nzo ) {
          printf("Likely not enough domains, but I try");
         } else { // This is the general case
-		matrix dlog(nzones,1);
-		int ndom_left=ndom-nzones;
+		matrix dlog(nzo,1);
+		int ndom_left=ndom-nzo;
 		int iz,izmax,k,ki,ndom_check;
 		double dlogmax;
 		std::vector <int> ndz,lifi;
                	//izif.clear(); // izif = index of zones interfaces
-		for (int k=0;k<nzones;k++) {ndz.push_back(1);izif[k]=1;}
-	//for (int k=0;k<nzones;k++) {ndz.push_back(1);izif.push_back(1);}
-	//for (int k=0;k<nzones;k++) {ndz.push_back(1);lifi.push_back(1);}
-		for (iz=0; iz<nzones; iz++) {
+		for (int k=0;k<nzo;k++) {ndz.push_back(1);izif[k]=1;}
+	//for (int k=0;k<nzo;k++) {ndz.push_back(1);izif.push_back(1);}
+	//for (int k=0;k<nzo;k++) {ndz.push_back(1);lifi.push_back(1);}
+		for (iz=0; iz<nzo; iz++) {
                  if (iz==0) { dlog(iz)=fabs(log(p_inter(0)));
 			} else {
 			    dlog(iz)=fabs(log(p_inter(iz)/p_inter(iz-1))) ;
 			}
 		}
-//for (int k=0;k<nzones;k++) fprintf(fic,"%d %e \n",k,dlog(k));
+//for (int k=0;k<nzo;k++) fprintf(fic,"%d %e \n",k,dlog(k));
 // insert an additional domain where the PRES drop is max.
 // until no domain is left!
 	while (ndom_left >=1) {
 		ndom_left=ndom_left-1;
                 dlogmax=max(dlog);
 		izmax=99;
-                for (iz=0; iz<nzones; iz++) {
+                for (iz=0; iz<nzo; iz++) {
                     if (fabs(dlog(iz)-dlogmax)<1e-15) izmax=iz;
                 }
 		if (izmax==99) printf("izmax = %d, ndom_left= %d\n",izmax,ndom_left);
                 dlog(izmax)=dlog(izmax)*ndz[izmax]/(ndz[izmax]+1);
 		ndz[izmax]=ndz[izmax]+1;
         }             
-for (int k=0;k<nzones;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
+for (int k=0;k<nzo;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 // check total number of domains
 		ndom_check=0;
-		for (iz=0; iz<nzones;iz++) ndom_check=ndom_check+ndz[iz];
+		for (iz=0; iz<nzo;iz++) ndom_check=ndom_check+ndz[iz];
 		printf("ndom_check = %d\n",ndom_check);
 		if (ndom_check != ndom) {
     			std::cerr << "ERROR: ndoms do not match in new_distrib...\n";
@@ -529,7 +524,7 @@ for (int k=0;k<nzones;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 		ki=ndz[0]-1;
                 izif[0]=ki;
 			printf("izif (%d) = %d\n",0,ki);
-		for (iz=1; iz<nzones; iz++) {
+		for (iz=1; iz<nzo; iz++) {
 			for (k=ki;k<ki+ndz[iz];k++) {
 				double a=log(p_inter(iz)/p_inter(iz-1))/ndz[iz];
 				pif(k)=exp(a*(k-ki)+log(p_inter(iz-1)));
@@ -539,12 +534,12 @@ for (int k=0;k<nzones;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 			printf("izif (%d) = %d\n",iz,ki);
 		}
 // last interface is the surface and not account by the foregoing algo
-		pif(ndom-1)=p_inter(nzones-1);
+		pif(ndom-1)=p_inter(nzo-1);
 // Now we can tag each domain with its type
 		// First zone is special
 		for(int n=0;n<=izif[0];n++) domain_type[n] = zone_type[0];
 		// Other zones
-		for (iz=1; iz<nzones; iz++) {
+		for (iz=1; iz<nzo; iz++) {
 		  for(int n=izif[iz-1]+1;n<=izif[iz];n++) domain_type[n]=zone_type[iz];
 		}
 	for (int n=0;n<ndomains;n++) printf("domain_type[%d] = %d\n",n,domain_type[n]);
@@ -553,7 +548,7 @@ for (int k=0;k<nzones;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 // Finally we need the index of the interfaces between the zones once the
 // domains have been distributed. These are stored in izif.
 
-for (int k=0;k<nzones;k++) fprintf(fic,"k= %d p_inter %e \n",k,p_inter(k));
+for (int k=0;k<nzo;k++) fprintf(fic,"k= %d p_inter %e \n",k,p_inter(k));
 for (int k=0;k<ndomains;k++) fprintf(fic,"k= %d pif %e \n",k,pif(k));
 fclose(fic);
 	}

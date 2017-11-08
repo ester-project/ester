@@ -65,6 +65,7 @@ class star2d {
 	std::vector<int> izif; // index (<= ndomains) of zones interfaces
 	std::vector<int> domain_type;
 	std::vector<int> zone_type;
+	int nzones;
 	#define RADIATIVE 0
 	#define CORE 1
 	#define CONVECTIVE 2
