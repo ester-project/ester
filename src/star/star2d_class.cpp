@@ -88,7 +88,7 @@ void star2d::copy(const star2d &A) {
     domain_type=A.domain_type;
     izif=A.izif;
     zone_type=A.zone_type; // Absolutely necessary !!
-    nzones=A.nzones;	   // do not forget to copy !!
+    this -> nzones=A.nzones;	   // do not forget to copy !!
     nd_core=A.nd_core;	   // do not forget to copy !!
 
 }
@@ -553,7 +553,10 @@ int star2d::read(const char *input_file, int dim) {
 	printf("star2d::read started\n");
     // if input file ends with '.h5': read in hdf5 format
     if (isHDF5Name(input_file)) {
-        return hdf5_read(input_file, dim);
+        int itt=hdf5_read(input_file, dim);
+	printf("hdf5 nzones = %d\n",nzones);
+        return itt;
+        //return hdf5_read(input_file, dim);
     }
 
     if(!fp.open(input_file,'b')) {
@@ -864,8 +867,8 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
  	    printf("  I shall read the input file\n");
             if(!in1d.read(input_file)) {
  	      //if (config.verbose == 55) printf("   The file is 1d\n");
- 	      printf("THE FILE WAS 1d AND HAS BEEN READ nzones=%d\n",nzones);
- 	      printf("Tc=%e\n",Tc);
+ 	      printf("THE FILE WAS 1d AND HAS BEEN READ nzones=%d\n",in1d.nzones);
+ 	      printf("Tc=%e\n",in1d.Tc);
                 if(*param_file) {
                     if(fp.open(param_file)) {
                         while((k=fp.get(arg,val))) {
