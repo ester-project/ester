@@ -13,6 +13,8 @@ double_map initial_composition(double X, double Z) {
 	comp["N15"]=Z*2.08372414940812e-04;
 	comp["O16"]=Z*4.82006487350336e-01;
 	comp["O17"]=Z*1.95126448826986e-04;
+// Comment MR nov. 2017: these data are compatible with Grevesse Noels
+// 1993, table 3 (ratio of isotopes abundances).
 	
 	double tot=comp.sum();
 	
