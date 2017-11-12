@@ -336,7 +336,7 @@ void star1d::dump_info() {
 	
 	printf("Grid parameters:\n\n");
 	printf("\t # of domains = %d\n",ndomains);
-	printf("\t # of domains in convective core = %d\n",conv);
+	printf("\t # of domains in convective core = %d\n",nd_core);
 	printf("\t nr = %d    (",nr);
 	for(int n=0;n<ndomains;n++) {
 		printf("%d",map.gl.npts[n]);

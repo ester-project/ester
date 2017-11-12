@@ -385,8 +385,6 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
 
     domain_type.resize(ndomains);
-    izif.resize(ndomains);
-    zone_type.resize(ndomains);
     if (read_attr(star, "domain_type", &domain_type[0])) {
         ester_err("Could not read 'domain_type' from file `%s'", input_file);
 	printf("I use the old setup\n");
@@ -395,7 +393,6 @@ int star2d::hdf5_read(const char *input_file, int dim) {
             else domain_type[n] = RADIATIVE;
         }
     }
-//    int nzones;
     if (read_attr(star, "nzones", &nzones)) {
         ester_err("Could not read 'nzones' from file `%s'", input_file);
         exit(EXIT_FAILURE);
@@ -405,7 +402,8 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_err("Could not read 'zone_type' from file `%s'", input_file);
         exit(EXIT_FAILURE);
     }
-	izif.resize(nzones);
+
+    izif.resize(ndomains);
     if (read_attr(star, "izif", &izif[0])) {
         ester_err("Could not read 'izif' from file `%s'", input_file);
         exit(EXIT_FAILURE);
