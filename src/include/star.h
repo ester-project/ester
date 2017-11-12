@@ -153,16 +153,16 @@ class star2d {
 	virtual bool remap_domains(int ndom, remapper &red);
 	virtual matrix find_boundaries(const matrix &logTi) const;
 	virtual std::vector<int> distribute_domains(int ndom,matrix &zif,bool check_only=false) const;
-	virtual matrix distribute_domains(int ndomains,int &conv_new,double p_cc=0) const;
+//	virtual matrix distribute_domains(int ndomains,int &conv_new,double p_cc=0) const;
 	virtual matrix find_boundaries_old(matrix pif) const;
-	virtual void check_map();
+//	virtual void check_map();
 	virtual void new_check_map();
-	virtual int check_CC(double &p_cc,matrix &Rcc);
+//	virtual int check_CC(double &p_cc,matrix &Rcc);
         matrix solve_temp_rad();
         //int find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter);
         int find_zones(matrix& r_inter, matrix& p_inter);
         //matrix new_distribute_domains(int ndom,matrix p_inter,std::vector<int> zone_type);
-        matrix new_distribute_domains(int ndom,matrix p_inter);
+//        matrix new_distribute_domains(int ndom,matrix p_inter);
         matrix New_distribute_domains(int ndom,matrix p_inter);
 
 	
