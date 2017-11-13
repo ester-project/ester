@@ -14,7 +14,8 @@ double_map initial_composition(double X, double Z) {
 	comp["O16"]=Z*4.82006487350336e-01;
 	comp["O17"]=Z*1.95126448826986e-04;
 // Comment MR nov. 2017: these data are compatible with Grevesse Noels
-// 1993, table 3 (ratio of isotopes abundances).
+// 1993, table 3 (ratio of isotopes abundances). They also appear 
+// in CESAM2k code as the GN93 solar mixture.
 	
 	double tot=comp.sum();
 	
