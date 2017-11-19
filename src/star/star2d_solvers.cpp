@@ -53,27 +53,17 @@ void star2d::init_comp() {
         comp["He3"]=zeros(nr,nth);
         }
 
-	if(!conv) return;
+	if(nd_core == 0) return;
 
     int n = 0; // Count the number of point in the core
-    for (int i=0; i<conv; i++) {
+    for (int i=0; i<nd_core; i++) {
         n += map.gl.npts[i];
     }
+        comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
 
-    //matrix &rz = map.rz;
-    printf("in init_comp: (n= %d)\n", n);
-/*
-    comp.setblock(0, n-1, 0, 0, initial_composition(Xh0, Z0)*ones(n, nth));
-*/
-
-//    for (int i=n; i<nr; i++) {
-        //comp.setblock(i, i, 0, 0, initial_composition(comp["H"](i, 0), Z0)*ones(1, nth));
-    //}
-    // Xh.setblock(0, n-1, 0, 0, comp["H"].block(0, n-1, 0, 0));
-
-//#if 0
-    if(stratified_comp == 0) {
-     //   comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
+// tentative de Delphine
+    /*if(stratified_comp == 0) {
+        comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
     }
     else {
         comp.setblock(0, n-1, 0, -1,
@@ -88,7 +78,7 @@ void star2d::init_comp() {
             l += m;
         }
     }
-//#endif
+*/
 }
 
 void star2d::calc_veloc() {
