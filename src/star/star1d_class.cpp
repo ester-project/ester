@@ -5,19 +5,15 @@
 #include <stdlib.h>
 
 star1d::star1d() {
-    DEBUG_FUNCNAME;
 }
 
 star1d::~star1d() {
-    DEBUG_FUNCNAME;
 }
 
 star1d::star1d(const star1d &A) : star2d(A) {
-    DEBUG_FUNCNAME;
 }
 
 star1d &star1d::operator=(const star1d &A) {
-    DEBUG_FUNCNAME;
 	star2d::operator=(A);
 	
 	return *this;
@@ -25,20 +21,17 @@ star1d &star1d::operator=(const star1d &A) {
 }
 
 void star1d::write_tag(OUTFILE *fp) const {
-    DEBUG_FUNCNAME;
 	char tag[7]="star1d";
 	
 	fp->write("tag",tag,7);
 }
 
 bool star1d::check_tag(const char *tag) const {
-    DEBUG_FUNCNAME;
 	if(strcmp(tag,"star1d")) return false;
 	return true;
 }
 
 int star1d::read_old(const char *input_file) {
-    DEBUG_FUNCNAME;
 	FILE *fp;
 	char tag[7],mode,*c;
 	int ndom,i;
@@ -161,12 +154,10 @@ int star1d::read_old(const char *input_file) {
 }
 
 int star1d::read(const char *input_file, int dim) {
-    DEBUG_FUNCNAME;
     return star2d::read(input_file, 1);
 }
 
 int star1d::init(const char *input_file,const char *param_file,int argc,char *argv[]) {
-    DEBUG_FUNCNAME;
 	cmdline_parser cmd;
 	file_parser fp;
 	char *arg,*val,default_params[256];
@@ -277,7 +268,6 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 }
 
 int star1d::check_arg(char *arg,char *val,int *change_grid) {
-    DEBUG_FUNCNAME;
 	if(!strcmp(arg,"nth")) {
 		return 1;
 	} else if(!strcmp(arg,"nex")) {
@@ -292,7 +282,6 @@ int star1d::check_arg(char *arg,char *val,int *change_grid) {
 }
 
 void star1d::dump_info() {
-    DEBUG_FUNCNAME;
     printf("ESTER 1d model file");
     printf(" (Version %s)\n", version.name.c_str());
 	// printf("\n1d ESTER model file  (Version %d.%d rev %d",version.major,version.minor,version.rev);

@@ -510,7 +510,7 @@ matrix sym::sym_add::eval() const {
 		m+=oper[i].second*oper[i].first->eval();
 	}
 	return m;
-} 
+}
 
 ostream &sym::sym_add::print(ostream &os) const {
 

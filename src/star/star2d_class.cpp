@@ -35,8 +35,8 @@ star2d::star2d(const star2d &A) : nr(map.gl.N), nth(map.leg.npts),
     Dt(map.Dt), Dt2(map.Dt2), zex(map.ex.z), Dex(map.ex.D), rex(map.ex.r),
     D(map.D) {
 
-    copy(A);
-}
+        copy(A);
+    }
 
 star2d &star2d::operator=(const star2d &A) {
 
@@ -196,7 +196,6 @@ void star2d::hdf5_write(const char *filename) const {
 }
 
 void star2d::write(const char *output_file, char mode) const {
-    DEBUG_FUNCNAME;
     OUTFILE fp;
 
     if (isHDF5Name(output_file)) {
@@ -285,7 +284,6 @@ int read_field(H5::Group grp, const char *name, matrix &field) {
 #endif
 
 int star2d::hdf5_read(const char *input_file, int dim) {
-    DEBUG_FUNCNAME;
 #ifdef USE_HDF5
 #ifndef DEBUG
     H5::Exception::dontPrint();
@@ -478,7 +476,6 @@ int star2d::hdf5_read(const char *input_file, int dim) {
 }
 
 int star2d::read(const char *input_file, int dim) {
-    DEBUG_FUNCNAME;
     char tag[32];
     int ndom;
     INFILE fp;
@@ -525,9 +522,9 @@ int star2d::read(const char *input_file, int dim) {
     char *buf = NULL;
     if (version.svn) {
         if (asprintf(&buf, "%d.%d rev %d",
-                version.major,
-                version.minor,
-                version.rev) == -1) {
+                    version.major,
+                    version.minor,
+                    version.rev) == -1) {
             ester_err("out of memory");
             exit(EXIT_FAILURE);
         }
@@ -602,7 +599,6 @@ int star2d::read(const char *input_file, int dim) {
 }
 
 void star2d::write_tag(OUTFILE *fp) const {
-    DEBUG_FUNCNAME;
     char tag[7]="star2d";
 
     fp->write("tag",tag,7);
@@ -610,15 +606,13 @@ void star2d::write_tag(OUTFILE *fp) const {
 }
 
 bool star2d::check_tag(const char *tag) const {
-    DEBUG_FUNCNAME;
-        if(strcmp(tag,"star2d")) return false;
+    if(strcmp(tag,"star2d")) return false;
     return true;
 
 }
 
 int star2d::read_old(const char *input_file){
-    DEBUG_FUNCNAME;
-        FILE *fp;
+    FILE *fp;
     char tag[7],mode,*c;
     int ndom;
 
@@ -758,8 +752,7 @@ int star2d::read_old(const char *input_file){
 }
 
 int star2d::init(const char *input_file,const char *param_file,int argc,char *argv[]) {
-    DEBUG_FUNCNAME;
-        cmdline_parser cmd;
+    cmdline_parser cmd;
     file_parser fp;
     char *arg,*val,default_params[256];
     mapping map0;
@@ -776,7 +769,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
                 if(*param_file) {
                     if(fp.open(param_file)) {
                         while((k=fp.get(arg,val))) {
-                            if(!strcmp(arg,"nth")&&val) nt=atoi(val);		
+                            if(!strcmp(arg,"nth")&&val) nt=atoi(val);
                             if(!strcmp(arg,"nex")&&val) next=atoi(val);
                         }
                         fp.close();
@@ -784,7 +777,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
                 }
                 cmd.open(argc,argv);
                 while(cmd.get(arg,val)) {
-                    if(!strcmp(arg,"nth")&&val) nt=atoi(val);		
+                    if(!strcmp(arg,"nth")&&val) nt=atoi(val);
                     if(!strcmp(arg,"nex")&&val) next=atoi(val);
                 }
                 cmd.close();
@@ -870,12 +863,12 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
             map_new=map;
             map=map0;
             remap(map_new.ndomains,map_new.gl.npts,map_new.nt,map_new.nex);
-        } 
+        }
         if(version.rev<=71) { // Force remapping for old files
             int npts[ndomains+1];
             for(int n=0;n<ndomains;n++) npts[n]=map.npts[n];
             npts[ndomains]=npts[ndomains-1];
-            remap(ndomains+1,npts,map.nt,map.nex);	
+            remap(ndomains+1,npts,map.nt,map.nex);
             remap(ndomains-1,map.npts,map.nt,map.nex);
         }
     } else {
@@ -897,8 +890,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 
 // used when computing a 2D model from a 1D model
 void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
-    DEBUG_FUNCNAME;
-        matrix thd;
+    matrix thd;
     char *arg,*val,default_params[256];
     int k;
     file_parser fp;
@@ -907,13 +899,13 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 
     *this=A;
 
-    phiex=phi(nr-1)/map.ex.r;	
-    Omega_bk=0;	
+    phiex=phi(nr-1)/map.ex.r;
+    Omega_bk=0;
     Omega=0;
 
     if(fp.open(default_params)) {
         while((k=fp.get(arg,val))) {
-            if(!strcmp(arg,"nth")&&val&&npts_th==-1) npts_th=atoi(val);		
+            if(!strcmp(arg,"nth")&&val&&npts_th==-1) npts_th=atoi(val);
             if(!strcmp(arg,"nex")&&val&&npts_ex==-1) npts_ex=atoi(val);
             if(!strcmp(arg,"Omega_bk")&&val) Omega_bk=atof(val);
             if(!strcmp(arg,"Ekman")&&val) Ekman=atof(val);
@@ -932,8 +924,7 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 }
 
 void star2d::interp(remapper *red) {
-    DEBUG_FUNCNAME;
-        p=red->interp(p);
+    p=red->interp(p);
     phi=red->interp(phi);
     T=red->interp(T);
     w=red->interp(w);
@@ -946,8 +937,7 @@ void star2d::interp(remapper *red) {
 
 extern bool dump_jac;
 int star2d::check_arg(char *arg,char *val,int *change_grid) {
-    DEBUG_FUNCNAME;
-        int err=0,i;
+    int err=0,i;
     char *tok;
 
     if(!strcmp(arg,"ndomains")) {
@@ -967,7 +957,7 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
             *(map.gl.npts+i)=atoi(tok);
             tok=strtok(NULL,",");
             i++;
-        }	
+        }
         if(i==1) {
             for(i=1;i<map.gl.ndomains;i++) {
                 *(map.gl.npts+i)=*map.gl.npts;
@@ -1074,7 +1064,6 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
 
 // dump_info used by 'ester info'
 void star2d::dump_info() {
-    DEBUG_FUNCNAME;
     printf("ESTER 2d model file");
     printf(" (Version %s)\n", version.name.c_str());
     // printf("\n2d ESTER model file (Version %d.%d rev %d",

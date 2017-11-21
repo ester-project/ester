@@ -128,8 +128,9 @@ matrix diff_leg::nodes(int n,matrix &w) {
 		x0=x;
 		p=Pn(n,x);
 		// Normalizacion
-		for(int j=1;j<=n;j++) 
+		for(int j=1;j<=n;j++) {
 			p.setrow(j,p.row(j)/sqrt(2*j+1));
+        }
 		x+=p.row(n)*(1-x*x)/n/(x*p.row(n)-p.row(n-1));
 		if(max(abs(x-x0))<tol) fin--;
 	}
@@ -146,6 +147,7 @@ void diff_leg::init() {
 
 	int i,n;
 	double ll;
+
 	matrix p(npts*2-1,1),dp(1,npts),d2p(1,npts);
 	matrix p_1(1,npts),p0(1,npts);
 	matrix x,w;
@@ -162,7 +164,6 @@ void diff_leg::init() {
 	dP1_01.dim(npts,npts);
 	dP1_10.dim(npts,npts);
 	dP1_11.dim(npts,npts);
-	
 	
 	ll=0;
 	p=ones(1,npts);
