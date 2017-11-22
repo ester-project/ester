@@ -473,7 +473,7 @@ matrix star2d::solve_temp_rad() {
 
 //int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter)
 int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
-    int n = 1, details=1;
+    int details=1;
     double last_zi, zi;
     matrix schw, dschw,bv2;
 
@@ -526,7 +526,7 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 	bv2f = (map.gl.P1, sp_bv2); 
 
 // filtrage brutal
-    schw=bv2f;
+    schw=bv2;
     for (int k=0;k<nr;k++) {
 	if (fabs(bv2f(k,-1)) < 1.0e-3 ) schw(k,-1)=-1e-3;
     }
@@ -535,12 +535,13 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 
     FILE *fic = fopen("schwi.txt", "a");
 	fprintf(fic,"it= %d\n",glit);
-    for (int k=0;k<nr;k++) fprintf(fic,"%d  %e %e %e\n",k,schw(k,-1),bv2(k,-1),bv2f(k,-1));
+    for (int k=0;k<nr;k++) fprintf(fic,"%d  %e %e %e %e\n",k,r(k,-1),schw(k,-1),bv2(k,-1),bv2f(k,-1));
     fclose(fic);
 
     //dschw = (D, schw);
 
     int nc=999,nl;
+    int n=1;
     for (int i=itest_sch; i<nr; i++) {
         if (schw(i-1, -1) * schw(i, -1) < 0 ) {
             n++;
@@ -580,10 +581,10 @@ if (details) printf("n= %d\n",n);
 if (details) for (int i=0; i<n+1;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
 
 // Now we select the thick zones by removing the thin ones (less than
-// 1%)
+// 0.2%)
 int is=0;
 for (int i=0; i< n;i++) {
-if (les_zi[i+1]-les_zi[i] < 0.01) {
+if (les_zi[i+1]-les_zi[i] < 0.010) {
    les_zi[i+1]=0.;
    les_zi[i]=0.;
    is=is+2;
