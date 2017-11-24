@@ -184,11 +184,11 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 					printf("Syntax error in parameters file %s, line %d\n",param_file,k);
 					if(i==2) {
 						printf("Error: Argument to '%s' missing\n",arg);
-						return 1;
+						exit(EXIT_FAILURE);
 					}
 					if(i==1) {
 						printf("Unknown parameter %s\n",arg);
-						return 1;
+						exit(EXIT_FAILURE);
 					}
 				}
 			}
@@ -208,11 +208,11 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 					printf("Sintax error in parameters file %s, line %d\n",param_file,k);
 					if(i==2) {
 						printf("Error: Argument to '%s' missing\n",arg);
-						return 1;
+						exit(EXIT_FAILURE);
 					}
 					if(i==1) {
 						printf("Unknown parameter %s\n",arg);
-						return 1;
+						exit(EXIT_FAILURE);
 					}
 				}
 			}
@@ -226,11 +226,11 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		err_code=check_arg(arg,val,&change_grid);
 		if(err_code==2) {
 			fprintf(stderr,"Error: Argument to '%s' missing\n",arg);
-			return 1;
+            exit(EXIT_FAILURE);
 		}
 		if(err_code==1) {
 			fprintf(stderr,"Unknown parameter '%s'\n",arg);
-			return 1;
+            exit(EXIT_FAILURE);
 		}
 		cmd.ack(arg,val);
 	}

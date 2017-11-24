@@ -84,25 +84,26 @@ class sym {
 
 	symbolic *context;
 	sym_expr *expr;
-	
+
 public:
+
 	sym();
 	sym(const sym &);
 	explicit sym(const double &);
 	explicit sym(const int &);
 	sym(const rational &q);
 	~sym();
-	
+
 	symbolic *check_context() const;
 	symbolic *check_context(const sym &s) const;
 	symbolic *check_context(const sym_vec &s) const;
 	symbolic *check_context(const sym_tens &s) const;
-	
+
 	sym &operator=(const sym &);
 	sym &operator=(double n) {return *this=sym(n);};
 	friend sym operator+(const sym &,const sym &);
 	friend sym operator*(const sym &,const sym &);
-	sym &operator+=(const sym &s) {return *this=*this+s;}; 
+	sym &operator+=(const sym &s) {return *this=*this+s;};
 	sym &operator-=(const sym &s) {return *this=*this+sym(-1)*s;};
 	sym &operator*=(const sym &s) {return *this=*this*s;};
 	sym &operator/=(const sym &s) {return *this=*this*pow(s,-1);};
@@ -128,14 +129,14 @@ public:
 	friend bool sort_pair_r(const std::pair<sym_expr *,rational> &,const std::pair<sym_expr *,rational> &);
 	friend std::ostream& operator<<(std::ostream& os, const sym::sym_expr&);
 	friend std::ostream& operator<<(std::ostream& os, const sym&);
-	
+
 	friend sym trig_simplify(const sym &);
-	
+
 	void add(solver *op,std::string eq_name,std::string var_name) const;
 	void add(solver *op,std::string eq_name,std::string var_name,const matrix &d) const;
 	void add_ex(solver *op,int n,std::string eq_name,std::string var_name) const;
 	void add_ex(solver *op,int n,std::string eq_name,std::string var_name,const matrix &d) const;
-	
+
 	void bc_top1_add(solver *op,int n,std::string eq_name,std::string var_name) const;
 	void bc_top2_add(solver *op,int n,std::string eq_name,std::string var_name) const;
 	void bc_bot1_add(solver *op,int n,std::string eq_name,std::string var_name) const;
@@ -144,7 +145,9 @@ public:
 	void bc_top2_add(solver *op,int n,std::string eq_name,std::string var_name,const matrix &d) const;
 	void bc_bot1_add(solver *op,int n,std::string eq_name,std::string var_name,const matrix &d) const;
 	void bc_bot2_add(solver *op,int n,std::string eq_name,std::string var_name,const matrix &d) const;
-	
+
+	std::ostream& print(std::ostream& os) const;
+
 	friend class symbolic;
 	friend class sym_vec;
 	friend class sym_tens;
@@ -177,7 +180,7 @@ inline sym pow(const sym &s,const double &n) {return pow(s,sym(n));}
 sym pow(const double &n,const sym &s);
 sym diff(const sym &,const sym &);
 sym jacobian(const sym &,const sym &);
-	
+
 std::ostream& operator<<(std::ostream& os, const sym&);
 
 sym trig_simplify(const sym &);
@@ -189,16 +192,16 @@ enum sym_vec_type {COVARIANT,CONTRAVARIANT};
 class sym_vec {
 	sym s[3];
 	sym_vec_type type;
-	
+
 	void set_context(symbolic *context);
 public:
 	sym_vec(sym_vec_type type_set=CONTRAVARIANT);
-	
+
 	symbolic *check_context() const;
 	symbolic *check_context(const sym &s) const;
 	symbolic *check_context(const sym_vec &s) const;
 	symbolic *check_context(const sym_tens &s) const;
-	
+
 	bool is_covariant();
 	bool is_contravariant();
 	void set_type(sym_vec_type);
@@ -217,8 +220,10 @@ public:
 	friend sym_vec cross(const sym_vec &,const sym_vec &);
 	friend sym_tens tensor(const sym_vec &,const sym_vec &);
 	sym D(const sym &) const;
-	sym_vec D(const sym_vec &) const;	
-		
+	sym_vec D(const sym_vec &) const;
+
+    std::ostream& print(std::ostream&) const;
+
 	friend class symbolic;
 	friend class sym;
 	friend class sym_tens;
@@ -236,16 +241,16 @@ std::ostream& operator<<(std::ostream& os, const sym_vec&);
 class sym_tens {
 	sym s[3][3];
 	sym_vec_type type[2];
-	
+
 	void set_context(symbolic *context);
 public:
 	sym_tens(sym_vec_type type_set0=CONTRAVARIANT,sym_vec_type type_set1=CONTRAVARIANT);
-	
+
 	symbolic *check_context() const;
 	symbolic *check_context(const sym &s) const;
 	symbolic *check_context(const sym_vec &s) const;
 	symbolic *check_context(const sym_tens &s) const;
-	
+
 	bool is_covariant(int);
 	bool is_contravariant(int);
 	void set_type(sym_vec_type,sym_vec_type);
@@ -264,7 +269,7 @@ public:
 	friend sym_tens tensor(const sym_vec &,const sym_vec &);
 	sym operator%(const sym_tens &) const;
 	sym_tens T() const;
-	
+
 	friend class symbolic;
 	friend class sym;
 	friend class sym_vec;
@@ -285,9 +290,9 @@ class symbolic {
 	mapping map;
 	sym one_;
 	int maxder;
-	inline sym d(const sym &s,int k) {return diff(s,x[k]);}; 
+	inline sym d(const sym &s,int k) {return diff(s,x[k]);};
 	inline sym G(int i,int j,int k) {return christoffel(i,j,k);};
-	
+
 	void add(const sym &s,solver *op,int n,std::string type,
 			std::string eq_name,std::string var_name,const matrix &d);
 	void add_bc(const sym &s,solver *op,int n,std::string type,
@@ -312,19 +317,19 @@ public:
 	sym regconst(const std::string &name);
 	sym regvar_indep(const std::string &name);
 	sym var(const std::string &name);
-	
+
 	void set_value(const char *name,const matrix &value,int parity=0);
 	void set_map(const mapping &map);
-	
-	sym::sym_expr *derive(const sym::sym_expr &,const sym::symbol &); 
+
+	sym::sym_expr *derive(const sym::sym_expr &,const sym::symbol &);
 	matrix get_value(const sym::sym_expr &);
-	
+
 	sym Dz(const sym &);
 	sym Dt(const sym &);
 	sym Dphi(const sym &);
 	sym det(const sym_tens &);
 	sym_tens inv(const sym_tens &);
-	
+
 	sym_vec contravariant(const sym_vec &);
 	sym_vec covariant(const sym_vec &);
 	sym_tens contravariant_contravariant(const sym_tens &);
@@ -333,7 +338,7 @@ public:
 	sym_tens covariant_covariant(const sym_tens &);
 
 	double perm(int i,int j,int k);
-	
+
 	sym_vec gradient(const sym &);
 	sym christoffel(int,int,int);
 	sym covderiv(const sym_vec &,int,int);
@@ -444,7 +449,7 @@ public:
 	matrix eval() const;
 	std::ostream &print(std::ostream&) const;
 };
-	
+
 class sym::sym_add: public sym_expr {
 public:
 	int order() const {return 3;};

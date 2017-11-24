@@ -5,5 +5,6 @@
 
 void sigfpe_handler(int);
 void enable_sigfpe();
+void disable_sigfpe();
 
 #endif

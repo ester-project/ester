@@ -122,9 +122,9 @@ int configuration::check_arg(const char *arg,const char *val) {
 		if(val==NULL) return 2;
 		newton_dmax=atof(val);
 	}
-	else if(!strcmp(arg,"fpe")) {
-        enable_sigfpe();
-	}
+	// else if(!strcmp(arg,"fpe")) {
+    //     this->sigfpe = true;
+	// }
 	else err=1;
 
 	return err;
