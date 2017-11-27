@@ -62,6 +62,17 @@ void star2d::init_comp() {
     }
         comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
 
+// Put a special composition in the last domain: Daniel request
+    n = 0; // Count the number of points to the before last domain
+    for (int i=0; i<ndomains-1; i++) {
+        n += map.gl.npts[i];
+    }
+	printf(" in init_comp n=%d, nr=%d\n",n,nr);
+	double x=0.70,z=0.02;
+        comp.setblock(0,n-1,0,-1,initial_composition(x,z)*ones(n,nth));
+        comp.setblock(n,nr-1,0,-1,initial_composition(X0,Z0)*ones(nr-n,nth));
+
+
 // tentative de Delphine
     /*if(stratified_comp == 0) {
         comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
