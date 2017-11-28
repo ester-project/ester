@@ -1,5 +1,8 @@
 lib_LTLIBRARIES	= libcesam.la
 
+tablesdir	= $(datadir)/ester/tables/cesam
+tables_DATA	= opa/opa_yveline.data
+
 libcesam_la_SOURCES = mod_kind.f		\
 					  mod_numerique.f	\
 					  mod_donnees.f		\

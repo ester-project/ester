@@ -8,11 +8,12 @@
             implicit none
 
             langue = 'PSE'
-            NOM_CHEMIN = ESTER_DATADIR//'/tables/cesam/'
+            NOM_CHEMIN = ESTER_DATADIR//'/ester/tables/cesam/'
             nom_opa = 'opa_yveline'
-            f_opa(1) = 'opa_yveline.bin'
+            f_opa(1) = 'opa_yveline.data'
             nchim = 3
             z0 = 0.02d0
+            ihe4 = 2
 
         end subroutine init_cesam_opa
 
