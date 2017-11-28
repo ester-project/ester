@@ -48,10 +48,10 @@ c--------------------------------------------------------------------
 2000	FORMAT(8es10.3)
 
 c normalisation de la composition chimique, retrait des valeurs négatives
-	print*,'Je suis la 1 xchi=',xchim
+	! print*,'Je suis la 1 xchi=',xchim
 	 xchi=ABS(xchim) ; WHERE(xchi < 1.d-30)xchi=0.d0 ; xchi=xchi/SUM(xchi)
 
-	print*,'Je suis la xchi=',xchi
+	! print*,'Je suis la xchi=',xchi
 
 c Si t > t_compton les éléments chimiques sont totalement ionisés
 c utilisation de l'opacité compton

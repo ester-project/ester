@@ -75,11 +75,11 @@ c------------------------------------------------------------------------
 	 ENDIF
 	ENDIF
 
-	print*,'in yvelin t= ',t
-	print*,'in yvelin ro= ',ro
-	print*,'in yvelin X= ',xchim(1)
-	print*,'in yvelin Y= ',xchim(2)
-	print*,'in yvelin Z= ',xchim(3)
+	! print*,'in yvelin t= ',t
+	! print*,'in yvelin ro= ',ro
+	! print*,'in yvelin X= ',xchim(1)
+	! print*,'in yvelin Y= ',xchim(2)
+	! print*,'in yvelin Z= ',xchim(3)
 
 c si Z > 0.1 arrêt
 	IF(nchim > 1)THEN
@@ -501,8 +501,8 @@ c	COMMON/val_opal/vz,vx,vlt6,vlr,vt6,vlk,nt,nr,nz,nx
 	SAVE
 
 c ouverture des fichiers d'opacité
-	print*,'in lect_opal= ',nom_chemin
-	print*,'in lect_opal= ',f_opa(1)
+	! print*,'in lect_opal= ',nom_chemin
+	! print*,'in lect_opal= ',f_opa(1)
 
 	nom_table=TRIM(nom_chemin)//f_opa(1)
 	INQUIRE(file=nom_table,exist=ok)
@@ -516,8 +516,8 @@ c ouverture des fichiers d'opacité
 c	lecture des tables
 
 	READ(11, "(4i3)") nz, nx, nt, nr
-	WRITE(*,1)TRIM(f_opa(1)),nz,nx,nt,nr
-	WRITE(2,1)TRIM(f_opa(1)),nz,nx,nt,nr
+	! WRITE(*,1)TRIM(f_opa(1)),nz,nx,nt,nr
+	! WRITE(2,1)TRIM(f_opa(1)),nz,nx,nt,nr
 1	FORMAT(/,'--------------opacités Yveline---------------',//,
 	1 'tables d''opacités Yveline: ',a,/,i3,' valeurs de Z,',
 	2 i3,' valeurs de X,',i3,' valeurs de T6,',i3,' valeurs de LOG R')
