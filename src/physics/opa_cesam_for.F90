@@ -9,10 +9,24 @@
 
             langue = 'PSE'
             NOM_CHEMIN = ESTER_DATADIR//'/tables/cesam/'
-            nom_opa = 'opa_yveline.bin'
+            nom_opa = 'opa_yveline'
+            f_opa(1) = 'opa_yveline.bin'
             nchim = 3
-
-            print*, "Opacity table: " &
-                & // trim(NOM_CHEMIN) // trim(nom_opa)
+            z0 = 0.02d0
 
         end subroutine init_cesam_opa
+
+        subroutine opa_cesam(xchim, t, ro, kap, dkapt, dkapro, dkapx)
+
+            use mod_opa
+            use mod_kind
+            use mod_donnees, only: nchim
+            implicit none
+
+            real(kind=dp), intent(in), dimension(nchim) :: xchim
+            real(kind=dp), intent(in) :: t, ro
+            real(kind=dp), intent(out) :: kap, dkapt, dkapro, dkapx
+
+            call opa(xchim, t, ro, kap, dkapt, dkapro, dkapx)
+
+        end subroutine opa_cesam

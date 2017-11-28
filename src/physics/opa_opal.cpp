@@ -14,16 +14,16 @@ extern"C" {
 }
 
 double opa_opal_i(double X,double Z,double T,double rho,double &dlogkt,double &dlogkr) {
-    
+
     double t6,r;
-    
+
     t6=T*1e-6;
     r=rho/t6/t6/t6;
-    
+
     opacgn93_(&Z,&X,&t6,&r);
     dlogkt=e_.dopact;
     dlogkr=e_.dopacr;
-    
+
 	return e_.opact;
 }
 
@@ -38,7 +38,7 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	dlnkrho.dim(T.nrows(),T.ncols());
 	N=T.nrows()*T.ncols();
 	double dlogkt,dlogkr;
-	
+
 	for(i=0;i<N;i++) {
 		opa.k(i)=opa_opal_i(X(i),Z,T(i),rho(i),dlogkt,dlogkr);
 		if(opa.k(i)==-99) error=1;
@@ -51,8 +51,8 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	opa.dlnxi_lnrho=-1-dlnkrho;
     opa.dlnxi_lnT=3-dlnkT;
 	if(error) ester_err("Values outside OPAL opacity table");
-	
+
 	return error;
-		
+
 }
-		
+
