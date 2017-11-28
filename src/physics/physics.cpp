@@ -14,6 +14,8 @@ int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
     	error=opa_houdek(X,Z,T,rho,opa);
 	} else if(!strcmp(opa.name,"kramer")) {
         error=opa_kramer(T,rho,opa);
+	} else if(!strcmp(opa.name,"cesam")) {
+		error=opa_cesam(X, Z, T, rho, opa);
     } else {
         ester_err("Unknown opacity method: %s",opa.name);
     	return 1;

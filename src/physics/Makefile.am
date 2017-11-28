@@ -1,8 +1,6 @@
 AM_CPPFLAGS  = -I$(top_srcdir)/src/include
-AM_CPPFLAGS += -I../../tables/cesam_nuc
+AM_CPPFLAGS += -I../../tables/cesam
 AM_CXXFLAGS=-Wall
-
-export HDF5_CXX=$(HDF5_BACKEND)
 
 lib_LTLIBRARIES			= libnuc_cesam.la
 
@@ -13,4 +11,5 @@ libnuc_cesam_la_SOURCES = nuc_cesam_for.F EOS5_xtrin.F		\
                           eos_opal.cpp nuc_cesam.cpp		\
                           nuc_simple.cpp opa_houdek.cpp		\
                           opa_kramer.cpp opa_opal.cpp		\
-                          physics.cpp
+                          physics.cpp opa_cesam.cpp 		\
+						  opa_cesam_for.F90
