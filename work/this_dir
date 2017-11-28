@@ -1,1 +1,11 @@
 A directory for some src files used during the development....
+
+opacity: contains an extraction of houdek's code for computing opacities
+for use: just tune the path for your ester distrib in opa.f, then make,
+then 'opa input param' see example in opa.f
+
+cesam_opa: extraction of cesam2k use of yveline opacities
+usage: first 'make a2b' which generates the script converting
+opa_yveline.data to opa_yveline.bin (binary)
+run the script. then in test_opa.f adapt the PATH the table
+opa_yveline.bin and make test_opa and run.
