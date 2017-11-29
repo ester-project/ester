@@ -273,12 +273,14 @@ void star1d::solve_definitions(solver *op) {
 	op->add_d("s","log_p",-eos.del_ad);
 	op->add_d("s","log_pc",-eos.del_ad);
 	*/
-	
+
+// Expression of \delta\khi (thermal conductivity)	
 	op->add_d("opa.xi","rho",opa.dlnxi_lnrho*opa.xi/rho);
 	op->add_d("opa.xi","log_rhoc",opa.dlnxi_lnrho*opa.xi);
 	op->add_d("opa.xi","log_T",opa.dlnxi_lnT*opa.xi);
 	op->add_d("opa.xi","log_Tc",opa.dlnxi_lnT*opa.xi);
 	
+// Expression of \delta\kappa (opacity) 	
 	op->add_d("opa.k","log_T",3*opa.k);
 	op->add_d("opa.k","log_Tc",3*opa.k);
 	op->add_d("opa.k","rho",-opa.k/rho);
@@ -1166,11 +1168,23 @@ fclose(qfic);
                         rhs_T(j0)=1.-T(j0);
 			if (domain_type[n] == RADIATIVE) {
 			   //printf("Radiative n= %d\n",n);
-			   op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
-			   op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
-			   op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
-			   op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
-			   rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+// MR: I impose the continuity of the local flux rather than the temperature derivative
+			   op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
+			   op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
+			   op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
+			   op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
+			   //op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+			   //op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+
+// MR: the variations of rz during the iterations are crucial to take intot account the 
+//     changes of the mapping due to the distribution of domains that equalize the pressure
+//     or temperature drop in a domain. In fine, when converged rz=1 in 1D, but rz should
+//     be allowed to vary during iterations.
+			   op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
+			   op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
+			   //rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+			   rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
+
                            op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
                            rhs_Lambda(0)=-(D,T)(0);
 			}
@@ -1230,11 +1244,22 @@ fclose(qfic);
                            op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                            op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
 			}
-			op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
-			op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
-			op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
-			op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
-			rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+//MR: I impose the continuity of the local flux rather than the temperature derivative
+			   op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
+			   op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
+			   op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
+			   op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
+			//op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+			//op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+
+// MR: the variations of rz during the iterations are crucial to take intot account the 
+//     changes of the mapping due to the distribution of domains that equalize the pressure
+//     or temperature drop in a domain. In fine, when converged rz=1 in 1D, but rz should
+//     be allowed to vary during iterations.
+			   op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
+			   op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
+			 //rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+			   rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
 		       } else if (domain_type[n] == CORE) {
 			// Continuity of T bottom
 			   printf("CORE n= %d\n",n);
@@ -1463,7 +1488,6 @@ fprintf(RHS," it = %d\n",glit);
 for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS Ri %d, %e \n",k,rhs(k));
 fprintf(RHS,"RHS Ri END avec nzones=1\n");
 	
-	//printf("in solve_map nzones=%d\n",nzones);
 	if(nzones>1) {
 		
 		symbolic S;
@@ -1484,7 +1508,6 @@ fprintf(RHS,"Entropy END\n");
 		for (int iz=0;iz<nzones-1;iz++) {
 		        for(n=0,j0=0;n<izif[iz]+1;n++) j0+=map.gl.npts[n];
 			n=izif[iz]+1; // on les gere comme des CL bottom du domaine au dessus
-//	printf("In solve_map n=%d\n",n);
 		        op->reset(n,"Ri");
 			eq.bc_bot2_add(op,n,"Ri","p",ones(1,nth));
 			eq.bc_bot2_add(op,n,"Ri","s",ones(1,nth));
