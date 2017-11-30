@@ -33,6 +33,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_CHECK_PROG([ADDR2LINE], [addr2line], [yes], [no])
+CXXFLAGS="$CXXFLAGS -std=c++11"
 
 AS_IF([test "x$ADDR2LINE" == "xyes"],
       [AC_DEFINE([HAVE_ADDR2LINE], [1], [addr2line is installed])])
