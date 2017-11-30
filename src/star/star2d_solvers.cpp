@@ -67,7 +67,7 @@ void star2d::init_comp() {
     for (int i=0; i<ndomains-1; i++) {
         n += map.gl.npts[i];
     }
-	printf(" in init_comp n=%d, nr=%d\n",n,nr);
+	if (details) printf(" in init_comp n=%d, nr=%d\n",n,nr);
 	//double x=0.70,z=0.02;
 	double x=X0*0.100,z=0.062;
         comp.setblock(0,n-1,0,-1,initial_composition(x,z)*ones(n,nth));

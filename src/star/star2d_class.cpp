@@ -90,6 +90,7 @@ void star2d::copy(const star2d &A) {
     zone_type=A.zone_type; // Absolutely necessary !!
     this -> nzones=A.nzones;	   // do not forget to copy !!
     nd_core=A.nd_core;	   // do not forget to copy !!
+    details=A.details;	   // do not forget to copy !!
 
 }
 
@@ -236,6 +237,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("nd_core",&nd_core);
     fp.write("domain_type",&domain_type[0],ndomains);
     fp.write("izif",&izif[0],ndomains);
+    fp.write("nzones",&nzones);
     fp.write("surff",&surff);
     fp.write("Tc",&Tc);
     fp.write("pc",&pc);
@@ -622,6 +624,7 @@ int star2d::read(const char *input_file, int dim) {
     fp.read("Xc",&Xc);
     fp.read("conv",&conv);
     fp.read("nd_core",&nd_core);
+    fp.read("nzones",&nzones);
     domain_type.resize(ndomains);
     izif.resize(ndomains);
     fp.read("izif",&izif[0]);
@@ -1040,7 +1043,7 @@ void star2d::interp(remapper *red) {
     Xh=red->interp(Xh);
     Xh_prec=Xh;
     Wr=red->interp(Wr); // necessary for output
- 	printf("     In interp, Xh size: %dx%d\n", Xh.nrows(), Xh.ncols());
+ 	if (details) printf("     In interp, Xh size: %dx%d\n", Xh.nrows(), Xh.ncols());
     w=red->interp(w);
     G=red->interp(G,11);
     comp=red->interp(comp);

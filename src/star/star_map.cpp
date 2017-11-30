@@ -23,7 +23,7 @@ void star2d::new_check_map() {
 	   find_zones(R_inter, p_inter);
 	   int nzones_ap=zone_type.size();
 	   if (nzones_av == nzones_ap) {
-		printf("Number of zones unchanged: do nothing\n");
+		if (details) printf("Number of zones unchanged: do nothing\n");
 		return;
 	   }
 	   // Redistribute the domains and output izif (index of zone interface)
@@ -37,9 +37,11 @@ void star2d::new_check_map() {
 	// Install the new mapping and do interpolation for this mapping
 	   map=red->get_map(); // generate r,r_z,...
 	   interp(red);
+if (details) {
 FILE *fic=fopen("new_R.txt", "a");
 for (int k=0;k<=ndomains;k++) fprintf(fic,"k= %d R= %e \n",k,R(k,0));
 fclose(fic);
+}
 	   delete red;
 	} else return; // else do nothing
 }
@@ -53,11 +55,13 @@ matrix star2d::New_distribute_domains(int ndom,matrix p_inter) {
     matrix pif(ndom,1); // pressure at domain interfaces
     int nzo=zone_type.size(); // zone_type is initialized by find_zones
 FILE *fic=fopen("New_pif.txt", "a");
+if (details) {
 printf("Start NEW distribute domains \n");
 printf("nzs =  %d \n",nzo);
 printf("p_inter nrows %d \n",p_inter.nrows());
 printf("p_inter ncols %d \n",p_inter.ncols());
-printf("p_inter(nzo-1) %e \n",p_inter(nzo-1));
+for (int k=0; k<nth;k++) printf("p_inter(0,%d)= %e, p_inter(1,%d)= %e \n",k,p_inter(0,k),k,p_inter(nzo-1,k));
+}
 
     p_s=map.leg.eval_00(PRES.row(-1),0)(0);
 fprintf(fic,"p_s= %e\n",p_s);
@@ -85,6 +89,7 @@ fprintf(fic,"p_s= %e\n",p_s);
 			    dlog(iz)=fabs(log(p_inter(iz)/p_inter(iz-1))) ;
 			}
 		}
+	if (details) printf("dlogp zone 1 = %e, dlogp zone 2 = %e\n",dlog(0),dlog(1));
 // insert an additional domain where the PRES drop is max.
 // until no domain is left!
 		while (ndom_left >=1) {
@@ -92,7 +97,7 @@ fprintf(fic,"p_s= %e\n",p_s);
                   dlogmax=max(dlog);
 		  izmax=99;
                   for (iz=0; iz<nzo; iz++) {
-                    if (fabs(dlog(iz)-dlogmax)<1e-15) izmax=iz;
+                    if (fabs(dlog(iz)-dlogmax)<1e-12) izmax=iz;
                   }
 		  if (izmax==99) printf("izmax = %d, ndom_left= %d\n",izmax,ndom_left);
                   dlog(izmax)=dlog(izmax)*ndz[izmax]/(ndz[izmax]+1);
@@ -102,7 +107,7 @@ for (int k=0;k<nzo;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 // check total number of domains
 		ndom_check=0;
 		for (iz=0; iz<nzo;iz++) ndom_check=ndom_check+ndz[iz];
-		printf("ndom_check = %d\n",ndom_check);
+		if (details) printf("ndom_check = %d\n",ndom_check);
 		if (ndom_check != ndom) {
     			std::cerr << "ERROR: ndoms do not match in new_distrib...\n";
     			std::terminate();
@@ -114,7 +119,7 @@ for (int k=0;k<nzo;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 		for (k=0;k<ndz[0];k++) pif(k)=exp((k+1)*log(p_inter(0))/ndz[0]);
 		ki=ndz[0]-1;
                 izif[0]=ki;
-		printf("izif (%d) = %d\n",0,ki);
+		if (details) printf("izif (%d) = %d\n",0,ki);
            // First zone done
 		for (iz=1; iz<nzo; iz++) {
 			for (k=ki;k<ki+ndz[iz];k++) {
@@ -123,7 +128,7 @@ for (int k=0;k<nzo;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 			}
  			ki=ki+ndz[iz];
 			izif[iz]=ki;
-			printf("izif (%d) = %d\n",iz,ki);
+			if (details) printf("izif (%d) = %d\n",iz,ki);
 		}
            // All zones done
 // last interface is the surface and not account by the foregoing algo
@@ -138,17 +143,17 @@ for (int k=0;k<nzo;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 // Compute the number of domains in the core
 	nd_core=0;
 	for (int n=0;n<ndomains;n++) {
-		printf("domain_type[%d] = %d\n",n,domain_type[n]);
+		if (details) printf("domain_type[%d] = %d\n",n,domain_type[n]);
 		if (domain_type[n] == CORE) nd_core++;
 	}
-		printf("nd_core=%d\n",nd_core);
+		if (details) printf("nd_core=%d\n",nd_core);
 
 
 // Finally we need the index of the interfaces between the zones once the
 // domains have been distributed. These are stored in izif.
 
-for (int k=0;k<nzo;k++) fprintf(fic,"k= %d p_inter %e \n",k,p_inter(k));
-for (int k=0;k<ndomains;k++) fprintf(fic,"k= %d pif %e \n",k,pif(k));
+if (details) for (int k=0;k<nzo;k++) fprintf(fic,"k= %d p_inter %e \n",k,p_inter(k));
+if (details) for (int k=0;k<ndomains;k++) fprintf(fic,"k= %d pif %e \n",k,pif(k));
 fclose(fic);
 	}
 }
@@ -168,7 +173,7 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
     DEBUG_FUNCNAME;
     remapper red(map); // declaration object of class remapper 
 
-    printf("    Enter remap in star_map\n");
+    if (details) printf("    Enter remap in star_map\n");
     red.set_ndomains(ndom_in);
     red.set_npts(npts_in);
     red.set_nt(nth_in);
@@ -180,7 +185,7 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
     map=red.get_map(); // update the mapping
     interp(&red); // interpolate the variable on the new update
 
-	printf("    Leave remap in star_map\n");
+	if (details) printf("    Leave remap in star_map\n");
 }
 
 // Some domains have boundaries imposed by the physics and these
@@ -192,7 +197,7 @@ bool star2d::remap_domains(int ndom, remapper &red) {
     int nzo=1;
     std::vector<int> index;	
 // Here look for interface between zones of different type.
-if (config.verbose == 19) printf("++++++ start of remap_domains\n");
+if (details) printf("++++++ start of remap_domains\n");
     for(int n=1,type=domain_type[0];n<ndomains;n++) {
         if(domain_type[n]!=type) {
             index.push_back(n-1);
@@ -221,12 +226,12 @@ if (config.verbose == 19) printf("++++++ start of remap_domains\n");
 
 // if nothing has changed return
     if(index_new==index&&ndom==ndomains) {
-     if (config.verbose == 19) printf("quit remap_domain with nothing changed\n"); return false;
+     if (details) printf("quit remap_domain with nothing changed\n"); return false;
     }
 
 // compute new indices of interfaces between zones and recompute the zeta of the new
 // domains (zif)
-printf("++++++ remap_domains and redistribute domains\n");
+if (details) printf("++++++ remap_domains and redistribute domains\n");
     index_new=distribute_domains(ndom,zif);
 
 // Now that the zif are known we can recompute the radii R of the new domains inside
@@ -246,7 +251,7 @@ printf("++++++ remap_domains and redistribute domains\n");
     int n=0;
     while(domain_type[n++]==CORE) conv++; // update of the conv variable
 
-printf("++++++ remap_domains end with redistributed domains\n");
+if (details) printf("++++++ remap_domains end with redistributed domains\n");
     return true;
 }
 
@@ -470,16 +475,17 @@ matrix star2d::solve_temp_rad() {
 
 //int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter)
 int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
-    int details=1;
     double last_zi, zi;
     matrix schw, dschw,bv2;
 
     matrix T_schw = solve_temp_rad();
 
-	printf("Start of find zone, min_core= %e\n",min_core_size);
-	FILE *coco=fopen("les_z.txt", "w");
-	for (int i=0;i<nr;i++) fprintf(coco,"%d  %e\n",i,z(i));
-	fclose(coco);
+	if (details) {
+            printf("Start of find zone, min_core= %e\n",min_core_size);
+	    FILE *coco=fopen("les_z.txt", "w");
+	    for (int i=0;i<nr;i++) fprintf(coco,"%d  %e\n",i,z(i));
+	    fclose(coco);
+	}
 
     int itest_sch=0;
     while(r(itest_sch,-1)<1.05*min_core_size) itest_sch++;
@@ -565,7 +571,8 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     std::vector<double> les_zi(n+1);
     for (int i=0; i< n+1;i++) les_zi[i]=0.;
 
-// We first detect the number of true interfaces
+// We first detect the number of true interfaces using the last latitude
+// point (-1), which is the closest one to the pole.
     n = 0;
     for (int i=itest_sch; i<=nl; i++) {  // we stop the search at nl or nl-1
         if (schw(i-1, -1) * schw(i, -1) < 0 ) {
@@ -602,30 +609,33 @@ if (les_zi[i] !=0.) {
 	   k++;
           }
 }
-if (details) printf("number of interf left %d \n",k);
+if (details) printf("number of interfaces left %d \n",k);
 
 // Now we set the values of r_inter and p_inter
 // which include the true surface
     r_inter = zeros(k+1, nth);
     p_inter = zeros(k+1, nth);
-    int j=-1;
+    for (int j=0; j<nth;j++) {
     for (int i=0; i< k;i++) {
 	   zi=the_zi[i];
            r_inter(i, j) = map.gl.eval(r.col(j), zi)(0);
            p_inter(i, j) = map.gl.eval(PRES.col(j), zi)(0);
+     }
      }
 
 // We add the surface as the last r_inter
     r_inter.setrow(-1, z(-1) * ones(1, nth));
     p_inter.setrow(-1, PRES(-1) * ones(1, nth));
 
-
-    std::cout << "CONV: " << CONVECTIVE << ", ";
-    std::cout << "CORE: " << CORE << ", ";
-    std::cout << "RAD: " << RADIATIVE << "\n";
+	if (details) { 
+           std::cout << "CONV: " << CONVECTIVE << ", ";
+           std::cout << "CORE: " << CORE << ", ";
+           std::cout << "RAD: " << RADIATIVE << "\n";
+        }
 
     last_zi = 0.0;
     n=k;
+    int j=-1;
     zone_type = std::vector<int>(n+1);
     for (int i=0; i<n+1; i++) {
         double mid_zone = (last_zi+r_inter(i, j))/2.0;
@@ -638,7 +648,7 @@ if (details) printf("number of interf left %d \n",k);
             zone_type[i] = RADIATIVE;
         }
 	if (i==n) zone_type[i] = RADIATIVE; // the last zone is necessarily radiative
-        printf("ZONE: [%e, %e]: convection (schw: %e): %d\n",
+        printf("ZONE: [%e, %e], schw= %.5e, type: %d\n",
                 last_zi, r_inter(i, j),
                 schwi,
                 zone_type[i]);
@@ -647,6 +657,7 @@ if (details) printf("number of interf left %d \n",k);
 //exit(0);
 
 // Check if there are contiguous zones and suppress them if true
+/*  Should no longer be necessary
 	int nsz=0;
 	redo:
 	if (details) printf("In find_zones nb of zones = %d\n",n+1);
@@ -670,12 +681,10 @@ if (details) for (int i=0; i<n+1;i++) printf("i=%d, zone_type=%d\n",i,zone_type[
 	   n=n-1; // reduce the number of zones
 	   goto redo; // and check again
 	}
-	//printf("In find_zones nsz=%d \n",nsz);
-	printf("End of find_zones: number of zones =%d \n",n+1);
-        //std::vector<int> zone_type_bis(n+1);	
-	//for (int i=0;i<n+1;i++) zone_type_bis[i]=zone_type[i];
+	printf("In find_zones nsz=%d \n",nsz);
+*/
+	if (details) printf("End of find_zones: number of zones =%d \n",n+1);
 	zone_type.resize(n+1);
-	//for (int i=0;i<n+1;i++) zone_type[i]=zone_type_bis[i];
 
     return n+1; // n+1 is the number of zones
 }
