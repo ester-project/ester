@@ -257,7 +257,6 @@ matrix mapping::stream(const matrix &Fz,matrix &Ft) const {
 // Calculates the stream function of the divergenceless vector field whose
 // zeta-contravariant component is Fz (for Fz even at pole and equator).
 // Returns also the theta-contravariant component Ft
-
 	matrix f;
 
 	f=r*r*rz*Fz;

@@ -206,7 +206,7 @@ class star1d : public star2d {
 	virtual double solve(solver *);
 	virtual void solve_poisson(solver *);
 	virtual void solve_pressure(solver *);
-	virtual void solve_temp(solver *);
+	//virtual void solve_temp(solver *);
 	virtual void new_solve_temp(solver *);
 	virtual void solve_dim(solver *);
 	virtual void solve_map(solver *);

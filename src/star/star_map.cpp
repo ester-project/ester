@@ -6,7 +6,6 @@ extern "C" {
 }
 
 void star2d::new_check_map() {
-        //DEBUG_FUNCNAME;
         matrix pif,R_inter,p_inter;
         remapper *red;
         matrix R(ndomains+1,nth);
@@ -50,7 +49,6 @@ matrix star2d::New_distribute_domains(int ndom,matrix p_inter) {
 // ndom ==> input
 // called by new_check_map to redistribute domain
 
-    //DEBUG_FUNCNAME;
     double p_s;
     matrix pif(ndom,1); // pressure at domain interfaces
     int nzo=zone_type.size(); // zone_type is initialized by find_zones
@@ -97,7 +95,7 @@ fprintf(fic,"p_s= %e\n",p_s);
                   dlogmax=max(dlog);
 		  izmax=99;
                   for (iz=0; iz<nzo; iz++) {
-                    if (fabs(dlog(iz)-dlogmax)<1e-12) izmax=iz;
+                    if (fabs(dlog(iz)-dlogmax)<1e-15) izmax=iz;
                   }
 		  if (izmax==99) printf("izmax = %d, ndom_left= %d\n",izmax,ndom_left);
                   dlog(izmax)=dlog(izmax)*ndz[izmax]/(ndz[izmax]+1);
@@ -170,7 +168,6 @@ fclose(fic);
 // domain.
 
 void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
-    //DEBUG_FUNCNAME;
     remapper red(map); // declaration object of class remapper 
 
     if (details) printf("    Enter remap in star_map\n");
@@ -192,7 +189,6 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
 // boundaries cannot be moved (ex. CC & RZ interface).
 // domain_type = integer for CC RZ CZ (see star.h)
 bool star2d::remap_domains(int ndom, remapper &red) {
-    //DEBUG_FUNCNAME;
 //	Count zones
     int nzo=1;
     std::vector<int> index;	

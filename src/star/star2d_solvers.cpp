@@ -64,6 +64,7 @@ void star2d::init_comp() {
 // Put a special composition in the last domain: Daniel's request
 /*
 	printf("WARNING : Daniel's superstar computed!\n");
+
     n = 0; // Count the number of points to the before last domain
     for (int i=0; i<ndomains-1; i++) {
         n += map.gl.npts[i];
@@ -98,7 +99,7 @@ void star2d::init_comp() {
 }
 
 void star2d::calc_veloc() {
-// vr=rz*V^zeta vt=r*V^theta
+// vr=rz*V^zeta vt=r*V^theta cimputed from G
 	vr=(G,map.leg.D_11)/r+(map.rt/r+cos(th)/sin(th))/r*G;
 	vr.setrow(0,zeros(1,nth));
 	vr/=rho;
@@ -114,6 +115,8 @@ solver *star2d::init_solver(int nvar_add) {
 	nvar=34; // include Xh
 	op=new solver;
 	op->init(ndomains+1,nvar+nvar_add,"full");
+	
+// control of CGS solver parameters
 	op->maxit_ref=10;op->use_cgs=1;op->maxit_cgs=20;op->debug=0;
 	op->rel_tol=1e-12;op->abs_tol=1e-20;
 	register_variables(op);
@@ -678,7 +681,6 @@ void star2d::solve_mov(solver *op) {
 /// \brief Writes Xh equation for the evolution
 //Evolution Xh --------------------------------------
 void star2d::solve_Xh(solver *op) {
-    //DEBUG_FUNCNAME;
 // Solve_Xh solves the time-diffusion equation for Xh, for a single
 // time-step and a weak diffusion. Namely, we solve:
 // D*lap(x) -(X-X_prec) = 0

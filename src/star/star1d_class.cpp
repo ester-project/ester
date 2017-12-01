@@ -157,7 +157,6 @@ int star1d::read_old(const char *input_file) {
 }
 
 int star1d::read(const char *input_file, int dim) {
-    //DEBUG_FUNCNAME;
 	int itt=star2d::read(input_file, 1);
     printf("STAR1D::READ NZONES=%d\n",nzones);
     return itt;
