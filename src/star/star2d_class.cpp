@@ -1035,7 +1035,7 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 }
 
 void star2d::interp(remapper *red) {
-    DEBUG_FUNCNAME;
+    //DEBUG_FUNCNAME;
  	if (config.verbose == 55) printf("     Enter interp in star2d_class\n");
         p=red->interp(p);
     phi=red->interp(phi);

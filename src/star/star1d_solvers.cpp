@@ -381,7 +381,7 @@ void star1d::solve_pressure(solver *op) {
 
 //Evolution Xh --------------------------------------
 void star1d::solve_Xh(solver *op) {
-    DEBUG_FUNCNAME;
+    //DEBUG_FUNCNAME;
 
     double Qmc2=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
     double factor=4*HYDROGEN_MASS/Qmc2*MYR;
@@ -508,7 +508,7 @@ fprintf(RHS,"RHS Xh END\n");
 }
 
 void star1d::solve_Wr(solver *op) {
-    DEBUG_FUNCNAME;
+    //DEBUG_FUNCNAME;
 
 // programmation en langage symbolique
     static symbolic S;
@@ -579,7 +579,7 @@ fprintf(RHS,"RHS Wr END\n");
 
 
 void star1d::solve_temp(solver *op) {
-    DEBUG_FUNCNAME;
+    //DEBUG_FUNCNAME;
 	if (config.verbose == 19) printf("in solve temp start \n");
 	int n,j0,j1,ndom,iconv;
 	//matrix q;
@@ -679,77 +679,6 @@ FILE *ficb=fopen("rhs_T.txt", "a");
 	}
 	
 	
-	rhs_T=zeros(nr,1);
-
-    matrix rhs_lum,lum;
-
-    lum=zeros(ndomains,1);
-    j0=0;
-    for(n=0;n<ndomains;n++) {
-        if(n) lum(n)=lum(n-1);
-        lum(n)+=4*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),
-            (rho*nuc.eps*r*r).block(j0,j0+map.gl.npts[n]-1,0,0))(0);
-        j0+=map.gl.npts[n];
-    }
-
-    rhs_lum=zeros(ndomains,1);
-    j0=0;
-    for(n=0;n<ndomains;n++) {
-        op->bc_bot2_add_d(n,"lum","lum",ones(1,1));
-        op->bc_bot2_add_li(n,"lum","rho",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(r*r*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,0));
-        op->bc_bot2_add_li(n,"lum","nuc.eps",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(r*r*rho).block(j0,j0+map.gl.npts[n]-1,0,0));
-        op->bc_bot2_add_d(n,"lum","Lambda",-4*PI*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(rho*nuc.eps*r*r).block(j0,j0+map.gl.npts[n]-1,0,0)));
-        //r (rz)
-        op->bc_bot2_add_li(n,"lum","r",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(2*r*rho*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,0));
-        op->bc_bot2_add_li(n,"lum","rz",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(r*r*rho*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,0));
-
-        if(n) op->bc_bot1_add_d(n,"lum","lum",-ones(1,1));
-        j0+=map.gl.npts[n];
-    }
-    op->set_rhs("lum",rhs_lum);
-
-    //Frad
-
-    matrix rhs_Frad,Frad;
-    int j1;
-
-    Frad=-opa.xi*(D,T);
-    rhs_Frad=zeros(ndomains*2-1,1);
-    j0=0;
-    for(n=0;n<ndomains;n++) {
-        j1=j0+map.gl.npts[n]-1;
-
-        if(n) op->bc_bot2_add_d(n,"Frad","Frad",ones(1,1));
-        op->bc_top1_add_d(n,"Frad","Frad",ones(1,1));
-
-        if(n) op->bc_bot2_add_l(n,"Frad","T",opa.xi.row(j0),D.block(n).row(0));
-        op->bc_top1_add_l(n,"Frad","T",opa.xi.row(j1),D.block(n).row(-1));
-
-        if(n) op->bc_bot2_add_d(n,"Frad","opa.xi",(D,T).row(j0));
-        op->bc_top1_add_d(n,"Frad","opa.xi",(D,T).row(j1));
-
-        if(n) op->bc_bot2_add_d(n,"Frad","rz",Frad.row(j0));
-        op->bc_top1_add_d(n,"Frad","rz",Frad.row(j1));
-
-        j0=j1+1;
-    }
-    op->set_rhs("Frad",rhs_Frad);
-
-
-    //Temperature
-
-    matrix rhs_T,rhs_Lambda;
-    matrix qcore,qenv;
-
-    qenv=zeros(nr,1);
-    qcore=qenv;
-    j0=0;
-    for(n=0;n<ndomains;n++) {
-        if(n<conv) qcore.setblock(j0,j0+map.gl.npts[n]-1,0,0,ones(map.gl.npts[n],1));
-        else qenv.setblock(j0,j0+map.gl.npts[n]-1,0,0,ones(map.gl.npts[n],1));
-        j0+=map.gl.npts[n];
-    }
-
 
     rhs_T=zeros(nr,1);
 
@@ -769,17 +698,17 @@ FILE *ficb=fopen("rhs_T.txt", "a");
 #define print_sym(s) { std::cout << #s << " = "; \
     (s).print(std::cout); std::cout << '\n'; }
     // print_sym(div(grad(T_)));
-    div_Frad.add(op,eqn,"T",qenv);
-    div_Frad.add(op,eqn,"opa.xi",qenv);
-    div_Frad.add(op,eqn,"r",qenv);
-    rhs_T-=div_Frad.eval()*qenv;
+    div_Frad.add(op,eqn,"T",qrad);
+    div_Frad.add(op,eqn,"opa.xi",qrad);
+    div_Frad.add(op,eqn,"r",qrad);
+    rhs_T-=div_Frad.eval()*qrad;
 
 
-    op->add_d(eqn,"nuc.eps",qenv*Lambda*rho/opa.xi);
-    op->add_d(eqn,"rho",qenv*Lambda*nuc.eps/opa.xi);
-    op->add_d(eqn,"Lambda",qenv*rho*nuc.eps/opa.xi);
-    op->add_d(eqn,"opa.xi",-qenv*Lambda*rho*nuc.eps/opa.xi/opa.xi);
-    rhs_T+=-qenv*Lambda*rho*nuc.eps/opa.xi;
+    op->add_d(eqn,"nuc.eps",qrad*Lambda*rho/opa.xi);
+    op->add_d(eqn,"rho",qrad*Lambda*nuc.eps/opa.xi);
+    op->add_d(eqn,"Lambda",qrad*rho*nuc.eps/opa.xi);
+    op->add_d(eqn,"opa.xi",-qrad*Lambda*rho*nuc.eps/opa.xi/opa.xi);
+    rhs_T+=-qrad*Lambda*rho*nuc.eps/opa.xi;
 
 
     //Convection
@@ -797,23 +726,23 @@ FILE *ficb=fopen("rhs_T.txt", "a");
 
         div_Fconv=-div(-rho_*T_*grad(s_)*kc_)/xi_;
 
-        div_Fconv.add(op,eqn,"T",qenv);
-        div_Fconv.add(op,eqn,"rho",qenv);
-        div_Fconv.add(op,eqn,"s",qenv);
-        div_Fconv.add(op,eqn,"r",qenv);
-        div_Fconv.add(op,eqn,"opa.xi",qenv);
+        div_Fconv.add(op,eqn,"T",qrad);
+        div_Fconv.add(op,eqn,"rho",qrad);
+        div_Fconv.add(op,eqn,"s",qrad);
+        div_Fconv.add(op,eqn,"r",qrad);
+        div_Fconv.add(op,eqn,"opa.xi",qrad);
 
-        add_kconv(op,eqn,div_Fconv.jacobian("kc",0,0).eval()*qenv);
-        add_dkconv_dz(op,eqn,div_Fconv.jacobian("kc",1,0).eval()*qenv);
+        add_kconv(op,eqn,div_Fconv.jacobian("kc",0,0).eval()*qrad);
+        add_dkconv_dz(op,eqn,div_Fconv.jacobian("kc",1,0).eval()*qrad);
 
-        rhs_T-=div_Fconv.eval()*qenv;
+        rhs_T-=div_Fconv.eval()*qrad;
 
     }*/
 
     //Core convection
-    op->add_l(eqn,"s",qcore,D);
-    //rhs_T+=-qcore*(D,eos.s);
-    rhs_T+=-qcore*(D,entropy());
+    op->add_l(eqn,"s",qconv,D);
+    //rhs_T+=-qconv*(D,eos.s);
+    rhs_T+=-qconv*(D,entropy());
 
     rhs_Lambda=zeros(ndomains,1);
 
@@ -1026,7 +955,7 @@ fclose(fic);
 }
 
 void star1d::new_solve_temp(solver *op) {
-    DEBUG_FUNCNAME;
+    //DEBUG_FUNCNAME;
 	//printf("start of new_solve temp \n");
 	int n,j0,j1,ndom;
 	char eqn[8];
@@ -1447,7 +1376,7 @@ fprintf(RHS,"RHS R END\n");
 }
 
 void star1d::solve_map(solver *op) {
-    DEBUG_FUNCNAME;
+    //DEBUG_FUNCNAME;
 	int n,j0,j1,ndom;
 	matrix rhs;
 	

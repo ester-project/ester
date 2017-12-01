@@ -62,7 +62,8 @@ void star2d::init_comp() {
         comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
 
 // Put a special composition in the last domain: Daniel's request
-
+/*
+	printf("WARNING : Daniel's superstar computed!\n");
     n = 0; // Count the number of points to the before last domain
     for (int i=0; i<ndomains-1; i++) {
         n += map.gl.npts[i];
@@ -72,7 +73,7 @@ void star2d::init_comp() {
 	double x=X0*0.100,z=0.062;
         comp.setblock(0,n-1,0,-1,initial_composition(x,z)*ones(n,nth));
         comp.setblock(n,nr-1,0,-1,initial_composition(X0,Z0)*ones(nr-n,nth));
-
+*/
 
 
 
@@ -677,7 +678,7 @@ void star2d::solve_mov(solver *op) {
 /// \brief Writes Xh equation for the evolution
 //Evolution Xh --------------------------------------
 void star2d::solve_Xh(solver *op) {
-    DEBUG_FUNCNAME;
+    //DEBUG_FUNCNAME;
 // Solve_Xh solves the time-diffusion equation for Xh, for a single
 // time-step and a weak diffusion. Namely, we solve:
 // D*lap(x) -(X-X_prec) = 0
@@ -759,7 +760,7 @@ void star2d::solve_Xh(solver *op) {
 /// \brief Writes temperature and luminosity equations and interface conditions
 /// into the solver.
 void star2d::solve_temp(solver *op) {
-	int n,j0;
+	int n,j0,j1,ndom;
 	matrix q;
 	char eqn[8];
 	matrix &gzz=map.gzz, &gzt=map.gzt, &rz=map.rz;
@@ -805,7 +806,6 @@ void star2d::solve_temp(solver *op) {
 // intsurf Frad dS = Lum ; note that here dS=2*pi*r^2*rz*sin(th)*dth
 
 	matrix rhs_Frad,Frad;
-	int j1;
 
 	Frad=-opa.xi*(gzz*(D,T)+gzt*(T,Dt)); // explicit expression of Frad
 	rhs_Frad=zeros(ndomains*2-1,nth);
@@ -933,6 +933,9 @@ void star2d::solve_temp(solver *op) {
 // Interface and boundary conditions for the temperature
 	j0=0;
 	for(n=0;n<ndomains;n++) {
+                ndom=map.gl.npts[n];
+                j1=j0+ndom-1;
+
 		if(n==0) { // In the first domain T(0)=1
 			op->bc_bot2_add_d(n,eqn,"T",ones(1,nth));
 			rhs_T.setrow(j0,1-T.row(j0));
@@ -941,23 +944,25 @@ void star2d::solve_temp(solver *op) {
 			op->bc_bot1_add_d(n,eqn,"T",-ones(1,nth));
 			rhs_T.setrow(j0,-T.row(j0)+T.row(j0-1));
 		}
-        // Radiative envelope: the continuity of (1/rz)(dT/dzeta) is imposed
 		if(n>=conv) {
 			if(n<ndomains-1) {
-				/*op->bc_top1_add_d(n,eqn,"Frad",rz.row(j0+map.gl.npts[n]-1));
-				op->bc_top2_add_d(n,eqn,"Frad",-rz.row(j0+map.gl.npts[n]-1));
-				op->bc_top1_add_d(n,eqn,"rz",Frad.row(j0+map.gl.npts[n]-1));
-				op->bc_top2_add_d(n,eqn,"rz",-Frad.row(j0+map.gl.npts[n]-1));
+/*
+// Radiative envelope: the continuity of (1/rz)(dT/dzeta) is imposed
+				op->bc_top1_add_l(n,eqn,"T",1/rz.row(j1),D.block(n).row(-1));
+				op->bc_top1_add_d(n,eqn,"rz",-((D,T)/rz/rz).row(j1));
+				op->bc_top2_add_l(n,eqn,"T",-1/rz.row(j1+1),D.block(n+1).row(0));
+				op->bc_top2_add_d(n,eqn,"rz",((D,T)/rz/rz).row(j1+1));
+				rhs_T.setrow(j1,((D,T)/rz).row(j1+1)-((D,T)/rz).row(j1));
+*/
+// MR: We impose the continuity of the flux instead of the temperature derivative
+		op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1)/rz.row(j1),D.block(n).row(-1));
+		op->bc_top1_add_d(n,eqn,"rz",-opa.xi.row(j1)*((D,T)/rz/rz).row(j1));
+		op->bc_top1_add_d(n,eqn,"opa.xi",((D,T)/rz).row(j1));
+		op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1)/rz.row(j1+1),D.block(n+1).row(0));
+		op->bc_top2_add_d(n,eqn,"rz",opa.xi.row(j1+1)*((D,T)/rz/rz).row(j1+1));
+		op->bc_top2_add_d(n,eqn,"opa.xi",-((D,T)/rz).row(j1+1));
+	rhs_T.setrow(j1,opa.xi.row(j1+1)*((D,T)/rz).row(j1+1)-opa.xi.row(j1)*((D,T)/rz).row(j1));
 
-				rhs_T.setrow(j0+map.gl.npts[n]-1,
-					-Frad.row(j0+map.gl.npts[n]-1)*rz.row(j0+map.gl.npts[n]-1)
-					+Frad.row(j0+map.gl.npts[n])*rz.row(j0+map.gl.npts[n]));*/
-				op->bc_top1_add_l(n,eqn,"T",1/rz.row(j0+map.gl.npts[n]-1),D.block(n).row(-1));
-				op->bc_top1_add_d(n,eqn,"rz",-((D,T)/rz/rz).row(j0+map.gl.npts[n]-1));
-				op->bc_top2_add_l(n,eqn,"T",-1/rz.row(j0+map.gl.npts[n]),D.block(n+1).row(0));
-				op->bc_top2_add_d(n,eqn,"rz",((D,T)/rz/rz).row(j0+map.gl.npts[n]));
-				rhs_T.setrow(j0+map.gl.npts[n]-1,
-					((D,T)/rz).row(j0+map.gl.npts[n])-((D,T)/rz).row(j0+map.gl.npts[n]-1));
 			} else { // In the last domain set the upper BC T=Ts
 				op->bc_top1_add_d(n,eqn,"T",ones(1,nth));
 				op->bc_top1_add_d(n,eqn,"Ts",-ones(1,nth));
