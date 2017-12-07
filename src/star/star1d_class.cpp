@@ -1,6 +1,8 @@
 #include "ester-config.h"
 #include "utils.h"
 #include "star.h"
+#include "matplotlib.h"
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -342,4 +344,58 @@ void star1d::dump_info() {
 	
 }
 
+void star1d::plot(const matrix& error) {
+    plt.clf();
 
+    plt.subplot(231);
+    // plt.title(std::string("iter: ") + std::to_string(nit));
+    plt.plot(r, rho, "$\\rho$");
+    plt.plot(r, T, "T");
+    plt.plot(r, p, "p");
+    plt.legend();
+    for (int i=0; i<ndomains; i++) {
+        plt.axvline(map.gl.xif[i]);
+    }
+
+    plt.subplot(232);
+    // plt.title(std::string("iter: ") + std::to_string(nit));
+    plt.plot(r, phi, "$\\Phi$");
+    plt.legend();
+
+    plt.subplot(233, true);
+    std::ostringstream str_stream;
+
+    // str_stream.clear();
+    // str_stream.str("");
+    // str_stream << nit;
+    // plt.text(0.0, 1.0, std::string("iter:   ") + str_stream.str());
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << Tc;
+    plt.text(0.0, .3, std::string("$T_c$:   ") + str_stream.str());
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << pc;
+    plt.text(0.0, .2, std::string("$p_c$:   ") + str_stream.str());
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << pc;
+    plt.text(0.0, 0.1, std::string("$\\rho_c$:  ") + str_stream.str());
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << pi_c;
+    plt.text(0.0, 0.0, std::string("$\\pi_c$: ") + str_stream.str());
+
+
+
+    plt.subplot(223);
+    plt.semilogy(error, "error");
+    plt.legend();
+
+    plt.draw();
+    plt.pause();
+}

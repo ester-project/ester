@@ -21,7 +21,7 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     int i,N,error=0;
     
     static double Z_table=-99;
-    
+
     t6=T*1e-6;
     p_mb=p*1e-12;
     

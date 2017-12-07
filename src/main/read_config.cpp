@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "parser.h"
 #include "read_config.h"
+#include "matplotlib.h"
 
 configuration::configuration(int argc,char *argv[]) {
 
@@ -24,6 +25,7 @@ configuration::configuration(int argc,char *argv[]) {
 	maxit=200;
 	tol=1e-8;
 	newton_dmax=0.5;
+    noplot = false;
 
 	sprintf(file, "%s/ester/star.cfg", ESTER_DATADIR);
 	if(!fp.open(file))
@@ -105,6 +107,8 @@ int configuration::check_arg(const char *arg,const char *val) {
 	}
 	else if(!strcmp(arg,"noplot")) {
 		strcpy(plot_device,"/NULL");
+        noplot = true;
+        plt.init(true);
 	}
 	else if(!strcmp(arg,"maxit")) {
 		if(val==NULL) return 2;

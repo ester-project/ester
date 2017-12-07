@@ -3,7 +3,7 @@ AM_CXXFLAGS=-Wall
 
 BUILT_SOURCES	= main/read_config.cpp
 
-AM_CPPFLAGS = -I$(srcdir)/include
+AM_CPPFLAGS = -I$(srcdir)/include -I$(srcdir)/graphics
 AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam
 
 bin_PROGRAMS		= star1d star2d version star_evol ester_info gen_output
@@ -41,7 +41,7 @@ main/ester: main/ester.in Makefile
 
 lib_LTLIBRARIES			= libester.la
 libester_la_SOURCES		= global/global.cpp									\
-                          graphics/graphics.cpp								\
+                          graphics/graphics.cpp	graphics/matplotlib.cpp		\
                           mapping/mapping.cpp mapping/remapper.cpp 			\
                           matrix/mat_math.cpp matrix/matrix_block_diag.cpp	\
                           matrix/matrix.cpp matrix/matrix_map.cpp			\

@@ -1,11 +1,13 @@
 #include "ester-config.h"
 #include "utils.h"
+#include "matplotlib.h"
 #include "star.h"
 #include "read_config.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <iomanip>
 
 int main(int argc,char *argv[]) {
 
@@ -14,13 +16,13 @@ int main(int argc,char *argv[]) {
     tiempo t;
     double t_plot;
     configuration config(argc,argv);
-    figure *fig = NULL;
+    // figure *fig = NULL;
 
     t.start();
-    if(config.verbose) {
-        fig=new figure(config.plot_device);
-        fig->subplot(2,1);
-    }
+    // if(config.verbose) {
+    //     fig=new figure(config.plot_device);
+    //     fig->subplot(2,1);
+    // }
 
     star1d A;
     solver *op;
@@ -49,6 +51,11 @@ int main(int argc,char *argv[]) {
         A.env_convec=0;
     }
     err=1;
+
+    int last_plot_it = -100;
+
+    if (config.noplot == false) A.plot(error.block(0, nit-1, 0 ,0));
+
     while(!last_it) {
         if(err<0.1&&!*config.input_file) {
             A.core_convec=core_convec_set;
@@ -65,16 +72,23 @@ int main(int argc,char *argv[]) {
         if(config.verbose) {
             printf("it=%d err=%e\n",nit,err);
 
-            if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
-                fig->semilogy(error.block(0,nit-1,0,0));
-                fig->label("Iteration number","Relative error","");
-                A.spectrum(fig,A.rho);
-                fig->label("Density (normalized spectrum)","","");
-                t_plot=tt(nit-1);
-            }
+            // if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
+            //     fig->semilogy(error.block(0,nit-1,0,0));
+            //     fig->label("Iteration number","Relative error","");
+            //     A.spectrum(fig,A.rho);
+            //     fig->label("Density (normalized spectrum)","","");
+            //     t_plot=tt(nit-1);
+            // }
 
         }
+
+        if (config.noplot == false && (nit - last_plot_it > 10 || last_it)) {
+            last_plot_it = nit;
+            A.plot(error.block(0, nit-1, 0 ,0));
+        }
+
     }
+
     if(config.verbose) {
         printf("Mass=%3.3f Msun  Radius=%3.3f Rsun  Luminosity=%3.3f Lsun  Teff=%1.1f K\n",
                 A.M/M_SUN,A.R/R_SUN,A.luminosity()/L_SUN,A.Teff()(0));
@@ -85,13 +99,16 @@ int main(int argc,char *argv[]) {
     delete op;
     A.write(config.output_file,config.output_mode);
 
-    if(config.verbose) {
-        delete fig;
-    }
+    // if(config.verbose) {
+    //     delete fig;
+    // }
 
     t.stop();
     if(config.verbose)
         printf("%2.2f seconds\n",t.value());
+
+    plt.show(true);
+
     return 0;
 }
 
