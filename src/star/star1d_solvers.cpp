@@ -4,6 +4,8 @@
 #include <string.h>
 #include "symbolic.h"
 
+#include "matplotlib.h"
+
 void star1d::fill() {
 	Y0=1.-X0-Z0;
         //printf("begin fill call init_comp\n");

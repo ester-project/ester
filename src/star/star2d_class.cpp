@@ -1277,3 +1277,6 @@ void star2d::dump_info() {
 
 }
 
+void star2d::plot(const matrix& error) {
+    ester_err("star2d::plot not yet implemented");
+}

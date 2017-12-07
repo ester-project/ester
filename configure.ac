@@ -45,7 +45,9 @@ AM_CONDITIONAL(HAVE_SWIG, [test "x$have_swig" == "xyes"])
 
 AS_IF([test "x$PYTHON" != "x:"],
       [PYTHONINC=`$PYTHON -c "from distutils import sysconfig; print(sysconfig.get_python_inc())"`
-       CPPFLAGS="$CPPFLAGS -I$PYTHONINC"])
+       CPPFLAGS="$CPPFLAGS -I$PYTHONINC"
+       PYTHONLIBS=`$PYTHON-config --ldflags`
+       LIBS+="$PYTHONLIBS"])
 
 # Checks for libraries.
 

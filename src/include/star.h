@@ -182,6 +182,8 @@ class star2d {
 
     void hdf5_write(const char *filename) const;
     int hdf5_read(const char *input_file, int dim);
+
+    virtual void plot(const matrix&);
 };
 
 class star1d : public star2d {
@@ -228,6 +230,8 @@ class star1d : public star2d {
 	void spectrum(figure *,const matrix &,const char *line="") const;
 	
 	virtual void check_jacobian(solver *op,const char *eqn);
+
+    virtual void plot(const matrix&);
 };
 
 class star_evol : public star2d {

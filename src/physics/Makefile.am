@@ -1,4 +1,4 @@
-AM_CPPFLAGS  = -I$(top_srcdir)/src/include
+AM_CPPFLAGS  = -I$(top_srcdir)/src/include -I$(top_srcdir)/src/graphics
 AM_CPPFLAGS += -I../../tables/cesam
 AM_CXXFLAGS=-Wall
 

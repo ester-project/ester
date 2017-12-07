@@ -14,7 +14,7 @@ pkgpython_PYTHON = ester.py ester_wrap.py
 pkgpyexec_LTLIBRARIES = _ester_wrap.la
 
 _ester_wrap_la_SOURCES = ester_wrap.cpp
-_ester_wrap_la_CPPFLAGS = -I$(top_srcdir)
+_ester_wrap_la_CPPFLAGS = -I$(top_srcdir)/src/include -I$(top_srcdir)/src/graphics
 _ester_wrap_la_LDFLAGS = -module
 _ester_wrap_la_LIBADD = $(top_builddir)/src/libester.la
 

@@ -1,11 +1,13 @@
 #include "ester-config.h"
 #include "utils.h"
+#include "matplotlib.h"
 #include "star.h"
 #include "read_config.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <iomanip>
 
 int main(int argc,char *argv[]) {
 
@@ -75,7 +77,7 @@ int main(int argc,char *argv[]) {
 		last_it=(A.global_err<config.tol&&nit>=config.minit)||nit>=config.maxit;
 		if(config.verbose) {
 			printf("it=%d err=%e\n",nit,A.global_err);
-			
+		/**	
 			if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
 				fig->semilogy(error.block(0,nit-1,0,0));
 				fig->label("Iteration number","Relative error","");
@@ -83,6 +85,11 @@ int main(int argc,char *argv[]) {
 				fig->label("Density (normalized spectrum)","","");
 				t_plot=tt(nit-1);
 			}
+	      **/
+        if (config.noplot == false && (nit - last_plot_it > 10 || last_it)) {
+            last_plot_it = nit;
+            A.plot(error.block(0, nit-1, 0 ,0));
+        }
 
 		}
   	//if (nit > 3) exit(0);

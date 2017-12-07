@@ -1,6 +1,6 @@
 EXTRA_DIST = src/poly.h
 
-AM_CXXFLAGS=-I$(top_srcdir)/src/include
+AM_CXXFLAGS=-I$(top_srcdir)/src/include -I$(top_srcdir)/src/graphics
 
 AM_LIBS = -lm
 
