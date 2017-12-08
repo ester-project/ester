@@ -370,8 +370,8 @@ void star1d::plot(const matrix& error) {
     plt.subplot(231);
     // plt.title(std::string("iter: ") + std::to_string(nit));
     plt.plot(r, rho, "$\\rho$");
-    plt.plot(r, T, "T");
-    plt.plot(r, p, "p");
+    plt.plot(r, T, "$T$");
+    plt.plot(r, p, "$p$");
     plt.legend();
     for (int i=0; i<ndomains; i++) {
         plt.axvline(map.gl.xif[i]);
@@ -384,11 +384,6 @@ void star1d::plot(const matrix& error) {
 
     plt.subplot(233, true);
     std::ostringstream str_stream;
-
-    // str_stream.clear();
-    // str_stream.str("");
-    // str_stream << nit;
-    // plt.text(0.0, 1.0, std::string("iter:   ") + str_stream.str());
 
     str_stream.clear();
     str_stream.str("");

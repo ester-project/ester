@@ -7,6 +7,7 @@
 #ifdef USE_HDF5
 #include <H5Cpp.h>
 #endif
+#include "matplotlib.h"
 
 star2d::star2d() : nr(map.gl.N), nth(map.leg.npts), nex(map.ex.gl.N),
     ndomains(map.gl.ndomains), r(map.r), z(map.z), th(map.th), Dt(map.Dt),
@@ -1273,10 +1274,65 @@ void star2d::dump_info() {
     printf("Tests:\n\n");
     printf("\tVirial test = %e\n",virial());
     printf("\tEnergy test = %e\n",energy_test());
-    printf("\n");
 
 }
 
 void star2d::plot(const matrix& error) {
-    ester_err("star2d::plot not yet implemented");
+    matrix theta = vector(0, 2*M_PI, 64);
+    matrix r = map.leg.eval_00(this->r, theta);
+    matrix w = map.leg.eval_00(this->w, theta);
+
+    matrix cost = cos(theta);
+    matrix sint = sin(theta);
+
+    matrix x = r*sint;
+    matrix y = r*cost;
+
+    plt.clf();
+
+    plt.subplot(231);
+    plt.pcolormesh(x, y, w);
+    plt.colorbar();
+
+    matrix r_e = map.leg.eval_00(this->r, M_PI/2.0);
+    matrix rho_e = map.leg.eval_00(this->rho, M_PI/2.0);
+    matrix T_e = map.leg.eval_00(this->T, M_PI/2.0);
+    matrix p_e = map.leg.eval_00(this->p, M_PI/2.0);
+
+    plt.subplot(232);
+    plt.plot(r_e, rho_e, "$\\rho_{eq}$");
+    plt.plot(r_e, T_e, "$T_{eq}$");
+    plt.plot(r_e, p_e, "$p_{eq}$");
+    plt.legend();
+
+
+    plt.subplot(233, true);
+    std::ostringstream str_stream;
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << Tc;
+    plt.text(0.0, .3, std::string("$T_c$:   ") + str_stream.str());
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << pc;
+    plt.text(0.0, .2, std::string("$p_c$:   ") + str_stream.str());
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << pc;
+    plt.text(0.0, 0.1, std::string("$\\rho_c$:  ") + str_stream.str());
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << pi_c;
+    plt.text(0.0, 0.0, std::string("$\\pi_c$: ") + str_stream.str());
+
+    plt.subplot(223);
+    plt.semilogy(error, "error");
+    plt.legend();
+
+    plt.draw();
+    plt.pause();
 }
