@@ -14,6 +14,7 @@ std::vector<std::string> matplotlib::functions = {
     "text",
     "show",
     "legend",
+    "colorbar",
     "title",
     "clf",
     "ion",
@@ -22,6 +23,7 @@ std::vector<std::string> matplotlib::functions = {
     "axvline",
     "savefig",
     "close",
+    "pcolormesh",
     "pause"};
 bool matplotlib::noplot = false;
 
@@ -39,6 +41,8 @@ void matplotlib::init(bool noplot) {
 
         Py_SetProgramName((char *) std::string("ester").c_str());
         Py_Initialize();
+
+        import_array();
 
         PyObject *res;
         PyObject *matplotlib_name = PyString_FromString("matplotlib");
@@ -69,8 +73,6 @@ void matplotlib::init(bool noplot) {
             ester_warn("import matplotlib.pyplot failed\n");
         }
         Py_DECREF(pyplot_name);
-
-        import_array();
 
         for (auto function: matplotlib::functions) {
             py[function] = PyObject_GetAttrString(pyplot, function.c_str());
@@ -116,8 +118,12 @@ PyObject *matrix_to_py(const matrix& m) {
     npy_intp dims[2];
     dims[0] = (size_t) m.nrows();
     dims[1] = (size_t) m.ncols();
-    PyObject *py_matrix = PyArray_SimpleNewFromData(2, dims, NPY_DOUBLE, m.data());
-    return py_matrix;
+
+
+    return PyArray_New(&PyArray_Type, 2, dims,
+            NPY_DOUBLE, NULL, m.data(),
+            sizeof(double), NPY_ARRAY_FARRAY_RO, NULL);
+
 }
 
 void matplotlib::plot(const matrix& x, std::string label) {
@@ -182,6 +188,12 @@ void matplotlib::legend() {
     if (noplot) return;
 
     call("legend");
+}
+
+void matplotlib::colorbar() {
+    if (noplot) return;
+
+    call("colorbar");
 }
 
 void matplotlib::title(const std::string& title) {
@@ -312,4 +324,19 @@ void matplotlib::call(const std::string& name, PyObject *args, PyObject *kwargs)
     if (kwargs) Py_DECREF(kwargs);
     if(res) Py_DECREF(res);
     else ester_warn("call to matplotlib.pyplot.%s failed", name.c_str());
+}
+
+void matplotlib::pcolormesh(const matrix& x, const matrix& y, const matrix& c) {
+    if (noplot) return;
+
+    PyObject *pyx = matrix_to_py(x);
+    PyObject *pyy = matrix_to_py(y);
+    PyObject *pyc = matrix_to_py(c);
+
+    PyObject *args = PyTuple_New(3);
+    PyTuple_SetItem(args, 0, pyx);
+    PyTuple_SetItem(args, 1, pyy);
+    PyTuple_SetItem(args, 2, pyc);
+
+    call("pcolormesh", args);
 }

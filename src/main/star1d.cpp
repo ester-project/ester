@@ -14,7 +14,7 @@ int main(int argc,char *argv[]) {
     int nit,last_it;
     double err;
     tiempo t;
-    double t_plot;
+    // double t_plot;
     configuration config(argc,argv);
     // figure *fig = NULL;
 
@@ -36,7 +36,7 @@ int main(int argc,char *argv[]) {
 
     matrix tt(config.maxit+1,1),error(config.maxit+1,1);
 
-    t_plot=0;
+    // t_plot=0;
     last_it=nit>=config.maxit;
     op=A.init_solver();
     if(config.verbose>2) op->verbose=1;
