@@ -10,7 +10,7 @@ int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 
 	int n=g.nrows();
 	int m=g.ncols();
-
+printf("arrive dans atm_onelayer\n");
 	atm.ps.dim(n,m);atm.Ts.dim(n,m);
 	atm.dlnps_lng.dim(n,m);atm.dlnps_lnTeff.dim(n,m);
 	atm.dlnTs_lng.dim(n,m);atm.dlnTs_lnTeff.dim(n,m);

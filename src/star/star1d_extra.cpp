@@ -78,5 +78,3 @@ matrix star1d::N2() const {
 	
 	return N2;
 }
-
-
