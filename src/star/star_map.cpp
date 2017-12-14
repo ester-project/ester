@@ -525,7 +525,7 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 	bv2f = (map.gl.P1, sp_bv2); 
 
 // filtrage brutal
-    schw=bv2;
+    schw=bv2f;
     for (int k=0;k<nr;k++) {
 	if (fabs(bv2f(k,-1)) < 1.0e-3 ) schw(k,-1)=-1e-3;
     }
@@ -584,7 +584,7 @@ if (details) for (int i=0; i<n+1;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
 // 0.2%)
 int is=0;
 for (int i=0; i< n;i++) {
-if (les_zi[i+1]-les_zi[i] < 0.010) {
+if (les_zi[i+1]-les_zi[i] < 0.001) {
    les_zi[i+1]=0.;
    les_zi[i]=0.;
    is=is+2;
