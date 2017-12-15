@@ -48,10 +48,14 @@ void matplotlib::init(bool noplot) {
         PyObject *matplotlib_name = PyString_FromString("matplotlib");
         if (!matplotlib_name) {
             ester_warn("error initializing matplotlib");
+            matplotlib::noplot = true;
+            return;
         }
         PyObject *matplotlib = PyImport_Import(matplotlib_name);
         if (!matplotlib) {
             ester_warn("import matplotlib failed\n");
+            matplotlib::noplot = true;
+            return;
         }
         Py_DECREF(matplotlib_name);
 
@@ -67,10 +71,14 @@ void matplotlib::init(bool noplot) {
         PyObject *pyplot_name = PyString_FromString("matplotlib.pyplot");
         if (!pyplot_name) {
             ester_warn("error initializing matplotlib.pyplot");
+            matplotlib::noplot = true;
+            return;
         }
         PyObject *pyplot = PyImport_Import(pyplot_name);
         if (!pyplot) {
             ester_warn("import matplotlib.pyplot failed\n");
+            matplotlib::noplot = true;
+            return;
         }
         Py_DECREF(pyplot_name);
 
@@ -78,9 +86,13 @@ void matplotlib::init(bool noplot) {
             py[function] = PyObject_GetAttrString(pyplot, function.c_str());
             if (!py[function]) {
                 ester_warn("Failed loading python function `%s'", function.c_str());
+                matplotlib::noplot = true;
+                return;
             }
             if (!PyFunction_Check(py[function])) {
                 ester_warn("`%s' is not a function...", function.c_str());
+                matplotlib::noplot = true;
+                return;
             }
         }
 
