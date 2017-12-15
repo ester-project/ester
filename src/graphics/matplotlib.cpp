@@ -3,6 +3,7 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
 
+#include <sstream>
 
 std::map<std::string, PyObject *> matplotlib::py;
 std::vector<std::string> matplotlib::functions = {
@@ -29,6 +30,23 @@ bool matplotlib::noplot = false;
 
 matplotlib plt;
 
+static PyObject *import_module(const std::string& name) {
+    PyObject *module_name = PyString_FromString(name.c_str());
+    if (!module_name) {
+        ester_warn("error initializing %s", name.c_str());
+        PyErr_PrintEx(0);
+        return NULL;
+    }
+    PyObject *module = PyImport_Import(module_name);
+    if (!module) {
+        ester_warn("import %s failed", name.c_str());
+        PyErr_PrintEx(0);
+        return NULL;
+    }
+    Py_DECREF(module_name);
+    return module;
+}
+
 void matplotlib::init(bool noplot) {
     matplotlib::noplot = noplot;
     if (noplot) return;
@@ -36,7 +54,6 @@ void matplotlib::init(bool noplot) {
     static bool init = false;
     if (init == false) {
 
-        // Should the plot window be close at exit (bug with TkAgg backend)
         bool close = false;
 
         Py_SetProgramName((char *) std::string("ester").c_str());
@@ -45,19 +62,21 @@ void matplotlib::init(bool noplot) {
         import_array();
 
         PyObject *res;
-        PyObject *matplotlib_name = PyString_FromString("matplotlib");
-        if (!matplotlib_name) {
-            ester_warn("error initializing matplotlib");
-            matplotlib::noplot = true;
-            return;
-        }
-        PyObject *matplotlib = PyImport_Import(matplotlib_name);
+
+        // try to use system's python libs first
+        std::ostringstream str_stream;
+        str_stream << "import sys; sys.path.insert(0, '/usr/lib/python"
+            << PYTHON_VERSION
+            << "/dist-packages')\n";
+        PyRun_SimpleString(str_stream.str().c_str());
+
+        PyObject *matplotlib = import_module("matplotlib");
         if (!matplotlib) {
-            ester_warn("import matplotlib failed\n");
+            ester_warn("import matplotlib failed");
+            PyErr_PrintEx(0);
             matplotlib::noplot = true;
             return;
         }
-        Py_DECREF(matplotlib_name);
 
         res = PyObject_CallMethod(matplotlib,
                 const_cast<char *>(std::string("use").c_str()),
@@ -68,29 +87,25 @@ void matplotlib::init(bool noplot) {
             close = true;
         }
 
-        PyObject *pyplot_name = PyString_FromString("matplotlib.pyplot");
-        if (!pyplot_name) {
-            ester_warn("error initializing matplotlib.pyplot");
-            matplotlib::noplot = true;
-            return;
-        }
-        PyObject *pyplot = PyImport_Import(pyplot_name);
+        PyObject *pyplot = import_module("matplotlib.pyplot");
         if (!pyplot) {
-            ester_warn("import matplotlib.pyplot failed\n");
+            ester_warn("import matplotlib.pyplot failed");
+            PyErr_PrintEx(0);
             matplotlib::noplot = true;
             return;
         }
-        Py_DECREF(pyplot_name);
 
         for (auto function: matplotlib::functions) {
             py[function] = PyObject_GetAttrString(pyplot, function.c_str());
             if (!py[function]) {
                 ester_warn("Failed loading python function `%s'", function.c_str());
+                PyErr_PrintEx(0);
                 matplotlib::noplot = true;
                 return;
             }
             if (!PyFunction_Check(py[function])) {
                 ester_warn("`%s' is not a function...", function.c_str());
+                PyErr_PrintEx(0);
                 matplotlib::noplot = true;
                 return;
             }
@@ -280,7 +295,10 @@ void matplotlib::subplot(int subplot, bool clear_axis) {
         }
         Py_DECREF(res);
     }
-    else ester_warn("matplotlib.pyplot.pause failed");
+    else {
+        ester_warn("matplotlib.pyplot.pause failed");
+        PyErr_PrintEx(0);
+    }
 }
 
 void matplotlib::draw() {

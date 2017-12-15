@@ -47,7 +47,8 @@ AS_IF([test "x$PYTHON" != "x:"],
       [PYTHONINC=`$PYTHON -c "from distutils import sysconfig; print(sysconfig.get_python_inc())"`
        CPPFLAGS="$CPPFLAGS -I$PYTHONINC"
        PYTHONLIBS=`$PYTHON-config --ldflags`
-       LIBS+="$PYTHONLIBS"])
+       LIBS+="$PYTHONLIBS"
+       AC_DEFINE([PYTHON_VERSION], ["@PYTHON_VERSION@"], [Version of python])])
 
 # Checks for libraries.
 
