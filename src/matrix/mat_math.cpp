@@ -329,7 +329,7 @@ matrix pow(const matrix &a,double n) {
     int i,N;
     
     N=a.nc*a.nf;
-    
+
     for(i=0;i<N;i++)
     	res.p[i]=pow(a.p[i],n);
     	

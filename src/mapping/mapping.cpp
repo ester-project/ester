@@ -10,12 +10,12 @@ mapping::mapping() : nr(gl.N), nt(leg.npts), ndomains(gl.ndomains),
     npts(gl.npts), eta(eta_), D(gl.D), z(gl.x), th(leg.th), Dt(leg.D_00), Dt2(leg.D2_00),
     Dt_11(leg.D_11), Dt2_11(leg.D2_11), Dt_01(leg.D_01), Dt2_01(leg.D2_01),
     Dt_10(leg.D_10), Dt2_10(leg.D2_10), I(gl.I),
-    It(leg.I_00), ex(this), nex(ex.gl.N) { 
+    It(leg.I_00), ex(this), nex(ex.gl.N) {
 
 	ex.gl.set_ndomains(1);
 	ex.gl.set_xif(0.,1.);
 	ex.gl.set_npts(10);
-	
+
 	mode=MAP_BONAZZOLA;
 }
 
@@ -40,30 +40,30 @@ void mapping::copy(const mapping &map) {
 	R=map.R;
 	J[0]=map.J[0];J[1]=map.J[1];J[2]=map.J[2];J[3]=map.J[3];
 	ex.copy(map.ex);
-	
+
 }
 
 mapping &mapping::operator=(const mapping &map) {
 
 	copy(map);
-	
+
 	return *this;
 }
 
 void mapping::set_ndomains(int ndom) {
-	
+
 	gl.set_ndomains(ndom);
 
 }
 
 void mapping::set_npts(int n) {
-	
+
 	for(int i=0;i<ndomains;i++) gl.npts[i]=n;
-	
+
 }
 
 void mapping::set_npts(int *n) {
-	
+
 	for(int i=0;i<ndomains;i++) gl.npts[i]=n[i];
 }
 
@@ -91,7 +91,7 @@ int mapping::init() {
 	leg.init();
 	ex.gl.init();
 	return remap();
-	
+
 }
 
 int mapping::remap() {
@@ -189,15 +189,14 @@ int mapping::remap() {
 			J[3].setblock(j0,j0+dj-1,0,-1,q);
 			j0+=dj;
 		}
-		
+
 	}
 
-	
-	gzz=(r*r+rt*rt)/r/r/rz/rz;
-	gzz.setrow(0,1/rz.row(0)/rz.row(0));
-	gzt=-rt/r/r/rz;
-	gzt.setrow(0,zeros(1,leg.npts));
-	gtt=1/r/r;
+    gzz=(r*r+rt*rt)/r/r/rz/rz;
+    gzz.setrow(0, 1/rz.row(0)/rz.row(0));
+    gzt=-rt/r/r/rz;
+    gzt.setrow(0, zeros(1,leg.npts));
+    gtt=1/r/r;
 
 	matrix xi;
 	ex.z=eta(-1)/(1-ex.gl.x);
@@ -214,23 +213,23 @@ int mapping::remap() {
 	ex.J[1]=zeros(nex,nt);
 	ex.J[2]=ones(nex,nt);
 	ex.J[3]=zeros(nex,nt);
-	
-	
+
+
 	ex.gzz=(1+ex.rt*ex.rt/ex.r/ex.r)/ex.rz/ex.rz;
 	ex.gzt=-ex.rt/ex.r/ex.r/ex.rz;
 	ex.gtt=1/ex.r/ex.r;
 
 	ex.D=ex.gl.D*eta(-1)/ex.z/ex.z;
-	
+
 // check that rz always positive otherwise warning!
 // used in update_map to control the relaxation param.
 	if(exist(rz<0)||exist(ex.rz<0)) {
 		ester_warn("(mapping) Found rz<0");
 		return 1;
 	}
-	
+
 	return 0;
-	
+
 }
 
 matrix mapping::dr(const matrix &a) const {
@@ -240,17 +239,17 @@ matrix mapping::dr(const matrix &a) const {
 
 matrix mapping::dt(const matrix &a) const {
 
-	return (a,Dt)-(D,a)*rt/rz;	
+	return (a,Dt)-(D,a)*rt/rz;
 }
-	
+
 matrix mapping::dt_odd(const matrix &a) const {
 
-	return (a,Dt_11)-(D,a)*rt/rz;	
+	return (a,Dt_11)-(D,a)*rt/rz;
 }
 
 matrix mapping::dt2(const matrix &a) const {
 
-	return dt_odd(dt(a));	
+	return dt_odd(dt(a));
 }
 
 matrix mapping::stream(const matrix &Fz,matrix &Ft) const {
@@ -258,9 +257,9 @@ matrix mapping::stream(const matrix &Fz,matrix &Ft) const {
 // Calculates the stream function of the divergenceless vector field whose
 // zeta-contravariant component is Fz (for Fz even at pole and equator).
 // Returns also the theta-contravariant component Ft
-	
+
 	matrix f;
-	
+
 	f=r*r*rz*Fz;
 	f=(f,leg.P_00);
 	f=-f/leg.l_00()/(leg.l_00()+1.);
@@ -268,12 +267,12 @@ matrix mapping::stream(const matrix &Fz,matrix &Ft) const {
 	f=(f,leg.dP1_00);
 	f/=r;
 	f.setrow(0,zeros(1,leg.npts));
-	
+
 	Ft=-(D,f*r)/r/r/rz;
 	Ft.setrow(0,zeros(1,leg.npts));
-	
+
 	return f;
-	
+
 
 }
 
@@ -282,7 +281,7 @@ matrix mapping::stream(const matrix &Fz) const {
 	matrix Ft;
 	return stream(Fz,Ft);
 }
-  
+
 matrix mapping::eval(const matrix &y,const matrix &ri, const matrix &thi,int parity) const {
 
 	if(ri.nrows()!=thi.nrows()||ri.ncols()!=thi.ncols()) {
@@ -293,7 +292,7 @@ matrix mapping::eval(const matrix &y,const matrix &ri, const matrix &thi,int par
 		ester_err("(mapping.eval) Matrix dimensions must agree");
 		exit(1);
 	}
-	
+
 	matrix yi(ri.nrows(),ri.ncols());
 	int N=ri.nrows()*ri.ncols();
 	matrix yth,T,rth,rzth;
@@ -325,7 +324,7 @@ matrix mapping::eval(const matrix &y,const matrix &ri, const matrix &thi,int par
 		}
 		yi(i)=gl.eval(yth,zi)(0);
 	}
-	
+
 	return yi;
 
 }
@@ -333,29 +332,29 @@ matrix mapping::eval(const matrix &y,const matrix &ri, const matrix &thi,int par
 // compute r for all zeta values
 matrix mapping::zeta_to_r(const matrix &z) const {
 	matrix rr(z.nrows(),z.ncols());
-	
+
 	if(z.ncols()!=leg.npts) {
 		ester_err("(mapping.zeta_to_r) Matrix must have nth columns");
 		exit(1);
 	}
-	
+
 	for(int j=0;j<leg.npts;j++) {
 		rr.setcol(j,gl.eval(r.col(j),z.col(j)));
-	}	
+	}
 	return rr;
 }
 
 matrix mapping::draw0(const matrix &A,int parity,matrix &x,matrix &y) const {
-	
+
 	matrix zz(gl.N,4*leg.npts+1);
-	
+
 	x.dim(gl.N,4*leg.npts+1);
 	y.dim(gl.N,4*leg.npts+1);
-	
+
 	x.setblock(0,gl.N-1,0,leg.npts-1,r*sin(th));
 	y.setblock(0,gl.N-1,0,leg.npts-1,r*cos(th));
 	zz.setblock(0,gl.N-1,0,leg.npts-1,A);
-	
+
 	x.setblock(0,gl.N-1,leg.npts,2*leg.npts-1,-x.block(0,gl.N-1,0,leg.npts-1).fliplr());
 	y.setblock(0,gl.N-1,leg.npts,2*leg.npts-1,y.block(0,gl.N-1,0,leg.npts-1).fliplr());
 	switch(parity) {
@@ -371,7 +370,7 @@ matrix mapping::draw0(const matrix &A,int parity,matrix &x,matrix &y) const {
 		case 11:
 			zz.setblock(0,gl.N-1,leg.npts,2*leg.npts-1,-zz.block(0,gl.N-1,0,leg.npts-1).fliplr());
 	}
-	
+
 	x.setblock(0,gl.N-1,2*leg.npts,3*leg.npts-1,-x.block(0,gl.N-1,0,leg.npts-1));
 	y.setblock(0,gl.N-1,2*leg.npts,3*leg.npts-1,-y.block(0,gl.N-1,0,leg.npts-1));
 	switch(parity) {
@@ -387,7 +386,7 @@ matrix mapping::draw0(const matrix &A,int parity,matrix &x,matrix &y) const {
 		case 11:
 			zz.setblock(0,gl.N-1,2*leg.npts,3*leg.npts-1,zz.block(0,gl.N-1,0,leg.npts-1));
 	}
-	
+
 	x.setblock(0,gl.N-1,3*leg.npts,4*leg.npts-1,x.block(0,gl.N-1,0,leg.npts-1).fliplr());
 	y.setblock(0,gl.N-1,3*leg.npts,4*leg.npts-1,-y.block(0,gl.N-1,0,leg.npts-1).fliplr());
 	switch(parity) {
@@ -406,24 +405,24 @@ matrix mapping::draw0(const matrix &A,int parity,matrix &x,matrix &y) const {
 	x.setcol(4*leg.npts,x.col(0));
 	y.setcol(4*leg.npts,y.col(0));
 	zz.setcol(4*leg.npts,zz.col(0));
-	
+
 	return zz;
 }
 
 
 matrix mapping::drawi0(const matrix &A,int sr,int st,int parity,matrix &x,matrix &y) const {
-	
+
 	matrix zz(sr,4*st+1),r1,z1;
 	diff_leg leg1;
 	diff_gl gl1;
-	
+
 	leg1.npts=st;
 	leg1.init();
 	gl1.set_ndomains(1);
 	gl1.set_npts(sr);
 	gl1.set_xif(gl.xif[0],gl.xif[gl.ndomains]);
 	gl1.init();
-	
+
 	r1=gl.eval(r,gl1.x);
 	r1=leg.eval_00(r1,leg1.th);
 	z1=gl.eval(A,gl1.x);
@@ -440,14 +439,14 @@ matrix mapping::drawi0(const matrix &A,int sr,int st,int parity,matrix &x,matrix
 		case 11:
 			z1=leg.eval_11(z1,leg1.th);
 	}
-	
+
 	x.dim(sr,4*st+1);
 	y.dim(sr,4*st+1);
-	
+
 	x.setblock(0,sr-1,0,st-1,r1*sin(leg1.th));
 	y.setblock(0,sr-1,0,st-1,r1*cos(leg1.th));
 	zz.setblock(0,sr-1,0,st-1,z1);
-	
+
 	x.setblock(0,sr-1,st,2*st-1,-x.block(0,sr-1,0,st-1).fliplr());
 	y.setblock(0,sr-1,st,2*st-1,y.block(0,sr-1,0,st-1).fliplr());
 	switch(parity) {
@@ -463,7 +462,7 @@ matrix mapping::drawi0(const matrix &A,int sr,int st,int parity,matrix &x,matrix
 		case 11:
 			zz.setblock(0,sr-1,st,2*st-1,-zz.block(0,sr-1,0,st-1).fliplr());
 	}
-	
+
 	x.setblock(0,sr-1,2*st,3*st-1,-x.block(0,sr-1,0,st-1));
 	y.setblock(0,sr-1,2*st,3*st-1,-y.block(0,sr-1,0,st-1));
 	switch(parity) {
@@ -479,7 +478,7 @@ matrix mapping::drawi0(const matrix &A,int sr,int st,int parity,matrix &x,matrix
 		case 11:
 			zz.setblock(0,sr-1,2*st,3*st-1,zz.block(0,sr-1,0,st-1));
 	}
-	
+
 	x.setblock(0,sr-1,3*st,4*st-1,x.block(0,sr-1,0,st-1).fliplr());
 	y.setblock(0,sr-1,3*st,4*st-1,-y.block(0,sr-1,0,st-1).fliplr());
 	switch(parity) {
@@ -495,47 +494,47 @@ matrix mapping::drawi0(const matrix &A,int sr,int st,int parity,matrix &x,matrix
 		case 11:
 			zz.setblock(0,sr-1,3*st,4*st-1,-zz.block(0,sr-1,0,st-1).fliplr());
 	}
-	
+
 	x.setcol(4*st,x.col(0));
 	y.setcol(4*st,y.col(0));
 	zz.setcol(4*st,zz.col(0));
-	
+
 	return zz;
 }
 
 
 void mapping::draw(figure *pfig,const matrix &A,int parity) const {
-	
+
 	matrix x,y,zz;
-	
+
 	pfig->axis(-max(r.row(-1))*1.02,max(r.row(-1))*1.02,-max(r.row(-1))*1.02,max(r.row(-1))*1.02,1);
 	zz=draw0(A,parity,x,y);
-	
+
 	pfig->pcolor(x,y,zz);
-	
+
 }
 
 void mapping::drawi(figure *pfig,const matrix &A,int sr,int st,int parity) const {
-	
+
 	matrix x,y,zz;
-	
+
 	pfig->axis(-max(r.row(-1))*1.02,max(r.row(-1))*1.02,-max(r.row(-1))*1.02,max(r.row(-1))*1.02,1);
 	zz=drawi0(A,sr,st,parity,x,y);
-	
+
 	pfig->pcolor(x,y,zz);
-	
+
 }
 
 void mapping::drawc(figure *pfig,const matrix &A,int ncontours,int parity) const {
-	
+
 	matrix x,y,zz;
-	
+
 	pfig->axis(-max(r.row(-1))*1.02,max(r.row(-1))*1.02,-max(r.row(-1))*1.02,max(r.row(-1))*1.02,1);
 	zz=draw0(A,parity,x,y);
-	
+
 	pfig->plot(x.row(-1),y.row(-1));
 	pfig->hold(1);
-	
+
 	matrix cc;
 	double zmin,zmax;
 	double cmin,cmax;
@@ -545,7 +544,7 @@ void mapping::drawc(figure *pfig,const matrix &A,int ncontours,int parity) const
 	else if(zmax<0) cmin=-zmax;
 	cmax=zmax>-zmin?zmax:-zmin;
 	pfig->caxis(cmin,cmax);
-	
+
 	if(min(zz)<0) {
 		cc=vector(zmin,zmax>0?0:zmax,ncontours);
 		pfig->contour(x,y,-zz,-cc,"k=");
@@ -555,20 +554,20 @@ void mapping::drawc(figure *pfig,const matrix &A,int ncontours,int parity) const
 		pfig->contour(x,y,zz,cc,"k-");
 	}
 	pfig->hold(0);
-	
+
 }
 
 void mapping::drawci(figure *pfig,const matrix &A,int sr,int st,int ncontours,int parity) const {
-	
+
 	matrix x,y,zz;
-	
-	
+
+
 	pfig->axis(-max(r.row(-1))*1.02,max(r.row(-1))*1.02,-max(r.row(-1))*1.02,max(r.row(-1))*1.02,1);
-	zz=drawi0(A,sr,st,parity,x,y);	
-	
+	zz=drawi0(A,sr,st,parity,x,y);
+
 	pfig->plot(x.row(-1),y.row(-1));
 	pfig->hold(1);
-	
+
 	matrix cc;
 	double zmin,zmax;
 	double cmin,cmax;
@@ -578,7 +577,7 @@ void mapping::drawci(figure *pfig,const matrix &A,int sr,int st,int ncontours,in
 	else if(zmax<0) cmin=-zmax;
 	cmax=zmax>-zmin?zmax:-zmin;
 	pfig->caxis(cmin,cmax);
-	
+
 	if(min(zz)<0) {
 		cc=vector(zmin,zmax>0?0:zmax,ncontours);
 		pfig->contour(x,y,-zz,-cc,"k=");
@@ -589,14 +588,14 @@ void mapping::drawci(figure *pfig,const matrix &A,int sr,int st,int ncontours,in
 	}
 	pfig->hold(0);
 
-	
+
 }
 
 void mapping::spectrum(figure *pfig,const matrix &y,int parity) const {
 
 	matrix ys(y.nrows(),y.ncols()),xv,Pleg,l;
 	int i,j;
-	
+
 	switch(parity) {
 		case 00:
 			Pleg=leg.P_00;
@@ -614,7 +613,7 @@ void mapping::spectrum(figure *pfig,const matrix &y,int parity) const {
 			Pleg=leg.P_11;
 			l=leg.l_11();
 	}
-	
+
 	ys=abs((gl.P,y,Pleg));
 	j=0;
 	for(i=0;i<gl.ndomains;i++) {
@@ -625,7 +624,7 @@ void mapping::spectrum(figure *pfig,const matrix &y,int parity) const {
 	xv=vector_t(1,ys.nrows(),ys.nrows());
 	pfig->caxis(-16,0);
 	pfig->pcolor(l,xv,log10(abs(ys)));
-	
+
 	pfig->hold(1);
 	j=gl.npts[0];
 	for(i=1;i<gl.ndomains;i++) {
@@ -649,13 +648,13 @@ void mapping::ext_map::copy(const ext_map &map) {
 	r=map.r;rz=map.rz;rzz=map.rzz;rt=map.rt;rtt=map.rtt;rzt=map.rzt;
 	gzz=map.gzz;gzt=map.gzt;gtt=map.gtt;
 	J[0]=map.J[0];J[1]=map.J[1];J[2]=map.J[2];J[3]=map.J[3];
-	
+
 }
 
 mapping::ext_map::operator mapping() {
 
 	mapping map;
-	
+
 	map.eta_=zeros(2,1);map.eta_(0)=parent->eta_(-1);map.eta_(1)=INFINITY;
     map.gl=gl;
     map.gl.D.block(0)=D;
@@ -665,7 +664,7 @@ mapping::ext_map::operator mapping() {
     map.R=zeros(2,parent->nt);map.R.setrow(0,(parent->R).row(-1));map.R.setrow(1,map.R.row(1)+INFINITY);
     map.mode=parent->mode;
 	map.J[0]=J[0];map.J[1]=J[1];map.J[2]=J[2];map.J[3]=J[3];
-	
+
 	return map;
 }
 

@@ -19,16 +19,16 @@ int main(int argc,char *argv[]) {
 	double t_plot;
 	configuration config(argc,argv);
 	tiempo t;
-	figure *fig = NULL;
+	// figure *fig = NULL;
 	
 	signal(SIGINT,sig_handler);
 	
 	t.start();
 		
-	if(config.verbose) {
-		fig=new figure(config.plot_device);
-		fig->subplot(2,2);
-	}
+	// if(config.verbose) {
+	// 	fig=new figure(config.plot_device);
+	// 	fig->subplot(2,2);
+	// }
 	
 	star2d A;
 	solver *op;
@@ -83,6 +83,7 @@ int main(int argc,char *argv[]) {
 			printf("\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,1-1./A.map.leg.eval_00(A.r.row(-1),PI/2)(0),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
 
 			if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
+#if 0
 				fig->semilogy(error.block(0,nit-1,0,0));
 				fig->label("Iteration number","Relative error","");
 				fig->colorbar();
@@ -94,6 +95,9 @@ int main(int argc,char *argv[]) {
 				A.drawci(fig,A.G,100,64,15,11);
 				fig->label("Meridional circulation","","");
 				t_plot=tt(nit-1);
+#else
+                A.plot(error.block(0, nit-1, 0, 0));
+#endif
 			}
 
 		}
@@ -121,18 +125,19 @@ int main(int argc,char *argv[]) {
 		printf("rhoc=%e Tc=%e pc=%e\n",A.rhoc,A.Tc,A.pc);
 		if(A.conv) printf("R. conv. core (p)=%3.3f Rsun\n",*(A.map.gl.xif+A.conv)*A.R/R_SUN);
 		printf("Virial test: %e Energy test: %e\n",A.virial(),A.energy_test());
+        printf("\n");
 	}
 
 	A.write(config.output_file,config.output_mode);
 
-	if(config.verbose) {
-		delete fig;
-	}
+	// if(config.verbose) {
+	// 	delete fig;
+	// }
 
 	delete op;
 	t.stop();
 	if(config.verbose) 
-		printf("%2.2f seconds\n\n",t.value());	
+		printf("%2.2f seconds\n",t.value());
 	
 	return 0;
 }

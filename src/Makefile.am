@@ -3,8 +3,8 @@ AM_CXXFLAGS=-Wall
 
 BUILT_SOURCES	= main/read_config.cpp
 
-AM_CPPFLAGS = -I$(srcdir)/include
-AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam_nuc
+AM_CPPFLAGS = -I$(srcdir)/include -I$(srcdir)/graphics
+AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam
 
 bin_PROGRAMS		= star1d star2d version star_evol ester_info gen_output
 
@@ -23,9 +23,10 @@ gen_output_SOURCES	= main/gen_output.cpp
 version_SOURCES		= main/version.cpp
 ester_info_SOURCES	= main/ester-info.cpp
 
-EXTRA_DIST	= $(srcdir)/main/ester.in				\
-			  $(srcdir)/include/lapack.h			\
-			  $(srcdir)/include/utils.h
+EXTRA_DIST	= $(srcdir)/main/ester.in		\
+			  $(srcdir)/include/lapack.h	\
+			  $(srcdir)/include/utils.h		\
+			  $(srcdir)/include/stack.h
 
 
 bin_SCRIPTS	= main/ester
@@ -40,7 +41,7 @@ main/ester: main/ester.in Makefile
 
 lib_LTLIBRARIES			= libester.la
 libester_la_SOURCES		= global/global.cpp									\
-                          graphics/graphics.cpp								\
+                          graphics/graphics.cpp	graphics/matplotlib.cpp		\
                           mapping/mapping.cpp mapping/remapper.cpp 			\
                           matrix/mat_math.cpp matrix/matrix_block_diag.cpp	\
                           matrix/matrix.cpp matrix/matrix_map.cpp			\
@@ -56,10 +57,11 @@ libester_la_SOURCES		= global/global.cpp									\
                           star/star_map.cpp star/star_phys.cpp 				\
                           symbolic/rational.cpp symbolic/symbolic.cpp		\
                           symbolic/sym.cpp symbolic/sym_expr.cpp			\
-                          symbolic/sym_tens.cpp symbolic/sym_vec.cpp
+                          symbolic/sym_tens.cpp symbolic/sym_vec.cpp		\
+						  utils/stack.cpp utils/debug.cpp
 
 libester_la_LIBADD = physics/libnuc_cesam.la				\
-					 ../tables/cesam_nuc/libnuc.la			\
+					 ../tables/cesam/libcesam.la			\
 					 ../tables/houdek/v9/lib/libopint.la
 
 library_includedir  	= $(includedir)/

@@ -1,16 +1,10 @@
-extern "C" {
-#include <stdio.h>
-}
+#ifndef DEBUG_H
+#define DEBUG_H
 
-#ifdef DEBUG
+#include "utils.h"
 
-#define DEBUG_FUNCNAME do {\
-    fprintf(stderr, "%s\n", __PRETTY_FUNCTION__); \
-} while(0)
-
-#else 
-
-#define DEBUG_FUNCNAME do {\
-} while(0)
+void sigfpe_handler(int);
+void enable_sigfpe();
+void disable_sigfpe();
 
 #endif

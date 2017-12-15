@@ -72,7 +72,7 @@ int main(int argc,char *argv[]) {
 	
 	double Xc=A.Xc;
 	int n=0;
-	char outfile[256];
+	char outfile[268];
 	
 	while(Xc>=Xcmin&&Xc<=1) {
 		printf("Xc=%f\n",Xc);
@@ -120,8 +120,8 @@ int main(int argc,char *argv[]) {
 			fig->plot(XX,Lzc/A.Lz());
 			fig->label("X(core)","Lz_core/Lz","");
 		}
-		sprintf(outfile,"%s_%04d",config.output_file,n);
-		A.write(outfile,config.output_mode);
+		sprintf(outfile, "%s_%04d", config.output_file, n);
+		A.write(outfile, config.output_mode);
 		Xc-=dXc;
 		n++;
 	}

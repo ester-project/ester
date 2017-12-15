@@ -1,9 +1,10 @@
 #include "ester-config.h"
-#include"symbolic.h"
-#include<iostream>
-#include<typeinfo>
-#include <algorithm> 
-#include <cmath> 
+#include "symbolic.h"
+
+#include <iostream>
+#include <typeinfo>
+#include <algorithm>
+#include <cmath>
 
 using namespace std;
 
@@ -75,18 +76,18 @@ sym::sym_num *sym::sym_num::clone() const {
 int sym::sym_num::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
-	
+
 	sym_num *q;
 	q=(sym_num *) &s;
-	
+
 	return COMPARE(value,q->value);
 
 }
 
 sym::sym_expr *sym::sym_num::reduce() {
-	
+
 	value=symbolic::round_to_tol(value);
-	
+
 	return this;
 
 }
@@ -98,7 +99,7 @@ sym::sym_expr *sym::sym_num::derive(const sym_expr &) {
 
 matrix sym::sym_num::eval() const {
 	return value*ones(1,1);
-} 
+}
 
 ostream &sym::sym_num::print(ostream &os) const {
 
@@ -118,23 +119,23 @@ sym::symbol *sym::symbol::clone() const {
 int sym::symbol::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
-	
+
 	symbol *q;
 	q=(symbol *) &s;
-	
+
 	return COMPARE(name,q->name);
 
 }
 
 sym::sym_expr *sym::symbol::derive(const sym_expr &s) {
-	
+
 	if(is_const) {delete this;return new sym_num(0);}
-	
+
 	if(is_indep) {
 		if(s==*this) {delete this;return new sym_num(1);}
 		else {delete this;return new sym_num(0);}
 	}
-	
+
 	if(typeid(s)==typeid(symbol)) {
 		symbol *symb;
 		symb=(symbol *)(&s);
@@ -150,15 +151,15 @@ sym::sym_expr *sym::symbol::derive(const sym_expr &s) {
 			return sderiv;
 		}
 	}
-	
+
 	if(s==*this) {delete this;return new sym_num(1);}
 	else {delete this;return new sym_num(0);}
-	
+
 }
 
 matrix sym::symbol::eval() const {
 	return context->get_value(*this);
-} 
+}
 
 ostream &sym::symbol::print(ostream &os) const {
 	return os<<name;
@@ -183,13 +184,13 @@ sym::sym_deriv *sym::sym_deriv::clone() const {
 int sym::sym_deriv::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
-	
+
 	sym_deriv *q;
 	q=(sym_deriv *) &s;
-	
+
 	int c=oper->comp(*(q->oper));
 	if(c!=0) return c;
-	
+
 	return var.comp(q->var);
 
 }
@@ -215,7 +216,7 @@ sym::sym_expr *sym::sym_deriv::reduce() {
 sym::sym_deriv *sym::sym_deriv::create(sym_expr *s1,const symbol &symb) {
 
 	sym_deriv *snew;
-	
+
 	snew=new sym_deriv();
 	snew->oper=s1;
 	snew->var=symb;
@@ -224,7 +225,7 @@ sym::sym_deriv *sym::sym_deriv::create(sym_expr *s1,const symbol &symb) {
 
 
 sym::sym_expr *sym::sym_deriv::derive(const sym_expr &s) {
-	
+
 	if(typeid(s)==typeid(symbol)) {
 		symbol *symb;
 		symb=(symbol *)(&s);
@@ -240,20 +241,20 @@ sym::sym_expr *sym::sym_deriv::derive(const sym_expr &s) {
 			return sderiv;
 		}
 	}
-	
+
 	if(s==*this) {delete this;return new sym_num(1);}
 	else {delete this;return new sym_num(0);}
-	
+
 }
 
 matrix sym::sym_deriv::eval() const {
 	return context->get_value(*this);
-} 
+}
 
 ostream &sym::sym_deriv::print(ostream &os) const {
 
-	os<<"D("<<*oper<<","<<var<<")";	
-	
+	os<<"D("<<*oper<<","<<var<<")";
+
 	return os;
 }
 
@@ -271,7 +272,7 @@ sym::sym_add::~sym_add() {
 sym::sym_add::sym_add(const sym_add &s) {
 
 	oper=s.oper;
-	for(unsigned int i=0;i<oper.size();i++) 
+	for(unsigned int i=0;i<oper.size();i++)
 		oper[i].first=s.oper[i].first->clone();
 
 }
@@ -283,10 +284,10 @@ sym::sym_add *sym::sym_add::clone() const {
 int sym::sym_add::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
-	
+
 	sym_add *q;
 	q=(sym_add *) &s;
-	
+
 	int c;
 	c=COMPARE(oper.size(),(q->oper).size());
 	if(c!=0) return c;
@@ -301,15 +302,15 @@ int sym::sym_add::comp(const sym_expr &s) const {
 }
 
 sym::sym_expr *sym::sym_add::reduce() {
-	
+
 	sym_add s_old(*this);
 
 	for(unsigned int i=0;i<oper.size();i++)
         oper[i].first=oper[i].first->reduce();
 	for(unsigned int i=0;i<oper.size();i++)
         oper[i].second=symbolic::round_to_tol(oper[i].second);
-	
-	
+
+
 // Find children nodes of type sym_add and merge them in current node
 //  a + [b + c] --> a + b + c
 
@@ -349,28 +350,28 @@ sym::sym_expr *sym::sym_add::reduce() {
 					snum->value=1;		// It will be deleted by the next reduction of the child node
 					break;    // After reduction of the sym_prod node ther will be only 1 sym_num node
 				}
-			}			
+			}
 		}
 	}
 
 // sym_num nodes should have coefficient=1
-	
+
 	n=oper.size();
 	for(int	i=0;i<n;i++) {
-		if(typeid(*(oper[i].first))==typeid(sym_num)) 
+		if(typeid(*(oper[i].first))==typeid(sym_num))
 			if(oper[i].second!=1) {
 				sym_num *s;
 				s=(sym_num *)oper[i].first;
 				s->value*=oper[i].second;
 				oper[i].second=1;
-			}	
+			}
 	}
 
 	if(symbolic::trig_simplify) {
 		n=oper.size();
 		for(int i=0;i<n;i++) {
 			// sin(x)^2 or cos(x)^2 should be in a sym_prod node
-			if(typeid(*(oper[i].first))==typeid(sym_prod)&&oper[i].second!=0) {	
+			if(typeid(*(oper[i].first))==typeid(sym_prod)&&oper[i].second!=0) {
 				sym_prod *sprod;
 				sprod=(sym_prod *)oper[i].first;
 				// Try to find a sin or cos in the sym_prod node with exponent at least 2
@@ -429,7 +430,7 @@ sym::sym_expr *sym::sym_add::reduce() {
 					}
 				}
 			}
-		} 
+		}
 	}
 
 
@@ -454,7 +455,7 @@ sym::sym_expr *sym::sym_add::reduce() {
 				oper[i].second=0;
 			}
 		}
-		
+
 	}
 
 // Remove zeros
@@ -466,7 +467,7 @@ sym::sym_expr *sym::sym_add::reduce() {
 			if( ((sym_num *)oper[i].first)->value==0) {
 				delete oper[i].first;
 				oper.erase(oper.begin()+i--);
-			} 		
+			}
 		}
 	}
 
@@ -491,7 +492,7 @@ sym::sym_expr *sym::sym_add::reduce() {
 
 	if(comp(s_old)) return reduce();
 	else return this;
-	
+
 }
 
 sym::sym_expr *sym::sym_add::derive(const sym_expr &s) {
@@ -503,14 +504,14 @@ sym::sym_expr *sym::sym_add::derive(const sym_expr &s) {
 }
 
 matrix sym::sym_add::eval() const {
-	
+
 	matrix m=zeros(1,1);
-	
+
 	for(unsigned int i=0;i<oper.size();i++) {
 		m+=oper[i].second*oper[i].first->eval();
 	}
 	return m;
-} 
+}
 
 ostream &sym::sym_add::print(ostream &os) const {
 
@@ -518,7 +519,7 @@ ostream &sym::sym_add::print(ostream &os) const {
 	for(unsigned int i=0;i<oper.size();i++) {
 		if(oper[i].second>=0&&i) os<<"+";
 		if(oper[i].second!=1) {
-			if(oper[i].second==-1) 
+			if(oper[i].second==-1)
 				os<<"-";
 			else
 				os<<oper[i].second<<"*";
@@ -532,7 +533,7 @@ ostream &sym::sym_add::print(ostream &os) const {
 sym::sym_add *sym::sym_add::create(sym_expr *s1,sym_expr *s2) {
 
 	sym_add *snew;
-	
+
 	snew=new sym_add();
 	snew->oper.push_back(make_pair(s1,1));
 	snew->oper.push_back(make_pair(s2,1));
@@ -571,16 +572,16 @@ sym::sym_expr *sym::sym_add::power(int n) {
 		stemp=(sym_add *)sa->multiply(*sa);
 		delete sa;
 		sa=stemp;
-		
+
 		n/=2;
 	}
-	
+
 	sym_add *snew=(sym_add *)sa->multiply(*sb);
 	delete sa;
 	delete sb;
-	
+
 	return snew->reduce();
-	
+
 }
 
 /////////////////////////////// sym_prod ///////////////////////////
@@ -596,7 +597,7 @@ sym::sym_prod::~sym_prod() {
 sym::sym_prod::sym_prod(const sym_prod &s) {
 
 	oper=s.oper;
-	for(unsigned int i=0;i<oper.size();i++) 
+	for(unsigned int i=0;i<oper.size();i++)
 		oper[i].first=s.oper[i].first->clone();
 
 }
@@ -608,10 +609,10 @@ sym::sym_prod *sym::sym_prod::clone() const {
 int sym::sym_prod::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
-	
+
 	sym_prod *q;
 	q=(sym_prod *) &s;
-	
+
 	int c;
 	c=COMPARE(oper.size(),(q->oper).size());
 	if(c!=0) return c;
@@ -626,7 +627,7 @@ int sym::sym_prod::comp(const sym_expr &s) const {
 }
 
 sym::sym_expr *sym::sym_prod::reduce() {
-	
+
 	sym_prod s_old(*this);
 
 	for(unsigned int i=0;i<oper.size();i++) oper[i].first=oper[i].first->reduce();
@@ -656,29 +657,29 @@ sym::sym_expr *sym::sym_prod::reduce() {
 
 	n=oper.size();
 	for(unsigned int i=0;i<n;i++) {
-		if(typeid(*(oper[i].first))==typeid(sym_num)) 
+		if(typeid(*(oper[i].first))==typeid(sym_num))
 			if(oper[i].second!=1) {
 				sym_num *s;
 				s=(sym_num *)oper[i].first;
 				s->value=std::pow(s->value,oper[i].second.eval());
 				oper[i].second=1;
-			}	
+			}
 	}
 
 // sym_exp nodes should have exponent=1
 
 	n=oper.size();
 	for(unsigned int i=0;i<n;i++) {
-		if(typeid(*(oper[i].first))==typeid(sym_exp)) 
+		if(typeid(*(oper[i].first))==typeid(sym_exp))
 			if(oper[i].second!=1&&oper[i].second!=0) {
 				double ex=oper[i].second.eval();
 				oper[i].second=1;
 				sym_exp *sexp;
 				sexp=(sym_exp *)oper[i].first;
 				sexp->oper=sym_prod::create(sexp->oper,new sym_num(ex));
-			}	
+			}
 	}
-	
+
 // Sort
 	sort(oper.begin(),oper.end(),sort_pair_r);
 
@@ -700,9 +701,9 @@ sym::sym_expr *sym::sym_prod::reduce() {
 				oper[i].second=0;
 			}
 		}
-		
+
 	}
-	
+
 // Expand powers of sym_add terms
 	if(symbolic::expand_products) {
 		for(unsigned int i=0;i<oper.size();i++) {
@@ -723,11 +724,11 @@ sym::sym_expr *sym::sym_prod::reduce() {
 				delete oper[i].first;
 				oper[i].first=s;
 				oper[i].second=rational(oper[i].second.num()/ex,oper[i].second.den());
-			}	
+			}
 		}
 // Sort
 	sort(oper.begin(),oper.end(),sort_pair_r);
-	
+
 	}
 // Remove ones
 	for(unsigned int i=0;i<oper.size();i++) {
@@ -738,10 +739,10 @@ sym::sym_expr *sym::sym_prod::reduce() {
 			if( ((sym_num *)oper[i].first)->value==1) {
 				delete oper[i].first;
 				oper.erase(oper.begin()+i--);
-			} 		
+			}
 		}
 	}
-	
+
 // Find zeros
 	for(unsigned int i=0;i<oper.size();i++) {
 		if(typeid(*(oper[i].first))==typeid(sym_num)) {
@@ -752,7 +753,7 @@ sym::sym_expr *sym::sym_prod::reduce() {
 		}
 	}
 
-	
+
 // Check the new size and change to appropriate node type
 	if(oper.size()==0) {
 		delete this;
@@ -792,7 +793,7 @@ sym::sym_expr *sym::sym_prod::reduce() {
 
 	if(comp(s_old)) return reduce();
 	else return this;
-	
+
 }
 
 sym::sym_expr *sym::sym_prod::derive(const sym_expr &s) {
@@ -807,21 +808,21 @@ sym::sym_expr *sym::sym_prod::derive(const sym_expr &s) {
 		sprod->oper[i].second-=1;
 		snew->oper.push_back(make_pair(sprod,(oper[i].second).eval()));
 	}
-	
+
 	delete this;
 
 	return snew;
 }
 
 matrix sym::sym_prod::eval() const {
-	
+
 	matrix m=ones(1,1);
-	
+
 	for(unsigned int i=0;i<oper.size();i++) {
 		m*=::pow(oper[i].first->eval(),oper[i].second.eval());
 	}
 	return m;
-} 
+}
 
 ostream &sym::sym_prod::print(ostream &os) const {
 
@@ -846,7 +847,7 @@ ostream &sym::sym_prod::print(ostream &os) const {
 sym::sym_prod *sym::sym_prod::create(sym_expr *s1,sym_expr *s2) {
 
 	sym_prod *snew;
-	
+
 	snew=new sym_prod();
 	snew->oper.push_back(make_pair(s1,1));
 	snew->oper.push_back(make_pair(s2,1));
@@ -857,7 +858,7 @@ sym::sym_prod *sym::sym_prod::create(sym_expr *s1,sym_expr *s2) {
 sym::sym_prod *sym::sym_prod::create_pow(sym_expr *s,const rational &q) {
 
 	sym_prod *snew;
-	
+
 	snew=new sym_prod();
 	snew->oper.push_back(make_pair(s,q));
 
@@ -882,16 +883,16 @@ sym::sym_sin *sym::sym_sin::clone() const {
 int sym::sym_sin::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
-	
+
 	sym_sin *q;
 	q=(sym_sin *) &s;
-	
+
 	return oper->comp(*(q->oper));
 
 }
 
 sym::sym_expr *sym::sym_sin::reduce() {
-	
+
 	oper=oper->reduce();
 	if(typeid(*oper)==typeid(sym_num)) {
 		double val=((sym_num *)oper)->value;
@@ -903,21 +904,21 @@ sym::sym_expr *sym::sym_sin::reduce() {
 }
 
 sym::sym_expr *sym::sym_sin::derive(const sym_expr &s) {
-	
+
 	sym_expr *arg;
 	sym_cos *scos;
 	scos=sym_cos::create(oper);
 	arg=oper->clone();
 	oper=NULL;
 	delete this;
-	
+
 	return sym_prod::create(scos,arg->derive(s));
-	
+
 }
 
 matrix sym::sym_sin::eval() const {
 	return ::sin(oper->eval());
-} 
+}
 
 ostream &sym::sym_sin::print(ostream &os) const {
 	return os<<"sin("<<*oper<<")";
@@ -926,10 +927,10 @@ ostream &sym::sym_sin::print(ostream &os) const {
 sym::sym_sin *sym::sym_sin::create(sym_expr *s) {
 
 	sym_sin *snew;
-	
+
 	snew=new sym_sin();
 	snew->oper=s;
-	
+
 	return snew;
 }
 
@@ -951,16 +952,16 @@ sym::sym_cos *sym::sym_cos::clone() const {
 int sym::sym_cos::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
-	
+
 	sym_cos *q;
 	q=(sym_cos *) &s;
-	
+
 	return oper->comp(*(q->oper));
 
 }
 
 sym::sym_expr *sym::sym_cos::reduce() {
-	
+
 	oper=oper->reduce();
 	if(typeid(*oper)==typeid(sym_num)) {
 		double val=((sym_num *)oper)->value;
@@ -972,21 +973,21 @@ sym::sym_expr *sym::sym_cos::reduce() {
 }
 
 sym::sym_expr *sym::sym_cos::derive(const sym_expr &s) {
-	
+
 	sym_expr *arg;
 	sym_sin *ssin;
 	ssin=sym_sin::create(oper);
 	arg=oper->clone();
 	oper=NULL;
 	delete this;
-	
+
 	return sym_prod::create(ssin->mult(sym_num(-1)),arg->derive(s));
-	
+
 }
 
 matrix sym::sym_cos::eval() const {
 	return ::cos(oper->eval());
-} 
+}
 
 ostream &sym::sym_cos::print(ostream &os) const {
 	return os<<"cos("<<*oper<<")";
@@ -995,10 +996,10 @@ ostream &sym::sym_cos::print(ostream &os) const {
 sym::sym_cos *sym::sym_cos::create(sym_expr *s) {
 
 	sym_cos *snew;
-	
+
 	snew=new sym_cos();
 	snew->oper=s;
-	
+
 	return snew;
 }
 
@@ -1020,16 +1021,16 @@ sym::sym_exp *sym::sym_exp::clone() const {
 int sym::sym_exp::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
-	
+
 	sym_exp *q;
 	q=(sym_exp *) &s;
-	
+
 	return oper->comp(*(q->oper));
 
 }
 
 sym::sym_expr *sym::sym_exp::reduce() {
-	
+
 	oper=oper->reduce();
 	if(typeid(*oper)==typeid(sym_num)) {
 		double val=((sym_num *)oper)->value;
@@ -1069,17 +1070,17 @@ sym::sym_expr *sym::sym_exp::reduce() {
 }
 
 sym::sym_expr *sym::sym_exp::derive(const sym_expr &s) {
-	
+
 	sym_expr *arg;
 	arg=oper->clone();
-	
+
 	return sym_prod::create(this,arg->derive(s));
-	
+
 }
 
 matrix sym::sym_exp::eval() const {
 	return ::exp(oper->eval());
-} 
+}
 
 ostream &sym::sym_exp::print(ostream &os) const {
 	return os<<"exp("<<*oper<<")";
@@ -1088,10 +1089,10 @@ ostream &sym::sym_exp::print(ostream &os) const {
 sym::sym_exp *sym::sym_exp::create(sym_expr *s) {
 
 	sym_exp *snew;
-	
+
 	snew=new sym_exp();
 	snew->oper=s;
-	
+
 	return snew;
 }
 
@@ -1113,16 +1114,16 @@ sym::sym_log *sym::sym_log::clone() const {
 int sym::sym_log::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
-	
+
 	sym_log *q;
 	q=(sym_log *) &s;
-	
+
 	return oper->comp(*(q->oper));
 
 }
 
 sym::sym_expr *sym::sym_log::reduce() {
-	
+
 	oper=oper->reduce();
 	if(typeid(*oper)==typeid(sym_num)) {
 		double val=((sym_num *)oper)->value;
@@ -1148,7 +1149,7 @@ sym::sym_expr *sym::sym_log::reduce() {
 			return snew->reduce();
 		}
 		for(unsigned int i=0;i<sprod->oper.size();i++) {
-			if(typeid(*(sprod->oper[i].first))==typeid(sym_exp)&&sprod->oper[i].second==1) {				
+			if(typeid(*(sprod->oper[i].first))==typeid(sym_exp)&&sprod->oper[i].second==1) {
 				sym_expr *arg;
 				arg=((sym_exp *)sprod->oper[i].first)->oper->clone();
 				sprod->oper[i].second=0;
@@ -1156,26 +1157,26 @@ sym::sym_expr *sym::sym_log::reduce() {
 			}
 		}
 	}
-	
-	
+
+
 	return this;
 
 }
 
 sym::sym_expr *sym::sym_log::derive(const sym_expr &s) {
-	
+
 	sym_expr *arg;
 	arg=oper;
 	oper=NULL;
 	delete this;
 	sym_expr *s1=sym_prod::create_pow(arg->clone(),-1);
 	return sym_prod::create( s1,arg->derive(s));
-	
+
 }
 
 matrix sym::sym_log::eval() const {
 	return ::log(oper->eval());
-} 
+}
 
 ostream &sym::sym_log::print(ostream &os) const {
 	return os<<"log("<<*oper<<")";
@@ -1184,10 +1185,10 @@ ostream &sym::sym_log::print(ostream &os) const {
 sym::sym_log *sym::sym_log::create(sym_expr *s) {
 
 	sym_log *snew;
-	
+
 	snew=new sym_log();
 	snew->oper=s;
-	
+
 	return snew;
 }
 

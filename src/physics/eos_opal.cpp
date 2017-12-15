@@ -21,7 +21,7 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     int i,N,error=0;
     
     static double Z_table=-99;
-    
+
     t6=T*1e-6;
     p_mb=p*1e-12;
     
@@ -65,6 +65,15 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	eos.cv(i)=1e6*(*(eeos_.eos+4));
     	eos.chi_rho(i)=*(eeos_.eos+5);
     	eos.chi_T(i)=*(eeos_.eos+6);
+        if (rhoi == -9e-99) {
+            printf("Values outside OPAL eos table:\n");
+            printf("  X = %e\n", Xi);
+            printf("  Z = %e\n", Zi);
+            printf("  T = %e\n", t6i);
+            printf("  p = %e\n", p_mbi);
+            print_stack();
+            exit(EXIT_FAILURE);
+        }
     }
     if(exist(rho==-9e99)) {
         ester_err("Values outside OPAL eos table");

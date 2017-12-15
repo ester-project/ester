@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 /// \brief The matrix class is used to facilitate the work with regular dense
-/// matrices. 
+/// matrices.
 class matrix {
 	double *p;
 	int nf,nc;
@@ -18,9 +18,9 @@ public:
 	matrix &dim(int nrow,int ncol);
 	matrix &redim(int nrow,int ncol);
 	matrix &operator=(const matrix &);
-	double &operator()(int irow,int icol); 
+	double &operator()(int irow,int icol);
 	double &operator()(int ielem);
-	const double &operator()(int irow,int icol) const; 
+	const double &operator()(int irow,int icol) const;
 	const double &operator()(int ielem) const;
 	int read(int nrow,int ncol,FILE *fp,char mode='t');
 	int write(FILE *fp=stdout,char mode='t') const;
@@ -28,34 +28,34 @@ public:
 	void swap(matrix &);
 	void zero(int nrows,int ncols);
 	void values(double,...);
-	
+
 	friend matrix operator-(double,const matrix &);
 	friend matrix operator-(const matrix &);
 	friend matrix operator/(double,const matrix &);
-	
+
 	matrix operator+(const matrix &) const;
 	matrix operator+(double) const;
 	matrix operator-(const matrix &) const;
 	matrix operator-(double) const;
-	matrix operator*(const matrix &) const;	
+	matrix operator*(const matrix &) const;
 	matrix operator*(double) const;
-	matrix operator/(const matrix &) const;	
+	matrix operator/(const matrix &) const;
 	matrix operator/(double) const;
-	matrix operator==(const matrix &) const;	
+	matrix operator==(const matrix &) const;
 	matrix operator==(double) const;
-	matrix operator!=(const matrix &) const;	
+	matrix operator!=(const matrix &) const;
 	matrix operator!=(double) const;
 	matrix operator>(const matrix &) const;
 	matrix operator>(double) const;
-	matrix operator<(const matrix &a) const {return a>*this;}	
+	matrix operator<(const matrix &a) const {return a>*this;}
 	matrix operator<(double) const;
-	matrix operator>=(const matrix &) const;	
+	matrix operator>=(const matrix &) const;
 	matrix operator>=(double) const;
-	matrix operator<=(const matrix &a) const {return a>=*this;}	
+	matrix operator<=(const matrix &a) const {return a>=*this;}
 	matrix operator<=(double) const;
-	matrix operator&&(const matrix &) const;	
+	matrix operator&&(const matrix &) const;
 	matrix operator&&(double) const;
-	matrix operator||(const matrix &) const;	
+	matrix operator||(const matrix &) const;
 	matrix operator||(double) const;
 	matrix &operator+=(const matrix &);
 	matrix &operator-=(const matrix &);
@@ -75,33 +75,33 @@ public:
 	matrix &setblock(int irow1,int irow2,int icol1,int icol2,const matrix &);
 	matrix &setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,const matrix &);
    	matrix concatenate(const matrix &a,int dir=0) const;
-   	
+
 	matrix transpose() const;
 	matrix fliplr() const;
 	matrix flipud() const;
-	
+
 	friend matrix ones(int nfil,int ncol);
 	friend matrix zeros(int nfil,int ncol);
 	friend matrix random_matrix(int nfil,int ncol);
 	friend matrix eye(int n);
 	friend matrix vector(double x0,double x1,int n);
 	friend matrix vector_t(double x0,double x1,int n);
-	
+
 	friend double max(const matrix &);
 	friend double min(const matrix &);
 	friend double sum(const matrix &);
 	friend double mean(const matrix &);
-	
+
 	friend matrix max(const matrix &,const matrix &);
 	friend matrix max(const matrix &,double);
 	friend matrix max(double,const matrix &);
 	friend matrix min(const matrix &,const matrix &);
 	friend matrix min(const matrix &,double);
 	friend matrix min(double,const matrix &);
-	
+
 	friend int exist(const matrix &);
 	friend int isequal(const matrix &,const matrix &);
-	
+
 	friend matrix cos(const matrix &);
 	friend matrix sin(const matrix &);
 	friend matrix tan(const matrix &);
@@ -130,7 +130,7 @@ public:
 	matrix operator,(const matrix &) const;
 	matrix solve(matrix) const;
 	matrix inv() const;
-	
+
 	friend class matrix_block_diag;
 
 };
@@ -168,7 +168,7 @@ matrix max(double,const matrix &);
 matrix min(const matrix &,const matrix &);
 matrix min(const matrix &,double);
 matrix min(double,const matrix &);
-	
+
 int exist(const matrix &);
 int isequal(const matrix &,const matrix &);
 
@@ -246,7 +246,7 @@ matrix_block_diag eye(const matrix_block_diag &);
 #include<string>
 
 class double_map : public std::map<std::string,double> {
-public:	
+public:
 	inline double &operator[](const std::string& key) {return std::map<std::string,double>::operator[](key);}
 	inline const double &operator[](const std::string& key) const {return find(key)->second;};
 	double sum();
@@ -302,18 +302,18 @@ public:
 	matrix_map &setcol(int icol,const matrix &);
 	matrix_map &setblock(int irow1,int irow2,int icol1,int icol2,const matrix &);
 	matrix_map &setblock_step(int irow1,int irow2,int drow,int icol1,int icol2,int dcol,const matrix &);
-	
+
 	matrix_map operator*(double d) const;
 	matrix_map operator*(const matrix &m) const;
-	matrix_map &operator*=(const double_map &d); 
-	matrix_map &operator/=(const double_map &d); 
+	matrix_map &operator*=(const double_map &d);
+	matrix_map &operator/=(const double_map &d);
 	matrix_map &operator+=(const matrix_map &d);
 	matrix_map &operator-=(const matrix_map &d);
 	matrix_map &operator*=(const matrix_map &d);
 	matrix_map &operator/=(const matrix_map &d);
-	
+
 	matrix sum();
-	
+
 };
 
 class create_matrix_map
@@ -343,17 +343,38 @@ inline matrix_map operator*(const matrix &m,const double_map &d) {return d*m;};
 inline matrix_map operator*(double d,const matrix_map &a) {return a*d;};
 inline matrix_map operator*(const matrix &m,const matrix_map &a) {return a*m;};
 
-#include<sys/time.h>
+#include <sys/time.h>
 class tiempo {
-	double t,t0;
+	double t, t0;
 	timeval tim;
 public:
 	int active;
-	tiempo() {t=0;active=0;}
-	void reset() {t=0;}
-	void start() {gettimeofday(&tim,NULL);t0=tim.tv_sec+tim.tv_usec/1e6;active=1;}
-	void stop() {gettimeofday(&tim,NULL);if(active) t+=tim.tv_sec+tim.tv_usec/1e6-t0;active=0;}
-	double value() {double tt;gettimeofday(&tim,NULL);tt=t;if(active) tt+=tim.tv_sec+tim.tv_usec/1e6-t0;return tt;}
+	tiempo() {
+        t=0;
+        active=0;
+    }
+
+	void reset() { t=0; }
+
+	void start() {
+        gettimeofday(&tim, NULL);
+        t0 = tim.tv_sec + tim.tv_usec/1e6;
+        active=1;
+    }
+
+	void stop() {
+        gettimeofday(&tim,NULL);
+        if(active) t+=tim.tv_sec+tim.tv_usec/1e6-t0;
+        active=0;
+    }
+
+	double value() {
+        double tt;
+        gettimeofday(&tim, NULL);
+        tt = t;
+        if (active) tt+=tim.tv_sec+tim.tv_usec/1e6-t0;
+        return tt;
+    }
 };
 
 

@@ -32,6 +32,11 @@ AC_PROG_AWK
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
+AC_CHECK_PROG([ADDR2LINE], [addr2line], [yes], [no])
+CXXFLAGS="$CXXFLAGS -std=c++11"
+
+AS_IF([test "x$ADDR2LINE" == "xyes"],
+      [AC_DEFINE([HAVE_ADDR2LINE], [1], [addr2line is installed])])
 
 AM_PATH_PYTHON(2.3)
 AX_PKG_SWIG([1.3.17], [have_swig="yes"], [have_swig="no"])
@@ -40,7 +45,9 @@ AM_CONDITIONAL(HAVE_SWIG, [test "x$have_swig" == "xyes"])
 
 AS_IF([test "x$PYTHON" != "x:"],
       [PYTHONINC=`$PYTHON -c "from distutils import sysconfig; print(sysconfig.get_python_inc())"`
-       CPPFLAGS="$CPPFLAGS -I$PYTHONINC"])
+       CPPFLAGS="$CPPFLAGS -I$PYTHONINC"
+       PYTHONLIBS=`$PYTHON-config --ldflags`
+       LIBS+="$PYTHONLIBS"])
 
 # Checks for libraries.
 
@@ -160,7 +167,7 @@ AC_CHECK_FUNCS([floor gettimeofday pow sqrt strtoul])
 
 AC_CONFIG_FILES([Makefile
                  tables/Makefile
-                 tables/cesam_nuc/Makefile
+                 tables/cesam/Makefile
                  tables/houdek/v9/Makefile
                  tables/houdek/v9/lib/Makefile
                  tables/opal/Makefile

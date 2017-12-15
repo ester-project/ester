@@ -12,7 +12,7 @@ diff_gl::diff_gl(int n):ndomains(ndom), N(Ntot) {
 	ndom=n;
 	npts=new int[ndom];
 	xif=new double[ndom+1];
-	
+
 }
 
 diff_gl::~diff_gl() {
@@ -70,7 +70,7 @@ void diff_gl::set_xif(double x,...) {
 
 	va_list ap;
 	int i;
-	
+
 	va_start(ap,x);
 	*xif=x;
 	for(i=1;i<ndom+1;i++) {
@@ -83,7 +83,7 @@ void diff_gl::set_npts(int n,...) {
 
 	va_list ap;
 	int i;
-	
+
 	va_start(ap,n);
 	*npts=n;
 	for(i=1;i<ndom;i++) {
@@ -98,7 +98,7 @@ void diff_gl::init() {
 	int i,j1,j2;
 	double x1,x2;
 	matrix T;
-	
+
 	Ntot=0;
 	for(i=0;i<ndom;i++)
 		Ntot+=*(npts+i);
@@ -127,14 +127,14 @@ void diff_gl::init_1() {
 
 	int n=*npts;
 	matrix i(n,1),j(1,n);
-	
+
 	xif[0]=0;xif[1]=1;
 	i=vector_t(0,n-1,n);
 	j=vector(0,n-1,n);
 	x=-cos(i*(PI/(n-1)));
 	x=(x+1)/2;
-	
-	
+
+
 	P.block(0)=((2-((i==0)||(i==n-1)))*pow(-1,i)/(n-1))/(1+((j==0)||(j==n-1)))*
 		cos(i*(j*(PI/(n-1))));
 	P1.block(0)=cos((j*PI)*(1-i/(n-1)));
@@ -150,7 +150,7 @@ void diff_gl::init_1() {
 	P.block(0)=P1.block(0).inv();
 	D.block(0)=j*sin(j*th)/sin(th);
 	D.block(0).setrow(n-1,j*j*ones(1,n));
-	for(k=0,kk=-1;k<n-1;k++,kk=-kk) 
+	for(k=0,kk=-1;k<n-1;k++,kk=-kk)
 		D.block(0)(0,k)=kk*k*k;
 	D.block(0)=2*(D.block(0),P.block(0));
 */
@@ -159,7 +159,7 @@ void diff_gl::init_1() {
 	I.setblock_step(0,0,1,0,I.ncols()-1,2,2/(1-i*i));
 	I=(I,P.block(0));
 	I=I/2;
-	
+
 }
 
 matrix diff_gl::eval(const matrix &y,const matrix &x) const {
@@ -187,7 +187,7 @@ matrix diff_gl::eval(const matrix &y,const matrix &x,matrix &T) const {
 
 	matrix yi(x.nrows(),y.ncols()),Ti(x.nrows(),1);
 	int i,j,k;
-	
+
 	T.dim(x.nrows(),y.nrows());
 
 	k=0;
@@ -207,12 +207,5 @@ matrix diff_gl::eval(const matrix &y,const matrix &x,matrix &T) const {
 	yi=(T,y);
 
 	return yi;
-	
+
 }
-
-
-
-
-
-
-

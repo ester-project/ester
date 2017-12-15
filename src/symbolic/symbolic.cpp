@@ -473,8 +473,9 @@ sym symbolic::divergence(const sym_vec &v) {
 	
 	V=contravariant(v);
 	
-	for(int i=0;i<3;i++) 
+	for(int i=0;i<3;i++) {
 		s=s+d(V(i),i)+d(sqrt_g,i)/sqrt_g*V(i);
+    }
 		//s=s+covderiv(V,i,i);
 		
 		
@@ -538,7 +539,7 @@ sym_tens symbolic::stress(const sym_vec &v) {
 	t.set_context(this);
 	
 	t=grad(v)+grad(v).T()-2./3.*g*div(v);
-				
+
 	return t;
 }
 
