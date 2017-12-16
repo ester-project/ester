@@ -38,6 +38,7 @@ void star2d::new_check_map() {
 	   interp(red);
 if (details) {
 FILE *fic=fopen("new_R.txt", "a");
+fprintf(fic,"it= %d\n",glit);
 for (int k=0;k<=ndomains;k++) fprintf(fic,"k= %d R= %e \n",k,R(k,0));
 fclose(fic);
 }

@@ -118,11 +118,17 @@ int mapping::remap() {
 		int j0=0,dj;
 		matrix q,dR,zz,xi,A,Ap,App;
 		double deta,a;
+	FILE *fic=fopen("rz.txt", "a");
 		for(int i=0;i<ndomains;i++) {
 			dj=npts[i];
 			zz=gl.x.block(j0,j0+dj-1,0,0);
 			deta=eta(i+1)-eta(i);
 			dR=R.row(i+1)-R.row(i);
+	if (dR(0) < 0) {
+	   fprintf(fic,"in mapping::remap dR(%d) = %e\n",i,dR(0));
+	   printf("dR < 0\n");
+	   return 1;
+	}
 			xi=(zz-eta(i))/deta;
 			if(i==0) {
 				A=2.5*xi*xi*xi-1.5*xi*xi*xi*xi*xi;
@@ -157,6 +163,7 @@ int mapping::remap() {
 			J[3].setblock(j0,j0+dj-1,0,-1,q);
 			j0+=dj;
 		}
+	fclose(fic);
 	} else {
 		int j0=0,dj;
 		matrix q,dR,zz,xi;
@@ -223,6 +230,7 @@ int mapping::remap() {
 
 // check that rz always positive otherwise warning!
 // used in update_map to control the relaxation param.
+
 	if(exist(rz<0)||exist(ex.rz<0)) {
 		ester_warn("(mapping) Found rz<0");
 		return 1;

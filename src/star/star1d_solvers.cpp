@@ -1383,6 +1383,7 @@ fprintf(RHS,"RHS Ri END avec nzones=1\n");
 matrix ss=entropy();
 fprintf(RHS," it = %d\n",glit);
 for (int k=0;k<nr;k++) fprintf(RHS,"entropy %d, %e \n",k,ss(k));
+for (int k=0;k<ndomains;k++) fprintf(RHS,"Ri %d, %e \n",k,map.R(k));
 fprintf(RHS,"Entropy END\n");
 	
 		eq=(grad(p_),grad(s_))/S.r/S.r;
