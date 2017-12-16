@@ -1383,8 +1383,9 @@ fprintf(RHS,"RHS Ri END avec nzones=1\n");
 matrix ss=entropy();
 fprintf(RHS," it = %d\n",glit);
 for (int k=0;k<nr;k++) fprintf(RHS,"entropy %d, %e \n",k,ss(k));
+fprintf(RHS,"nzones = %d\n",nzones);
+for (int k=0;k<nzones;k++) fprintf(RHS,"izif %d, %d \n",k,izif[k]);
 for (int k=0;k<ndomains;k++) fprintf(RHS,"Ri %d, %e \n",k,map.R(k));
-fprintf(RHS,"Entropy END\n");
 	
 		eq=(grad(p_),grad(s_))/S.r/S.r;
 	
@@ -1399,7 +1400,9 @@ fprintf(RHS,"Entropy END\n");
 			eq.bc_bot2_add(op,n,"Ri","s",ones(1,nth));
 			eq.bc_bot2_add(op,n,"Ri","r",ones(1,nth));
 		        rhs(n)=-eq.eval()(j0);	
+			fprintf(RHS,"iz= %d, n=%d, j0= %d\n",iz,n,j0);
 		}
+fprintf(RHS,"Entropy END\n");
 	}
 	
 fprintf(RHS," it = %d\n",glit);
