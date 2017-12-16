@@ -35,15 +35,6 @@ void star1d::fill() {
         //printf("size of schwarz %d,%d\n",schwarz.nrows(),schwarz.ncols());
 
 
-
-// for the output
-        schwarz=-(D,p)*((D,log(T))-eos.del_ad*(D,log(p)));
-	schwarz = schwarz/r/r;
-	schwarz.setrow(0, zeros(1, nth));
-        //printf("size of schwarz %d,%d\n",schwarz.nrows(),schwarz.ncols());
-
-
-
 }
 
 solver *star1d::init_solver(int nvar_add) {
@@ -191,13 +182,13 @@ FILE *fic=fopen("err.txt", "a");
 	dXh=op->get_var("lnXh");	
 	err2=max(abs(dXh));err=err2>err?err2:err;
   fprintf(fic,"err Xh = %e\n",err2);
- if (err> 1e-0) for (int k=0;k<nr;k++) fprintf(fic,"%d %e \n",k,dXh(k));
+ //if (err> 1e-0) for (int k=0;k<nr;k++) fprintf(fic,"%d %e \n",k,dXh(k));
 	while(exist(abs(h*dXh)>q)) h/=2;
 // Compute dWr
 	dWr=op->get_var("Wr");	
 	err2=max(abs(dWr));err=err2>err?err2:err;
   fprintf(fic,"err Wr = %e\n",err2);
- if (err> 1e-4) for (int k=0;k<nr;k++) fprintf(fic,"%d %e %e \n",k,Wr(k),dWr(k));
+ //if (err> 1e-4) for (int k=0;k<nr;k++) fprintf(fic,"%d %e %e \n",k,Wr(k),dWr(k));
 	while(exist(abs(h*dWr)>q)) h/=2;
 // End of dWr computation
 
@@ -211,6 +202,8 @@ FILE *fic=fopen("err.txt", "a");
 	while(fabs(h*dTc(0))>q) h/=2;
 	
 	dRi=op->get_var("Ri");	
+  fprintf(fic," it = %d  h=%e\n",glit,h);
+  for (int k=0;k<ndomains;k++) fprintf(fic,"dR(%d)= %e, R= %e\n",k,dRi(k),map.R(k));
 	update_map(h*dRi);
 	
 	phi+=h*dphi;
@@ -506,9 +499,9 @@ if (delta != 0.) { // unsteady case  ************************************
      op->bc_top1_add_d(ndomains-1,"lnXh","lnXh",ones(1,1));
      rhs(-1)=-log(Xh(-1))+log(X0);
 
-fprintf(RHS," it = %d\n",glit);
-for (int k=0;k<nr;k++) fprintf(RHS,"RHS Xh %d, %e \n",k,rhs(k));
-fprintf(RHS,"RHS Xh END\n");
+//fprintf(RHS," it = %d\n",glit);
+//for (int k=0;k<nr;k++) fprintf(RHS,"RHS Xh %d, %e \n",k,rhs(k));
+//fprintf(RHS,"RHS Xh END\n");
 
   op->set_rhs("lnXh",rhs);
 //Evolution Xh end-----------------------------------
@@ -577,9 +570,9 @@ void star1d::solve_Wr(solver *op) {
            rhs(j0) = -Wr(j0-1)+Wr(j0);
          }
 
-fprintf(RHS," it = %d\n",glit);
-for (int k=0;k<nr;k++) fprintf(RHS,"RHS Wr %d, %e \n",k,rhs(k));
-fprintf(RHS,"RHS Wr END\n");
+//fprintf(RHS," it = %d\n",glit);
+//for (int k=0;k<nr;k++) fprintf(RHS,"RHS Wr %d, %e \n",k,rhs(k));
+//fprintf(RHS,"RHS Wr END\n");
 	op->set_rhs("Wr",rhs);
 }
 
@@ -1038,7 +1031,6 @@ FILE *fic=fopen("new_rhs_lamb.txt", "a");
 		op->bc_top1_add_d(n,"Frad","rz",Frad.row(j1));
 	
 		j0=j1+1;
-//>>>>>>> 5ae6f52546fe4f94ffa2f8eaca8916bc6bafb228
 	}
 	op->set_rhs("Frad",rhs_Frad);
 	

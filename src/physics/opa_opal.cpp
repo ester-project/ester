@@ -38,16 +38,16 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	dlnkrho.dim(T.nrows(),T.ncols());
 	N=T.nrows()*T.ncols();
 	double dlogkt,dlogkr;
-	FILE *fic=fopen("av_opa.txt","a");
-	fprintf(fic,"in opa_opal\n");	
+//	FILE *fic=fopen("av_opa.txt","a");
+//	fprintf(fic,"in opa_opal\n");	
 	for(i=0;i<N;i++) {
-		fprintf(fic,"%d  X= %e, T= %e, rho= %e\n",i,X(i),T(i),rho(i));
+//		fprintf(fic,"%d  X= %e, T= %e, rho= %e\n",i,X(i),T(i),rho(i));
 		opa.k(i)=opa_opal_i(X(i),Z,T(i),rho(i),dlogkt,dlogkr);
 		if(opa.k(i)==-99) error=1;
 		dlnkT(i)=dlogkt;
 		dlnkrho(i)=dlogkr;
 	}
-	fclose(fic);
+//	fclose(fic);
 	opa.k=pow(10,opa.k);
 	dlnkT-=3*dlnkrho;
 	opa.xi=16*SIG_SB*pow(T,3)/(3*opa.k*rho);
