@@ -94,6 +94,7 @@ void star1d::register_variables(solver *op) {
 }
 
 FILE *RHS;
+FILE *entrop;
 double star1d::solve(solver *op) {
 	int info[5];
 	matrix rho_prec;
@@ -102,6 +103,7 @@ double star1d::solve(solver *op) {
 //	printf("**********  start of star1d::solve\n");
 	//check_map();
 	RHS=fopen("all_rhs.txt","a");
+	entrop=fopen("entropie.txt","a");
 
 	new_check_map();
 	
@@ -209,6 +211,12 @@ FILE *fic=fopen("err.txt", "a");
 	phi+=h*dphi;
 	p+=h*dp*p;
 	T+=h*dT*T;
+
+matrix bv2=(D,p)/p/eos.G1-(D,rho)/rho;
+matrix ss=entropy();
+fprintf(entrop,"entropy it = %d\n",glit);
+for (int k=0;k<nr;k++) fprintf(entrop,"%d %e %e\n",k,map.r(k),ss(k));
+fclose(entrop);
 // Evolution of Xh, dXh is the variation on ln(Xh) assumed to be small
 	Xh+=h*dXh*Xh;
 	Wr+=h*dWr;
@@ -1108,21 +1116,23 @@ fclose(qfic);
 			if (domain_type[n] == RADIATIVE) {
 			   //printf("Radiative n= %d\n",n);
 // MR: I impose the continuity of the local flux rather than the temperature derivative
-			   op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
-			   op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
-			   op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
-			   op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
-			   //op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
-			   //op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+			   //op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
+			   //op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
+			   //op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
+			   //op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
+			   op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+			   op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
 
 // MR: the variations of rz during the iterations are crucial to take intot account the 
 //     changes of the mapping due to the distribution of domains that equalize the pressure
 //     or temperature drop in a domain. In fine, when converged rz=1 in 1D, but rz should
 //     be allowed to vary during iterations.
-			   op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
-			   op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
-			   //rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
-			   rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
+			   //op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
+			   //op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
+			   op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
+			   op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
+			   rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+			   //rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
 
                            op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
                            rhs_Lambda(0)=-(D,T)(0);
@@ -1184,21 +1194,23 @@ fclose(qfic);
                            op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
 			}
 //MR: I impose the continuity of the local flux rather than the temperature derivative
-			   op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
-			   op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
-			   op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
-			   op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
-			//op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
-			//op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+			 //op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
+			   //op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
+			   //op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
+			   //op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
+			op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+			op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
 
 // MR: the variations of rz during the iterations are crucial to take intot account the 
 //     changes of the mapping due to the distribution of domains that equalize the pressure
 //     or temperature drop in a domain. In fine, when converged rz=1 in 1D, but rz should
 //     be allowed to vary during iterations.
-			   op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
-			   op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
-			 //rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
-			   rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
+			// op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
+			 //op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
+			   op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
+			   op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
+			   rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+			   //rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
 		       } else if (domain_type[n] == CORE) {
 			// Continuity of T bottom
 			   printf("CORE n= %d\n",n);
@@ -1331,7 +1343,7 @@ fprintf(RHS," it = %d\n",glit);
 for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS log_R %d, %e \n",k,rhs(k));
 fprintf(RHS,"RHS R END\n");
 }
-
+//------------------------------------------------------------------------
 void star1d::solve_map(solver *op) {
 	int n,j0,j1,ndom;
 	matrix rhs;
@@ -1344,9 +1356,6 @@ void star1d::solve_map(solver *op) {
 	}	
 	op->set_rhs("dRi",rhs);
 	
-fprintf(RHS," it = %d\n",glit);
-for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS dRi %d, %e \n",k,rhs(k));
-fprintf(RHS,"RHS dRi END\n");
 	
 	rhs=zeros(ndomains,1);
 	int nzones=zone_type.size();
