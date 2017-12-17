@@ -113,7 +113,8 @@ matrix star2d::entropy() const {
 //	Valid only for homogeneus composition !!!!!!
 
 	matrix s(nr,nth),rhs;
-	
+	double RGP=K_BOL/UMA; // Ideal gas constant
+
 	solver op;
 	op.init(ndomains,1,"full");
 	op.maxit_ref=10;op.use_cgs=0;
@@ -121,7 +122,9 @@ matrix star2d::entropy() const {
 	op.regvar("s");op.set_nr(map.gl.npts);
 	
 	op.add_l("s","s",ones(nr,1),D);
-	rhs=eos.cp*((D,log(T))-eos.del_ad*(D,log(p)));
+// MR: rescale entropy by the idal gas constant
+	rhs=eos.cp*((D,log(T))-eos.del_ad*(D,log(p)))/RGP/5;
+	//rhs=eos.cp*((D,log(T))-eos.del_ad*(D,log(p)));
 	//rhs=(D,log(T))-eos.del_ad*(D,log(p));
 	
 	op.bc_bot2_add_d(0,"s","s",ones(1,1));
