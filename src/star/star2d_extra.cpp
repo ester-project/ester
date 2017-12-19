@@ -122,8 +122,8 @@ matrix star2d::entropy() const {
 	op.regvar("s");op.set_nr(map.gl.npts);
 	
 	op.add_l("s","s",ones(nr,1),D);
-// MR: rescale entropy by the idal gas constant
-	rhs=eos.cp*((D,log(T))-eos.del_ad*(D,log(p)))/RGP/5;
+// MR: rescale entropy by the ideal gas constant
+	rhs=eos.cp*((D,log(T))-eos.del_ad*(D,log(p)))/RGP;
 	//rhs=eos.cp*((D,log(T))-eos.del_ad*(D,log(p)));
 	//rhs=(D,log(T))-eos.del_ad*(D,log(p));
 	

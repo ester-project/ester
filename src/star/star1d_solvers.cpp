@@ -272,10 +272,13 @@ void star1d::solve_definitions(solver *op) {
 	op->add_d("rz","dRi",(D,map.J[3]));
 	
 	//	Valid only for homogeneus composition !!!!!!
-	op->add_d("s","log_T",eos.cp);
-	op->add_d("s","log_Tc",eos.cp);
-	op->add_d("s","log_p",-eos.cp*eos.del_ad);
-	op->add_d("s","log_pc",-eos.cp*eos.del_ad);
+// MR we rescale entropy with the ideal gas constant
+// changed in star2d_extra.cpp & star2d_solver
+double RGP=K_BOL/UMA;
+	op->add_d("s","log_T",eos.cp/RGP);
+	op->add_d("s","log_Tc",eos.cp/RGP);
+	op->add_d("s","log_p",-eos.cp*eos.del_ad/RGP);
+	op->add_d("s","log_pc",-eos.cp*eos.del_ad/RGP);
 	/*
 	op->add_d("s","log_T",ones(nr,1));
 	op->add_d("s","log_Tc",ones(nr,1));
