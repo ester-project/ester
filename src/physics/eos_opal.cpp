@@ -52,11 +52,12 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     N=T.nrows()*T.ncols();
 
 	double Xi,Zi,t6i,p_mbi,rhoi;
+	double RGP=K_BOL/UMA;
     for(i=0;i<N;i++) {
     	Xi=X(i);Zi=Z;t6i=t6(i);p_mbi=p_mb(i);
     	eos5_xtrin_(&Xi,&Zi,&t6i,&p_mbi,&rhoi);
     	rho(i)=rhoi;
-    	eos.s(i)=1e6*(*(eeos_.eos+2));
+    	eos.s(i)=1e6*(*(eeos_.eos+2))/RGP;
 		eos.G1(i)=*(eeos_.eos+7);
 		eos.del_ad(i)=1/(*(eeos_.eos+8));
     	eos.G3_1(i)=*(eeos_.eos+7)/(*(eeos_.eos+8));

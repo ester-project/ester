@@ -217,6 +217,13 @@ matrix ss=entropy();
 fprintf(entrop,"entropy it = %d\n",glit);
 for (int k=0;k<nr;k++) fprintf(entrop,"%d %e %e\n",k,map.r(k),ss(k));
 fclose(entrop);
+if (details) {
+FILE *fic=fopen("R.txt", "a");
+fprintf(fic,"it= %d\n",glit);
+for (int k=0;k<=ndomains;k++) fprintf(fic,"%d %e\n",k,map.R(k));
+fclose(fic);
+}
+
 // Evolution of Xh, dXh is the variation on ln(Xh) assumed to be small
 	Xh+=h*dXh*Xh;
 	Wr+=h*dWr;
@@ -724,12 +731,12 @@ fclose(qfic);
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
 		j1=j0+ndom-1;
-		//printf("n = %d, domain_type=%d\n",n,domain_type[n]);
+		printf("n = %d, domain_type=%d\n",n,domain_type[n]);
                 if(n==0) { // care of the first and central domain
                         op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                         rhs_T(j0)=1.-T(j0);
 			if (domain_type[n] == RADIATIVE) {
-			   //printf("Radiative n= %d\n",n);
+			   printf("Central Radiative domain n= %d cont of DT on top\n",n);
 // MR: I impose the continuity of the local flux rather than the temperature derivative
 			   //op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
 			   //op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
@@ -753,7 +760,7 @@ fclose(qfic);
                            rhs_Lambda(0)=-(D,T)(0);
 			}
 			if (domain_type[n] == CORE) {
-			   //printf("CORE n= %d\n",n);
+			   printf("CORE domain n= %d cont of lambda on top\n",n);
                            op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
                            op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
 			}
@@ -763,12 +770,13 @@ fclose(qfic);
 			   exit(0);
 			}
 			if (domain_type[n-1] == CONVECTIVE) {
-                           //printf("LAST DOM CASE: CONVECTIVE n= %d RAD %d\n",n-1,n);
+                           printf("LAST DOM CASE: CONVECTIVE n-1= %d RAD %d\n",n-1,n);
                            op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
                            op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
                            op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
                            rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
                         } else if (domain_type[n-1] == RADIATIVE) {
+                           printf("LAST DOM CASE above RADIATIVE n= %d\n",n);
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
                            rhs_T(j0)=-T(j0)+T(j0-1);
@@ -786,7 +794,7 @@ fclose(qfic);
                            op->bc_bot2_add_d(n,"Lambda","r",4*PI*(Frad*2*r).row(j0));
                            op->bc_bot1_add_d(n,"Lambda","lum",-ones(1,1));
                            rhs_Lambda(n)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
-			   //printf("CORE n= %d lum n-1= %e, rhs_L=%e\n",n-1,lum(n-1),rhs_Lambda(n));
+			   printf("RADIATIVE above CORE n= %d Frad imposed\n",n);
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
                            rhs_T(j0)=-T(j0)+T(j0-1);
@@ -797,7 +805,7 @@ fclose(qfic);
 			   op->bc_bot1_add_d(n,eqn,"rz",-(D,T).row(j0-1));
 			   op->bc_bot2_add_d(n,eqn,"rz",(D,T).row(j0));
 			   rhs_T(j0)=-(D,T)(j0-1)+(D,T)(j0);
-			   //printf("CONVECTIVE n= %d RAD %d\n",n-1,n);
+			   printf("ZONE RADIATIVE n= %d DT bot\n",n);
 			   //op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
 			   //op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
 			   //op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
@@ -806,7 +814,7 @@ fclose(qfic);
                            op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
 			} else { // the preceding domain is radiative hence
 			// we apply continuity of T at bottom and of DT at top
-			   //printf("Radiative n= %d\n",n);
+			 //printf("Domain n= %d T bot imposed\n",n);
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
                            rhs_T(j0)=-T(j0)+T(j0-1);
@@ -832,6 +840,7 @@ fclose(qfic);
 			   op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
 			   rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
 			   //rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
+			 //printf("ZONE RADIATIVE numero= %d top DT done \n",n);
 		       } else if (domain_type[n] == CORE) {
 			// Continuity of T bottom
 			   printf("CORE n= %d\n",n);
@@ -841,7 +850,7 @@ fclose(qfic);
                            op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
                            op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
 		       } else if (domain_type[n] == CONVECTIVE) {
-			   //printf("CONVECTIVE n= %d\n",n);
+			   printf("CONVECTIVE ZONE n= %d Continuity of T bottom\n",n);
 			// Continuity of T bottom
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
@@ -850,7 +859,7 @@ fclose(qfic);
                            op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                            op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
 			   if (domain_type[n+1] == RADIATIVE) {
-			   //printf("LAST CONVECTIVE n= %d\n",n);
+			   printf("CONVECTIVE ZONE n= %d Continuity of T top\n",n);
 			// continuity of T top of CZ needed if last convective domain
 			      op->bc_top2_add_d(n,eqn,"T",ones(1,1));
 			      op->bc_top1_add_d(n,eqn,"T",-ones(1,1));
@@ -878,7 +887,7 @@ fclose(fic);
     schw=schw/r/r;
     schw.setrow(0,zeros(1,nth));
     schw.setrow(0,-(D.row(0),schw)/D(0,0));
-    FILE *ficsch=fopen("nSchwi.txt", "a");
+    FILE *ficsch=fopen("nSchwi.txt", "w");
     fprintf(ficsch," it = %d\n",glit);
     for (int k=0;k<nr;k++) fprintf(ficsch,"i= %d schwi= %e \n",k,schw(k,-1));
     fclose(ficsch);
@@ -960,9 +969,9 @@ void star1d::solve_dim(solver *op) {
     }
     op->set_rhs("log_R",rhs);
 
-fprintf(RHS," it = %d\n",glit);
-for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS log_R %d, %e \n",k,rhs(k));
-fprintf(RHS,"RHS R END\n");
+//fprintf(RHS," it = %d\n",glit);
+//for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS log_R %d, %e \n",k,rhs(k));
+//fprintf(RHS,"RHS R END\n");
 }
 //------------------------------------------------------------------------
 void star1d::solve_map(solver *op) {

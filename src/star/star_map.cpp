@@ -223,7 +223,8 @@ if (details) printf("++++++ start of remap_domains\n");
 
 // if nothing has changed return
     if(index_new==index&&ndom==ndomains) {
-     if (details) printf("quit remap_domain with nothing changed\n"); return false;
+     if (details) printf("quit remap_domain with nothing changed\n");
+     return false;
     }
 
 // compute new indices of interfaces between zones and recompute the zeta of the new
@@ -512,6 +513,21 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 // Compute the square of the BV frequency
 	bv2=(D,p)/p/eos.G1-(D,rho)/rho;
 	bv2(0,-1)=0.;
+/*
+matrix ss=entropy();
+FILE *entrop;
+entrop=fopen("sm_entropie.txt","a");
+fprintf(entrop,"entropy it = %d\n",glit);
+for (int k=0;k<nr;k++) fprintf(entrop,"%d %e %e\n",k,map.r(k),ss(k));
+fclose(entrop);
+int k_rad=0;
+    for (int k=0;k<nr;k++) {
+	if (ss(k,-1)-ss(nr-1,-1) < 0.0 ) {
+           k_rad=k; // store the last point where entropy is below surface entropy
+        }
+    }
+	   printf("k_rad = %d -------------------------\n",k_rad);
+*/
 
 // filtrage chebyshev
 	matrix sp_bv2,bv2f;
@@ -530,6 +546,8 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     for (int k=0;k<nr;k++) {
 	if (fabs(bv2f(k,-1)) < 1.0e-3 ) schw(k,-1)=-1e-3;
     }
+// pas de filtrage
+	schw=bv2;
 
 
 
@@ -552,11 +570,13 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 // since we want models that terminate with a radiative zone
 	nl=nc;
 	if (details) printf(" av. n= %d, nl=%d\n",n,nl);
-	if (schw(nr-1,-1) < 0) {
-		n=n-1;
-		nl=nc-1;
+
+	if (schw(nr-2,-1) < 0) {
+		printf("Last domain Conv  schw<0\n");
+		//n=n-1;
+		//nl=nc-1;
 	}
-		
+
 	if (details) printf(" ap. n= %d, nl=%d\n",n,nl);
 
 
@@ -571,7 +591,8 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 // We first detect the number of true interfaces using the last latitude
 // point (-1), which is the closest one to the pole.
     n = 0;
-    for (int i=itest_sch; i<=nl; i++) {  // we stop the search at nl or nl-1
+    //for (int i=itest_sch; i<=nl; i++) {  // we stop the search at nl or nl-1
+    for (int i=itest_sch; i<nr; i++) {  // we stop the search at nl or nl-1
         if (schw(i-1, -1) * schw(i, -1) < 0 ) {
                 n++;
 		zi=z(i-1)-schw(i-1,-1)*(z(i)-z(i-1))/(schw(i,-1)-schw(i-1,-1));
@@ -592,6 +613,9 @@ if (les_zi[i+1]-les_zi[i] < 0.001) {
    i++;
    }
 }
+// on rajoute en dernier z(k_rad)
+//les_zi[n-1]=z(k_rad);
+
 if (details) printf("number of interf suppressed %d \n",is);
 if (details) for (int i=0; i< n;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
 
@@ -644,7 +668,7 @@ if (details) printf("number of interfaces left %d \n",k);
         } else {
             zone_type[i] = RADIATIVE;
         }
-	if (i==n) zone_type[i] = RADIATIVE; // the last zone is necessarily radiative
+	//if (i==n) zone_type[i] = RADIATIVE; // the last zone is necessarily radiative
         printf("ZONE: [%e, %e], schw= %.5e, type: %d\n",
                 last_zi, r_inter(i, j),
                 schwi,

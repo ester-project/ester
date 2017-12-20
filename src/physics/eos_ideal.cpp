@@ -20,7 +20,8 @@ int eos_ideal(const matrix &X,double Z,const matrix &T,const matrix &p,
 	eos.d=b;
 	eos.chi_T=b;
 	eos.chi_rho=b;
-	eos.s=K_BOL/mu/HYDROGEN_MASS*log(pow(T,1.5)/rho);
+	//eos.s=K_BOL/mu/HYDROGEN_MASS*log(pow(T,1.5)/rho);
+	eos.s=1./mu*log(pow(T,1.5)/rho);
 	
 	return 0;
 }
