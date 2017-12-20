@@ -22,8 +22,9 @@ void star2d::new_check_map() {
 	   find_zones(R_inter, p_inter);
 	   int nzones_ap=zone_type.size();
 	   if (nzones_av == nzones_ap) {
-		if (details) printf("Number of zones unchanged: do nothing\n");
-		return;
+		//if (details) printf("Number of zones unchanged: do nothing\n");
+		if (details) printf("Number of zones unchanged: do something\n");
+		//return;
 	   }
 	   // Redistribute the domains and output izif (index of zone interface)
 	   // as a global var.
