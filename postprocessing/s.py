@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib
 import numpy as np
 
 f = open('entropie.txt', 'r')
@@ -28,8 +29,9 @@ for line in g:
 
 
 plt.close()
+f, ax = plt.subplots()
 ymm=0.
-it=range(76,87)
+it=range(59,64)
 for k_choice in it :
  b = [[], []]
  r = []
@@ -56,4 +58,6 @@ for k_choice in it :
      plt.plot([r[11],r[11]],[-100,100],'k--',linewidth=3)
  plt.xlim(xmin=0.98,xmax=1.)
  plt.ylim(ymin=ym,ymax=ymm)
+
+f.canvas.manager.window.move(1000, 0)
 plt.show()
