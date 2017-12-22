@@ -22,9 +22,9 @@ void star2d::new_check_map() {
 	   find_zones(R_inter, p_inter);
 	   int nzones_ap=zone_type.size();
 	   if (nzones_av == nzones_ap) {
-		//if (details) printf("Number of zones unchanged: do nothing\n");
-		if (details) printf("Number of zones unchanged: do something\n");
-		//return;
+		if (details) printf("Number of zones unchanged: do nothing\n");
+//if (details) printf("Number of zones unchanged: do something\n");
+		return;
 	   }
 	   // Redistribute the domains and output izif (index of zone interface)
 	   // as a global var.
@@ -533,7 +533,7 @@ int k_rad=0;
 // filtrage chebyshev
 	matrix sp_bv2,bv2f;
 	sp_bv2=(map.gl.P,bv2);
-	int j0=0, n_filter=2;
+	int j0=0, n_filter=10;
 	for (int idom=0; idom< ndomains;idom++) {
 	   int ndom=map.gl.npts[idom];
            int j1=j0+ndom-1;
@@ -548,7 +548,7 @@ int k_rad=0;
 	if (fabs(bv2f(k,-1)) < 1.0e-3 ) schw(k,-1)=-1e-3;
     }
 // pas de filtrage
-	schw=bv2;
+	schw=bv2f;
 
 
 
@@ -586,8 +586,8 @@ int k_rad=0;
 // If there are n zones there are n+1 interfaces which encompass centre and
 // surface.
 
-    std::vector<double> les_zi(n+1);
-    for (int i=0; i< n+1;i++) les_zi[i]=0.;
+    std::vector<double> les_zi(n+2);
+    for (int i=0; i< n+2;i++) les_zi[i]=0.;
 
 // We first detect the number of true interfaces using the last latitude
 // point (-1), which is the closest one to the pole.
@@ -600,13 +600,14 @@ int k_rad=0;
 		les_zi[n]=zi;
         }
     }
-if (details) printf("n= %d\n",n);
-if (details) for (int i=0; i<n+1;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
+les_zi[n+1]=1.;
+if (details) printf("nb dinterface detecte= %d\n",n);
+if (details) for (int i=0; i<n+2;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
 
 // Now we select the thick zones by removing the thin ones (less than
 // 0.2%)
 int is=0;
-for (int i=0; i< n;i++) {
+for (int i=0; i< n+1;i++) {
 if (les_zi[i+1]-les_zi[i] < 0.001) {
    les_zi[i+1]=0.;
    les_zi[i]=0.;
@@ -614,36 +615,40 @@ if (les_zi[i+1]-les_zi[i] < 0.001) {
    i++;
    }
 }
-// on rajoute en dernier z(k_rad)
-//les_zi[n-1]=z(k_rad);
 
 if (details) printf("number of interf suppressed %d \n",is);
-if (details) for (int i=0; i< n;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
+if (details) for (int i=0; i< n+2;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
 
-// Now we count the number of true interfaces left ==> k
+// Now we count the number of true interfaces left ==> n_interf
 // and recollect their positions ==> the_zi
-int k=0;
+int n_interf=0;
 std::vector<double> the_zi(n);
 
-for (int i=0; i< n+1;i++) {
-if (les_zi[i] !=0.) {
-	the_zi[k]=les_zi[i];
-	   k++;
+for (int i=0; i< n+2;i++) {
+if (les_zi[i] !=0. && les_zi[i] !=1.) {
+	the_zi[n_interf]=les_zi[i];
+	   n_interf++;
           }
 }
-if (details) printf("number of interfaces left %d \n",k);
+if (details) printf("1/number of interfaces calcule %d \n",n_interf);
+matrix bb=ones(2,1);
+bb(0,0)=2; bb(1,0)=n_interf;
+n_interf=min(bb);
+if (details) printf("number of interfaces calcule %d \n",n_interf);
+
+n_interf=2; //min(3*ones(1,1),n_interf*ones(1,1));
 
 // Now we set the values of r_inter and p_inter
 // which include the true surface
-    r_inter = zeros(k+1, nth);
-    p_inter = zeros(k+1, nth);
+    r_inter = zeros(n_interf+1, nth);
+    p_inter = zeros(n_interf+1, nth);
     for (int j=0; j<nth;j++) {
-    for (int i=0; i< k;i++) {
+      for (int i=0; i< n_interf;i++) {
 	   zi=the_zi[i];
            r_inter(i, j) = map.gl.eval(r.col(j), zi)(0);
            p_inter(i, j) = map.gl.eval(PRES.col(j), zi)(0);
-     }
-     }
+      }
+    }
 
 // We add the surface as the last r_inter
     r_inter.setrow(-1, z(-1) * ones(1, nth));
@@ -655,29 +660,33 @@ if (details) printf("number of interfaces left %d \n",k);
            std::cout << "RAD: " << RADIATIVE << "\n";
         }
 
-    last_zi = 0.0;
-    n=k;
     int j=-1;
-    zone_type = std::vector<int>(n+1);
-    for (int i=0; i<n+1; i++) {
-        double mid_zone = (last_zi+r_inter(i, j))/2.0;
-        double schwi = map.gl.eval(schw, mid_zone)(0);
-        if (schwi < 0 && last_zi <=1e-5) {
-            zone_type[i] = CORE;
-        } else if (schwi < 0 && last_zi >1e-5) {
-            zone_type[i] = CONVECTIVE;
-        } else {
+    zone_type = std::vector<int>(n_interf+1);
+    double mid_zone = r_inter(0, j)/2.0; // middle of first zone
+    double schwi = map.gl.eval(schw, mid_zone)(0);
+    if (schwi < 0) {
+            zone_type[0] = CORE;
+    } else {
+            zone_type[0] = RADIATIVE;
+    }
+    printf("ZONE: [%e, %e], type: %d\n",
+                0., r_inter(0, j), zone_type[0]);
+
+    last_zi = r_inter(0, j);
+    //for (int i=1; i<3; i++) { // nb of zones limited to 3
+    for (int i=1; i<n_interf+1; i++) {
+        if ( zone_type[i-1] == CORE || zone_type[i-1] == CONVECTIVE) {
             zone_type[i] = RADIATIVE;
+        } else if (zone_type[i-1] == RADIATIVE) {
+            zone_type[i] = CONVECTIVE;
         }
-	//if (i==n) zone_type[i] = RADIATIVE; // the last zone is necessarily radiative
-        printf("ZONE: [%e, %e], schw= %.5e, type: %d\n",
-                last_zi, r_inter(i, j),
-                schwi,
-                zone_type[i]);
+        printf("ZONE: [%e, %e], type: %d\n",
+                last_zi, r_inter(i, j), zone_type[i]);
         last_zi = r_inter(i, j);
     }
-//exit(0);
 
+
+//exit(0);
 // Check if there are contiguous zones and suppress them if true
 /*  Should no longer be necessary
 	int nsz=0;
@@ -705,8 +714,8 @@ if (details) for (int i=0; i<n+1;i++) printf("i=%d, zone_type=%d\n",i,zone_type[
 	}
 	printf("In find_zones nsz=%d \n",nsz);
 */
-	if (details) printf("End of find_zones: number of zones =%d \n",n+1);
-	zone_type.resize(n+1);
+	if (details) printf("End of find_zones: number of zones =%d \n",n_interf+1);
+//	zone_type.resize(n_interf+1);
 
-    return n+1; // n+1 is the number of zones
+    return n_interf+1; // return the number of zones
 }

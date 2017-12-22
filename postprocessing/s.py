@@ -1,6 +1,11 @@
 import matplotlib.pyplot as plt
-import matplotlib
 import numpy as np
+
+try:
+    iti=int(raw_input('first it: '))
+    itl=int(raw_input('Last it: '))
+except ValueError:
+    print "Not a number"
 
 f = open('entropie.txt', 'r')
 
@@ -29,9 +34,8 @@ for line in g:
 
 
 plt.close()
-f, ax = plt.subplots()
 ymm=0.
-it=range(59,64)
+it=range(iti,itl)
 for k_choice in it :
  b = [[], []]
  r = []
@@ -45,19 +49,23 @@ for k_choice in it :
 #	 print R[1][i]
 
 
- ym=min(b[1][250:360])     
+ #ym=min(b[1][250:360])     
+ ym=min(b[1][0:360])     
  ymm=max([ymm,max(b[1][:])])
  plt.plot(b[0][:],b[1][:])
  plt.plot([r[9],r[9]],[-100,100],'b-')
  plt.plot([r[10],r[10]],[-100,100],'r-')
  plt.plot([r[11],r[11]],[-100,100],'k-')
+ if (k_choice == max(it)-1):
+    plt.plot(b[0][:],b[1][:],'bo')
+    plt.plot([r[9],r[9]],[-100,100],'b-x',linewidth=3)
+    plt.plot([r[10],r[10]],[-100,100],'r-x',linewidth=3)
+    plt.plot([r[11],r[11]],[-100,100],'k-x',linewidth=3)
  if (k_choice == max(it)):
      plt.plot(b[0][:],b[1][:],'ro')
      plt.plot([r[9],r[9]],[-100,100],'b--',linewidth=3)
      plt.plot([r[10],r[10]],[-100,100],'r--',linewidth=3)
      plt.plot([r[11],r[11]],[-100,100],'k--',linewidth=3)
- plt.xlim(xmin=0.98,xmax=1.)
+ plt.xlim(xmin=0.,xmax=1.)
  plt.ylim(ymin=ym,ymax=ymm)
-
-f.canvas.manager.window.move(1000, 0)
 plt.show()

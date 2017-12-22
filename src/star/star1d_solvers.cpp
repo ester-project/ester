@@ -674,6 +674,7 @@ FILE *fic=fopen("new_rhs_lamb.txt", "a");
 	qrad=zeros(nr,1);
 	qconv=qrad;
 	j0=0;
+	domain_type[ndomains-1]=RADIATIVE; // last domain is imposed to be radiative
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
 		j1=j0+ndom-1;
@@ -731,7 +732,7 @@ fclose(qfic);
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
 		j1=j0+ndom-1;
-		printf("n = %d, domain_type=%d\n",n,domain_type[n]);
+		//printf("n = %d, domain_type=%d\n",n,domain_type[n]);
                 if(n==0) { // care of the first and central domain
                         op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                         rhs_T(j0)=1.-T(j0);
@@ -768,19 +769,20 @@ fclose(qfic);
 			if (domain_type[n] == RADIATIVE) {
 			   //printf("Warning! last domain is not radiative: I stop\n");
 			   //exit(0);
-			   if (domain_type[n-1] == CONVECTIVE) {
-                              printf("LAST DOM CASE: CONVECTIVE n-1= %d RAD %d\n",n-1,n);
-                              op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
-                              op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
-                              op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
-                              rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
-                           } else if (domain_type[n-1] == RADIATIVE) {
-                              printf("LAST DOM CASE above RADIATIVE n= %d\n",n);
+			   //if (domain_type[n-1] == CONVECTIVE) {
+                           // printf("LAST DOM CASE: CONVECTIVE n-1= %d RAD %d\n",n-1,n);
+                           // op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
+                           // op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
+                           // op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
+                           // rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
+                           //} else if (domain_type[n-1] == RADIATIVE) {
+                            //  printf("LAST DOM CASE above RADIATIVE n= %d\n",n);
                               op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                               op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
                               rhs_T(j0)=-T(j0)+T(j0-1);
-                           }
+                           //}
 			} else if (domain_type[n] == CONVECTIVE) {
+                             printf("The LAST DOM CASE is CONVECTIVE %d\n",n);
 			     op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                              op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
                              rhs_T(j0)=-T(j0)+T(j0-1);
@@ -791,7 +793,7 @@ fclose(qfic);
                         op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                         op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
                 } else { // Now domains are not first and not last!
-	               // We first care of radiative domains
+	               // We first care about radiative domains
 		       if (domain_type[n] == RADIATIVE) {
 			if (domain_type[n-1] == CORE) {
                            op->bc_bot2_add_d(n,"Lambda","Frad",4*PI*(r*r).row(j0));
@@ -862,13 +864,13 @@ fclose(qfic);
 			// Continuity of Lambda bottom
                            op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                            op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
-			   if (domain_type[n+1] == RADIATIVE) {
-			   printf("CONVECTIVE ZONE n= %d Continuity of T top\n",n);
+			// if (domain_type[n+1] == RADIATIVE) {
+			// printf("CONVECTIVE ZONE n= %d Continuity of T top\n",n);
 			// continuity of T top of CZ needed if last convective domain
-			      op->bc_top2_add_d(n,eqn,"T",ones(1,1));
-			      op->bc_top1_add_d(n,eqn,"T",-ones(1,1));
-			      rhs_T(j1)=T(j1)-T(j1+1);
-                           }
+			//    op->bc_top2_add_d(n,eqn,"T",ones(1,1));
+			//    op->bc_top1_add_d(n,eqn,"T",-ones(1,1));
+			//    rhs_T(j1)=T(j1)-T(j1+1);
+                        // }
 		       }
 		} // End of options on n==0, n==ndomains-1, else
 //if (domain_type[0] == CORE) printf("j0=%d,j1=%d, %e, %e\n",j0,j1,rhs_T(j0),rhs_T(j1));
