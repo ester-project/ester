@@ -2,7 +2,6 @@
 #define _ESTER_H
 
 #include "constants.h"
-#include "graphics.h"
 #include "mapping.h"
 #include "matrix.h"
 #include "numdiff.h"

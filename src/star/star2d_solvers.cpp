@@ -1359,7 +1359,7 @@ void star2d::check_jacobian(solver *op,const char *eqn) {
 	/*drhs=dq;
 	drhs2=dq-dq2;
 	*/
-	static figure fig("/XSERVE");
+	// static figure fig("/XSERVE");
 
 	/*
 	fig.subplot(1,2);
@@ -1375,11 +1375,11 @@ void star2d::check_jacobian(solver *op,const char *eqn) {
 	if (drhs.nrows()==1) nn=drhs.ncols();
 	else nn=drhs.nrows();
 
-	fig.axis(0-nn/20.,nn*(1+1./20),-15,0);
-	fig.plot(log10(abs(drhs)+1e-20),"b");
-	fig.hold(1);
-	fig.plot(log10(abs(drhs2)+1e-20),"r");
-	fig.hold(0);
+	// fig.axis(0-nn/20.,nn*(1+1./20),-15,0);
+	// fig.plot(log10(abs(drhs)+1e-20),"b");
+	// fig.hold(1);
+	// fig.plot(log10(abs(drhs2)+1e-20),"r");
+	// fig.hold(0);
 
 	delete [] y;
 }

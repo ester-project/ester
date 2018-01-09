@@ -31,6 +31,7 @@ int main(int argc,char *argv[]) {
         ester_err("Could not initialize star");
         return 1;
     }
+    printf("Star init OK\n");
 
     nit=0;
 

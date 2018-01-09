@@ -410,6 +410,7 @@ matrix mapping::draw0(const matrix &A,int parity,matrix &x,matrix &y) const {
 }
 
 
+#if 0
 matrix mapping::drawi0(const matrix &A,int sr,int st,int parity,matrix &x,matrix &y) const {
 
 	matrix zz(sr,4*st+1),r1,z1;
@@ -501,7 +502,6 @@ matrix mapping::drawi0(const matrix &A,int sr,int st,int parity,matrix &x,matrix
 
 	return zz;
 }
-
 
 void mapping::draw(figure *pfig,const matrix &A,int parity) const {
 
@@ -634,6 +634,7 @@ void mapping::spectrum(figure *pfig,const matrix &y,int parity) const {
 	pfig->hold(0);
 
 }
+#endif
 
 mapping::ext_map::ext_map(mapping *map) {
 

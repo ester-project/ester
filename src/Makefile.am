@@ -41,7 +41,7 @@ main/ester: main/ester.in Makefile
 
 lib_LTLIBRARIES			= libester.la
 libester_la_SOURCES		= global/global.cpp									\
-                          graphics/graphics.cpp	graphics/matplotlib.cpp		\
+                          graphics/matplotlib.cpp		\
                           mapping/mapping.cpp mapping/remapper.cpp 			\
                           matrix/mat_math.cpp matrix/matrix_block_diag.cpp	\
                           matrix/matrix.cpp matrix/matrix_map.cpp			\
@@ -72,7 +72,6 @@ library_include_HEADERS = $(srcdir)/include/constants.h \
 						  $(srcdir)/include/physics.h	\
 						  $(srcdir)/include/star.h		\
 						  $(srcdir)/include/debug.h		\
-						  $(srcdir)/include/graphics.h	\
 						  $(srcdir)/include/matrix.h	\
 						  $(srcdir)/include/parser.h	\
 						  $(srcdir)/include/solver.h	\

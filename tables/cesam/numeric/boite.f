@@ -32,10 +32,10 @@ c---------------------------------------------------------------
  	desy(4)=y+dy
  	desy(5)=y-dy
  	
- 	CALL pgsls(2)
- 	CALL pgline(5,desx,desy)
- 	CALL pgsls(1)
- 	CALL pgpoint(1,x,y,16)
+ 	! CALL pgsls(2)
+ 	! CALL pgline(5,desx,desy)
+ 	! CALL pgsls(1)
+ 	! CALL pgpoint(1,x,y,16)
  	
  	RETURN
  	
