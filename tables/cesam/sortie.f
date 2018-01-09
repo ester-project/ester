@@ -20,7 +20,6 @@ c-----------------------------------------------------------------------
 	 CLOSE(UNIT=102)
 	 CLOSE(UNIT=103)
 	ENDIF
-	CALL pgend
 	STOP
 	
 	END SUBROUTINE sortie

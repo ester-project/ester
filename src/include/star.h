@@ -8,7 +8,6 @@
 #include "physics.h"
 #include "constants.h"
 #include "parser.h"
-#include "graphics.h"
 #include "debug.h"
 #include "symbolic.h"
 
@@ -167,11 +166,11 @@ class star2d {
         matrix New_distribute_domains(int ndom,matrix p_inter);
 
 	
-	void draw(figure *,const matrix &,int parity=0) const;
-	void drawi(figure *,const matrix &,int sr,int st,int parity=0) const;
-	void drawc(figure *,const matrix &,int ncontours,int parity=0) const;
-	void drawci(figure *,const matrix &,int sr,int st,int ncontours,int parity=0) const;
-	void spectrum(figure *,const matrix &,int parity=0) const;
+	// void draw(figure *,const matrix &,int parity=0) const;
+	// void drawi(figure *,const matrix &,int sr,int st,int parity=0) const;
+	// void drawc(figure *,const matrix &,int ncontours,int parity=0) const;
+	// void drawci(figure *,const matrix &,int sr,int st,int ncontours,int parity=0) const;
+	// void spectrum(figure *,const matrix &,int parity=0) const;
 
 	matrix kconv() const;
 	void add_kconv(solver *op,const char *eqn,const matrix &d);
@@ -227,7 +226,7 @@ class star1d : public star2d {
 	
 	virtual void fill();
 	
-	void spectrum(figure *,const matrix &,const char *line="") const;
+	// void spectrum(figure *,const matrix &,const char *line="") const;
 	
 	virtual void check_jacobian(solver *op,const char *eqn);
 

@@ -3,7 +3,6 @@
 
 #include "matrix.h"
 #include "numdiff.h"
-#include "graphics.h"
 #include "solver.h"
 
 #define MAP_BONAZZOLA 0
@@ -67,12 +66,12 @@ class mapping {
 
 
 	matrix draw0(const matrix &A,int parity,matrix &x,matrix &y) const;
-	void draw(figure *pfig,const matrix &A,int parity=0) const;
-	matrix drawi0(const matrix &A,int sr,int st,int parity,matrix &x,matrix &y) const;
-	void drawi(figure *pfig,const matrix &A,int sr,int st,int parity=0) const;
-	void drawc(figure *pfig,const matrix &A,int ncontours,int parity=0) const;
-	void drawci(figure *pfig,const matrix &A,int sr,int st,int ncontours,int parity=0) const;
-	void spectrum(figure *pfig,const matrix &y,int parity=0) const;
+	// void draw(figure *pfig,const matrix &A,int parity=0) const;
+	// matrix drawi0(const matrix &A,int sr,int st,int parity,matrix &x,matrix &y) const;
+	// void drawi(figure *pfig,const matrix &A,int sr,int st,int parity=0) const;
+	// void drawc(figure *pfig,const matrix &A,int ncontours,int parity=0) const;
+	// void drawci(figure *pfig,const matrix &A,int sr,int st,int ncontours,int parity=0) const;
+	// void spectrum(figure *pfig,const matrix &y,int parity=0) const;
 
 	friend class ext_map;
 

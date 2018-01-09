@@ -113,17 +113,17 @@ solution *solve_poly1d(double n, double tol, int nr) {
         return NULL;
     }
 
-    figure fig("/XSERVE");
-    fig.subplot(2, 1);
+    // figure fig("/XSERVE");
+    // fig.subplot(2, 1);
 
-    fig.plot(map.r, Phi);
-    fig.label("r", "Phi", "");
+    // fig.plot(map.r, Phi);
+    // fig.label("r", "Phi", "");
 
-    S.set_value("Phi", Phi);
-    S.set_value("Lambda", Lambda*ones(1, 1));
-    S.set_value("Phi0", Phi0*ones(1, 1));
-    fig.semilogy(map.r.block(1, -1, 0, 0), abs(eq.eval()).block(1, -1, 0, 0));
-    fig.label("r", "Residual", "");
+    // S.set_value("Phi", Phi);
+    // S.set_value("Lambda", Lambda*ones(1, 1));
+    // S.set_value("Phi0", Phi0*ones(1, 1));
+    // fig.semilogy(map.r.block(1, -1, 0, 0), abs(eq.eval()).block(1, -1, 0, 0));
+    // fig.label("r", "Residual", "");
 
     printf("\nLambda = %f\n", Lambda);
     printf("Phi(0) = %f\n", Phi(0));
@@ -680,18 +680,18 @@ solution *solve_poly2d(double n, double tol, int nr, int nt, int nex, double ome
 		return NULL;
 	}
 
-	figure fig("/XSERVE");
-	fig.subplot(2, 1);
+	// figure fig("/XSERVE");
+	// fig.subplot(2, 1);
 
-	fig.colorbar();
-	map.draw(&fig, Phi);
-	fig.label("", "", "phi");
+	// fig.colorbar();
+	// map.draw(&fig, Phi);
+	// fig.label("", "", "phi");
 
-	S.set_value("Phi", Phi);
-	S.set_value("Lambda", Lambda * ones(1, 1));
-	S.set_value("Phi0", Phi0 * ones(1, 1));
-	fig.semilogy(map.r.block(1, -1, 0, 0), abs(eq.eval()).block(1, -1, 0, 0));
-	fig.label("r", "Residual", "");
+	// S.set_value("Phi", Phi);
+	// S.set_value("Lambda", Lambda * ones(1, 1));
+	// S.set_value("Phi0", Phi0 * ones(1, 1));
+	// fig.semilogy(map.r.block(1, -1, 0, 0), abs(eq.eval()).block(1, -1, 0, 0));
+	// fig.label("r", "Residual", "");
 
 	printf("Lambda = %f\n",Lambda);
 	printf("Phi0 = %f\n", Phi(0, 0));

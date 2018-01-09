@@ -57,13 +57,7 @@ int main(int argc,char *argv[]) {
 		A=A1d;
 	}
 
-	figure *fig;
 	solver *op;
-	
-	if(config.verbose) {
-		fig=new figure(config.plot_device);
-		fig->subplot(2,2);
-	}
 	
 	op=A.init_solver();
 	if(config.verbose>2) op->verbose=1;
@@ -106,20 +100,6 @@ int main(int argc,char *argv[]) {
 			Lzc=Lzc.concatenate(A.Lzcore()*ones(1,1));
 		}
 		
-		if(config.verbose) {
-			fig->subplot(2,2);
-			fig->colorbar();
-			A.draw(fig,A.w);
-			fig->label("Differential rotation","","");
-			fig->plot(-logTeff,logL);
-			fig->label("-log(Teff(pol))","log(L/Lsun)","");
-			fig->axis(1.05*max(XX),0,min(Wbk)*0.95,max(Wbk)*1.05);
-			fig->plot(XX,Wbk);
-			fig->label("X(core)","Omega_bk","");
-			fig->axis(1.05*max(XX),0,min(Lzc/A.Lz())*0.95,max(Lzc/A.Lz())*1.05);
-			fig->plot(XX,Lzc/A.Lz());
-			fig->label("X(core)","Lz_core/Lz","");
-		}
 		sprintf(outfile, "%s_%04d", config.output_file, n);
 		A.write(outfile, config.output_mode);
 		Xc-=dXc;
