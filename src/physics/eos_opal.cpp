@@ -35,7 +35,7 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	printf("Can't initialize OPAL EOS table\n");
     	return error;
     }
-    
+
     rho.dim(T.nrows(),T.ncols());
     eos.s.dim(T.nrows(),T.ncols());
     eos.G1.dim(T.nrows(),T.ncols());

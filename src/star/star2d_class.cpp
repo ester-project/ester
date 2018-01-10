@@ -3,7 +3,7 @@
 #include "matrix.h"
 #include "star.h"
 #include <string.h>
-#include <stdlib.h>
+#include <cstdlib>
 #ifdef USE_HDF5
 #include <H5Cpp.h>
 #endif
