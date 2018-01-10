@@ -739,7 +739,7 @@ fclose(qfic);
                         op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                         rhs_T(j0)=1.-T(j0);
 			if (domain_type[n] == RADIATIVE) {
-			   printf("Central Radiative domain n= %d cont of DT on top\n",n);
+			   //printf("Central Radiative domain n= %d cont of DT on top\n",n);
 // MR: I impose the continuity of the local flux rather than the temperature derivative
 			   //op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
 			   //op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));

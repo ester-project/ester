@@ -475,9 +475,9 @@ matrix star2d::solve_temp_rad() {
 //int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter)
 int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     double last_zi, zi;
-    matrix schw, dschw,bv2;
+    matrix schw, dschw,bv2,schwBP;
 
-    matrix T_schw = solve_temp_rad();
+    matrix T_rad = solve_temp_rad();
 
 	if (details) {
             printf("Start of find zone, min_core= %e\n",min_core_size);
@@ -491,25 +491,31 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 // "itest_sch" is the first grid point where Schwarzschild is tested
 // (to avoid too small cores)
 
+/** Schwarzschild criterion
+    schw = -(grad P).(grad s)
+    if schw > 0 then stable
+    if schw < 0 then unstable = convection zone
+**/
 
 // Paco's version
 //    schw=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
 //        -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
 
-// Bertrand version
-      //schw = -(map.gzz*(D, p)+map.gzt*(p, Dt))*((D, T_schw)/T_schw-eos.del_ad*(D, log(p))) -
-          //(map.gzt*(D, p)+map.gtt*(p, Dt))*((T_schw, Dt)/T_schw-eos.del_ad*(log(p), Dt));
+// We evaluate the Schwarzschild criterion from the radiative solution T_rad
+      schwBP = -(map.gzz*(D, p)+map.gzt*(p, Dt))*((D, T_rad)/T_rad-eos.del_ad*(D, log(p))) -
+          (map.gzt*(D, p)+map.gtt*(p, Dt))*((T_rad, Dt)/T_rad-eos.del_ad*(log(p), Dt));
 
-    //for (int k=0;k<nr;k++) fprintf(fic,"i= %d schw= %e T=%e, p=%e, na=%e, gzz=%e\n",k,schw(k,-1),T_schw(k,-1),p(k,-1),eos.del_ad(k,-1),map.gzz(k,-1));
 
-    //schw.setrow(0, zeros(1, nth));
+    //for (int k=0;k<nr;k++) fprintf(fic,"i= %d schw= %e T=%e, p=%e, na=%e, gzz=%e\n",k,schw(k,-1),T_rad(k,-1),p(k,-1),eos.del_ad(k,-1),map.gzz(k,-1));
+
+    schwBP.setrow(0, zeros(1, nth));
     //schw = schw/r/r;
     //schw.setrow(0, zeros(1, nth));
     //schw.setrow(0, -(D.row(0), schw)/D(0, 0));
 	//schwarz=schw;
 	////printf("size of schwarz %d,%d\n",schwarz.nrows(),schwarz.ncols());
 
-    //for (int k=0;k<nr;k++) fprintf(fic,"i= %d schw= %e T_schw=%e, T=%e\n",k,schw(k),T_schw(k),T(k));
+    //for (int k=0;k<nr;k++) fprintf(fic,"i= %d schw= %e T_rad=%e, T=%e\n",k,schw(k),T_rad(k),T(k));
 
 // Compute the square of the BV frequency
 	bv2=(D,p)/p/eos.G1-(D,rho)/rho;
@@ -548,13 +554,13 @@ int k_rad=0;
 	if (fabs(bv2f(k,-1)) < 1.0e-3 ) schw(k,-1)=-1e-3;
     }
 // pas de filtrage
-	schw=bv2f;
+	schw=schwBP;
 
 
 
     FILE *fic = fopen("schwi.txt", "a");
 	fprintf(fic,"it= %d\n",glit);
-    for (int k=0;k<nr;k++) fprintf(fic,"%d  %e %e %e %e\n",k,r(k,-1),schw(k,-1),bv2(k,-1),bv2f(k,-1));
+    for (int k=0;k<nr;k++) fprintf(fic,"%d  %e %e %e %e\n",k,r(k,-1),schwBP(k,-1),bv2(k,-1),bv2f(k,-1));
     fclose(fic);
 
     //dschw = (D, schw);
@@ -593,7 +599,7 @@ int k_rad=0;
 // point (-1), which is the closest one to the pole.
     n = 0;
     //for (int i=itest_sch; i<=nl; i++) {  // we stop the search at nl or nl-1
-    for (int i=itest_sch; i<nr; i++) {  // we stop the search at nl or nl-1
+    for (int i=itest_sch; i<nr; i++) {  
         if (schw(i-1, -1) * schw(i, -1) < 0 ) {
                 n++;
 		zi=z(i-1)-schw(i-1,-1)*(z(i)-z(i-1))/(schw(i,-1)-schw(i-1,-1));
