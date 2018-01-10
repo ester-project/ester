@@ -8,7 +8,7 @@
 std::map<std::string, PyObject *> matplotlib::py;
 std::vector<std::string> matplotlib::functions = {
     "plot",
-    "semilogy",
+    "semilogx",
     "semilogy",
     "loglog",
     "subplot",
@@ -197,6 +197,22 @@ void matplotlib::semilogx(const matrix& x, std::string label) {
     call("semilogx", args, kwargs);
 }
 
+void matplotlib::semilogx(const matrix& x, const matrix& y, std::string label) {
+    if (noplot) return;
+
+    PyObject *pyx = matrix_to_py(x);
+    PyObject *pyy = matrix_to_py(y);
+
+    PyObject *args = PyTuple_New(2);
+    PyTuple_SetItem(args, 0, pyx);
+    PyTuple_SetItem(args, 1, pyy);
+
+    PyObject *kwargs = PyDict_New();
+    PyDict_SetItemString(kwargs, "label", PyString_FromString(label.c_str()));
+
+    call("semilogx", args, kwargs);
+}
+
 void matplotlib::semilogy(const matrix& x, std::string label) {
     if (noplot) return;
 
@@ -204,6 +220,22 @@ void matplotlib::semilogy(const matrix& x, std::string label) {
 
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, pyx);
+
+    PyObject *kwargs = PyDict_New();
+    PyDict_SetItemString(kwargs, "label", PyString_FromString(label.c_str()));
+
+    call("semilogy", args, kwargs);
+}
+
+void matplotlib::semilogy(const matrix& x, const matrix& y, std::string label) {
+    if (noplot) return;
+
+    PyObject *pyx = matrix_to_py(x);
+    PyObject *pyy = matrix_to_py(y);
+
+    PyObject *args = PyTuple_New(2);
+    PyTuple_SetItem(args, 0, pyx);
+    PyTuple_SetItem(args, 1, pyy);
 
     PyObject *kwargs = PyDict_New();
     PyDict_SetItemString(kwargs, "label", PyString_FromString(label.c_str()));

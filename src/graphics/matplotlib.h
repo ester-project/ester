@@ -25,7 +25,9 @@ class matplotlib {
         static void plot(const matrix&, std::string label = "");
         static void plot(const matrix&, const matrix&, std::string label = "");
         static void semilogx(const matrix&, std::string label = "");
+        static void semilogx(const matrix&, const matrix&, std::string label = "");
         static void semilogy(const matrix&, std::string label = "");
+        static void semilogy(const matrix&, const matrix&, std::string label = "");
         static void loglog(const matrix&, const matrix&, std::string label = "");
         static void pcolormesh(const matrix&, const matrix&, const matrix&);
         static void axvline(double);
