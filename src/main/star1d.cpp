@@ -9,6 +9,25 @@
 #include <string.h>
 #include <iomanip>
 
+int killed=0;
+
+void sig_handler(int sig) {
+    char yn;
+    if (sig == SIGINT) {
+        printf("\nFinish iteration and save model ([y]/n)?");
+        if (scanf(" %c",&yn) == 1) {
+            if (yn=='y') {
+                killed = 1;
+                return;
+            }
+        }
+        else {
+            killed = 1;
+        }
+    }
+    exit(sig);
+}
+
 int main(int argc,char *argv[]) {
 
     int nit,last_it;
@@ -17,6 +36,8 @@ int main(int argc,char *argv[]) {
     // double t_plot;
     configuration config(argc,argv);
     // figure *fig = NULL;
+
+    signal(SIGINT, sig_handler);
 
     t.start();
     // if(config.verbose) {
@@ -38,7 +59,7 @@ int main(int argc,char *argv[]) {
     matrix tt(config.maxit+1,1),error(config.maxit+1,1);
 
     // t_plot=0;
-    last_it=nit>=config.maxit;
+    last_it = (nit>=config.maxit) || killed;
     op=A.init_solver();
     if(config.verbose>2) op->verbose=1;
     A.config.newton_dmax=config.newton_dmax;
