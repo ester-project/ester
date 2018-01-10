@@ -368,7 +368,8 @@ void star1d::plot(const matrix& error) {
     plt.clf();
 
     plt.subplot(231);
-    // plt.title(std::string("iter: ") + std::to_string(nit));
+// Explanation: divide the screen into 2 lines 3 columns and set in subplot 1
+    plt.title(std::string("iter: ") + std::to_string(glit));
     plt.plot(r, rho, "$\\rho$");
     plt.plot(r, T, "$T$");
     plt.plot(r, p, "$p$");
@@ -378,11 +379,13 @@ void star1d::plot(const matrix& error) {
     }
 
     plt.subplot(232);
+// Explanation: divide the screen into 2 lines 3 columns and set in subplot 2
     // plt.title(std::string("iter: ") + std::to_string(nit));
     plt.plot(r, phi, "$\\Phi$");
     plt.legend();
 
     plt.subplot(233, true);
+// Explanation: divide the screen into 2 lines 3 columns and set in subplot 3
     std::ostringstream str_stream;
 
     str_stream.clear();
@@ -408,7 +411,12 @@ void star1d::plot(const matrix& error) {
 
 
     plt.subplot(223);
+// Explanation: divide the screen into 2 lines 2 columns and set in subplot 3
     plt.semilogy(error, "error");
+    plt.legend();
+
+    plt.subplot(224);
+    plt.plot(entropy(), "s");
     plt.legend();
 
     plt.draw();

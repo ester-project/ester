@@ -15,14 +15,10 @@ int main(int argc,char *argv[]) {
 	//double err;
 	tiempo t;
 	double t_plot;
+	int last_plot_it=0;
 	configuration config(argc,argv);
-	figure *fig = NULL;
 	
 	t.start();
-	if(config.verbose) {
-		fig=new figure(config.plot_device);
-		fig->subplot(2,1);
-	}
 	
 	star1d A;
 	solver *op;
@@ -93,7 +89,7 @@ int main(int argc,char *argv[]) {
 
 		}
   	//if (nit > 3) exit(0);
-  	if (nit > 100) last_it=1;
+  	if (nit > 70) last_it=1;
 	}
 	if(config.verbose) {
 		printf("Mass=%3.3f Msun  Radius=%3.3f Rsun  Luminosity=%3.3f Lsun  Teff=%1.1f K\n",
@@ -107,10 +103,6 @@ int main(int argc,char *argv[]) {
 	}
 	delete op;
 	A.write(config.output_file,config.output_mode);
-	
-	if(config.verbose) {
-		delete fig;
-	}
 	
 	t.stop();
 	if(config.verbose) 

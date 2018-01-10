@@ -24,13 +24,8 @@ int main(int argc,char *argv[]) {
 	double err;
 	tiempo t;
 	configuration config(argc,argv);
-	figure *fig = NULL;
 	
 	t.start();
-	if(config.verbose) {
-		fig=new figure(config.plot_device);
-	//	fig->subplot(2,1);
-	}
 	
 	star1d A;
 	solver *op;
@@ -109,8 +104,8 @@ printf("Newton iteration finished it=%d err=%e time=%e\n",nit,err,A.time);
                 rk.set_var("log_R",log(A.R)*ones(1,1));
                 if(state == RK_STEP) {
 			//fig->axis(0.,1.,0.6,0.71);
-                        fig->plot(A.r, A.Wr);
-                        fig->hold(1);
+                        //fig->plot(A.r, A.Wr);
+                        //fig->hold(1);
                 //        printf("t = %f  \n", A.time );
 			n_step++;
                 	sprintf(outfile,"%s_%04d",config.output_file,n_step);
@@ -127,10 +122,6 @@ printf("Newton iteration finished it=%d err=%e time=%e\n",nit,err,A.time);
 	}
 	delete op;
 	A.write(config.output_file,config.output_mode);
-	
-	if(config.verbose) {
-		delete fig;
-	}
 	
 	t.stop();
 	if(config.verbose) 
