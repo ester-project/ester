@@ -57,9 +57,11 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	Xi=X(i);Zi=Z;t6i=t6(i);p_mbi=p_mb(i);
     	eos5_xtrin_(&Xi,&Zi,&t6i,&p_mbi,&rhoi);
     	rho(i)=rhoi;
+// Note (*(eeos_.eos+2) is a trick to get the value of the common/eeos/eos(1+2) field
+// since eos(3) is the entropy, eos.s is indeed the entropy (in units of energy/T6)
     	eos.s(i)=1e6*(*(eeos_.eos+2))/RGP;
-		eos.G1(i)=*(eeos_.eos+7);
-		eos.del_ad(i)=1/(*(eeos_.eos+8));
+	eos.G1(i)=*(eeos_.eos+7);
+	eos.del_ad(i)=1/(*(eeos_.eos+8));
     	eos.G3_1(i)=*(eeos_.eos+7)/(*(eeos_.eos+8));
     	eos.d(i)=(*(eeos_.eos+6))/(*(eeos_.eos+5));
     	eos.cp(i)=1e6*(*(eeos_.eos+7))*(*(eeos_.eos+4))/(*(eeos_.eos+5));
