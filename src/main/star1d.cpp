@@ -9,6 +9,25 @@
 #include <string.h>
 #include <iomanip>
 
+int killed=0;
+
+void sig_handler(int sig) {
+    char yn;
+    if (sig == SIGINT) {
+        printf("\nFinish iteration and save model ([y]/n)?");
+        if (scanf(" %c",&yn) == 1) {
+            if (yn=='y') {
+                killed = 1;
+                return;
+            }
+        }
+        else {
+            killed = 1;
+        }
+    }
+    exit(sig);
+}
+
 int main(int argc,char *argv[]) {
 
 	int nit,last_it;
