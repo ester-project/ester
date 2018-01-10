@@ -372,7 +372,7 @@ void star1d::plot(const matrix& error) {
     plt.title(std::string("iter: ") + std::to_string(glit));
     plt.plot(r, rho, "$\\rho$");
     plt.plot(r, T, "$T$");
-    plt.plot(r, p, "$p$");
+    plt.semilogy(r, p, "$p$");
     plt.legend();
     for (int i=0; i<ndomains; i++) {
         plt.axvline(map.gl.xif[i]);
@@ -416,8 +416,8 @@ void star1d::plot(const matrix& error) {
     plt.legend();
 
     plt.subplot(224);
-    plt.plot(entropy(), "s");
-    plt.legend();
+    plt.plot(r,entropy(), "s");
+    //plt.legend();
 
     plt.draw();
     plt.pause();

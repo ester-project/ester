@@ -103,6 +103,7 @@ int main(int argc,char *argv[]) {
 	}
 	delete op;
 	A.write(config.output_file,config.output_mode);
+	A.plot(error.block(0, nit-1, 0 ,0));
 	
 	t.stop();
 	if(config.verbose) 
