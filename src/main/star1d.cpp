@@ -129,7 +129,7 @@ int main(int argc,char *argv[]) {
     if(config.verbose)
         printf("%2.2f seconds\n",t.value());
 
-    plt.show(true);
+    plt::show(true);
 
     return 0;
 }

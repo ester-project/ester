@@ -3,6 +3,7 @@
 import numpy as _np
 import matplotlib.pyplot as _plt
 import ester_wrap as _wrapper
+_wrapper.plt_init(True)
 
 SIG_SB = 5.670400e-5;
 K_BOL = 1.3806503e-16;
@@ -14,7 +15,6 @@ C_LIGHT = 2.99792458e10;
 M_SUN = 1.9891e33;
 R_SUN = 6.95508e10;
 L_SUN = 3.8396e33;
-
 
 def _mat_to_numpy(mat):
     nr = mat.nrows()
