@@ -5,8 +5,8 @@
 
 #include <sstream>
 
-std::map<std::string, PyObject *> matplotlib::py;
-std::vector<std::string> matplotlib::functions = {
+std::map<std::string, PyObject *> plt::py;
+std::vector<std::string> plt::functions = {
     "plot",
     "semilogx",
     "semilogy",
@@ -26,9 +26,7 @@ std::vector<std::string> matplotlib::functions = {
     "close",
     "pcolormesh",
     "pause"};
-bool matplotlib::noplot = false;
-
-matplotlib plt;
+bool plt::noplot = false;
 
 static PyObject *import_module(const std::string& name) {
     PyObject *module_name = PyString_FromString(name.c_str());
@@ -47,8 +45,8 @@ static PyObject *import_module(const std::string& name) {
     return module;
 }
 
-void matplotlib::init(bool noplot) {
-    matplotlib::noplot = noplot;
+void plt::init(bool noplot) {
+    plt::noplot = noplot;
     if (noplot) return;
 
     static bool init = false;
@@ -74,7 +72,7 @@ void matplotlib::init(bool noplot) {
         if (!matplotlib) {
             ester_warn("import matplotlib failed");
             PyErr_PrintEx(0);
-            matplotlib::noplot = true;
+            plt::noplot = true;
             return;
         }
 
@@ -91,22 +89,22 @@ void matplotlib::init(bool noplot) {
         if (!pyplot) {
             ester_warn("import matplotlib.pyplot failed");
             PyErr_PrintEx(0);
-            matplotlib::noplot = true;
+            plt::noplot = true;
             return;
         }
 
-        for (auto function: matplotlib::functions) {
+        for (auto function: plt::functions) {
             py[function] = PyObject_GetAttrString(pyplot, function.c_str());
             if (!py[function]) {
                 ester_warn("Failed loading python function `%s'", function.c_str());
                 PyErr_PrintEx(0);
-                matplotlib::noplot = true;
+                plt::noplot = true;
                 return;
             }
             if (!PyFunction_Check(py[function])) {
                 ester_warn("`%s' is not a function...", function.c_str());
                 PyErr_PrintEx(0);
-                matplotlib::noplot = true;
+                plt::noplot = true;
                 return;
             }
         }
@@ -131,14 +129,10 @@ void matplotlib::init(bool noplot) {
 
         atexit(Py_Finalize);
         if (close == false) {
-            atexit(matplotlib::block);
+            atexit(plt::block);
         }
         init = true;
     }
-}
-
-matplotlib::matplotlib() {
-    matplotlib::init();
 }
 
 PyObject *matrix_to_py(const matrix& m) {
@@ -153,7 +147,7 @@ PyObject *matrix_to_py(const matrix& m) {
 
 }
 
-void matplotlib::plot(const matrix& x, std::string label) {
+void plt::plot(const matrix& x, std::string label) {
     if (noplot) return;
 
     PyObject *pyx = matrix_to_py(x);
@@ -167,7 +161,7 @@ void matplotlib::plot(const matrix& x, std::string label) {
     call("plot", args, kwargs);
 }
 
-void matplotlib::plot(const matrix& x, const matrix& y, std::string label) {
+void plt::plot(const matrix& x, const matrix& y, std::string label) {
     if (noplot) return;
 
     PyObject *pyx = matrix_to_py(x);
@@ -183,7 +177,7 @@ void matplotlib::plot(const matrix& x, const matrix& y, std::string label) {
     call("plot", args, kwargs);
 }
 
-void matplotlib::semilogx(const matrix& x, std::string label) {
+void plt::semilogx(const matrix& x, std::string label) {
     if (noplot) return;
 
     PyObject *pyx = matrix_to_py(x);
@@ -197,7 +191,7 @@ void matplotlib::semilogx(const matrix& x, std::string label) {
     call("semilogx", args, kwargs);
 }
 
-void matplotlib::semilogx(const matrix& x, const matrix& y, std::string label) {
+void plt::semilogx(const matrix& x, const matrix& y, std::string label) {
     if (noplot) return;
 
     PyObject *pyx = matrix_to_py(x);
@@ -213,7 +207,7 @@ void matplotlib::semilogx(const matrix& x, const matrix& y, std::string label) {
     call("semilogx", args, kwargs);
 }
 
-void matplotlib::semilogy(const matrix& x, std::string label) {
+void plt::semilogy(const matrix& x, std::string label) {
     if (noplot) return;
 
     PyObject *pyx = matrix_to_py(x);
@@ -227,7 +221,7 @@ void matplotlib::semilogy(const matrix& x, std::string label) {
     call("semilogy", args, kwargs);
 }
 
-void matplotlib::semilogy(const matrix& x, const matrix& y, std::string label) {
+void plt::semilogy(const matrix& x, const matrix& y, std::string label) {
     if (noplot) return;
 
     PyObject *pyx = matrix_to_py(x);
@@ -243,19 +237,35 @@ void matplotlib::semilogy(const matrix& x, const matrix& y, std::string label) {
     call("semilogy", args, kwargs);
 }
 
-void matplotlib::legend() {
+void plt::loglog(const matrix& x, const matrix& y, std::string label) {
+    if (noplot) return;
+
+    PyObject *pyx = matrix_to_py(x);
+    PyObject *pyy = matrix_to_py(y);
+
+    PyObject *args = PyTuple_New(2);
+    PyTuple_SetItem(args, 0, pyx);
+    PyTuple_SetItem(args, 1, pyy);
+
+    PyObject *kwargs = PyDict_New();
+    PyDict_SetItemString(kwargs, "label", PyString_FromString(label.c_str()));
+
+    call("loglog", args, kwargs);
+}
+
+void plt::legend() {
     if (noplot) return;
 
     call("legend");
 }
 
-void matplotlib::colorbar() {
+void plt::colorbar() {
     if (noplot) return;
 
     call("colorbar");
 }
 
-void matplotlib::title(const std::string& title) {
+void plt::title(const std::string& title) {
     if (noplot) return;
 
     PyObject *args = PyTuple_New(1);
@@ -263,31 +273,31 @@ void matplotlib::title(const std::string& title) {
     call("title", args);
 }
 
-void matplotlib::clf() {
+void plt::clf() {
     if (noplot) return;
 
     call("clf");
 }
 
-void matplotlib::ion() {
+void plt::ion() {
     if (noplot) return;
 
     call("ion");
 }
 
-void matplotlib::ioff() {
+void plt::ioff() {
     if (noplot) return;
 
     call("ioff");
 }
 
-void matplotlib::close() {
+void plt::close() {
     if (noplot) return;
 
     call("close");
 }
 
-void matplotlib::show(bool block) {
+void plt::show(bool block) {
     if (noplot) return;
 
     PyObject *args = PyTuple_New(0);
@@ -296,13 +306,13 @@ void matplotlib::show(bool block) {
     call("show", args, kwargs);
 }
 
-void matplotlib::block() {
+void plt::block() {
     if (noplot) return;
 
     show(true);
 }
 
-void matplotlib::pause(double t) {
+void plt::pause(double t) {
     if (noplot) return;
 
     PyObject *args = PyTuple_New(1);
@@ -310,7 +320,7 @@ void matplotlib::pause(double t) {
     call("pause", args);
 }
 
-void matplotlib::subplot(int subplot, bool clear_axis) {
+void plt::subplot(int subplot, bool clear_axis) {
     if (noplot) return;
 
     PyObject *args = PyTuple_New(1);
@@ -333,13 +343,13 @@ void matplotlib::subplot(int subplot, bool clear_axis) {
     }
 }
 
-void matplotlib::draw() {
+void plt::draw() {
     if (noplot) return;
 
     call("draw");
 }
 
-void matplotlib::axvline(double x) {
+void plt::axvline(double x) {
     if (noplot) return;
 
     PyObject *args = PyTuple_New(1);
@@ -351,7 +361,7 @@ void matplotlib::axvline(double x) {
     call("axvline", args, kwargs);
 }
 
-void matplotlib::text(double x, double y, std::string text) {
+void plt::text(double x, double y, std::string text) {
     if (noplot) return;
 
     PyObject *args = PyTuple_New(3);
@@ -361,7 +371,7 @@ void matplotlib::text(double x, double y, std::string text) {
     call("text", args);
 }
 
-void matplotlib::savefig(const std::string& filename) {
+void plt::savefig(const std::string& filename) {
     if (noplot) return;
 
     PyObject *args = PyTuple_New(1);
@@ -369,7 +379,7 @@ void matplotlib::savefig(const std::string& filename) {
     call("savefig", args);
 }
 
-void matplotlib::call(const std::string& name, PyObject *args, PyObject *kwargs) {
+void plt::call(const std::string& name, PyObject *args, PyObject *kwargs) {
     if (noplot) return;
 
     PyObject *res;
@@ -388,7 +398,7 @@ void matplotlib::call(const std::string& name, PyObject *args, PyObject *kwargs)
     else ester_warn("call to matplotlib.pyplot.%s failed", name.c_str());
 }
 
-void matplotlib::pcolormesh(const matrix& x, const matrix& y, const matrix& c) {
+void plt::pcolormesh(const matrix& x, const matrix& y, const matrix& c) {
     if (noplot) return;
 
     PyObject *pyx = matrix_to_py(x);

@@ -8,7 +8,7 @@
 #include <Python.h>
 #include <vector>
 
-class matplotlib {
+class plt {
     private:
         static std::map<std::string, PyObject *> py;
         static std::vector<std::string> functions;
@@ -20,7 +20,6 @@ class matplotlib {
 
     public:
         static void init(bool noplot = false);
-        matplotlib();
         static void subplot(int, bool clear_axis = false);
         static void plot(const matrix&, std::string label = "");
         static void plot(const matrix&, const matrix&, std::string label = "");
@@ -44,7 +43,5 @@ class matplotlib {
         static void title(const std::string&);
         static void pause(double = 1e-4);
 };
-
-extern matplotlib plt;
 
 #endif

@@ -34,6 +34,7 @@
 
 %{
 #include "../src/include/matrix.h"
+#include "../src/graphics/matplotlib.h"
 #include "../src/include/star.h"
 #include "../src/include/physics.h"
 #include "../src/include/mapping.h"
@@ -45,6 +46,7 @@
 %array_class(int, intArray);
 
 %include "../src/include/matrix.h"
+%include "../src/graphics/matplotlib.h"
 %include "../src/include/physics.h"
 %include "../src/include/mapping.h"
 %include "../src/include/numdiff.h"

@@ -365,7 +365,7 @@ void star1d::dump_info() {
 }
 
 void star1d::plot(const matrix& error) {
-    plt.clf();
+    plt::clf();
 
     plt.subplot(231);
 // Explanation: divide the screen into 2 lines 3 columns and set in subplot 1
@@ -375,7 +375,7 @@ void star1d::plot(const matrix& error) {
     plt.semilogy(r, p, "$p$");
     plt.legend();
     for (int i=0; i<ndomains; i++) {
-        plt.axvline(map.gl.xif[i]);
+        plt::axvline(map.gl.xif[i]);
     }
 
     plt.subplot(232);
@@ -391,23 +391,22 @@ void star1d::plot(const matrix& error) {
     str_stream.clear();
     str_stream.str("");
     str_stream << Tc;
-    plt.text(0.0, .3, std::string("$T_c$:   ") + str_stream.str());
+    plt::text(0.0, .3, std::string("$T_c$:   ") + str_stream.str());
 
     str_stream.clear();
     str_stream.str("");
     str_stream << pc;
-    plt.text(0.0, .2, std::string("$p_c$:   ") + str_stream.str());
+    plt::text(0.0, .2, std::string("$p_c$:   ") + str_stream.str());
 
     str_stream.clear();
     str_stream.str("");
     str_stream << pc;
-    plt.text(0.0, 0.1, std::string("$\\rho_c$:  ") + str_stream.str());
+    plt::text(0.0, 0.1, std::string("$\\rho_c$:  ") + str_stream.str());
 
     str_stream.clear();
     str_stream.str("");
     str_stream << pi_c;
-    plt.text(0.0, 0.0, std::string("$\\pi_c$: ") + str_stream.str());
-
+    plt::text(0.0, 0.0, std::string("$\\pi_c$: ") + str_stream.str());
 
 
     plt.subplot(223);
