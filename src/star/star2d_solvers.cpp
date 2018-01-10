@@ -1371,9 +1371,6 @@ void star2d::check_jacobian(solver *op,const char *eqn) {
 	*/
 	drhs.write();
 	drhs2.write();
-	int nn;
-	if (drhs.nrows()==1) nn=drhs.ncols();
-	else nn=drhs.nrows();
 
 	// fig.axis(0-nn/20.,nn*(1+1./20),-15,0);
 	// fig.plot(log10(abs(drhs)+1e-20),"b");

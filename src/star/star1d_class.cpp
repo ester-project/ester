@@ -198,7 +198,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		}
 		change_grid=0;
 	}
-	
+
 	if(*param_file) {
 		if(!fp.open(param_file)) { 
 			printf("Can't open parameters file %s\n",param_file);
