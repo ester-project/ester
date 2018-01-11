@@ -14,7 +14,7 @@ int main(int argc,char *argv[]) {
 	int nit,last_it;
 	//double err;
 	tiempo t;
-	double t_plot;
+//	double t_plot;
 	int last_plot_it=0;
 	configuration config(argc,argv);
 	
@@ -35,7 +35,7 @@ int main(int argc,char *argv[]) {
 	
 	matrix tt(config.maxit+1,1),error(config.maxit+1,1);
 
-	t_plot=0;
+//	t_plot=0;
 	last_it=nit>=config.maxit; // last_it=0 normally
 	op=A.init_solver();
 	if(config.verbose>2) op->verbose=1;
@@ -49,6 +49,7 @@ int main(int argc,char *argv[]) {
 		A.core_convec=0;
 		A.env_convec=0;
 	}
+	A.delta=0;  // steady solution used in solve_Xh
 	A.global_err=1;
 	A.glit=0;
 	A.details=1;
@@ -89,7 +90,7 @@ int main(int argc,char *argv[]) {
 
 		}
   	//if (nit > 3) exit(0);
-  	if (nit > 100) last_it=1;
+  	if (nit > 80) last_it=1;
 	}
 	if(config.verbose) {
 		printf("Mass=%3.3f Msun  Radius=%3.3f Rsun  Luminosity=%3.3f Lsun  Teff=%1.1f K\n",

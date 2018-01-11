@@ -417,6 +417,9 @@ void star1d::plot(const matrix& error) {
 
     plt.subplot(224);
     plt.plot(r,entropy(), "s");
+    for (int i=0; i<ndomains; i++) {
+        plt.axvline(map.gl.xif[i]);
+    }
     //plt.legend();
 
     plt.draw();

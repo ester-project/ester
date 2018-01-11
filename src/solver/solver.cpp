@@ -1473,6 +1473,7 @@ void solver::add(int iblock,const char *eqn, const char *varn,const char *block_
 		fprintf(stderr,"ERROR (solver):\n\t");
 		fprintf(stderr,"\"bc_bot1\" terms are not allowed in first domain\n");
 		fprintf(stderr,"\tin block %d, eq \"%s\", var \"%s\"\n",iblock,eqn,varn);
+		ester_err("ERROR tracing...");
 		exit(1);
 	}
 	if(iblock==nb-1&&!strcmp(block_type,"bc_top2")) {
