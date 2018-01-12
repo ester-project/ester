@@ -1279,7 +1279,7 @@ void star2d::dump_info() {
 
 }
 
-void star2d::plot(const matrix& error) {
+void star2d::plot(const matrix_map& error) {
 
     matrix theta = vector(0, 2*M_PI, 64);
     matrix r = map.leg.eval_00(this->r, theta);
@@ -1333,7 +1333,8 @@ void star2d::plot(const matrix& error) {
     plt::text(0.0, 0.0, std::string("$\\pi_c$: ") + str_stream.str());
 
     plt::subplot(223);
-    plt::semilogy(error, "error");
+    plt::semilogy(error["Phi"], "error $\\Phi$");
+    plt::semilogy(error["log_p"], "error $log_p$");
     plt::legend();
 
     plt::draw();

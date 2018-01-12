@@ -53,6 +53,12 @@ int main(int argc,char *argv[]) {
         A.time+=A.dtime;
 	
 	matrix tt(config.maxit+1,1),error(config.maxit+1,1);
+    matrix_map error_map;
+    error_map["Phi"] = zeros(config.maxit+1, 1);
+    error_map["log_p"] = zeros(config.maxit+1, 1);
+    error_map["log_T"] = zeros(config.maxit+1, 1);
+    error_map["log_pc"] = zeros(config.maxit+1, 1);
+    error_map["log_Tc"] = zeros(config.maxit+1, 1);
 
 //	t_plot=0;
 	last_it=nit>=config.maxit; // last_it=0 normally
@@ -77,7 +83,7 @@ int main(int argc,char *argv[]) {
 	printf("check config.input_file= %d\n",A.config.input_file);
     //int last_plot_it = -100;
 
-    if (config.noplot == false) A.plot(error.block(0, nit-1, 0 ,0));
+    if (config.noplot == false) A.plot(error_map.block(0, nit-1, 0 ,0));
 
 	while(!last_it) {
 		if(A.global_err<0.01&&!*config.input_file) { // global_err<0.1 and no input file
@@ -106,7 +112,7 @@ int main(int argc,char *argv[]) {
 	      **/
         if (config.noplot == false && (nit - last_plot_it > 0 || last_it)) {
             last_plot_it = nit;
-            A.plot(error.block(0, nit-1, 0 ,0));
+            A.plot(error_map.block(0, nit-1, 0 ,0));
         }
 
 		}
@@ -125,7 +131,7 @@ int main(int argc,char *argv[]) {
 	}
 	delete op;
 	A.write(config.output_file,config.output_mode);
-	A.plot(error.block(0, nit-1, 0 ,0));
+	//A.plot(error.block(0, nit-1, 0 ,0));
 	
 	t.stop();
 	if(config.verbose) 

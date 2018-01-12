@@ -45,6 +45,7 @@ int main(int argc,char *argv[]) {
 	nit=0;
 	
 	matrix tt(config.maxit+1,1),error(config.maxit+1,1);
+    matrix_map error_map;
 
 	t_plot=0;
 	last_it=nit>=config.maxit;
@@ -86,7 +87,7 @@ int main(int argc,char *argv[]) {
             A.core_convec=core_convec_set;
 		}
 		
-		A.global_err=A.solve(op);
+		A.global_err=A.solve(op, error_map, nit-1);
 		err=A.global_err;
 
 		tt(nit-1)=t.value();
@@ -111,7 +112,7 @@ int main(int argc,char *argv[]) {
 				fig->label("Meridional circulation","","");
 				t_plot=tt(nit-1);
 #else
-                A.plot(error.block(0, nit-1, 0, 0));
+                A.plot(error_map.block(0, nit-1, 0, 0));
 #endif
 			}
 

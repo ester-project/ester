@@ -365,7 +365,7 @@ void star1d::dump_info() {
 	
 }
 
-void star1d::plot(const matrix& error) {
+void star1d::plot(const matrix_map& error) {
     plt::clf();
 
 
@@ -413,7 +413,11 @@ void star1d::plot(const matrix& error) {
 
     plt::subplot(121);
 // Explanation: divide the screen into 2 lines 2 columns and set in subplot 3
-    plt::semilogy(error, "error");
+    plt::semilogy(error["Phi"], "error $\\Phi$");
+    plt::semilogy(error["log_p"], "error $log_p$");
+    plt::semilogy(error["log_T"], "error $log_T$");
+    plt::semilogy(error["log_pc"], "error $log_{p_c}$");
+    plt::semilogy(error["log_Tc"], "error $log_{T_c}$");
     plt::legend();
 
     plt::subplot(122);
