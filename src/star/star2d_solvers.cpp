@@ -176,6 +176,11 @@ double star2d::solve(solver *op) {
     return solve(op, error_map, 0);
 }
 
+double star2d::solve(solver *op) {
+    matrix_map error_map;
+    return solve(op, error_map, 0);
+}
+
 /// \brief Performs one step of the Newton algorithm to compute the star's
 /// internal structure.
 double star2d::solve(solver *op, matrix_map& error_map, int nit) {
