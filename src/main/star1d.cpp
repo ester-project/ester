@@ -90,7 +90,7 @@ int main(int argc,char *argv[]) {
 
         tt(nit-1)=t.value();
         error(nit-1)=err;
-        last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit;
+        last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit || killed;
         if(config.verbose) {
             printf("it=%d err=%e\n",nit,err);
 
