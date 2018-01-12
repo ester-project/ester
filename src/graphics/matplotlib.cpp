@@ -147,13 +147,14 @@ PyObject *matrix_to_py(const matrix& m) {
 
 }
 
-void plt::plot(const matrix& x, std::string label) {
+void plt::plot(const matrix& x, std::string label, std::string style) {
     if (noplot) return;
 
     PyObject *pyx = matrix_to_py(x);
 
-    PyObject *args = PyTuple_New(1);
+    PyObject *args = PyTuple_New(2);
     PyTuple_SetItem(args, 0, pyx);
+    PyTuple_SetItem(args, 1, PyString_FromString(style.c_str()));
 
     PyObject *kwargs = PyDict_New();
     PyDict_SetItemString(kwargs, "label", PyString_FromString(label.c_str()));
@@ -161,15 +162,16 @@ void plt::plot(const matrix& x, std::string label) {
     call("plot", args, kwargs);
 }
 
-void plt::plot(const matrix& x, const matrix& y, std::string label) {
+void plt::plot(const matrix& x, const matrix& y, std::string label, std::string style) {
     if (noplot) return;
 
     PyObject *pyx = matrix_to_py(x);
     PyObject *pyy = matrix_to_py(y);
 
-    PyObject *args = PyTuple_New(2);
+    PyObject *args = PyTuple_New(3);
     PyTuple_SetItem(args, 0, pyx);
     PyTuple_SetItem(args, 1, pyy);
+    PyTuple_SetItem(args, 2, PyString_FromString(style.c_str()));
 
     PyObject *kwargs = PyDict_New();
     PyDict_SetItemString(kwargs, "label", PyString_FromString(label.c_str()));

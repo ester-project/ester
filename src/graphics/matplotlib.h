@@ -21,8 +21,8 @@ class plt {
     public:
         static void init(bool noplot = false);
         static void subplot(int, bool clear_axis = false);
-        static void plot(const matrix&, std::string label = "");
-        static void plot(const matrix&, const matrix&, std::string label = "");
+        static void plot(const matrix&, std::string label = "", std::string style = "");
+        static void plot(const matrix&, const matrix&, std::string label = "", std::string style = "");
         static void semilogx(const matrix&, std::string label = "");
         static void semilogx(const matrix&, const matrix&, std::string label = "");
         static void semilogy(const matrix&, std::string label = "");
