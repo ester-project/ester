@@ -614,7 +614,7 @@ if (details) for (int i=0; i<n+2;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
 // 0.2%)
 int is=0;
 for (int i=0; i< n+1;i++) {
-if (les_zi[i+1]-les_zi[i] < 0.001) {
+if (les_zi[i+1]-les_zi[i] < 0.01) {
    les_zi[i+1]=0.;
    les_zi[i]=0.;
    is=is+2;

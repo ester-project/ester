@@ -272,6 +272,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		G=0*T;
 		w=0*T;
 		conv=0;
+		nd_core=0;
 		domain_type.resize(ndomains);
 		izif.resize(ndomains);
 		for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;

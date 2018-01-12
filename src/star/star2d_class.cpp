@@ -985,6 +985,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         Xh=X0*ones(nr,nth);
         Wr=zeros(nr,nth);
         conv=0;
+	nd_core=0;
         time=0.;
         domain_type.resize(ndomains);
         izif.resize(ndomains);
