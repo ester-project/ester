@@ -74,15 +74,15 @@ int main(int argc,char *argv[]) {
 	A.details=1;
 	A.config.input_file=*config.input_file;
 	printf("check config.input_file= %d\n",A.config.input_file);
+    //int last_plot_it = -100;
 
-	//printf("core_convec_set = %d env_convec_set=%d\n",core_convec_set,env_convec_set);
+    if (config.noplot == false) A.plot(error.block(0, nit-1, 0 ,0));
+
 	while(!last_it) {
-///*
 		if(A.global_err<0.01&&!*config.input_file) { // global_err<0.1 and no input file
 			A.core_convec=core_convec_set;
 			A.env_convec=env_convec_set;
 		}
-//*/
 		nit++;
 		A.glit++;
 		//A.check_jacobian(op,"log_T");exit(0);
