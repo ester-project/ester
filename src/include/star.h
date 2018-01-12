@@ -100,6 +100,7 @@ class star2d {
 	
 	virtual solver *init_solver(int nvar_add=0);
 	virtual double solve(solver *);
+	virtual double solve(solver *, matrix_map& error, int);
 	virtual void register_variables(solver *op);
 	
 	virtual void solve_poisson(solver *);
@@ -163,7 +164,7 @@ class star2d {
     void hdf5_write(const char *filename) const;
     int hdf5_read(const char *input_file, int dim);
 
-    virtual void plot(const matrix&);
+    virtual void plot(const matrix_map&);
 };
 
 class star1d : public star2d {
@@ -186,6 +187,7 @@ class star1d : public star2d {
 	virtual solver *init_solver(int nvar_add=0);
 	virtual void register_variables(solver *op);
 	virtual double solve(solver *);
+	virtual double solve(solver *, matrix_map& error, int);
 	virtual void solve_poisson(solver *);
 	virtual void solve_pressure(solver *);
 	virtual void solve_temp(solver *);
@@ -208,7 +210,7 @@ class star1d : public star2d {
 	
 	virtual void check_jacobian(solver *op,const char *eqn);
 
-    virtual void plot(const matrix&);
+    virtual void plot(const matrix_map&);
 };
 
 class star_evol : public star2d {

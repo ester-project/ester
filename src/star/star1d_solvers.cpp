@@ -85,6 +85,11 @@ void star1d::register_variables(solver *op) {
 }
 
 double star1d::solve(solver *op) {
+    matrix_map error_map;
+    return solve(op, error_map, 0);
+}
+
+double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     int info[5];
     matrix rho0;
     double err,err2;
@@ -132,24 +137,30 @@ double star1d::solve(solver *op) {
 
     dphi=op->get_var("Phi");
     err=max(abs(dphi/phi));
+    error_map["Phi"](nit) = err;
 
     dp=op->get_var("log_p");
     err2=max(abs(dp));err=err2>err?err2:err;
+    error_map["log_p"](nit) = err2;
     while(exist(abs(h*dp)>q)) h/=2;
 
     dT=op->get_var("log_T");
     err2=max(abs(dT));err=err2>err?err2:err;
+    error_map["log_T"](nit) = err2;
     while(exist(abs(h*dT)>q)) h/=2;
 
     dpc=op->get_var("log_pc");
     err2=fabs(dpc(0)/pc);err=err2>err?err2:err;
+    error_map["log_pc"](nit) = err2;
     while(fabs(h*dpc(0))>q*pc) h/=2;
 
     dTc=op->get_var("log_Tc");
     err2=fabs(dTc(0));err=err2>err?err2:err;
+    error_map["log_Tc"](nit) = err2;
     while(fabs(h*dTc(0))>q) h/=2;
 
     dRi=op->get_var("Ri");
+    // error_map["Ri"](0) = max(fabs(dRi));
     update_map(h*dRi);
 
     phi+=h*dphi;

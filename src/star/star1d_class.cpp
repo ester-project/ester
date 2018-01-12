@@ -344,7 +344,7 @@ void star1d::dump_info() {
 	
 }
 
-void star1d::plot(const matrix& error) {
+void star1d::plot(const matrix_map& error) {
     plt::clf();
 
     plt::subplot(231);
@@ -388,7 +388,11 @@ void star1d::plot(const matrix& error) {
 
 
     plt::subplot(223);
-    plt::semilogy(error, "error");
+    plt::semilogy(error["Phi"], "error $\\Phi$");
+    plt::semilogy(error["log_p"], "error $log_p$");
+    plt::semilogy(error["log_T"], "error $log_T$");
+    plt::semilogy(error["log_pc"], "error $log_{p_c}$");
+    plt::semilogy(error["log_Tc"], "error $log_{T_c}$");
     plt::legend();
 
     plt::draw();

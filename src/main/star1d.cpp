@@ -57,6 +57,12 @@ int main(int argc,char *argv[]) {
     nit=0;
 
     matrix tt(config.maxit+1,1),error(config.maxit+1,1);
+    matrix_map error_map;
+    error_map["Phi"] = zeros(config.maxit+1, 1);
+    error_map["log_p"] = zeros(config.maxit+1, 1);
+    error_map["log_T"] = zeros(config.maxit+1, 1);
+    error_map["log_pc"] = zeros(config.maxit+1, 1);
+    error_map["log_Tc"] = zeros(config.maxit+1, 1);
 
     // t_plot=0;
     last_it = (nit>=config.maxit) || killed;
@@ -76,7 +82,7 @@ int main(int argc,char *argv[]) {
 
     int last_plot_it = -100;
 
-    if (config.noplot == false) A.plot(error.block(0, nit-1, 0 ,0));
+    if (config.noplot == false) A.plot(error_map.block(0, nit-1, 0 ,0));
 
     while(!last_it) {
         if(err<0.1&&!*config.input_file) {
@@ -86,7 +92,7 @@ int main(int argc,char *argv[]) {
         nit++;
         //A.check_jacobian(op,"log_T");exit(0);
 
-        err=A.solve(op);
+        err=A.solve(op, error_map, nit-1);
 
         tt(nit-1)=t.value();
         error(nit-1)=err;
@@ -106,7 +112,7 @@ int main(int argc,char *argv[]) {
 
         if (config.noplot == false && (nit - last_plot_it > 10 || last_it)) {
             last_plot_it = nit;
-            A.plot(error.block(0, nit-1, 0 ,0));
+            A.plot(error_map.block(0, nit-1, 0 ,0));
         }
 
     }
