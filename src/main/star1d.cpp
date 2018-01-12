@@ -91,6 +91,7 @@ int main(int argc,char *argv[]) {
 		tt(nit-1)=t.value();
 		error(nit-1)=A.global_err;
 		last_it=(A.global_err<config.tol&&nit>=config.minit)||nit>=config.maxit;
+		//last_it=(A.global_err<config.tol&&nit>=config.minit)||nit>=config.maxit || killed;
 		if(config.verbose) {
 			printf("it=%d err=%e\n",nit,A.global_err);
 		/**	

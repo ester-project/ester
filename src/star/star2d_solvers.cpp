@@ -56,6 +56,7 @@ void star2d::init_comp() {
 	if(nd_core == 0) return;
 
     int n = 0; // Count the number of point in the core
+	printf("nd_core = %d\n",nd_core);
     for (int i=0; i<nd_core; i++) {
         n += map.gl.npts[i];
     }

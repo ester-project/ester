@@ -367,24 +367,24 @@ void star1d::dump_info() {
 void star1d::plot(const matrix& error) {
     plt::clf();
 
-    plt.subplot(231);
+    plt::subplot(231);
 // Explanation: divide the screen into 2 lines 3 columns and set in subplot 1
-    plt.title(std::string("iter: ") + std::to_string(glit));
-    plt.plot(r, rho, "$\\rho$");
-    plt.plot(r, T, "$T$");
-    plt.semilogy(r, p, "$p$");
-    plt.legend();
+    plt::title(std::string("iter: ") + std::to_string(glit));
+    plt::plot(r, rho, "$\\rho$");
+    plt::plot(r, T, "$T$");
+    plt::semilogy(r, p, "$p$");
+    plt::legend();
     for (int i=0; i<ndomains; i++) {
         plt::axvline(map.gl.xif[i]);
     }
 
-    plt.subplot(232);
+    plt::subplot(232);
 // Explanation: divide the screen into 2 lines 3 columns and set in subplot 2
-    // plt.title(std::string("iter: ") + std::to_string(nit));
-    plt.plot(r, phi, "$\\Phi$");
-    plt.legend();
+    // plt::title(std::string("iter: ") + std::to_string(nit));
+    plt::plot(r, phi, "$\\Phi$");
+    plt::legend();
 
-    plt.subplot(233, true);
+    plt::subplot(233, true);
 // Explanation: divide the screen into 2 lines 3 columns and set in subplot 3
     std::ostringstream str_stream;
 
@@ -409,18 +409,18 @@ void star1d::plot(const matrix& error) {
     plt::text(0.0, 0.0, std::string("$\\pi_c$: ") + str_stream.str());
 
 
-    plt.subplot(223);
+    plt::subplot(223);
 // Explanation: divide the screen into 2 lines 2 columns and set in subplot 3
-    plt.semilogy(error, "error");
-    plt.legend();
+    plt::semilogy(error, "error");
+    plt::legend();
 
-    plt.subplot(224);
-    plt.plot(r,entropy(), "s");
+    plt::subplot(224);
+    plt::plot(r,entropy(), "s");
     for (int i=0; i<ndomains; i++) {
-        plt.axvline(map.gl.xif[i]);
+        plt::axvline(map.gl.xif[i]);
     }
-    //plt.legend();
+    //plt::legend();
 
-    plt.draw();
-    plt.pause();
+    plt::draw();
+    plt::pause();
 }
