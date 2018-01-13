@@ -53,6 +53,7 @@ class star2d {
 	double m,pi_c,Lambda;
 	double surff;
 	int conv,nd_core;
+	int n_essai;
 	double Xc;
 	int core_convec;
 	int env_convec;

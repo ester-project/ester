@@ -368,6 +368,7 @@ void star1d::dump_info() {
 void star1d::plot(const matrix& error) {
     plt::clf();
 
+/*
     plt::subplot(231);
 // Explanation: divide the screen into 2 lines 3 columns and set in subplot 1
     plt::title(std::string("iter: ") + std::to_string(glit));
@@ -414,10 +415,12 @@ void star1d::plot(const matrix& error) {
 // Explanation: divide the screen into 2 lines 2 columns and set in subplot 3
     plt::semilogy(error, "error");
     plt::legend();
-
-    plt::subplot(224);
-    plt::plot(r,entropy(), "s");
-    for (int i=0; i<ndomains; i++) {
+*/
+    //plt::subplot(224);
+	//printf("glit= %d\n",glit);
+if (glit <= 10) plt::subplot(111);
+    plt::plot(r.block(240,359,0,0),entropy().block(240,359,0,0), "s");
+    for (int i=8; i<ndomains; i++) {
         plt::axvline(map.gl.xif[i]);
     }
     //plt::legend();

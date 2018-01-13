@@ -92,6 +92,7 @@ void star2d::copy(const star2d &A) {
     this -> nzones=A.nzones;	   // do not forget to copy !!
     nd_core=A.nd_core;	   // do not forget to copy !!
     details=A.details;	   // do not forget to copy !!
+    n_essai=A.n_essai;	   // do not forget to copy !!
 
 }
 

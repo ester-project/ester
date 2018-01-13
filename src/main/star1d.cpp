@@ -68,6 +68,7 @@ int main(int argc,char *argv[]) {
 		A.core_convec=0;
 		A.env_convec=0;
 	}
+	A.n_essai=0;
 	A.delta=0;  // steady solution used in solve_Xh
 	A.global_err=1;
 	A.glit=0;
@@ -103,14 +104,14 @@ int main(int argc,char *argv[]) {
 				t_plot=tt(nit-1);
 			}
 	      **/
-        if (config.noplot == false && (nit - last_plot_it > 10 || last_it)) {
+        if (config.noplot == false && (nit - last_plot_it > 0 || last_it)) {
             last_plot_it = nit;
             A.plot(error.block(0, nit-1, 0 ,0));
         }
 
 		}
   	//if (nit > 3) exit(0);
-  	if (nit > 80) last_it=1;
+  	if (nit > 73) last_it=1;
 	}
 	if(config.verbose) {
 		printf("Mass=%3.3f Msun  Radius=%3.3f Rsun  Luminosity=%3.3f Lsun  Teff=%1.1f K\n",

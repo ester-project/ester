@@ -22,9 +22,14 @@ void star2d::new_check_map() {
 	   find_zones(R_inter, p_inter);
 	   int nzones_ap=zone_type.size();
 	   if (nzones_av == nzones_ap) {
-		if (details) printf("Number of zones unchanged: do nothing\n");
-//if (details) printf("Number of zones unchanged: do something\n");
-		return;
+if (details) printf("Number of zones unchanged: do something\n");
+		n_essai=n_essai+1;
+		  if (details) printf("n_essai=%d\n",n_essai);
+		if (n_essai >0) {
+		  if (details) printf("Number of zones unchanged: do nothing\n");
+		  if (details) printf("n_essai=%d\n",n_essai);
+		  return;
+		}
 	   }
 	   // Redistribute the domains and output izif (index of zone interface)
 	   // as a global var.
@@ -614,7 +619,7 @@ if (details) for (int i=0; i<n+2;i++) printf("i= %d  z= %e\n",i,les_zi[i]);
 // 0.2%)
 int is=0;
 for (int i=0; i< n+1;i++) {
-if (les_zi[i+1]-les_zi[i] < 0.01) {
+if (les_zi[i+1]-les_zi[i] < 0.001) {
    les_zi[i+1]=0.;
    les_zi[i]=0.;
    is=is+2;
@@ -636,13 +641,13 @@ if (les_zi[i] !=0. && les_zi[i] !=1.) {
 	   n_interf++;
           }
 }
-if (details) printf("1/number of interfaces calcule %d \n",n_interf);
+if (details) printf("Number of interfaces calcule %d \n",n_interf);
 matrix bb=ones(2,1);
 bb(0,0)=2; bb(1,0)=n_interf;
 n_interf=min(bb);
 if (details) printf("number of interfaces calcule %d \n",n_interf);
 
-n_interf=2; //min(3*ones(1,1),n_interf*ones(1,1));
+//n_interf=2; //min(3*ones(1,1),n_interf*ones(1,1));
 
 // Now we set the values of r_inter and p_inter
 // which include the true surface
