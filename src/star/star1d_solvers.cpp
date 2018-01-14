@@ -730,7 +730,6 @@ fclose(qfic);
 // Scan now all the domains to impose the interface conditions according to the
 // domain type.
 	j0=0;
-	//int ilam=0;
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
 		j1=j0+ndom-1;
@@ -739,63 +738,45 @@ fclose(qfic);
                         op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                         rhs_T(j0)=1.-T(j0);
 			if (domain_type[n] == RADIATIVE) {
-			   //printf("Central Radiative domain n= %d cont of DT on top\n",n);
-// MR: I impose the continuity of the local flux rather than the temperature derivative
-			   //op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
-			   //op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
-			   //op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
-			   //op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
-			   op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
-			   op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+			  if (details) printf("ZONE RADIATIVE n= %d DT top\n",n);
+// MR: if there are chemical discontinuities then impose the continuity of
+//     the local flux rather than the temperature derivative
+			  //op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
+			  //op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
+			  //op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
+			  //op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
+			  //op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
+			  //op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
+			  //rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
 
 // MR: the variations of rz during the iterations are crucial to take intot account the 
 //     changes of the mapping due to the distribution of domains that equalize the pressure
 //     or temperature drop in a domain. In fine, when converged rz=1 in 1D, but rz should
 //     be allowed to vary during iterations.
-			   //op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
-			   //op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
+			   op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+			   op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
 			   op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
 			   op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
 			   rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
-			   //rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
 
                            op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
                            rhs_Lambda(0)=-(D,T)(0);
 			}
 			if (domain_type[n] == CORE) {
-			   //printf("CORE domain n= %d cont of lambda on top\n",n);
+			   if (details) printf("CORE n= %d lambda top\n",n);
                            op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
                            op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
 			}
                 } else if (n==ndomains-1) { // care of the last domain
-/**
-			if (domain_type[n] == RADIATIVE) {
-			   //printf("Warning! last domain is not radiative: I stop\n");
-			   //exit(0);
-			   if (domain_type[n-1] == CONVECTIVE) {
-                            printf("LAST DOM CASE: CONVECTIVE n-1= %d RAD %d\n",n-1,n);
-                            op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
-                            op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
-                            op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
-                            rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
-                           } else if (domain_type[n-1] == RADIATIVE) {
-                            //  printf("LAST DOM CASE above RADIATIVE n= %d\n",n);
-                           }
-			} else if (domain_type[n] == CONVECTIVE) {
-                             printf("The LAST DOM CASE is CONVECTIVE %d\n",n);
-			     op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
-                             op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
-                             rhs_T(j0)=-T(j0)+T(j0-1);
-                        }
-**/
-                              op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
-                              op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
-                              rhs_T(j0)=-T(j0)+T(j0-1);
+                        op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
+                        op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
+                        rhs_T(j0)=-T(j0)+T(j0-1);
 			op->bc_top1_add_d(n,eqn,"T",ones(1,1));
 			op->bc_top1_add_d(n,eqn,"Ts",-ones(1,1));
 			rhs_T(-1)=Ts(0)-T(-1);
                         op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                         op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
+                        if (details) printf("LAST DOM n=%d T bot T top \n",n);
                 } else { // Now domains are not first and not last!
 	               // We first care about radiative domains
 		       if (domain_type[n] == RADIATIVE) {
@@ -811,11 +792,18 @@ fclose(qfic);
 			}
 			// Now the temperature equation
 			// we apply continuity of T at bottom and of DT at top
-			// except if layer above is convective
-			if (domain_type[n+1] == CONVECTIVE) {
-                           op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
-                           op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
-                           rhs_T(j0)=-T(j0)+T(j0-1);
+			// except if layer below is convective
+			if (domain_type[n-1] == CONVECTIVE) {
+			   op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
+			   op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
+			   op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
+			   rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
+			   op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+			   op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+			   op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
+			   op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
+			   rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+		if (details)  printf("ZONE RADIATIVE n= %d DT bot and DT top\n",n);
 			} else {
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
@@ -825,53 +813,32 @@ fclose(qfic);
 			   op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
 			   op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
 			   rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+		if (details)  printf("ZONE RADIATIVE n= %d T bot and DT top\n",n);
 			}
 // MR: the variations of rz during the iterations are crucial to take into account the 
 //     changes of the mapping due to the distribution of domains that equalize the pressure
 //     or temperature drop in a domain. In fine, when converged rz=1 in 1D, but rz should
 //     be allowed to vary during iterations.
-/*
-			else if (domain_type[n-1] == CONVECTIVE) {
-// test of new interface conditions
-			   op->bc_bot1_add_l(n,eqn,"T",ones(1,1),D.block(n-1).row(-1));
-			   op->bc_bot2_add_l(n,eqn,"T",-ones(1,1),D.block(n).row(0));
-			   op->bc_bot1_add_d(n,eqn,"rz",-(D,T).row(j0-1));
-			   op->bc_bot2_add_d(n,eqn,"rz",(D,T).row(j0));
-			   rhs_T(j0)=-(D,T)(j0-1)+(D,T)(j0);
-			   printf("ZONE RADIATIVE n= %d DT bot\n",n);
-			   //op->bc_bot2_add_d(n,eqn,"Frad",4*PI*(r*r).row(j0));
-			   //op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
-			   //op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
-			   //rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
-			} else { // the preceding domain is radiative hence
-                           op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
-                           op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
-                           rhs_T(j0)=-T(j0)+T(j0-1);
-			// we also apply continuity of Lambda at bottom
-                           op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
-                           op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
-			}
-*/
 //MR: I impose the continuity of the local flux rather than the temperature derivative
 			 //op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
-			   //op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
-			   //op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
-			   //op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
-			// op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
+			 //op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
+			 //op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
+			 //op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
+			 //op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
 			 //op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
-			   //rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
+			 //rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
 
 			 //printf("ZONE RADIATIVE numero= %d top DT done \n",n);
 		       } else if (domain_type[n] == CORE) {
 			// Continuity of T bottom
-			   printf("CORE n= %d\n",n);
+			   if (details)  printf("CORE n= %d\n",n);
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
                            rhs_T(j0)=-T(j0)+T(j0-1);
                            op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
                            op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
 		       } else if (domain_type[n] == CONVECTIVE) {
-			   printf("CONVECTIVE ZONE n= %d Continuity of T bottom\n",n);
+			   if (details)  printf("CONVECTIVE ZONE n= %d T bottom\n",n);
 			// Continuity of T bottom
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
@@ -880,17 +847,14 @@ fclose(qfic);
                            op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                            op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
 			   if (domain_type[n+1] == RADIATIVE) {
-			   printf("CONVECTIVE ZONE n= %d Continuity of DT top\n",n);
-			   //continuity of DT top of CZ needed if next domain radiative
-			     op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
-			     op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
-			     op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
-			     op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
-			     rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+			   //continuity of T top of CZ needed if next domain radiative
+			     if (details)  printf("CONVECTIVE ZONE n= %d T top\n",n);
+                             op->bc_top2_add_d(n,eqn,"T",ones(1,1));
+                             op->bc_top1_add_d(n,eqn,"T",-ones(1,1));
+                             rhs_T(j1)=-T(j1)+T(j1+1);
                            }
 		       }
 		} // End of options on n==0, n==ndomains-1, else
-//if (domain_type[0] == CORE) printf("j0=%d,j1=%d, %e, %e\n",j0,j1,rhs_T(j0),rhs_T(j1));
 		j0+=ndom;
 	}  // End of loop on domains rank
 FILE *ficb=fopen("new_rhs_T.txt", "a");

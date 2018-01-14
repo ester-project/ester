@@ -72,7 +72,7 @@ int main(int argc,char *argv[]) {
 	A.delta=0;  // steady solution used in solve_Xh
 	A.global_err=1;
 	A.glit=0;
-	A.details=1;
+	A.details=0;
 	A.config.input_file=*config.input_file;
 	printf("check config.input_file= %d\n",A.config.input_file);
     //int last_plot_it = -100;
@@ -111,7 +111,7 @@ int main(int argc,char *argv[]) {
 
 		}
   	//if (nit > 3) exit(0);
-  	if (nit > 73) last_it=1;
+  	if (nit > 80) last_it=1;
 	}
 	if(config.verbose) {
 		printf("Mass=%3.3f Msun  Radius=%3.3f Rsun  Luminosity=%3.3f Lsun  Teff=%1.1f K\n",

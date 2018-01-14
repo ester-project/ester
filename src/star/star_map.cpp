@@ -15,7 +15,7 @@ void star2d::new_check_map() {
                 zone_type = std::vector<int>(1);
 	}
 
-	if (global_err < 0.1) { // look for new convective regions and eventually remap the star
+	if (global_err < 1e-6) { // look for new convective regions and eventually remap the star
 	   // Find the zone boundaries and the associated pressures
 	   // and output zone_type as global var.
 	   int nzones_av=zone_type.size();
@@ -643,11 +643,11 @@ if (les_zi[i] !=0. && les_zi[i] !=1.) {
 }
 if (details) printf("Number of interfaces calcule %d \n",n_interf);
 matrix bb=ones(2,1);
-bb(0,0)=2; bb(1,0)=n_interf;
+bb(0,0)=3; bb(1,0)=n_interf;
 n_interf=min(bb);
 if (details) printf("number of interfaces calcule %d \n",n_interf);
 
-//n_interf=2; //min(3*ones(1,1),n_interf*ones(1,1));
+n_interf=3; //min(3*ones(1,1),n_interf*ones(1,1));
 
 // Now we set the values of r_inter and p_inter
 // which include the true surface
