@@ -97,7 +97,11 @@ void star1d::register_variables(solver *op) {
 
 FILE *RHS;
 FILE *entrop;
-//double star1d::solve(solver *op) {
+double star1d::solve(solver *op) {
+    matrix_map error_map;
+    return solve(op, error_map, 0);
+}
+
 double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 	int info[5];
 	matrix rho_prec;
@@ -231,9 +235,6 @@ fprintf(fic,"it= %d\n",glit);
 for (int k=0;k<=ndomains;k++) fprintf(fic,"%d %e\n",k,map.R(k));
 fclose(fic);
              }
-//}
-
-//double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 
 // Evolution of Xh, dXh is the variation on ln(Xh) assumed to be small
 	Xh+=h*dXh*Xh;
@@ -252,9 +253,7 @@ fclose(fic);
 	err2=max(abs(rho-rho_prec));err=err2>err?err2:err;
 	
 fclose(fic);
-//	return err;
-       // matrix_map error_map;
-    return solve(op, error_map, 0);
+	return err;
 }
 
 void star1d::update_map(matrix dR) {

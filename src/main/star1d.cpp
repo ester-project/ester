@@ -31,9 +31,7 @@ void sig_handler(int sig) {
 int main(int argc,char *argv[]) {
 
 	int nit,last_it;
-	//double err;
 	tiempo t;
-//	double t_plot;
 	int last_plot_it=0;
 	configuration config(argc,argv);
 	
@@ -45,7 +43,7 @@ int main(int argc,char *argv[]) {
 	if(A.init(config.input_file,config.param_file,argc,argv)) {
         ester_err("Could not initialize star");
         return 1;
-    }
+                                                                  }
         //A.config.verbose=config.verbose;
 	printf("verbose= %d\n",A.config.verbose);
 
@@ -53,14 +51,13 @@ int main(int argc,char *argv[]) {
         A.time+=A.dtime;
 	
 	matrix tt(config.maxit+1,1),error(config.maxit+1,1);
-    matrix_map error_map;
-    error_map["Phi"] = zeros(config.maxit+1, 1);
-    error_map["log_p"] = zeros(config.maxit+1, 1);
-    error_map["log_T"] = zeros(config.maxit+1, 1);
-    error_map["log_pc"] = zeros(config.maxit+1, 1);
-    error_map["log_Tc"] = zeros(config.maxit+1, 1);
+        matrix_map error_map;
+        error_map["Phi"] = zeros(config.maxit+1, 1);
+        error_map["log_p"] = zeros(config.maxit+1, 1);
+        error_map["log_T"] = zeros(config.maxit+1, 1);
+        error_map["log_pc"] = zeros(config.maxit+1, 1);
+        error_map["log_Tc"] = zeros(config.maxit+1, 1);
 
-//	t_plot=0;
 	last_it=nit>=config.maxit; // last_it=0 normally
 	op=A.init_solver();
 	if(config.verbose>2) op->verbose=1;
@@ -93,32 +90,24 @@ int main(int argc,char *argv[]) {
 		nit++;
 		A.glit++;
 		//A.check_jacobian(op,"log_T");exit(0);
-		A.global_err=A.solve(op);
+		A.global_err=A.solve(op, error_map, nit-1);
 		
 		tt(nit-1)=t.value();
 		error(nit-1)=A.global_err;
 		last_it=(A.global_err<config.tol&&nit>=config.minit)||nit>=config.maxit;
 		//last_it=(A.global_err<config.tol&&nit>=config.minit)||nit>=config.maxit || killed;
 		if(config.verbose) {
-			printf("it=%d err=%e\n",nit,A.global_err);
-		/**	
-			if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
-				fig->semilogy(error.block(0,nit-1,0,0));
-				fig->label("Iteration number","Relative error","");
-				A.spectrum(fig,A.rho);
-				fig->label("Density (normalized spectrum)","","");
-				t_plot=tt(nit-1);
-			}
-	      **/
-        if (config.noplot == false && (nit - last_plot_it > 0 || last_it)) {
-            last_plot_it = nit;
-            A.plot(error_map.block(0, nit-1, 0 ,0));
-        }
-
+		  printf("it=%d err=%e\n",nit,A.global_err);
 		}
+                if (config.noplot == false && (nit - last_plot_it > 0 || last_it)) {
+                     last_plot_it = nit;
+                     A.plot(error_map.block(0, nit-1, 0 ,0));
+                }
+
   	//if (nit > 3) exit(0);
   	if (nit > 80) last_it=1;
-	}
+	} // End of the while loop
+
 	if(config.verbose) {
 		printf("Mass=%3.3f Msun  Radius=%3.3f Rsun  Luminosity=%3.3f Lsun  Teff=%1.1f K\n",
 				A.M/M_SUN,A.R/R_SUN,A.luminosity()/L_SUN,A.Teff()(0));
@@ -127,7 +116,6 @@ int main(int argc,char *argv[]) {
 		int jc=0;
 		for (int n=0;n<A.nd_core;n++) jc+=A.map.gl.npts[n];
 		if(A.nd_core != 0) printf("r_cz=%3.3f Rsun\n",(A.r(jc))*A.R/R_SUN);
-		//if(A.conv) printf("r_cz=%3.3f Rsun\n",*(A.map.gl.xif+A.conv)*A.R/R_SUN);
 	}
 	delete op;
 	A.write(config.output_file,config.output_mode);

@@ -372,7 +372,6 @@ void star1d::plot(const matrix_map& error) {
 /*
     plt::subplot(211);
 // subplot(231) divide the screen into 2 lines 3 columns and set in subplot 1
-    plt::title(std::string("iter: ") + std::to_string(glit));
     plt::plot(r, rho, "$\\rho$");
     plt::plot(r, T, "$T$");
     plt::semilogy(r, p, "$p$");
@@ -413,15 +412,15 @@ void star1d::plot(const matrix_map& error) {
 
     plt::subplot(121);
 // Explanation: divide the screen into 2 lines 2 columns and set in subplot 3
+    plt::title(std::string("iter: ") + std::to_string(glit));
     plt::semilogy(error["Phi"], "error $\\Phi$");
-    plt::semilogy(error["log_p"], "error $log_p$");
-    plt::semilogy(error["log_T"], "error $log_T$");
-    plt::semilogy(error["log_pc"], "error $log_{p_c}$");
-    plt::semilogy(error["log_Tc"], "error $log_{T_c}$");
+    plt::semilogy(error["log_p"], "error $\\log P$");
+    plt::semilogy(error["log_T"], "error $\\log T$");
+    plt::semilogy(error["log_pc"], "error $\\log {p_c}$");
+    plt::semilogy(error["log_Tc"], "error $\\log {T_c}$");
     plt::legend();
 
     plt::subplot(122);
-	//printf("glit= %d\n",glit);
     plt::plot(r.block(240,359,0,0),entropy().block(240,359,0,0), "s");
     for (int i=8; i<ndomains; i++) {
         plt::axvline(map.gl.xif[i]);
