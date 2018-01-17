@@ -751,23 +751,23 @@ fclose(qfic);
 			  if (details) printf("ZONE RADIATIVE n= %d DT top\n",n);
 // MR: if there are chemical discontinuities then impose the continuity of
 //     the local flux rather than the temperature derivative
-			  //op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
-			  //op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
-			  //op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
-			  //op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
-			  //op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
-			  //op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
-			  //rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
+			  op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
+			  op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
+			  op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
+			  op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
+			  op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
+			  op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
+			  rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
+			  //op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+			  //op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+			  //op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
+			  //op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
+			  //rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
 
 // MR: the variations of rz during the iterations are crucial to take intot account the 
 //     changes of the mapping due to the distribution of domains that equalize the pressure
 //     or temperature drop in a domain. In fine, when converged rz=1 in 1D, but rz should
 //     be allowed to vary during iterations.
-			   op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
-			   op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
-			   op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
-			   op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
-			   rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
 
                            op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
                            rhs_Lambda(0)=-(D,T)(0);
@@ -808,11 +808,18 @@ fclose(qfic);
 			   op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
 			   op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
 			   rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
-			   op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
-			   op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
-			   op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
-			   op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
-			   rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+			   op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
+			   op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
+			   op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
+			   op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
+			   op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
+			   op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
+			   rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
+			   //op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+			   //op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+			   //op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
+			   //op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
+			   //rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
 		if (details)  printf("ZONE RADIATIVE n= %d DT bot and DT top\n",n);
 			} else {
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
@@ -824,21 +831,7 @@ fclose(qfic);
 			   op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
 			   rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
 		if (details)  printf("ZONE RADIATIVE n= %d T bot and DT top\n",n);
-			}
-// MR: the variations of rz during the iterations are crucial to take into account the 
-//     changes of the mapping due to the distribution of domains that equalize the pressure
-//     or temperature drop in a domain. In fine, when converged rz=1 in 1D, but rz should
-//     be allowed to vary during iterations.
-//MR: I impose the continuity of the local flux rather than the temperature derivative
-			 //op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
-			 //op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
-			 //op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
-			 //op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
-			 //op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
-			 //op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
-			 //rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
-
-			 //printf("ZONE RADIATIVE numero= %d top DT done \n",n);
+			       }
 		       } else if (domain_type[n] == CORE) {
 			// Continuity of T bottom
 			   if (details)  printf("CORE n= %d\n",n);
