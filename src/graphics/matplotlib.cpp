@@ -93,6 +93,8 @@ void plt::init(bool noplot) {
             return;
         }
 
+#if defined(__linux__)
+#if USE_GTK
         res = PyObject_CallMethod(matplotlib,
                 const_cast<char *>(std::string("use").c_str()),
                 const_cast<char *>(std::string("s").c_str()),
@@ -101,6 +103,8 @@ void plt::init(bool noplot) {
         else {
             close = true;
         }
+#endif
+#endif
 
         PyObject *pyplot = import_module("matplotlib.pyplot");
         if (!pyplot) {

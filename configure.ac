@@ -55,6 +55,16 @@ AS_IF([test "x$PYTHON" != "x:"],
        LIBS+="$PYTHONLIBS"
        AC_DEFINE([PYTHON_VERSION], ["@PYTHON_VERSION@"], [Version of python])])
 
+AC_MSG_CHECKING([for matplotlib GTKAgg backend])
+have_gtk=`$PYTHON -c "import sys; \
+        sys.path.insert(0, '/usr/lib/python$PYTHON_VERSION/dist-packages'); \
+        import matplotlib; matplotlib.use('GTKAgg'); import matplotlib.pyplot; print('yes')" 2> /dev/null`
+
+AS_IF([test "x$have_gtk" == "xyes"],
+      [AC_DEFINE([USE_GTK], [1], [Use GTKAgg matplotlib backend])
+       AC_MSG_RESULT(yes)],
+      [AC_MSG_RESULT(no)])
+
 # Checks for libraries.
 
 # Checks for header files.
