@@ -826,11 +826,18 @@ fclose(qfic);
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
                            rhs_T(j0)=-T(j0)+T(j0-1);
-			   op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
-			   op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
-			   op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
-			   op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
-			   rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+			   op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
+			   op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
+			   op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
+			   op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
+			   op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
+			   op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
+			   rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
+			   //op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+			   //op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+			   //op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
+			   //op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
+			   //rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
 		if (details)  printf("ZONE RADIATIVE n= %d T bot and DT top\n",n);
 			       }
 		       } else if (domain_type[n] == CORE) {

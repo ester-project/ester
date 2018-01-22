@@ -371,8 +371,9 @@ void star1d::plot(const matrix_map& error) {
     plt::subplot(221);
 // subplot(231) divide the screen into 2 lines 3 columns and set in subplot 1
     //plt::plot(r, rho, "$\\rho$");
+    plt::semilogy(r, rho, "$\\rho$");
     plt::semilogy(r, T, "$T$");
-    plt::semilogy(r, p, "$p$");
+    //plt::semilogy(r, p, "$p$");
     plt::legend("lower left");
     for (int i=0; i<ndomains; i++) {
         plt::axvline(map.gl.xif[i]);

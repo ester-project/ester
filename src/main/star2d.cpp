@@ -63,7 +63,8 @@ int main(int argc,char *argv[]) {
 	}
 	A.global_err=1;
         A.glit=0;
-        A.details=0;
+        A.details=1;
+	A.n_essai=0;
         A.config.input_file=*config.input_file;
         printf("check config.input_file= %d\n",A.config.input_file);
 
