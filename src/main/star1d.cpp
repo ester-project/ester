@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <iomanip>
+#include <signal.h>
 
 int killed=0;
 
