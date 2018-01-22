@@ -65,13 +65,13 @@ void star2d::init_comp() {
 /*
 	printf("WARNING : Daniel's superstar computed!\n");
 
-    n = 0; // Count the number of points to the before last domain
-    for (int i=0; i<ndomains-1; i++) {
+    n = 0; // Count the number of points to the before before last domain
+    for (int i=0; i<ndomains-2; i++) {
         n += map.gl.npts[i];
     }
 	if (details) printf(" in init_comp n=%d, nr=%d\n",n,nr);
-	//double x=0.70,z=0.02;
-	double x=X0*0.100,z=0.062;
+//	double x=0.70,z=0.02;
+	double x=X0*0.100,z=0.02;
         comp.setblock(0,n-1,0,-1,initial_composition(x,z)*ones(n,nth));
         comp.setblock(n,nr-1,0,-1,initial_composition(X0,Z0)*ones(nr-n,nth));
 */

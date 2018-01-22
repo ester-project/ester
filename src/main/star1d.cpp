@@ -75,7 +75,7 @@ int main(int argc,char *argv[]) {
 	A.delta=0;  // steady solution used in solve_Xh
 	A.global_err=1;
 	A.glit=0;
-	A.details=0;
+	A.details=1;
 	A.config.input_file=*config.input_file;
 	printf("check config.input_file= %d\n",A.config.input_file);
     //int last_plot_it = -100;
@@ -99,13 +99,13 @@ int main(int argc,char *argv[]) {
 		if(config.verbose) {
 		  printf("it=%d err=%e\n",nit,A.global_err);
 		}
-                if (config.noplot == false && (nit - last_plot_it > 0 || last_it)) {
+                if (config.noplot == false && (nit - last_plot_it > 10 || last_it)) {
                      last_plot_it = nit;
                      A.plot(error_map.block(0, nit-1, 0 ,0));
                 }
 
   	//if (nit > 3) exit(0);
-  	if (nit > 80) last_it=1;
+  	if (nit > 100) last_it=1;
 	} // End of the while loop
 
 	if(config.verbose) {

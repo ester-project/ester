@@ -369,22 +369,22 @@ void star1d::plot(const matrix_map& error) {
     plt::clf();
 
 
-/*
-    plt::subplot(211);
+    plt::subplot(221);
 // subplot(231) divide the screen into 2 lines 3 columns and set in subplot 1
-    plt::plot(r, rho, "$\\rho$");
-    plt::plot(r, T, "$T$");
+    //plt::plot(r, rho, "$\\rho$");
+    //plt::plot(r, T, "$T$");
     plt::semilogy(r, p, "$p$");
-    plt::legend();
+    plt::legend("lower left");
     for (int i=0; i<ndomains; i++) {
         plt::axvline(map.gl.xif[i]);
     }
-    plt::subplot(232);
+    plt::subplot(222);
 // Explanation: divide the screen into 2 lines 3 columns and set in subplot 2
     // plt::title(std::string("iter: ") + std::to_string(nit));
     plt::plot(r, phi, "$\\Phi$");
     plt::legend();
 
+/*
     plt::subplot(233, true);
 // Explanation: divide the screen into 2 lines 3 columns and set in subplot 3
     std::ostringstream str_stream;
@@ -410,19 +410,19 @@ void star1d::plot(const matrix_map& error) {
     plt::text(0.0, 0.0, std::string("$\\pi_c$: ") + str_stream.str());
 */
 
-    plt::subplot(121);
+    plt::subplot(223);
 // Explanation: divide the screen into 2 lines 2 columns and set in subplot 3
     plt::title(std::string("iter: ") + std::to_string(glit));
     plt::semilogy(error["Phi"], "error $\\Phi$");
     plt::semilogy(error["log_p"], "error $\\log P$");
     plt::semilogy(error["log_T"], "error $\\log T$");
-    plt::semilogy(error["log_pc"], "error $\\log {p_c}$");
+    //plt::semilogy(error["log_pc"], "error $\\log {p_c}$");
     plt::semilogy(error["log_Tc"], "error $\\log {T_c}$");
     plt::legend();
 
-    plt::subplot(122);
-    plt::plot(r.block(240,359,0,0),entropy().block(240,359,0,0), "s");
-    for (int i=8; i<ndomains; i++) {
+    plt::subplot(224);
+    plt::plot(r.block(0,nr-1,0,0),entropy().block(0,nr-1,0,0), "s");
+    for (int i=0; i<ndomains; i++) {
         plt::axvline(map.gl.xif[i]);
     }
     //plt::legend();

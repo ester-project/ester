@@ -15,7 +15,7 @@ void star2d::new_check_map() {
                 zone_type = std::vector<int>(1);
 	}
 
-	if (global_err < 1e-6) { // look for new convective regions and eventually remap the star
+	if (global_err < 1e-4) { // look for new convective regions and eventually remap the star
 	   // Find the zone boundaries and the associated pressures
 	   // and output zone_type as global var.
 	   int nzones_av=zone_type.size();
@@ -647,7 +647,7 @@ bb(0,0)=3; bb(1,0)=n_interf;
 n_interf=min(bb);
 if (details) printf("number of interfaces calcule %d \n",n_interf);
 
-n_interf=3; //min(3*ones(1,1),n_interf*ones(1,1));
+//n_interf=3; //min(3*ones(1,1),n_interf*ones(1,1));
 
 // Now we set the values of r_inter and p_inter
 // which include the true surface
@@ -696,37 +696,8 @@ n_interf=3; //min(3*ones(1,1),n_interf*ones(1,1));
         last_zi = r_inter(i, j);
     }
 
-
 //exit(0);
-// Check if there are contiguous zones and suppress them if true
-/*  Should no longer be necessary
-	int nsz=0;
-	redo:
-	if (details) printf("In find_zones nb of zones = %d\n",n+1);
-	int flag=0;
-	for (int iz=0;iz<n;iz++){
-		if (zone_type[iz]==zone_type[iz+1]) {
-		printf("iz =%d flag=%d\n",iz,flag);
-		  for (int k=iz;k<n;k++) {
-		    r_inter(k,j)=r_inter(k+1,j);
-		    p_inter(k,j)=p_inter(k+1,j);
-		    zone_type[k]=zone_type[k+1];
-		  }
-		  nsz++; // increase the number of suppressed zones
-		  flag=1;
-		  goto exit_loop;
-		}
-         }
-	exit_loop:
-if (details) for (int i=0; i<n+1;i++) printf("i=%d, zone_type=%d\n",i,zone_type[i]);
-	if (flag) {
-	   n=n-1; // reduce the number of zones
-	   goto redo; // and check again
-	}
-	printf("In find_zones nsz=%d \n",nsz);
-*/
-	if (details) printf("End of find_zones: number of zones =%d \n",n_interf+1);
-//	zone_type.resize(n_interf+1);
+if (details) printf("End of find_zones: number of zones =%d \n",n_interf+1);
 
     return n_interf+1; // return the number of zones
 }
