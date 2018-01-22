@@ -393,7 +393,8 @@ void star1d::plot(const matrix_map& error) {
     plt::semilogy(error["log_T"], "error $log_T$");
     plt::semilogy(error["log_pc"], "error $log_{p_c}$");
     plt::semilogy(error["log_Tc"], "error $log_{T_c}$");
-    plt::legend();
+    plt::semilogy(error["Ri"], "error $R_i$");
+    plt::legend("lower left");
 
     plt::draw();
     plt::pause();

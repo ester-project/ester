@@ -137,7 +137,7 @@ class star2d:
             self.conduct    = self.interp(self.conduct)
 
 
-	self.Dt		= _mat_to_numpy(self._s.Dt) #theta derivative
+        self.Dt         = _mat_to_numpy(self._s.Dt) #theta derivative
         self.r          = _mat_to_numpy(self._s.r)
         self.rt         = _np.dot(self.r, self.Dt)
         self.rz         = _mat_to_numpy(self._s.map.rz)

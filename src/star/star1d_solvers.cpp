@@ -160,7 +160,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     while(fabs(h*dTc(0))>q) h/=2;
 
     dRi=op->get_var("Ri");
-    // error_map["Ri"](0) = max(fabs(dRi));
+    error_map["Ri"](nit) = max(abs(dRi));
     update_map(h*dRi);
 
     phi+=h*dphi;

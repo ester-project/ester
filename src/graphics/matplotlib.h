@@ -36,7 +36,7 @@ class plt {
         static void ioff();
         static void clf();
         static void draw();
-        static void legend();
+        static void legend(std::string = "");
         static void colorbar();
         static void close();
         static void savefig(const std::string&);

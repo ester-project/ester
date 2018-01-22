@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <iomanip>
+#include <signal.h>
 
 int killed=0;
 
@@ -52,7 +53,6 @@ int main(int argc,char *argv[]) {
         ester_err("Could not initialize star");
         return 1;
     }
-    printf("Star init OK\n");
 
     nit=0;
 
@@ -63,6 +63,7 @@ int main(int argc,char *argv[]) {
     error_map["log_T"] = zeros(config.maxit+1, 1);
     error_map["log_pc"] = zeros(config.maxit+1, 1);
     error_map["log_Tc"] = zeros(config.maxit+1, 1);
+    error_map["Ri"] = zeros(config.maxit+1, 1);
 
     // t_plot=0;
     last_it = (nit>=config.maxit) || killed;

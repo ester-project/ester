@@ -43,10 +43,15 @@ AX_PKG_SWIG([1.3.17], [have_swig="yes"], [have_swig="no"])
 
 AM_CONDITIONAL(HAVE_SWIG, [test "x$have_swig" == "xyes"])
 
+AC_ARG_VAR([PYTHON_CONFIG], [Path to python-config])
+AC_PATH_PROGS([PYTHON_CONFIG],
+              [python$PYTHON_VERSION-config python-config],
+              [no],
+              [`dirname $PYTHON`])
 AS_IF([test "x$PYTHON" != "x:"],
       [PYTHONINC=`$PYTHON -c "from distutils import sysconfig; print(sysconfig.get_python_inc())"`
        CPPFLAGS="$CPPFLAGS -I$PYTHONINC"
-       PYTHONLIBS=`$PYTHON-config --ldflags`
+       PYTHONLIBS=`$PYTHON_CONFIG --ldflags`
        LIBS+="$PYTHONLIBS"
        AC_DEFINE([PYTHON_VERSION], ["@PYTHON_VERSION@"], [Version of python])])
 
