@@ -216,6 +216,7 @@ FILE *fic=fopen("err.txt", "a");
 	while(fabs(h*dTc(0))>q) h/=2;
 	
 	dRi=op->get_var("Ri");	
+    error_map["Ri"](nit) = max(abs(dRi));
   fprintf(fic," it = %d  h=%e\n",glit,h);
   for (int k=0;k<ndomains;k++) fprintf(fic,"dR(%d)= %e, R= %e\n",k,dRi(k),map.R(k));
 	update_map(h*dRi);

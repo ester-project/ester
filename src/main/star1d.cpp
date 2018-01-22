@@ -36,6 +36,7 @@ int main(int argc,char *argv[]) {
 	configuration config(argc,argv);
 	
 	t.start();
+	signal(SIGINT, sig_handler);
 	
 	star1d A;
 	solver *op;
@@ -57,6 +58,7 @@ int main(int argc,char *argv[]) {
         error_map["log_T"] = zeros(config.maxit+1, 1);
         error_map["log_pc"] = zeros(config.maxit+1, 1);
         error_map["log_Tc"] = zeros(config.maxit+1, 1);
+        error_map["Ri"] = zeros(config.maxit+1, 1);
 
 	last_it=nit>=config.maxit; // last_it=0 normally
 	op=A.init_solver();
@@ -75,7 +77,7 @@ int main(int argc,char *argv[]) {
 	A.delta=0;  // steady solution used in solve_Xh
 	A.global_err=1;
 	A.glit=0;
-	A.details=1;
+	A.details=0;
 	A.config.input_file=*config.input_file;
 	printf("check config.input_file= %d\n",A.config.input_file);
     //int last_plot_it = -100;
@@ -94,8 +96,8 @@ int main(int argc,char *argv[]) {
 		
 		tt(nit-1)=t.value();
 		error(nit-1)=A.global_err;
-		last_it=(A.global_err<config.tol&&nit>=config.minit)||nit>=config.maxit;
-		//last_it=(A.global_err<config.tol&&nit>=config.minit)||nit>=config.maxit || killed;
+		//last_it=(A.global_err<config.tol&&nit>=config.minit)||nit>=config.maxit;
+		last_it=(A.global_err<config.tol&&nit>=config.minit)||nit>=config.maxit || killed;
 		if(config.verbose) {
 		  printf("it=%d err=%e\n",nit,A.global_err);
 		}

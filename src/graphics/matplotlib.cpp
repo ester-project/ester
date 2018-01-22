@@ -29,7 +29,7 @@ std::vector<std::string> plt::functions = {
 bool plt::noplot = false;
 
 static PyObject *import_module(const std::string& name) {
-    PyObject *module_name = PyString_FromString(name.c_str());
+    PyObject *module_name = PyUnicode_FromString(name.c_str());
     if (!module_name) {
         ester_warn("error initializing %s", name.c_str());
         PyErr_PrintEx(0);
@@ -45,8 +45,21 @@ static PyObject *import_module(const std::string& name) {
     return module;
 }
 
+#if PY_MAJOR_VERSION >= 3
+void *
+#else
+void
+#endif
+import_array_wrapper() {
+    import_array();
+#if PY_MAJOR_VERSION >= 3
+    return NULL;
+#endif
+}
+
 void plt::init(bool noplot) {
     plt::noplot = noplot;
+
     if (noplot) return;
 
     static bool init = false;
@@ -54,10 +67,14 @@ void plt::init(bool noplot) {
 
         bool close = false;
 
+#if PY_MAJOR_VERSION >= 3
+        Py_SetProgramName((wchar_t *) std::wstring(L"ester").c_str());
+#else
         Py_SetProgramName((char *) std::string("ester").c_str());
+#endif
         Py_Initialize();
 
-        import_array();
+        import_array_wrapper();
 
         PyObject *res;
 
@@ -154,10 +171,10 @@ void plt::plot(const matrix& x, std::string label, std::string style) {
 
     PyObject *args = PyTuple_New(2);
     PyTuple_SetItem(args, 0, pyx);
-    PyTuple_SetItem(args, 1, PyString_FromString(style.c_str()));
+    PyTuple_SetItem(args, 1, PyUnicode_FromString(style.c_str()));
 
     PyObject *kwargs = PyDict_New();
-    PyDict_SetItemString(kwargs, "label", PyString_FromString(label.c_str()));
+    PyDict_SetItemString(kwargs, "label", PyUnicode_FromString(label.c_str()));
 
     call("plot", args, kwargs);
 }
@@ -171,10 +188,10 @@ void plt::plot(const matrix& x, const matrix& y, std::string label, std::string 
     PyObject *args = PyTuple_New(3);
     PyTuple_SetItem(args, 0, pyx);
     PyTuple_SetItem(args, 1, pyy);
-    PyTuple_SetItem(args, 2, PyString_FromString(style.c_str()));
+    PyTuple_SetItem(args, 2, PyUnicode_FromString(style.c_str()));
 
     PyObject *kwargs = PyDict_New();
-    PyDict_SetItemString(kwargs, "label", PyString_FromString(label.c_str()));
+    PyDict_SetItemString(kwargs, "label", PyUnicode_FromString(label.c_str()));
 
     call("plot", args, kwargs);
 }
@@ -188,7 +205,7 @@ void plt::semilogx(const matrix& x, std::string label) {
     PyTuple_SetItem(args, 0, pyx);
 
     PyObject *kwargs = PyDict_New();
-    PyDict_SetItemString(kwargs, "label", PyString_FromString(label.c_str()));
+    PyDict_SetItemString(kwargs, "label", PyUnicode_FromString(label.c_str()));
 
     call("semilogx", args, kwargs);
 }
@@ -204,7 +221,7 @@ void plt::semilogx(const matrix& x, const matrix& y, std::string label) {
     PyTuple_SetItem(args, 1, pyy);
 
     PyObject *kwargs = PyDict_New();
-    PyDict_SetItemString(kwargs, "label", PyString_FromString(label.c_str()));
+    PyDict_SetItemString(kwargs, "label", PyUnicode_FromString(label.c_str()));
 
     call("semilogx", args, kwargs);
 }
@@ -218,7 +235,7 @@ void plt::semilogy(const matrix& x, std::string label) {
     PyTuple_SetItem(args, 0, pyx);
 
     PyObject *kwargs = PyDict_New();
-    PyDict_SetItemString(kwargs, "label", PyString_FromString(label.c_str()));
+    PyDict_SetItemString(kwargs, "label", PyUnicode_FromString(label.c_str()));
 
     call("semilogy", args, kwargs);
 }
@@ -234,7 +251,7 @@ void plt::semilogy(const matrix& x, const matrix& y, std::string label) {
     PyTuple_SetItem(args, 1, pyy);
 
     PyObject *kwargs = PyDict_New();
-    PyDict_SetItemString(kwargs, "label", PyString_FromString(label.c_str()));
+    PyDict_SetItemString(kwargs, "label", PyUnicode_FromString(label.c_str()));
 
     call("semilogy", args, kwargs);
 }
@@ -250,15 +267,24 @@ void plt::loglog(const matrix& x, const matrix& y, std::string label) {
     PyTuple_SetItem(args, 1, pyy);
 
     PyObject *kwargs = PyDict_New();
-    PyDict_SetItemString(kwargs, "label", PyString_FromString(label.c_str()));
+    PyDict_SetItemString(kwargs, "label", PyUnicode_FromString(label.c_str()));
 
     call("loglog", args, kwargs);
 }
 
-void plt::legend() {
+void plt::legend(std::string loc) {
     if (noplot) return;
 
-    call("legend");
+    if (loc == "") {
+        call("legend");
+    }
+    else {
+        PyObject *args = PyTuple_New(0);
+
+        PyObject *kwargs = PyDict_New();
+        PyDict_SetItemString(kwargs, "loc", PyUnicode_FromString(loc.c_str()));
+        call("legend", args, kwargs);
+    }
 }
 
 void plt::colorbar() {
@@ -271,7 +297,7 @@ void plt::title(const std::string& title) {
     if (noplot) return;
 
     PyObject *args = PyTuple_New(1);
-    PyTuple_SetItem(args, 0, PyString_FromString(title.c_str()));
+    PyTuple_SetItem(args, 0, PyUnicode_FromString(title.c_str()));
     call("title", args);
 }
 
@@ -326,7 +352,7 @@ void plt::subplot(int subplot, bool clear_axis) {
     if (noplot) return;
 
     PyObject *args = PyTuple_New(1);
-    PyTuple_SetItem(args, 0, PyInt_FromLong((long) subplot));
+    PyTuple_SetItem(args, 0, PyLong_FromLong((long) subplot));
     PyObject *res = PyObject_CallObject(py["subplot"], args);
     Py_DECREF(args);
     if(res) {
@@ -357,8 +383,8 @@ void plt::axvline(double x) {
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, PyFloat_FromDouble(x));
     PyObject *kwargs = PyDict_New();
-    PyDict_SetItemString(kwargs, "color", PyString_FromString("gray"));
-    PyDict_SetItemString(kwargs, "linestyle", PyString_FromString("--"));
+    PyDict_SetItemString(kwargs, "color", PyUnicode_FromString("gray"));
+    PyDict_SetItemString(kwargs, "linestyle", PyUnicode_FromString("--"));
     PyDict_SetItemString(kwargs, "alpha", PyFloat_FromDouble(0.5));
     call("axvline", args, kwargs);
 }
@@ -369,7 +395,7 @@ void plt::text(double x, double y, std::string text) {
     PyObject *args = PyTuple_New(3);
     PyTuple_SetItem(args, 0, PyFloat_FromDouble(x));
     PyTuple_SetItem(args, 1, PyFloat_FromDouble(y));
-    PyTuple_SetItem(args, 2, PyString_FromString(text.c_str()));
+    PyTuple_SetItem(args, 2, PyUnicode_FromString(text.c_str()));
     call("text", args);
 }
 
@@ -377,7 +403,7 @@ void plt::savefig(const std::string& filename) {
     if (noplot) return;
 
     PyObject *args = PyTuple_New(1);
-    PyTuple_SetItem(args, 0, PyString_FromString(filename.c_str()));
+    PyTuple_SetItem(args, 0, PyUnicode_FromString(filename.c_str()));
     call("savefig", args);
 }
 
