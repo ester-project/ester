@@ -44,13 +44,21 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		if(opa.k(i)==-99) error=1;
 		dlnkT(i)=dlogkt;
 		dlnkrho(i)=dlogkr;
+        if (error) {
+            printf("Values outside OPAL opacity table\n");
+            printf("  X   = %e\n", X(i));
+            printf("  Z   = %e\n", Z);
+            printf("  T   = %e\n", T(i));
+            printf("  rho = %e\n", rho(i));
+            print_stack();
+            exit(EXIT_FAILURE);
+        }
 	}
 	opa.k=pow(10,opa.k);
 	dlnkT-=3*dlnkrho;
 	opa.xi=16*SIG_SB*pow(T,3)/(3*opa.k*rho);
 	opa.dlnxi_lnrho=-1-dlnkrho;
     opa.dlnxi_lnT=3-dlnkT;
-	if(error) ester_err("Values outside OPAL opacity table");
 
 	return error;
 
