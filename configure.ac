@@ -52,7 +52,7 @@ AS_IF([test "x$PYTHON" != "x:"],
       [PYTHONINC=`$PYTHON -c "from distutils import sysconfig; print(sysconfig.get_python_inc())"`
        CPPFLAGS="$CPPFLAGS -I$PYTHONINC"
        PYTHONLIBS=`$PYTHON_CONFIG --ldflags`
-       LIBS+="$PYTHONLIBS"
+       LIBS+=" $PYTHONLIBS"
        AC_DEFINE([PYTHON_VERSION], ["@PYTHON_VERSION@"], [Version of python])])
 
 AC_MSG_CHECKING([for matplotlib GTKAgg backend])
