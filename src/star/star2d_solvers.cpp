@@ -205,21 +205,30 @@ double star2d::solve(solver *op, matrix_map& error_map, int nit) {
 	dphi=op->get_var("Phi").block(0,nr-1,0,-1);
 	dphiex=op->get_var("Phi").block(nr,nr+nex-1,0,-1);
 	err=max(abs(dphi/phi));
+    error_map["Phi"](nit) = err;
+
 	//printf("err(phi)=%e\n",err);
 	dp=op->get_var("p");
 	err2=max(abs(dp/p));err=err2>err?err2:err;
+    error_map["p"](nit) = err2;
 	while(exist(abs(h*dp/p)>dmax)) h/=2;
+
 	//printf("err(p)=%e\n",err2);
 	dT=op->get_var("T");
 	err2=max(abs(dT/T));err=err2>err?err2:err;
+    error_map["T"](nit) = err2;
 	while(exist(abs(h*dT/T)>dmax)) h/=2;
+
 	//printf("err(T)=%e\n",err2);
 	dpc=op->get_var("log_pc");
 	err2=fabs(dpc(0));err=err2>err?err2:err;
+    error_map["log_pc"](nit) = err2;
 	while(fabs(h*dpc(0))>dmax) h/=2;
+
 	//printf("err(pc)=%e\n",err2);
 	dTc=op->get_var("log_Tc");
 	err2=fabs(dTc(0));err=err2>err?err2:err;
+    error_map["log_Tc"](nit) = err2;
 	while(fabs(h*dTc(0))>dmax) h/=2;
 	//printf("err(Tc)=%e\n",err2);
 
@@ -235,6 +244,7 @@ double star2d::solve(solver *op, matrix_map& error_map, int nit) {
 
 	matrix dRi;
 	dRi=op->get_var("Ri");
+    error_map["Ri"](nit) = max(abs(dRi));
 	update_map(h*dRi);
 	err2=max(abs(dRi));err=err2>err?err2:err;
 

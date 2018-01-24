@@ -1208,10 +1208,12 @@ void star2d::plot(const matrix_map& error) {
     str_stream << pi_c;
     plt::text(0.0, 0.0, std::string("$\\pi_c$: ") + str_stream.str());
 
-    plt::subplot(223);
-    plt::semilogy(error["Phi"], "error $\\Phi$");
-    plt::semilogy(error["log_p"], "error $log_p$");
-    plt::legend();
+    if (error["Phi"].ncols()*error["Phi"].nrows() > 0) {
+        plt::subplot(223);
+        plt::semilogy(error["Phi"], "error $\\Phi$");
+        plt::semilogy(error["p"], "error $p$");
+        plt::legend();
+    }
 
     plt::draw();
     plt::pause();
