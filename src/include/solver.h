@@ -9,6 +9,12 @@
 /// Where \f$ . \f$ is the matrix multiplication and \f$ \circ \f$,
 /// the Schur product.
 
+#if __cplusplus > 199711L
+#include<mutex>
+#define THREADS
+#endif
+//#define PERF_LOG
+
 class solver_operator {
 public:
 	int verbose;
@@ -243,7 +249,13 @@ class solver {
 	void subst_dep_eq(const char *block_type,solver_block *,int n,int i,int j);
 	void subst_dep_elem(int i,int k,solver_block *bb,solver_elem *p,const matrix &d,int n2,int m2);
 	void solve_dep();
+#ifdef THREADS
+	std::mutex mutex;
+#endif
 public:
+#ifdef PERF_LOG
+	bool perf_log;
+#endif
 	int use_cgs,maxit_ref,maxit_cgs,verbose;
 	int debug;
 	double rel_tol,abs_tol;
@@ -259,6 +271,10 @@ public:
 	void reset(int iblock,int ieq);
 	void reset(int iblock,const char *eq_name);
 	void reset(const char *eq_name);
+	void reset_bc_bot(int iblock, int ieq);
+	void reset_bc_top(int iblock, int ieq);
+	void reset_bc_bot(int iblock, const char *eq_name);
+	void reset_bc_top(int iblock, const char *eq_name);
 	void regvar(const char *var_name,int dependent=0);
 	inline void regvar_dep(const char *var_name) {regvar(var_name,1);}
 	int get_nvar();
@@ -686,6 +702,7 @@ public:
 	int get_order();
 	bool needs_initial_derivative();
 	double get_t();
+	void reset();
 	
 	int solve(double t0,double t1);
 

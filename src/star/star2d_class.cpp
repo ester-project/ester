@@ -25,6 +25,7 @@ star2d::star2d() : nr(map.gl.N), nth(map.leg.npts), nex(map.ex.gl.N),
     version.svn=0;
     stratified_comp = 0;
     config.dump_iter = 0;
+    age = 0;
 }
 
 star2d::~star2d() {
@@ -74,16 +75,25 @@ void star2d::copy(const star2d &A) {
 
     phiex=A.phiex;
     w=A.w;
-    vr=A.vr;vt=A.vt;G=A.G;
+    vr=A.vr;vt=A.vt;
 
-    Omega=A.Omega;Omega_bk=A.Omega_bk;
-    Ekman=A.Ekman;
+    Omega=A.Omega;Omega_bk=A.Omega_bk;Omegac=A.Omegac;
+    reynolds_v = A.reynolds_v;
+    reynolds_h = A.reynolds_h;
+    visc_v = A.visc_v;
+    visc_h = A.visc_h;
+    diffusion_v = A.diffusion_v;
+    diffusion_h = A.diffusion_h;
 
     core_convec=A.core_convec;
     env_convec=A.env_convec;
     min_core_size=A.min_core_size;
 
     domain_type=A.domain_type;
+    domain_weight=A.domain_weight;
+
+    stratified_comp = A.stratified_comp;
+    version = A.version;
 
 }
 
@@ -207,6 +217,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.open(output_file,mode);
     write_tag(&fp);
 
+    fp.write("age", &age);
     fp.write("ndomains",&ndomains);
     fp.write("npts",map.gl.npts,ndomains);
     fp.write("xif",map.gl.xif,ndomains+1);
@@ -219,6 +230,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("Xc",&Xc);
     fp.write("conv",&conv);
     fp.write("domain_type",&domain_type[0],ndomains);
+    fp.write("domain_weight",&domain_weight[0],ndomains);
     fp.write("surff",&surff);
     fp.write("Tc",&Tc);
     fp.write("pc",&pc);
@@ -228,7 +240,12 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("atm.name",atm.name,strlen(atm.name)+1);
     fp.write("Omega",&Omega);
     fp.write("Omega_bk",&Omega_bk);
-    fp.write("Ekman",&Ekman);
+    fp.write("reynolds_v",&reynolds_v);
+    fp.write("reynolds_h",&reynolds_h);
+    fp.write("visc_v",&visc_v);
+    fp.write("visc_h",&visc_h);
+    fp.write("diffusion_v",&diffusion_v);
+    fp.write("diffusion_h",&diffusion_h);
     fp.write("core_convec",&core_convec);
     fp.write("env_convec",&env_convec);
     fp.write("min_core_size",&min_core_size);
@@ -244,8 +261,11 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("phiex",&phiex);
     fp.write("map.R",&map.R);
     fp.write("w",&w);
-    fp.write("G",&G);
+    fp.write("vr",&vr);
+    fp.write("vt", &vt);
     fp.write("comp",(matrix_map *)&comp);
+
+    write_vars(&fp);
 
     fp.close();
 
@@ -490,7 +510,7 @@ int star2d::read(const char *input_file, int dim) {
 
     if(!fp.open(input_file,'b')) {
         if(!fp.open(input_file,'t')) {
-            return read_old(input_file);
+            return 1;
         }
     }
 
@@ -562,6 +582,10 @@ int star2d::read(const char *input_file, int dim) {
             else domain_type[n]=RADIATIVE;
         }
     }
+    domain_weight.resize(ndomains);
+    if(fp.read("domain_weight",&domain_weight[0])) {
+    	domain_weight = init_domain_weight(domain_type);
+    }
     fp.read("surff",&surff);
     fp.read("Tc",&Tc);
     fp.read("pc",&pc);
@@ -571,11 +595,17 @@ int star2d::read(const char *input_file, int dim) {
     if(fp.read("atm.name",atm.name)) strcpy(atm.name,"simple");
     if(fp.read("Omega",&Omega)) Omega=0;
     if(fp.read("Omega_bk",&Omega_bk)) Omega_bk=0;
-    if(fp.read("Ekman",&Ekman)) Ekman=0;
+    if(fp.read("reynolds_v",&reynolds_v)) reynolds_v = 1e9;
+    if(fp.read("reynolds_h",&reynolds_h)) reynolds_h = 1e7;
+    if(fp.read("visc_v",&visc_v)) visc_v = 1e7;
+    if(fp.read("visc_h",&visc_h)) visc_h = 1e8;
+    if(fp.read("diffusion_v",&diffusion_v)) diffusion_v = 1e4;
+    if(fp.read("diffusion_h",&diffusion_h)) diffusion_h = 1e5;
     if(fp.read("core_convec",&core_convec)) core_convec=1;
     if(fp.read("env_convec",&env_convec)) env_convec=0;
     if(fp.read("min_core_size",&min_core_size)) min_core_size=0.03;
     if(fp.read("stratified_comp",&stratified_comp)) stratified_comp = 0;
+    if(fp.read("age", &age)) age = 0;
 
     map.init();
 
@@ -592,14 +622,20 @@ int star2d::read(const char *input_file, int dim) {
         w=zeros(nr,nth);
         ester_warn("cannot read w,set to 0\n");
     }
-    if(fp.read("G",&G)) G=zeros(nr,nth);
+    if(fp.read("vr",&vr)) vr=zeros(nr,nth);
+    if(fp.read("vt", &vt)) vt = zeros(nr, nth);
     if(fp.read("comp",(matrix_map *)&comp)) init_comp();
 
+    read_vars(&fp);
     fp.close();
     fill();
 
     return 0;
 }
+
+
+void star2d::read_vars(INFILE *fp) {}
+void star2d::write_vars(OUTFILE *fp) const {}
 
 void star2d::write_tag(OUTFILE *fp) const {
     DEBUG_FUNCNAME;
@@ -615,7 +651,7 @@ bool star2d::check_tag(const char *tag) const {
     return true;
 
 }
-
+/*
 int star2d::read_old(const char *input_file){
     DEBUG_FUNCNAME;
         FILE *fp;
@@ -756,7 +792,7 @@ int star2d::read_old(const char *input_file){
     fill();
     return 0;
 }
-
+*/
 int star2d::init(const char *input_file,const char *param_file,int argc,char *argv[]) {
     DEBUG_FUNCNAME;
         cmdline_parser cmd;
@@ -768,7 +804,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     diff_leg leg_new;
     matrix Tr,m0;
 
-    sprintf(default_params,"%s/ester/1d_default.par", ESTER_DATADIR);
+    sprintf(default_params,"%s/ester/2d_default.par", ESTER_DATADIR);
 
     if(input_file != NULL) {
         if (read(input_file)) {
@@ -871,13 +907,13 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
             map=map0;
             remap(map_new.ndomains,map_new.gl.npts,map_new.nt,map_new.nex);
         } 
-        if(version.rev<=71) { // Force remapping for old files
+        /*if(version.rev<=71) { // Force remapping for old files
             int npts[ndomains+1];
             for(int n=0;n<ndomains;n++) npts[n]=map.npts[n];
             npts[ndomains]=npts[ndomains-1];
             remap(ndomains+1,npts,map.nt,map.nex);	
             remap(ndomains-1,map.npts,map.nt,map.nex);
-        }
+        }*/
     } else {
         map.init();
         T=1-0.5*r*r;
@@ -885,10 +921,12 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         phi=-T;
         phiex=zeros(nex,nth);
         w=zeros(nr,nth);
-        G=zeros(nr,nth);
+        vr=zeros(nr,nth);
+        vt=zeros(nr,nth);
         conv=0;
         domain_type.resize(ndomains);
         for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
+        domain_weight = init_domain_weight(domain_type);
     }
     init_comp();
     fill();
@@ -903,7 +941,7 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
     int k;
     file_parser fp;
 
-    sprintf(default_params,"%s/config/2d_default.par",ESTER_DATADIR);
+    sprintf(default_params,"%s/ester/2d_default.par",ESTER_DATADIR);
 
     *this=A;
 
@@ -916,13 +954,18 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
             if(!strcmp(arg,"nth")&&val&&npts_th==-1) npts_th=atoi(val);		
             if(!strcmp(arg,"nex")&&val&&npts_ex==-1) npts_ex=atoi(val);
             if(!strcmp(arg,"Omega_bk")&&val) Omega_bk=atof(val);
-            if(!strcmp(arg,"Ekman")&&val) Ekman=atof(val);
+            if(!strcmp(arg,"reynolds_v")&&val) reynolds_v=atof(val);
+            if(!strcmp(arg,"reynolds_h")&&val) reynolds_h=atof(val);
+            if(!strcmp(arg,"visc_v")&&val) visc_v=atof(val);
+            if(!strcmp(arg,"visc_h")&&val) visc_h=atof(val);
+            if(!strcmp(arg,"diffusion_v")&&val) diffusion_v=atof(val);
+            if(!strcmp(arg,"diffusion_h")&&val) diffusion_h=atof(val);
         }
         fp.close();
     }
 
-    if(npts_th==-1) npts_th=8;
-    if(npts_ex==-1) npts_ex=8;
+    if(npts_th==-1) npts_th=24;
+    if(npts_ex==-1) npts_ex=30;
 
 
     remap(ndomains,map.gl.npts,npts_th,npts_ex);
@@ -933,11 +976,13 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 
 void star2d::interp(remapper *red) {
     DEBUG_FUNCNAME;
-        p=red->interp(p);
+
+    p=red->interp(p);
     phi=red->interp(phi);
     T=red->interp(T);
     w=red->interp(w);
-    G=red->interp(G,11);
+    vt=red->interp(vt,11);
+    vr=red->interp(vr);
     comp=red->interp(comp);
     phiex=red->interp_ex(phiex);
     fill(); // recompute the microphysic variables
@@ -1037,9 +1082,29 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
         if(val==NULL) return 2;
         strcpy(atm.name,val);
     }
-    else if(!strcmp(arg,"Ekman")) {
+    else if(!strcmp(arg,"reynolds_v")) {
         if(val==NULL) return 2;
-        Ekman=atof(val);
+        reynolds_v=atof(val);
+    }
+    else if(!strcmp(arg,"reynolds_h")) {
+    	if(val==NULL) return 2;
+    	reynolds_h=atof(val);
+    }
+    else if(!strcmp(arg,"visc_v")) {
+    	if(val==NULL) return 2;
+    	visc_v=atof(val);
+    }
+    else if(!strcmp(arg,"visc_h")) {
+    	if(val==NULL) return 2;
+    	visc_h=atof(val);
+    }
+    else if(!strcmp(arg,"diffusion_v")) {
+    	if(val==NULL) return 2;
+    	diffusion_v=atof(val);
+    }
+    else if(!strcmp(arg,"diffusion_h")) {
+    	if(val==NULL) return 2;
+    	diffusion_h=atof(val);
     }
     else if(!strcmp(arg,"core_convec")) {
         if(val==NULL) return 2;
@@ -1085,6 +1150,7 @@ void star2d::dump_info() {
     // printf(")\n\n");
 
     printf("General parameters:\n\n");
+    printf("\tAge = %f Myr\n", age);
     printf("\tMass = %.5f Msun (%e g)\n",M/M_SUN,M);
     printf("\tRadius (p) = %.5f Rsun (%e cm)\n",R/R_SUN,R);
     double re=map.leg.eval_00(r.row(-1),PI/2)(0);
@@ -1153,6 +1219,12 @@ void star2d::dump_info() {
     printf("\tEquation of state = %s\n",eos.name);
     printf("\tNuclear reactions = %s\n",nuc.name);
     printf("\tAtmosphere = %s\n",atm.name);
+    printf("\tViscosity (vertical) = %e cm^2/s\n", visc_v);
+    printf("\tViscosity (horizontal) = %ecm^2/s\n", visc_h);
+    printf("\tChemical diffusion (vertical) = %e cm^2/s\n", diffusion_v);
+    printf("\tChemical diffusion (horizontal) = %e cm^2/s\n", diffusion_h);
+    printf("\tMeridional circulation reynolds number (vertical) = %e\n", reynolds_v);
+    printf("\tMeridional circulation reynolds number (horizontal) = %e\n", reynolds_h);
     printf("\tsurff = %e\n",surff);
     printf("\tcore_convec = %d\n",core_convec);
     printf("\tmin_core_size = %e\n",min_core_size);

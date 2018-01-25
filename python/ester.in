@@ -36,12 +36,16 @@ def _double_to_numpy(mat, nr, nth):
 
 class star2d:
 
-    def interp(self, f):
+    def interp(self, f, parity=0):
     # add points f(theta=0) and f(theta=pi/2) to  field f 
         r = _np.zeros(shape=(f.shape[0], self.nth+2))
         r[:, 1:self.nth+1] = f
-        r[:, 0] = _np.dot(f, self.P_eq)[:, 0]
-        r[:, -1] = _np.dot(f, self.P_po)[:, 0]
+        if parity:
+        	r[:, 0] = 0
+        	r[:, -1] = 0
+        else:
+        	r[:, 0] = _np.dot(f, self.P_eq)[:, 0]
+        	r[:, -1] = _np.dot(f, self.P_po)[:, 0]
         return r
 
     def __init__(self, model, interpolate=True):
@@ -107,7 +111,7 @@ class star2d:
         self.conduct    = _mat_to_numpy(self._s.opa.xi)
 
         if interpolate:
-            self.G          = self.interp(self.G)
+            self.G          = self.interp(self.G, 1)
             self.N2         = self.interp(self.N2)
             self.T          = self.interp(self.T)
             self.X          = self.interp(self.X)
@@ -132,7 +136,7 @@ class star2d:
             self.d          = self.interp(self.d)
             self.s          = self.interp(self.s)
             self.vr         = self.interp(self.vr)
-            self.vt         = self.interp(self.vt)
+            self.vt         = self.interp(self.vt, 1)
             self.opacity    = self.interp(self.opacity)
             self.conduct    = self.interp(self.conduct)
 
@@ -147,12 +151,12 @@ class star2d:
         self.gzt        = _mat_to_numpy(self._s.map.gzt)
         if interpolate:
             self.r          = self.interp(self.r)
-            self.rt         = self.interp(self.rt)
+            self.rt         = self.interp(self.rt, 1)
             self.rz         = self.interp(self.rz)
             self.rzz        = self.interp(self.rzz)
-            self.rzt        = self.interp(self.rzt)
+            self.rzt        = self.interp(self.rzt, 1)
             self.gzz        = self.interp(self.gzz)
-            self.gzt        = self.interp(self.gzt)
+            self.gzt        = self.interp(self.gzt, 1)
         self.th         = _np.zeros(shape=(self.nth+2))
         self.th[1:self.nth+1] = _mat_to_numpy(self._s.th)
         self.th[0] = _np.pi/2
@@ -182,7 +186,7 @@ class star2d:
 # It = weights for computing theta-integrals, since polar and equatorial points
 # are used in the representation of the fields, the associated weights are zero
         self.It         = _np.zeros(shape=(1, self.nth+2))
-        self.It[0, 1:self.nth+1] = _mat_to_numpy(self._s.map.leg.I_00)[0, :]
+        self.It[0, 1:self.nth+1] = _mat_to_numpy(self._s.map.leg.I_00)[:, 0]
         self.It         = _np.reshape(self.It,self.nth+2)
 
         ones = _wrapper.ones(1, self.nth)

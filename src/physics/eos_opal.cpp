@@ -16,7 +16,7 @@ extern"C" {
 
 int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos) {
-    
+
     matrix t6,p_mb;
     int i,N,error=0;
     
@@ -54,6 +54,7 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
 	double Xi,Zi,t6i,p_mbi,rhoi;
     for(i=0;i<N;i++) {
     	Xi=X(i);Zi=Z;t6i=t6(i);p_mbi=p_mb(i);
+    	if (Xi == 0) Xi = 1e-10; // OPAL crash if X = 0 ???
     	eos5_xtrin_(&Xi,&Zi,&t6i,&p_mbi,&rhoi);
     	rho(i)=rhoi;
     	eos.s(i)=1e6*(*(eeos_.eos+2));

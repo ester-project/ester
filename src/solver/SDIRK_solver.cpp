@@ -303,6 +303,10 @@ void SDIRK_solver::unwrap(const matrix *v,matrix *u) {
 	}
 }
 
+void SDIRK_solver::reset() {
+	stage = -1;
+}
+
 int SDIRK_solver::solve(double t0,double t1) {
 
 	check_init();
@@ -337,7 +341,11 @@ int SDIRK_solver::solve(double t0,double t1) {
 			last_step=false;
 			return RK_END;
 		}
-		if(step>t1-t) {
+		if(t1-t<1.25*step) {
+			h = t1-t;
+			last_step = true;
+		}
+		else if(step>t1-t) {
 			h=t1-t;
 			last_step=true;
 		} else h=step;

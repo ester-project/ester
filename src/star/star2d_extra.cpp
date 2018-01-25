@@ -39,14 +39,14 @@ void star2d::calc_units() {
 	units.T=Tc;
 	units.r=R;
 	units.Omega=sqrt(pc/rhoc)/R;
-	units.v=sqrt(pc/rhoc);
+	units.v=R/MYR;
 	units.F=pc/R/rhoc;
 }
 
 double star2d::luminosity() const {
 
-	return 2*PI*(map.gl.I,(rho*nuc.eps*r*r*map.rz,map.leg.I_00))(0)*units.rho*units.r*units.r*units.r;
-
+	matrix Fz=-opa.xi*(map.gzz*(D,T)+map.gzt*(T,Dt));
+	return 2*PI*((Fz*r*r*map.rz).row(nr-1),map.leg.I_00)(0)*units.T*units.r;
 }
 
 double star2d::Lz() const {
@@ -105,8 +105,6 @@ matrix star2d::N2() const {
 
 matrix star2d::entropy() const {
 
-//	Valid only for homogeneus composition !!!!!!
-
 	matrix s(nr,nth),rhs;
 	
 	solver op;
@@ -133,6 +131,7 @@ matrix star2d::entropy() const {
 		s.setcol(j,op.get_var("s"));
 	}
 	return s;
+
 }
 
 matrix star2d::Teff() const {
@@ -191,13 +190,11 @@ double star2d::virial() const {
 double star2d::energy_test() const {
 
 	double e1,e2;
-	matrix Fz;
 	
 	e1=luminosity();
-	Fz=-opa.xi*(map.gzz*(D,T)+map.gzt*(T,Dt));
-	e2=2*PI*((Fz*r*r*map.rz).row(nr-1),map.leg.I_00)(0)*units.T*units.r;
-	
-	return (e1-e2)/e1;
+	e2=2*PI*(map.gl.I,(rho*nuc.eps*r*r*map.rz,map.leg.I_00))(0)*units.rho*units.r*units.r*units.r;
+
+	return fabs((e1-e2)/e1);
 
 }
 
@@ -275,7 +272,7 @@ double star2d::apparent_luminosity(double i) const {
 	return L_ap;
 	
 }
-
+/*
 matrix star2d::stream() const {
 
 	matrix vr_,GG;
@@ -295,7 +292,7 @@ matrix star2d::stream() const {
 		
 	return GG;
 }
-
+*/
 
 
 

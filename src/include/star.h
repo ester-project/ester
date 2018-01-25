@@ -15,13 +15,22 @@
 #include <cmath>
 #include <vector>
 
-#define PRES T
-#define LOG_PRES "log_T"
-//#define PRES p
-//#define LOG_PRES "log_p"
+#if __cplusplus > 199711L
+#include<thread>
+#define THREADS
+#endif
+#ifdef MKL
+#include "mkl.h"
+#endif
+
+
+//#define PRES T
+//#define LOG_PRES "log_T"
+#define PRES p
+#define LOG_PRES "log_p"
 #define T_CONSTANT_DOMAINS
 //#define PHOTOSPHERE 1
-//#define KINEMATIC_VISC
+//#define ASYMP_VISC
 
 class star1d;
 
@@ -31,6 +40,10 @@ class star2d {
 	void init1d(const star1d &A,int npts_th,int npts_ex);
 	virtual bool check_tag(const char *tag) const;
 	virtual void write_tag(OUTFILE *fp) const;
+	virtual void write_eqs(solver *op);
+	virtual double update_solution(solver *op, double &h);
+	virtual void read_vars(INFILE *fp);
+	virtual void write_vars(OUTFILE *fp) const;
   public:
   	mapping map;
   	const int &nr,&nth,&nex,&ndomains;
@@ -38,13 +51,16 @@ class star2d {
 	const matrix_block_diag &D;
     matrix rho,phi,p,T;
     matrix phiex;
-	matrix vr,vt,G,w;
+	matrix vr,vt,w;
+	matrix vangle;
 	composition_map comp; 
     double X0,Y0,Z0;
     double R,M;
     double rhoc,Tc,pc;
     double Omega,Omega_bk,Omegac;
-   	double Ekman;
+   	double reynolds_v, reynolds_h, visc_v, visc_h;
+   	double diffusion_v, diffusion_h;
+   	double age;
   	opa_struct opa;
 	nuc_struct nuc;
 	eos_struct eos;
@@ -59,6 +75,7 @@ class star2d {
 	int stratified_comp;
 	double min_core_size;
 	std::vector<int> domain_type;
+	std::vector<double> domain_weight;
 	#define RADIATIVE 0
 	#define CORE 1
 	#define CONVECTIVE 2
@@ -71,7 +88,7 @@ class star2d {
 	struct units_struct {
 		double rho,p,phi,T,Omega,r,v,F;
 	} units;
-	void calc_units();
+	virtual void calc_units();
 
 	star2d();
 	virtual ~star2d();
@@ -91,7 +108,7 @@ class star2d {
 	virtual int init(const char *input_file,const char *param_file,int argc,char *argv[]);
 	virtual int check_arg(char *arg,char *val,int *change_grid);
 	virtual int read(const char *input_file, int dim = 2);
-	virtual int read_old(const char *input_file);
+	//virtual int read_old(const char *input_file);
 	virtual void write(const char *output_file,char output_mode='b') const;
 	virtual void interp(remapper *red);
 	
@@ -105,6 +122,7 @@ class star2d {
 	
 	virtual void solve_poisson(solver *);
 	virtual void solve_mov(solver *);
+	virtual void solve_cont(solver *);
 	virtual void solve_temp(solver *);
 	virtual void solve_dim(solver *);
 	virtual void solve_map(solver *);
@@ -113,10 +131,10 @@ class star2d {
 	virtual void solve_Teff(solver *);
 	virtual void solve_definitions(solver *);
 	virtual void solve_atm(solver *);
+	virtual void solve_vangle(solver *);
 	
 	virtual void update_map(matrix dR);
 	
-	virtual void calc_veloc();
 	
 	virtual matrix entropy() const;
 	virtual double luminosity() const;
@@ -129,7 +147,7 @@ class star2d {
 	virtual double virial_ps() const;
 	virtual double virial() const;
 	virtual double energy_test() const;
-	virtual matrix stream() const;
+	//virtual matrix stream() const;
 	virtual double apparent_luminosity(double i) const;
 	virtual double Lz() const;
 	virtual double Mcore() const;
@@ -137,16 +155,23 @@ class star2d {
 	virtual matrix Rcore() const;
 	
 	virtual void fill();
+	virtual void calc_vangle();
 	
 	// star_map.cpp
 	virtual void remap(int ndomains,int *npts,int nth,int nex);
-	virtual bool remap_domains(int ndom, remapper &red);
-	virtual matrix find_boundaries(const matrix &logTi) const;
-	virtual std::vector<int> distribute_domains(int ndom,matrix &zif,bool check_only=false) const;
-	virtual matrix distribute_domains(int ndomains,int &conv_new,double p_cc=0) const;
-	virtual matrix find_boundaries_old(matrix pif) const;
 	virtual void check_map();
-	virtual int check_convec(double &p_cc,matrix &Rcc);
+	virtual int count_zones(std::vector<int> &index);
+	virtual matrix get_zone_itfs(matrix &pzone);
+	virtual void add_convective_core(double pcc, matrix Rcc);
+	virtual int remove_convective_core();
+	virtual std::vector<int> distribute_domains(int ndom, matrix pzone, std::vector<int> &index_new);
+	virtual std::vector<int> resample_domain_type(int ndom_new, std::vector<int> index_old, std::vector<int> index_new);
+	virtual std::vector<double> init_domain_weight(std::vector<int> &domain_type_new);
+	virtual matrix get_new_boundaries(matrix pzone, matrix Rzone, std::vector<int> ndom_zone, std::vector<double> weight);
+	virtual matrix find_boundary(double pif);
+	virtual bool remap_domains(int ndom, remapper &red);
+	virtual int check_convec(double &p_cc, matrix &Rcc);
+	virtual void update_domain_weights();
 	
 	void draw(figure *,const matrix &,int parity=0) const;
 	void drawi(figure *,const matrix &,int sr,int st,int parity=0) const;
@@ -159,7 +184,6 @@ class star2d {
 	void add_dkconv_dz(solver *op,const char *eqn,const matrix &d);
 	// void kconv_common(matrix &kc,matrix &Ja,matrix &Jb,symbolic &S,sym &a_,sym &b_) const;
 
-	virtual void check_jacobian(solver *op,const char *eqn);
 
     void hdf5_write(const char *filename) const;
     int hdf5_read(const char *input_file, int dim);
@@ -177,7 +201,7 @@ class star1d : public star2d {
 	star1d &operator=(const star1d &);
 	virtual int init(const char *input_file,const char *param_file,int argc,char *argv[]);
 	virtual int check_arg(char *arg,char *val,int *change_grid);
-	virtual int read_old(const char *input_file);
+	//virtual int read_old(const char *input_file);
 	virtual int read(const char *input_file, int dim = 1);
 	
 	virtual void dump_info();
@@ -205,23 +229,51 @@ class star1d : public star2d {
 	
 	void spectrum(figure *,const matrix &,const char *line="") const;
 	
-	virtual void check_jacobian(solver *op,const char *eqn);
+
 };
 
 class star_evol : public star2d {
 protected:
-    bool comp_inited;
+	matrix Xprev, r0, rho0, T0, lnp0, w0, phi0;
+	double lnR0, drhocdX, lnrhoc0, lnTc0, lnpc0;
+	double delta;
+	bool check_map_enable;
+	double mH0, mH;
+	virtual void read_vars(INFILE *fp);
+	virtual void write_vars(OUTFILE *fp) const;
+	virtual void write_eqs(solver *op);
+	virtual double update_solution(solver *op, double &h);
+	virtual void copy(const star_evol &);
+	virtual void calcTimeDerivs();
 public:
-    bool converged;
-	double Lz_obj;
+	matrix dXdt, drhodt, dpdt, dwdt, dTdt, dphidt;
 	star_evol();
 	star_evol(const star2d &);
+	star_evol(const star_evol &);
+	star_evol &operator=(const star_evol &);
+	virtual void init_comp();
 	virtual void fill();
-	virtual int read(const char *input_file, int dim = 2);
 	virtual solver *init_solver(int nvar_add=0);
+	virtual SDIRK_solver *init_time_solver();
 	virtual void register_variables(solver *op);
-	virtual void solve_Omega(solver *);
-    // void init_comp();
+	virtual void register_variables(SDIRK_solver *rk);
+    virtual void init_step(SDIRK_solver *rk);
+    virtual void finish_step(SDIRK_solver *rk, int state);
+    virtual void check_map();
+    virtual void interp(remapper *red);
+    virtual void calc_units();
+    virtual void solve_definitions(solver *);
+    virtual void solve_dim(solver *);
+    virtual void solve_Omega(solver *);
+    virtual void solve_X(solver *);
+    virtual void solve_cont(solver *);
+    virtual void solve_temp(solver *);
+    virtual void solve_mov(solver *);
+    virtual double solve(solver *);
+
+    virtual void reset_time_solver(SDIRK_solver *);
+
+    virtual int remove_convective_core();
 };
 
 #endif

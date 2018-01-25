@@ -9,6 +9,11 @@ using namespace std;
 
 #define COMPARE(A,B) ((A)>(B)?1:((A)==(B)?0:-1))
 
+sym::sym_flags::sym_flags() {
+	collect = false;
+	trig_simplify = false;
+}
+
 bool sort_pair_d(const pair<sym::sym_expr *,double> &a,const pair<sym::sym_expr *,double> &b) {
 
 	int c;
@@ -72,6 +77,10 @@ sym::sym_num *sym::sym_num::clone() const {
 	return new sym_num(*this);
 }
 
+int sym::sym_num::nodeCount() const {
+	return 1;
+}
+
 int sym::sym_num::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
@@ -83,8 +92,8 @@ int sym::sym_num::comp(const sym_expr &s) const {
 
 }
 
-sym::sym_expr *sym::sym_num::reduce() {
-	
+sym::sym_expr *sym::sym_num::reduce(sym_flags flags) {
+
 	value=symbolic::round_to_tol(value);
 	
 	return this;
@@ -115,6 +124,10 @@ sym::symbol *sym::symbol::clone() const {
 	return new symbol(*this);
 }
 
+int sym::symbol::nodeCount() const {
+	return 1;
+}
+
 int sym::symbol::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
@@ -128,9 +141,7 @@ int sym::symbol::comp(const sym_expr &s) const {
 
 sym::sym_expr *sym::symbol::derive(const sym_expr &s) {
 	
-	if(is_const) {delete this;return new sym_num(0);}
-	
-	if(is_indep) {
+	if(is_indep || is_const) {
 		if(s==*this) {delete this;return new sym_num(1);}
 		else {delete this;return new sym_num(0);}
 	}
@@ -180,6 +191,12 @@ sym::sym_deriv *sym::sym_deriv::clone() const {
 	return new sym_deriv(*this);
 }
 
+int sym::sym_deriv::nodeCount() const {
+	int cnt = 1;
+	cnt += oper->nodeCount();
+	return cnt;
+}
+
 int sym::sym_deriv::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
@@ -194,9 +211,9 @@ int sym::sym_deriv::comp(const sym_expr &s) const {
 
 }
 
-sym::sym_expr *sym::sym_deriv::reduce() {
+sym::sym_expr *sym::sym_deriv::reduce(sym_flags flags) {
 
-	oper->reduce();
+	oper->reduce(flags);
 	if(typeid(*oper)==typeid(sym_deriv)) {
 		sym_deriv *sderiv;
 		sderiv=(sym_deriv *)oper;
@@ -205,7 +222,7 @@ sym::sym_expr *sym::sym_deriv::reduce() {
 			stemp=var;
 			var=sderiv->var;
 			sderiv->var=stemp;
-			sderiv->reduce();
+			sderiv->reduce(flags);
 		}
 	}
 	return this;
@@ -280,6 +297,13 @@ sym::sym_add *sym::sym_add::clone() const {
 	return new sym_add(*this);
 }
 
+int sym::sym_add::nodeCount() const {
+	int cnt = 1;
+	for(unsigned int i=0; i<oper.size(); i++)
+		cnt += oper[i].first->nodeCount();
+	return cnt;
+}
+
 int sym::sym_add::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
@@ -300,12 +324,12 @@ int sym::sym_add::comp(const sym_expr &s) const {
 	return c;
 }
 
-sym::sym_expr *sym::sym_add::reduce() {
+sym::sym_expr *sym::sym_add::reduce(sym_flags flags) {
 	
 	sym_add s_old(*this);
 
 	for(unsigned int i=0;i<oper.size();i++)
-        oper[i].first=oper[i].first->reduce();
+        oper[i].first=oper[i].first->reduce(flags);
 	for(unsigned int i=0;i<oper.size();i++)
         oper[i].second=symbolic::round_to_tol(oper[i].second);
 	
@@ -366,7 +390,7 @@ sym::sym_expr *sym::sym_add::reduce() {
 			}	
 	}
 
-	if(symbolic::trig_simplify) {
+	if(flags.trig_simplify) {
 		n=oper.size();
 		for(int i=0;i<n;i++) {
 			// sin(x)^2 or cos(x)^2 should be in a sym_prod node
@@ -387,7 +411,7 @@ sym::sym_expr *sym::sym_add::reduce() {
 						scos=((sym_sin *)sprod->oper[j].first)->oper->clone(); //argument of sin
 						scos=sym_cos::create(scos);
 						scos=sym_prod::create_pow(scos,2);
-						test=test->mult(*scos)->reduce();
+						test=test->mult(*scos)->reduce(flags);
 						delete scos;
 					}
 					else if(typeid(*(sprod->oper[j].first))==typeid(sym_cos)&&sprod->oper[j].second>=2) {
@@ -400,7 +424,7 @@ sym::sym_expr *sym::sym_add::reduce() {
 						ssin=((sym_cos *)sprod->oper[j].first)->oper->clone(); //argument of cos
 						ssin=sym_sin::create(ssin);
 						ssin=sym_prod::create_pow(ssin,2);
-						test=test->mult(*ssin)->reduce();
+						test=test->mult(*ssin)->reduce(flags);
 						delete ssin;
 					}
 					if(found) {
@@ -411,11 +435,11 @@ sym::sym_expr *sym::sym_add::reduce() {
 							if(oper[k].second==0) continue;
 							sym_expr *test2;
 							test2=oper[k].first->clone();
-							test2=test2->mult(sym_num(oper[k].second))->reduce();
+							test2=test2->mult(sym_num(oper[k].second))->reduce(flags);
 							if(*test2==*test) {
 								found=true;
 								delete oper[i].first;
-								oper[i].first=snew->clone()->reduce();
+								oper[i].first=snew->clone()->reduce(flags);
 								oper[i].second=1;
 								oper[k].second=0;
 								delete test2;
@@ -486,10 +510,81 @@ sym::sym_expr *sym::sym_add::reduce() {
 		}
 		oper[0].first=NULL;
 		delete this;
-		return s->reduce();
+		return s->reduce(flags);
 	}
 
-	if(comp(s_old)) return reduce();
+// Collect terms with common factors
+	if(flags.collect) {
+		std::vector<sym_expr *> factors;
+		// Collect possible factors in factors[]
+		for(unsigned int i=0; i<oper.size(); i++) {
+			if(typeid(*(oper[i].first))==typeid(sym_prod)) {
+				sym_prod *sprod = (sym_prod *) oper[i].first;
+				for(unsigned int j=0; j<sprod->oper.size(); j++) {
+					bool already = false;
+					for(unsigned int k=0; k<factors.size(); k++) {
+						if (*(sprod->oper[j].first) == *(factors[k])) {
+							already = true;
+							break;
+						}
+					}
+					if(!already)
+						factors.push_back(sprod->oper[j].first->clone());
+				}
+			}
+			else {
+				bool already = false;
+				for(unsigned int k=0; k<factors.size(); k++) {
+					if (*(oper[i].first) == *(factors[k])) {
+						already = true;
+						break;
+					}
+					if(!already)
+						factors.push_back(oper[i].first->clone());
+				}
+			}
+		}
+		// Create common factor
+		// The factor is chosen if the minimum exponent among all the terms is != 0
+		// Factors with negative exponent in at least 1 term are always chosen
+		sym_prod *fact = new sym_prod();
+		sym_prod *fact_inv = new sym_prod();
+		for(unsigned int i=0; i<factors.size(); i++) {
+			rational minexp = 999999999;
+			for(unsigned int j=0; j<oper.size(); j++) {
+				if(typeid(*(oper[j].first))==typeid(sym_prod)) {
+					rational exponent = ((sym_prod *) oper[j].first)->get_exponent(*factors[i]);
+					minexp = exponent < minexp ? exponent : minexp;
+				}
+				else if(*(oper[j].first) == *factors[i]) {
+					minexp = minexp > 1 ? 1 : minexp;
+				}
+				else {
+					minexp = minexp > 0 ? 0 : minexp;
+				}
+			}
+			if(minexp != 0) {
+				fact->oper.push_back(make_pair(factors[i]->clone(), minexp));
+				fact_inv->oper.push_back(make_pair(factors[i]->clone(), -minexp));
+			}
+		}
+		for(unsigned int i=0; i<factors.size(); i++)
+			delete factors[i];
+		if(fact->oper.size()) { // Extract global factor (fact)
+			// Divide all terms by fact_inv
+			for(unsigned int i=0; i<oper.size(); i++) {
+				sym_prod *snew = sym_prod::create(fact_inv->clone(), oper[i].first);
+				oper[i].first = snew->reduce(flags);
+			}
+			// Multiply globally bu fact
+			sym_prod *snew = sym_prod::create(fact, this);
+			return snew->reduce(flags);
+		}
+	}
+
+
+
+	if(comp(s_old)) return reduce(flags);
 	else return this;
 	
 }
@@ -555,7 +650,7 @@ sym::sym_expr *sym::sym_add::multiply(const sym_add &s) {
 
 }
 
-sym::sym_expr *sym::sym_add::power(int n) {
+sym::sym_expr *sym::sym_add::power(int n, sym_flags flags) {
 
 	sym_add *sa,*sb,*stemp;
 
@@ -579,7 +674,7 @@ sym::sym_expr *sym::sym_add::power(int n) {
 	delete sa;
 	delete sb;
 	
-	return snew->reduce();
+	return snew->reduce(flags);
 	
 }
 
@@ -605,6 +700,13 @@ sym::sym_prod *sym::sym_prod::clone() const {
 	return new sym_prod(*this);
 }
 
+int sym::sym_prod::nodeCount() const {
+	int cnt = 1;
+	for(unsigned int i=0; i<oper.size(); i++)
+		cnt += oper[i].first->nodeCount();
+	return cnt;
+}
+
 int sym::sym_prod::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
@@ -625,11 +727,11 @@ int sym::sym_prod::comp(const sym_expr &s) const {
 	return c;
 }
 
-sym::sym_expr *sym::sym_prod::reduce() {
-	
+sym::sym_expr *sym::sym_prod::reduce(sym_flags flags) {
+
 	sym_prod s_old(*this);
 
-	for(unsigned int i=0;i<oper.size();i++) oper[i].first=oper[i].first->reduce();
+	for(unsigned int i=0;i<oper.size();i++) oper[i].first=oper[i].first->reduce(flags);
 
 // Find children nodes of type sym_prod and merge them in current node
 //  a * [b * c] --> a * b * c
@@ -704,7 +806,7 @@ sym::sym_expr *sym::sym_prod::reduce() {
 	}
 	
 // Expand powers of sym_add terms
-	if(symbolic::expand_products) {
+	if(!flags.collect) {
 		for(unsigned int i=0;i<oper.size();i++) {
 			if(typeid(*(oper[i].first))!=typeid(sym_add)) continue;
 			if(oper[i].second==0) continue;
@@ -719,7 +821,7 @@ sym::sym_expr *sym::sym_prod::reduce() {
 			if(oper[i].second.num()!=1) {
 				sym_expr *s;
 				int ex=abs(oper[i].second.num());
-				s=((sym_add *)oper[i].first)->power(ex);
+				s=((sym_add *)oper[i].first)->power(ex, flags);
 				delete oper[i].first;
 				oper[i].first=s;
 				oper[i].second=rational(oper[i].second.num()/ex,oper[i].second.den());
@@ -764,13 +866,13 @@ sym::sym_expr *sym::sym_prod::reduce() {
 			s=oper[0].first;
 			oper[0].first=NULL;
 			delete this;
-			return s->reduce();
+			return s->reduce(flags);
 		}
 	}
 
 // Multiply sym_add terms
 
-	if(symbolic::expand_products) {
+	if(!flags.collect) {
 		n=oper.size();
 		for(unsigned int i=0;i<n;i++) {
 			if(typeid(*(oper[i].first))!=typeid(sym_add)) continue;
@@ -786,11 +888,28 @@ sym::sym_expr *sym::sym_prod::reduce() {
 				snew->oper.push_back(make_pair(sprod,sadd->oper[j].second));
 			}
 			delete this;
-			return snew->reduce();
+			return snew->reduce(flags);
 		}
 	}
 
-	if(comp(s_old)) return reduce();
+// First coefficient of sym_add terms should be one
+// otherwise (2*x+2*y)/(x+y) won't be simplified
+
+	for(unsigned int i=0; i<oper.size(); i++) {
+		if(typeid(*(oper[i].first))!=typeid(sym_add)) continue;
+		sym_add *sadd = (sym_add *)oper[i].first;
+		if(sadd->oper[0].second == 1) continue;
+		double fact = sadd->oper[0].second;
+		sadd->oper[0].second = 1;
+		for(unsigned int j=1; j<sadd->oper.size(); j++) {
+			sadd->oper[j].second /= fact;
+		}
+		sym_num *snum = new sym_num();
+		snum->value = std::pow(fact, oper[i].second.eval());
+		oper.push_back(make_pair(snum, rational(1)));
+	}
+
+	if(comp(s_old)) return reduce(flags);
 	else return this;
 	
 }
@@ -811,6 +930,17 @@ sym::sym_expr *sym::sym_prod::derive(const sym_expr &s) {
 	delete this;
 
 	return snew;
+}
+
+rational sym::sym_prod::get_exponent(const sym_expr &factor) {
+	// Return exponent of factor
+	for (unsigned int i=0; i<oper.size(); i++) {
+		if (*oper[i].first == factor) {
+			return oper[i].second;
+		}
+	}
+
+	return 0;
 }
 
 matrix sym::sym_prod::eval() const {
@@ -879,6 +1009,12 @@ sym::sym_sin *sym::sym_sin::clone() const {
 	return new sym_sin(*this);
 }
 
+int sym::sym_sin::nodeCount() const {
+	int cnt = 1;
+	cnt += oper->nodeCount();
+	return cnt;
+}
+
 int sym::sym_sin::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
@@ -890,9 +1026,9 @@ int sym::sym_sin::comp(const sym_expr &s) const {
 
 }
 
-sym::sym_expr *sym::sym_sin::reduce() {
+sym::sym_expr *sym::sym_sin::reduce(sym_flags flags) {
 	
-	oper=oper->reduce();
+	oper=oper->reduce(flags);
 	if(typeid(*oper)==typeid(sym_num)) {
 		double val=((sym_num *)oper)->value;
 		delete this;
@@ -948,6 +1084,12 @@ sym::sym_cos *sym::sym_cos::clone() const {
 	return new sym_cos(*this);
 }
 
+int sym::sym_cos::nodeCount() const {
+	int cnt = 1;
+	cnt += oper->nodeCount();
+	return cnt;
+}
+
 int sym::sym_cos::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
@@ -959,9 +1101,9 @@ int sym::sym_cos::comp(const sym_expr &s) const {
 
 }
 
-sym::sym_expr *sym::sym_cos::reduce() {
+sym::sym_expr *sym::sym_cos::reduce(sym_flags flags) {
 	
-	oper=oper->reduce();
+	oper=oper->reduce(flags);
 	if(typeid(*oper)==typeid(sym_num)) {
 		double val=((sym_num *)oper)->value;
 		delete this;
@@ -1017,6 +1159,12 @@ sym::sym_exp *sym::sym_exp::clone() const {
 	return new sym_exp(*this);
 }
 
+int sym::sym_exp::nodeCount() const {
+	int cnt = 1;
+	cnt += oper->nodeCount();
+	return cnt;
+}
+
 int sym::sym_exp::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
@@ -1028,9 +1176,9 @@ int sym::sym_exp::comp(const sym_expr &s) const {
 
 }
 
-sym::sym_expr *sym::sym_exp::reduce() {
+sym::sym_expr *sym::sym_exp::reduce(sym_flags flags) {
 	
-	oper=oper->reduce();
+	oper=oper->reduce(flags);
 	if(typeid(*oper)==typeid(sym_num)) {
 		double val=((sym_num *)oper)->value;
 		delete this;
@@ -1060,7 +1208,7 @@ sym::sym_expr *sym::sym_exp::reduce() {
 				sym_expr *arg;
 				arg=((sym_log *)sadd->oper[i].first)->oper->clone();
 				sadd->oper[i].second=0;
-				return sym_prod::create( sym_prod::create_pow(arg,qex), this)->reduce();
+				return sym_prod::create( sym_prod::create_pow(arg,qex), this)->reduce(flags);
 			}
 		}
 	}
@@ -1110,6 +1258,12 @@ sym::sym_log *sym::sym_log::clone() const {
 	return new sym_log(*this);
 }
 
+int sym::sym_log::nodeCount() const {
+	int cnt = 1;
+	cnt += oper->nodeCount();
+	return cnt;
+}
+
 int sym::sym_log::comp(const sym_expr &s) const {
 
 	if(typeid(*this)!=typeid(s)) return COMPARE(order(),s.order());
@@ -1121,9 +1275,9 @@ int sym::sym_log::comp(const sym_expr &s) const {
 
 }
 
-sym::sym_expr *sym::sym_log::reduce() {
+sym::sym_expr *sym::sym_log::reduce(sym_flags flags) {
 	
-	oper=oper->reduce();
+	oper=oper->reduce(flags);
 	if(typeid(*oper)==typeid(sym_num)) {
 		double val=((sym_num *)oper)->value;
 		delete this;
@@ -1145,14 +1299,14 @@ sym::sym_expr *sym::sym_log::reduce() {
 			sym_expr *snew;
 			snew=sym_prod::create(new sym_num(sprod->oper[0].second.eval()),this);
 			delete sprod;
-			return snew->reduce();
+			return snew->reduce(flags);
 		}
 		for(unsigned int i=0;i<sprod->oper.size();i++) {
 			if(typeid(*(sprod->oper[i].first))==typeid(sym_exp)&&sprod->oper[i].second==1) {				
 				sym_expr *arg;
 				arg=((sym_exp *)sprod->oper[i].first)->oper->clone();
 				sprod->oper[i].second=0;
-				return sym_add::create( arg, this)->reduce();
+				return sym_add::create( arg, this)->reduce(flags);
 			}
 		}
 	}

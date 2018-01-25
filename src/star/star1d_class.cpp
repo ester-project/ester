@@ -36,7 +36,7 @@ bool star1d::check_tag(const char *tag) const {
 	if(strcmp(tag,"star1d")) return false;
 	return true;
 }
-
+/*
 int star1d::read_old(const char *input_file) {
     DEBUG_FUNCNAME;
 	FILE *fp;
@@ -158,7 +158,7 @@ int star1d::read_old(const char *input_file) {
 	fclose(fp);
 	fill();
 	return 0;
-}
+}*/
 
 int star1d::read(const char *input_file, int dim) {
     DEBUG_FUNCNAME;
@@ -262,11 +262,13 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		T=1-0.5*r*r;
 		p=T;
 		phi=-T;
-		G=0*T;
+		vr=0*T;
+		vt=0*T;
 		w=0*T;
 		conv=0;
 		domain_type.resize(ndomains);
 		for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
+		domain_weight = init_domain_weight(domain_type);
 		phiex=zeros(map.nex,map.nt);
 	}
 	

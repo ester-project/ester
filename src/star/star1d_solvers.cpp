@@ -24,9 +24,9 @@ void star1d::fill() {
 	atmosphere();
 	
 	phiex=phi(-1)/rex;
-	w=zeros(nr,1);G=zeros(nr,1);vr=zeros(nr,1);vt=zeros(nr,1);
+	w=zeros(nr,1);vr=zeros(nr,1);vt=zeros(nr,1);
 	
-	Omega=0;Omega_bk=0;Ekman=0;Omegac=0;
+	Omega=0;Omega_bk=0;Omegac=0;
 
 }
 
@@ -600,10 +600,11 @@ void star1d::solve_map(solver *op) {
 		else {
 			matrix delta;
 			delta=zeros(1,map.gl.npts[n]);delta(0)=1;delta(-1)=-1;
-			op->bc_bot2_add_l(n,"Ri",LOG_PRES,ones(1,1),delta);
+			op->bc_bot2_add_l(n,"Ri",LOG_PRES,ones(1,1)*domain_weight[n],delta);
 			delta=zeros(1,map.gl.npts[n-1]);delta(0)=1;delta(-1)=-1;
-			op->bc_bot1_add_l(n,"Ri",LOG_PRES,-ones(1,1),delta);
-			rhs(n)=log(PRES(j0+map.gl.npts[n]-1))-log(PRES(j0))-log(PRES(j0-1))+log(PRES(j0-map.gl.npts[n-1]));
+			op->bc_bot1_add_l(n,"Ri",LOG_PRES,-ones(1,1)*domain_weight[n-1],delta);
+			rhs(n)= ( log(PRES(j0+map.gl.npts[n]-1)) - log(PRES(j0)))*domain_weight[n]
+					- (log(PRES(j0-1)) - log(PRES(j0-map.gl.npts[n-1])))*domain_weight[n-1];
 		}
 		j0+=map.gl.npts[n];
 	}
@@ -689,150 +690,6 @@ void star1d::solve_Teff(solver *op) {
 		
 }
 
-
-void star1d::check_jacobian(solver *op,const char *eqn) {
-    DEBUG_FUNCNAME;
-	star1d B;
-	matrix rhs,drhs,drhs2,qq;
-	matrix *y;
-	double q;
-	int i,j,j0;
-	
-	y=new matrix[op->get_nvar()];
-	B=*this;
-	// Perturbar el modelo
-	{
-		double a,ar,asc;
-		
-		a=1e-8;ar=1e-8;
-		asc=a>ar?a:ar;
-		B.phi=B.phi+a*B.phi+ar*B.phi*random_matrix(nr,1);
-		B.p=B.p+a*B.p+ar*B.p*random_matrix(nr,1);
-		B.pc=B.pc+asc*B.pc;
-		B.T=B.T+a*B.T+ar*B.T*random_matrix(nr,1);
-		B.Tc=B.Tc+asc*B.Tc;
-		B.map.R=B.map.R+a*B.map.R+ar*B.map.R*random_matrix(ndomains,1);
-		B.map.remap();
-	}
-	
-	B.fill();
-	
-	i=op->get_id("rho");
-	y[i]=zeros(nr,1);
-	i=op->get_id("opa.xi");
-	y[i]=zeros(nr,1);
-	i=op->get_id("nuc.eps");
-	y[i]=zeros(nr,1);
-	i=op->get_id("r");
-	y[i]=zeros(nr,1);
-	i=op->get_id("rz");
-	y[i]=zeros(nr,1);
-	i=op->get_id("s");
-	y[i]=zeros(nr,1);
-	i=op->get_id("opa.k");
-	y[i]=zeros(nr,1);
-	
-	
-	i=op->get_id("Phi");
-	y[i]=zeros(nr,1);
-	y[i]=B.phi-phi;
-	i=op->get_id("p");
-	y[i]=B.p-p;
-	i=op->get_id("log_p");
-	y[i]=log(B.p)-log(p);
-	i=op->get_id("pi_c");
-	y[i]=(B.pi_c-pi_c)*ones(ndomains,1);
-	i=op->get_id("T");
-	y[i]=B.T-T;
-	i=op->get_id("log_T");
-	y[i]=log(B.T)-log(T);
-	i=op->get_id("Lambda");
-	y[i]=(B.Lambda-Lambda)*ones(ndomains,1);
-	i=op->get_id("Ri");
-	y[i]=zeros(ndomains,1);
-	y[i].setblock(1,ndomains-1,0,0,(B.map.R-map.R).block(0,ndomains-2,0,0));
-	j=i;
-	i=op->get_id("dRi");
-	y[i]=zeros(ndomains,1);
-	y[i].setblock(0,ndomains-2,0,0,y[j].block(1,ndomains-1,0,0)-y[j].block(0,ndomains-2,0,0));
-	y[i](ndomains-1)=-y[j](ndomains-1);
-	i=op->get_id("log_rhoc");
-	y[i]=(log(B.rhoc)-log(rhoc))*ones(ndomains,1);
-	i=op->get_id("log_pc");
-	y[i]=(log(B.pc)-log(pc))*ones(ndomains,1);
-	i=op->get_id("log_Tc");
-	y[i]=(log(B.Tc)-log(Tc))*ones(ndomains,1);
-	i=op->get_id("log_R");
-	y[i]=(log(B.R)-log(R))*ones(ndomains,1);
-	i=op->get_id("m");
-	q=0;
-	j0=0;
-	y[i]=zeros(ndomains,1);
-	for(j=0;j<ndomains;j++) {
-		q+=4*PI*(B.map.gl.I.block(0,0,j0,j0+map.gl.npts[j]-1),
-			(B.rho*B.r*B.r).block(j0,j0+map.gl.npts[j]-1,0,0))(0)-
-			4*PI*(map.gl.I.block(0,0,j0,j0+map.gl.npts[j]-1),
-			(rho*r*r).block(j0,j0+map.gl.npts[j]-1,0,0))(0);
-		y[i](j)=q;
-		j0+=map.gl.npts[j];
-	}
-	i=op->get_id("ps");
-	y[i]=B.ps-ps;
-	i=op->get_id("Ts");
-	y[i]=B.Ts-Ts;
-	i=op->get_id("lum");
-	y[i]=zeros(ndomains,1);
-	j0=0;
-	q=0;
-	for(j=0;j<ndomains;j++) {
-		q+=4*PI*B.Lambda*(B.map.gl.I.block(0,0,j0,j0+map.gl.npts[j]-1),
-			(B.rho*B.nuc.eps*B.r*B.r).block(j0,j0+map.gl.npts[j]-1,0,0))(0)-
-			4*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[j]-1),
-			(rho*nuc.eps*r*r).block(j0,j0+map.gl.npts[j]-1,0,0))(0);
-		y[i](j)=q;
-		j0+=map.gl.npts[j];
-	}
-	i=op->get_id("Frad");
-	y[i]=zeros(ndomains*2-1,1);
-	j0=0;
-	matrix Frad,BFrad;
-	Frad=-opa.xi*(D,T);
-	BFrad=-B.opa.xi*(B.D,B.T);
-	for(j=0;j<ndomains;j++) {	
-		if(j) y[i](2*j-1)=BFrad(j0)-Frad(j0);
-		y[i](2*j)=BFrad(j0+map.gl.npts[j]-1)-Frad(j0+map.gl.npts[j]-1);
-		j0+=map.gl.npts[j];
-	}
-	i=op->get_id("gsup");
-	y[i]=(B.gsup()-gsup())*ones(1,1);
-	i=op->get_id("Teff");
-	y[i]=(B.Teff()-Teff())*ones(1,1);
-	
-	B.solve(op);
-	rhs=op->get_rhs(eqn);
-	B=*this;
-	B.solve(op);
-	
-	op->mult(y);
-	drhs=rhs-op->get_rhs(eqn);
-	drhs2=y[op->get_id(eqn)]+drhs;
-	
-	static figure fig("/XSERVE");
-	
-	drhs.write();
-	drhs2.write();
-	int nn;
-	if (drhs.nrows()==1) nn=drhs.ncols();
-	else nn=drhs.nrows();
-	
-	fig.axis(0-nn/20.,nn*(1+1./20),-15,0);
-	fig.plot(log10(abs(drhs)+1e-20),"b");
-	fig.hold(1);
-	fig.plot(log10(abs(drhs2)+1e-20),"r");
-	fig.hold(0);
-	
-	delete [] y;
-}
 
 
 

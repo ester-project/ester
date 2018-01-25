@@ -56,7 +56,8 @@ libester_la_SOURCES		= global/global.cpp									\
                           star/star_map.cpp star/star_phys.cpp 				\
                           symbolic/rational.cpp symbolic/symbolic.cpp		\
                           symbolic/sym.cpp symbolic/sym_expr.cpp			\
-                          symbolic/sym_tens.cpp symbolic/sym_vec.cpp
+                          symbolic/sym_tens.cpp symbolic/sym_vec.cpp        \
+                          physics/composition.cpp
 
 libester_la_LIBADD = physics/libnuc_cesam.la				\
 					 ../tables/cesam_nuc/libnuc.la			\

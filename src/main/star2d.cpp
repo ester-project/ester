@@ -32,14 +32,14 @@ int main(int argc,char *argv[]) {
 	
 	star2d A;
 	solver *op;
-	
+
 	if(A.init(config.input_file,config.param_file,argc,argv)) {
         ester_err("Could not initialize star");
         return 1;
     }
-	
+
 	nit=0;
-	
+
 	matrix tt(config.maxit+1,1),error(config.maxit+1,1);
 
 	t_plot=0;
@@ -54,7 +54,7 @@ int main(int argc,char *argv[]) {
 	if(*config.input_file==0) {
 		A.core_convec=0;
 	}
-	
+
     while(!last_it) {
         if (A.config.dump_iter) {
             char *filename = NULL;
@@ -86,12 +86,12 @@ int main(int argc,char *argv[]) {
 				fig->semilogy(error.block(0,nit-1,0,0));
 				fig->label("Iteration number","Relative error","");
 				fig->colorbar();
-				A.spectrum(fig,A.rho);
-				fig->label("Density (normalized spectrum)","","");
+				A.spectrum(fig,A.vt,11);
+				fig->label("Stream function (normalized spectrum)","","");
 				fig->colorbar();
 				A.drawi(fig,A.w,100,64);
 				fig->label("Differential rotation","","");
-				A.drawci(fig,A.G,100,64,15,11);
+				A.drawi(fig,A.vr,100,64);
 				fig->label("Meridional circulation","","");
 				t_plot=tt(nit-1);
 			}

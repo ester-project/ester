@@ -5,8 +5,6 @@
 #include <stdlib.h>
 #include <cmath>
 
-//#define PERF_LOG
-
 void solver::solver_block::init(int nvar) {
 	
 	int i,j;
@@ -68,7 +66,7 @@ void solver::solver_block::reset(int ieq) {
 void solver::solver_block::add(int ieq,int ivar,char type,const matrix *d,const matrix *l,const matrix *r,const matrix *i) {
 
 	solver_elem *p,*pnew;
-	
+
 	if(!nr[ieq]&&!nth[ieq]) {
 		nr[ieq]=d->nrows();
 		nth[ieq]=d->ncols();
@@ -106,6 +104,9 @@ solver::solver() {
 	mult_fcn=NULL;
 	mult_context=NULL;
 	debug=0;
+#ifdef PERF_LOG
+	perf_log = false;
+#endif
 };
 
 
@@ -265,6 +266,28 @@ void solver::reset(const char *eq_name) {
 		reset(i,eq_name);
 }
 
+void solver::reset_bc_bot(int iblock, int ieq) {
+
+	sync=0;
+	if(iblock) bc_bot1[iblock].reset(ieq);
+	bc_bot2[iblock].reset(ieq);
+}
+
+void solver::reset_bc_top(int iblock, int ieq) {
+
+	sync=0;
+	bc_top1[iblock].reset(ieq);
+	if(iblock<nb-1) bc_top2[iblock].reset(ieq);
+}
+
+void solver::reset_bc_bot(int iblock,const char *eq_name) {
+	reset_bc_bot(iblock, get_id(eq_name));
+}
+
+void solver::reset_bc_top(int iblock,const char *eq_name) {
+	reset_bc_top(iblock, get_id(eq_name));
+}
+
 void solver::set_nr(int *nr) {
 	int i;
 
@@ -343,7 +366,9 @@ void solver::fill_void_blocks() {
 }
 
 void solver::set_rhs(const char *eqn,const matrix &b) {
-
+#ifdef THREADS
+	mutex.lock();
+#endif
 	int ieq;
 	ieq=get_id(eqn);
 	if(dep(ieq)) {
@@ -353,6 +378,9 @@ void solver::set_rhs(const char *eqn,const matrix &b) {
 		exit(1);
 	}
 	rhs[ieq]=b;
+#ifdef THREADS
+	mutex.unlock();
+#endif
 }
 
 matrix solver::get_rhs(const char *eqn) {
@@ -399,7 +427,8 @@ void solver::solve(int *info) {
 #ifdef PERF_LOG
 	static tiempo tref,tcgs,tlu,tcreate,ttot;
 	static int nref=0,ncgs=0,nlu=0,ncreate=0;
-	ttot.start();
+	if(perf_log)
+		ttot.start();
 #endif
 	if(info!=NULL) for(i=0;i<5;i++) info[i]=0;
 	if(!sync) fill_void_blocks();
@@ -419,20 +448,25 @@ void solver::solve(int *info) {
 		if(verbose)
 			printf("CGS iteration:\n");
 #ifdef PERF_LOG
-		tcgs.start();
+		if(perf_log)
+			tcgs.start();
 #endif
 		y*=0;
 		err=cgs(rhsw,y,maxit_cgs);
 #ifdef PERF_LOG
-		tcgs.stop();
-		if(err>=0) ncgs+=err; else ncgs+=maxit_cgs;
+		if(perf_log) {
+			tcgs.stop();
+			if(err>=0) ncgs+=err; else ncgs+=maxit_cgs;
+		}
 #endif
 		if(info!=NULL) {info[2]=1;info[4]=err;}
 		if(err>=0) {
 			unwrap(&y,sol);
 #ifdef PERF_LOG
-			ttot.stop();
-			printf("Total: %2.3fs \nLU(%d): %2.3fs (%2.3fs) cgs(%d): %2.3fs (%2.3fs)  ref(%d): %2.3fs (%2.3fs)  create(%d): %2.3fs (%2.3fs)\n",ttot.value(),nlu,tlu.value(),tlu.value()/nlu,ncgs,tcgs.value(),tcgs.value()/ncgs,nref,tref.value(),tref.value()/nref,ncreate,tcreate.value(),tcreate.value()/ncreate);
+			if(perf_log) {
+				ttot.stop();
+				printf("Total: %2.3fs \nLU(%d): %2.3fs (%2.3fs) cgs(%d): %2.3fs (%2.3fs)  ref(%d): %2.3fs (%2.3fs)  create(%d): %2.3fs (%2.3fs)\n",ttot.value(),nlu,tlu.value(),tlu.value()/nlu,ncgs,tcgs.value(),tcgs.value()/ncgs,nref,tref.value(),tref.value()/nref,ncreate,tcreate.value(),tcreate.value()/ncreate);
+			}
 #endif
 			if(verbose)
 				printf("Solving dependent variables...\n");
@@ -447,12 +481,15 @@ void solver::solve(int *info) {
 			printf("Creating matrix...\n");
 		if(debug) printf("SOLVER: Debug mode is ON\n");
 #ifdef PERF_LOG
-		tcreate.start();
+		if (perf_log)
+			tcreate.start();
 #endif
 		create();
 #ifdef PERF_LOG
-		tcreate.stop();
-		ncreate++;
+		if (perf_log) {
+			tcreate.stop();
+			ncreate++;
+		}
 #endif
 		if(info!=NULL) info[0]=1;
 	}
@@ -460,7 +497,8 @@ void solver::solve(int *info) {
 		if(verbose)
 			printf("LU Factorization...\n");
 #ifdef PERF_LOG
-		tlu.start();
+		if (perf_log)
+			tlu.start();
 #endif
 	} else {
 		if(verbose)
@@ -468,22 +506,27 @@ void solver::solve(int *info) {
 	}
 	y=op->solve(rhsw);
 #ifdef PERF_LOG
-	if(!sync) {
-		tlu.stop();
-		nlu++;
+	if (perf_log) {
+		if(!sync) {
+			tlu.stop();
+			nlu++;
+		}
 	}
 #endif
 	sync=1;
 	if(maxit_ref) {
 #ifdef PERF_LOG
-		tref.start();
+		if (perf_log)
+			tref.start();
 #endif
 		if(verbose)
 			printf("CGS refinement:\n");
 		err=cgs(rhsw,y,maxit_ref);
 #ifdef PERF_LOG
-		tref.stop();
-		if(err>=0) nref+=err; else nref+=maxit_cgs;
+		if (perf_log) {
+			tref.stop();
+			if(err>=0) nref+=err; else nref+=maxit_cgs;
+		}
 #endif
 		if(info!=NULL) {info[1]=1;info[3]=err;}
 		if(verbose)
@@ -495,8 +538,10 @@ void solver::solve(int *info) {
 		printf("Solving dependent variables...\n");
 	solve_dep();
 #ifdef PERF_LOG
-	ttot.stop();
-	printf("Total: %2.3fs \nLU(%d): %2.3fs (%2.3fs) cgs(%d): %2.3fs (%2.3fs)  ref(%d): %2.3fs (%2.3fs)  create(%d): %2.3fs (%2.3fs)\n",ttot.value(),nlu,tlu.value(),tlu.value()/nlu,ncgs,tcgs.value(),tcgs.value()/ncgs,nref,tref.value(),tref.value()/nref,ncreate,tcreate.value(),tcreate.value()/ncreate);
+	if (perf_log) {
+		ttot.stop();
+		printf("Total: %2.3fs \nLU(%d): %2.3fs (%2.3fs) cgs(%d): %2.3fs (%2.3fs)  ref(%d): %2.3fs (%2.3fs)  create(%d): %2.3fs (%2.3fs)\n",ttot.value(),nlu,tlu.value(),tlu.value()/nlu,ncgs,tcgs.value(),tcgs.value()/ncgs,nref,tref.value(),tref.value()/nref,ncreate,tcreate.value(),tcreate.value()/ncreate);
+	}
 #endif	
 
 }
@@ -1452,7 +1497,9 @@ void solver::add(const char *eqn, const char *varn,const char *block_type,char t
 void solver::add(int iblock,const char *eqn, const char *varn,const char *block_type,char type,const matrix *d,const matrix *l,const matrix *r,const matrix *i) {
 
 	solver_block *bb;
-
+#ifdef THREADS
+	mutex.lock();
+#endif
 	int ieq,ivar;
 	ieq=get_id(eqn);
 	ivar=get_id(varn);
@@ -1514,6 +1561,10 @@ void solver::add(int iblock,const char *eqn, const char *varn,const char *block_
 	}
 	
 	bb[iblock].add(ieq,ivar,type,d,ll,r,i);	
+
+#ifdef THREADS
+	mutex.unlock();
+#endif
 
 }
 

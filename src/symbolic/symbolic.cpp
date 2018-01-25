@@ -4,11 +4,11 @@
 #include <cmath>
 #include <typeinfo>
 
-double symbolic::tol=1e-14;
-bool symbolic::expand_products=true;
-bool symbolic::trig_simplify=false;
+double symbolic::tol=1e-12;
 bool symbolic::axisymmetric=true;
+bool symbolic::simplify_auto=false;
 bool symbolic::spherical=false;
+bool symbolic::debug=false;
 
 symbolic::symbolic() : one_(sym(1)), one(one_) {
 	one_.context=this;
@@ -66,6 +66,7 @@ void symbolic::init() {
 double symbolic::round_to_tol(double value) {
 
 	if(tol==0) return value;
+	//if(round(value)==0) return value;
 // Round to nearest integer if the difference is less than symbolic::tol
 	if(fabs(value-round(value))<tol) return round(value);
 // Check also small fractions
@@ -93,7 +94,7 @@ sym symbolic::regvar(const std::string &name) {
 	vars[name].context=this;
 	vars[name].is_const=false;
 	vars[name].is_indep=false;
-	
+
 	return var(name);
 
 }
@@ -167,6 +168,7 @@ void symbolic::set_map(const mapping &map_) {
 sym::sym_expr *symbolic::derive(const sym::sym_expr &f,const sym::symbol &x) {
 // To be called by sym_deriv::derive() and symbol::derive(), to set maxder and return special symbols for some
 // derivatives: rz,rt,rzz,rzt,rtt
+// If no special symbol needed returns NULL
 
 	if(f==vars["r"]) {
 		if(x==vars["zeta"]) {
@@ -185,7 +187,7 @@ sym::sym_expr *symbolic::derive(const sym::sym_expr &f,const sym::symbol &x) {
 	if(!spherical) {
 		if(f==vars["rz"]) {
 			if(x==vars["zeta"]) {
-				maxder=maxder>1?maxder:1;
+				maxder=maxder>1?maxder:1; // max. derivative for "r" is maxder+1
 				return vars["rzz"].clone();
 			}
 			if(x==vars["theta"]) {
@@ -212,17 +214,54 @@ sym::sym_expr *symbolic::derive(const sym::sym_expr &f,const sym::symbol &x) {
 			return NULL;
 		}
 	}
+
 	if(axisymmetric) 
 		if(x==vars["phi"]) return new sym::sym_num(0);
 	
-	int der=1;
+	int der=1, derz=0, dert=0;
+	if(x==vars["zeta"]) derz++;
+	if(x==vars["theta"]) dert++;
 	
 	const sym::sym_expr *s=&f;
 	
 	while(typeid(*s)==typeid(sym::sym_deriv)) {
+		if(((sym::sym_deriv *)s)->var == vars["zeta"]) derz++;
+		if(((sym::sym_deriv *)s)->var == vars["theta"]) dert++;
 		s=((sym::sym_deriv *)s)->oper;
 		der++;
 	}
+	if(*s==vars["rzz"] || *s==vars["rzt"] || *s==vars["rtt"]) {
+		der += 2;
+		if(*s==vars["rzz"]) {
+			maxder=maxder>der-1?maxder:der-1;
+			return NULL;
+		}
+		if(*s==vars["rzt"]) {
+			derz += 1; dert += 1;
+		}
+		if(*s==vars["rtt"]) {
+			if(derz < 2) {
+				maxder=maxder>der-1?maxder:der-1;
+				return NULL;
+			}
+			dert += 2;
+		}
+		if(derz+dert != der) return new sym::sym_num(0);
+		sym s2;
+		if(derz >= 2) {
+			s2 = var("rzz");
+			derz -= 2;
+		}
+		else { // dert >= 2
+			s2 = var("rtt");
+			dert -= 2;
+		}
+		for(int i=0; i<derz; i++) s2 = Dz(s2);
+		for(int i=0; i<dert; i++) s2 = Dt(s2);
+		maxder=maxder>der-1?maxder:der-1;
+		return s2.expr->clone();
+	}
+
 	maxder=maxder>der?maxder:der;
 	
 	return NULL;
@@ -537,7 +576,7 @@ sym_tens symbolic::stress(const sym_vec &v) {
 	
 	t.set_context(this);
 	
-	t=grad(v)+grad(v).T()-2./3.*g*div(v);
+	t=grad(v)+grad(v).T()-rational(2,3)*g*div(v);
 				
 	return t;
 }
@@ -557,12 +596,13 @@ void symbolic::add(const sym &expr,solver *op,int n,std::string type,
 		case 10: dt=map.Dt_10;dt2=map.Dt2_10;break;
 		case 11: dt=map.Dt_11;dt2=map.Dt2_11;break;
 	}
-	
+
 	for(int i=0;i<=der;i++) {
 		for(int j=0;j<=der-i;j++) {
 			sym dy=y;
 			for(int k=0;k<i;k++) dy=Dz(dy);
 			for(int k=0;k<j;k++) dy=Dt(dy);
+			if(dy==0) continue;
 			sym jac=jacobian(expr,dy);
 			if(jac!=0) {
 				matrix_block_diag pre(eye(map.D));
@@ -655,6 +695,7 @@ void symbolic::add_bc(const sym &expr,solver *op,int n,std::string type,
 			sym dy=y;
 			for(int k=0;k<i;k++) dy=Dz(dy);
 			for(int k=0;k<j;k++) dy=Dt(dy);
+			if(dy==0) continue;
 			sym jac=jacobian(expr,dy);
 			if(jac!=0) {
 				matrix pre(eye(D.nrows()));
@@ -675,7 +716,8 @@ void symbolic::add_bc(const sym &expr,solver *op,int n,std::string type,
 		}
 	}	
 				
-}
 
+
+}
 
 

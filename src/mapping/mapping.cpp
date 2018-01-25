@@ -15,7 +15,6 @@ mapping::mapping() : nr(gl.N), nt(leg.npts), ndomains(gl.ndomains),
 	ex.gl.set_ndomains(1);
 	ex.gl.set_xif(0.,1.);
 	ex.gl.set_npts(10);
-	
 	mode=MAP_BONAZZOLA;
 }
 
@@ -305,11 +304,13 @@ matrix mapping::eval(const matrix &y,const matrix &ri, const matrix &thi,int par
 		zi=ri(i)/max(rth);
 		if(zi-1>-1e-10&&zi-1<1e-10) zi=1;
 		if(zi<1e-10&&zi>-1e-10) zi=0;
-		if(zi>1||zi<0) {
-			ester_err("(mapping.eval) Coordinates (r,theta)=(%f,%f) are out of bounds",
-				ri(i),thi(i));
-			exit(1);
-		}
+		//if(zi>1||zi<0) {
+		//	ester_err("(mapping.eval) Coordinates (r,theta)=(%f,%f) are out of bounds",
+		//		ri(i),thi(i));
+		//	exit(1);
+		//}
+		if (zi > 1) zi = 1;
+		if (zi < 0) zi = 0;
 		int fin=0,nit=0;
 		if(zi==0||zi==1) fin=99;
 		while(fin<2) {

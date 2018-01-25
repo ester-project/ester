@@ -82,6 +82,13 @@ class sym {
 	class sym_exp;
 	class sym_log;
 
+	class sym_flags {
+	public:
+		bool collect;
+		bool trig_simplify;
+		sym_flags();
+	};
+
 	symbolic *context;
 	sym_expr *expr;
 	
@@ -97,7 +104,11 @@ public:
 	symbolic *check_context(const sym &s) const;
 	symbolic *check_context(const sym_vec &s) const;
 	symbolic *check_context(const sym_tens &s) const;
-	
+
+	int complexity() const;
+	sym &simplify();
+	sym &expand();
+	sym &collect();
 	sym &operator=(const sym &);
 	sym &operator=(double n) {return *this=sym(n);};
 	friend sym operator+(const sym &,const sym &);
@@ -128,8 +139,6 @@ public:
 	friend bool sort_pair_r(const std::pair<sym_expr *,rational> &,const std::pair<sym_expr *,rational> &);
 	friend std::ostream& operator<<(std::ostream& os, const sym::sym_expr&);
 	friend std::ostream& operator<<(std::ostream& os, const sym&);
-	
-	friend sym trig_simplify(const sym &);
 	
 	void add(solver *op,std::string eq_name,std::string var_name) const;
 	void add(solver *op,std::string eq_name,std::string var_name,const matrix &d) const;
@@ -180,10 +189,6 @@ sym jacobian(const sym &,const sym &);
 	
 std::ostream& operator<<(std::ostream& os, const sym&);
 
-sym trig_simplify(const sym &);
-sym_vec trig_simplify(const sym_vec &);
-sym_tens trig_simplify(const sym_tens &);
-
 enum sym_vec_type {COVARIANT,CONTRAVARIANT};
 
 class sym_vec {
@@ -198,7 +203,10 @@ public:
 	symbolic *check_context(const sym &s) const;
 	symbolic *check_context(const sym_vec &s) const;
 	symbolic *check_context(const sym_tens &s) const;
-	
+
+	sym_vec &simplify();
+	sym_vec &expand();
+	sym_vec &collect();
 	bool is_covariant();
 	bool is_contravariant();
 	void set_type(sym_vec_type);
@@ -245,7 +253,10 @@ public:
 	symbolic *check_context(const sym &s) const;
 	symbolic *check_context(const sym_vec &s) const;
 	symbolic *check_context(const sym_tens &s) const;
-	
+
+	sym_tens &simplify();
+	sym_tens &expand();
+	sym_tens &collect();
 	bool is_covariant(int);
 	bool is_contravariant(int);
 	void set_type(sym_vec_type,sym_vec_type);
@@ -299,10 +310,10 @@ public:
 	sym_tens g,g_;
 	sym x[3];
 	static double tol;
-	static bool expand_products;
-	static bool trig_simplify;
+	static bool simplify_auto;
 	static bool axisymmetric;
 	static bool spherical;
+	static bool debug;
 	static double round_to_tol(double);
 	const sym &one;
 	symbolic();
@@ -376,7 +387,8 @@ public:
 	virtual ~sym_expr() {};
 	virtual int order() const=0;
 	virtual sym_expr *clone() const=0;
-	virtual sym_expr *reduce() {return this;};
+	virtual int nodeCount() const=0;
+	virtual sym_expr *reduce(sym_flags flags) {return this;};
 	virtual sym_expr *derive(const sym_expr &)=0;
 	virtual int comp(const sym_expr &s) const=0; // 1 if this>s, 0 if this==s, -1 if this<s
 	virtual matrix eval() const=0;
@@ -407,8 +419,9 @@ public:
 	sym_num() {};
 	sym_num(const double &);
 	sym_num *clone() const;
+	int nodeCount() const;
 	int comp(const sym_expr &) const;
-	sym_expr *reduce();
+	sym_expr *reduce(sym_flags flags);
 	sym_expr *derive(const sym_expr &);
 	matrix eval() const;
 	std::ostream &print(std::ostream&) const;
@@ -421,6 +434,7 @@ public:
 	bool is_const,is_indep;
 	symbolic *context;
 	symbol *clone() const;
+	int nodeCount() const;
 	int comp(const sym_expr &) const;
 	sym_expr *derive(const sym_expr &);
 	matrix eval() const;
@@ -437,8 +451,9 @@ public:
 	sym_expr *oper;
 	symbol var;
 	sym_deriv *clone() const;
+	int nodeCount() const;
 	int comp(const sym_expr &) const;
-	sym_expr *reduce();
+	sym_expr *reduce(sym_flags flags);
 	sym_expr *derive(const sym_expr &);
 	static sym_deriv *create(sym_expr *,const symbol &);
 	matrix eval() const;
@@ -453,14 +468,15 @@ public:
 	sym_add(const sym_add &);
 	~sym_add();
 	sym_add *clone() const;
+	int nodeCount() const;
 	int comp(const sym_expr &) const;
-	sym_expr *reduce();
+	sym_expr *reduce(sym_flags flags);
 	sym_expr *derive(const sym_expr &);
 	matrix eval() const;
 	std::ostream &print(std::ostream&) const;
 	static sym_add *create(sym_expr *,sym_expr *);
 	sym_expr *multiply(const sym_add &);
-	sym_expr *power(int n);
+	sym_expr *power(int n, sym_flags);
 };
 
 class sym::sym_prod: public sym_expr {
@@ -471,9 +487,11 @@ public:
 	sym_prod(const sym_prod &);
 	~sym_prod();
 	sym_prod *clone() const;
+	int nodeCount() const;
 	int comp(const sym_expr &) const;
-	sym_expr *reduce();
+	sym_expr *reduce(sym_flags flags);
 	sym_expr *derive(const sym_expr &);
+	rational get_exponent(const sym_expr &);
 	matrix eval() const;
 	std::ostream &print(std::ostream&) const;
 	static sym_prod *create(sym_expr *,sym_expr *);
@@ -491,8 +509,9 @@ public:
 	~sym_sin();
 	sym_sin(const sym_sin &);
 	sym_sin *clone() const;
+	int nodeCount() const;
 	int comp(const sym_expr &) const;
-	sym_expr *reduce();
+	sym_expr *reduce(sym_flags flags);
 	sym_expr *derive(const sym_expr &);
 	matrix eval() const;
 	std::ostream &print(std::ostream&) const;
@@ -507,8 +526,9 @@ public:
 	~sym_cos();
 	sym_cos(const sym_cos &);
 	sym_cos *clone() const;
+	int nodeCount() const;
 	int comp(const sym_expr &) const;
-	sym_expr *reduce();
+	sym_expr *reduce(sym_flags flags);
 	sym_expr *derive(const sym_expr &);
 	matrix eval() const;
 	std::ostream &print(std::ostream&) const;
@@ -523,8 +543,9 @@ public:
 	~sym_exp();
 	sym_exp(const sym_exp &);
 	sym_exp *clone() const;
+	int nodeCount() const;
 	int comp(const sym_expr &) const;
-	sym_expr *reduce();
+	sym_expr *reduce(sym_flags flags);
 	sym_expr *derive(const sym_expr &);
 	matrix eval() const;
 	std::ostream &print(std::ostream&) const;
@@ -539,8 +560,9 @@ public:
 	~sym_log();
 	sym_log(const sym_log &);
 	sym_log *clone() const;
+	int nodeCount() const;
 	int comp(const sym_expr &) const;
-	sym_expr *reduce();
+	sym_expr *reduce(sym_flags flags);
 	sym_expr *derive(const sym_expr &);
 	matrix eval() const;
 	std::ostream &print(std::ostream&) const;

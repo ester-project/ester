@@ -5,18 +5,21 @@
 #include<string.h>
 #include"symbolic.h"
 
+#include <omp.h>
+#define TNEW
+
 /// \brief Initialize star's chemical composition, equation of state, opacity,
 /// nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere,
 /// flatness, scaled keplerian angular velocity
 void star2d::fill() {
     DEBUG_FUNCNAME;
 	Y0=1.-X0-Z0;
-	init_comp();
-	
+	//init_comp();
+
 	eq_state();
 	opacity();
 	nuclear();
-	
+
 	m=2*PI*(map.gl.I,rho*r*r*map.rz,map.leg.I_00)(0);
 
 	R=pow(M/m/rhoc,1./3.);
@@ -24,7 +27,6 @@ void star2d::fill() {
 	pi_c=(4*PI*GRAV*rhoc*rhoc*R*R)/pc;
 	Lambda=rhoc*R*R/Tc;
 	
-	calc_veloc();	
 	calc_units();
 
 	atmosphere();
@@ -32,6 +34,8 @@ void star2d::fill() {
 	//Omegac=sqrt(map.leg.eval_00(((Dex,phiex)/rex/map.ex.rz).row(0),PI/2)(0));
 	double eps=1.-1./map.leg.eval_00(r.row(-1),PI/2)(0);
 	Omegac=sqrt(pi_c*m/4/PI*(1-eps)*(1-eps)*(1-eps));
+
+	calc_vangle();
 
 }
 
@@ -66,23 +70,13 @@ void star2d::init_comp() {
     }
 }
 
-void star2d::calc_veloc() {
-    DEBUG_FUNCNAME;
-// vr=rz*V^zeta vt=r*V^theta
-	vr=(G,map.leg.D_11)/r+(map.rt/r+cos(th)/sin(th))/r*G;
-	vr.setrow(0,zeros(1,nth));
-	vr/=rho;
-	vt=-(D,G)/map.rz-1./r*G;
-	vt.setrow(0,zeros(1,nth));
-	vt/=rho;
-}
-
 solver *star2d::init_solver(int nvar_add) {
     DEBUG_FUNCNAME;
 	int nvar;
 	solver *op;
-	
-	nvar=33;
+
+	nvar=37;
+
 	op=new solver;
 	op->init(ndomains+1,nvar+nvar_add,"full");
 	
@@ -123,43 +117,48 @@ void star2d::register_variables(solver *op) {
 	op->regvar("m");
 	op->regvar("ps");
 	op->regvar("Ts");
-	op->regvar("lum");
-	op->regvar("Frad");
 	op->regvar("Teff");
 	op->regvar("gsup");
 	op->regvar("w");
-	op->regvar("G");
+	op->regvar("vr");
+	op->regvar("vt");
 	op->regvar_dep("rho");
 	op->regvar_dep("opa.xi");
 	op->regvar_dep("opa.k");
 	op->regvar_dep("nuc.eps");
 	op->regvar_dep("s");
 	op->regvar("gamma");
-	
-
+	op->regvar("Omega0");
+	op->regvar_dep("log_Re");
+	op->regvar("sin_vangle");
+	op->regvar_dep("cos_vangle");
 }
 
-/// \brief Performs one step of the Newton algorithm to compute the star's
-/// internal structure.
-double star2d::solve(solver *op) {
-    DEBUG_FUNCNAME;
-	int info[5];
-	matrix rho0;
-	double err,err2,h,dmax;
+void star2d::write_eqs(solver *op) {
 
-	if(Omega==0 && Omega_bk != 0) {
-		Omega=Omega_bk*Omegac;
-		w=Omega*ones(nr,nth);
-	}
+#ifdef MKL
+	int mkl_threads = mkl_get_max_threads();
+	mkl_set_num_threads(1);   // Faster with 1 thread !?
+#endif
 
-	check_map();
-
-// Clear up the preceding equations (clear up is not necessary
-// if the system is linear) reset does not clear up the LU factorization
-// which can be reused:
-	op->reset();
-
-	if(config.verbose) {printf("Writing equations...");fflush(stdout);}
+#ifdef THREADS
+	int num_threads = 12;
+	std::thread t[num_threads];
+	t[0] = std::thread(&star2d::solve_definitions, this, op);
+	t[1] = std::thread(&star2d::solve_poisson, this, op);
+	t[2] = std::thread(&star2d::solve_mov, this, op);
+	t[3] = std::thread(&star2d::solve_temp, this, op);
+	t[4] = std::thread(&star2d::solve_dim, this, op);
+	t[5] = std::thread(&star2d::solve_map, this, op);
+	t[6] = std::thread(&star2d::solve_Omega, this, op);
+	t[7] = std::thread(&star2d::solve_atm, this, op);
+	t[8] = std::thread(&star2d::solve_gsup, this, op);
+	t[9] = std::thread(&star2d::solve_Teff, this, op);
+	t[10] = std::thread(&star2d::solve_cont, this, op);
+	t[11] = std::thread(&star2d::solve_vangle, this, op);
+	for(int i=0; i< num_threads; i++)
+		t[i].join();
+#else
 	solve_definitions(op);
 	solve_poisson(op);
 	solve_mov(op);
@@ -170,37 +169,22 @@ double star2d::solve(solver *op) {
 	solve_atm(op);
 	solve_gsup(op);
 	solve_Teff(op);
-	if(config.verbose) printf("Done\n");
+	solve_cont(op);
+	solve_vangle(op);
+#endif
+#ifdef MKL
+	mkl_set_num_threads(mkl_threads);
+#endif
+}
 
-// Solving the system:
-	op->solve(info);
-	
-// Some output verbose ----------------------
-	if (config.verbose) {
-		if(info[2]) {
-			printf("CGS Iteration: ");
-			if(info[4]>0)
-				printf("Converged after %d iterations\n",info[4]);
-			else
-				printf("Not converged (Error %d)\n",info[4]);
-		}
-		if(info[0]) 
-			printf("Solved using LU factorization\n");
-		if(info[1]) {
-			printf("CGS Refinement: ");
-			if(info[3]>0)
-				printf("Converged after %d iterations\n",info[3]);
-			else
-				printf("Not converged (Error %d)\n",info[3]);
-		}
-	}
-// End  output verbose ----------------------
-	
-	h=1;
+double star2d::update_solution(solver *op, double &h) {
+
+	double err,err2,dmax;
+
 // h : relaxation parameter for Newton solver: useful for the first
 // iterations
 	dmax=config.newton_dmax;
-	
+
 	matrix dphi,dphiex,dp,dT,dpc,dTc;
 	dphi=op->get_var("Phi").block(0,nr-1,0,-1);
 	dphiex=op->get_var("Phi").block(nr,nr+nex-1,0,-1);
@@ -231,19 +215,72 @@ double star2d::solve(solver *op) {
 	Tc*=exp(h*dTc(0));
 	Omega=Omega+h*op->get_var("Omega")(0);
 	w+=h*op->get_var("w");
-	G+=h*op->get_var("G");
-	
+	vr+=h*op->get_var("vr");
+	vt+=h*op->get_var("vt");
+
 	matrix dRi;
 	dRi=op->get_var("Ri");
 	update_map(h*dRi);
 	err2=max(abs(dRi));err=err2>err?err2:err;
-	
-	rho0=rho;
-	
-    fill();
-	
-	err2=max(abs(rho-rho0));err=err2>err?err2:err;
-	
+
+	return err;
+}
+
+/// \brief Performs one step of the Newton algorithm to compute the star's
+/// internal structure.
+double star2d::solve(solver *op) {
+    DEBUG_FUNCNAME;
+	int info[5];
+
+	if(Omega==0 && Omega_bk != 0) {
+		Omega=Omega_bk*Omegac;
+		w=Omega*ones(nr,nth);
+	}
+
+	check_map();
+
+// Clear up the preceding equations (clear up is not necessary
+// if the system is linear) reset does not clear up the LU factorization
+// which can be reused:
+	op->reset();
+
+	if(config.verbose) {printf("Writing equations...");fflush(stdout);}
+	write_eqs(op);
+	if(config.verbose) printf("Done\n");
+
+// Solving the system:
+	op->solve(info);
+
+// Some output verbose ----------------------
+	if (config.verbose) {
+		if(info[2]) {
+			printf("CGS Iteration: ");
+			if(info[4]>0)
+				printf("Converged after %d iterations\n",info[4]);
+			else
+				printf("Not converged (Error %d)\n",info[4]);
+		}
+		if(info[0]) 
+			printf("Solved using LU factorization\n");
+		if(info[1]) {
+			printf("CGS Refinement: ");
+			if(info[3]>0)
+				printf("Converged after %d iterations\n",info[3]);
+			else
+				printf("Not converged (Error %d)\n",info[3]);
+		}
+	}
+// End  output verbose ----------------------
+
+	double h = 1.;
+	double err = update_solution(op, h);
+
+	matrix rho0=rho;
+
+	fill();
+
+	double err2=max(abs(rho-rho0));err=err2>err?err2:err;
+
 	return err;
 
 }
@@ -326,9 +363,70 @@ void star2d::solve_definitions(solver *op) {
 	op->add_d("s","log_Tc",eos.cp);
 	op->add_d("s","p",-eos.cp*eos.del_ad/p);
 	op->add_d("s","log_pc",-eos.cp*eos.del_ad);
-	
+
+	/*eos_struct eos2;
+	matrix rho2;
+	strcpy(eos2.name, eos.name);
+	double dlogT = 1e-4;
+	matrix T2 = T*(1+dlogT);
+	eos_calc(comp.X(), Z0, T2*Tc, p*pc, rho2, eos2);
+	matrix dcpdlnT = (eos2.cp - eos.cp)/dlogT;
+	matrix ddeladdlnT = (eos2.del_ad - eos.del_ad)/dlogT;
+	double dlogp = 1e-4;
+	matrix p2 = p*(1+dlogp);
+	eos_calc(comp.X(), Z0, T*Tc, p2*pc, rho2, eos2);
+	matrix dcpdlnp = (eos2.cp - eos.cp)/dlogp;
+	matrix ddeladdlnp = (eos2.del_ad - eos.del_ad)/dlogp;
+	op->add_d("eos.cp", "log_p", dcpdlnp);
+	op->add_d("eos.cp", "log_pc", dcpdlnp);
+	op->add_d("eos.cp", "log_T", dcpdlnT);
+	op->add_d("eos.cp", "log_Tc", dcpdlnT);
+	op->add_d("eos.del_ad", "log_p", ddeladdlnp);
+	op->add_d("eos.del_ad", "log_pc", ddeladdlnp);
+	op->add_d("eos.del_ad", "log_T", ddeladdlnT);
+	op->add_d("eos.del_ad", "log_Tc", ddeladdlnT);*/
+
 }
 
+void star2d::calc_vangle() {
+	static symbolic S;
+	static bool sym_inited = false;
+	static sym sin_vangle;
+	if (!sym_inited) {
+		sym p = S.regvar("p");
+		sym_vec thvec = S.r*grad(S.theta);
+		sin_vangle = (grad(p), thvec)/sqrt((grad(p), grad(p)));
+		sym_inited = true;
+	}
+	S.set_value("p", p);
+	S.set_map(map);
+	vangle = asin(sin_vangle.eval());
+	vangle.setrow(0, zeros(1, nth));
+}
+
+void star2d::solve_vangle(solver *op) {
+	static symbolic S;
+	static bool sym_inited = false;
+	static sym eq;
+	if (!sym_inited) {
+		sym p = S.regvar("p");
+		sym sin_vangle = S.regvar("sin_vangle");
+		sym_vec thvec = S.r*grad(S.theta);
+		eq = sin_vangle - (grad(p), thvec)/sqrt((grad(p), grad(p)));
+		sym_inited = true;
+	}
+	S.set_value("p", p);
+	S.set_value("sin_vangle", sin(vangle), 11);
+	S.set_map(map);
+
+	eq.add(op, "sin_vangle", "sin_vangle");
+	eq.add(op, "sin_vangle", "p");
+	eq.add(op, "sin_vangle", "r");
+	op->bc_bot2_add_d(0, "sin_vangle", "sin_vangle", ones(1, nth));
+	op->set_rhs("sin_vangle", zeros(nr, nth));
+
+	op->add_d("cos_vangle", "sin_vangle", -sin(vangle)/cos(vangle));
+}
 
 /// \brief Writes Poisson equation and interface conditions into the solver.
 void star2d::solve_poisson(solver *op) {
@@ -448,163 +546,210 @@ void star2d::solve_poisson(solver *op) {
 	op->set_rhs("Phi",rhs);
 }
 
+void star2d::solve_cont(solver *op) {
 
-/// \brief Writes movement and vorticity equations into the solver
+	static symbolic S;
+	static sym eq, flux;
+	static bool sym_inited = false;
+	if (!sym_inited) {
+		sym rho = S.regvar("rho");
+		sym vr = S.regvar("vr");
+		sym vt = S.regvar("vt");
+
+		sym_vec phivec(COVARIANT);
+		phivec(0) = 0*S.one; phivec(1) = 0*S.one; phivec(2) = S.r*sin(S.theta);
+		sym_vec rvec = grad(S.r);
+		sym_vec thvec = cross(phivec, rvec);
+		sym_vec nvec = grad(S.zeta);
+		nvec = nvec / sqrt((nvec, nvec));
+
+		sym_vec V = vr*rvec + vt*thvec;
+		eq = div(rho*V);
+		flux = rho * (nvec, V);
+		sym_inited = true;
+	}
+
+	S.set_value("vr", vr);
+	S.set_value("vt", vt, 11);
+	S.set_value("rho", rho);
+	S.set_map(map);
+
+	eq.add(op, "vr", "vr");
+	eq.add(op, "vr", "vt");
+	eq.add(op, "vr", "rho");
+	eq.add(op, "vr", "r");
+
+	matrix rhs = -eq.eval();
+	matrix flux_val = flux.eval();
+
+	int j0 = 0;
+	for (int n = 0; n < ndomains; n++) {
+		int j1 = j0 + map.npts[n] - 1;
+
+		if (n == 0) {
+			op->bc_bot2_add_d(n, "vr", "vr", ones(1, nth));
+			rhs.setrow(0, -vr.row(0));
+		}
+
+		if (n == conv-1) {
+			flux.bc_top1_add(op, n, "vr", "vr");
+			flux.bc_top1_add(op, n, "vr", "vt");
+			flux.bc_top1_add(op, n, "vr", "rho");
+			flux.bc_top1_add(op, n, "vr", "r");
+			flux.bc_top2_add(op, n, "vr", "vr", -ones(1, nth));
+			flux.bc_top2_add(op, n, "vr", "vt", -ones(1, nth));
+			flux.bc_top2_add(op, n, "vr", "rho", -ones(1, nth));
+			flux.bc_top2_add(op, n, "vr", "r", -ones(1, nth));
+			rhs.setrow(j1, -flux_val.row(j1) + flux_val.row(j1+1));
+		}
+		else if (n == ndomains - 1) {
+			flux.bc_top1_add(op, n, "vr", "vr");
+			flux.bc_top1_add(op, n, "vr", "vt");
+			flux.bc_top1_add(op, n, "vr", "rho");
+			flux.bc_top1_add(op, n, "vr", "r");
+			rhs.setrow(j1, -flux_val.row(j1));
+		}
+		else {
+			op->bc_top1_add_d(n, "vr", "vr", ones(1, nth));
+			op->bc_top2_add_d(n, "vr", "vr", -ones(1, nth));
+			rhs.setrow(j1, -vr.row(j1) + vr.row(j1+1));
+
+		}
+		j0 += map.npts[n];
+	}
+
+	op->set_rhs("vr", rhs);
+
+
+}
+
 void star2d::solve_mov(solver *op) {
     DEBUG_FUNCNAME;
-	static bool eqinit=false;
+	static bool eqinit = false;
 	static symbolic S;
-	static sym eq_vort,eq_phi,bc,ic_w;
-	static sym_vec eqmov;
-	
+	static sym eq_phi, bc_w, ic_w, ic_t, ic_dt, ic_visc, bc_t, eqmov_r, eqmov_t;
 	if(!eqinit) {
-		eqinit=true;
-		sym p,G,w,rho,phi;
-		sym mu;
-		
-		p=S.regvar("p");  // Pressure
-		G=S.regvar("G");  // Stream function of Merid. Circ.
-		w=S.regvar("w");  // Differential Rotation
-		rho=S.regvar("rho"); // Density
-		phi=S.regvar("Phi"); // Gravitational Potential
-		
-		#ifdef KINEMATIC_VISC
-			mu=rho;
-		#else
-			mu=S.one;
-		#endif
-		
-		sym_vec V,phivec(COVARIANT),svec;
+		eqinit = true;
+
+		sym p = S.regvar("p");  // Pressure
+		sym vt = S.regvar("vt");
+		sym vr = S.regvar("vr");
+		sym w = S.regvar("w");  // Differential Rotation
+		sym rho = S.regvar("rho"); // Density
+		sym phi = S.regvar("Phi"); // Gravitational Potential
+		sym reynolds_v = S.regconst("reynolds_v");
+		sym reynolds_h = S.regconst("reynolds_h");
+		sym Re = exp(S.regconst("log_Re"));
+		sym visc_ratio = S.regconst("visc_ratio"); // nu_v/nu_h
+		sym sin_vangle = S.regvar("sin_vangle");
+		sym cos_vangle = S.regvar("cos_vangle");
+
+		sym_vec phivec(COVARIANT);
+		phivec(0) = 0*S.one; phivec(1) = 0*S.one; phivec(2) = S.r*sin(S.theta);
+		sym_vec rvec = grad(S.r);
+		sym_vec thvec = cross(phivec, rvec);
+		sym_vec nvec = grad(S.zeta);
+		nvec = nvec / sqrt((nvec, nvec));
+		sym_vec tvec = cross(phivec, nvec);
+
+		sym_vec V, svec;
 		sym s;
-// Phivec is the E_phi the covariant basis phi-vector
-		phivec(0)=0*S.one;phivec(1)=0*S.one;phivec(2)=S.r*sin(S.theta);
-		s=S.r*sin(S.theta);
-		svec=grad(s);
-		V=curl(G*phivec)/rho;
-		
-// The momentum equation  is eqmov=0; it gives the pressure
-		eqmov=grad(p)+rho*grad(phi)-rho*s*w*w*svec;
-		eqmov=covariant(eqmov);
-		
-// The vorticity equation
-		eq_vort=(phivec,curl(eqmov/rho));
-		
+		s = S.r*sin(S.theta);
+		svec = grad(s);
+		V = vr*rvec + vt*thvec;
+
+		sym_vec v_vec = cos_vangle*rvec - sin_vangle*thvec;
+		sym_vec h_vec = sin_vangle*rvec + cos_vangle*thvec;
+
+		// The momentum equation  is eqmov=0; it gives the pressure
+		sym_vec eqmov = grad(p)/rho + grad(phi) - s*w*w*svec;
+
+		sym_tens nu_mc = tensor(v_vec, v_vec)*Re/reynolds_v + tensor(h_vec, h_vec)*Re/reynolds_h + tensor(phivec, phivec)*Re/reynolds_h;
+		sym_tens SS = (grad(V), nu_mc.T()) + (nu_mc, grad(V).T()) - rational(2, 3)*S.g*(nu_mc%grad(V));;
+		//sym_tens SS = stress(V);
+		sym_vec visc = (div(rho*SS))/rho;
+
+		sym_vec eqmov_visc = covariant(eqmov - visc);
+		eqmov_r = eqmov_visc(0);
+		eqmov_t = eqmov_visc(1);
+
 // The angular momentum equation
-		eq_phi=div(rho*s*s*w*V)-div(mu*s*s*grad(w));
-		
-		sym_vec nvec(COVARIANT),tvec(CONTRAVARIANT);
-		
-		nvec(0)=Dz(S.r);nvec(1)=0*S.one;nvec(2)=0*S.one;
-		tvec(0)=0*S.one;tvec(1)=1/S.r;tvec(2)=0*S.one;
-		
-// the special boundary condition that couples G and w for the determination of w
-		bc=mu*s*s*(nvec,grad(w))+G*(tvec,grad(s*s*w));
-		
-		ic_w=covariant(eqmov-grad(p))(1);
+
+		sym_tens nu = tensor(v_vec, v_vec)*visc_ratio/Re + tensor(h_vec, h_vec)/Re;
+		eq_phi = rho*(V, grad(s*s*w)) - div(s*s*rho*(nu, grad(w)));
+
+		ic_t = (tvec, V);
+		ic_visc = ((SS, nvec), tvec);
+		ic_dt = S.Dz(vt)/S.rz;
+
+		ic_w = S.Dz(w)/S.rz;
+
+		bc_t = ic_visc;
+		bc_w = (nvec, grad(w));
 	}
-	
+
+	int j0;
+
 	S.set_value("p",p);
-	S.set_value("G",G,11);
+	S.set_value("vt",vt,11);
+	S.set_value("vr", vr);
 	S.set_value("w",w);
 	S.set_value("rho",rho);
 	S.set_value("Phi",phi);
+	S.set_value("reynolds_v", reynolds_v*ones(1,1));
+	S.set_value("reynolds_h", reynolds_h*ones(1,1));
+	S.set_value("log_Re", log(R*R/visc_h/MYR)*ones(1,1));
+	S.set_value("visc_ratio", visc_v/visc_h*ones(1,1));
+	S.set_value("sin_vangle", sin(vangle), 11);
+	S.set_value("cos_vangle", cos(vangle));
+
 	S.set_map(map);
-	
+
 	op->add_d("p","log_p",p);
-	
+	op->add_d("log_Re", "log_R", 2*ones(nr, nth));
+
 // First component of the equation of motion tagged "log_p"
 // we explicit the dependences
-	eqmov(0).add(op,"log_p","p");
-	eqmov(0).add(op,"log_p","w");
-	eqmov(0).add(op,"log_p","rho");
-	eqmov(0).add(op,"log_p","Phi");
-	eqmov(0).add(op,"log_p","r");
-	op->set_rhs("log_p",-eqmov(0).eval());
-	
-// Equation of vorticity, dependences...
-	eq_vort.add(op,"w","p");
-	eq_vort.add(op,"w","w");
-	eq_vort.add(op,"w","rho");
-	eq_vort.add(op,"w","r");
-	op->set_rhs("w",-eq_vort.eval());
-	
-// Equation of angular momentum, dependences...
-	eq_phi.add(op,"G","w");
-	eq_phi.add(op,"G","G");
-	eq_phi.add(op,"G","rho");
-	eq_phi.add(op,"G","r");
-	op->set_rhs("G",-eq_phi.eval());
-	
-// Boundary conditions
+	eqmov_r.add(op,"log_p","p");
+	eqmov_r.add(op,"log_p","w");
+	eqmov_r.add(op,"log_p","rho");
+	eqmov_r.add(op,"log_p","Phi");
+	eqmov_r.add(op,"log_p","r");
+	eqmov_r.add(op,"log_p","vr");
+	eqmov_r.add(op,"log_p","vt");
+	eqmov_r.add(op,"log_p","log_Re");
+	eqmov_r.add(op,"log_p","sin_vangle");
+	eqmov_r.add(op,"log_p","cos_vangle");
+	op->set_rhs("log_p",-eqmov_r.eval());
+
 
 	matrix rhs;
-	matrix q,TT;
-	int j0;
-	
+
 	// log_p - Pressure
 	rhs=op->get_rhs("log_p");
-	op->bc_bot2_add_d(0,"log_p","p",ones(1,nth));
-	rhs.setrow(0,-p.row(0)+1); // central pressure is unity
-	
-	j0=map.gl.npts[0];
-	for(int n=1;n<ndomains;n++) { // continuity of pressure
-		op->bc_bot2_add_d(n,"log_p","p",ones(1,nth));
-		op->bc_bot1_add_d(n,"log_p","p",-ones(1,nth));
-		rhs.setrow(j0,-p.row(j0)+p.row(j0-1));	
-		j0+=map.gl.npts[n];
+
+	j0 = 0;
+	for(int n=0; n<ndomains; n++) {
+		//int j1 = j0 + map.npts[n] - 1;
+		if (n == 0) {
+			op->bc_bot2_add_d(0,"log_p","p",ones(1,nth));
+			rhs.setrow(0,-p.row(0)+1); // central pressure is unity
+		}
+		else {
+			op->bc_bot2_add_d(n,"log_p","p",ones(1,nth));
+			op->bc_bot1_add_d(n,"log_p","p",-ones(1,nth));
+			rhs.setrow(j0,-p.row(j0)+p.row(j0-1));
+		}
+
+		if (n == ndomains-1) {
+		}
+		else {
+		}
+
+		j0 += map.npts[n];
 	}
 	op->set_rhs("log_p",rhs);
-	
-	// w - Differential Rotation
-	rhs=op->get_rhs("w");
-// d_zeta Omega=0 at r=0
-	op->bc_bot2_add_l(0,"w","w",ones(1,nth),D.block(0).row(0));
-	rhs.setrow(0,-(D,w).row(0));
-// Interface condition for the continuity of the horizontal component of
-// pressure gradient
-	j0=0;
-	for(int n=0;n<ndomains-1;n++) {
-		ic_w.bc_top1_add(op,n,"w","w");
-		ic_w.bc_top1_add(op,n,"w","rho");
-		ic_w.bc_top1_add(op,n,"w","Phi");
-		ic_w.bc_top1_add(op,n,"w","r");
-		ic_w.bc_top2_add(op,n,"w","w",-ones(1,nth));
-		ic_w.bc_top2_add(op,n,"w","rho",-ones(1,nth));
-		ic_w.bc_top2_add(op,n,"w","Phi",-ones(1,nth));
-		ic_w.bc_top2_add(op,n,"w","r",-ones(1,nth));
-		rhs.setrow(j0+map.gl.npts[n]-1,
-			-ic_w.eval().row(j0+map.gl.npts[n]-1)+ic_w.eval().row(j0+map.gl.npts[n]));
-		
-		j0+=map.gl.npts[n];
-	}
-	
-// Surface condition on the angular velocity and stream function
-	q=ones(1,nth);
-	q(0)=0;
-	map.leg.eval_00(th,PI/2*ones(1,nth),TT);
-	bc.bc_top1_add(op,ndomains-1,"w","G",q);
-	bc.bc_top1_add(op,ndomains-1,"w","w",q);
-	bc.bc_top1_add(op,ndomains-1,"w","rho",q);
-	bc.bc_top1_add(op,ndomains-1,"w","r",q);
-	op->bc_top1_add_r(ndomains-1,"w","w",(1-q),TT);
-	op->bc_top1_add_d(ndomains-1,"w","Omega",-(1-q));
-	rhs.setrow(-1,-q*bc.eval().row(-1)-(1-q)*((w.row(-1),TT)-Omega));
-	op->set_rhs("w",rhs);
-	
-	//G - Meridional circulation
-	rhs=op->get_rhs("G");
-	op->bc_bot2_add_d(0,"G","G",ones(1,nth));
-	rhs.setrow(0,-G.row(0));
-	j0=map.gl.npts[0];
-	for(int n=1;n<ndomains;n++) {
-		op->bc_bot2_add_d(n,"G","G",ones(1,nth));
-		op->bc_bot1_add_d(n,"G","G",-ones(1,nth));
-		rhs.setrow(j0,-G.row(j0)+G.row(j0-1));
-	
-		j0+=map.gl.npts[n];
-	}
-	op->set_rhs("G",rhs);
-	
+
 	//pi_c -  non-dimensional parameter
 	rhs=zeros(ndomains,1);
 	j0=0;
@@ -613,268 +758,309 @@ void star2d::solve_mov(solver *op) {
 			op->bc_top1_add_d(n,"pi_c","pi_c",ones(1,1));
 			op->bc_top2_add_d(n,"pi_c","pi_c",-ones(1,1));
 		} else {
+			matrix TT;
 			map.leg.eval_00(th,0,TT);
 			op->bc_top1_add_r(n,"pi_c","ps",-ones(1,1),TT);
 			op->bc_top1_add_r(n,"pi_c","p",ones(1,1),TT);
 			rhs(ndomains-1)=(ps-p.row(-1),TT)(0);
 		}
-		
+
 		j0+=map.gl.npts[n];
 	}
 	op->set_rhs("pi_c",rhs);
-	
+
 	if(Omega==0) {
-		op->reset("w");
 		op->add_d("w","w",ones(nr,nth));
-		op->add_d("w","Omega",-ones(nr,nth));
 		op->set_rhs("w",zeros(nr,nth));
-		op->reset("G");
-		op->add_d("G","G",ones(nr,nth));
-		op->set_rhs("G",zeros(nr,nth));
+
+		op->add_d("vt","vt",ones(nr,nth));
+		op->set_rhs("vt",zeros(nr,nth));
+
+		for(int n=0; n<ndomains; n++) op->add_d(n, "Omega0", "Omega0", ones(1,1));
+		op->set_rhs("Omega0",zeros(ndomains,1));
+		return;
 	}
+
+
+	// Second component of the equation of motion, dependences...
+	eqmov_t.add(op,"vt","p");
+	eqmov_t.add(op,"vt","w");
+	eqmov_t.add(op,"vt","rho");
+	eqmov_t.add(op,"vt","Phi");
+	eqmov_t.add(op,"vt","r");
+	eqmov_t.add(op,"vt","vr");
+	eqmov_t.add(op,"vt","vt");
+	eqmov_t.add(op,"vt","log_Re");
+	eqmov_t.add(op,"vt","sin_vangle");
+	eqmov_t.add(op,"vt","cos_vangle");
+	op->set_rhs("vt",-eqmov_t.eval());
+
+	// Equation of angular momentum, dependences...
+	eq_phi.add(op,"w","w");
+	eq_phi.add(op,"w","vr");
+	eq_phi.add(op,"w","vt");
+	eq_phi.add(op,"w","rho");
+	eq_phi.add(op,"w","r");
+	eq_phi.add(op,"w","sin_vangle");
+	eq_phi.add(op,"w","cos_vangle");
+	eq_phi.add(op,"w","log_Re");
+	op->set_rhs("w",-eq_phi.eval());
+
+	// w - Differential Rotation
+
+	rhs = op->get_rhs("w");
+	matrix ic_w_val = ic_w.eval();
+	j0 = 0;
+	for(int n=0; n<ndomains; n++) {
+		int j1 = j0 + map.npts[n] - 1;
+		if (n == 0) {
+			op->bc_bot2_add_d(n, "w", "w", ones(1, nth));
+			op->bc_bot2_add_d(n, "w", "Omega0", -ones(1, nth));
+			rhs.setrow(j0, zeros(1, nth));
+		}
+		else {
+			op->bc_bot2_add_d(n, "w", "w", ones(1, nth));
+			op->bc_bot1_add_d(n, "w", "w", -ones(1, nth));
+			rhs.setrow(j0, -w.row(j0) + w.row(j0-1));
+		}
+		if (n == ndomains - 1) {
+			bc_w.bc_top1_add(op, n, "w", "w");
+			bc_w.bc_top1_add(op, n, "w", "r");
+			rhs.setrow(j1, -bc_w.eval().row(-1));
+		}
+		else {
+			ic_w.bc_top1_add(op, n, "w", "w");
+			ic_w.bc_top1_add(op, n, "w", "r");
+			ic_w.bc_top2_add(op, n, "w", "w", -ones(1, nth));
+			ic_w.bc_top2_add(op, n, "w", "r", -ones(1, nth));
+			rhs.setrow(j1, -ic_w_val.row(j1) + ic_w_val.row(j1+1));
+		}
+		j0 += map.npts[n];
+	}
+	op->set_rhs("w",rhs);
+
+	rhs = zeros(ndomains, 1);
+	for(int n=0; n<ndomains; n++) {
+		if (n == ndomains-1) {
+			matrix TT;
+			map.leg.eval_00(th, PI/2, TT);
+			op->bc_top1_add_r(n, "Omega0", "w", ones(1,1), TT);
+			op->bc_top1_add_d(n, "Omega0", "Omega", -ones(1,1));
+			rhs(n) = -(w.row(-1), TT)(0) + Omega;
+		}
+		else {
+			op->bc_top1_add_d(n, "Omega0", "Omega0", ones(1,1));
+			op->bc_top2_add_d(n, "Omega0", "Omega0", -ones(1,1));
+		}
+	}
+	op->set_rhs("Omega0", rhs);
+
+	//G - Meridional circulation
+	rhs=op->get_rhs("vt");
+	matrix ic_t_val = ic_t.eval();
+	matrix ic_dt_val = ic_dt.eval();
+	matrix ic_visc_val = ic_visc.eval();
+
+	j0 = 0;
+	for(int n=0; n<ndomains; n++) {
+		int j1 = j0 + map.npts[n] - 1;
+		if (n == 0) {
+			op->bc_bot2_add_d(n ,"vt", "vt", ones(1, nth));
+			rhs.setrow(j0, -vt.row(j0));
+		}
+		else if (n == conv){
+			ic_t.bc_bot2_add(op, n, "vt", "vt");
+			ic_t.bc_bot2_add(op, n, "vt", "vr");
+			ic_t.bc_bot2_add(op, n, "vt", "r");
+			ic_t.bc_bot1_add(op, n, "vt", "vt", -ones(1, nth));
+			ic_t.bc_bot1_add(op, n, "vt", "vr", -ones(1, nth));
+			ic_t.bc_bot1_add(op, n, "vt", "r", -ones(1, nth));
+			rhs.setrow(j0, -ic_t_val.row(j0) + ic_t_val.row(j0-1));
+		}
+		else {
+			op->bc_bot2_add_d(n ,"vt", "vt", ones(1, nth));
+			op->bc_bot1_add_d(n ,"vt", "vt", -ones(1, nth));
+			rhs.setrow(j0, -vt.row(j0) + vt.row(j0-1));
+		}
+
+		if (n == ndomains-1) {
+			bc_t.bc_top1_add(op, n, "vt", "p");
+			bc_t.bc_top1_add(op, n, "vt", "rho");
+			bc_t.bc_top1_add(op, n, "vt", "Phi");
+			bc_t.bc_top1_add(op, n, "vt", "w");
+			bc_t.bc_top1_add(op, n, "vt", "r");
+			bc_t.bc_top1_add(op, n, "vt", "vr");
+			bc_t.bc_top1_add(op, n, "vt", "vt");
+			rhs.setrow(j1, -bc_t.eval().row(j1));
+		}
+		else if (n == conv-1) {
+			ic_visc.bc_top1_add(op, n, "vt", "vr");
+			ic_visc.bc_top1_add(op, n, "vt", "vt");
+			ic_visc.bc_top1_add(op, n, "vt", "r");
+			ic_visc.bc_top2_add(op, n, "vt", "vr", -ones(1, nth));
+			ic_visc.bc_top2_add(op, n, "vt", "vt", -ones(1, nth));
+			ic_visc.bc_top2_add(op, n, "vt", "r", -ones(1, nth));
+			rhs.setrow(j1, -ic_visc_val.row(j1) + ic_visc_val.row(j1+1));
+		}
+		else {
+			ic_dt.bc_top1_add(op, n, "vt", "vt");
+			ic_dt.bc_top1_add(op, n, "vt", "r");
+			ic_dt.bc_top2_add(op, n, "vt", "vt", -ones(1, nth));
+			ic_dt.bc_top2_add(op, n, "vt", "r", -ones(1, nth));
+			rhs.setrow(j1, -ic_dt_val.row(j1) + ic_dt_val.row(j1+1));
+		}
+
+		j0 += map.npts[n];
+	}
+	op->set_rhs("vt",rhs);
+
+
+
 }
 
 
-
-/// \brief Writes temperature and luminosity equations and interface conditions
-/// into the solver.
 void star2d::solve_temp(solver *op) {
-    DEBUG_FUNCNAME;
-	int n,j0;
-	matrix q;
-	char eqn[8];
-	matrix &gzz=map.gzz, &gzt=map.gzt, &rz=map.rz;
-	
-	op->add_d("T","log_T",T);
-	strcpy(eqn,"log_T");
-	
-	//Luminosity
 
-	matrix rhs_lum,lum;
-	
-	lum=zeros(ndomains,1);
-	j0=0;
-// for each domain we compute the luminosity at the upper boundary
-// lum(n) =int_0^pi\int_0^eta_n 2*pi*r^2*rz*rho*eps dzeta sin(theta)dtheta
-	for(n=0;n<ndomains;n++) {
-		if(n) lum(n)=lum(n-1);
-		lum(n)+=2*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),
-			(rho*nuc.eps*r*r*rz).block(j0,j0+map.gl.npts[n]-1,0,-1),map.leg.I_00)(0);
-		j0+=map.gl.npts[n];
+	double xi_conv = 1.e13; // PARAMETER
+
+	static symbolic S;
+	static sym eq, icflux;
+	static bool sym_inited = false;
+	if (!sym_inited){
+		sym T = S.regvar("T");
+		sym p = S.regvar("p");
+		sym xi = S.regvar("opa.xi");
+		sym eps = S.regvar("nuc.eps");
+		sym Lambda = S.regvar("Lambda");
+		sym rho = S.regvar("rho");
+		sym vr = S.regvar("vr");
+		sym vt = S.regvar("vt");
+		sym lnTc = S.regconst("log_Tc");
+		sym xi_conv = S.regconst("xi_conv");
+		sym cp = S.regvar("eos.cp");
+		sym del_ad = S.regvar("eos.del_ad");
+		sym MYR = S.regconst("MYR");
+
+		sym_vec phivec(COVARIANT);
+		phivec(0) = 0*S.one; phivec(1) = 0*S.one; phivec(2) = S.r*sin(S.theta);
+		sym_vec rvec = grad(S.r);
+		sym_vec thvec = cross(phivec, rvec);
+		sym_vec nvec = grad(S.zeta);
+		nvec = nvec / sqrt((nvec, nvec));
+
+		sym_vec grad_s = cp * (grad(T)/T - del_ad * grad(p)/p);
+		sym_vec flux = -xi * grad(T) - xi_conv * grad_s;
+		icflux = (nvec, flux)/Lambda;
+
+		sym_vec rhoV = rho*(vr*rvec + vt*thvec);
+
+		sym advec = exp(lnTc) / MYR * T * (rhoV, grad_s);
+
+		eq = div(flux)/Lambda - rho*eps + advec;
+		sym_inited = true;
+
 	}
 
-// Now we code the equation of luminosity, namely Lum=intvol Lambda*rho*eps*dV
-// Since this equation is a one-line matrix, it is implemented as a BC
-	rhs_lum=zeros(ndomains,1);
-	j0=0;
-	for(n=0;n<ndomains;n++) {
-		op->bc_bot2_add_d(n,"lum","lum",ones(1,1));
-		op->bc_bot2_add_lri(n,"lum","rho",-2*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(r*r*rz*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,-1));
-		op->bc_bot2_add_lri(n,"lum","nuc.eps",-2*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(r*r*rz*rho).block(j0,j0+map.gl.npts[n]-1,0,-1));
-		op->bc_bot2_add_d(n,"lum","Lambda",-2*PI*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(rho*nuc.eps*r*r*rz).block(j0,j0+map.gl.npts[n]-1,0,-1),map.leg.I_00));
-//metric terms from dV
-		op->bc_bot2_add_lri(n,"lum","r",-2*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(2*r*rz*rho*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,-1));
-		op->bc_bot2_add_lri(n,"lum","rz",-2*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(r*r*rho*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,-1));
-			
-		if(n) op->bc_bot1_add_d(n,"lum","lum",-ones(1,1));
-		j0+=map.gl.npts[n];
+	matrix xi_conv_mat = zeros(nr, nth);
+	int j0 = 0;
+	for (int n=0; n<conv; n++) {
+		int j1 = j0 + map.npts[n] - 1;
+		xi_conv_mat.setblock(j0, j1, 0, -1, xi_conv*ones(map.npts[n], nth));
+		j0 += map.npts[n];
 	}
-	op->set_rhs("lum",rhs_lum);
-	
-// Frad is (-xi*grad(T) scal E^zeta
-// Note that one property of Frad is that on zeta=cte surface
-// intsurf Frad dS = Lum ; note that here dS=2*pi*r^2*rz*sin(th)*dth
-	
-	matrix rhs_Frad,Frad;
-	int j1;
-	
-	Frad=-opa.xi*(gzz*(D,T)+gzt*(T,Dt)); // explicit expression of Frad
-	rhs_Frad=zeros(ndomains*2-1,nth);
-	j0=0;
-	for(n=0;n<ndomains;n++) {
-		j1=j0+map.gl.npts[n]-1;
-		
-		if(n) op->bc_bot2_add_d(n,"Frad","Frad",ones(1,nth));
-		op->bc_top1_add_d(n,"Frad","Frad",ones(1,nth));
 
-// terms from temperature variations (delta T)		
-		q=opa.xi*gzz;
-		if(n) op->bc_bot2_add_l(n,"Frad","T",q.row(j0),D.block(n).row(0));
-		op->bc_top1_add_l(n,"Frad","T",q.row(j1),D.block(n).row(-1));
-		q=opa.xi*gzt;
-		if(n) op->bc_bot2_add_r(n,"Frad","T",q.row(j0),Dt);
-		op->bc_top1_add_r(n,"Frad","T",q.row(j1),Dt);
-
-// terms from delta xi				
-		if(n) op->bc_bot2_add_d(n,"Frad","opa.xi",-Frad.row(j0)/opa.xi.row(j0));
-		op->bc_top1_add_d(n,"Frad","opa.xi",-Frad.row(j1)/opa.xi.row(j1));
-
-// terms from delta r
-		q=opa.xi*(-2.*r*gzt*gzt*(D,T)-2./r*gzt*(T,Dt));
-		if(n) op->bc_bot2_add_d(n,"Frad","r",q.row(j0));
-		op->bc_top1_add_d(n,"Frad","r",q.row(j1));
-//terms from delta rz
-		q=opa.xi*(-2./rz*gzz*(D,T)-1./rz*gzt*(T,Dt));
-		if(n) op->bc_bot2_add_d(n,"Frad","rz",q.row(j0));
-		op->bc_top1_add_d(n,"Frad","rz",q.row(j1));
-// terms from d(delta r)/dtheta, which are resumed to delta r again
-// thanks to Dt multiplication
-		q=opa.xi*(-2./rz*gzt*(D,T)-1./r/r/rz*(T,Dt));
-		if(n) op->bc_bot2_add_r(n,"Frad","r",q.row(j0),Dt);
-		op->bc_top1_add_r(n,"Frad","r",q.row(j1),Dt);
-		
-		j0=j1+1;
-	}
-	op->set_rhs("Frad",rhs_Frad);
-		
-	
-// Temperature field
-	
-	matrix rhs_T,rhs_Lambda;
-	matrix TT,qcore,qenv;
-	
-	qenv=zeros(nr,nth);
-	qcore=qenv;
-	j0=0;
-// define the grid-points belonging to the core
-	for(n=0;n<ndomains;n++) {
-		if(n<conv) qcore.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth));
-		else qenv.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth));
-		j0+=map.gl.npts[n];
-	}
-	
-	
-	rhs_T=zeros(nr,nth);
-
-	symbolic S;
-	sym T_,xi_,s_,G_;
-	sym div_Frad;
-	
+	S.set_value("T", T);
+	S.set_value("p", p);
+	S.set_value("opa.xi", opa.xi);
+	S.set_value("nuc.eps", nuc.eps);
+	S.set_value("Lambda", Lambda*ones(1,1));
+	S.set_value("rho", rho);
+	S.set_value("xi_conv", xi_conv_mat);
+	S.set_value("eos.cp", eos.cp);
+	S.set_value("eos.del_ad", eos.del_ad);
+	S.set_value("vt", vt, 11);
+	S.set_value("vr", vr);
+	S.set_value("log_Tc", log(Tc)*ones(1,1));
+	S.set_value("MYR", MYR*ones(1,1));
 	S.set_map(map);
-	
-	T_=S.regvar("T");
-	xi_=S.regvar("opa.xi");
-	s_=S.regvar("s");
-	G_=S.regvar("G");
-	S.set_value("T",T);
-	S.set_value("opa.xi",opa.xi);
-	S.set_value("s",entropy());
-	S.set_value("G",G);
-	
-// Diffusion terms of temperature equation
-// Recall eqn is log_T
-	div_Frad=-div(-xi_*grad(T_))/xi_;
-	
-	div_Frad.add(op,eqn,"T",qenv);
-	div_Frad.add(op,eqn,"opa.xi",qenv);
-	div_Frad.add(op,eqn,"r",qenv);
-	rhs_T-=div_Frad.eval()*qenv;
 
-// Explicit the expression of the functional derivative of the 
-// temperature equation	
-	op->add_d(eqn,"nuc.eps",qenv*Lambda*rho/opa.xi);
-	op->add_d(eqn,"rho",qenv*Lambda*nuc.eps/opa.xi);	
-	op->add_d(eqn,"Lambda",qenv*rho*nuc.eps/opa.xi);
-	op->add_d(eqn,"opa.xi",-qenv*Lambda*rho*nuc.eps/opa.xi/opa.xi);
-	rhs_T+=-qenv*Lambda*rho*nuc.eps/opa.xi;
-	
-	// Advection
-	/*
-	sym adv;
-	sym_vec rhov_,phivec(COVARIANT);
-	
-	phivec(0)=0*S.one;phivec(1)=0*S.one;phivec(2)=S.r*S.sint;
-	rhov_=curl(G_*phivec);
-	adv=-T_*(rhov_,grad(s_))/xi_;
-	
-	adv.add(op,eqn,"T",qenv*Ekman*sqrt(rhoc*pc)*R);
-	adv.add(op,eqn,"s",qenv*Ekman*sqrt(rhoc*pc)*R);
-	adv.add(op,eqn,"G",qenv*Ekman*sqrt(rhoc*pc)*R);
-	adv.add(op,eqn,"opa.xi",qenv*Ekman*sqrt(rhoc*pc)*R);
-	
-	matrix advec;
-	
-	advec=qenv*Ekman*sqrt(rhoc*pc)*R*adv.eval();
-	
-	op->add_d(eqn,"log_R",advec);
-	op->add_d(eqn,"log_pc",0.5*advec);
-	op->add_d(eqn,"log_rhoc",0.5*advec);
-	rhs_T+=-advec;
-	*/
+	op->add_d("T","log_T",T);
 
-//Core convection, equation ds/dzeta=0
-	op->add_l(eqn,"s",qcore,D);
-	//rhs_T+=-qcore*(D,eos.s);
-	rhs_T+=-qcore*(D,entropy());
-	
-	rhs_Lambda=zeros(ndomains,1);
-	
-	map.leg.eval_00(th,0,TT);
-	
-// Interface and boundary conditions for the temperature
-	j0=0;
-	for(n=0;n<ndomains;n++) {
-		if(n==0) { // In the first domain T(0)=1
-			op->bc_bot2_add_d(n,eqn,"T",ones(1,nth));
-			rhs_T.setrow(j0,1-T.row(j0));
-		} else {  // we impose the continuity of T
-			op->bc_bot2_add_d(n,eqn,"T",ones(1,nth));
-			op->bc_bot1_add_d(n,eqn,"T",-ones(1,nth));
-			rhs_T.setrow(j0,-T.row(j0)+T.row(j0-1));
+	eq.add(op, "log_T", "T");
+	eq.add(op, "log_T", "p");
+	eq.add(op, "log_T", "opa.xi");
+	eq.add(op, "log_T", "nuc.eps");
+	eq.add(op, "log_T", "Lambda");
+	eq.add(op, "log_T", "rho");
+	eq.add(op, "log_T", "vr");
+	eq.add(op, "log_T", "vt");
+	eq.add(op, "log_T", "log_Tc");
+	eq.add(op, "log_T", "r");
+
+
+	//eq.add(op, "log_T", "eos.cp");
+	//eq.add(op, "log_T", "eos.del_ad");
+
+	matrix rhs = -eq.eval();
+	matrix icflux_val = icflux.eval();
+
+	matrix dT = (D, T);
+	j0 = 0;
+	for (int n = 0; n < ndomains; n++) {
+		int j1 = j0 + map.npts[n] - 1;
+
+		if (n == conv && conv > 0) {
+			icflux.bc_bot2_add(op, n, "log_T", "T");
+			icflux.bc_bot2_add(op, n, "log_T", "p");
+			icflux.bc_bot2_add(op, n, "log_T", "opa.xi");
+			icflux.bc_bot2_add(op, n, "log_T", "r");
+			icflux.bc_bot2_add(op, n, "log_T", "Lambda");
+			icflux.bc_bot1_add(op, n, "log_T", "T", -ones(1, nth));
+			icflux.bc_bot1_add(op, n, "log_T", "p", -ones(1, nth));
+			icflux.bc_bot1_add(op, n, "log_T", "opa.xi", -ones(1, nth));
+			icflux.bc_bot1_add(op, n, "log_T", "r", -ones(1, nth));
+			icflux.bc_bot1_add(op, n, "log_T", "Lambda", -ones(1, nth));
+			rhs.setrow(j0, -icflux_val.row(j0) + icflux_val.row(j0-1));
 		}
-        // Radiative envelope: the continuity of (1/rz)(dT/dzeta) is imposed
-		if(n>=conv) {
-			if(n<ndomains-1) {
-				/*op->bc_top1_add_d(n,eqn,"Frad",rz.row(j0+map.gl.npts[n]-1));
-				op->bc_top2_add_d(n,eqn,"Frad",-rz.row(j0+map.gl.npts[n]-1));
-				op->bc_top1_add_d(n,eqn,"rz",Frad.row(j0+map.gl.npts[n]-1));
-				op->bc_top2_add_d(n,eqn,"rz",-Frad.row(j0+map.gl.npts[n]-1));
-				
-				rhs_T.setrow(j0+map.gl.npts[n]-1,
-					-Frad.row(j0+map.gl.npts[n]-1)*rz.row(j0+map.gl.npts[n]-1)
-					+Frad.row(j0+map.gl.npts[n])*rz.row(j0+map.gl.npts[n]));*/
-				op->bc_top1_add_l(n,eqn,"T",1/rz.row(j0+map.gl.npts[n]-1),D.block(n).row(-1));
-				op->bc_top1_add_d(n,eqn,"rz",-((D,T)/rz/rz).row(j0+map.gl.npts[n]-1));
-				op->bc_top2_add_l(n,eqn,"T",-1/rz.row(j0+map.gl.npts[n]),D.block(n+1).row(0));
-				op->bc_top2_add_d(n,eqn,"rz",((D,T)/rz/rz).row(j0+map.gl.npts[n]));
-				rhs_T.setrow(j0+map.gl.npts[n]-1,
-					((D,T)/rz).row(j0+map.gl.npts[n])-((D,T)/rz).row(j0+map.gl.npts[n]-1));
-			} else { // In the last domain set the upper BC T=Ts
-				op->bc_top1_add_d(n,eqn,"T",ones(1,nth));
-				op->bc_top1_add_d(n,eqn,"Ts",-ones(1,nth));
-				rhs_T.setrow(-1,Ts-T.row(-1));
+		else {
+			op->bc_bot2_add_l(n, "log_T", "T", 1./map.rz.row(j0), D.block(n).row(0));
+			op->bc_bot2_add_d(n, "log_T", "rz", -1./map.rz.row(j0)/map.rz.row(j0)*dT.row(j0));
+			rhs.setrow(j0, -dT.row(j0)/map.rz.row(j0)) ;
+			if (n) {
+				op->bc_bot1_add_l(n, "log_T", "T", -1./map.rz.row(j0-1), D.block(n-1).row(-1));
+				op->bc_bot1_add_d(n, "log_T", "rz", 1./map.rz.row(j0-1)/map.rz.row(j0-1)*dT.row(j0-1));
+				rhs.setrow(j0, rhs.row(j0) + dT.row(j0-1)/map.rz.row(j0-1));
 			}
 		}
-		
-		if(n<conv) {
-        // Inside the convective core Lambda is continuous. Imposed on top of the domains
-			op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
-			op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
-		} else if(n==conv) { // In the first domain above the CC
-			if(n==0) { // There is no central core
-				map.leg.eval_00(th,PI/2,q);
-				op->bc_bot2_add_lr(n,"Lambda","T",ones(1,1),D.block(0).row(0),q);
-				rhs_Lambda(0)=-((D,T).row(0),q)(0);
-			} else { // The domain above the CC is not the central domain
-                                 // The Lambda eqn says that the total radiative flux is the luminosity at the boundary
-				op->bc_bot2_add_ri(n,"Lambda","Frad",2*PI*ones(1,1),map.leg.I_00,(r*r*rz).row(j0));
-				op->bc_bot2_add_ri(n,"Lambda","r",2*PI*ones(1,1),map.leg.I_00,(Frad*2*r*rz).row(j0));
-				op->bc_bot2_add_ri(n,"Lambda","rz",2*PI*ones(1,1),map.leg.I_00,(Frad*r*r).row(j0));
-				op->bc_bot1_add_d(n,"Lambda","lum",-ones(1,1));
-				rhs_Lambda(n)=-2*PI*(Frad.row(j0)*(r*r*rz).row(j0),map.leg.I_00)(0)+lum(n-1);
-			}
-		} else { // In all other domains continuity of Lambda is imposed at the bottom of the domain
+		if (n < ndomains - 1) {
+			op->bc_top1_add_d(n, "log_T", "T", ones(1,nth));
+			op->bc_top2_add_d(n, "log_T", "T", -ones(1,nth));
+			rhs.setrow(j1, -T.row(j1) + T.row(j1+1));
+		}
+		else {
+			op->bc_top1_add_d(n, "log_T", "T", ones(1,nth));
+			op->bc_top1_add_d(n, "log_T", "Ts", -ones(1,nth));
+			rhs.setrow(j1, -T.row(j1) + Ts);
+		}
+		j0 += map.npts[n];
+	}
+	op->set_rhs("log_T", rhs);
+
+	rhs = zeros(ndomains, 1);
+	for (int n=0; n<ndomains; n++) {
+		if (n == 0) {
+			op->bc_bot2_add_r(n, "Lambda", "T", ones(1,1), map.It/2.);
+			rhs(n) = 1. - (T.row(0), map.It)(0)/2.;
+		}
+		else {
 			op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
 			op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
 		}
-		
-		j0+=map.gl.npts[n];
 	}
-	op->set_rhs(eqn,rhs_T);
-	op->set_rhs("Lambda",rhs_Lambda);
-	
-}
+	op->set_rhs("Lambda", rhs);
 
+
+}
 
 /// \brief Writes the equations for the dimensional quantities (T_c, rho_c, R, etc.)
 
@@ -1025,11 +1211,11 @@ void star2d::solve_map(solver *op) {
 			q(0,nth-1)=1;
 			matrix delta;
 			delta=zeros(1,map.gl.npts[n]);delta(0)=1;delta(-1)=-1;
-			op->bc_bot2_add_lr(n,"Ri",LOG_PRES,q,delta,TT);
+			op->bc_bot2_add_lr(n,"Ri",LOG_PRES,q*domain_weight[n],delta,TT);
 			delta=zeros(1,map.gl.npts[n-1]);delta(0)=1;delta(-1)=-1;
-			op->bc_bot1_add_lr(n,"Ri",LOG_PRES,-q,delta,TT);
-			rhs.setrow(n,(log(PRES.row(j0+map.gl.npts[n]-1))-log(PRES.row(j0))
-			-log(PRES.row(j0-1))+log(PRES.row(j0-map.gl.npts[n-1])),TT));
+			op->bc_bot1_add_lr(n,"Ri",LOG_PRES,-q*domain_weight[n-1],delta,TT);
+			rhs.setrow(n,( (log(PRES.row(j0+map.gl.npts[n]-1)) - log(PRES.row(j0))) *domain_weight[n]
+			- (log(PRES.row(j0-1)) - log(PRES.row(j0-map.gl.npts[n-1])))*domain_weight[n-1] , TT) );
 			op->bc_bot2_add_d(n,"Ri",LOG_PRES,(1-q));
 			op->bc_bot2_add_r(n,"Ri",LOG_PRES,q-1,TT);
 			rhs.setrow(n,rhs.row(n)+(1-q)*(-log(PRES.row(j0))+log((PRES.row(j0),TT))));
@@ -1216,188 +1402,5 @@ void star2d::solve_atm(solver *op) {
 }
 
 
-/// \brief Routine to check the Jacobian matrix
-void star2d::check_jacobian(solver *op,const char *eqn) {
-    DEBUG_FUNCNAME;
-	star2d B;
-	matrix rhs,drhs,drhs2,qq;
-	matrix *y;
-	double q;
-	int i,j,j0;
-	
-	y=new matrix[op->get_nvar()];
-	B=*this;
-	// Perturbar el modelo
-	{
-		double a,ar,asc;
-		
-		a=1e-8;ar=1e-8;
-		asc=a>ar?a:ar;
-		B.phi=B.phi+a*B.phi+ar*B.phi*random_matrix(nr,nth);
-		B.phiex=B.phiex+a*B.phiex+ar*B.phiex*random_matrix(nex,nth);
-		B.p=B.p+a*B.p+ar*B.p*random_matrix(nr,nth);
-		B.pc=B.pc+asc*B.pc;
-		B.T=B.T+a*B.T+ar*B.T*random_matrix(nr,nth);
-		B.Tc=B.Tc+asc*B.Tc;
-		B.w=B.w+a*B.w+ar*B.w*random_matrix(nr,nth);
-		B.Omega=B.Omega+asc*B.Omega;
-		B.G=B.G+a*B.G+ar*B.G*random_matrix(nr,nth);
-		B.map.R=B.map.R+a*B.map.R*sin(th)*sin(th)+ar*B.map.R*random_matrix(ndomains,nth);
-		B.map.remap();
-	}
-	
-	B.fill();
-	
-	i=op->get_id("rho");
-	y[i]=zeros(nr,nth);
-	i=op->get_id("opa.xi");
-	y[i]=zeros(nr,nth);
-	i=op->get_id("nuc.eps");
-	y[i]=zeros(nr,nth);
-	i=op->get_id("r");
-	y[i]=zeros(nr+nex,nth);
-	i=op->get_id("rz");
-	y[i]=zeros(nr+nex,nth);
-	i=op->get_id("s");
-	y[i]=zeros(nr,nth);
-	i=op->get_id("opa.k");
-	y[i]=zeros(nr,nth);
-	
-	
-	i=op->get_id("Phi");
-	y[i]=zeros(nr+nex,nth);
-	y[i].setblock(0,nr-1,0,-1,B.phi-phi);
-	y[i].setblock(nr,nr+nex-1,0,-1,B.phiex-phiex);
-	i=op->get_id("p");
-	y[i]=B.p-p;
-	i=op->get_id("log_p");
-	y[i]=log(B.p)-log(p);
-	i=op->get_id("pi_c");
-	y[i]=(B.pi_c-pi_c)*ones(ndomains,1);
-	i=op->get_id("T");
-	y[i]=B.T-T;
-	i=op->get_id("log_T");
-	y[i]=log(B.T)-log(T);
-	i=op->get_id("Lambda");
-	y[i]=(B.Lambda-Lambda)*ones(ndomains,1);
-	i=op->get_id("eta");
-	y[i]=B.map.eta-map.eta;
-	j=i;
-	i=op->get_id("deta");
-	y[i]=y[j].block(1,ndomains,0,0)-y[j].block(0,ndomains-1,0,0);
-	i=op->get_id("Ri");
-	y[i]=B.map.R-map.R;
-	j=i;
-	i=op->get_id("dRi");
-	y[i]=y[j].block(1,ndomains,0,-1)-y[j].block(0,ndomains-1,0,-1);
-	i=op->get_id("Omega");
-	y[i]=(B.Omega-Omega)*ones(ndomains+1,1);
-	i=op->get_id("log_rhoc");
-	y[i]=(log(B.rhoc)-log(rhoc))*ones(ndomains,1);
-	i=op->get_id("log_pc");
-	y[i]=(log(B.pc)-log(pc))*ones(ndomains,1);
-	i=op->get_id("log_Tc");
-	y[i]=(log(B.Tc)-log(Tc))*ones(ndomains,1);
-	i=op->get_id("log_R");
-	y[i]=(log(B.R)-log(R))*ones(ndomains,1);
-	i=op->get_id("m");
-	q=0;
-	j0=0;
-	y[i]=zeros(ndomains,1);
-	for(j=0;j<ndomains;j++) {
-		q+=2*PI*(B.map.gl.I.block(0,0,j0,j0+map.gl.npts[j]-1),
-			(B.rho*B.r*B.r*B.map.rz).block(j0,j0+map.gl.npts[j]-1,0,-1),
-			B.map.leg.I_00)(0)-
-			2*PI*(map.gl.I.block(0,0,j0,j0+map.gl.npts[j]-1),
-			(rho*r*r*map.rz).block(j0,j0+map.gl.npts[j]-1,0,-1),
-			map.leg.I_00)(0);
-		y[i](j)=q;
-		j0+=map.gl.npts[j];
-	}
-	i=op->get_id("ps");
-	y[i]=B.ps-ps;
-	i=op->get_id("Ts");
-	y[i]=B.Ts-Ts;
-	i=op->get_id("lum");
-	y[i]=zeros(ndomains,1);
-	j0=0;
-	q=0;
-	for(j=0;j<ndomains;j++) {
-		q+=2*PI*B.Lambda*(B.map.gl.I.block(0,0,j0,j0+map.gl.npts[j]-1),
-			(B.rho*B.nuc.eps*B.r*B.r*B.map.rz).block(j0,j0+map.gl.npts[j]-1,0,-1),B.map.leg.I_00)(0)-
-			2*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[j]-1),
-			(rho*nuc.eps*r*r*map.rz).block(j0,j0+map.gl.npts[j]-1,0,-1),map.leg.I_00)(0);
-		y[i](j)=q;
-		j0+=map.gl.npts[j];
-	}
-	i=op->get_id("Frad");
-	y[i]=zeros(ndomains*2-1,nth);
-	j0=0;
-	matrix Frad,BFrad;
-	Frad=-opa.xi*(map.gzz*(D,T)+map.gzt*(T,Dt));
-	BFrad=-B.opa.xi*(B.map.gzz*(B.D,B.T)+B.map.gzt*(B.T,B.Dt));
-	for(j=0;j<ndomains;j++) {	
-		if(j) y[i].setrow(2*j-1,BFrad.row(j0)-Frad.row(j0));
-		y[i].setrow(2*j,BFrad.row(j0+map.gl.npts[j]-1)-Frad.row(j0+map.gl.npts[j]-1));
-		j0+=map.gl.npts[j];
-	}
-	i=op->get_id("gsup");
-	y[i]=B.gsup()-gsup();
-	i=op->get_id("Teff");
-	y[i]=B.Teff()-Teff();
-	i=op->get_id("w");
-	y[i]=B.w-w;
-	i=op->get_id("G");
-	y[i]=B.G-G;	
-	i=op->get_id("gamma");
-	y[i]=sqrt(1-B.map.rt*B.map.rt/B.r/B.r)-sqrt(1-map.rt*map.rt/r/r);	
-	
-	/*
-	matrix dlnp,dlnT,dlnrho,dlnrho2,dq,dq2;
-	double dlnpc,dlnTc,dlnrhoc;
-	dlnp=log(B.p)-log(p);dlnT=log(B.T)-log(T);dlnrho=log(B.rho)-log(rho);
-	dlnpc=log(B.pc)-log(pc);dlnTc=log(B.Tc)-log(Tc);dlnrhoc=log(B.rhoc)-log(rhoc);
-	dlnrho2=dlnp/eos.chi_rho-dlnT*eos.d+dlnpc/eos.chi_rho-dlnTc*eos.d-dlnrhoc;
-	dq=1./B.rho/B.rho*(B.rho,B.Dt)-1./rho/rho*(rho,Dt);
-	dq2=-1./rho/rho*(rho,Dt)*dlnrho+1./rho*(dlnrho,Dt);
-	dq2=-2./rho/rho*(rho,Dt)*dlnrho+1./rho/rho*(rho*dlnrho,Dt);
-	*/
-	
-	B.solve(op);
-	rhs=op->get_rhs(eqn);
-	B=*this;
-	B.solve(op);
-	
-	op->mult(y);
-	drhs=rhs-op->get_rhs(eqn);
-	drhs2=y[op->get_id(eqn)]+drhs;
-	
-	/*drhs=dq;
-	drhs2=dq-dq2;
-	*/
-	static figure fig("/XSERVE");
-	
-	/*
-	fig.subplot(1,2);
-	
-	fig.colorbar();
-	B.draw(&fig,log10(abs(drhs)+1e-15));
-	fig.colorbar();
-	B.draw(&fig,log10(abs(drhs2)+1e-15));
-	*/
-	drhs.write();
-	drhs2.write();
-	int nn;
-	if (drhs.nrows()==1) nn=drhs.ncols();
-	else nn=drhs.nrows();
-	
-	fig.axis(0-nn/20.,nn*(1+1./20),-15,0);
-	fig.plot(log10(abs(drhs)+1e-20),"b");
-	fig.hold(1);
-	fig.plot(log10(abs(drhs2)+1e-20),"r");
-	fig.hold(0);
-	
-	delete [] y;
-}
 
 

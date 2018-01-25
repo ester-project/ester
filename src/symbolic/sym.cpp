@@ -41,30 +41,14 @@ sym &sym::operator=(const sym &s) {
 	return *this;
 }
 
+int sym::complexity() const {
+	return expr->nodeCount();
+}
+
 ostream& operator<<(ostream& os, const sym &s) {
 
 	return os<<*s.expr;
 
-}
-
-sym trig_simplify(const sym &s) {
-	sym snew(s);
-	bool temp=symbolic::trig_simplify;
-	symbolic::trig_simplify=true;
-	snew.expr=snew.expr->reduce();
-	symbolic::trig_simplify=temp;
-	return snew;
-}
-sym_vec trig_simplify(const sym_vec &v) {
-	sym_vec w;
-	for(int i=0;i<3;i++) w(i)=trig_simplify(v(i));
-	return w;
-}
-sym_tens trig_simplify(const sym_tens &v) {
-	sym_tens w;
-	for(int i=0;i<3;i++) 
-		for(int j=0;j<3;j++) w(i,j)=trig_simplify(v(i,j));
-	return w;
 }
 
 symbolic *sym::check_context() const {
@@ -140,6 +124,70 @@ symbolic *sym::check_context(const sym_tens &s) const {
 	return c;
 }
 
+sym &sym::simplify() {
+
+	sym_flags flags;
+	flags.trig_simplify = true;
+	collect();
+	expand();
+	return *this;
+}
+
+sym &sym::expand() {
+
+	sym_flags flags;
+	expr = expr->reduce(flags);
+	return *this;
+}
+
+sym &sym::collect() {
+
+	sym_flags flags;
+	flags.collect = true;
+	expr = expr->reduce(flags);
+	return *this;
+}
+
+
+sym_vec &sym_vec::simplify() {
+
+	for(int i=0;i<3;i++) s[i].simplify();
+	return *this;
+}
+
+sym_tens &sym_tens::simplify() {
+
+	for(int i=0;i<3;i++)
+		for(int j=0;j<3;j++) s[i][j].simplify();
+	return *this;
+}
+
+sym_vec &sym_vec::expand() {
+
+	for(int i=0;i<3;i++) s[i].expand();
+	return *this;
+}
+
+sym_tens &sym_tens::expand() {
+
+	for(int i=0;i<3;i++)
+		for(int j=0;j<3;j++) s[i][j].expand();
+	return *this;
+}
+
+sym_vec &sym_vec::collect() {
+
+	for(int i=0;i<3;i++) s[i].collect();
+	return *this;
+}
+
+sym_tens &sym_tens::collect() {
+
+	for(int i=0;i<3;i++)
+		for(int j=0;j<3;j++) s[i][j].collect();
+	return *this;
+}
+
 sym operator+(const sym &s1,const sym &s2) {
 
 	sym snew;
@@ -147,7 +195,9 @@ sym operator+(const sym &s1,const sym &s2) {
 	snew.context=s1.check_context(s2);
 	delete snew.expr;
 	snew.expr=s1.expr->clone();
-	snew.expr=snew.expr->add(*s2.expr)->reduce();
+	snew.expr=snew.expr->add(*s2.expr);
+	if(symbolic::simplify_auto) snew.simplify();
+	else snew.expand();
 
 	return snew;
 }
@@ -159,7 +209,9 @@ sym operator*(const sym &s1,const sym &s2) {
 	snew.context=s1.check_context(s2);
 	delete snew.expr;
 	snew.expr=s1.expr->clone();
-	snew.expr=snew.expr->mult(*s2.expr)->reduce();
+	snew.expr=snew.expr->mult(*s2.expr);
+	if(symbolic::simplify_auto) snew.simplify();
+	else snew.expand();
 
 	return snew;
 }
@@ -174,7 +226,9 @@ sym pow(const sym &s,const rational &q) {
 	snew.context=s.check_context();
 	delete snew.expr;
 	snew.expr=s.expr->clone();
-	snew.expr=snew.expr->pow(q)->reduce();
+	snew.expr=snew.expr->pow(q);
+	if(symbolic::simplify_auto) snew.simplify();
+	else snew.expand();
 
 	return snew;
 }
@@ -186,7 +240,9 @@ sym sin(const sym &s) {
 	snew.context=s.check_context();
 	delete snew.expr;
 	snew.expr=s.expr->clone();
-	snew.expr=snew.expr->sin()->reduce();
+	snew.expr=snew.expr->sin();
+	if(symbolic::simplify_auto) snew.simplify();
+	else snew.expand();
 
 	return snew;
 }
@@ -198,7 +254,9 @@ sym cos(const sym &s) {
 	snew.context=s.check_context();
 	delete snew.expr;
 	snew.expr=s.expr->clone();
-	snew.expr=snew.expr->cos()->reduce();
+	snew.expr=snew.expr->cos();
+	if(symbolic::simplify_auto) snew.simplify();
+	else snew.expand();
 
 	return snew;
 }
@@ -215,7 +273,9 @@ sym exp(const sym &s) {
 	snew.context=s.check_context();
 	delete snew.expr;
 	snew.expr=s.expr->clone();
-	snew.expr=snew.expr->exp()->reduce();
+	snew.expr=snew.expr->exp();
+	if(symbolic::simplify_auto) snew.simplify();
+	else snew.expand();
 
 	return snew;
 }
@@ -227,7 +287,9 @@ sym log(const sym &s) {
 	snew.context=s.check_context();
 	delete snew.expr;
 	snew.expr=s.expr->clone();
-	snew.expr=snew.expr->log()->reduce();
+	snew.expr=snew.expr->log();
+	if(symbolic::simplify_auto) snew.simplify();
+	else snew.expand();
 
 	return snew;
 }
@@ -266,7 +328,9 @@ sym jacobian(const sym &f,const sym &a) {
 	snew.context=f.check_context(a);
 	delete snew.expr;
 	snew.expr=f.expr->clone();
-	snew.expr=snew.expr->derive(*a.expr)->reduce();
+	snew.expr=snew.expr->derive(*a.expr);
+	if(symbolic::simplify_auto) snew.simplify();
+	else snew.expand();
 	
 	return snew;
 }
