@@ -345,6 +345,7 @@ void star1d::dump_info() {
 }
 
 void star1d::plot(const matrix_map& error) {
+
     plt::clf();
 
     plt::subplot(231);

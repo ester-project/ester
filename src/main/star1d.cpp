@@ -40,6 +40,8 @@ int main(int argc,char *argv[]) {
 
     signal(SIGINT, sig_handler);
 
+    plt::figure(1, 10, 4);
+
     t.start();
     // if(config.verbose) {
     //     fig=new figure(config.plot_device);

@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "star.h"
 #include "read_config.h"
+#include "matplotlib.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -22,6 +23,8 @@ int main(int argc,char *argv[]) {
 	// figure *fig = NULL;
 	
 	signal(SIGINT,sig_handler);
+
+    plt::figure(1, 10, 4);
 	
 	t.start();
 		
