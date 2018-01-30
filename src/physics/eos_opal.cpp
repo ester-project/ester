@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "physics.h"
 #include "constants.h"
+#include "math.h"
 
 #include <iostream>
 
@@ -67,7 +68,7 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	eos.cv(i)=1e6*(*(eeos_.eos+4));
     	eos.chi_rho(i)=*(eeos_.eos+5);
     	eos.chi_T(i)=*(eeos_.eos+6);
-        if (std::abs(rhoi - (-9e99)) < 1e-10) {
+        if (fabs(rhoi - (-9e99)) < 1e-10) {
             printf("Values outside OPAL eos table:\n");
             printf("  X = %e\n", Xi);
             printf("  Z = %e\n", Zi);
