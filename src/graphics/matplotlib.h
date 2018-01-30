@@ -43,6 +43,8 @@ class plt {
         static void title(const std::string&);
         static void pause(double = 1e-4);
         static void figure(const int&, int width=-1, int height=-1);
+        static void axis(const double&, const double&, const double&, const double&);
+        static void axis(const std::string&);
 };
 
 #endif
