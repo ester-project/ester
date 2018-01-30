@@ -1296,6 +1296,7 @@ void star2d::plot(const matrix_map& error) {
     plt::subplot(231);
     plt::pcolormesh(x, y, w);
     plt::colorbar();
+    plt::axis("scaled");
 
     matrix r_e = map.leg.eval_00(this->r, M_PI/2.0);
     matrix rho_e = map.leg.eval_00(this->rho, M_PI/2.0);

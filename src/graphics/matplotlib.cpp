@@ -26,6 +26,7 @@ std::vector<std::string> plt::functions = {
     "close",
     "pcolormesh",
     "figure",
+    "axis",
     "pause"};
 bool plt::noplot = false;
 
@@ -463,4 +464,23 @@ void plt::figure(const int& id, int width, int height) {
     else {
         call("figure", args);
     }
+}
+
+void plt::axis(const double& x0, const double& x1, const double& y0, const double& y1) {
+    PyObject *args = PyTuple_New(1);
+    PyObject *list = PyList_New(4);
+
+    PyList_SetItem(list, 0, PyFloat_FromDouble(x0));
+    PyList_SetItem(list, 1, PyFloat_FromDouble(x1));
+    PyList_SetItem(list, 2, PyFloat_FromDouble(y0));
+    PyList_SetItem(list, 3, PyFloat_FromDouble(y1));
+
+    PyTuple_SetItem(args, 0, list);
+    call("axis", args);
+}
+
+void plt::axis(const std::string& a) {
+    PyObject *args = PyTuple_New(1);
+    PyTuple_SetItem(args, 0, PyUnicode_FromString(a.c_str()));
+    call("axis", args);
 }
