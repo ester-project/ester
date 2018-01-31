@@ -77,7 +77,7 @@ int main(int argc,char *argv[]) {
 	A.delta=0;  // steady solution used in solve_Xh
 	A.global_err=1;
 	A.glit=0;
-	A.details=0;
+	A.details=1;
 	A.config.input_file=*config.input_file;
 	printf("check config.input_file= %d\n",A.config.input_file);
     //int last_plot_it = -100;
