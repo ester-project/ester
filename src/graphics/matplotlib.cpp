@@ -25,6 +25,8 @@ std::vector<std::string> plt::functions = {
     "savefig",
     "close",
     "pcolormesh",
+    "figure",
+    "axis",
     "pause"};
 bool plt::noplot = false;
 
@@ -93,6 +95,8 @@ void plt::init(bool noplot) {
             return;
         }
 
+#if defined(__linux__)
+#if USE_GTK
         res = PyObject_CallMethod(matplotlib,
                 const_cast<char *>(std::string("use").c_str()),
                 const_cast<char *>(std::string("s").c_str()),
@@ -101,6 +105,8 @@ void plt::init(bool noplot) {
         else {
             close = true;
         }
+#endif
+#endif
 
         PyObject *pyplot = import_module("matplotlib.pyplot");
         if (!pyplot) {
@@ -126,23 +132,23 @@ void plt::init(bool noplot) {
             }
         }
 
-        PyObject *gcf = PyObject_GetAttrString(pyplot, std::string("gcf").c_str());
-        PyObject *args = PyTuple_New(0);
-        res = PyObject_CallObject(gcf, args);
-        Py_DECREF(args);
-        if (res) {
-            PyObject *set_size = PyObject_GetAttrString(res, std::string("set_size_inches").c_str());
-            if (set_size) {
-                PyObject *args = PyTuple_New(2);
-                PyTuple_SetItem(args, 0, PyFloat_FromDouble(12.8));
-                PyTuple_SetItem(args, 1, PyFloat_FromDouble(4.8));
-                PyObject *r = PyObject_CallObject(set_size, args);
-                Py_DECREF(args);
-                if (r) Py_DECREF(r);
-                Py_DECREF(res);
-                Py_DECREF(set_size);
-            }
-        }
+        // PyObject *gcf = PyObject_GetAttrString(pyplot, std::string("gcf").c_str());
+        // PyObject *args = PyTuple_New(0);
+        // res = PyObject_CallObject(gcf, args);
+        // Py_DECREF(args);
+        // if (res) {
+        //     PyObject *set_size = PyObject_GetAttrString(res, std::string("set_size_inches").c_str());
+        //     if (set_size) {
+        //         PyObject *args = PyTuple_New(2);
+        //         PyTuple_SetItem(args, 0, PyFloat_FromDouble(12.8));
+        //         PyTuple_SetItem(args, 1, PyFloat_FromDouble(4.8));
+        //         PyObject *r = PyObject_CallObject(set_size, args);
+        //         Py_DECREF(args);
+        //         if (r) Py_DECREF(r);
+        //         Py_DECREF(res);
+        //         Py_DECREF(set_size);
+        //     }
+        // }
 
         atexit(Py_Finalize);
         if (close == false) {
@@ -439,4 +445,42 @@ void plt::pcolormesh(const matrix& x, const matrix& y, const matrix& c) {
     PyTuple_SetItem(args, 2, pyc);
 
     call("pcolormesh", args);
+}
+
+void plt::figure(const int& id, int width, int height) {
+    if (noplot) return;
+
+    PyObject *args = PyTuple_New(1);
+    PyTuple_SetItem(args, 0, PyInt_FromLong(id));
+
+    if (width != -1 || height != -1) {
+        PyObject *kwargs = PyDict_New();
+        PyObject *size = PyTuple_New(2);
+        PyTuple_SetItem(size, 0, PyInt_FromLong(width));
+        PyTuple_SetItem(size, 1, PyInt_FromLong(height));
+        PyDict_SetItemString(kwargs, "figsize", size);
+        call("figure", args, kwargs);
+    }
+    else {
+        call("figure", args);
+    }
+}
+
+void plt::axis(const double& x0, const double& x1, const double& y0, const double& y1) {
+    PyObject *args = PyTuple_New(1);
+    PyObject *list = PyList_New(4);
+
+    PyList_SetItem(list, 0, PyFloat_FromDouble(x0));
+    PyList_SetItem(list, 1, PyFloat_FromDouble(x1));
+    PyList_SetItem(list, 2, PyFloat_FromDouble(y0));
+    PyList_SetItem(list, 3, PyFloat_FromDouble(y1));
+
+    PyTuple_SetItem(args, 0, list);
+    call("axis", args);
+}
+
+void plt::axis(const std::string& a) {
+    PyObject *args = PyTuple_New(1);
+    PyTuple_SetItem(args, 0, PyUnicode_FromString(a.c_str()));
+    call("axis", args);
 }

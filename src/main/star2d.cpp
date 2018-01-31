@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "star.h"
 #include "read_config.h"
+#include "matplotlib.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -22,6 +23,8 @@ int main(int argc,char *argv[]) {
 	// figure *fig = NULL;
 	
 	signal(SIGINT,sig_handler);
+
+    plt::figure(1, 10, 4);
 	
 	t.start();
         printf("Start of star2d\n");
@@ -46,6 +49,12 @@ int main(int argc,char *argv[]) {
 	
 	matrix tt(config.maxit+1,1),error(config.maxit+1,1);
     matrix_map error_map;
+    error_map["Phi"] = zeros(config.maxit+1, 1);
+    error_map["p"] = zeros(config.maxit+1, 1);
+    error_map["T"] = zeros(config.maxit+1, 1);
+    error_map["log_pc"] = zeros(config.maxit+1, 1);
+    error_map["log_Tc"] = zeros(config.maxit+1, 1);
+    error_map["Ri"] = zeros(config.maxit+1, 1);
 
 	t_plot=0;
 	last_it=nit>=config.maxit;
