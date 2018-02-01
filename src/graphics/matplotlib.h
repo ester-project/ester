@@ -1,11 +1,12 @@
 #ifndef MATPLOTLIB_H
 #define MATPLOTLIB_H
 
+#include <Python.h>
+
 #include "ester-config.h"
 #include "utils.h"
 #include "matrix.h"
 
-#include <Python.h>
 #include <vector>
 
 class plt {

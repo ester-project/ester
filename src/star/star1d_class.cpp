@@ -386,8 +386,6 @@ void star1d::plot(const matrix_map& error) {
     str_stream << pi_c;
     plt::text(0.0, 0.0, std::string("$\\pi_c$: ") + str_stream.str());
 
-
-
     if (error["Phi"].ncols()*error["Phi"].nrows() > 0) {
         plt::subplot(223);
         plt::semilogy(error["Phi"], "error $\\Phi$");

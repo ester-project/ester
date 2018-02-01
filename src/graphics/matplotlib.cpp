@@ -167,7 +167,6 @@ PyObject *matrix_to_py(const matrix& m) {
     return PyArray_New(&PyArray_Type, 2, dims,
             NPY_DOUBLE, NULL, m.data(),
             sizeof(double), NPY_ARRAY_FARRAY_RO, NULL);
-
 }
 
 void plt::plot(const matrix& x, std::string label, std::string style) {
