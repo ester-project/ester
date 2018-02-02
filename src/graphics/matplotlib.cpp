@@ -88,15 +88,6 @@ void plt::init(bool noplot) {
 
         import_array_wrapper();
 
-        PyObject *res;
-
-        // try to use system's python libs first
-        std::ostringstream str_stream;
-        str_stream << "import sys; sys.path.insert(0, '/usr/lib/python"
-            << PYTHON_VERSION
-            << "/dist-packages')\n";
-        PyRun_SimpleString(str_stream.str().c_str());
-
         PyObject *matplotlib = import_module("matplotlib");
         if (!matplotlib) {
             ester_warn("import matplotlib failed");
@@ -107,7 +98,7 @@ void plt::init(bool noplot) {
 
 #if defined(__linux__)
 #if USE_GTK
-        res = PyObject_CallMethod(matplotlib,
+        PyObject *res = PyObject_CallMethod(matplotlib,
                 const_cast<char *>(std::string("use").c_str()),
                 const_cast<char *>(std::string("s").c_str()),
                 "GTKAgg");
@@ -520,13 +511,13 @@ void plt::figure(const int& id, int width, int height) {
     if (noplot) return;
 
     PyObject *args = PyTuple_New(1);
-    PyTuple_SetItem(args, 0, PyInt_FromLong(id));
+    PyTuple_SetItem(args, 0, PyLong_FromLong(id));
 
     if (width != -1 || height != -1) {
         PyObject *kwargs = PyDict_New();
         PyObject *size = PyTuple_New(2);
-        PyTuple_SetItem(size, 0, PyInt_FromLong(width));
-        PyTuple_SetItem(size, 1, PyInt_FromLong(height));
+        PyTuple_SetItem(size, 0, PyLong_FromLong(width));
+        PyTuple_SetItem(size, 1, PyLong_FromLong(height));
         PyDict_SetItemString(kwargs, "figsize", size);
         call("figure", args, kwargs);
     }
