@@ -65,6 +65,24 @@ AS_IF([test "x$have_gtk" == "xyes"],
        AC_MSG_RESULT(yes)],
       [AC_MSG_RESULT(no)])
 
+AC_MSG_CHECKING([for numpy API version])
+AC_COMPILE_IFELSE(
+                  [AC_LANG_SOURCE([
+                   #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+                   #include <numpy/arrayobject.h>
+                   void main(void) {
+                   int i = NPY_ARRAY_FARRAY_RO;
+                   }
+                   ])],
+                   [numpy_api=1.7],
+                   [numpy_api=deprecated])
+AC_MSG_RESULT($numpy_api)
+
+AS_IF([test "x$numpy_api" == "xdeprecated"],
+      [AC_DEFINE([USE_DEPRECATED_NUMPY], [1],
+                 [Use deprecated (<1.7) numpy A API])])
+
+
 # Checks for libraries.
 
 # Checks for header files.

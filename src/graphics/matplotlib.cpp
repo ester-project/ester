@@ -1,6 +1,8 @@
 #include "matplotlib.h"
 
+#ifndef USE_DEPRECATED_NUMPY
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#endif
 #include <numpy/arrayobject.h>
 
 #include <sstream>
@@ -164,9 +166,15 @@ PyObject *matrix_to_py(const matrix& m) {
     dims[1] = (size_t) m.ncols();
 
 
+#ifndef USE_DEPRECATED_NUMPY
+#define NUMPY_ARRAY NPY_ARRAY_FARRAY_RO
+#else
+#define NUMPY_ARRAY NPY_FARRAY_RO
+#endif
     return PyArray_New(&PyArray_Type, 2, dims,
             NPY_DOUBLE, NULL, m.data(),
-            sizeof(double), NPY_ARRAY_FARRAY_RO, NULL);
+            sizeof(double), NUMPY_ARRAY, NULL);
+#undef NUMPY_ARRAY
 }
 
 void plt::plot(const matrix& x, std::string label, std::string style) {
