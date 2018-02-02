@@ -43,6 +43,10 @@ AX_PKG_SWIG([1.3.17], [have_swig="yes"], [have_swig="no"])
 
 AM_CONDITIONAL(HAVE_SWIG, [test "x$have_swig" == "xyes"])
 
+AC_ARG_ENABLE([plt],
+              AS_HELP_STRING([--disable-plt],
+                             [Enable/disable matplotlib support]))
+
 AC_ARG_VAR([PYTHON_CONFIG], [Path to python-config])
 AC_PATH_PROGS([PYTHON_CONFIG],
               [python$PYTHON_VERSION-config python-config],
@@ -55,28 +59,32 @@ AS_IF([test "x$PYTHON" != "x:"],
        LIBS+=" $PYTHONLIBS"
        AC_DEFINE([PYTHON_VERSION], ["@PYTHON_VERSION@"], [Version of python])])
 
-AC_MSG_CHECKING([for matplotlib GTKAgg backend])
-have_gtk=`$PYTHON -c "import sys; \
-        sys.path.insert(0, '/usr/lib/python$PYTHON_VERSION/dist-packages'); \
-        import matplotlib; matplotlib.use('GTKAgg'); import matplotlib.pyplot; print('yes')" 2> /dev/null`
+AS_IF([test "x$enable_plt" != "xno"],
+    [enable_plt="yes"
+     AC_MSG_CHECKING([for matplotlib GTKAgg backend])
+     have_gtk=`$PYTHON -c "import sys; \
+             sys.path.insert(0, '/usr/lib/python$PYTHON_VERSION/dist-packages'); \
+             import matplotlib; matplotlib.use('GTKAgg'); import matplotlib.pyplot; print('yes')" 2> /dev/null`
 
-AS_IF([test "x$have_gtk" == "xyes"],
-      [AC_DEFINE([USE_GTK], [1], [Use GTKAgg matplotlib backend])
-       AC_MSG_RESULT(yes)],
-      [AC_MSG_RESULT(no)])
+     AS_IF([test "x$have_gtk" == "xyes"],
+           [AC_DEFINE([USE_GTK], [1], [Use GTKAgg matplotlib backend])
+            AC_MSG_RESULT(yes)],
+           [AC_MSG_RESULT(no)])
 
-AC_MSG_CHECKING([for numpy API version])
-AC_COMPILE_IFELSE(
-                  [AC_LANG_SOURCE([
-                   #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-                   #include <numpy/arrayobject.h>
-                   void main(void) {
-                   int i = NPY_ARRAY_FARRAY_RO;
-                   }
-                   ])],
-                   [numpy_api=1.7],
-                   [numpy_api=deprecated])
-AC_MSG_RESULT($numpy_api)
+     AC_MSG_CHECKING([for numpy API version])
+     AC_COMPILE_IFELSE(
+                       [AC_LANG_SOURCE([
+                        #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+                        #include <numpy/arrayobject.h>
+                        void main(void) {
+                        int i = NPY_ARRAY_FARRAY_RO;
+                        }
+                        ])],
+                        [numpy_api=1.7],
+                        [numpy_api=deprecated])
+     AC_MSG_RESULT($numpy_api)]
+     AC_DEFINE([ENABLE_PLT], [1], [Enable matplotlib grahpical output]),
+    [enable_plt="no"])
 
 AS_IF([test "x$numpy_api" == "xdeprecated"],
       [AC_DEFINE([USE_DEPRECATED_NUMPY], [1],
@@ -296,6 +304,7 @@ HDF5:       $enable_hdf5
 swig:       $have_swig
 python:     $PYTHON_VERSION
 py module:  $pymodule
+matplotlib: $enable_plt
 -------------------------------------------------------------------------------
 
 EOF

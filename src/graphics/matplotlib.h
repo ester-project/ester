@@ -1,9 +1,14 @@
 #ifndef MATPLOTLIB_H
 #define MATPLOTLIB_H
 
-#include <Python.h>
-
 #include "ester-config.h"
+
+#if ENABLE_PLT
+#include <Python.h>
+#else
+#define PyObject void
+#endif
+
 #include "utils.h"
 #include "matrix.h"
 
