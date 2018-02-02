@@ -127,7 +127,7 @@ AC_COMPILE_IFELSE(
                    [have_mkl=no])
 AC_MSG_RESULT($have_mkl)
 
-AS_IF([test "x$have_cblas" == "xno" -a "x$have_blas" == "xno" -a "x$have_lapack" == "xno"],
+AS_IF([test "x$have_mkl" == "xyes" -a "x$have_cblas" == "xno" -a "x$have_blas" == "xno" -a "x$have_lapack" == "xno"],
       [AC_SEARCH_LIBS([dgetrf_], [mkl_rt],
                [have_mkl=yes
                 AC_DEFINE([USE_MKL], [1],
