@@ -45,9 +45,8 @@ solver *star1d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 	
-	nvar=30; // total number of variables
+	nvar=31; // total number of variables
                  // variables added (lnXh, Wr, xi_eff, xi_turb)
-		 // variable deprecated: Frad
 	
 	op=new solver();
 	op->init(ndomains,nvar+nvar_add,"full");
@@ -85,7 +84,7 @@ void star1d::register_variables(solver *op) {
 	op->regvar("ps");
 	op->regvar("Ts");
 	op->regvar("lum");
-//	op->regvar("Frad");
+	op->regvar("Frad");
 	op->regvar_dep("rho");
 	op->regvar_dep("s");
 	op->regvar("Teff");
@@ -675,6 +674,31 @@ void star1d::new_solve_temp(solver *op) {
 	}
 	op->set_rhs("lum",rhs_lum);
 	
+//Frad
+        matrix rhs_Frad,Frad;
+
+        Frad=-opa.xi*(D,T);
+        rhs_Frad=zeros(ndomains*2-1,1);
+        j0=0;
+        for(n=0;n<ndomains;n++) {
+                j1=j0+map.gl.npts[n]-1;
+
+                if(n) op->bc_bot2_add_d(n,"Frad","Frad",ones(1,1));
+                op->bc_top1_add_d(n,"Frad","Frad",ones(1,1));
+
+                if(n) op->bc_bot2_add_l(n,"Frad","T",opa.xi.row(j0),D.block(n).row(0));
+                op->bc_top1_add_l(n,"Frad","T",opa.xi.row(j1),D.block(n).row(-1));
+
+                if(n) op->bc_bot2_add_d(n,"Frad","opa.xi",(D,T).row(j0));
+                op->bc_top1_add_d(n,"Frad","opa.xi",(D,T).row(j1));
+
+                if(n) op->bc_bot2_add_d(n,"Frad","rz",Frad.row(j0));
+                op->bc_top1_add_d(n,"Frad","rz",Frad.row(j1));
+
+                j0=j1+1;
+        }
+        op->set_rhs("Frad",rhs_Frad);
+
 	
 	//Temperature
 	
@@ -691,7 +715,13 @@ void star1d::new_solve_temp(solver *op) {
 		j1=j0+ndom-1;
 		if (domain_type[n] == RADIATIVE) {
                    Pe.setblock(j0,j1,0,0,zeros(ndom,1));
-    		} else Pe.setblock(j0,j1,0,0,Peclet*ones(ndom,1));
+        //           xi_eff.setblock(j0,j1,0,0,opa.xi.block(j0,j1,0,0))
+    		} else if (domain_type[n] == CORE) {
+              Pe.setblock(j0,j1,0,0,100.*Peclet*ones(ndom,1));
+    		} else {
+              Pe.setblock(j0,j1,0,0,Peclet*ones(ndom,1));
+		}
+              //xi_eff.setblock(j0,j1,0,0,Peclet*ones(ndom,1)*max(opa.xi.block(j0,j1,0,0)));
 		j0+=ndom;
 	}
 	xi_eff=(Pe+ones(nr,1))*opa.xi;
@@ -702,8 +732,6 @@ for (int k=0;k<ndomains;k++) fprintf(qfic,"%d dom_type=%d\n",k,domain_type[k]);
 for (int k=0;k<nr;k++) fprintf(qfic,"%d Pe=%e xi_eff=%e r=%e\n",k,Pe(k),xi_eff(k),map.r(k));
 fclose(qfic);
 
-	//xi_eff=opa.xi;
-	//printf("Check Peclet = %e\n",Peclet);
 // Now we write the temperature equation	
 	rhs_T=zeros(nr,1);
 
@@ -758,13 +786,20 @@ fclose(qfic);
 			  
 // MR: if there are chemical or turbulent discontinuities then impose the continuity of
 //     the local flux rather than the temperature derivative
-			  op->bc_top1_add_l(n,eqn,"T",xi_eff.row(j1),D.block(n).row(-1));
+/*			  op->bc_top1_add_l(n,eqn,"T",xi_eff.row(j1),D.block(n).row(-1));
 			  op->bc_top1_add_d(n,eqn,"xi_eff",(D,T).row(j1));
 			  op->bc_top2_add_l(n,eqn,"T",-xi_eff.row(j1+1),D.block(n+1).row(0));
 			  op->bc_top2_add_d(n,eqn,"xi_eff",-(D,T).row(j1+1));
 			  op->bc_top1_add_d(n,eqn,"rz",-xi_eff(j1)*(D,T).row(j1));
 			  op->bc_top2_add_d(n,eqn,"rz",xi_eff(j1+1)*(D,T).row(j1+1));
 			  rhs_T(j1)=-xi_eff(j1)*(D,T)(j1)+xi_eff(j1+1)*(D,T)(j1+1);
+*/
+                        op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+                        op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+                        op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
+                        op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
+                        rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+
 
 // MR: the variations of rz during the iterations are crucial to take intot account the 
 //     changes of the mapping due to the distribution of domains that equalize the pressure
@@ -773,7 +808,13 @@ fclose(qfic);
 
                            op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
                            rhs_Lambda(0)=-(D,T)(0);
-		
+	/*	
+			op->bc_top1_add_d(n,"Lambda","Frad",4*PI*(r*r).row(j0));
+                        op->bc_top1_add_d(n,"Lambda","r",4*PI*(Frad*2*r).row(j0));
+                        op->bc_top2_add_d(n,"Lambda","lum",-ones(1,1));
+                        rhs_Lambda(1)=-4*PI*Frad(j1)*(r*r)(j0)+lum(n+1);
+ 	*/
+
                 } else if (n==ndomains-1) { // care of the last domain
                         op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                         op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
@@ -794,13 +835,19 @@ fclose(qfic);
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
                            rhs_T(j0)=-T(j0)+T(j0-1);
-			   op->bc_top1_add_l(n,eqn,"T",xi_eff.row(j1),D.block(n).row(-1));
+/*			   op->bc_top1_add_l(n,eqn,"T",xi_eff.row(j1),D.block(n).row(-1));
 			   op->bc_top1_add_d(n,eqn,"xi_eff",(D,T).row(j1));
 			   op->bc_top2_add_l(n,eqn,"T",-xi_eff.row(j1+1),D.block(n+1).row(0));
 			   op->bc_top2_add_d(n,eqn,"xi_eff",-(D,T).row(j1+1));
 			   op->bc_top1_add_d(n,eqn,"rz",-xi_eff(j1)*(D,T).row(j1));
 			   op->bc_top2_add_d(n,eqn,"rz",xi_eff(j1+1)*(D,T).row(j1+1));
 			   rhs_T(j1)=-xi_eff(j1)*(D,T)(j1)+xi_eff(j1+1)*(D,T)(j1+1);
+*/
+                        op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+                        op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
+                        op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
+                        op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
+                        rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
 		} // End of options on n==0, n==ndomains-1, else
 		j0+=ndom;
 	}  // End of loop on domains rank

@@ -59,7 +59,6 @@ matrix star1d::Teff() const {
 	matrix F;
 	F=-opa.xi*(D,T);
 	return pow(F(-1)/SIG_SB*units.T/units.r,0.25)*ones(1,1);
-
 }
 
 matrix star1d::gsup() const {

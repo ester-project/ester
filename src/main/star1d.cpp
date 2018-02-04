@@ -102,13 +102,13 @@ int main(int argc,char *argv[]) {
 		if(config.verbose) {
 		  printf("it=%d err=%e\n",nit,A.global_err);
 		}
-                if (config.noplot == false && (nit - last_plot_it > 10 || last_it)) {
+                if (config.noplot == false && (nit - last_plot_it > 2 || last_it)) {
                      last_plot_it = nit;
                      A.plot(error_map.block(0, nit-1, 0 ,0));
                 }
 
   	//if (nit > 3) exit(0);
-  	if (nit > 100) last_it=1;
+  	if (nit > 200) last_it=1;
 	} // End of the while loop
 
 	if(config.verbose) {
