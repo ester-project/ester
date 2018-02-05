@@ -8,7 +8,7 @@ def integre(f,a):
     jfirst=np.zeros(a.ndomains,dtype=np.int)
 
     for i in np.arange(a.ndomains-1)+1:
-       jfirst[i]=jfirst[i-1]+a.npts[i]
+       jfirst[i]=jfirst[i-1]+a.npts[i-1]
 
 # fill the matrix with the derivation-matrix
     A=a.D
