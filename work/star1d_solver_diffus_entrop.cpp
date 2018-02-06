@@ -674,35 +674,6 @@ void star1d::new_solve_temp(solver *op) {
 	}
 	op->set_rhs("lum",rhs_lum);
 	
-//Frad
-        matrix rhs_Frad,Frad;
-
-        Frad=-opa.xi*(D,T);
-        rhs_Frad=zeros(ndomains*2-1,1);
-        j0=0;
-        for(n=0;n<ndomains;n++) {
-                j1=j0+map.gl.npts[n]-1;
-
-                if(n) op->bc_bot2_add_d(n,"Frad","Frad",ones(1,1));
-                op->bc_top1_add_d(n,"Frad","Frad",ones(1,1));
-
-                if(n) op->bc_bot2_add_l(n,"Frad","T",opa.xi.row(j0),D.block(n).row(0));
-                op->bc_top1_add_l(n,"Frad","T",opa.xi.row(j1),D.block(n).row(-1));
-
-                if(n) op->bc_bot2_add_d(n,"Frad","opa.xi",(D,T).row(j0));
-                op->bc_top1_add_d(n,"Frad","opa.xi",(D,T).row(j1));
-
-                if(n) op->bc_bot2_add_d(n,"Frad","rz",Frad.row(j0));
-                op->bc_top1_add_d(n,"Frad","rz",Frad.row(j1));
-
-                j0=j1+1;
-        }
-        op->set_rhs("Frad",rhs_Frad);
-
-	
-	//Temperature
-	
-	matrix rhs_T,rhs_Lambda;
 	matrix Pe,xi_eff;
 	
 // We first compute the mask of Péclet numbers for convective/radiative domains
@@ -715,16 +686,50 @@ void star1d::new_solve_temp(solver *op) {
 		j1=j0+ndom-1;
 		if (domain_type[n] == RADIATIVE) {
                    Pe.setblock(j0,j1,0,0,zeros(ndom,1));
-        //           xi_eff.setblock(j0,j1,0,0,opa.xi.block(j0,j1,0,0))
     		} else if (domain_type[n] == CORE) {
               Pe.setblock(j0,j1,0,0,100.*Peclet*ones(ndom,1));
     		} else {
               Pe.setblock(j0,j1,0,0,Peclet*ones(ndom,1));
 		}
-              //xi_eff.setblock(j0,j1,0,0,Peclet*ones(ndom,1)*max(opa.xi.block(j0,j1,0,0)));
 		j0+=ndom;
 	}
 	xi_eff=(Pe+ones(nr,1))*opa.xi;
+
+//Frad a completer
+        matrix rhs_Frad,Frad,ss=entropy();
+
+        Frad=-opa.xi*(D,T)-Pe*opa.xi*(D,entropy());
+        rhs_Frad=zeros(ndomains*2-1,1);
+        j0=0;
+        for(n=0;n<ndomains;n++) {
+                j1=j0+map.gl.npts[n]-1;
+
+                if(n) op->bc_bot2_add_d(n,"Frad","Frad",ones(1,1));
+                op->bc_top1_add_d(n,"Frad","Frad",ones(1,1));
+
+                if(n) op->bc_bot2_add_l(n,"Frad","T",opa.xi.row(j0),D.block(n).row(0));
+                op->bc_top1_add_l(n,"Frad","T",opa.xi.row(j1),D.block(n).row(-1));
+
+                if(n) op->bc_bot2_add_l(n,"Frad","s",(Pe*opa.xi*T).row(j0),D.block(n).row(0));
+                op->bc_top1_add_l(n,"Frad","s",(Pe*opa.xi*T).row(j1),D.block(n).row(-1));
+
+                if(n) op->bc_bot2_add_d(n,"Frad","T",(Pe*opa.xi*(D,ss)).row(j0));
+                op->bc_top1_add_d(n,"Frad","T",(Pe*opa.xi*(D,ss)).row(j1));
+
+                if(n) op->bc_bot2_add_d(n,"Frad","opa.xi",((D,T)+Pe*T*(D,ss)).row(j0));
+                op->bc_top1_add_d(n,"Frad","opa.xi",((D,T)+Pe*T*(D,ss)).row(j1));
+
+                if(n) op->bc_bot2_add_d(n,"Frad","rz",Frad.row(j0));
+                op->bc_top1_add_d(n,"Frad","rz",Frad.row(j1));
+
+                j0=j1+1;
+        }
+        op->set_rhs("Frad",rhs_Frad);
+
+	
+	//Temperature
+	
+	matrix rhs_T,rhs_Lambda;
 
 FILE *qfic=fopen("Pe.txt", "a");
 fprintf(qfic," it = %d\n",glit);

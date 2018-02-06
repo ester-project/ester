@@ -102,7 +102,7 @@ int main(int argc,char *argv[]) {
 		if(config.verbose) {
 		  printf("it=%d err=%e\n",nit,A.global_err);
 		}
-                if (config.noplot == false && (nit - last_plot_it > 2 || last_it)) {
+                if (config.noplot == false && (nit - last_plot_it > 4 || last_it)) {
                      last_plot_it = nit;
                      A.plot(error_map.block(0, nit-1, 0 ,0));
                 }
