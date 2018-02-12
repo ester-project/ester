@@ -1,6 +1,6 @@
 AM_CXXFLAGS=-Wall
 
-BUILT_SOURCES	= star1dR.cpp star2dR.cpp
+BUILT_SOURCES	= star1dR.cpp star2dR.cpp read_config.cpp
 
 AM_CPPFLAGS = -I$(top_srcdir)/src/include -I$(srcdir)/graphics
 AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam -I$(srcdir)/starR
@@ -12,8 +12,8 @@ star1dR_LDADD		= $(top_builddir)/src/libester.la
 star2dR_LDADD		= $(top_builddir)/src/libester.la
 
 
-star1dR_SOURCES		= star1dR.cpp starR/read_config.cpp starR/star1dR_class.cpp
-star2dR_SOURCES		= star2dR.cpp starR/read_config.cpp starR/star2dR_class.cpp
+star1dR_SOURCES		= star1dR.cpp read_config.cpp starR/star1dR_class.cpp
+star2dR_SOURCES		= star2dR.cpp read_config.cpp starR/star2dR_class.cpp
 
 do_subst = sed -e 's,[@]datadir[@],$(datadir),g' \
                -e 's,[@]prefix[@],$(prefix),g'   \
@@ -27,3 +27,6 @@ star1dR.cpp: $(top_srcdir)/src/main/star1d.cpp Makefile
 
 star2dR.cpp: $(top_srcdir)/src/main/star2d.cpp Makefile
 	$(do_subst) < $< > $@
+
+read_config.cpp: $(top_srcdir)/src/main/read_config.cpp Makefile
+	cp $< $@
