@@ -204,6 +204,7 @@ AC_CONFIG_FILES([Makefile
                  tables/houdek/v9/lib/Makefile
                  tables/opal/Makefile
                  src/Makefile
+                 utils/Makefile
                  src/physics/Makefile
                  lib-example/Makefile
                  test/models/Makefile

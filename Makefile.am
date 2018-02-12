@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = . tables src test/models lib-example python
+SUBDIRS = . tables src test/models lib-example python utils
 
 all-local: ester-config.h
 clean-local:

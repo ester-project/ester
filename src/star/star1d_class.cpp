@@ -357,6 +357,7 @@ void star1d::plot(const matrix_map& error) {
     for (int i=0; i<ndomains; i++) {
         plt::axvline(map.gl.xif[i]);
     }
+    plt::axvline(1.0);
 
     plt::subplot(232);
     // plt::title(std::string("iter: ") + std::to_string(nit));

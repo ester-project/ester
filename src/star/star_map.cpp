@@ -213,8 +213,7 @@ matrix star2d::find_boundaries(const matrix &logTi) const {
             zj+=dzj;
             nit++;
             if(nit>100) {
-                fprintf(stderr,"Error: (star2d) No convergence in find_boundaries\n");
-                exit(1);
+                ester_err("No convergence in find_boundaries\n");
             }
         }
         zi.setcol(j,zj);
@@ -299,8 +298,7 @@ matrix star2d::find_boundaries_old(matrix pif) const {
             zj+=dzj;
             nit++;
             if(nit>100) {
-                fprintf(stderr,"Error: (star2d) No convergence in find_boundaries\n");
-                exit(1);
+                ester_err("No convergence in find_boundaries\n");
             }
         }
 

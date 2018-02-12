@@ -48,16 +48,21 @@ void star2dR::register_variables(solver *op) {
 	op->regvar("log_M");
 }
 
-double star2dR::solve(solver *op) {
-
+double star2dR::solve(solver *op, matrix_map& error_map, int nit) {
 	double err,Omega0=Omega;
 
-	err=star2d::solve(op);
+	err=star2d::solve(op, error_map, nit);
 	Xc+=op->get_var("Xc")(0);
 	while(fabs((Omega-Omega0)/Omegac)>config.newton_dmax) Omega=(Omega+Omega0)/2;
 	fill();
 
 	return err;
+}
+
+double star2dR::solve(solver *op) {
+
+    matrix_map error_map;
+    return solve(op, error_map, 0);
 }
 
 void star2dR::fill() {

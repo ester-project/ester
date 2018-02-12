@@ -148,7 +148,9 @@ int main(int argc,char *argv[]) {
 	t.stop();
 	if(config.verbose) 
 		printf("%2.2f seconds\n",t.value());
-	
+
+    plt::show(true);
+
 	return 0;
 }
 

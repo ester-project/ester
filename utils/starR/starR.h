@@ -11,6 +11,7 @@ public:
 	solver *init_solver(int nvar_add=0);
 	void register_variables(solver *);
 	double solve(solver *);
+	virtual double solve(solver *, matrix_map& error, int);
 	void fill();
 	void solve_dim(solver *);
 	void solve_definitions(solver *);
@@ -25,6 +26,7 @@ public:
 	solver *init_solver(int nvar_add=0);
 	void register_variables(solver *);
 	double solve(solver *);
+	virtual double solve(solver *, matrix_map& error, int);
 	void fill();
 	void solve_dim(solver *);
 	void solve_definitions(solver *);

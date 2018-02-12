@@ -28,6 +28,8 @@ int star1dR::check_arg(char *arg,char *val,int *change_grid) {
 	return star1d::check_arg(arg,val,change_grid);
 }
 
+
+
 solver *star1dR::init_solver(int nvar_add) {
 
 	return star1d::init_solver(2+nvar_add);
@@ -40,15 +42,20 @@ void star1dR::register_variables(solver *op) {
 	op->regvar("log_M");
 }
 
-double star1dR::solve(solver *op) {
+double star1dR::solve(solver *op, matrix_map& error_map, int nit) {
 
 	double err;
 
-	err=star1d::solve(op);
+	err=star1d::solve(op, error_map, nit);
 	Xc+=op->get_var("Xc")(0);
 	fill();
 
 	return err;
+}
+
+double star1dR::solve(solver *op) {
+    matrix_map error_map;
+    return solve(op, error_map, 0);
 }
 
 void star1dR::fill() {
