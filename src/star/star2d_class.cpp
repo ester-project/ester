@@ -160,7 +160,7 @@ void star2d::hdf5_write(const char *filename) const {
     write_attr(star, "pc",          real,       &pc);
     write_attr(star, "Omega",       real, &Omega);
     write_attr(star, "Omega_bk",    real, &Omega_bk);
-    write_attr(star, "Ekman",       real, &Ekman);
+    //write_attr(star, "Ekman",       real, &Ekman);
     write_attr(star, "min_core_size", real, &min_core_size);
     double ek = this->virial_L()/2;
     write_attr(star, "Ek",          real, &ek);
@@ -191,7 +191,7 @@ void star2d::hdf5_write(const char *filename) const {
     fields["R"] = map.R;
     fields["p"] = p;
     fields["T"] = T;
-    fields["G"] = G;
+    //fields["G"] = G;
     fields["w"] = w;
     fields["X"] = comp.X();
     fields["Y"] = comp.Y();
@@ -428,10 +428,10 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_warn("Could not read 'Omega_bk' from file `%s'", input_file);
         Omega_bk = .0;
     }
-    if (read_attr(star, "Ekman", &Ekman)) {
-        ester_warn("Could not read 'Ekman' from file `%s'", input_file);
-        Ekman = .0;
-    }
+//    if (read_attr(star, "Ekman", &Ekman)) {
+//        ester_warn("Could not read 'Ekman' from file `%s'", input_file);
+//        Ekman = .0;
+//    }
     if (read_attr(star, "core_convec", &core_convec)) {
         ester_warn("Could not read 'core_convec' from file `%s'", input_file);
         core_convec = 1;
@@ -479,10 +479,10 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_warn("Could not read field 'w' from file `%s'", input_file);
         w = zeros(nr, nth);
     }
-    if (read_field(star, "G", G)) {
-        ester_warn("Could not read field 'G' from file `%s'", input_file);
-        G = zeros(nr, nth);
-    }
+//    if (read_field(star, "G", G)) {
+//        ester_warn("Could not read field 'G' from file `%s'", input_file);
+//        G = zeros(nr, nth);
+//    }
     if (read_field(star, "X", comp["H"])) {
         ester_warn("Could not read field 'X' from file `%s'", input_file);
         comp["H"] = zeros(nr, nth);
