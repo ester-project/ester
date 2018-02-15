@@ -3,6 +3,7 @@
 import numpy as _np
 import matplotlib.pyplot as _plt
 import ester_wrap as _wrapper
+_wrapper.plt_init(True)
 
 SIG_SB = 5.670400e-5;
 K_BOL = 1.3806503e-16;

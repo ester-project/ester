@@ -1338,5 +1338,3 @@ matrix calcMass(star1d &a) {
 
 }
 
-
-

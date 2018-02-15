@@ -38,6 +38,7 @@
 #include "../src/include/physics.h"
 #include "../src/include/mapping.h"
 #include "../src/include/numdiff.h"
+#include "../src/graphics/matplotlib.h"
 %}
 
 %include "carrays.i"
@@ -49,3 +50,4 @@
 %include "../src/include/mapping.h"
 %include "../src/include/numdiff.h"
 %include "../src/include/star.h"
+%include "../src/graphics/matplotlib.h"

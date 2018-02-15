@@ -36,6 +36,7 @@ class plt {
         static void loglog(const matrix&, const matrix&, std::string label = "");
         static void pcolormesh(const matrix&, const matrix&, const matrix&);
         static void axvline(double);
+        static void axhline(double);
         static void text(double, double, std::string);
         static void show(bool block = false);
         static void ion();

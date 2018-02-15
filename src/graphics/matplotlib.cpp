@@ -27,6 +27,7 @@ std::vector<std::string> plt::functions = {
     "ioff",
     "draw",
     "axvline",
+    "axhline",
     "savefig",
     "close",
     "pcolormesh",
@@ -96,19 +97,6 @@ void plt::init(bool noplot) {
             return;
         }
 
-#if defined(__linux__)
-#if USE_GTK
-        PyObject *res = PyObject_CallMethod(matplotlib,
-                const_cast<char *>(std::string("use").c_str()),
-                const_cast<char *>(std::string("s").c_str()),
-                "GTKAgg");
-        if (res) Py_DECREF(res);
-        else {
-            close = true;
-        }
-#endif
-#endif
-
         PyObject *pyplot = import_module("matplotlib.pyplot");
         if (!pyplot) {
             ester_warn("import matplotlib.pyplot failed");
@@ -165,7 +153,6 @@ PyObject *matrix_to_py(const matrix& m) {
     npy_intp dims[2];
     dims[0] = (size_t) m.nrows();
     dims[1] = (size_t) m.ncols();
-
 
 #ifndef USE_DEPRECATED_NUMPY
 #define NUMPY_ARRAY NPY_ARRAY_FARRAY_RO
@@ -443,6 +430,20 @@ void plt::axvline(double x) {
     PyDict_SetItemString(kwargs, "linestyle", PyUnicode_FromString("--"));
     PyDict_SetItemString(kwargs, "alpha", PyFloat_FromDouble(0.5));
     call("axvline", args, kwargs);
+#endif
+}
+
+void plt::axhline(double y) {
+#if ENABLE_PLT
+    if (noplot) return;
+
+    PyObject *args = PyTuple_New(1);
+    PyTuple_SetItem(args, 0, PyFloat_FromDouble(y));
+    PyObject *kwargs = PyDict_New();
+    PyDict_SetItemString(kwargs, "color", PyUnicode_FromString("gray"));
+    PyDict_SetItemString(kwargs, "linestyle", PyUnicode_FromString("--"));
+    PyDict_SetItemString(kwargs, "alpha", PyFloat_FromDouble(0.5));
+    call("axhline", args, kwargs);
 #endif
 }
 

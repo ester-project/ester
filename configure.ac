@@ -53,24 +53,15 @@ AC_PATH_PROGS([PYTHON_CONFIG],
               [no],
               [`dirname $PYTHON`])
 AS_IF([test "x$PYTHON" != "x:"],
-      [PYTHONINC=`$PYTHON -c "from distutils import sysconfig; print(sysconfig.get_python_inc())"`
-       CPPFLAGS="$CPPFLAGS -I$PYTHONINC"
+      [PYTHONINC=`$PYTHON -c "from distutils import sysconfig; \
+       print(sysconfig.get_python_inc())"`
+       NUMPYINC=`$PYTHON -c "from numpy import get_include; print(get_include())"`
+       CPPFLAGS="$CPPFLAGS -I$PYTHONINC -I$NUMPYINC"
        PYTHONLIBS=`$PYTHON_CONFIG --ldflags`
-       LIBS+=" $PYTHONLIBS"
-       AC_DEFINE([PYTHON_VERSION], ["@PYTHON_VERSION@"], [Version of python])])
+       LIBS+=" $PYTHONLIBS"])
 
 AS_IF([test "x$enable_plt" != "xno"],
     [enable_plt="yes"
-     AC_MSG_CHECKING([for matplotlib GTKAgg backend])
-     have_gtk=`$PYTHON -c "import sys; \
-             sys.path.insert(0, '/usr/lib/python$PYTHON_VERSION/dist-packages'); \
-             import matplotlib; matplotlib.use('GTKAgg'); import matplotlib.pyplot; print('yes')" 2> /dev/null`
-
-     AS_IF([test "x$have_gtk" == "xyes"],
-           [AC_DEFINE([USE_GTK], [1], [Use GTKAgg matplotlib backend])
-            AC_MSG_RESULT(yes)],
-           [AC_MSG_RESULT(no)])
-
      AC_MSG_CHECKING([for numpy API version])
      AC_COMPILE_IFELSE(
                        [AC_LANG_SOURCE([

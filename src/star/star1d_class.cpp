@@ -403,7 +403,7 @@ void star1d::plot(const matrix_map& error) {
 
     str_stream.clear();
     str_stream.str("");
-    str_stream << pc;
+    str_stream << rhoc;
     plt::text(0.0, 0.1, std::string("$\\rho_c$:  ") + str_stream.str());
 
     str_stream.clear();

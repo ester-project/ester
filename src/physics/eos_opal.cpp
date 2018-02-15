@@ -2,9 +2,10 @@
 #include "utils.h"
 #include "physics.h"
 #include "constants.h"
-#include "math.h"
+#include "matplotlib.h"
 
 #include <iostream>
+#include <cmath>
 
 extern"C" {
 	void zfs_interp_eos5_(double *z);
@@ -27,7 +28,7 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
 
     t6=T*1e-6;
     p_mb=p*1e-12;
-    
+
     if(Z!=Z_table) {
     	lreadco_.itime=0;
     	zfs_interp_eos5_(&Z);
@@ -72,12 +73,14 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	eos.chi_rho(i)=*(eeos_.eos+5);
     	eos.chi_T(i)=*(eeos_.eos+6);
         if (fabs(rhoi - (-9e99)) < 1e-10) {
+
             printf("Values outside OPAL eos table:\n");
             printf("  X = %e\n", Xi);
             printf("  Z = %e\n", Zi);
             printf("  T = %e\n", t6i);
             printf("  p = %e\n", p_mbi);
             print_stack();
+
             exit(EXIT_FAILURE);
         }
     }

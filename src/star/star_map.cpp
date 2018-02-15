@@ -1,5 +1,6 @@
 #include "ester-config.h"
 #include "star.h"
+#include "matplotlib.h"
 
 extern "C" {
 #include <stdlib.h>
