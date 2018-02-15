@@ -379,7 +379,7 @@ void star1d::plot(const matrix_map& error) {
 
     str_stream.clear();
     str_stream.str("");
-    str_stream << pc;
+    str_stream << rhoc;
     plt::text(0.0, 0.1, std::string("$\\rho_c$:  ") + str_stream.str());
 
     str_stream.clear();
@@ -387,7 +387,7 @@ void star1d::plot(const matrix_map& error) {
     str_stream << pi_c;
     plt::text(0.0, 0.0, std::string("$\\pi_c$: ") + str_stream.str());
 
-    if (error["Phi"].ncols()*error["Phi"].nrows() > 0) {
+    if (error["Phi"].ncols()*error["Phi"].nrows() > 0 && error["Phi"](0) > .0) {
         plt::subplot(223);
         plt::semilogy(error["Phi"], "error $\\Phi$");
         plt::semilogy(error["log_p"], "error $log_p$");

@@ -527,7 +527,6 @@ int star2d::read(const char *input_file, int dim) {
                     version.minor,
                     version.rev) == -1) {
             ester_err("out of memory");
-            exit(EXIT_FAILURE);
         }
     }
     else {
@@ -536,7 +535,6 @@ int star2d::read(const char *input_file, int dim) {
                     version.minor,
                     version.rev) == -1) {
             ester_err("out of memory");
-            exit(EXIT_FAILURE);
         }
     }
     version.name = std::string(buf);
@@ -785,14 +783,12 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
                 init1d(in1d, nt, next);
             } else {
                 ester_err("Error reading input file: %s", input_file);
-                return 1;
             }
         }
         map0=map;
     } else {
         if(!fp.open(default_params)) {
             ester_err("Can't open default parameters file %s\n", default_params);
-            return 1;
         }
         else {
             while((k=fp.get(arg,val))) {

@@ -1,5 +1,6 @@
 #include "ester-config.h"
 #include "star.h"
+#include "matplotlib.h"
 
 extern "C" {
 #include <stdlib.h>
@@ -95,8 +96,7 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
     int nzones=zif.nrows();
 
     if(nzones>ndom) {
-        fprintf(stderr,"Error: At least %d domains are needed for this model\n",nzones);
-        exit(1);
+        ester_err("Error: At least %d domains are needed for this model\n",nzones);
     }
 
     // Calculate Delta(log(T)) in each zone at theta=0

@@ -835,7 +835,3 @@ void star1d::check_jacobian(solver *op,const char *eqn) {
 
     delete [] y;
 }
-
-
-
-
