@@ -144,42 +144,19 @@ AC_ARG_ENABLE([hdf5],
               AS_HELP_STRING([--enable-hdf5],
                              [Enable HDF5 support]))
 
-AX_LIB_HDF5([serial])
-extension="out"
 AS_IF([test "x$enable_hdf5" != "xno"],
-      [AC_MSG_CHECKING([whether we can link against hdf5 libraries])
-      AS_IF([test "x$HDF5_LIBS" != "x"],
-            [LIBS="$LIBS $HDF5_LIBS -lhdf5_cpp"
-             CPPFLAGS="$CPPFLAGS $HDF5_CPPFLAGS"
-             LDFLAGS="$LDFLAGS $HDF5_LDFLAGS"])
-       AC_LINK_IFELSE(
-                      [AC_LANG_SOURCE([
-                       #include <H5Cpp.h>
-                       int main(void) {}
-                       ])],
-                       [h5cxx_works="yes"],
-                       [h5cxx_works="no"])
-       AC_MSG_RESULT($h5cxx_works)
-       AC_MSG_CHECKING([whether h5cc works])
-       AC_LANG_PUSH([C])
-       AC_LINK_IFELSE(
-                      [AC_LANG_SOURCE([
-                       #include <hdf5.h>
-                       int main(void) {}
-                       ])],
-                       [h5cc_works="yes"],
-                       [h5cc_works="no"])
-       AC_LANG_POP([C])
-       AC_MSG_RESULT($h5cc_works)
-       AS_IF([test "x$h5cxx_works" == "xno" -o "x$h5cc_works" == "xno"],
-             [enable_hdf5="no"
-              extension="out"],
-             [enable_hdf5="yes"
-              extension="h5"
-              AC_DEFINE([USE_HDF5], [1], [Enable hdf5 support]) ])],
-   [enable_hdf5="no"])
+      [AX_LIB_HDF5([serial])
+       extension="out"
+       AS_IF([test "x$with_hdf5" == "xyes"],
+             [extension="h5"
+              CPPFLAGS="$CPPFLAGS $HDF5_CPPFLAGS"
+              LDFLAGS="$LDFLAGS $HDF5_LDFLAGS"
+              LIBS="$LIBS -lhdf5_cpp $HDF5_LIBS"
+              AC_DEFINE([USE_HDF5], [1], [Enable hdf5 support])],
+              [extension="out"])],
+     [with_hdf5="no"])
 
-AM_CONDITIONAL(USE_HDF5, [test "x$enable_hdf5" == "xyes"])
+AM_CONDITIONAL(USE_HDF5, [test "x$with_hdf5" == "xyes"])
 
 AC_SUBST(extension)
 
@@ -289,10 +266,11 @@ ester-$VERSION build configuration:
 prefix:     $prefix
 FC:         $FC
 CPPFLAGS:   $CPPFLAGS
+LDFLAGS:    $LDFLAGS
 CXX:        $CXX
 CXXFLAGS:   $CXXFLAGS
 LIBS:       $LIBS
-HDF5:       $enable_hdf5
+HDF5:       $with_hdf5
 swig:       $have_swig
 python:     $PYTHON_VERSION
 py module:  $pymodule
