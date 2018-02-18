@@ -750,6 +750,7 @@ fclose(qfic);
 	op->add_d(eqn,"r",2*r*opa.xi*Flux);
 	op->add_d(eqn,"opa.xi",r*r*Flux);
 	op->add_d(eqn,"rz",-r*r*opa.xi*Flux);
+	op->add_d(eqn,"lum",qconv/4/PI);
 	rhs_T+=-qconv*(lum(ndomains-1)/4/PI+r*r*opa.xi*Flux);
 /*
 	printf("lum = %e\n",lum(ndomains-1));
@@ -852,7 +853,7 @@ fclose(qfic);
 			   //op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
 			   //op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
 			   //rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
-		if (details)  printf("ZONE RADIATIVE n= %d DT bot and DT top\n",n);
+		//if (details)  printf("ZONE RADIATIVE n= %d DT bot and DT top\n",n);
 			} else {
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
@@ -869,7 +870,7 @@ fclose(qfic);
 			   //op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
 			   //op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
 			   //rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
-		if (details)  printf("ZONE RADIATIVE n= %d T bot and DT top\n",n);
+		//if (details)  printf("ZONE RADIATIVE n= %d T bot and DT top\n",n);
 			       }
 		       } else if (domain_type[n] == CORE) {
 			// Continuity of T bottom
