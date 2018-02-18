@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #a=star1d('M2ideal')
-a=star1d('M2ds.h5')
+a=star1d('M19.h5')
 RGP=K_BOL/UMA
 print 'Teff = ',a.Teff
 Teff=(a.L/4/np.pi/a.R**2/SIG_SB)**0.25
@@ -25,14 +25,14 @@ jfirst=np.zeros(a.ndomains,dtype=np.int)
 for i in np.arange(a.ndomains-1)+1:
        jfirst[i]=jfirst[i-1]+a.npts[i-1]
 
-Peclet=100.
+Peclet=a.Peclet
 for i in range(a.ndomains-1) : 
   j0=jfirst[i]
   j1=jfirst[i+1]-1
   if (i==0) :
-        Pe[j0:j1]=100.*Peclet*cp[j0:j1]/RGP
+        Pe[j0:j1]=100.*Peclet #*cp[j0:j1]/RGP
   if (i==9) :
-        Pe[j0:j1]=Peclet*cp[j0:j1]/RGP
+        Pe[j0:j1]=Peclet #*cp[j0:j1]/RGP
 
 r=np.reshape(a.r,a.nr,1)
 xi=np.reshape(a.conduct,a.nr,1)
@@ -45,8 +45,8 @@ gradt=a.Tc*np.reshape(np.dot(a.D,a.T),a.nr,1)/a.R
 gradT=np.reshape(np.dot(a.D,a.T),a.nr,1)
 grads=np.reshape(np.dot(a.D,a.s),a.nr,1)
 gradlnp=np.reshape(np.dot(a.D,a.p)/a.p,a.nr,1)/a.R
-Flux=Peclet*T*grads+gradT
 #Flux=-4*np.pi*(xi_e*gradt-xi_t*temp*del_ad*gradlnp)*r**2*a.R**2/a.L
+Flux=-(Pe*T*grads+gradT)*xi*r**2
 #Flux=-4*np.pi*xi*gradt*r**2*a.R**2/a.L
 
 plt.plot(a.r,Flux)

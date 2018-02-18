@@ -183,6 +183,7 @@ class star2d:
         self.Tc         = self._s.Tc
         self.pc         = self._s.pc
         self.M          = self._s.M
+        self.Peclet     = self._s.Peclet
         self.L          = self._s.luminosity()
         self.rex        = _mat_to_numpy(self._s.rex) * self.R
         self.Mcore      = self._s.Mcore()

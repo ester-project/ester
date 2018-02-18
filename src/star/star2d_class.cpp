@@ -93,6 +93,7 @@ void star2d::copy(const star2d &A) {
     nd_core=A.nd_core;	   // do not forget to copy !!
     details=A.details;	   // do not forget to copy !!
     n_essai=A.n_essai;	   // do not forget to copy !!
+    Peclet=A.Peclet;	   // do not forget to copy !!
 
 }
 
@@ -156,6 +157,7 @@ printf("start hdf5_write\n");
     write_attr(star, "env_convec",  integer,    &env_convec);
     write_attr(star, "stratified_comp", integer, &stratified_comp);
     write_attr(star, "xif",         real,       map.gl.xif, map.ndomains+1);
+    write_attr(star, "Peclet",      real,       &Peclet);
     write_attr(star, "M",           real,       &M);
     write_attr(star, "R",           real,       &R);
     write_attr(star, "X0",          real,       &X0);
@@ -230,6 +232,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("xif",map.gl.xif,ndomains+1);
     fp.write("nth",&map.leg.npts,1);
     fp.write("nex",map.ex.gl.npts,1);
+    fp.write("Peclet",&Peclet);
     fp.write("M",&M);
     fp.write("R",&R);
     fp.write("X0",&X0);
@@ -363,6 +366,9 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     if (read_attr(star, "nex", map.ex.gl.npts)) {
         ester_err("Could not read 'nex' from file `%s'", input_file);
         exit(EXIT_FAILURE);
+    }
+    if (read_attr(star, "Peclet", &Peclet)) {
+        ester_warn("Could not read 'Peclet' from file `%s'", input_file);
     }
     if (read_attr(star, "M", &M)) {
         ester_warn("Could not read 'M' from file `%s'", input_file);
@@ -619,6 +625,7 @@ int star2d::read(const char *input_file, int dim) {
     fp.read("xif",map.gl.xif);
     if(fp.read("nth",&map.leg.npts)) map.leg.npts=1;
     fp.read("nex",map.ex.gl.npts);
+    fp.read("Peclet",&Peclet);
     fp.read("M",&M);
     fp.read("R",&R);
     if(fp.read("X0",&X0)) fp.read("X",&X0);

@@ -831,6 +831,15 @@ fclose(qfic);
 			   op->bc_bot2_add_d(n,eqn,"r",4*PI*(Frad*2*r).row(j0));
 			   op->bc_bot1_add_d(n,eqn,"lum",-ones(1,1));
 			   rhs_T(j0)=-4*PI*Frad(j0)*(r*r)(j0)+lum(n-1);
+
+/*			   op->bc_bot2_add_l(n,eqn,"T",opa.xi.row(j0),D.block(n).row(0));
+			   op->bc_bot2_add_d(n,eqn,"opa.xi",(D,T).row(j0));
+			   op->bc_bot1_add_l(n,eqn,"T",-opa.xi.row(j0-1),D.block(n-1).row(-1));
+			   op->bc_bot2_add_d(n,eqn,"opa.xi",-(D,T).row(j0-1));
+			   op->bc_bot1_add_d(n,eqn,"rz",-opa.xi(j0)*(D,T).row(j0));
+			   op->bc_bot2_add_d(n,eqn,"rz",opa.xi(j0-1)*(D,T).row(j0-1));
+			   rhs_T(j0)=-opa.xi(j0)*(D,T)(j0)+opa.xi(j0-1)*(D,T)(j0-1);
+*/
 			   op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
 			   op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
 			   op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
