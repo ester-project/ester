@@ -3,7 +3,7 @@ do_subst = sed -e 's,[@]PYTHON[@],$(PYTHON),g'
 if BUILD_ESTER_PY
 EXTRA_DIST = ester.in ester_wrap.py ester_wrap.cxx ester.i num.in cesam.in
 
-BUILT_SOURCES = ester.py
+BUILT_SOURCES = ester.py cesam.py num.py
 
 if HAVE_SWIG
 SWIG_SRC = $(srcdir)/ester.i

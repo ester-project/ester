@@ -31,40 +31,18 @@ void sig_handler(int sig) {
 
 int main(int argc,char *argv[]) {
 
-<<<<<<< HEAD
 	int nit,last_it;
 	tiempo t;
 	int last_plot_it=0;
 	configuration config(argc,argv);
 	
-	t.start();
 	signal(SIGINT, sig_handler);
+	t.start();
 	
 	star1d A;
 	solver *op;
 	
 	if(A.init(config.input_file,config.param_file,argc,argv)) {
-=======
-    int nit,last_it;
-    double err;
-    tiempo t;
-    // double t_plot;
-    configuration config(argc,argv);
-    // figure *fig = NULL;
-
-    signal(SIGINT, sig_handler);
-
-    t.start();
-    // if(config.verbose) {
-    //     fig=new figure(config.plot_device);
-    //     fig->subplot(2,1);
-    // }
-
-    star1d A;
-    solver *op;
-
-    if(A.init(config.input_file,config.param_file,argc,argv)) {
->>>>>>> bde4dde... Adds solve_phi function
         ester_err("Could not initialize star");
         return 1;
                                                                   }
