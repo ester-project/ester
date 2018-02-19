@@ -8,6 +8,20 @@ from subprocess import call
 prefix="@prefix@"
 datadir="@datadir@/ester/"
 
+def check_cesam_input():
+    i = 0
+    input = ''
+    for arg in sys.argv[i:]:
+        if arg == '-i':
+            input = sys.argv[i+1]
+            out = os.path.basename(input).replace('.osc', '.h5')
+            sys.argv[i+1] = out
+        i = i +1
+    if input.endswith('.osc'):
+        from ester.cesam import cesam_to_ester
+        print('Converting `%s\' to ester HDF5 model: `%s\'' % (input, out))
+        cesam_to_ester(input, out)
+
 
 # Let the child process handle SIGINT
 def signal_handler(signal,frame):
@@ -19,14 +33,16 @@ if len(sys.argv)>=2:
 	command=sys.argv[1]
 
 if command=='1d':
-	cmd="star1d"
-	out=call([prefix+"/bin/"+cmd]+sys.argv[2:])
-	sys.exit(out)
+    cmd="star1d"
+    check_cesam_input()
+    out=call([prefix+"/bin/"+cmd]+sys.argv[2:])
+    sys.exit(out)
 
 elif command=='2d':
-	cmd="star2d"
-	out=call([prefix+"/bin/"+cmd]+sys.argv[2:])
-	sys.exit(out)
+    cmd="star2d"
+    check_cesam_input()
+    out=call([prefix+"/bin/"+cmd]+sys.argv[2:])
+    sys.exit(out)
 	
 elif command=='evol':
 	cmd="star_evol"

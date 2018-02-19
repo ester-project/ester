@@ -1,0 +1,189 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import h5py
+import sys
+
+from .num import polint
+
+
+def read_cesam_osc(filename):
+    f = open(filename, encoding="latin-1")
+    lines = f.readlines()
+    nr = int(lines[5].split()[0])
+    model = np.zeros((nr, 10))
+
+    mass = float(lines[6][0:19])
+    radius = float(lines[6][19:38])
+
+    i_r = 0  # radius
+    i_m = 1  # mass (actually log m)
+    i_t = 2
+    i_p = 3
+    i_rho = 4
+    i_x = 2
+    i_y = 4
+    for i in range(0, nr):
+        line1 = lines[10 + i * 7]
+        line2 = lines[14 + i * 7]
+
+        r_str = line1[i_r * 19:(i_r + 1) * 19]
+        m_str = line1[i_m * 19:(i_m + 1) * 19]
+        t_str = line1[i_t * 19:(i_t + 1) * 19]
+        p_str = line1[i_p * 19:(i_p + 1) * 19]
+        rho_str = line1[i_rho * 19:(i_rho + 1) * 19]
+        x_str = line2[i_x * 19:(i_x + 1) * 19]
+        y_str = line2[i_y * 19:(i_y + 1) * 19]
+
+        r = float(r_str)
+        m = float(m_str)
+        t = float(t_str)
+        p = float(p_str)
+        rho = float(rho_str)
+        x = float(x_str)
+        y = float(y_str)
+
+        model[nr - i - 1, 0] = r
+        model[nr - i - 1, 1] = np.exp(m)
+        model[nr - i - 1, 2] = t
+        model[nr - i - 1, 3] = p
+        model[nr - i - 1, 4] = rho
+        model[nr - i - 1, 8] = x
+        model[nr - i - 1, 9] = y
+
+    return mass, radius, model
+
+
+def cesam_to_ester(filename, output=None, plot=False):
+    mass, radius, model = read_cesam_osc(filename)
+
+    r = model[:, 0]
+    r = r/radius
+    logp = np.log(model[:, 3])
+    nr = 0
+    ndom = 12
+    ri = [0]
+    npts_m = [0]
+    n = 0
+    dom_r = 1.0 / float(ndom-1)
+    delta_p = (logp[0] - logp[-1])/ndom
+    # last_dp =logp[0]
+    while r[nr] < 1:
+        nr = nr + 1
+        if n * dom_r < r[nr]:
+        # if last_dp - logp[nr] > delta_p:
+            # last_dp = logp[nr]
+            n = n + 1
+            ri.append(r[nr])
+            npts_m.append(1)
+        else:
+            npts_m[-1] = npts_m[-1] + 1
+
+    ri.append(1)
+
+    nex = [10]
+
+    r_m = model[:nr, 0]
+    r_m = r_m/r_m[-1]
+    m_m = model[:nr, 1]
+    t_m = np.log(model[:nr, 2])
+    p_m = np.log(model[:nr, 3])
+    rho_m = model[:nr, 4]
+    xc_m = model[:nr, 8]
+    y_m = model[:nr, 9]
+
+    # interpolate model onto ESTER grid
+    npts = ndom * [30]  # 30 points in each domains
+    nr = sum(npts)
+    r = np.zeros(nr)
+    t = np.zeros(nr)
+    p = np.zeros(nr)
+    rho = np.zeros(nr)
+    Xc = np.zeros(nr)
+    phi = np.zeros(nr)
+
+    w = np.zeros(nr)
+
+    m = np.zeros(nr)
+
+    print('ndom: %d\nnpts: %d' % (ndom, nr))
+
+    # Build radial grid
+    for i in range(0, ndom):
+        x0 = ri[i]
+        x1 = ri[i + 1]
+        r_dom = (-np.cos(np.pi*np.linspace(0, 1, 30)) + 1.0)/2.0
+        r_dom = r_dom * (x1-x0) + x0
+        r[sum(npts[:i]):sum(npts[:i + 1])] = r_dom
+
+
+    i0 = 0
+    for i in range(0, nr):
+        while r_m[i0+2] < r[i] and i0 < len(r_m):
+            i0 = i0+1
+        if i0 > len(r_m)-4:
+            i0 = len(r_m)-5
+
+        i1 = i0+4
+
+        assert(r_m[i0] <= r[i])
+        assert(r_m[i1] >= r[i])
+
+        m[i] =   polint(r_m[i0:i1], m_m[i0:i1], 4, r[i])
+        t[i] =   polint(r_m[i0:i1], t_m[i0:i1], 4, r[i])
+        p[i] =   polint(r_m[i0:i1], p_m[i0:i1], 4, r[i])
+        rho[i] = polint(r_m[i0:i1], rho_m[i0:i1], 4, r[i])
+        Xc[i] =  polint(r_m[i0:i1], xc_m[i0:i1], 4, r[i])
+
+    t = np.exp(t)
+    p = np.exp(p)
+
+    t = t / t[0]
+    rho = rho / rho[0]
+    p = p / p[0]
+
+    if plot:
+        plt.plot(r, rho, label='$\\rho$')
+        plt.plot(r, p, label='$p$')
+        plt.plot(r, t, label='$T$')
+        for i in ri:
+            plt.axvline(i, color="grey", linestyle='--', alpha=0.5)
+        plt.legend()
+        plt.show()
+
+    if output == None:
+        f = h5py.File(filename.replace('.osc', '.h5'), 'w')
+    else:
+        f = h5py.File(output, 'w')
+    g = f.create_group('/star')
+
+    g.attrs.create('nth', 1, dtype='i')
+    g.attrs.create('min_core_size', 0.01)
+    g.attrs['version'] = 'cesamToEster'
+    g.attrs.create('ndomains', ndom, dtype='i')
+    g.attrs.create('npts', npts, dtype='i')
+    g.attrs['xif'] = ri
+    g.attrs['surff'] = 1.0
+    g.attrs.create('nex', nex, dtype='i')
+    g.attrs['M'] = mass
+    g.attrs['R'] = radius
+    g.attrs['X0'] = Xc[0]
+    g.attrs['Z0'] = 1.0 - (Xc[0] + y_m[0])
+    g.attrs['Z0'] = 0.02
+    g.attrs['Xc'] = 1.0
+    g.attrs.create('conv', 1, dtype='i')
+    g.attrs.create('core_convec', 1, dtype='i')
+    g.attrs.create('env_convec', 0, dtype='i')
+    g.attrs['Tc'] = np.exp(t_m[0])
+    g.attrs['pc'] = np.exp(p_m[0])
+
+    g.create_dataset("phi", data=phi, shape=(1, r.size))
+    g.create_dataset("p", data=p, shape=(1, r.size))
+    g.create_dataset("rho", data=rho, shape=(1, r.size))
+    g.create_dataset("T", data=t, shape=(1, r.size))
+    g.create_dataset("w", data=np.zeros((1, r.size)))
+    g.create_dataset("R", data=ri, shape=(1, len(ri)))
+    g.create_dataset("X", data=Xc, shape=(1, r.size))
+    g.create_dataset("r", data=r, shape=(1, r.size))
+    g.create_dataset("z", data=r, shape=(1, r.size))
+
+    f.close()
