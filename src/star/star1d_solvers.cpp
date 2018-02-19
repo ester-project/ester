@@ -11,6 +11,7 @@ void star1d::fill() {
     init_comp();
 
     eq_state();
+
     opacity();
     nuclear();
 
@@ -166,6 +167,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     phi+=h*dphi;
     p+=h*dp*p;
     T+=h*dT*T;
+
     pc*=exp(h*dpc(0));
     Tc*=exp(h*dTc(0));
 

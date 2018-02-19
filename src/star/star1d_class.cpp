@@ -265,7 +265,9 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 	
 	init_comp();
 	fill();
-	
+
+    phi = solve_phi();
+
 	return 0;
 }
 

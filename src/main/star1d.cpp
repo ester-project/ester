@@ -40,8 +40,6 @@ int main(int argc,char *argv[]) {
 
     signal(SIGINT, sig_handler);
 
-    plt::figure(1, 10, 4);
-
     t.start();
     // if(config.verbose) {
     //     fig=new figure(config.plot_device);
@@ -85,9 +83,13 @@ int main(int argc,char *argv[]) {
 
     int last_plot_it = -100;
 
-    if (config.noplot == false) A.plot(error_map.block(0, nit-1, 0 ,0));
+    if (config.noplot == false) {
+        plt::figure(1, 10, 4);
+        A.plot(error_map.block(0, nit-1, 0 ,0));
+    }
 
     while(!last_it) {
+
         if(err<0.1&&!*config.input_file) {
             A.core_convec=core_convec_set;
             A.env_convec=env_convec_set;
@@ -102,18 +104,9 @@ int main(int argc,char *argv[]) {
         last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit || killed;
         if(config.verbose) {
             printf("it=%d err=%e\n",nit,err);
-
-            // if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
-            //     fig->semilogy(error.block(0,nit-1,0,0));
-            //     fig->label("Iteration number","Relative error","");
-            //     A.spectrum(fig,A.rho);
-            //     fig->label("Density (normalized spectrum)","","");
-            //     t_plot=tt(nit-1);
-            // }
-
         }
 
-        if (config.noplot == false && (nit - last_plot_it > 10 || last_it)) {
+        if (config.noplot == false && (nit+1 - last_plot_it > config.plot_interval || last_it)) {
             last_plot_it = nit;
             A.plot(error_map.block(0, nit-1, 0 ,0));
         }
