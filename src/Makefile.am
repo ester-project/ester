@@ -26,12 +26,13 @@ version_SOURCES		= main/version.cpp
 ester_info_SOURCES	= main/ester-info.cpp
 
 EXTRA_DIST	= $(srcdir)/main/ester.in		\
+EXTRA_DIST	= $(srcdir)/main/cesam_to_ester.in		\
 			  $(srcdir)/include/lapack.h	\
 			  $(srcdir)/include/utils.h		\
 			  $(srcdir)/include/stack.h
 
 
-bin_SCRIPTS	= main/ester
+bin_SCRIPTS	= main/ester main/cesam_to_ester
 CLEANFILES  = $(bin_SCRIPTS)
 
 do_subst = sed -e 's,[@]datadir[@],$(datadir),g' \
@@ -39,6 +40,9 @@ do_subst = sed -e 's,[@]datadir[@],$(datadir),g' \
                -e 's,[@]PYTHON[@],$(PYTHON),g'
 
 main/ester: main/ester.in Makefile
+	$(do_subst) < $< > $@
+
+main/cesam_to_ester: main/cesam_to_ester.in Makefile
 	$(do_subst) < $< > $@
 
 lib_LTLIBRARIES			= libester.la

@@ -1,7 +1,7 @@
 do_subst = sed -e 's,[@]PYTHON[@],$(PYTHON),g'
 
 if BUILD_ESTER_PY
-EXTRA_DIST = ester.in ester_wrap.py ester_wrap.cxx ester.i
+EXTRA_DIST = ester.in ester_wrap.py ester_wrap.cxx ester.i num.in cesam.in
 
 BUILT_SOURCES = ester.py
 
@@ -10,7 +10,7 @@ SWIG_SRC = $(srcdir)/ester.i
 BUILT_SOURCES += ester_wrap.cpp
 endif
 
-pkgpython_PYTHON = ester.py ester_wrap.py
+pkgpython_PYTHON = ester.py ester_wrap.py num.py cesam.py
 pkgpyexec_LTLIBRARIES = _ester_wrap.la
 
 _ester_wrap_la_SOURCES = ester_wrap.cpp
@@ -29,6 +29,12 @@ ester_wrap.py: $(srcdir)/ester_wrap.py
 endif
 
 ester.py: $(srcdir)/ester.in Makefile
+	$(do_subst) < $< > $@
+
+num.py: $(srcdir)/num.in Makefile
+	$(do_subst) < $< > $@
+
+cesam.py: $(srcdir)/cesam.in Makefile
 	$(do_subst) < $< > $@
 
 CLEANFILES = $(BUILT_SOURCES)
