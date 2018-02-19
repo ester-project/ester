@@ -750,8 +750,8 @@ fclose(qfic);
 	op->add_d(eqn,"r",2*r*opa.xi*Flux);
 	op->add_d(eqn,"opa.xi",r*r*Flux);
 	op->add_d(eqn,"rz",-r*r*opa.xi*Flux);
-	op->add_d(eqn,"lum",qconv/4/PI);
-	rhs_T+=-qconv*(lum(ndomains-1)/4/PI+r*r*opa.xi*Flux);
+	//op->add_d(eqn,"lum",qconv/4/PI);
+	rhs_T+=-qconv*(lum(ndomains-3)/4/PI+r*r*opa.xi*Flux);
 /*
 	printf("lum = %e\n",lum(ndomains-1));
 	op->add_l(eqn,"s",qconv,D);
@@ -890,6 +890,7 @@ fclose(qfic);
                            op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                            op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
                            rhs_T(j0)=-T(j0)+T(j0-1);
+
 /*
 			   op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
 			   op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
@@ -898,22 +899,43 @@ fclose(qfic);
 			   op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
 			   op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
 			   rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
+
+			op->bc_top1_add_d(n,eqn,"r",(Flux*2*r*opa.xi).row(j1));
+			op->bc_top1_add_d(n,eqn,"opa.xi",(Flux*r*r).row(j1));
+			op->bc_top1_add_d(n,eqn,"rz",-(Flux*r*r*opa.xi).row(j1));
+			op->bc_top1_add_l(n,eqn,"T",(r*r*opa.xi).row(j1),D.block(n).row(-1));
+			op->bc_top1_add_d(n,eqn,"T",(Peclet*r*r*opa.xi*(D,entropy())).row(j1));
+			op->bc_top1_add_l(n,eqn,"s",(Peclet*r*r*opa.xi*T).row(j1),D.block(n).row(-1));
+
+			op->bc_top2_add_d(n,eqn,"r",-(Flux*2*r*opa.xi).row(j1+1));
+			op->bc_top2_add_d(n,eqn,"opa.xi",-(Flux*r*r).row(j1+1));
+			op->bc_top2_add_d(n,eqn,"rz",(Flux*r*r*opa.xi).row(j1+1));
+			op->bc_top2_add_l(n,eqn,"T",-(r*r*opa.xi).row(j1+1),D.block(n+1).row(0));
+			op->bc_top2_add_d(n,eqn,"T",-(Peclet*r*r*opa.xi*(D,entropy())).row(j1+1));
+			op->bc_top2_add_l(n,eqn,"s",-(Peclet*r*r*opa.xi*T).row(j1+1),D.block(n+1).row(0));
+
+			rhs_T(j1)=-(r*r*opa.xi*Flux)(j1)+(r*r*opa.xi*Flux)(j1+1);
+
 */
+
 			   op->bc_top1_add_d(n,eqn,"Frad",(r*r).row(j1));
 			   op->bc_top1_add_d(n,eqn,"r",(Frad*2*r).row(j1));
 			   op->bc_top2_add_d(n,eqn,"lum",-ones(1,1)/4/PI);
-			   rhs_T(j1)=-Frad(j1)*(r*r)(j1)+opa.xi(j1)*Peclet*T(j1)*(D,entropy())(j1)+lum(n)/4/PI;
+			   rhs_T(j1)=-(Frad*r*r)(j1)+lum(n)/4/PI;
+
+			   //rhs_T(j1)=-(Frad*r*r)(j1)+Peclet*(opa.xi*T*(D,entropy()))(j1)+lum(n)/4/PI;
+//				printf("j1 = %d\n",j1);
 
 			// Continuity of Lambda bottom
                            op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                            op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
-			   if (domain_type[n+1] == RADIATIVE) {
+//			   if (domain_type[n+1] == RADIATIVE) {
 			   //continuity of T top of CZ needed if next domain radiative
-			     if (details)  printf("CONVECTIVE ZONE n= %d T top\n",n);
-                             op->bc_top2_add_d(n,eqn,"T",ones(1,1));
-                             op->bc_top1_add_d(n,eqn,"T",-ones(1,1));
-                             rhs_T(j1)=-T(j1)+T(j1+1);
-                           }
+//			     if (details)  printf("top !! CONVECTIVE ZONE n= %d T top\n",n);
+//                             op->bc_top2_add_d(n,eqn,"T",ones(1,1));
+//                             op->bc_top1_add_d(n,eqn,"T",-ones(1,1));
+//                             rhs_T(j1)=-T(j1)+T(j1+1);
+//                           }
 		       }
 		} // End of options on n==0, n==ndomains-1, else
 		j0+=ndom;
