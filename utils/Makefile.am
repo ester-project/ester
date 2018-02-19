@@ -6,6 +6,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/src/include -I$(srcdir)/graphics
 AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam -I$(srcdir)/starR
 AM_CPPFLAGS +=-I$(top_srcdir)/src/graphics
 
+EXTRA_DIST = $(srcdir)/starR/starR.h
+
 bin_PROGRAMS		= star1dR star2dR
 
 star1dR_LDADD		= $(top_builddir)/src/libester.la
@@ -30,3 +32,5 @@ star2dR.cpp: $(top_srcdir)/src/main/star2d.cpp Makefile
 
 read_config.cpp: $(top_srcdir)/src/main/read_config.cpp Makefile
 	cp $< $@
+
+CLEANFILES  = star1dR.cpp star2dR.cpp  read_config.cpp

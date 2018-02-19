@@ -24,10 +24,11 @@ version_SOURCES		= main/version.cpp
 ester_info_SOURCES	= main/ester-info.cpp
 
 EXTRA_DIST	= $(srcdir)/main/ester.in		\
-EXTRA_DIST	= $(srcdir)/main/cesam_to_ester.in		\
+			  $(srcdir)/main/cesam_to_ester.in		\
 			  $(srcdir)/include/lapack.h	\
 			  $(srcdir)/include/utils.h		\
-			  $(srcdir)/include/stack.h
+			  $(srcdir)/include/stack.h		\
+			  $(srcdir)/graphics/matplotlib.h
 
 
 bin_SCRIPTS	= main/ester main/cesam_to_ester

@@ -30,6 +30,7 @@ EXTRA_DIST	= \
 			  opa/kappa_cond.f opa/opa_compton.f opa/opa.f opa/opa_gong.f \
 			  opa/opa_int_zsx.f opa/opa_opal2.f opa/opa_opalCO.f \
 			  opa/opa_yveline.f opa/opa_yveline_lisse.f \
+			  opa/opa_yveline.data \
 			  \
 			  numeric/arb_rom.f numeric/boite.f numeric/box.f \
 			  numeric/bsp1ddn.f numeric/bsp1dn.f numeric/bsp_dis.f \
