@@ -381,8 +381,18 @@ matrix star2d::find_boundaries(const matrix &logTi) const {
             zj+=dzj;
             nit++;
             if(nit>100) {
-                fprintf(stderr,"Error: (star2d) No convergence in find_boundaries\n");
-                exit(1);
+       //fprintf(stderr,"Error: (star2d) No convergence in find_boundaries\n");
+       //exit(1);
+                plt::clf();
+                plt::plot(r, log(T), "$T$");
+                for (int i=0; i<logTi.nrows(); i++) {
+                    plt::axvline(zj(i));
+                    plt::axhline(logTi(i));
+                    LOGE("ri%d zj=%e, dzj=%e\n", i, zj(i), dzj(i));
+                }
+                LOGE("No convergence in find_boundaries");
+                plt::show(true);
+                ester_err("No convergence in find_boundaries\n");
             }
         }
         zi.setcol(j,zj);

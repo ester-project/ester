@@ -184,6 +184,8 @@ class star2d {
     void hdf5_write(const char *filename) const;
     int hdf5_read(const char *input_file, int dim);
 
+    matrix solve_phi(); // used to calculate initial solution for phi based on rho
+
     virtual void plot(const matrix_map&);
 };
 

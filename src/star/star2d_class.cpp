@@ -9,6 +9,67 @@
 #endif
 #include "matplotlib.h"
 
+matrix star2d::solve_phi() {
+    symbolic S;
+    S.set_map(map);
+
+    sym symPhi = S.regvar("Phi");
+    matrix phi, rho;
+
+    phi = zeros(nr, nth);
+    rho = this->rho;
+
+    sym eq = lap(symPhi);
+    solver op;
+    op.init(ndomains, 1, "full");
+    op.regvar("Phi");
+    op.set_nr(map.npts);
+
+    S.set_value("Phi", phi);
+
+    op.reset();
+    op.set_nr(map.npts);
+
+    matrix rhs = rho*pi_c;
+
+    eq.add(&op, "Phi", "Phi");
+
+    int j0 = 0;
+    for (int n=0; n<ndomains; n++) {
+        if (n == 0) {
+            // BC at center
+            op.bc_bot2_add_l(0, "Phi", "Phi", ones(1, nth), map.D.block(0).row(0));
+            rhs(0) = 0.0;
+        }
+        else {
+            op.bc_bot2_add_l(n, "Phi", "Phi", ones(1,1), D.block(n).row(0));
+            op.bc_bot1_add_l(n, "Phi", "Phi", -ones(1,1), D.block(n-1).row(-1));
+            rhs(j0) = -(D, phi)(j0) + (D, phi)(j0-1);
+        }
+
+        if (n == ndomains-1) {
+            // BC at surface
+            op.bc_top1_add_l(n, "Phi", "Phi", ones(1, nth), map.D.block(n).row(-1));
+            op.bc_top1_add_d(n, "Phi", "Phi", ones(1, nth));
+            rhs(-1) = -(map.D, phi)(-1) - phi(-1);
+        }
+        else {
+            op.bc_top1_add_d(n,"Phi", "Phi", ones(1,1));
+            op.bc_top2_add_d(n,"Phi", "Phi", -ones(1,1));
+            rhs(j0+map.gl.npts[n]-1) = -phi(j0+map.gl.npts[n]-1)+phi(j0+map.gl.npts[n]);
+        }
+        j0 += map.gl.npts[n];
+    }
+
+    op.set_rhs("Phi", rhs);
+
+    op.solve();
+
+    phi = op.get_var("Phi");
+
+    return phi;
+}
+
 star2d::star2d() : nr(map.gl.N), nth(map.leg.npts), nex(map.ex.gl.N),
     ndomains(map.gl.ndomains), r(map.r), z(map.z), th(map.th), Dt(map.Dt),
     Dt2(map.Dt2), zex(map.ex.z), Dex(map.ex.D), rex(map.ex.r),
@@ -544,10 +605,12 @@ printf("I read 6 zone_type.size/nzones= %d\n",nzones);
  	      printf("in hdf5_read Tc=%e\n",Tc);
 for (int n=0;n<nzones;n++) printf("zone_type[%d] = %d\n",n,zone_type[n]);
 
+    matrix sol_phi = solve_phi();
+    phi = sol_phi;
+
     return 0;
 #else
     ester_err("Could not read from hdf5 file: HDF5 is not enabled");
-    return 1; // return 1 (failure) if HDF5 is not enabled
 #endif
 }
 
@@ -1053,7 +1116,7 @@ void star2d::interp(remapper *red) {
     G=red->interp(G,11);
     comp=red->interp(comp);
     phiex=red->interp_ex(phiex);
-    fill(); // recompute the microphysic variables
+    fill(); // recompute the micro-physics variables
 
 }
 

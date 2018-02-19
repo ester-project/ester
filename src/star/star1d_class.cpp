@@ -287,6 +287,9 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 	fill();
         //printf("juste after fill \n");
         Wr=zeros(nr,1);	// initialize radial mass flux Wr=rho*Vr
+
+    phi = solve_phi();
+
 	return 0;
 }
 

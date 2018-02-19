@@ -12,6 +12,7 @@ void star1d::fill() {
 	init_comp();
 
     eq_state();
+
     opacity();
     nuclear();
 

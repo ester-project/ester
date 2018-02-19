@@ -58,4 +58,13 @@
 
 bool isHDF5Name(const char *fileName);
 
+#define RED "\033[0;31m"
+#define GREEN "\033[0;32m"
+#define YELLOW "\033[0;33m"
+#define RESET "\033[0;0m"
+
+#define LOGI(...)   { printf(GREEN); printf(__VA_ARGS__); printf(RESET); fflush(stdout); }
+#define LOGW(...)   { fprintf(stderr, YELLOW); fprintf(stderr, __VA_ARGS__); fprintf(stderr, RESET); }
+#define LOGE(...)   { fprintf(stderr, RED); fprintf(stderr, __VA_ARGS__); fprintf(stderr, RESET); }
+
 #endif // ESTER_UTILS_H
