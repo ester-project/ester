@@ -14,13 +14,13 @@ def check_cesam_input():
     for arg in sys.argv[i:]:
         if arg == '-i':
             input = sys.argv[i+1]
-            out = os.path.basename(input).replace('.osc', '.h5')
-            sys.argv[i+1] = out
+            if input.endswith('.osc'):
+                from ester.cesam import cesam_to_ester
+                out = os.path.basename(input).replace('.osc', '.h5')
+                print('Converting `%s\' to ester HDF5 model: `%s\'' % (input, out))
+                cesam_to_ester(input, out)
+                sys.argv[i+1] = out
         i = i +1
-    if input.endswith('.osc'):
-        from ester.cesam import cesam_to_ester
-        print('Converting `%s\' to ester HDF5 model: `%s\'' % (input, out))
-        cesam_to_ester(input, out)
 
 
 # Let the child process handle SIGINT
