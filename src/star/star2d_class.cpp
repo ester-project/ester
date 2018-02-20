@@ -167,7 +167,6 @@ void write_attr(H5::Group grp, const char *name, H5::DataType type,
 }
 
 void write_field(H5::Group grp, const char *name, const matrix &field) {
-    ester_debug("write_field %-14s\t", name);
     hsize_t dims[2];
     dims[0] = field.ncols();
     dims[1] = field.nrows();
@@ -175,7 +174,6 @@ void write_field(H5::Group grp, const char *name, const matrix &field) {
     H5::DataSet dataset = grp.createDataSet(name, H5::PredType::IEEE_F64LE,
             dataspace);
     dataset.write(field.data(), H5::PredType::IEEE_F64LE);
-    ester_debug("[OK] (%dx%d)\n", (int) dims[0], (int) dims[1]);
 }
 #endif
 
