@@ -918,10 +918,10 @@ fclose(qfic);
 
 */
 
-			   op->bc_top1_add_d(n,eqn,"Frad",(r*r).row(j1));
-			   op->bc_top1_add_d(n,eqn,"r",(Frad*2*r).row(j1));
-			   op->bc_top2_add_d(n,eqn,"lum",-ones(1,1)/4/PI);
-			   rhs_T(j1)=-(Frad*r*r)(j1)+lum(n)/4/PI;
+			   op->bc_top2_add_d(n,eqn,"Frad",(r*r).row(j1+1));
+			   op->bc_top2_add_d(n,eqn,"r",(Frad*2*r).row(j1+1));
+			   op->bc_top1_add_d(n,eqn,"lum",-ones(1,1)/4/PI);
+			   rhs_T(j1)=-(Frad*r*r)(j1+1)+lum(n)/4/PI;
 
 			   //rhs_T(j1)=-(Frad*r*r)(j1)+Peclet*(opa.xi*T*(D,entropy()))(j1)+lum(n)/4/PI;
 //				printf("j1 = %d\n",j1);
