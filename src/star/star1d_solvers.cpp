@@ -437,7 +437,6 @@ void star1d::solve_temp(solver *op) {
     op->add_d(eqn,"opa.xi",-qenv*Lambda*rho*nuc.eps/opa.xi/opa.xi);
     rhs_T+=-qenv*Lambda*rho*nuc.eps/opa.xi;
 
-
     //Convection
 
     /*if(env_convec) {
@@ -470,6 +469,9 @@ void star1d::solve_temp(solver *op) {
     op->add_l(eqn,"s",qcore,D);
     //rhs_T+=-qcore*(D,eos.s);
     rhs_T+=-qcore*(D,entropy());
+
+
+
 
     rhs_Lambda=zeros(ndomains,1);
 

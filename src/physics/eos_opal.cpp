@@ -2,7 +2,6 @@
 #include "utils.h"
 #include "physics.h"
 #include "constants.h"
-#include "matplotlib.h"
 
 #include <iostream>
 #include <cmath>
@@ -71,14 +70,12 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	eos.chi_T(i)=*(eeos_.eos+6);
         if (fabs(rhoi - (-9e99)) < 1e-10) {
 
-            printf("Values outside OPAL eos table:\n");
-            printf("  X = %e\n", Xi);
-            printf("  Z = %e\n", Zi);
-            printf("  T = %e\n", t6i);
-            printf("  p = %e\n", p_mbi);
-            print_stack();
-
-            exit(EXIT_FAILURE);
+            ester_err(
+                    "Values outside OPAL eos table:\n"
+                    "  X = %e\n"
+                    "  Z = %e\n"
+                    "  T = %e\n"
+                    "  p = %e", Xi, Zi, t6i, p_mbi);
         }
     }
     if(exist(rho==-9e99)) {

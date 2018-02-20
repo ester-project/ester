@@ -350,7 +350,7 @@ void solver::set_rhs(const char *eqn,const matrix &b) {
 		ester_err("ERROR (solver):\n\t");
 		ester_err("RHS not used in the definition of dependent variable \"%s\"",
                 eqn);
-		exit(1);
+        std::exit(EXIT_FAILURE);
 	}
 	rhs[ieq]=b;
 }

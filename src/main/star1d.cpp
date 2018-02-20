@@ -35,16 +35,12 @@ int main(int argc,char *argv[]) {
     double err;
     tiempo t;
     // double t_plot;
-    configuration config(argc,argv);
-    // figure *fig = NULL;
+
+    configuration config(argc, argv);
 
     signal(SIGINT, sig_handler);
 
     t.start();
-    // if(config.verbose) {
-    //     fig=new figure(config.plot_device);
-    //     fig->subplot(2,1);
-    // }
 
     star1d A;
     solver *op;
@@ -90,25 +86,32 @@ int main(int argc,char *argv[]) {
 
     while(!last_it) {
 
-        if(err<0.1&&!*config.input_file) {
-            A.core_convec=core_convec_set;
-            A.env_convec=env_convec_set;
+        try {
+            if(err<0.1&&!*config.input_file) {
+                A.core_convec=core_convec_set;
+                A.env_convec=env_convec_set;
+            }
+            nit++;
+            //A.check_jacobian(op,"log_T");exit(0);
+
+            err=A.solve(op, error_map, nit-1);
+
+            tt(nit-1)=t.value();
+            error(nit-1)=err;
+            last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit || killed;
+            if(config.verbose) {
+                printf("it=%d err=%e\n",nit,err);
+            }
+
+            if (config.noplot == false && (nit+1 - last_plot_it > config.plot_interval || last_it)) {
+                last_plot_it = nit;
+                A.plot(error_map.block(0, nit-1, 0 ,0));
+            }
         }
-        nit++;
-        //A.check_jacobian(op,"log_T");exit(0);
-
-        err=A.solve(op, error_map, nit-1);
-
-        tt(nit-1)=t.value();
-        error(nit-1)=err;
-        last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit || killed;
-        if(config.verbose) {
-            printf("it=%d err=%e\n",nit,err);
-        }
-
-        if (config.noplot == false && (nit+1 - last_plot_it > config.plot_interval || last_it)) {
-            last_plot_it = nit;
-            A.plot(error_map.block(0, nit-1, 0 ,0));
+        catch (runtime_exception) {
+            debugger d(argc, argv, A);
+            d.exec();
+            return 1;
         }
 
     }
