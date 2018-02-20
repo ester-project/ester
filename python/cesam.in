@@ -2,12 +2,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import h5py
 import sys
+import io
 
 from .num import polint
 
 
 def read_cesam_osc(filename):
-    f = open(filename, encoding="latin-1")
+    f = io.open(filename, encoding="latin-1")
     lines = f.readlines()
     nr = int(lines[5].split()[0])
     model = np.zeros((nr, 10))
