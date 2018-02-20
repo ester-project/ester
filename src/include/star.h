@@ -236,6 +236,8 @@ class star1d : public star2d {
 	virtual void check_jacobian(solver *op,const char *eqn);
 
     virtual void plot(const matrix_map&);
+
+    matrix spectrum(const matrix&);
 };
 
 class star_evol : public star2d {

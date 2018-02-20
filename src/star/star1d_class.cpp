@@ -369,6 +369,19 @@ void star1d::dump_info() {
 	
 }
 
+matrix star1d::spectrum(const matrix& var) {
+    matrix spec;
+    spec = (map.gl.P, var, map.leg.P_00);
+    int j = 0;
+    for (int i=0; i<ndomains; i++) {
+        spec.setblock(j, j+map.gl.npts[i]-1, 0, -1,
+                spec.block(j, j+map.gl.npts[i]-1, 0, -1)/max(spec.block(j, j+map.gl.npts[i]-1, 0, -1))
+                );
+        j += map.gl.npts[i];
+    }
+    return abs(spec);
+}
+
 void star1d::plot(const matrix_map& error) {
 
     plt::clf();
@@ -432,6 +445,17 @@ void star1d::plot(const matrix_map& error) {
         plt::axvline(map.gl.xif[i]);
     }
     plt::legend("upper left");
+
+    plt::subplot(224);
+    plt::title("Spectrum");
+    plt::semilogy(spectrum(rho), "$\\rho$");
+    int n = 0;
+    plt::axvline(n);
+    for (int i=0; i<ndomains; i++) {
+        n += map.gl.npts[i];
+        plt::axvline(n);
+    }
+    plt::legend();
 
     plt::draw();
     plt::pause();

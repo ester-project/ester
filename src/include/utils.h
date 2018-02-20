@@ -8,6 +8,10 @@
 #include <execinfo.h>
 #include <unistd.h>
 
+#ifdef DEBUG
+#include "debug.h"
+#endif
+
 #ifdef __GNUG__
 #define _print_stack()   { \
     print_stack(); \
@@ -18,17 +22,17 @@
 
 #ifdef DEBUG
 #define ester_err(...) do { \
-    fprintf(stderr, "Error at %s:%d: ", __FILE__, __LINE__); \
-    fprintf(stderr, __VA_ARGS__); \
-    fprintf(stderr, "\n"); \
+    LOGE("Error at %s:%d: ", __FILE__, __LINE__); \
+    LOGE(__VA_ARGS__); \
+    LOGE("\n"); \
     print_stack(); \
-    exit(EXIT_FAILURE); \
+    throw runtime_exception(); \
 } while(0)
 #else
 #define ester_err(...) do { \
-    fprintf(stderr, "Error: "); \
-    fprintf(stderr, __VA_ARGS__); \
-    fprintf(stderr, "\n"); \
+    LOGE("Error: "); \
+    LOGE(__VA_ARGS__); \
+    LOGE("\n"); \
     print_stack(); \
     exit(EXIT_FAILURE); \
 } while(0)
@@ -36,15 +40,15 @@
 
 #ifdef DEBUG
 #define ester_warn(...) do { \
-    fprintf(stderr, "Warning at %s:%d: ", __FILE__, __LINE__); \
-    fprintf(stderr, __VA_ARGS__); \
-    fprintf(stderr, "\n"); \
+    LOGW("Warning at %s:%d: ", __FILE__, __LINE__); \
+    LOGW(__VA_ARGS__); \
+    LOGW("\n"); \
 } while(0)
 #else
 #define ester_warn(...) do { \
-    fprintf(stderr, "Warning: "); \
-    fprintf(stderr, __VA_ARGS__); \
-    fprintf(stderr, "\n"); \
+    LOGW("Warning: "); \
+    LOGW(__VA_ARGS__); \
+    LOGW("\n"); \
 } while(0)
 #endif
 

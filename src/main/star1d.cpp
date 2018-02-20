@@ -43,6 +43,7 @@ int main(int argc,char *argv[]) {
 	solver *op;
 	
 	if(A.init(config.input_file,config.param_file,argc,argv)) {
+
         ester_err("Could not initialize star");
         return 1;
                                                                   }
@@ -89,6 +90,7 @@ int main(int argc,char *argv[]) {
     }
 
 	while(!last_it) {
+        try {
 		if(A.global_err<0.01&&!*config.input_file) { // global_err<0.1 and no input file
 			A.core_convec=core_convec_set;
 			A.env_convec=env_convec_set;
@@ -100,7 +102,6 @@ int main(int argc,char *argv[]) {
 		
 		tt(nit-1)=t.value();
 		error(nit-1)=A.global_err;
-		//last_it=(A.global_err<config.tol&&nit>=config.minit)||nit>=config.maxit;
 		last_it=(A.global_err<config.tol&&nit>=config.minit)||nit>=config.maxit || killed;
 		if(config.verbose) {
 		  printf("it=%d err=%e\n",nit,A.global_err);
@@ -109,8 +110,13 @@ int main(int argc,char *argv[]) {
                      last_plot_it = nit;
                      A.plot(error_map.block(0, nit-1, 0 ,0));
                 }
+	}
+        catch (runtime_exception) {
+            debugger d(argc, argv, A);
+            d.exec();
+            return 1;
+        }
 
-  	//if (nit > 3) exit(0);
   	if (nit > 200) last_it=1;
 	} // End of the while loop
 

@@ -56,7 +56,6 @@ if BUILD_ESTER_PY
 	@echo "Python modules are in:"
 	@echo "    $(pkgpythondir)"
 	@echo "    $(pkgpyexecdir)"
-	@echo "    (add it to your PYTHONPATH)"
 else
 	@echo "Python modules were not built"
 endif

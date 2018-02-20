@@ -608,7 +608,6 @@ void star1d::solve_Wr(solver *op) {
 	op->set_rhs("Wr",rhs);
 }
 
-
 void star1d::new_solve_temp(solver *op) {
 	//printf("start of new_solve temp \n");
 	int n,j0,j1,ndom;
