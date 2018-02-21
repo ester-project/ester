@@ -1,3 +1,4 @@
+#include "ester-config.h"
 #include "matplotlib.h"
 
 #if ENABLE_PLT
