@@ -225,7 +225,7 @@ void solver_full::lu_block(int i) {
 	ipiv[i]=new int[n];
 	dgetrf_(&n,&n,m[i].data(),&n,ipiv[i],&info);
 	ipiv_flag(i)=1;
-	
+
 	if(verbose) {
 		dgecon_(&norm,&n,m[i].data(),&n,&anorm,&rcond,work,iwork,&info);
 		printf("Block %d rcond: %e\n",i,rcond);

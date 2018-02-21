@@ -79,9 +79,13 @@ library_include_HEADERS = $(srcdir)/include/constants.h \
 						  $(srcdir)/include/physics.h	\
 						  $(srcdir)/include/star.h		\
 						  $(srcdir)/include/debug.h		\
+						  $(srcdir)/include/utils.h		\
+						  $(srcdir)/include/stack.h		\
+						  $(srcdir)/graphics/matplotlib.h		\
 						  $(srcdir)/include/matrix.h	\
 						  $(srcdir)/include/parser.h	\
 						  $(srcdir)/include/solver.h	\
 						  $(srcdir)/include/symbolic.h	\
-						  $(srcdir)/include/read_config.h
+						  $(srcdir)/include/read_config.h \
+						  $(builddir)/../ester-config.h
 

@@ -1780,6 +1780,9 @@ class star2d(_object):
     def hdf5_read(self, input_file, dim):
         return _ester_wrap.star2d_hdf5_read(self, input_file, dim)
 
+    def solve_phi(self):
+        return _ester_wrap.star2d_solve_phi(self)
+
     def plot(self, arg2):
         return _ester_wrap.star2d_plot(self, arg2)
 star2d_swigregister = _ester_wrap.star2d_swigregister
@@ -1879,6 +1882,9 @@ class star1d(star2d):
 
     def plot(self, arg2):
         return _ester_wrap.star1d_plot(self, arg2)
+
+    def spectrum(self, arg2):
+        return _ester_wrap.star1d_spectrum(self, arg2)
 star1d_swigregister = _ester_wrap.star1d_swigregister
 star1d_swigregister(star1d)
 
@@ -1926,6 +1932,208 @@ class star_evol(star2d):
     __del__ = lambda self: None
 star_evol_swigregister = _ester_wrap.star_evol_swigregister
 star_evol_swigregister(star_evol)
+
+class plt(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, plt, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, plt, name)
+    __repr__ = _swig_repr
+    if _newclass:
+        init = staticmethod(_ester_wrap.plt_init)
+    else:
+        init = _ester_wrap.plt_init
+    if _newclass:
+        subplot = staticmethod(_ester_wrap.plt_subplot)
+    else:
+        subplot = _ester_wrap.plt_subplot
+    if _newclass:
+        plot = staticmethod(_ester_wrap.plt_plot)
+    else:
+        plot = _ester_wrap.plt_plot
+    if _newclass:
+        semilogx = staticmethod(_ester_wrap.plt_semilogx)
+    else:
+        semilogx = _ester_wrap.plt_semilogx
+    if _newclass:
+        semilogy = staticmethod(_ester_wrap.plt_semilogy)
+    else:
+        semilogy = _ester_wrap.plt_semilogy
+    if _newclass:
+        loglog = staticmethod(_ester_wrap.plt_loglog)
+    else:
+        loglog = _ester_wrap.plt_loglog
+    if _newclass:
+        pcolormesh = staticmethod(_ester_wrap.plt_pcolormesh)
+    else:
+        pcolormesh = _ester_wrap.plt_pcolormesh
+    if _newclass:
+        axvline = staticmethod(_ester_wrap.plt_axvline)
+    else:
+        axvline = _ester_wrap.plt_axvline
+    if _newclass:
+        axhline = staticmethod(_ester_wrap.plt_axhline)
+    else:
+        axhline = _ester_wrap.plt_axhline
+    if _newclass:
+        text = staticmethod(_ester_wrap.plt_text)
+    else:
+        text = _ester_wrap.plt_text
+    if _newclass:
+        show = staticmethod(_ester_wrap.plt_show)
+    else:
+        show = _ester_wrap.plt_show
+    if _newclass:
+        ion = staticmethod(_ester_wrap.plt_ion)
+    else:
+        ion = _ester_wrap.plt_ion
+    if _newclass:
+        ioff = staticmethod(_ester_wrap.plt_ioff)
+    else:
+        ioff = _ester_wrap.plt_ioff
+    if _newclass:
+        clf = staticmethod(_ester_wrap.plt_clf)
+    else:
+        clf = _ester_wrap.plt_clf
+    if _newclass:
+        draw = staticmethod(_ester_wrap.plt_draw)
+    else:
+        draw = _ester_wrap.plt_draw
+    if _newclass:
+        legend = staticmethod(_ester_wrap.plt_legend)
+    else:
+        legend = _ester_wrap.plt_legend
+    if _newclass:
+        colorbar = staticmethod(_ester_wrap.plt_colorbar)
+    else:
+        colorbar = _ester_wrap.plt_colorbar
+    if _newclass:
+        close = staticmethod(_ester_wrap.plt_close)
+    else:
+        close = _ester_wrap.plt_close
+    if _newclass:
+        savefig = staticmethod(_ester_wrap.plt_savefig)
+    else:
+        savefig = _ester_wrap.plt_savefig
+    if _newclass:
+        title = staticmethod(_ester_wrap.plt_title)
+    else:
+        title = _ester_wrap.plt_title
+    if _newclass:
+        pause = staticmethod(_ester_wrap.plt_pause)
+    else:
+        pause = _ester_wrap.plt_pause
+    if _newclass:
+        figure = staticmethod(_ester_wrap.plt_figure)
+    else:
+        figure = _ester_wrap.plt_figure
+    if _newclass:
+        axis = staticmethod(_ester_wrap.plt_axis)
+    else:
+        axis = _ester_wrap.plt_axis
+
+    def __init__(self):
+        this = _ester_wrap.new_plt()
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _ester_wrap.delete_plt
+    __del__ = lambda self: None
+plt_swigregister = _ester_wrap.plt_swigregister
+plt_swigregister(plt)
+
+def plt_init(noplot=False):
+    return _ester_wrap.plt_init(noplot)
+plt_init = _ester_wrap.plt_init
+
+def plt_subplot(arg1, clear_axis=False):
+    return _ester_wrap.plt_subplot(arg1, clear_axis)
+plt_subplot = _ester_wrap.plt_subplot
+
+def plt_plot(*args):
+    return _ester_wrap.plt_plot(*args)
+plt_plot = _ester_wrap.plt_plot
+
+def plt_semilogx(*args):
+    return _ester_wrap.plt_semilogx(*args)
+plt_semilogx = _ester_wrap.plt_semilogx
+
+def plt_semilogy(*args):
+    return _ester_wrap.plt_semilogy(*args)
+plt_semilogy = _ester_wrap.plt_semilogy
+
+def plt_loglog(*args):
+    return _ester_wrap.plt_loglog(*args)
+plt_loglog = _ester_wrap.plt_loglog
+
+def plt_pcolormesh(arg2, arg3, arg4):
+    return _ester_wrap.plt_pcolormesh(arg2, arg3, arg4)
+plt_pcolormesh = _ester_wrap.plt_pcolormesh
+
+def plt_axvline(arg2):
+    return _ester_wrap.plt_axvline(arg2)
+plt_axvline = _ester_wrap.plt_axvline
+
+def plt_axhline(arg2):
+    return _ester_wrap.plt_axhline(arg2)
+plt_axhline = _ester_wrap.plt_axhline
+
+def plt_text(arg2, arg3, arg4):
+    return _ester_wrap.plt_text(arg2, arg3, arg4)
+plt_text = _ester_wrap.plt_text
+
+def plt_show(block=False):
+    return _ester_wrap.plt_show(block)
+plt_show = _ester_wrap.plt_show
+
+def plt_ion():
+    return _ester_wrap.plt_ion()
+plt_ion = _ester_wrap.plt_ion
+
+def plt_ioff():
+    return _ester_wrap.plt_ioff()
+plt_ioff = _ester_wrap.plt_ioff
+
+def plt_clf():
+    return _ester_wrap.plt_clf()
+plt_clf = _ester_wrap.plt_clf
+
+def plt_draw():
+    return _ester_wrap.plt_draw()
+plt_draw = _ester_wrap.plt_draw
+
+def plt_legend(*args):
+    return _ester_wrap.plt_legend(*args)
+plt_legend = _ester_wrap.plt_legend
+
+def plt_colorbar():
+    return _ester_wrap.plt_colorbar()
+plt_colorbar = _ester_wrap.plt_colorbar
+
+def plt_close():
+    return _ester_wrap.plt_close()
+plt_close = _ester_wrap.plt_close
+
+def plt_savefig(arg2):
+    return _ester_wrap.plt_savefig(arg2)
+plt_savefig = _ester_wrap.plt_savefig
+
+def plt_title(arg2):
+    return _ester_wrap.plt_title(arg2)
+plt_title = _ester_wrap.plt_title
+
+def plt_pause(arg1=1e-4):
+    return _ester_wrap.plt_pause(arg1)
+plt_pause = _ester_wrap.plt_pause
+
+def plt_figure(arg1, width=-1, height=-1):
+    return _ester_wrap.plt_figure(arg1, width, height)
+plt_figure = _ester_wrap.plt_figure
+
+def plt_axis(*args):
+    return _ester_wrap.plt_axis(*args)
+plt_axis = _ester_wrap.plt_axis
 
 # This file is compatible with both classic and new-style classes.
 
