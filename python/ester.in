@@ -232,7 +232,6 @@ class star2d:
         self._s.map.leg.eval_11(_wrapper.ones(1, self.nth), theta, m)
         return _mat_to_numpy(m)
 
-
 class star1d(star2d):
     def __init__(self, model):
         self._s = _wrapper.star1d()
