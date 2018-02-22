@@ -42,8 +42,8 @@ matrix star2d::solve_phi() {
             rhs(0) = 0.0;
         }
         else {
-            op.bc_bot2_add_l(n, "Phi", "Phi", ones(1,1), D.block(n).row(0));
-            op.bc_bot1_add_l(n, "Phi", "Phi", -ones(1,1), D.block(n-1).row(-1));
+            op.bc_bot2_add_l(n, "Phi", "Phi", ones(1, nth), D.block(n).row(0));
+            op.bc_bot1_add_l(n, "Phi", "Phi", -ones(1,nth), D.block(n-1).row(-1));
             rhs(j0) = -(D, phi)(j0) + (D, phi)(j0-1);
         }
 
@@ -54,8 +54,8 @@ matrix star2d::solve_phi() {
             rhs(-1) = -(map.D, phi)(-1) - phi(-1);
         }
         else {
-            op.bc_top1_add_d(n,"Phi", "Phi", ones(1,1));
-            op.bc_top2_add_d(n,"Phi", "Phi", -ones(1,1));
+            op.bc_top1_add_d(n,"Phi", "Phi", ones(1, nth));
+            op.bc_top2_add_d(n,"Phi", "Phi", -ones(1, nth));
             rhs(j0+map.gl.npts[n]-1) = -phi(j0+map.gl.npts[n]-1)+phi(j0+map.gl.npts[n]);
         }
         j0 += map.gl.npts[n];
@@ -179,9 +179,7 @@ void write_field(H5::Group grp, const char *name, const matrix &field) {
 
 void star2d::hdf5_write(const char *filename) const {
 #ifdef USE_HDF5
-#ifndef DEBUG
     H5::Exception::dontPrint();
-#endif
 
     H5::H5File file(filename, H5F_ACC_TRUNC);
     H5::Group star = file.createGroup("/star");
@@ -345,9 +343,7 @@ int read_field(H5::Group grp, const char *name, matrix &field) {
 
 int star2d::hdf5_read(const char *input_file, int dim) {
 #ifdef USE_HDF5
-#ifndef DEBUG
     H5::Exception::dontPrint();
-#endif
 
     H5::H5File file;
     H5std_string buf;
@@ -356,7 +352,6 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     catch (H5::FileIException e) {
         ester_err("Could not open file `%s'", input_file);
-        exit(EXIT_FAILURE);
     }
     H5::Group star;
     try {
@@ -364,13 +359,11 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     catch (H5::Exception) {
         ester_err("Could not open '/star' in `%s'", input_file);
-        exit(EXIT_FAILURE);
     }
 
     int ndoms;
     if (read_attr(star, "nth", &map.leg.npts)) {
         ester_err("could not read 'nth' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
     }
     if ((map.leg.npts == 1 && dim == 2) || (map.leg.npts > 1 && dim == 1)) {
         return 1;
@@ -490,16 +483,12 @@ int star2d::hdf5_read(const char *input_file, int dim) {
 
     if (read_field(star, "phi", phi)) {
         ester_err("Could not read field 'phi' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
     }
     if (read_field(star, "p", p)) {
         ester_err("Could not read field 'p' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
     }
     if (read_field(star, "T", T)) {
         ester_err("Could not read field 'T' from file `%s'", input_file);
-        T = zeros(nr, nth);
-        exit(EXIT_FAILURE);
     }
     if (read_field(star, "phiex", phiex)) {
         ester_warn("Could not read field 'phiex' from file `%s'", input_file);
@@ -507,8 +496,6 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     if (read_field(star, "R", map.R)) {
         ester_err("Could not read field 'R' from file `%s'", input_file);
-        map.R = zeros(nr, nth);
-        exit(EXIT_FAILURE);
     }
     if (map.R.nrows() < map.ndomains+1)
         map.R = zeros(1,nth).concatenate(map.R);
