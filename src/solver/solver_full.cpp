@@ -236,16 +236,30 @@ void solver_full::lu_block(int i) {
 void solver_full::solve_block(int i,char trans,matrix &x) {
 
 	int n,nrhs,info=0;
-	
+    matrix xx = x;
 	
 	if(trans=='T') x=x*c[i];
 	else x=x*r[i];
+
+    if (std::isnan(max(abs(x)))) {
+        ester_err("NaN in RHS solve block %d\n", i);
+    }
 	
 	n=m[i].nrows();nrhs=x.ncols();
 	dgetrs_(&trans,&n,&nrhs,m[i].data(),&n,ipiv[i],x.data(),&n,&info);
-	
-	if(trans=='T') x=x*r[i];
-	else x=x*c[i];
+
+    if (std::isnan(max(abs(x)))) {
+        LOGE("NaN in solve block %d\n", i);
+        for (int ii=0; ii<xx.ncols()*xx.nrows(); ii++) {
+            if (std::isnan(xx(ii)))
+                LOGE("rhs(%3d) = %e\n", ii, xx(ii));
+        }
+        ester_err("NaN found in solve_block");
+    }
+
+
+    if(trans=='T') x=x*r[i];
+    else x=x*c[i];
 
 }
 
