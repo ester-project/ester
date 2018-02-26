@@ -6,8 +6,6 @@ star2dR::star2dR() {Teff_obj=-1;Re_obj=-1;}
 
 int star2dR::check_arg(char *arg,char *val,int *change_grid) {
 
-	int err=0;
-
 	if(!strcmp(arg,"R")||!strcmp(arg,"Rp")) {
 		if(val==NULL) return 2;
 		R=atof(val)*R_SUN;
@@ -77,15 +75,15 @@ void star2dR::fill() {
 void star2dR::solve_dim(solver *op) {
 
 	star2d::solve_dim(op);
-	
+
 	matrix rhs;
-	
+
 	op->reset(ndomains-1,"log_R");
 	rhs=op->get_rhs("log_R");
 	op->add_d(ndomains-1,"log_R","log_R",ones(1,1));
 	rhs(ndomains-1)=0;
 	op->set_rhs("log_R",rhs);
-	
+
 	op->add_d(ndomains-1,"log_M","log_M",ones(1,1));
 	op->add_d(ndomains-1,"log_M","m",-ones(1,1)/m);
 	op->add_d(ndomains-1,"log_M","log_rhoc",-ones(1,1));
@@ -115,26 +113,26 @@ void star2dR::solve_definitions(solver *op) {
 
 	matrix rho0,xi0,eps0;
 	double rhoc0,Xc0;
-	
+
 	rho0=rho;xi0=opa.xi;eps0=nuc.eps;rhoc0=rhoc;Xc0=Xc;
-	
+
 	double dXc=1e-8;
-	
+
 	Xc+=dXc;
 	init_comp();
 	nuclear();
 	opacity();
 	eq_state();
 	matrix drho_dXc,dxi_dXc,deps_dXc,dlnrhoc_dXc;
-	
+
 	dlnrhoc_dXc=(rhoc-rhoc0)/rhoc0/dXc*ones(1,1);
 	drho_dXc=(rho-rho0)/dXc+rho0*dlnrhoc_dXc;
 	dxi_dXc=(opa.xi-xi0)/dXc;
 	deps_dXc=(nuc.eps-eps0)/dXc;
-	
+
 	Xc=Xc0;
 	fill();
-	
+
 	for(int n=0;n<ndomains;n++) op->add_d(n,"log_rhoc","Xc",dlnrhoc_dXc);
 	op->add_d("rho","Xc",drho_dXc);
 	op->add_d("opa.xi","Xc",dxi_dXc);
@@ -158,10 +156,9 @@ void star2dR::solve_Omega(solver *op) {
 	n=ndomains;
 	op->bc_bot1_add_d(n,"Omega","log_R",ones(1,1));
 	op->bc_bot2_add_r(n,"Omega","Ri",ones(1,1)/Req,TT);
-	
+
+
 	rhs(n)=-log(R)-log(Req)+log(Re_obj);
 	op->set_rhs("Omega",rhs);
 
 }
-
-
