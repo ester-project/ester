@@ -6,8 +6,6 @@ star1dR::star1dR() {Teff_obj=-1;}
 
 int star1dR::check_arg(char *arg,char *val,int *change_grid) {
 
-	int err=0;
-
 	if(!strcmp(arg,"R")) {
 		if(val==NULL) return 2;
 		R=atof(val)*R_SUN;
