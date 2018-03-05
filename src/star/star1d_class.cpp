@@ -404,11 +404,12 @@ void star1d::plot(const matrix_map& error) {
 
     if (error["Phi"].ncols()*error["Phi"].nrows() > 0 && error["Phi"](0) > .0) {
         plt::subplot(223);
-        plt::semilogy(error["Phi"], "error $\\Phi$");
-        plt::semilogy(error["log_p"], "error $log_p$");
-        plt::semilogy(error["log_T"], "error $log_T$");
+        plt::title("Error");
+        plt::semilogy(error["Phi"], "$\\Phi$");
+        plt::semilogy(error["log_p"], "$\\ln p$");
+        plt::semilogy(error["log_T"], "$\\ln T$");
         // plt::semilogy(error["log_pc"], "error $log_{p_c}$");
-        plt::semilogy(error["log_Tc"], "error $log_{T_c}$");
+        plt::semilogy(error["log_Tc"], "$\\ln T_c$");
         // plt::semilogy(error["Ri"], "error $R_i$");
         plt::legend("lower left");
     }
