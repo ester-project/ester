@@ -8,7 +8,7 @@ AM_CPPFLAGS +=-I$(top_srcdir)/src/graphics
 
 EXTRA_DIST = $(srcdir)/starR/starR.h
 
-bin_PROGRAMS		= star1dR star2dR
+bin_PROGRAMS		= star1dR star2dR app_luminosity
 
 star1dR_LDADD		= $(top_builddir)/src/libester.la
 star2dR_LDADD		= $(top_builddir)/src/libester.la
@@ -16,6 +16,8 @@ star2dR_LDADD		= $(top_builddir)/src/libester.la
 
 star1dR_SOURCES		= star1dR.cpp read_config.cpp starR/star1dR_class.cpp
 star2dR_SOURCES		= star2dR.cpp read_config.cpp starR/star2dR_class.cpp
+app_luminosity_SOURCES		= app_luminosity.cpp
+app_luminosity_LDADD		= $(top_builddir)/src/libester.la
 
 do_subst = sed -e 's,[@]datadir[@],$(datadir),g' \
                -e 's,[@]prefix[@],$(prefix),g'   \
