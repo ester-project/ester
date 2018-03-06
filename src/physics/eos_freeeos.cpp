@@ -23,8 +23,8 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
         matrix &rho, eos_struct &eos) {
 
     double t;
-    int ifoption = 3;
-    int ifmodified = 1;
+    int ifoption = 1;
+    int ifmodified = 2;
     int ifion = 0;
     int kif_in = 1;
     int neps = 20;
@@ -121,7 +121,7 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
         rho(i) = rhoi;
         if (iteration_count < 0) {
             ester_err(
-                    "Values outside freeeos eos table:\n"
+                    "Values outside freeEOS eos table:\n"
                     "  X = %e\n"
                     "  Z = %e\n"
                     "  T = %e\n"
@@ -131,12 +131,12 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
         eos.G1(i) = gamma1;
         eos.del_ad(i) = grada;
         eos.G3_1(i) = gamma1*(gamma2-1.0)/gamma2;
-        eos.d(i) = -density[2];          // d(lnRho)/d(lnT) ?? minus ??
+        eos.d(i) = -density[2];          // -d(lnRho)/d(lnT)
         eos.cp(i) = cp;
     	// eos.cv(i)=1e6*(*(eeos_.eos+4));
         eos.cv(i) = energy[2] * (1.0/t); // dE/dT (energy[2] is dE/dlnT)
-        eos.chi_rho(i) = 1/density[1];   // dlogP/dlogRho
-        eos.chi_T(i) = pressure[2];     // dlogP/dlogT
+        eos.chi_rho(i) = 1.0/density[1];   // dlogP/dlogRho
+        eos.chi_T(i) = -density[2] / density[1];     // dlogP/dlogT
     }
     delete[] eps;
 
