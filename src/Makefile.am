@@ -10,7 +10,7 @@ bin_PROGRAMS		= star1d star2d version star_evol ester_info gen_output
 
 star1d_LDADD		= libester.la
 star2d_LDADD		= libester.la
-gen_output_LDADD	= libester.la physics/libnuc_cesam.la
+gen_output_LDADD	= libester.la physics/libphysics.la
 version_LDADD		= libester.la
 star_evol_LDADD		= libester.la
 ester_info_LDADD	= libester.la
@@ -46,7 +46,7 @@ main/cesam_to_ester: main/cesam_to_ester.in Makefile
 
 lib_LTLIBRARIES			= libester.la
 libester_la_SOURCES		= global/global.cpp									\
-                          graphics/matplotlib.cpp		\
+                          graphics/matplotlib.cpp							\
                           mapping/mapping.cpp mapping/remapper.cpp 			\
                           matrix/mat_math.cpp matrix/matrix_block_diag.cpp	\
                           matrix/matrix.cpp matrix/matrix_map.cpp			\
@@ -65,26 +65,26 @@ libester_la_SOURCES		= global/global.cpp									\
                           symbolic/sym_tens.cpp symbolic/sym_vec.cpp		\
 						  utils/stack.cpp utils/debug.cpp
 
-libester_la_LIBADD = ../tables/freeeos/libfreeeos.la		\
-					 physics/libnuc_cesam.la				\
-					 ../tables/cesam/libcesam.la			\
+libester_la_LIBADD = physics/libphysics.la				\
+					 ../tables/freeeos/libfreeeos.la	\
+					 ../tables/cesam/libcesam.la		\
 					 ../tables/houdek/v9/lib/libopint.la
 
 library_includedir  	= $(includedir)/
-library_include_HEADERS = $(srcdir)/include/constants.h \
-						  $(srcdir)/include/ester.h		\
-						  $(srcdir)/include/mapping.h	\
-						  $(srcdir)/include/numdiff.h	\
-						  $(srcdir)/include/physics.h	\
-						  $(srcdir)/include/star.h		\
-						  $(srcdir)/include/debug.h		\
-						  $(srcdir)/include/utils.h		\
-						  $(srcdir)/include/stack.h		\
-						  $(srcdir)/graphics/matplotlib.h		\
-						  $(srcdir)/include/matrix.h	\
-						  $(srcdir)/include/parser.h	\
-						  $(srcdir)/include/solver.h	\
-						  $(srcdir)/include/symbolic.h	\
-						  $(srcdir)/include/read_config.h \
+library_include_HEADERS = $(srcdir)/include/constants.h 	\
+						  $(srcdir)/include/ester.h			\
+						  $(srcdir)/include/mapping.h		\
+						  $(srcdir)/include/numdiff.h		\
+						  $(srcdir)/include/physics.h		\
+						  $(srcdir)/include/star.h			\
+						  $(srcdir)/include/debug.h			\
+						  $(srcdir)/include/utils.h			\
+						  $(srcdir)/include/stack.h			\
+						  $(srcdir)/graphics/matplotlib.h	\
+						  $(srcdir)/include/matrix.h		\
+						  $(srcdir)/include/parser.h		\
+						  $(srcdir)/include/solver.h		\
+						  $(srcdir)/include/symbolic.h		\
+						  $(srcdir)/include/read_config.h 	\
 						  $(builddir)/../ester-config.h
 
