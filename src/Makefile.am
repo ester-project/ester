@@ -65,7 +65,8 @@ libester_la_SOURCES		= global/global.cpp									\
                           symbolic/sym_tens.cpp symbolic/sym_vec.cpp		\
 						  utils/stack.cpp utils/debug.cpp
 
-libester_la_LIBADD = physics/libnuc_cesam.la				\
+libester_la_LIBADD = ../tables/freeeos/libfreeeos.la		\
+					 physics/libnuc_cesam.la				\
 					 ../tables/cesam/libcesam.la			\
 					 ../tables/houdek/v9/lib/libopint.la
 

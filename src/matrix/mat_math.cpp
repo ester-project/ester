@@ -11,9 +11,11 @@ matrix cos(const matrix &a) {
     int i,N;
     
     N=a.nc*a.nf;
-    
-    for(i=0;i<N;i++)
+
+    for(i=0;i<N;i++) {
+
     	res.p[i]=cos(a.p[i]);
+    }
     	
     return res;
 }
@@ -25,7 +27,7 @@ matrix sin(const matrix &a) {
     int i,N;
     
     N=a.nc*a.nf;
-    
+
     for(i=0;i<N;i++)
     	res.p[i]=sin(a.p[i]);
     	
@@ -39,7 +41,7 @@ matrix tan(const matrix &a) {
     int i,N;
     
     N=a.nc*a.nf;
-    
+
     for(i=0;i<N;i++)
     	res.p[i]=tan(a.p[i]);
     	
@@ -53,7 +55,7 @@ matrix acos(const matrix &a) {
     int i,N;
     
     N=a.nc*a.nf;
-    
+
     for(i=0;i<N;i++)
     	res.p[i]=acos(a.p[i]);
     	

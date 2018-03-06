@@ -38,6 +38,7 @@ void star2d::eq_state() {
 
 	error=eos_calc(comp.X(),Z0,T*Tc,p*pc,rho,eos);
 
+
 //	rhoc=rho(0);
 	rho=rho/rhoc;
 
