@@ -12,4 +12,4 @@ libnuc_cesam_la_SOURCES = nuc_cesam_for.F EOS5_xtrin.F		\
                           nuc_simple.cpp opa_houdek.cpp		\
                           opa_kramer.cpp opa_opal.cpp		\
                           physics.cpp opa_cesam.cpp 		\
-						  opa_cesam_for.F90
+						  opa_cesam_for.F90 eos_freeeos.cpp

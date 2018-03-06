@@ -72,7 +72,6 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	eos.chi_rho(i)=*(eeos_.eos+5);
     	eos.chi_T(i)=*(eeos_.eos+6);
         if (fabs(rhoi - (-9e99)) < 1e-10) {
-
             ester_err(
                     "Values outside OPAL eos table:\n"
                     "  X = %e\n"
