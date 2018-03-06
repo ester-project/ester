@@ -64,6 +64,8 @@ int eos_idealrad(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos);
 int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos);
+int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
+		matrix &rho, eos_struct &eos);
 
 int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm);

@@ -25,31 +25,32 @@ int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 }
 
 int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
-		matrix &rho,eos_struct &eos) {
-		
-	int error=0;
-//        printf("in eos_cal X(0) %lf\n",X);	
-	if(!strcmp(eos.name,"ideal"))
-		error=eos_ideal(X,Z,T,p,rho,eos);
-	else if(!strcmp(eos.name,"ideal+rad"))
-		error=eos_idealrad(X,Z,T,p,rho,eos);
-	else if(!strcmp(eos.name,"opal")) 
-		error=eos_opal(X,Z,T,p,rho,eos);
-	else {
+        matrix &rho,eos_struct &eos) {
+
+    int error=0;
+
+    if(!strcmp(eos.name,"ideal"))
+        error=eos_ideal(X,Z,T,p,rho,eos);
+    else if(!strcmp(eos.name,"ideal+rad"))
+        error=eos_idealrad(X,Z,T,p,rho,eos);
+    else if(!strcmp(eos.name,"opal"))
+        error=eos_opal(X,Z,T,p,rho,eos);
+    else if(!strcmp(eos.name,"freeeos"))
+        error = eos_freeeos(X, Z, T, p, rho, eos);
+    else {
         ester_err("Unknown equation of state: %s",eos.name);
-    	return 1;
+        return 1;
     }
-	
-	return error;
-	
+
+    return error;
+
 }
 
 int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
 		nuc_struct &nuc) {
-		
+
 	int error=0;
-        //printf("start of nuc_calc \n");	
-	
+
 	if(!strcmp(nuc.name,"simple")) {
         //printf("nuc_calc 1\n");	
 		error=nuc_simple(X,T,rho,nuc);
@@ -60,26 +61,26 @@ int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
         ester_err("Unknown nuc. reac. type: %s",nuc.name);
     	return 1;
     }
-	
-	return error;	
-	
+
+	return error;
+
 }
 
 int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm) {
-		
+
 	int error=0;
-	
+
 	if(!strcmp(atm.name,"onelayer")) {
 		error=atm_onelayer(X,Z,g,Teff,eos_name,opa_name,atm);
     } else {
         ester_err("Unknown atmosphere type: %s", atm.name);
     	return 1;
     }
-	
-	return error;		
-		
-		
+
+	return error;
+
+
 }
 
 
