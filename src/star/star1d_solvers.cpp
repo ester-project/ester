@@ -601,14 +601,15 @@ void star1d::solve_flux(solver *op) {
 	
 
 // Equation for the flux=-DT
-	op->add_d("Flux","r",(D,Flux)-Lambda*rho*nuc.eps/opa.xi);
+	op->add_d("Flux","r",(D,Flux) + (D,opa.xi)/opa.xi*Flux - Lambda*rho*nuc.eps/opa.xi);
 	op->add_l("Flux","Flux",r,D);
 	op->add_d("Flux","Flux",2.+r*(D,opa.xi)/opa.xi);
-	op->add_d("Flux","rz",-r*(D,Flux));
+	op->add_d("Flux","rz",-r*(D,Flux) + -r*Flux*(D,opa.xi)/opa.xi);
 	op->add_d("Flux","Lambda",-r*rho*nuc.eps/opa.xi);
 	op->add_d("Flux","rho",-Lambda*r*nuc.eps/opa.xi);
 	op->add_d("Flux","nuc.eps",-Lambda*r*rho/opa.xi);
-	op->add_d("Flux","opa.xi",Lambda*r*rho*nuc.eps/opa.xi/opa.xi);
+	op->add_d("Flux","opa.xi",(-r*Flux*(D,opa.xi) + Lambda*r*rho*nuc.eps) /opa.xi/opa.xi);
+	op->add_l("Flux","opa.xi",Flux*r/opa.xi, D);	// 	
 	rhs_Flux=-(r*(D,Flux)+(2.+r*(D,opa.xi)/opa.xi)*Flux-Lambda*r*rho*nuc.eps/opa.xi);
 
 	
