@@ -112,6 +112,7 @@ void star2d::copy(const star2d &A) {
     phi=A.phi;
     p=A.p;
     T=A.T;
+    Flux=A.Flux;
     Xh=A.Xh;
     Wr=A.Wr;
     rho=A.rho;
@@ -256,6 +257,7 @@ printf("start hdf5_write\n");
     fields["R"] = map.R;
     fields["p"] = p;
     fields["T"] = T;
+    fields["Flux"] = Flux;
     fields["s"] = entropy();
     fields["G"] = G;
     fields["w"] = w;
@@ -322,6 +324,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("phi",&phi);
     fp.write("p",&p);
     fp.write("T",&T);
+    fp.write("Flux",&Flux);
     fp.write("Xh",&Xh);
     fp.write("Wr",&Wr);
     fp.write("phiex",&phiex);
@@ -554,6 +557,9 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     if (read_field(star, "T", T)) {
         ester_err("Could not read field 'T' from file `%s'", input_file);
     }
+    if (read_field(star, "Flux", Flux)) {
+        ester_err("Could not read field 'T' from file `%s'", input_file);
+    }
     if (read_field(star, "phiex", phiex)) {
         ester_warn("Could not read field 'phiex' from file `%s'", input_file);
         phiex = zeros(nr, nth);
@@ -709,6 +715,7 @@ int star2d::read(const char *input_file, int dim) {
     fp.read("phi",&phi);
     fp.read("p",&p);
     fp.read("T",&T);
+    fp.read("Flux",&Flux);
     fp.read("Xh",&Xh);
     fp.read("Wr",&Wr);
     fp.read("X_core",&X_core);
@@ -1029,6 +1036,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 	printf("Enter a piece of code in star2d_call\n");
         map.init();
         T=1-0.5*r*r;
+        Flux=r;
         p=T;
         phi=-T;
         phiex=zeros(nex,nth);
@@ -1093,10 +1101,10 @@ void star2d::interp(remapper *red) {
         p=red->interp(p);
     phi=red->interp(phi);
     T=red->interp(T);
+    Flux=red->interp(Flux);
     Xh=red->interp(Xh);
     Xh_prec=Xh;
     Wr=red->interp(Wr); // necessary for output
- 	if (details) printf("     In interp, Xh size: %dx%d\n", Xh.nrows(), Xh.ncols());
     w=red->interp(w);
     G=red->interp(G,11);
     comp=red->interp(comp);
