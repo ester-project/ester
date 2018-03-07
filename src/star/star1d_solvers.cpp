@@ -276,6 +276,9 @@ void star1d::update_map(matrix dR) {
 }
 
 void star1d::solve_definitions(solver *op) {
+
+	op->add_d("T","log_T",T);
+
 	op->add_d("rho","p",rho/eos.chi_rho/p);
 	op->add_d("rho","log_T",-rho*eos.d);
 	op->add_d("rho","log_pc",rho/eos.chi_rho);
@@ -615,7 +618,6 @@ void star1d::new_solve_temp(solver *op) {
 	double fact;
 	
 FILE *fic=fopen("new_rhs_lamb.txt", "a");
-	op->add_d("T","log_T",T);
 	strcpy(eqn,"log_T");
 	
 	//Luminosity
@@ -743,6 +745,8 @@ fclose(qfic);
 
 	matrix Flux=zeros(nr,1);
 	Flux=qconv*(Peclet*T*(D,entropy())+(D,T));
+//	double RGP=K_BOL/UMA; genere un bon bruit numérique dans la ZC
+//	Flux=qconv*((ones(nr,1)+Peclet*eos.cp/RGP)*(D,T)-Peclet*eos.cp/RGP*T*eos.del_ad*(D,p)/p);
 
 	op->add_l(eqn,"s",Peclet*qconv*r*r*opa.xi*T,D);
 	op->add_l(eqn,"T",qconv*r*r*opa.xi,D);
