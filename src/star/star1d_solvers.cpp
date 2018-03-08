@@ -616,18 +616,13 @@ void star1d::solve_flux(solver *op) {
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
 		j1=j0+ndom-1;
-                if(n==0) { // care of the first and central domain
-                        op->bc_top1_add_d(n,"Flux","Flux",ones(1,1));
-                        op->bc_top2_add_d(n,"Flux","Flux",-ones(1,1));
-                        rhs_Flux(j1)=-Flux(j1)+Flux(j1+1);
-
-                } else if (n==ndomains-1) { // care of the last domain
+                if (n==ndomains-1) { // care of the last domain
 
 			op->bc_top1_add_d(n,"Flux","T",ones(1,1));
 			op->bc_top1_add_d(n,"Flux","Ts",-ones(1,1));
 			rhs_Flux(-1)=Ts(0)-T(-1);
 
-                } else { // Now domains are not first and not last!
+                } else { // care of other domains
 
                         op->bc_top1_add_d(n,"Flux","Flux",ones(1,1));
                         op->bc_top2_add_d(n,"Flux","Flux",-ones(1,1));
@@ -644,22 +639,39 @@ void star1d::solve_flux(solver *op) {
 //--------------------------solve Temperature-------------------------------------------
 
 void star1d::solve_temp(solver *op) {
-	int n,j0,ndom;
+	int n,j0,j1,ndom;
 	
+// We first compute the mask of convective/radiative domains
+//        printf("Check Peclet = %e\n",Peclet);   
+        matrix Pe;
+        Pe=zeros(nr,1);
+        j0=0;
+        domain_type[ndomains-1]=RADIATIVE; // last domain is imposed to be radiative
+        for(n=0;n<ndomains;n++) {
+                ndom=map.gl.npts[n];
+                j1=j0+ndom-1;
+                if (domain_type[n] == RADIATIVE) {
+                   Pe.setblock(j0,j1,0,0,zeros(ndom,1));
+                } else if (domain_type[n] == CORE) {
+                   Pe.setblock(j0,j1,0,0,1e3*ones(ndom,1));
+                } else {
+                   Pe.setblock(j0,j1,0,0,Peclet*ones(ndom,1));
+                }
+                j0+=ndom;
+        }
+
+
 	matrix rhs_T,rhs_Lambda;
 	rhs_T=zeros(nr,1);
+	rhs_Lambda=zeros(ndomains,1);
 
 	op->add_d("log_T","Flux",ones(nr,1));
 	op->add_l("log_T","log_T",T,D);
 	op->add_d("log_T","log_T",-Flux);
 	op->add_d("log_T","rz",Flux);
-	rhs_T=-((D,T)+Flux); //+opa.xi*Pe*(D,entropy())+Flux/T);
-	//op->add_l("log_T","s",Pe*opa.xi,D);
+	op->add_l("log_T","s",Pe*T,D);
+	rhs_T=-((D,T)+Pe*T*(D,entropy())+Flux);
 
-	
-// Initialize the RHS of Lambda equation
-	rhs_Lambda=zeros(ndomains,1);
-	
 	j0=0;
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
@@ -695,7 +707,6 @@ void star1d::solve_temp(solver *op) {
 	
 	op->set_rhs("log_T",rhs_T);
 	op->set_rhs("Lambda",rhs_Lambda);
-
 }
 
 

@@ -654,7 +654,7 @@ if (les_zi[i] !=0. && les_zi[i] !=1.) {
 }
 if (details) printf("Number of interfaces calcule %d \n",n_interf);
 matrix bb=ones(2,1);
-bb(0,0)=1; bb(1,0)=n_interf;
+bb(0,0)=3; bb(1,0)=n_interf;
 n_interf=min(bb);
 if (details) printf("number of interfaces calcule %d \n",n_interf);
 
