@@ -1383,7 +1383,6 @@ void solver::add(const char *eqn, const char *varn,const char *block_type,char t
 	j0=0;
 	if(strcmp(block_type,"block")&&strcmp(block_type,"bc_eq")&&strcmp(block_type,"bc_pol")) {
 		ester_err("(solver::add): Invalid block_type %s", block_type);
-		exit(1);
 	}
 
 	for(k=0;k<nb;k++) {
