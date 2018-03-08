@@ -179,7 +179,6 @@ FILE *fic=fopen("err.txt", "a");
 	dFlux=op->get_var("Flux");	
 	err2=max(abs(dFlux));err=err2>err?err2:err;
 	while(exist(abs(h*dFlux)>q)) h/=2;
-	printf("dFlux %e\n",dFlux(180));
 
 	dT=op->get_var("log_T");	
 	err2=max(abs(dT));err=err2>err?err2:err;
@@ -624,6 +623,10 @@ void star1d::solve_flux(solver *op) {
 
                 } else if (n==ndomains-1) { // care of the last domain
 
+			op->bc_top1_add_d(n,"Flux","T",ones(1,1));
+			op->bc_top1_add_d(n,"Flux","Ts",-ones(1,1));
+			rhs_Flux(-1)=Ts(0)-T(-1);
+
                 } else { // Now domains are not first and not last!
 
                         op->bc_top1_add_d(n,"Flux","Flux",ones(1,1));
@@ -641,17 +644,17 @@ void star1d::solve_flux(solver *op) {
 //--------------------------solve Temperature-------------------------------------------
 
 void star1d::solve_temp(solver *op) {
-	int n,j0,j1,ndom;
+	int n,j0,ndom;
 	
 	matrix rhs_T,rhs_Lambda;
 	rhs_T=zeros(nr,1);
 
 	op->add_d("log_T","Flux",ones(nr,1));
 	op->add_l("log_T","log_T",T,D);
-	//op->add_l("log_T","s",Pe*opa.xi,D);
 	op->add_d("log_T","log_T",-Flux);
 	op->add_d("log_T","rz",Flux);
 	rhs_T=-((D,T)+Flux); //+opa.xi*Pe*(D,entropy())+Flux/T);
+	//op->add_l("log_T","s",Pe*opa.xi,D);
 
 	
 // Initialize the RHS of Lambda equation
@@ -660,7 +663,6 @@ void star1d::solve_temp(solver *op) {
 	j0=0;
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
-		j1=j0+ndom-1;
                 if(n==0) { // care of the first and central domain
                         op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
                         rhs_T(j0)=1.-T(j0);
@@ -675,10 +677,6 @@ void star1d::solve_temp(solver *op) {
                         op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
                         op->bc_bot1_add_d(n,"log_T","T",-ones(1,1));
                         rhs_T(j0)=-T(j0)+T(j0-1);
-
-			op->bc_top1_add_d(n,"log_T","T",ones(1,1));
-			op->bc_top1_add_d(n,"log_T","Ts",-ones(1,1));
-			rhs_T(-1)=Ts(0)-T(-1);
 
                         op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                         op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
