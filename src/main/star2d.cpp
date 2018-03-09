@@ -143,9 +143,9 @@ int main(int argc,char *argv[]) {
 		double wp=A.map.leg.eval_00(A.w.row(-1),0)(0)*A.units.Omega;
 		double we=A.map.leg.eval_00(A.w.row(-1),PI/2)(0)*A.units.Omega;
 		double Pp=2*PI/wp/3600./24.;
-		double Pe=2*PI/we/3600./24.;
+		double Peq=2*PI/we/3600./24.;
 		printf("P_rot(p)=%.3f days     P_rot(e)=%.3f days      v_eq=%.2f km/s\n",
-			Pp,Pe,we*Re/1e5);
+			Pp,Peq,we*Re/1e5);
 		printf("P_rot(c)=%.3f days\n",2*PI/(A.w(0,0)*A.units.Omega)/3600./24.);
 		printf("X=%3.4f (Xc/X=%3.4f) Z=%3.4f\n",A.X0,A.Xc,A.Z0);
 		printf("rhoc=%e Tc=%e pc=%e\n",A.rhoc,A.Tc,A.pc);

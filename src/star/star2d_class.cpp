@@ -113,6 +113,7 @@ void star2d::copy(const star2d &A) {
     p=A.p;
     T=A.T;
     Flux=A.Flux;
+    Pe=A.Pe;
     Xh=A.Xh;
     Wr=A.Wr;
     rho=A.rho;
@@ -258,6 +259,7 @@ printf("start hdf5_write\n");
     fields["p"] = p;
     fields["T"] = T;
     fields["Flux"] = Flux;
+    fields["Pe"] = Pe;
     fields["s"] = entropy();
     fields["G"] = G;
     fields["w"] = w;
@@ -325,6 +327,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("p",&p);
     fp.write("T",&T);
     fp.write("Flux",&Flux);
+    fp.write("Pe",&Pe);
     fp.write("Xh",&Xh);
     fp.write("Wr",&Wr);
     fp.write("phiex",&phiex);
@@ -558,7 +561,10 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_err("Could not read field 'T' from file `%s'", input_file);
     }
     if (read_field(star, "Flux", Flux)) {
-        ester_err("Could not read field 'T' from file `%s'", input_file);
+        ester_err("Could not read field 'Flux' from file `%s'", input_file);
+    }
+    if (read_field(star, "Pe", Pe)) {
+        ester_err("Could not read field 'Pe' from file `%s'", input_file);
     }
     if (read_field(star, "phiex", phiex)) {
         ester_warn("Could not read field 'phiex' from file `%s'", input_file);

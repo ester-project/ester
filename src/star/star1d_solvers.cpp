@@ -643,10 +643,9 @@ void star1d::solve_temp(solver *op) {
 	
 // We first compute the mask of convective/radiative domains
 //        printf("Check Peclet = %e\n",Peclet);   
-        matrix Pe;
         Pe=zeros(nr,1);
         j0=0;
-        domain_type[ndomains-1]=RADIATIVE; // last domain is imposed to be radiative
+        //domain_type[ndomains-1]=RADIATIVE; // last domain is imposed to be radiative
         for(n=0;n<ndomains;n++) {
                 ndom=map.gl.npts[n];
                 j1=j0+ndom-1;
