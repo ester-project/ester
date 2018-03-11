@@ -435,7 +435,7 @@ void star1d::plot(const matrix_map& error) {
     plt::subplot(223);
 // Explanation: divide the screen into 2 lines 2 columns and set in subplot 3
     plt::title(std::string("Error: ") + std::to_string(glit));
-    plt::semilogy(error["Phi"], " $\\Phi$");
+    plt::semilogy(error["Flux"], " $\\Phi$");
     plt::semilogy(error["log_p"], "$\\ln P$");
     plt::semilogy(error["log_T"], "$\\ln T$");
     //plt::semilogy(error["log_pc"], "error $\\log {p_c}$");
