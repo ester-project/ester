@@ -515,9 +515,6 @@ int star2d::hdf5_read(const char *input_file, int dim) {
 
     fill();
 
-    matrix sol_phi = solve_phi();
-    phi = sol_phi;
-
     return 0;
 #else
     ester_err("Could not read from hdf5 file: HDF5 is not enabled");
