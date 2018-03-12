@@ -61,6 +61,7 @@ int main(int argc,char *argv[]) {
         error_map["log_pc"] = zeros(config.maxit+1, 1);
         error_map["log_Tc"] = zeros(config.maxit+1, 1);
         error_map["Ri"] = zeros(config.maxit+1, 1);
+        error_map["Flux"] = zeros(config.maxit+1, 1);
 
 	last_it=nit>=config.maxit; // last_it=0 normally
 	op=A.init_solver();

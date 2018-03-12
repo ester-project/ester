@@ -178,6 +178,7 @@ FILE *fic=fopen("err.txt", "a");
 
 	dFlux=op->get_var("Flux");	
 	err2=max(abs(dFlux));err=err2>err?err2:err;
+        error_map["Flux"](nit) = err2;
 	while(exist(abs(h*dFlux)>q)) h/=2;
 
 	dT=op->get_var("log_T");	
