@@ -590,9 +590,6 @@ printf("I read 6 zone_type.size/nzones= %d\n",nzones);
  	      printf("in hdf5_read Tc=%e\n",Tc);
 for (int n=0;n<nzones;n++) printf("zone_type[%d] = %d\n",n,zone_type[n]);
 
-    matrix sol_phi = solve_phi();
-    phi = sol_phi;
-
     return 0;
 #else
     ester_err("Could not read from hdf5 file: HDF5 is not enabled");
