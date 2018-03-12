@@ -126,6 +126,7 @@ int main(int argc,char *argv[]) {
 				A.M/M_SUN,A.R/R_SUN,A.luminosity()/L_SUN,A.Teff()(0));
 		printf("X=%3.3f (Xc/X=%3.3f) Z=%3.3f\n",A.X0,A.Xc,A.Z0);
 		printf("rhoc=%e Tc=%e pc=%e\n",A.rhoc,A.Tc,A.pc);
+		printf("Virial test: %e Energy test: %e\n",A.virial(),A.energy_test());
 		int jc=0;
 		for (int n=0;n<A.nd_core;n++) jc+=A.map.gl.npts[n];
 		if(A.nd_core != 0) printf("r_cz=%3.3f Rsun\n",(A.r(jc))*A.R/R_SUN);
