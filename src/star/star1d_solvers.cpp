@@ -81,7 +81,6 @@ void star1d::register_variables(solver *op) {
 	op->regvar("m");
 	op->regvar("ps");
 	op->regvar("Ts");
-//	op->regvar("lum");
 	op->regvar("Flux");
 	op->regvar_dep("rho");
 	op->regvar_dep("s");
@@ -93,7 +92,13 @@ void star1d::register_variables(solver *op) {
 // Evolution of Xh
 	op->regvar("lnXh");
 	op->regvar("Wr");
-
+// MLT dependent variables
+/*
+	op->regvar_dep("U_mlt");
+	op->regvar_dep("a_mlt");
+	op->regvar_dep("W_mlt");
+	op->regvar_dep("x_mlt");
+*/
 }
 
 FILE *RHS;
@@ -180,12 +185,15 @@ FILE *fic=fopen("err.txt", "a");
 	err2=max(abs(dFlux));err=err2>err?err2:err;
         error_map["Flux"](nit) = err2;
 	while(exist(abs(h*dFlux)>q)) h/=2;
+  fprintf(fic,"err Flux = %e\n",err2);
+  //fprintf(fic," it = %d\n",glit);
+//for (int k=0;k<nr;k++) fprintf(fic,"err Flux %d, %e \n",k,dFlux(k));
 
 	dT=op->get_var("log_T");	
 	err2=max(abs(dT));err=err2>err?err2:err;
         error_map["log_T"](nit) = err2;
 	while(exist(abs(h*dT)>q)) h/=2;
-//  fprintf(fic,"err T = %e\n",err2);
+  fprintf(fic,"err T = %e\n",err2);
 // if (err> 1e-0) for (int k=0;k<nr;k++) fprintf(fic,"%d %e \n",k,dT(k));
 
 // Compute dXh
@@ -259,7 +267,7 @@ void star1d::update_map(matrix dR) {
         map.R=R0+h*dR;
     }
 }
-
+// ----------------------------- Solve Definitions ---------------------------
 void star1d::solve_definitions(solver *op) {
 
 	op->add_d("T","log_T",T);
@@ -280,7 +288,7 @@ void star1d::solve_definitions(solver *op) {
 	op->add_d("rz","Ri",(D,map.J[2]));
 	op->add_d("rz","dRi",(D,map.J[3]));
 	
-	//	Valid only for homogeneus composition !!!!!!
+// Valid only for homogeneus composition !!!!!!
 // MR we rescale entropy with the ideal gas constant
 // changed in star2d_extra.cpp & star2d_solver
 double RGP=K_BOL/UMA;
@@ -295,23 +303,65 @@ double RGP=K_BOL/UMA;
 	op->add_d("s","log_pc",-eos.del_ad);
 	*/
 
-// Expression of \delta\khi (thermal conductivity)	
+// Expression of \delta\khi  conductivity
 	op->add_d("opa.xi","rho",opa.dlnxi_lnrho*opa.xi/rho);
 	op->add_d("opa.xi","log_rhoc",opa.dlnxi_lnrho*opa.xi);
 	op->add_d("opa.xi","log_T",opa.dlnxi_lnT*opa.xi);
 	op->add_d("opa.xi","log_Tc",opa.dlnxi_lnT*opa.xi);
 	
-// Expression of \delta\kappa (opacity) 	
+// Expression of \delta\kappa opacity
+// The expression below looks exactly the same if you invert xi and k!!
 	op->add_d("opa.k","log_T",3*opa.k);
 	op->add_d("opa.k","log_Tc",3*opa.k);
 	op->add_d("opa.k","rho",-opa.k/rho);
 	op->add_d("opa.k","log_rhoc",-opa.k);
 	op->add_d("opa.k","opa.xi",-opa.k/opa.xi);
 	
+// delta nuc.eps (the nuclear power per unit mass)
 	op->add_d("nuc.eps","rho",nuc.dlneps_lnrho*nuc.eps/rho);
 	op->add_d("nuc.eps","log_rhoc",nuc.dlneps_lnrho*nuc.eps);
 	op->add_d("nuc.eps","log_T",nuc.dlneps_lnT*nuc.eps);
 	op->add_d("nuc.eps","log_Tc",nuc.dlneps_lnT*nuc.eps);
+
+// MLT dependent variable to simplify the formulation
+// U=c0*(xi/rho/cp)/alpha**2/Hp**2*sqrt(8*Hp/g/delta) see Manual
+// variations on cp and delta are ignored; g=P/rho/Hp in 1D
+	matrix hp=-p/(D,p);
+	U_mlt=9./4*sqrt(8.)/alpha_mlt/alpha_mlt*opa.xi/power(eos.cp,1.5)/R/hp/rhoc/rho/sqrt(eos.del_ad*T*Tc);
+	op->add_d("U_mlt","opa.xi",U_mlt/opa.xi);
+	op->add_d("U_mlt","log_rhoc",-U_mlt);
+	op->add_d("U_mlt","rho",-U_mlt/rho);
+	op->add_d("U_mlt","log_T",-U_mlt/2);
+	op->add_d("U_mlt","log_Tc",-U_mlt/2);
+	op->add_d("U_mlt","log_R",-U_mlt);
+	op->add_l("U_mlt","log_p",-U_mlt*hp,D);
+	op->add_d("U_mlt","rz",-U_mlt);
+
+// del_rad=Flux/T/hp
+	matrix del_rad=Flux/T/hp;
+	op->add_d("del_rad","Flux",del_rad/Flux);
+	op->add_d("del_rad","log_T",-del_rad);
+	op->add_d("del_rad","rz",-del_rad);
+	op->add_l("del_rad","log_p",-del_rad*hp,D);
+
+// a_mlt=(4/9)(del_rad-del_ad)*U+qa*U**3
+	double qa=19*19*19./27/27/27-1./9;
+	matrix a_mlt=4*(del_rad-eos.del_ad)/9*U_mlt+qa*power(U_mlt,3);
+	op->add_d("a_mlt","del_rad",4*U_mlt/9);
+	op->add_d("a_mlt","U_mlt",4*(del_rad-eos.del_ad)/9+3*qa*U_mlt*U_mlt);
+
+// W_mlt**3=a_mlt+sqrt(a_mlt**2+qw*U**6)	
+	double qw=368*368*368./729/729/729;
+	matrix W_mlt=power(a_mlt+sqrt(a_mlt*a_mlt+qw*power(U_mlt,6)),1./3);
+	op->add_d("W_mlt","a_mlt",1./3/W_mlt/W_mlt*(1.+a_mlt/(W_mlt*W_mlt*W_mlt-a_mlt));
+	op->add_d("W_mlt","U_mlt",qw*power(U_mlt,5)/W_mlt/W_mlt/(W_mlt*W_mlt*W_mlt-a_mlt));
+
+// x_mlt=(W**2+19UW/27-368/729*U**2)/W
+        double px=19./27;	
+        double qx=368./729;	
+	matrix x_mlt=W_mlt+px*U_mlt-qx*U_mlt*U_mlt/W_mlt
+	op->add_d("x_mlt","U_mlt",px-2*qx*U_mlt/W_mlt)
+	op->add_d("x_mlt","W_mlt",1+qx*U_mlt*U_mlt/W_mlt/W_mlt)
 	
 }
 
@@ -592,7 +642,7 @@ void star1d::solve_Wr(solver *op) {
 
 	op->set_rhs("Wr",rhs);
 }
-
+//------------------------------------ Solve Flux ----------------------------
 void star1d::solve_flux(solver *op) {
 	int n,j0,j1,ndom;
 	
@@ -612,7 +662,6 @@ void star1d::solve_flux(solver *op) {
 	op->add_l("Flux","opa.xi",Flux*r/opa.xi, D);	// 	
 	rhs_Flux=-(r*(D,Flux)+(2.+r*(D,opa.xi)/opa.xi)*Flux-Lambda*r*rho*nuc.eps/opa.xi);
 
-	
 	j0=0;
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
@@ -633,12 +682,16 @@ void star1d::solve_flux(solver *op) {
 		j0+=ndom;
 	}  // End of loop on domains rank
 	
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<nr;k++) fprintf(RHS,"RHS Flux %d, %e \n",k,rhs_Flux(k));
+fprintf(RHS,"RHS Flux END\n");
+	
 	op->set_rhs("Flux",rhs_Flux);
 
 }
 //--------------------------END of solve_Flux-------------------------------------------
-//--------------------------solve Temperature-------------------------------------------
 
+//--------------------------solve Temperature-------------------------------------------
 void star1d::solve_temp(solver *op) {
 	int n,j0,j1,ndom;
 	
