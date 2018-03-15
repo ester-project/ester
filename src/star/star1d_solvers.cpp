@@ -45,7 +45,6 @@ solver *star1d::init_solver(int nvar_add) {
 	solver *op;
 	
 	nvar=32; // includes all variables (reg and dep)
-//	nvar=34; // includes all variables (reg and dep)
 	
 	op=new solver();
 	op->init(ndomains,nvar+nvar_add,"full");
@@ -328,9 +327,10 @@ double RGP=K_BOL/UMA;
 	matrix gp=-(D,p)/p;
 // U=c0*(xi/rho/cp)/alpha**2/Hp**2*sqrt(8*Hp/g/delta) see Manual
 // variations on cp and del_ad are ignored; g=P/rho/Hp in 1D, delta=del_ad*rho*cp*T/P
-	U_mlt=9./4*sqrt(8.)/alpha_mlt/alpha_mlt*opa.xi/pow(eos.cp,1.5)/R*gp/rhoc/rho/sqrt(eos.del_ad*T*Tc);
+        double c0=9./4*sqrt(8.)/alpha_mlt/alpha_mlt;
+	U_mlt=c0*opa.xi/pow(eos.cp,1.5)/R*gp/rhoc/rho/sqrt(eos.del_ad*T*Tc);
 	// introduce Up=U/gp
-	matrix Up=9./4*sqrt(8.)/alpha_mlt/alpha_mlt*opa.xi/pow(eos.cp,1.5)/R/rhoc/rho/sqrt(eos.del_ad*T*Tc);
+	matrix Up=c0*opa.xi/pow(eos.cp,1.5)/R/rhoc/rho/sqrt(eos.del_ad*T*Tc);
 	op->add_d("U_mlt","opa.xi",U_mlt/opa.xi);
 	op->add_d("U_mlt","log_rhoc",-U_mlt);
 	op->add_d("U_mlt","rho",-U_mlt/rho);
@@ -339,11 +339,11 @@ double RGP=K_BOL/UMA;
 	op->add_d("U_mlt","log_R",-U_mlt);
 	op->add_d("U_mlt","Gp",Up);
 
-// del_rad=Flux/T/hp
-	matrix del_rad=Flux/T*gp;
-	op->add_d("del_rad","Flux",gp/T);
+// del_rad=Flux/T*hp
+	matrix del_rad=Flux/T/gp;
+	op->add_d("del_rad","Flux",del_rad/Flux);
 	op->add_d("del_rad","log_T",-del_rad);
-	op->add_d("del_rad","Gp",Flux/T);
+	op->add_d("del_rad","Gp",-del_rad/gp);
 
 // a_mlt=(4/9)(del_rad-del_ad)*U+qa*U**3 avec qa=19**3/27**3-1./9
 	double qa=6859./19683-1./9;
@@ -694,16 +694,17 @@ void star1d::solve_temp(solver *op) {
 	matrix rhs_T=zeros(nr,1);
 	matrix rhs_Lambda=zeros(ndomains,1);
 	matrix gp=-(D,p)/p;
-        matrix del_rad=Flux/T*gp;
-	matrix nabla,bloc;
+        matrix del_rad=Flux/T/gp;
+	matrix nabla;
         double px=19./27;	
         double qx=368./729;	
 	double qa=px*px*px-1./9;
-        double qw=qx*qx*qx;
+        double qx3=qx*qx*qx;
 	alpha_mlt=1.8;
-	U_mlt=9./4*sqrt(8.)/alpha_mlt/alpha_mlt*opa.xi/pow(eos.cp,1.5)/R*gp/rhoc/rho/sqrt(eos.del_ad*T*Tc);
+        double c0=9./4*sqrt(8.)/alpha_mlt/alpha_mlt;
+	U_mlt=c0*opa.xi/pow(eos.cp,1.5)/R*gp/rhoc/rho/sqrt(eos.del_ad*T*Tc);
 	a_mlt=4*(del_rad-eos.del_ad)/9*U_mlt+qa*pow(U_mlt,3);
-	matrix W3=a_mlt+sqrt(a_mlt*a_mlt+qw*pow(U_mlt,6));
+	matrix W3=a_mlt+sqrt(a_mlt*a_mlt+qx3*pow(U_mlt,6));
 
         j0=0;
         for(n=0;n<ndomains;n++) {
@@ -729,6 +730,7 @@ void star1d::solve_temp(solver *op) {
 	matrix rhs_gp;
 	rhs_gp=zeros(nr,1);
 	op->set_rhs("Gp",rhs_gp);
+	//op->set_rhs("Gp",zeros(nr,1));
 
 
         j0=0;
@@ -746,15 +748,15 @@ void star1d::solve_temp(solver *op) {
 		   matrix W=pow(W3.block(j0,j1,0,0),1./3);
 		   matrix a=a_mlt.block(j0,j1,0,0);
 		   matrix x=W+px*U-qx*U*U/W;
-		   matrix DD=sqrt(a*a+qw*pow(U,6));
-		   matrix KUW=(1.+px*U*U/W/W)*qw*pow(U,5)/W/W/DD+qx-2*px*U/W;
+		   matrix DD=sqrt(a*a+qx3*pow(U,6));
+		   matrix KUW=(1.+qx*U*U/W/W)*qx3*pow(U,5)/W/W/DD+px-2*qx*U/W;
 		   matrix nabla=eos.del_ad.block(j0,j1,0,0)+x*x-U*U;
 
 		   op->add_l(n,"log_T","log_T",ones(ndom,1),D.block(n));
-		   op->add_d(n,"log_T","a_mlt",2*gp.block(j0,j1,0,0)*x*W/3/DD*(1.+px*U*U/W/W));
+		   op->add_d(n,"log_T","a_mlt",2*gp.block(j0,j1,0,0)*x*W/3/DD*(1.+qx*U*U/W/W));
 		   op->add_d(n,"log_T","U_mlt",2*gp.block(j0,j1,0,0)*(x*KUW-U));
 		   op->add_l(n,"log_T","log_p",-nabla,D.block(n));
-		   op->add_d(n,"log_T","rz",-((D,T)/T).block(j0,j1,0,0)+nabla*gp.block(j0,j1,0,0));
+		   //op->add_d(n,"log_T","rz",-((D,T)/T).block(j0,j1,0,0)+nabla*gp.block(j0,j1,0,0));
 		   rhs_T.setblock(j0,j1,0,0,-(((D,T)/T).block(j0,j1,0,0)+nabla*gp.block(j0,j1,0,0)));
 		}
                 j0+=ndom;
