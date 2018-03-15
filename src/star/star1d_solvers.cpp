@@ -44,7 +44,8 @@ solver *star1d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 	
-	nvar=28; // two more variables added (lnXh and Wr)
+	nvar=32; // includes all variables (reg and dep)
+//	nvar=34; // includes all variables (reg and dep)
 	
 	op=new solver();
 	op->init(ndomains,nvar+nvar_add,"full");
@@ -89,16 +90,13 @@ void star1d::register_variables(solver *op) {
 	op->regvar_dep("opa.xi");
 	op->regvar_dep("opa.k");
 	op->regvar_dep("nuc.eps");
-// Evolution of Xh
 	op->regvar("lnXh");
 	op->regvar("Wr");
-// MLT dependent variables
-/*
+	op->regvar("Gp");
 	op->regvar_dep("U_mlt");
 	op->regvar_dep("a_mlt");
-	op->regvar_dep("W_mlt");
-	op->regvar_dep("x_mlt");
-*/
+	op->regvar_dep("del_rad");
+
 }
 
 FILE *RHS;
@@ -270,6 +268,7 @@ void star1d::update_map(matrix dR) {
 // ----------------------------- Solve Definitions ---------------------------
 void star1d::solve_definitions(solver *op) {
 
+// Definitions valid in every domain
 	op->add_d("T","log_T",T);
 	
 	op->add_d("rho","p",rho/eos.chi_rho/p);
@@ -324,45 +323,38 @@ double RGP=K_BOL/UMA;
 	op->add_d("nuc.eps","log_Tc",nuc.dlneps_lnT*nuc.eps);
 
 // MLT dependent variable to simplify the formulation
+
+	alpha_mlt=1.8;
+	matrix gp=-(D,p)/p;
 // U=c0*(xi/rho/cp)/alpha**2/Hp**2*sqrt(8*Hp/g/delta) see Manual
-// variations on cp and delta are ignored; g=P/rho/Hp in 1D
-	matrix hp=-p/(D,p);
-	U_mlt=9./4*sqrt(8.)/alpha_mlt/alpha_mlt*opa.xi/power(eos.cp,1.5)/R/hp/rhoc/rho/sqrt(eos.del_ad*T*Tc);
+// variations on cp and del_ad are ignored; g=P/rho/Hp in 1D, delta=del_ad*rho*cp*T/P
+	U_mlt=9./4*sqrt(8.)/alpha_mlt/alpha_mlt*opa.xi/pow(eos.cp,1.5)/R*gp/rhoc/rho/sqrt(eos.del_ad*T*Tc);
+	// introduce Up=U/gp
+	matrix Up=9./4*sqrt(8.)/alpha_mlt/alpha_mlt*opa.xi/pow(eos.cp,1.5)/R/rhoc/rho/sqrt(eos.del_ad*T*Tc);
 	op->add_d("U_mlt","opa.xi",U_mlt/opa.xi);
 	op->add_d("U_mlt","log_rhoc",-U_mlt);
 	op->add_d("U_mlt","rho",-U_mlt/rho);
 	op->add_d("U_mlt","log_T",-U_mlt/2);
 	op->add_d("U_mlt","log_Tc",-U_mlt/2);
 	op->add_d("U_mlt","log_R",-U_mlt);
-	op->add_l("U_mlt","log_p",-U_mlt*hp,D);
-	op->add_d("U_mlt","rz",-U_mlt);
+	op->add_d("U_mlt","Gp",Up);
 
 // del_rad=Flux/T/hp
-	matrix del_rad=Flux/T/hp;
-	op->add_d("del_rad","Flux",del_rad/Flux);
+	matrix del_rad=Flux/T*gp;
+	op->add_d("del_rad","Flux",gp/T);
 	op->add_d("del_rad","log_T",-del_rad);
-	op->add_d("del_rad","rz",-del_rad);
-	op->add_l("del_rad","log_p",-del_rad*hp,D);
+	op->add_d("del_rad","Gp",Flux/T);
 
-// a_mlt=(4/9)(del_rad-del_ad)*U+qa*U**3
-	double qa=19*19*19./27/27/27-1./9;
-	matrix a_mlt=4*(del_rad-eos.del_ad)/9*U_mlt+qa*power(U_mlt,3);
+// a_mlt=(4/9)(del_rad-del_ad)*U+qa*U**3 avec qa=19**3/27**3-1./9
+	double qa=6859./19683-1./9;
+	a_mlt=4*(del_rad-eos.del_ad)/9*U_mlt+qa*pow(U_mlt,3);
 	op->add_d("a_mlt","del_rad",4*U_mlt/9);
 	op->add_d("a_mlt","U_mlt",4*(del_rad-eos.del_ad)/9+3*qa*U_mlt*U_mlt);
 
-// W_mlt**3=a_mlt+sqrt(a_mlt**2+qw*U**6)	
-	double qw=368*368*368./729/729/729;
-	matrix W_mlt=power(a_mlt+sqrt(a_mlt*a_mlt+qw*power(U_mlt,6)),1./3);
-	op->add_d("W_mlt","a_mlt",1./3/W_mlt/W_mlt*(1.+a_mlt/(W_mlt*W_mlt*W_mlt-a_mlt));
-	op->add_d("W_mlt","U_mlt",qw*power(U_mlt,5)/W_mlt/W_mlt/(W_mlt*W_mlt*W_mlt-a_mlt));
+fprintf(RHS," it = %d\n",glit);
+//for (int k=0;k<nr;k++) fprintf(RHS," %d a_mlt= %e W3=%e \n",k,a_mlt(k),W3(k));
+fprintf(RHS,"a_mlt END\n");
 
-// x_mlt=(W**2+19UW/27-368/729*U**2)/W
-        double px=19./27;	
-        double qx=368./729;	
-	matrix x_mlt=W_mlt+px*U_mlt-qx*U_mlt*U_mlt/W_mlt
-	op->add_d("x_mlt","U_mlt",px-2*qx*U_mlt/W_mlt)
-	op->add_d("x_mlt","W_mlt",1+qx*U_mlt*U_mlt/W_mlt/W_mlt)
-	
 }
 
 void star1d::solve_poisson(solver *op) {
@@ -695,35 +687,93 @@ fprintf(RHS,"RHS Flux END\n");
 void star1d::solve_temp(solver *op) {
 	int n,j0,j1,ndom;
 	
-// We first compute the mask of convective/radiative domains
-//        printf("Check Peclet = %e\n",Peclet);   
+// Definitions valid everywhere
         Pe=zeros(nr,1);
+        matrix qrad=zeros(nr,1);
+        matrix qconv=zeros(nr,1);
+	matrix rhs_T=zeros(nr,1);
+	matrix rhs_Lambda=zeros(ndomains,1);
+	matrix gp=-(D,p)/p;
+        matrix del_rad=Flux/T*gp;
+	matrix nabla,bloc;
+        double px=19./27;	
+        double qx=368./729;	
+	double qa=px*px*px-1./9;
+        double qw=qx*qx*qx;
+	alpha_mlt=1.8;
+	U_mlt=9./4*sqrt(8.)/alpha_mlt/alpha_mlt*opa.xi/pow(eos.cp,1.5)/R*gp/rhoc/rho/sqrt(eos.del_ad*T*Tc);
+	a_mlt=4*(del_rad-eos.del_ad)/9*U_mlt+qa*pow(U_mlt,3);
+	matrix W3=a_mlt+sqrt(a_mlt*a_mlt+qw*pow(U_mlt,6));
+
         j0=0;
-        //domain_type[ndomains-1]=RADIATIVE; // last domain is imposed to be radiative
         for(n=0;n<ndomains;n++) {
                 ndom=map.gl.npts[n];
                 j1=j0+ndom-1;
                 if (domain_type[n] == RADIATIVE) {
                    Pe.setblock(j0,j1,0,0,zeros(ndom,1));
+                   qrad.setblock(j0,j1,0,0,ones(ndom,1));
                 } else if (domain_type[n] == CORE) {
                    Pe.setblock(j0,j1,0,0,1e3*ones(ndom,1));
+                   qconv.setblock(j0,j1,0,0,ones(ndom,1));
                 } else {
                    Pe.setblock(j0,j1,0,0,Peclet*ones(ndom,1));
+                   qconv.setblock(j0,j1,0,0,ones(ndom,1));
                 }
                 j0+=ndom;
         }
 
+// Equation for temperature according to the nature of the domain
+	op->add_d("Gp","Gp",ones(nr,1));
+        op->add_d("Gp","rz",gp);
+	op->add_l("Gp","log_p",ones(nr,1),D);
+	matrix rhs_gp;
+	rhs_gp=zeros(nr,1);
+	op->set_rhs("Gp",rhs_gp);
 
-	matrix rhs_T,rhs_Lambda;
-	rhs_T=zeros(nr,1);
-	rhs_Lambda=zeros(ndomains,1);
 
-	op->add_d("log_T","Flux",ones(nr,1));
-	op->add_l("log_T","log_T",T,D);
-	op->add_d("log_T","log_T",-Flux);
-	op->add_d("log_T","rz",Flux);
-	op->add_l("log_T","s",Pe*T,D);
-	rhs_T=-((D,T)+Pe*T*(D,entropy())+Flux);
+        j0=0;
+	for(n=0;n<ndomains;n++) {
+		ndom=map.gl.npts[n];
+                j1=j0+ndom-1;
+		if (domain_type[n] == RADIATIVE) {
+		   op->add_d(n,"log_T","Flux",ones(ndom,1));
+		   op->add_l(n,"log_T","log_T",T.block(j0,j1,0,0),D.block(n));
+		   op->add_d(n,"log_T","log_T",-Flux.block(j0,j1,0,0));
+		   op->add_d(n,"log_T","rz",Flux.block(j0,j1,0,0));
+		   rhs_T.setblock(j0,j1,0,0,-((D,T)+Flux).block(j0,j1,0,0));
+                } else {
+		   matrix U=U_mlt.block(j0,j1,0,0);
+		   matrix W=pow(W3.block(j0,j1,0,0),1./3);
+		   matrix a=a_mlt.block(j0,j1,0,0);
+		   matrix x=W+px*U-qx*U*U/W;
+		   matrix DD=sqrt(a*a+qw*pow(U,6));
+		   matrix KUW=(1.+px*U*U/W/W)*qw*pow(U,5)/W/W/DD+qx-2*px*U/W;
+		   matrix nabla=eos.del_ad.block(j0,j1,0,0)+x*x-U*U;
+
+		   op->add_l(n,"log_T","log_T",ones(ndom,1),D.block(n));
+		   op->add_d(n,"log_T","a_mlt",2*gp.block(j0,j1,0,0)*x*W/3/DD*(1.+px*U*U/W/W));
+		   op->add_d(n,"log_T","U_mlt",2*gp.block(j0,j1,0,0)*(x*KUW-U));
+		   op->add_l(n,"log_T","log_p",-nabla,D.block(n));
+		   op->add_d(n,"log_T","rz",-((D,T)/T).block(j0,j1,0,0)+nabla*gp.block(j0,j1,0,0));
+		   rhs_T.setblock(j0,j1,0,0,-(((D,T)/T).block(j0,j1,0,0)+nabla*gp.block(j0,j1,0,0)));
+		}
+                j0+=ndom;
+	}
+
+	// Entropy diffusion prescription
+	//op->add_l("log_T","s",Pe*T,D);
+	//rhs_T=-((D,T)+Pe*T*(D,entropy())+Flux);
+
+// MLT prescription for DT
+
+//	printf("ecco mlt\n");
+
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<nr;k++) fprintf(RHS,"qconv %d, %e %e\n",k,rhs_T(k),W3(k));
+fprintf(RHS,"qconv END\n");
+	
+
+
 
 	j0=0;
 	for(n=0;n<ndomains;n++) {

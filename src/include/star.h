@@ -37,6 +37,8 @@ class star2d {
 	const matrix_block_diag &D;
     matrix rho,phi,p,T,Xh,Xh_prec,Xh0,rho0,Wr,r0,schwarz,Flux,Pe;
     matrix phiex;
+    matrix U_mlt,a_mlt;
+    double alpha_mlt;
 	matrix vr,vt,G,w;
 	composition_map comp; 
     double X0,Y0,Z0;
