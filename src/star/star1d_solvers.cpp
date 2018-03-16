@@ -992,6 +992,9 @@ void star1d::solve_Teff(solver *op) {
     op->bc_top1_add_d(n,"Teff","log_Tc",-F);
     op->bc_top1_add_d(n,"Teff","log_R",F);
     op->bc_top1_add_d(n,"Teff","opa.xi",-F/opa.xi.row(-1));
+    op->bc_top1_add_d(n,"Teff","Flux",-opa.xi.row(-1)*Tc/R);
+
+/*
     q=opa.xi*Tc/R;
     op->bc_top1_add_l(n,"Teff","T",q.row(-1),D.block(n).row(-1));
     op->bc_top1_add_d(n,"Teff","rz",F);
@@ -1001,7 +1004,7 @@ void star1d::solve_Teff(solver *op) {
     op->bc_top1_add_d(n,"Teff","T",q.row(-1));
     q=Pe*T*opa.xi*Tc/R;
     op->bc_top1_add_l(n,"Teff","s",q.row(-1),D.block(n).row(-1));
-
+*/
     op->set_rhs("Teff",zeros(1,1));
 }
 
