@@ -84,6 +84,8 @@ class star2d:
         self.T          = _mat_to_numpy(self._s.T)
         self.Flux       = _mat_to_numpy(self._s.Flux)
         self.Pe         = _mat_to_numpy(self._s.Pe)
+        self.U_mlt      = _mat_to_numpy(self._s.U_mlt)
+        self.a_mlt      = _mat_to_numpy(self._s.a_mlt)
         self.X          = _mat_to_numpy(self._s.comp.X())
         self.Y          = _mat_to_numpy(self._s.comp.Y())
         self.Z          = _mat_to_numpy(self._s.comp.Z())
