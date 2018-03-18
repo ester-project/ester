@@ -744,6 +744,7 @@ void star1d::solve_temp(solver *op) {
 		   op->add_d(n,"log_T","rz",Flux.block(j0,j1,0,0));
 		   rhs_T.setblock(j0,j1,0,0,-((D,T)+Flux).block(j0,j1,0,0));
                 } else {
+		   matrix cp=eos.cp.block(j0,j1,0,0);
 		   matrix U=U_mlt.block(j0,j1,0,0);
 		   matrix W=pow(W3.block(j0,j1,0,0),1./3);
 		   matrix a=a_mlt.block(j0,j1,0,0);
@@ -751,13 +752,22 @@ void star1d::solve_temp(solver *op) {
 		   matrix DD=sqrt(a*a+qx3*pow(U,6));
 		   matrix KUW=(1.+qx*U*U/W/W)*qx3*pow(U,5)/W/W/DD+px-2*qx*U/W;
 		   matrix nabla=eos.del_ad.block(j0,j1,0,0)+x*x-U*U;
+		   matrix gs=(D,entropy()).block(j0,j1,0,0);
 
-		   op->add_l(n,"log_T","log_T",ones(ndom,1),D.block(n));
-		   op->add_d(n,"log_T","a_mlt",2*gp.block(j0,j1,0,0)*x*W/3/DD*(1.+qx*U*U/W/W));
-		   op->add_d(n,"log_T","U_mlt",2*gp.block(j0,j1,0,0)*(x*KUW-U));
-		   op->add_l(n,"log_T","log_p",-nabla,D.block(n));
+		   //op->add_l(n,"log_T","log_T",ones(ndom,1),D.block(n));
+		   //op->add_d(n,"log_T","a_mlt",2*gp.block(j0,j1,0,0)*x*W/3/DD*(1.+qx*U*U/W/W));
+		   //op->add_d(n,"log_T","U_mlt",2*gp.block(j0,j1,0,0)*(x*KUW-U));
+		   //op->add_l(n,"log_T","log_p",-nabla,D.block(n));
 		   //op->add_d(n,"log_T","rz",-((D,T)/T).block(j0,j1,0,0)+nabla*gp.block(j0,j1,0,0));
-		   rhs_T.setblock(j0,j1,0,0,-(((D,T)/T).block(j0,j1,0,0)+nabla*gp.block(j0,j1,0,0)));
+		   //rhs_T.setblock(j0,j1,0,0,-(((D,T)/T).block(j0,j1,0,0)+nabla*gp.block(j0,j1,0,0)));
+
+//version avec l'entropie
+	double RGP=K_BOL/UMA;
+	op->add_l(n,"log_T","s",ones(ndom,1),D.block(n));
+	op->add_d(n,"log_T","a_mlt",cp/RGP*2*gp.block(j0,j1,0,0)*x*W/3/DD*(1.+qx*U*U/W/W));
+	op->add_d(n,"log_T","U_mlt",2*cp/RGP*gp.block(j0,j1,0,0)*(x*KUW-U));
+	op->add_l(n,"log_T","log_p",-cp/RGP*(x*x-U*U),D.block(n));
+	rhs_T.setblock(j0,j1,0,0,-(gs+cp/RGP*(x*x-U*U)*gp.block(j0,j1,0,0)));
 		}
                 j0+=ndom;
 	}
