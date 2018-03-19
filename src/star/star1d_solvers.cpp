@@ -768,6 +768,7 @@ void star1d::solve_temp(solver *op) {
 	op->add_d(n,"log_T","U_mlt",2*cp/RGP*gp.block(j0,j1,0,0)*(x*KUW-U));
 	op->add_l(n,"log_T","log_p",-cp/RGP*(x*x-U*U),D.block(n));
 	rhs_T.setblock(j0,j1,0,0,-(gs+cp/RGP*(x*x-U*U)*gp.block(j0,j1,0,0)));
+	printf("j0 = %d, j1= %d, rhs_T(29)=%e\n",j0,j1,rhs_T(29));
 		}
                 j0+=ndom;
 	}
@@ -780,11 +781,6 @@ void star1d::solve_temp(solver *op) {
 
 //	printf("ecco mlt\n");
 
-fprintf(RHS," it = %d\n",glit);
-for (int k=0;k<nr;k++) fprintf(RHS,"qconv %d, %e %e\n",k,rhs_T(k),W3(k));
-fprintf(RHS,"qconv END\n");
-	
-
 
 
 	j0=0;
@@ -793,7 +789,7 @@ fprintf(RHS,"qconv END\n");
                 if(n==0) { // care of the first and central domain
                         op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
                         rhs_T(j0)=1.-T(j0);
-
+printf("%d rhs_T(j0) = %e\n",j0,rhs_T(j0));
 			op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
 			rhs_Lambda(0)=-(D,T)(0);
 			//op->bc_bot2_add_d(n,"Lambda","Flux",ones(1,1));
@@ -819,6 +815,10 @@ fprintf(RHS,"qconv END\n");
 		} // End of options on n==0, n==ndomains-1, else
 		j0+=ndom;
 	}  // End of loop on domains rank
+fprintf(RHS," it = %d\n",glit);
+for (int k=0;k<nr;k++) fprintf(RHS,"qconv %d, %e %e\n",k,rhs_T(k),W3(k));
+fprintf(RHS,"qconv END\n");
+	
 	
 	op->set_rhs("log_T",rhs_T);
 	op->set_rhs("Lambda",rhs_Lambda);
