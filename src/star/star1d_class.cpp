@@ -276,19 +276,17 @@ printf("I start from scratch and set Xh=X0 in star1d::init of star1d_class\n");
 		nd_core=0;
 		domain_type.resize(ndomains);
 		izif.resize(ndomains);
-		for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
+		domain_type[0]=CORE;
+		for(int n=1;n<ndomains;n++) domain_type[n]=CONVECTIVE;
 		phiex=zeros(map.nex,map.nt);
                 Wr=zeros(nr,1);	// initialize radial mass flux Wr=rho*Vr
 	}
 	
-        //printf("juste after else \n");
 	init_comp();
-        //printf("juste after init_comp \n");
 	fill();
-        //printf("juste after fill \n");
         Wr=zeros(nr,1);	// initialize radial mass flux Wr=rho*Vr
 
-    phi = solve_phi();
+        phi = solve_phi();
 
 	return 0;
 }
