@@ -118,7 +118,7 @@ int main(int argc,char *argv[]) {
             return 1;
         }
 
-  	if (nit > 140) last_it=1;
+  	if (nit > 200) last_it=1;
 	} // End of the while loop
 
 	if(config.verbose) {

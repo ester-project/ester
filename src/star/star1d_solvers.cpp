@@ -695,7 +695,6 @@ void star1d::solve_temp(solver *op) {
 	matrix rhs_Lambda=zeros(ndomains,1);
 	matrix gp=-(D,p)/p;
         matrix del_rad=Flux/T/gp;
-	matrix nabla;
         double px=19./27;	
         double qx=368./729;	
 	double qa=px*px*px-1./9;
@@ -743,6 +742,10 @@ void star1d::solve_temp(solver *op) {
 		   op->add_d(n,"log_T","log_T",-Flux.block(j0,j1,0,0));
 		   op->add_d(n,"log_T","rz",Flux.block(j0,j1,0,0));
 		   rhs_T.setblock(j0,j1,0,0,-((D,T)+Flux).block(j0,j1,0,0));
+                } else if (domain_type[n] == CORE) {
+		   matrix gs=(D,entropy()).block(j0,j1,0,0);
+	           op->add_l(n,"log_T","s",ones(ndom,1),D.block(n));
+	           rhs_T.setblock(j0,j1,0,0,-gs);
                 } else {
 		   matrix cp=eos.cp.block(j0,j1,0,0);
 		   matrix U=U_mlt.block(j0,j1,0,0);
@@ -751,9 +754,10 @@ void star1d::solve_temp(solver *op) {
 		   matrix x=W+px*U-qx*U*U/W;
 		   matrix DD=sqrt(a*a+qx3*pow(U,6));
 		   matrix KUW=(1.+qx*U*U/W/W)*qx3*pow(U,5)/W/W/DD+px-2*qx*U/W;
-		   matrix nabla=eos.del_ad.block(j0,j1,0,0)+x*x-U*U;
 		   matrix gs=(D,entropy()).block(j0,j1,0,0);
+		   for (int k=0;k<ndom;k++) if (W(k) == 0.) x(k)=0.;
 
+		   //matrix nabla=eos.del_ad.block(j0,j1,0,0)+x*x-U*U;
 		   //op->add_l(n,"log_T","log_T",ones(ndom,1),D.block(n));
 		   //op->add_d(n,"log_T","a_mlt",2*gp.block(j0,j1,0,0)*x*W/3/DD*(1.+qx*U*U/W/W));
 		   //op->add_d(n,"log_T","U_mlt",2*gp.block(j0,j1,0,0)*(x*KUW-U));
@@ -768,7 +772,14 @@ void star1d::solve_temp(solver *op) {
 	op->add_d(n,"log_T","U_mlt",2*cp/RGP*gp.block(j0,j1,0,0)*(x*KUW-U));
 	op->add_l(n,"log_T","log_p",-cp/RGP*(x*x-U*U),D.block(n));
 	rhs_T.setblock(j0,j1,0,0,-(gs+cp/RGP*(x*x-U*U)*gp.block(j0,j1,0,0)));
-	printf("j0 = %d, j1= %d, rhs_T(29)=%e\n",j0,j1,rhs_T(29));
+/*
+	printf("j0 = %d, j1= %d, rhs_T(29)=%e\n",j0,j1,rhs_T(j1));
+	printf("j0 = %d, j1= %d, x(29)=%e\n",j0,j1,x(j1));
+	printf("j0 = %d, j1= %d, U(29)=%e\n",j0,j1,U(j1));
+	printf("j0 = %d, j1= %d, a(29)=%e\n",j0,j1,a(j1));
+	printf("j0 = %d, j1= %d, W(29)=%e\n",j0,j1,W(j1));
+	printf("j0 = %d, j1= %d, W3(29)=%e\n",j0,j1,W3(j1));
+*/
 		}
                 j0+=ndom;
 	}
@@ -789,7 +800,6 @@ void star1d::solve_temp(solver *op) {
                 if(n==0) { // care of the first and central domain
                         op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
                         rhs_T(j0)=1.-T(j0);
-printf("%d rhs_T(j0) = %e\n",j0,rhs_T(j0));
 			op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
 			rhs_Lambda(0)=-(D,T)(0);
 			//op->bc_bot2_add_d(n,"Lambda","Flux",ones(1,1));
@@ -816,7 +826,7 @@ printf("%d rhs_T(j0) = %e\n",j0,rhs_T(j0));
 		j0+=ndom;
 	}  // End of loop on domains rank
 fprintf(RHS," it = %d\n",glit);
-for (int k=0;k<nr;k++) fprintf(RHS,"qconv %d, %e %e\n",k,rhs_T(k),W3(k));
+for (int k=0;k<nr;k++) fprintf(RHS,"%d, RHS_T= %e, a_mlt= %e, W3= %e\n",k,rhs_T(k),a_mlt(k),W3(k));
 fprintf(RHS,"qconv END\n");
 	
 	
