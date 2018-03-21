@@ -780,10 +780,11 @@ void star1d::solve_dim(solver *op) {
 }
 //------------------------------------------------------------------------
 void star1d::solve_map(solver *op) {
-	int n,j0,j1,ndom;
+	int k,n,j0,j1,ndom;
 	matrix rhs;
 	
 	rhs=zeros(ndomains,1);
+// Enforce the definition dRi=R(i+1)-Ri
 	for(n=0;n<ndomains;n++) {
 		op->bc_top1_add_d(n,"dRi","dRi",ones(1,1));
 		op->bc_top1_add_d(n,"dRi","Ri",ones(1,1));
@@ -805,7 +806,7 @@ void star1d::solve_map(solver *op) {
 			matrix delta;
 			j1=j0+ndom-1;
 			delta=zeros(1,map.gl.npts[n]); delta(0)=1;delta(-1)=-1;
-			op->bc_bot2_add_l(n,"Ri",LOG_PRES,ones(1,1),delta);
+			op->bc_bot2_add_l(n,"Ri",LOG_PRES,ones(1,1),delta); // LOG_PRES="log_T"
 			delta=zeros(1,map.gl.npts[n-1]); delta(0)=1;delta(-1)=-1;
 			op->bc_bot1_add_l(n,"Ri",LOG_PRES,-ones(1,1),delta);
 			rhs(n)=log(PRES(j1))-log(PRES(j0))-log(PRES(j0-1))+log(PRES(j0-map.gl.npts[n-1]));
@@ -813,47 +814,35 @@ void star1d::solve_map(solver *op) {
 		j0+=ndom;
 	}
 	
-fprintf(RHS," it = %d\n",glit);
-for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS Ri %d, %e \n",k,rhs(k));
-fprintf(RHS,"RHS Ri END avec nzones=1\n");
-	
-	if(nzones>1) {
+if(nzones>1) {
 		
 		symbolic S;
 		sym p_,s_,eq;
 		p_=S.regvar("p"); s_=S.regvar("s");
 		S.set_map(map); S.set_value("p",p); S.set_value("s",entropy());
-
-matrix ss=entropy();
-fprintf(RHS," it = %d\n",glit);
-for (int k=0;k<nr;k++) fprintf(RHS,"entropy %d, %e \n",k,ss(k));
-fprintf(RHS,"nzones = %d\n",nzones);
-for (int k=0;k<nzones;k++) fprintf(RHS,"izif %d, %d \n",k,izif[k]);
-for (int k=0;k<ndomains;k++) fprintf(RHS,"Ri %d, %e \n",k,map.R(k));
-	
-		//eq=(grad(p_),grad(s_))/S.r/S.r;
 		eq=(grad(p_),grad(s_));
+		//eq=(grad(p_),grad(s_))/S.r/S.r;
 	
 // Take care of convective layers
 // number of zones=number of interface+1 (the surface)
+// izif = index of zone interface = index of the domain immediately below the interface
+// Example: izif(0)=0 indicates that the first interface is above domain 0
+//          izif(1)=8 says that second interface is above domain 8
 
 		for (int iz=0;iz<nzones-1;iz++) { // we scan the zone interfaces
-		        for(n=0,j0=0;n<izif[iz]+1;n++) j0+=map.gl.npts[n];
-			// j0 is the radial index of the interface
-			n=izif[iz]+1; // n is index of the domain just above the interface
+
+		        for(k=0,j0=0;k<izif[iz]+1;k++) j0+=map.gl.npts[k]; // j0 is the radial index of the interface
+// Examine core and convective zones
+			n=izif[iz]+1; // n is the index of the domain just above the interface
 		        op->reset(n,"Ri");
 			eq.bc_bot2_add(op,n,"Ri","p",ones(1,nth));
 			eq.bc_bot2_add(op,n,"Ri","s",ones(1,nth));
 			eq.bc_bot2_add(op,n,"Ri","r",ones(1,nth));
 		        rhs(n)=-eq.eval()(j0);	
-			fprintf(RHS,"iz= %d, n=%d, j0= %d\n",iz,n,j0);
-		}
-fprintf(RHS,"Entropy END\n");
-	}
+			}
+
+	} // end of nzones>1
 	
-fprintf(RHS," it = %d\n",glit);
-for (int k=0;k<ndomains;k++) fprintf(RHS,"RHS Ri %d, %e \n",k,rhs(k));
-fprintf(RHS,"RHS Ri END\n");
 	op->set_rhs("Ri",rhs);
 }
 
