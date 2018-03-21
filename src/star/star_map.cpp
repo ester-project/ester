@@ -18,8 +18,8 @@ void star2d::new_check_map() {
 	}
 
 	//if (global_err < 1e-4) { // look for new convective regions and eventually remap the star
-	if (n_essai == 0) seuil=0.1;
-	if (n_essai > 0) seuil=0.1;
+	if (n_essai == 0) seuil=1e-3;
+	if (n_essai > 0) seuil=1e-3;
 	if (global_err < seuil) { // look for new convective regions and eventually remap the star
 	   // Find the zone boundaries and the associated pressures
 	   // and output zone_type as global var.
@@ -659,7 +659,7 @@ if (les_zi[i] !=0. && les_zi[i] !=1.) {
 }
 if (details) printf("Number of interfaces calcule %d \n",n_interf);
 matrix bb=ones(2,1);
-bb(0,0)=1; bb(1,0)=n_interf;
+bb(0,0)=3; bb(1,0)=n_interf;
 n_interf=min(bb);
 if (details) printf("number of interfaces calcule %d \n",n_interf);
 

@@ -646,6 +646,7 @@ void star1d::solve_temp(solver *op) {
 //        printf("Check Peclet = %e\n",Peclet);   
         Pe=zeros(nr,1);
         j0=0;
+	int nfc=0;
         //domain_type[ndomains-1]=RADIATIVE; // last domain is imposed to be radiative
         for(n=0;n<ndomains;n++) {
                 ndom=map.gl.npts[n];
@@ -655,7 +656,12 @@ void star1d::solve_temp(solver *op) {
                 } else if (domain_type[n] == CORE) {
                    Pe.setblock(j0,j1,0,0,1e3*ones(ndom,1));
                 } else {
-                   Pe.setblock(j0,j1,0,0,Peclet*ones(ndom,1));
+		   if (nfc == 0) nfc=n;
+		   double eta=map.gl.xif[nfc];
+			if (n == nfc) printf("eta %e\n",eta);
+                   //Pe.setblock(j0,j1,0,0,Peclet*ones(ndom,1));
+			matrix rr=map.r.block(j0,j1,0,0);
+                   Pe.setblock(j0,j1,0,0,Peclet*(1.-rr)/(1.-eta));
                 }
                 j0+=ndom;
         }
@@ -684,15 +690,7 @@ void star1d::solve_temp(solver *op) {
 			//op->bc_bot2_add_d(n,"Lambda","Flux",ones(1,1));
 			//rhs_Lambda(0)=-Flux(0);
 
-                } else if (n==ndomains-1) { // care of the last domain
-
-                        op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
-                        op->bc_bot1_add_d(n,"log_T","T",-ones(1,1));
-                        rhs_T(j0)=-T(j0)+T(j0-1);
-
-                        op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
-                        op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
-                } else { // Now domains are not first and not last!
+                } else {
 
                         op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
                         op->bc_bot1_add_d(n,"log_T","T",-ones(1,1));

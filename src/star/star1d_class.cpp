@@ -400,11 +400,14 @@ void star1d::plot(const matrix_map& error) {
     plt::subplot(222);
 // Explanation: divide the screen into 2 lines 3 columns and set in subplot 2
     // plt::title(std::string("iter: ") + std::to_string(nit));
-    plt::plot(r, entropy(), "$s$");
-    plt::legend("lower right");
-    for (int i=0; i<ndomains; i++) {
+    int nd=7;
+    int j0=0;
+    for(int n=0;n<nd;n++) j0+=map.gl.npts[n];
+    plt::plot(r.block(j0,nr-1,0,0),entropy().block(j0,nr-1,0,0), "s");
+    for (int i=nd; i<ndomains; i++) {
         plt::axvline(map.gl.xif[i]);
     }
+    plt::legend("lower right");
 
 /*
     plt::subplot(233, true);
@@ -442,13 +445,6 @@ void star1d::plot(const matrix_map& error) {
     plt::semilogy(error["log_Tc"], "$\\ln {T_c}$");
     plt::semilogy(error["Ri"], "$R_i$");
     plt::legend("lower left");
-
-    plt::subplot(224);
-    plt::plot(r.block(0,nr-1,0,0),entropy().block(0,nr-1,0,0), "s");
-    for (int i=0; i<ndomains; i++) {
-        plt::axvline(map.gl.xif[i]);
-    }
-    plt::legend("upper left");
 
     plt::subplot(224);
     plt::title("Spectrum");
