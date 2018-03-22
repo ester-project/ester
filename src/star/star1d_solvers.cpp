@@ -656,12 +656,12 @@ void star1d::solve_temp(solver *op) {
                 } else if (domain_type[n] == CORE) {
                    Pe.setblock(j0,j1,0,0,1e3*ones(ndom,1));
                 } else {
-		   if (nfc == 0) nfc=n;
+		   if (nfc == 0) nfc=n; // nfc=first convective domain
 		   double eta=map.gl.xif[nfc];
 			if (n == nfc) printf("eta %e\n",eta);
                    //Pe.setblock(j0,j1,0,0,Peclet*ones(ndom,1));
 			matrix rr=map.r.block(j0,j1,0,0);
-                   Pe.setblock(j0,j1,0,0,Peclet*(1.-rr)/(1.-eta));
+                   Pe.setblock(j0,j1,0,0,Peclet*(1.-rr*rr)/(1.-eta*eta));
                 }
                 j0+=ndom;
         }
@@ -828,18 +828,35 @@ if(nzones>1) {
 // izif = index of zone interface = index of the domain immediately below the interface
 // Example: izif(0)=0 indicates that the first interface is above domain 0
 //          izif(1)=8 says that second interface is above domain 8
+//		printf("XXXXX domain_type (%d) = %d\n",izif[iz],domain_type[izif[iz]]);
 
 		for (int iz=0;iz<nzones-1;iz++) { // we scan the zone interfaces
+			n=izif[iz]; // n is the index of the domain just below the interface
+		        for(k=0,j0=0;k<n+1;k++) j0+=map.gl.npts[k]; // j0 is the radial index of the interface
 
-		        for(k=0,j0=0;k<izif[iz]+1;k++) j0+=map.gl.npts[k]; // j0 is the radial index of the interface
-// Examine core and convective zones
-			n=izif[iz]+1; // n is the index of the domain just above the interface
-		        op->reset(n,"Ri");
-			eq.bc_bot2_add(op,n,"Ri","p",ones(1,nth));
-			eq.bc_bot2_add(op,n,"Ri","s",ones(1,nth));
-			eq.bc_bot2_add(op,n,"Ri","r",ones(1,nth));
-		        rhs(n)=-eq.eval()(j0);	
+			if (domain_type[izif[iz]] == CORE) {
+		          op->reset(n+1,"Ri");
+			  eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
+			  eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
+			  eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
+		          rhs(n+1)=-eq.eval()(j0);	
+			} else if (domain_type[izif[iz]] == RADIATIVE) {
+		          op->reset(n,"Ri");
+			  eq.bc_top1_add(op,n,"Ri","p",ones(1,nth));
+			  eq.bc_top1_add(op,n,"Ri","s",ones(1,nth));
+			  eq.bc_top1_add(op,n,"Ri","r",ones(1,nth));
+		          rhs(n)=-eq.eval()(j0);	
+			} else if (domain_type[izif[iz]] == CONVECTIVE) {
+		          op->reset(n+1,"Ri");
+			  eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
+			  eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
+			  eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
+		          rhs(n+1)=-eq.eval()(j0);	
+			} else {
+			  printf("There is a pb in domain_type");
+			  exit(0);
 			}
+		}
 
 	} // end of nzones>1
 	

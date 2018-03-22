@@ -18,8 +18,8 @@ void star2d::new_check_map() {
 	}
 
 	//if (global_err < 1e-4) { // look for new convective regions and eventually remap the star
-	if (n_essai == 0) seuil=1e-3;
-	if (n_essai > 0) seuil=1e-3;
+	if (n_essai == 0) seuil=1e-6;
+	if (n_essai > 0) seuil=1e-9;
 	if (global_err < seuil) { // look for new convective regions and eventually remap the star
 	   // Find the zone boundaries and the associated pressures
 	   // and output zone_type as global var.
@@ -496,7 +496,7 @@ matrix star2d::solve_temp_rad() {
 //int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter)
 int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     double last_zi, zi;
-    matrix schw, dschw,bv2,schwBP;
+    matrix schw, dschw,bv2,schwBP,schwFEL;
 
     matrix T_rad = solve_temp_rad();
 
@@ -519,17 +519,18 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 **/
 
 // Paco's version
-//    schw=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
-//        -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
+      schwFEL=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
+        -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
+      schwFEL.setrow(0, zeros(1, nth));
 
 // We evaluate the Schwarzschild criterion from the radiative solution T_rad
       schwBP = -(map.gzz*(D, p)+map.gzt*(p, Dt))*((D, T_rad)/T_rad-eos.del_ad*(D, log(p))) -
           (map.gzt*(D, p)+map.gtt*(p, Dt))*((T_rad, Dt)/T_rad-eos.del_ad*(log(p), Dt));
+      schwBP.setrow(0, zeros(1, nth));
 
 
     //for (int k=0;k<nr;k++) fprintf(fic,"i= %d schw= %e T=%e, p=%e, na=%e, gzz=%e\n",k,schw(k,-1),T_rad(k,-1),p(k,-1),eos.del_ad(k,-1),map.gzz(k,-1));
 
-    schwBP.setrow(0, zeros(1, nth));
     //schw = schw/r/r;
     //schw.setrow(0, zeros(1, nth));
     //schw.setrow(0, -(D.row(0), schw)/D(0, 0));
@@ -575,7 +576,8 @@ int k_rad=0;
 	if (fabs(bv2f(k,-1)) < 1.0e-3 ) schw(k,-1)=-1e-3;
     }
 // pas de filtrage
-	schw=schwBP;
+	//schw=schwBP;
+	schw=schwFEL;
 
 
 
@@ -659,7 +661,7 @@ if (les_zi[i] !=0. && les_zi[i] !=1.) {
 }
 if (details) printf("Number of interfaces calcule %d \n",n_interf);
 matrix bb=ones(2,1);
-bb(0,0)=3; bb(1,0)=n_interf;
+bb(0,0)=2; bb(1,0)=n_interf;
 n_interf=min(bb);
 if (details) printf("number of interfaces calcule %d \n",n_interf);
 
