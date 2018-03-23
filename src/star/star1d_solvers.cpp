@@ -841,11 +841,21 @@ if(nzones>1) {
 			  eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
 		          rhs(n+1)=-eq.eval()(j0);	
 			} else if (domain_type[izif[iz]] == RADIATIVE) {
-		          op->reset(n,"Ri");
-			  eq.bc_top1_add(op,n,"Ri","p",ones(1,nth));
-			  eq.bc_top1_add(op,n,"Ri","s",ones(1,nth));
-			  eq.bc_top1_add(op,n,"Ri","r",ones(1,nth));
-		          rhs(n)=-eq.eval()(j0);	
+/*
+			  int nn=n;
+		          op->reset(nn,"Ri");
+			  eq.bc_top1_add(op,nn,"Ri","p",ones(1,nth));
+			  eq.bc_top1_add(op,nn,"Ri","s",ones(1,nth));
+			  eq.bc_top1_add(op,nn,"Ri","r",ones(1,nth));
+		          rhs(nn)=-eq.eval()(j0);	
+*/
+			  int nn=n+1;
+		          op->reset(nn,"Ri");
+			  eq.bc_bot2_add(op,nn,"Ri","p",ones(1,nth));
+			  eq.bc_bot2_add(op,nn,"Ri","s",ones(1,nth));
+			  eq.bc_bot2_add(op,nn,"Ri","r",ones(1,nth));
+		          rhs(nn)=-eq.eval()(j0);	
+
 			} else if (domain_type[izif[iz]] == CONVECTIVE) {
 		          op->reset(n+1,"Ri");
 			  eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
