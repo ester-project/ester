@@ -323,7 +323,7 @@ double RGP=K_BOL/UMA;
 
 // MLT dependent variable to simplify the formulation
 
-	alpha_mlt=1.8;
+	alpha_mlt=0.1;
 	matrix gp=-(D,p)/p;
 // U=c0*(xi/rho/cp)/alpha**2/Hp**2*sqrt(8*Hp/g/delta) see Manual
 // variations on cp and del_ad are ignored; g=P/rho/Hp in 1D, delta=del_ad*rho*cp*T/P
@@ -699,7 +699,7 @@ void star1d::solve_temp(solver *op) {
         double qx=368./729;	
 	double qa=px*px*px-1./9;
         double qx3=qx*qx*qx;
-	alpha_mlt=1.8;
+	alpha_mlt=0.1;
         double c0=9./4*sqrt(8.)/alpha_mlt/alpha_mlt;
 	U_mlt=c0*opa.xi/pow(eos.cp,1.5)/R*gp/rhoc/rho/sqrt(eos.del_ad*T*Tc);
 	a_mlt=4*(del_rad-eos.del_ad)/9*U_mlt+qa*pow(U_mlt,3);
