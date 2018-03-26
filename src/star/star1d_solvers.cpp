@@ -323,7 +323,6 @@ double RGP=K_BOL/UMA;
 
 // MLT dependent variable to simplify the formulation
 
-	alpha_mlt=0.1;
 	matrix gp=-(D,p)/p;
 // U=c0*(xi/rho/cp)/alpha**2/Hp**2*sqrt(8*Hp/g/delta) see Manual
 // variations on cp and del_ad are ignored; g=P/rho/Hp in 1D, delta=del_ad*rho*cp*T/P
@@ -699,7 +698,6 @@ void star1d::solve_temp(solver *op) {
         double qx=368./729;	
 	double qa=px*px*px-1./9;
         double qx3=qx*qx*qx;
-	alpha_mlt=0.1;
         double c0=9./4*sqrt(8.)/alpha_mlt/alpha_mlt;
 	U_mlt=c0*opa.xi/pow(eos.cp,1.5)/R*gp/rhoc/rho/sqrt(eos.del_ad*T*Tc);
 	a_mlt=4*(del_rad-eos.del_ad)/9*U_mlt+qa*pow(U_mlt,3);
@@ -800,8 +798,13 @@ void star1d::solve_temp(solver *op) {
                 if(n==0) { // care of the first and central domain
                         op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
                         rhs_T(j0)=1.-T(j0);
+		if (domain_type[n] == RADIATIVE) {
 			op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
 			rhs_Lambda(0)=-(D,T)(0);
+		} else if (domain_type[n] == CORE) {
+			op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
+			op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
+		}
 			//op->bc_bot2_add_d(n,"Lambda","Flux",ones(1,1));
 			//rhs_Lambda(0)=-Flux(0);
 
@@ -813,6 +816,16 @@ void star1d::solve_temp(solver *op) {
 
                         op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                         op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
+                } else if (n==1 && domain_type[0] == CORE) { // Just above CORE impose ds=0
+                        op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
+                        op->bc_bot1_add_d(n,"log_T","T",-ones(1,1));
+                        rhs_T(j0)=-T(j0)+T(j0-1);
+
+                        op->bc_bot2_add_l(n,"Lambda","s",ones(1,1),D.block(n).row(0));
+                        op->bc_bot1_add_l(n,"Lambda","s",-ones(1,1),D.block(n-1).row(-1));
+                        op->bc_bot2_add_d(n,"Lambda","rz",-(D,entropy()).row(j0));
+                        op->bc_bot1_add_d(n,"Lambda","rz",(D,entropy()).row(j0-1));
+			rhs_Lambda(n)=-(D,entropy())(j0)+(D,entropy())(j0-1);
                 } else { // Now domains are not first and not last!
 
                         op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
