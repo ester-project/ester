@@ -698,6 +698,7 @@ void star1d::solve_temp(solver *op) {
         double qx=368./729;	
 	double qa=px*px*px-1./9;
         double qx3=qx*qx*qx;
+        double cuw=4./27*(1+sqrt(24.));
         double c0=9./4*sqrt(8.)/alpha_mlt/alpha_mlt;
 	U_mlt=c0*opa.xi/pow(eos.cp,1.5)/R*gp/rhoc/rho/sqrt(eos.del_ad*T*Tc);
 	a_mlt=4*(del_rad-eos.del_ad)/9*U_mlt+qa*pow(U_mlt,3);
@@ -753,8 +754,13 @@ void star1d::solve_temp(solver *op) {
 		   matrix DD=sqrt(a*a+qx3*pow(U,6));
 		   matrix KUW=(1.+qx*U*U/W/W)*qx3*pow(U,5)/W/W/DD+px-2*qx*U/W;
 		   matrix gs=(D,entropy()).block(j0,j1,0,0);
-		   for (int k=0;k<ndom;k++) if (W(k) == 0.) x(k)=0.;
-
+		   //for (int k=0;k<ndom;k++) if (W(k) == 0.) x(k)=0.;
+		   // On the sides of the convective domain del_rad=del_ad
+		// hence W=cuw*U and x=U
+		W(0)=cuw*U(0); W(ndom-1)=cuw*U(ndom-1);
+		x(0)=U(0); x(ndom-1)=U(ndom-1);
+		KUW(0)=(1.+qx/cuw/cuw)*qx3/cuw/cuw/sqrt(qa*qa+qx3)+px-2*qx/cuw;
+		KUW(ndom-1)=KUW(0);
 		   //matrix nabla=eos.del_ad.block(j0,j1,0,0)+x*x-U*U;
 		   //op->add_l(n,"log_T","log_T",ones(ndom,1),D.block(n));
 		   //op->add_d(n,"log_T","a_mlt",2*gp.block(j0,j1,0,0)*x*W/3/DD*(1.+qx*U*U/W/W));
@@ -770,6 +776,11 @@ void star1d::solve_temp(solver *op) {
 	op->add_d(n,"log_T","U_mlt",2*cp/RGP*gp.block(j0,j1,0,0)*(x*KUW-U));
 	op->add_l(n,"log_T","log_p",-cp/RGP*(x*x-U*U),D.block(n));
 	rhs_T.setblock(j0,j1,0,0,-(gs+cp/RGP*(x*x-U*U)*gp.block(j0,j1,0,0)));
+fprintf(RHS," it = %d n= %d\n",glit,n);
+for (int k=j0;k<j1+1;k++)
+fprintf(RHS,"%d, U= %e, a_mlt= %e, W3= %e, x=%e,DD=%e,KUW=%e\n",
+k,U_mlt(k),a_mlt(k),W3(k),x(k-j0),DD(k-j0),KUW(k-j0));
+fprintf(RHS,"qconv END\n");
 /*
 	printf("j0 = %d, j1= %d, rhs_T(29)=%e\n",j0,j1,rhs_T(j1));
 	printf("j0 = %d, j1= %d, x(29)=%e\n",j0,j1,x(j1));
@@ -795,6 +806,7 @@ void star1d::solve_temp(solver *op) {
 	j0=0;
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
+		j1=j0+ndom-1;
                 if(n==0) { // care of the first and central domain
                         op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
                         rhs_T(j0)=1.-T(j0);
@@ -826,6 +838,26 @@ void star1d::solve_temp(solver *op) {
                         op->bc_bot2_add_d(n,"Lambda","rz",-(D,entropy()).row(j0));
                         op->bc_bot1_add_d(n,"Lambda","rz",(D,entropy()).row(j0-1));
 			rhs_Lambda(n)=-(D,entropy())(j0)+(D,entropy())(j0-1);
+                } else if (domain_type[n] == CONVECTIVE) { 
+                        op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
+                        op->bc_bot1_add_d(n,"log_T","T",-ones(1,1));
+                        rhs_T(j0)=-T(j0)+T(j0-1);
+
+                        op->bc_top2_add_d(n,"log_T","T",-ones(1,1));
+                        op->bc_top1_add_d(n,"log_T","T",ones(1,1));
+                        rhs_T(j1)=-T(j1)+T(j1+1);
+
+                        op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
+                        op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
+                } else if (domain_type[n] == RADIATIVE && domain_type[n-1] == CONVECTIVE) { // Just above CZ impose ds=0
+                        op->bc_bot2_add_l(n,"log_T","s",ones(1,1),D.block(n).row(0));
+                        op->bc_bot1_add_l(n,"log_T","s",-ones(1,1),D.block(n-1).row(-1));
+                        op->bc_bot2_add_d(n,"log_T","rz",-(D,entropy()).row(j0));
+                        op->bc_bot1_add_d(n,"log_T","rz",(D,entropy()).row(j0-1));
+			rhs_T(j0)=-(D,entropy())(j0)+(D,entropy())(j0-1);
+
+                        op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
+                        op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
                 } else { // Now domains are not first and not last!
 
                         op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
@@ -842,6 +874,18 @@ fprintf(RHS," it = %d\n",glit);
 for (int k=0;k<nr;k++) fprintf(RHS,"%d, RHS_T= %e, a_mlt= %e, W3= %e\n",k,rhs_T(k),a_mlt(k),W3(k));
 fprintf(RHS,"qconv END\n");
 	
+// Check luminosity
+matrix lum;
+
+    lum=zeros(ndomains,1);
+    j0=0;
+    for(n=0;n<ndomains;n++) {
+        if(n) lum(n)=lum(n-1);
+        lum(n)+=4*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),
+            (rho*nuc.eps*r*r).block(j0,j0+map.gl.npts[n]-1,0,0))(0);
+        j0+=map.gl.npts[n];
+	//printf("lum (%d) = %e\n",n,lum(n));
+}
 	
 	op->set_rhs("log_T",rhs_T);
 	op->set_rhs("Lambda",rhs_Lambda);
