@@ -662,7 +662,15 @@ void star1d::solve_flux(solver *op) {
 			op->bc_top1_add_d(n,"Flux","T",ones(1,1));
 			op->bc_top1_add_d(n,"Flux","Ts",-ones(1,1));
 			rhs_Flux(-1)=Ts(0)-T(-1);
+/*
+                } else if (n==0) { // care of the central domain
+                        op->bc_bot2_add_d(n,"Flux","Flux",ones(1,1));
+                        rhs_Flux(j0)=-Flux(j0);
 
+                        op->bc_top1_add_d(n,"Flux","Flux",ones(1,1));
+                        op->bc_top2_add_d(n,"Flux","Flux",-ones(1,1));
+                        rhs_Flux(j1)=-Flux(j1)+Flux(j1+1);
+*/
                 } else { // care of other domains
 
                         op->bc_top1_add_d(n,"Flux","Flux",ones(1,1));
@@ -725,10 +733,7 @@ void star1d::solve_temp(solver *op) {
 	op->add_d("Gp","Gp",ones(nr,1));
         op->add_d("Gp","rz",gp);
 	op->add_l("Gp","log_p",ones(nr,1),D);
-	matrix rhs_gp;
-	rhs_gp=zeros(nr,1);
-	op->set_rhs("Gp",rhs_gp);
-	//op->set_rhs("Gp",zeros(nr,1));
+	op->set_rhs("Gp",zeros(nr,1));
 
 
         j0=0;
@@ -742,9 +747,12 @@ void star1d::solve_temp(solver *op) {
 		   op->add_d(n,"log_T","rz",Flux.block(j0,j1,0,0));
 		   rhs_T.setblock(j0,j1,0,0,-((D,T)+Flux).block(j0,j1,0,0));
                 } else if (domain_type[n] == CORE) {
-		   matrix gs=(D,entropy()).block(j0,j1,0,0);
-	           op->add_l(n,"log_T","s",ones(ndom,1),D.block(n));
-	           rhs_T.setblock(j0,j1,0,0,-gs);
+			op->add_d(n,"log_T","Flux",ones(ndom,1));
+			op->add_l(n,"log_T","log_T",T.block(j0,j1,0,0),D.block(n));
+			op->add_d(n,"log_T","log_T",-Flux.block(j0,j1,0,0));
+			op->add_d(n,"log_T","rz",Flux.block(j0,j1,0,0));
+			op->add_l(n,"log_T","s",(Pe*T).block(j0,j1,0,0),D.block(n));
+			rhs_T.setblock(j0,j1,0,0,-((D,T)+Pe*T*(D,entropy())+Flux).block(j0,j1,0,0));
                 } else {
 		   matrix cp=eos.cp.block(j0,j1,0,0);
 		   matrix U=U_mlt.block(j0,j1,0,0);
@@ -761,48 +769,33 @@ void star1d::solve_temp(solver *op) {
 		x(0)=U(0); x(ndom-1)=U(ndom-1);
 		KUW(0)=(1.+qx/cuw/cuw)*qx3/cuw/cuw/sqrt(qa*qa+qx3)+px-2*qx/cuw;
 		KUW(ndom-1)=KUW(0);
-		   //matrix nabla=eos.del_ad.block(j0,j1,0,0)+x*x-U*U;
-		   //op->add_l(n,"log_T","log_T",ones(ndom,1),D.block(n));
-		   //op->add_d(n,"log_T","a_mlt",2*gp.block(j0,j1,0,0)*x*W/3/DD*(1.+qx*U*U/W/W));
-		   //op->add_d(n,"log_T","U_mlt",2*gp.block(j0,j1,0,0)*(x*KUW-U));
-		   //op->add_l(n,"log_T","log_p",-nabla,D.block(n));
-		   //op->add_d(n,"log_T","rz",-((D,T)/T).block(j0,j1,0,0)+nabla*gp.block(j0,j1,0,0));
-		   //rhs_T.setblock(j0,j1,0,0,-(((D,T)/T).block(j0,j1,0,0)+nabla*gp.block(j0,j1,0,0)));
+		   matrix nabla=eos.del_ad.block(j0,j1,0,0)+x*x-U*U;
+		   op->add_l(n,"log_T","log_T",ones(ndom,1),D.block(n));
+		   op->add_d(n,"log_T","a_mlt",2*gp.block(j0,j1,0,0)*x*W/3/DD*(1.+qx*U*U/W/W));
+		   op->add_d(n,"log_T","U_mlt",2*gp.block(j0,j1,0,0)*(x*KUW-U));
+		   op->add_l(n,"log_T","log_p",-nabla,D.block(n));
+		   op->add_d(n,"log_T","rz",-((D,T)/T).block(j0,j1,0,0)+nabla*gp.block(j0,j1,0,0));
+		   rhs_T.setblock(j0,j1,0,0,-(((D,T)/T).block(j0,j1,0,0)+nabla*gp.block(j0,j1,0,0)));
 
-//version avec l'entropie
+//version avec l'entropie meme resultat qu'avec temperature
+/*
 	double RGP=K_BOL/UMA;
 	op->add_l(n,"log_T","s",ones(ndom,1),D.block(n));
 	op->add_d(n,"log_T","a_mlt",cp/RGP*2*gp.block(j0,j1,0,0)*x*W/3/DD*(1.+qx*U*U/W/W));
 	op->add_d(n,"log_T","U_mlt",2*cp/RGP*gp.block(j0,j1,0,0)*(x*KUW-U));
 	op->add_l(n,"log_T","log_p",-cp/RGP*(x*x-U*U),D.block(n));
 	rhs_T.setblock(j0,j1,0,0,-(gs+cp/RGP*(x*x-U*U)*gp.block(j0,j1,0,0)));
+*/
 fprintf(RHS," it = %d n= %d\n",glit,n);
 for (int k=j0;k<j1+1;k++)
 fprintf(RHS,"%d, U= %e, a_mlt= %e, W3= %e, x=%e,DD=%e,KUW=%e\n",
 k,U_mlt(k),a_mlt(k),W3(k),x(k-j0),DD(k-j0),KUW(k-j0));
 fprintf(RHS,"qconv END\n");
-/*
-	printf("j0 = %d, j1= %d, rhs_T(29)=%e\n",j0,j1,rhs_T(j1));
-	printf("j0 = %d, j1= %d, x(29)=%e\n",j0,j1,x(j1));
-	printf("j0 = %d, j1= %d, U(29)=%e\n",j0,j1,U(j1));
-	printf("j0 = %d, j1= %d, a(29)=%e\n",j0,j1,a(j1));
-	printf("j0 = %d, j1= %d, W(29)=%e\n",j0,j1,W(j1));
-	printf("j0 = %d, j1= %d, W3(29)=%e\n",j0,j1,W3(j1));
-*/
 		}
                 j0+=ndom;
 	}
 
-	// Entropy diffusion prescription
-	//op->add_l("log_T","s",Pe*T,D);
-	//rhs_T=-((D,T)+Pe*T*(D,entropy())+Flux);
-
-// MLT prescription for DT
-
-//	printf("ecco mlt\n");
-
-
-
+// Interface and boundary conditions
 	j0=0;
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
@@ -810,34 +803,9 @@ fprintf(RHS,"qconv END\n");
                 if(n==0) { // care of the first and central domain
                         op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
                         rhs_T(j0)=1.-T(j0);
-		if (domain_type[n] == RADIATIVE) {
 			op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
 			rhs_Lambda(0)=-(D,T)(0);
-		} else if (domain_type[n] == CORE) {
-			op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
-			op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
-		}
-			//op->bc_bot2_add_d(n,"Lambda","Flux",ones(1,1));
-			//rhs_Lambda(0)=-Flux(0);
 
-                } else if (n==ndomains-1) { // care of the last domain
-
-                        op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
-                        op->bc_bot1_add_d(n,"log_T","T",-ones(1,1));
-                        rhs_T(j0)=-T(j0)+T(j0-1);
-
-                        op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
-                        op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
-                } else if (n==1 && domain_type[0] == CORE) { // Just above CORE impose ds=0
-                        op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
-                        op->bc_bot1_add_d(n,"log_T","T",-ones(1,1));
-                        rhs_T(j0)=-T(j0)+T(j0-1);
-
-                        op->bc_bot2_add_l(n,"Lambda","s",ones(1,1),D.block(n).row(0));
-                        op->bc_bot1_add_l(n,"Lambda","s",-ones(1,1),D.block(n-1).row(-1));
-                        op->bc_bot2_add_d(n,"Lambda","rz",-(D,entropy()).row(j0));
-                        op->bc_bot1_add_d(n,"Lambda","rz",(D,entropy()).row(j0-1));
-			rhs_Lambda(n)=-(D,entropy())(j0)+(D,entropy())(j0-1);
                 } else if (domain_type[n] == CONVECTIVE) { 
                         op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
                         op->bc_bot1_add_d(n,"log_T","T",-ones(1,1));
@@ -849,7 +817,24 @@ fprintf(RHS,"qconv END\n");
 
                         op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                         op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
-                } else if (domain_type[n] == RADIATIVE && domain_type[n-1] == CONVECTIVE) { // Just above CZ impose ds=0
+/*
+} else if (domain_type[n] == RADIATIVE && domain_type[n+1] == CONVECTIVE) {
+// Just below CZ impose Ds continuous: does not improve the solution.
+                        op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
+                        op->bc_bot1_add_d(n,"log_T","T",-ones(1,1));
+                        rhs_T(j0)=-T(j0)+T(j0-1);
+
+                        op->bc_top1_add_l(n,"log_T","s",ones(1,1),D.block(n).row(-1));
+                        op->bc_top2_add_l(n,"log_T","s",-ones(1,1),D.block(n+1).row(0));
+                        op->bc_top1_add_d(n,"log_T","rz",-(D,entropy()).row(j1));
+                        op->bc_top2_add_d(n,"log_T","rz",(D,entropy()).row(j1+1));
+			rhs_T(j1)=-(D,entropy())(j1)+(D,entropy())(j1+1);
+
+                        op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
+                        op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
+*/
+} else if (domain_type[n] == RADIATIVE && domain_type[n-1] == CONVECTIVE) {
+// Just above CZ we impose continuity of Ds, otherwise crash!
                         op->bc_bot2_add_l(n,"log_T","s",ones(1,1),D.block(n).row(0));
                         op->bc_bot1_add_l(n,"log_T","s",-ones(1,1),D.block(n-1).row(-1));
                         op->bc_bot2_add_d(n,"log_T","rz",-(D,entropy()).row(j0));
@@ -858,7 +843,8 @@ fprintf(RHS,"qconv END\n");
 
                         op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                         op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
-                } else { // Now domains are not first and not last!
+
+                } else { // Now domains are not first
 
                         op->bc_bot2_add_d(n,"log_T","T",ones(1,1));
                         op->bc_bot1_add_d(n,"log_T","T",-ones(1,1));
@@ -874,9 +860,8 @@ fprintf(RHS," it = %d\n",glit);
 for (int k=0;k<nr;k++) fprintf(RHS,"%d, RHS_T= %e, a_mlt= %e, W3= %e\n",k,rhs_T(k),a_mlt(k),W3(k));
 fprintf(RHS,"qconv END\n");
 	
-// Check luminosity
-matrix lum;
-
+// Check luminosity (not used)
+    matrix lum;
     lum=zeros(ndomains,1);
     j0=0;
     for(n=0;n<ndomains;n++) {
@@ -884,7 +869,6 @@ matrix lum;
         lum(n)+=4*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),
             (rho*nuc.eps*r*r).block(j0,j0+map.gl.npts[n]-1,0,0))(0);
         j0+=map.gl.npts[n];
-	//printf("lum (%d) = %e\n",n,lum(n));
 }
 	
 	op->set_rhs("log_T",rhs_T);

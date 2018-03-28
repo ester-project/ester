@@ -11,8 +11,8 @@ import numpy as np
 
 #a=star1d('M2ideal')
 #a=star1d('M199s.h5')
-a=star1d('M1mlt.h5')
-#a=star1d('M1s15.h5')
+a=star1d('M2mlt.h5')
+#a=star1d('M19Pe100.h5')
 #a=star1d('M2m.h5')
 #a=star1d('M19P10HR.h5')
 UMA=1.67353249e-24
@@ -76,7 +76,7 @@ Fc=Flux-Frad
 Fgt=-gradT*r**2
 
 
-nd=4
+nd=8
 nst=jfirst[nd]
 nf=len(r)-1
 pflux, =plt.plot(r[nst:nf],Flux[nst:nf],'ro')
