@@ -1105,6 +1105,7 @@ void star2d::interp(remapper *red) {
     phi=red->interp(phi);
     T=red->interp(T);
     Flux=red->interp(Flux);
+    Pe=red->interp(Pe);
     Xh=red->interp(Xh);
     Xh_prec=Xh;
     Wr=red->interp(Wr); // necessary for output

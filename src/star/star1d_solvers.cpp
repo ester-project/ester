@@ -618,10 +618,15 @@ void star1d::solve_flux(solver *op) {
 		ndom=map.gl.npts[n];
 		j1=j0+ndom-1;
                 if (n==ndomains-1) { // care of the last domain
-
+/*
 			op->bc_top1_add_d(n,"Flux","T",ones(1,1));
 			op->bc_top1_add_d(n,"Flux","Ts",-ones(1,1));
 			rhs_Flux(-1)=Ts(0)-T(-1);
+*/
+        op->bc_top1_add_l(n,"Flux","log_T",ones(1,1),D.block(n).row(-1));
+        op->bc_top1_add_l(n,"Flux","log_p",-0.25*ones(1,1),D.block(n).row(-1));
+        rhs_Flux(-1)=-( ((D,T)/T)(-1)-0.25*((D,p)/p)(-1) );
+
 
                 } else { // care of other domains
 
