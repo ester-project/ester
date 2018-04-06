@@ -18,7 +18,7 @@ void star2d::new_check_map() {
 	}
 
 	//if (global_err < 1e-4) { // look for new convective regions and eventually remap the star
-	if (n_essai == 0) seuil=1e-6;
+	if (n_essai == 0) seuil=1e-3;
 	if (n_essai > 0) seuil=1e-9;
 	if (global_err < seuil) { // look for new convective regions and eventually remap the star
 	   // Find the zone boundaries and the associated pressures
@@ -183,19 +183,21 @@ fclose(fic);
 void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
     remapper red(map); // declaration object of class remapper 
 
-    if (details) printf("    Enter remap in star_map\n");
+    if (details) printf("    Enter remap in star_map 1\n");
     red.set_ndomains(ndom_in);
     red.set_npts(npts_in);
     red.set_nt(nth_in);
     red.set_nex(nex_in);
+    if (details) printf("    sets done in remap in star_map 1\n");
 
     if(ndom_in!=ndomains) 
         remap_domains(ndom_in,red); // the new R_i are now known
 
     map=red.get_map(); // update the mapping
+    if (details) printf("mapping updated in remap in star_map 1\n");
     interp(&red); // interpolate the variable on the new update
 
-	if (details) printf("    Leave remap in star_map\n");
+	if (details) printf("    Leave remap in star_map 1\n");
 }
 
 // Some domains have boundaries imposed by the physics and these
