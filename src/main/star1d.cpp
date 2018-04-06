@@ -79,6 +79,7 @@ int main(int argc,char *argv[]) {
 	A.n_essai=0;
 	A.delta=0;  // steady solution used in solve_Xh
 	A.global_err=1;
+	A.prev_global_err=1;
 	A.glit=0;
 	A.details=1;
 	A.config.input_file=*config.input_file;
@@ -100,6 +101,7 @@ int main(int argc,char *argv[]) {
 		A.glit++;
 		//A.check_jacobian(op,"log_T");exit(0);
 		A.global_err=A.solve(op, error_map, nit-1);
+		//A.prev_global_err=A.global_err;
 		
 		tt(nit-1)=t.value();
 		error(nit-1)=A.global_err;

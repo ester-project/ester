@@ -159,6 +159,7 @@ fclose(RHS);
 		
 	h=1;
 	q=config.newton_dmax;
+	prev_global_err=global_err;
 	
 	matrix dphi,dp,dT,dXh,dpc,dTc,dRi,dWr,dFlux;
 	
@@ -839,13 +840,13 @@ if(nzones>1) {
 			n=izif[iz]; // n is the index of the domain just below the interface
 		        for(k=0,j0=0;k<n+1;k++) j0+=map.gl.npts[k]; // j0 is the radial index of the interface
 
-			if (domain_type[izif[iz]] == CORE) {
+			if (domain_type[n] == CORE) {
 		          op->reset(n+1,"Ri");
 			  eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
 			  eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
 			  eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
 		          rhs(n+1)=-eq.eval()(j0);	
-			} else if (domain_type[izif[iz]] == RADIATIVE) {
+			} else if (domain_type[n] == RADIATIVE) {
 /*
 			  int nn=n;
 		          op->reset(nn,"Ri");
@@ -854,14 +855,13 @@ if(nzones>1) {
 			  eq.bc_top1_add(op,nn,"Ri","r",ones(1,nth));
 		          rhs(nn)=-eq.eval()(j0);	
 */
-			  int nn=n+1;
-		          op->reset(nn,"Ri");
-			  eq.bc_bot2_add(op,nn,"Ri","p",ones(1,nth));
-			  eq.bc_bot2_add(op,nn,"Ri","s",ones(1,nth));
-			  eq.bc_bot2_add(op,nn,"Ri","r",ones(1,nth));
-		          rhs(nn)=-eq.eval()(j0);	
+		          op->reset(n+1,"Ri");
+			  eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
+			  eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
+			  eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
+		          rhs(n+1)=-eq.eval()(j0);	
 
-			} else if (domain_type[izif[iz]] == CONVECTIVE) {
+			} else if (domain_type[n] == CONVECTIVE) {
 		          op->reset(n+1,"Ri");
 			  eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
 			  eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));

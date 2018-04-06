@@ -157,6 +157,8 @@ void star2d::copy(const star2d &A) {
     details=A.details;	   // do not forget to copy !!
     n_essai=A.n_essai;	   // do not forget to copy !!
     Peclet=A.Peclet;	   // do not forget to copy !!
+    global_err=A.global_err;	   // do not forget to copy !!
+    prev_global_err=A.prev_global_err;	   // do not forget to copy !!
 
 }
 

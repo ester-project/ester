@@ -18,8 +18,9 @@ void star2d::new_check_map() {
 	}
 
 	//if (global_err < 1e-4) { // look for new convective regions and eventually remap the star
-	if (n_essai == 0) seuil=1e-3;
-	if (n_essai > 0) seuil=1e-9;
+	if (n_essai == 0) seuil=1e-2;
+	if (n_essai > 0) seuil=1e-2;
+printf("global errors %e %e\n",prev_global_err,global_err);
 	if (global_err < seuil) { // look for new convective regions and eventually remap the star
 	   // Find the zone boundaries and the associated pressures
 	   // and output zone_type as global var.
@@ -28,10 +29,11 @@ printf("seuil %e\n",seuil);
 	   find_zones(R_inter, p_inter);
 	   int nzones_ap=zone_type.size();
 	   if (nzones_av == nzones_ap) {
-if (details) printf("Number of zones unchanged: do something\n");
 		n_essai=n_essai+1;
 		  if (details) printf("n_essai=%d\n",n_essai);
-		if (n_essai >0) {
+		//if (n_essai < 20) {
+		//if (global_err < prev_global_err || global_err<1e-4) {
+		if (global_err < prev_global_err || global_err<1e-4) {
 		  if (details) printf("Number of zones unchanged: do nothing\n");
 		  if (details) printf("n_essai=%d\n",n_essai);
 		  return;
@@ -39,6 +41,8 @@ if (details) printf("Number of zones unchanged: do something\n");
 	   }
 	   // Redistribute the domains and output izif (index of zone interface)
 	   // as a global var.
+           if (details) printf("check_map: REDISTRIBUTE DOMAINS\n");
+	   n_essai=0;
 	   pif=New_distribute_domains(ndomains,p_inter);
 	   // fill the matrix R with the radii of the first interface
 	   // to the lat interface, so 1==> -2, for all theta 0==>-1
@@ -585,7 +589,7 @@ int k_rad=0;
 
     FILE *fic = fopen("schwi.txt", "a");
 	fprintf(fic,"it= %d\n",glit);
-    for (int k=0;k<nr;k++) fprintf(fic,"%d  %e %e %e %e\n",k,r(k,-1),schwBP(k,-1),bv2(k,-1),bv2f(k,-1));
+    for (int k=0;k<nr;k++) fprintf(fic,"%d r=%e schw=%e bv2=%e %e\n",k,r(k,-1),schw(k,-1),bv2(k,-1),bv2f(k,-1));
     fclose(fic);
 
     //dschw = (D, schw);

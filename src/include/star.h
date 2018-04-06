@@ -59,7 +59,7 @@ class star2d {
 	int env_convec;
 	int stratified_comp;
 	double min_core_size;
-	double global_err;
+	double global_err,prev_global_err;
 	int glit; // global view of iteration number
 	int details; // for debugging details=1, set in main/star
 	double dtime,time,delta; // in Myrs
