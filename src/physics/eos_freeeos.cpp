@@ -127,7 +127,7 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
                     "  T = %e\n"
                     "  p = %e", X(i), Z, t, p(i));
         }
-        eos.s(i) = entropy[0];
+        eos.s(i) = entropy[0]/RGP;
         eos.G1(i) = gamma1;
         eos.del_ad(i) = grada;
         eos.G3_1(i) = gamma1*(gamma2-1.0)/gamma2;

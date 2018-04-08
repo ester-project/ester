@@ -118,7 +118,7 @@ matrix star2d::entropy() const {
 	op.regvar("s");op.set_nr(map.gl.npts);
 	
 	op.add_l("s","s",ones(nr,1),D);
-	rhs=eos.cp*((D,log(T))-eos.del_ad*(D,log(p)));
+	rhs=eos.cp*((D,log(T))-eos.del_ad*(D,log(p)))/RGP;
 	
 	op.bc_bot2_add_d(0,"s","s",ones(1,1));
 	rhs.setrow(0,zeros(1,nth));

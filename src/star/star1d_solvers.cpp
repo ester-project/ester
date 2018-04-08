@@ -92,6 +92,7 @@ double star1d::solve(solver *op) {
 
 FILE *NORM;
 FILE *NORMf;
+FILE *qfic;
 
 double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     int info[5];
@@ -100,6 +101,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 
 	NORM=fopen("fnorm.txt","a");
 	NORMf=fopen("norm.txt","a");
+        qfic=fopen("rhst.txt", "a");
     check_map();
 
     op->reset();
@@ -112,8 +114,10 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     solve_map(op);
     solve_gsup(op);
     solve_Teff(op);
-
     op->solve(info);
+    fclose(NORM);
+    fclose(NORMf);
+    fclose(qfic);
 
     if (config.verbose) {
         if(info[2]) {
@@ -223,10 +227,10 @@ void star1d::solve_definitions(solver *op) {
     op->add_d("rz","dRi",(D,map.J[3]));
 
     //    Valid only for homogeneus composition !!!!!!
-    op->add_d("s","T",eos.cp/T);
-    op->add_d("s","log_Tc",eos.cp);
-    op->add_d("s","p",-eos.cp*eos.del_ad/p);
-    op->add_d("s","log_pc",-eos.cp*eos.del_ad);
+    op->add_d("s","T",eos.cp/T/RGP);
+    op->add_d("s","log_Tc",eos.cp/RGP);
+    op->add_d("s","p",-eos.cp*eos.del_ad/p/RGP);
+    op->add_d("s","log_pc",-eos.cp*eos.del_ad/RGP);
 
     op->add_d("opa.xi","rho",opa.dlnxi_lnrho*opa.xi/rho);
     op->add_d("opa.xi","log_rhoc",opa.dlnxi_lnrho*opa.xi);
@@ -542,6 +546,8 @@ double F2=0;
 for (int k=0;k<nr;k++) F2=F2+rhs_T(k)*rhs_T(k);
 fprintf(NORM,"it = %d NT    = %e\n",glit,F2);
 fprintf(NORMf," %d %e\n",glit,F2);
+fprintf(qfic," it = %d\n",glit);
+for (int k=0;k<nr;k++) fprintf(qfic,"%d rhst=%e r=%e\n",k,rhs_T(k),map.r(k));
 
 }
 
