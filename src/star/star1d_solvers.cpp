@@ -97,6 +97,8 @@ void star1d::register_variables(solver *op) {
 }
 
 FILE *RHS;
+FILE *NORM;
+FILE *NORMf;
 FILE *entrop;
 double star1d::solve(solver *op) {
     matrix_map error_map;
@@ -112,6 +114,8 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 	//check_map();
 	RHS=fopen("all_rhs.txt","a");
 	entrop=fopen("entropie.txt","a");
+	NORM=fopen("fnorm.txt","a");
+	NORMf=fopen("normflux.txt","a");
 
 	new_check_map();
 	
@@ -134,6 +138,8 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 	if (config.verbose == 19) printf("solve : solve done\n");
 	
 fclose(RHS);
+fclose(NORM);
+fclose(NORMf);
 // Some output verbose ----------------------
 	if (config.verbose) {
 		if(info[2]) {
@@ -640,6 +646,10 @@ void star1d::solve_flux(solver *op) {
 	}  // End of loop on domains rank
 	
 	op->set_rhs("Flux",rhs_Flux);
+double F2=0;
+for (int k=0;k<nr;k++) F2=F2+rhs_Flux(k)*rhs_Flux(k);
+fprintf(NORM,"it = %d Nflux = %e\n",glit,F2);
+fprintf(NORMf," %d %e\n",glit,F2);
 
 }
 //--------------------------END of solve_Flux-------------------------------------------
@@ -711,6 +721,9 @@ void star1d::solve_temp(solver *op) {
 	
 	op->set_rhs("log_T",rhs_T);
 	op->set_rhs("Lambda",rhs_Lambda);
+double F2=0;
+for (int k=0;k<nr;k++) F2=F2+rhs_T(k)*rhs_T(k);
+fprintf(NORM,"it = %d NT    = %e\n",glit,F2);
 }
 
 
