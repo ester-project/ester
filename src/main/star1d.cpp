@@ -51,6 +51,7 @@ int main(int argc,char *argv[]) {
     }
 
     nit=0;
+    A.glit=0;
 
     matrix tt(config.maxit+1,1),error(config.maxit+1,1);
     matrix_map error_map;
@@ -92,6 +93,7 @@ int main(int argc,char *argv[]) {
                 A.env_convec=env_convec_set;
             }
             nit++;
+	    A.glit++;
             //A.check_jacobian(op,"log_T");exit(0);
 
             err=A.solve(op, error_map, nit-1);

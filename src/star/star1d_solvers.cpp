@@ -90,11 +90,16 @@ double star1d::solve(solver *op) {
     return solve(op, error_map, 0);
 }
 
+FILE *NORM;
+FILE *NORMf;
+
 double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     int info[5];
     matrix rho0;
     double err,err2;
 
+	NORM=fopen("fnorm.txt","a");
+	NORMf=fopen("norm.txt","a");
     check_map();
 
     op->reset();
@@ -287,6 +292,10 @@ void star1d::solve_poisson(solver *op) {
         j0+=map.gl.npts[n];
     }
     op->set_rhs("Phi",rhs);
+double F2=0;
+for (int k=0;k<nr;k++) F2=F2+rhs(k)*rhs(k);
+fprintf(NORM,"it = %d Nphi    = %e\n",glit,F2);
+fprintf(NORMf," %d %e\n",glit,F2);
 }
 
 void star1d::solve_pressure(solver *op) {
@@ -324,6 +333,11 @@ void star1d::solve_pressure(solver *op) {
     }
     op->set_rhs(eqn,rhs_p);
     op->set_rhs("pi_c",rhs_pi_c);
+double F2=0;
+for (int k=0;k<nr;k++) F2=F2+rhs_p(k)*rhs_p(k);
+fprintf(NORM,"it = %d Np    = %e\n",glit,F2);
+fprintf(NORMf," %d %e\n",glit,F2);
+
 }
 
 
@@ -524,6 +538,11 @@ void star1d::solve_temp(solver *op) {
     op->set_rhs(eqn,rhs_T);
     op->set_rhs("Lambda",rhs_Lambda);
 
+double F2=0;
+for (int k=0;k<nr;k++) F2=F2+rhs_T(k)*rhs_T(k);
+fprintf(NORM,"it = %d NT    = %e\n",glit,F2);
+fprintf(NORMf," %d %e\n",glit,F2);
+
 }
 
 
@@ -606,6 +625,8 @@ void star1d::solve_map(solver *op) {
         if(n<ndomains-1) op->bc_top2_add_d(n,"dRi","Ri",-ones(1,1));
     }
     op->set_rhs("dRi",rhs);
+double F2=0;
+for (int k=0;k<ndomains;k++) F2=F2+rhs(k)*rhs(k);
 
     rhs=zeros(ndomains,1);
     j0=0;
@@ -643,6 +664,10 @@ void star1d::solve_map(solver *op) {
         rhs(n)=-eq.eval()(j0);
     }
     op->set_rhs("Ri",rhs);
+
+for (int k=0;k<ndomains;k++) F2=F2+rhs(k)*rhs(k);
+fprintf(NORM,"it = %d Nmap    = %e\n",glit,F2);
+fprintf(NORMf," %d %e\n",glit,F2);
 }
 
 void star1d::solve_gsup(solver *op) {

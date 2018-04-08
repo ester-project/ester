@@ -57,6 +57,7 @@ class star2d {
 	int env_convec;
 	int stratified_comp;
 	double min_core_size;
+	int glit; // global view of iteration number
 	std::vector<int> domain_type;
 	#define RADIATIVE 0
 	#define CORE 1
