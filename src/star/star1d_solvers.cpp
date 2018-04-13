@@ -19,7 +19,8 @@ void star1d::fill() {
     R=pow(M/m/rhoc,1./3.);
 
     pi_c=(4*PI*GRAV*rhoc*rhoc*R*R)/pc;
-    Lambda=rhoc*R*R/Tc;
+    //Lambda=rhoc*R*R/Tc;
+    Lambda=epsc*rhoc*R*R/Tc/xic;
 
     calc_units();
 
@@ -36,7 +37,8 @@ solver *star1d::init_solver(int nvar_add) {
     int nvar;
     solver *op;
 
-    nvar=27;
+    //nvar=27; we add lnepsc and lnxic as var dep
+    nvar=29;
 
     op=new solver();
     op->init(ndomains,nvar+nvar_add,"full");
@@ -82,6 +84,8 @@ void star1d::register_variables(solver *op) {
     op->regvar_dep("opa.xi");
     op->regvar_dep("opa.k");
     op->regvar_dep("nuc.eps");
+    op->regvar_dep("log_epsc");
+    op->regvar_dep("log_xic");
 
 }
 
@@ -236,17 +240,20 @@ void star1d::solve_definitions(solver *op) {
     op->add_d("opa.xi","log_rhoc",opa.dlnxi_lnrho*opa.xi);
     op->add_d("opa.xi","T",opa.dlnxi_lnT*opa.xi/T);
     op->add_d("opa.xi","log_Tc",opa.dlnxi_lnT*opa.xi);
+    op->add_d("opa.xi","log_xic",-opa.xi);
 
     op->add_d("opa.k","T",3*opa.k/T);
     op->add_d("opa.k","log_Tc",3*opa.k);
     op->add_d("opa.k","rho",-opa.k/rho);
     op->add_d("opa.k","log_rhoc",-opa.k);
     op->add_d("opa.k","opa.xi",-opa.k/opa.xi);
+    op->add_d("opa.k","log_xic",-opa.k);
 
     op->add_d("nuc.eps","rho",nuc.dlneps_lnrho*nuc.eps/rho);
     op->add_d("nuc.eps","log_rhoc",nuc.dlneps_lnrho*nuc.eps);
     op->add_d("nuc.eps","T",nuc.dlneps_lnT*nuc.eps/T);
     op->add_d("nuc.eps","log_Tc",nuc.dlneps_lnT*nuc.eps);
+    op->add_d("nuc.eps","log_epsc",-nuc.eps);
 
 }
 
@@ -546,8 +553,14 @@ double F2=0;
 for (int k=0;k<nr;k++) F2=F2+rhs_T(k)*rhs_T(k);
 fprintf(NORM,"it = %d NT    = %e\n",glit,F2);
 fprintf(NORMf," %d %e\n",glit,F2);
+F2=0;
+for (int k=0;k<ndomains;k++) F2=F2+rhs_Lambda(k)*rhs_Lambda(k);
+fprintf(NORM,"it = %d lambda  = %e\n",glit,F2);
+fprintf(NORMf," %d %e\n",glit,F2);
+
 fprintf(qfic," it = %d\n",glit);
 for (int k=0;k<nr;k++) fprintf(qfic,"%d rhst=%e r=%e\n",k,rhs_T(k),map.r(k));
+for (int k=0;k<ndomains;k++) fprintf(qfic,"%d rhs_lam=%e r=%e\n",k,rhs_Lambda(k),map.r(k));
 
 }
 
@@ -574,6 +587,10 @@ void star1d::solve_dim(solver *op) {
     for(n=0;n<ndomains;n++) {
         op->add_d(n,"log_rhoc","log_pc",1./eos.chi_rho(0)*ones(1,1));
         op->add_d(n,"log_rhoc","log_Tc",-eos.d(0)*ones(1,1));
+        op->add_d(n,"log_xic","log_rhoc",opa.dlnxi_lnrho(0)*ones(1,1));
+        op->add_d(n,"log_xic","log_Tc",opa.dlnxi_lnT(0)*ones(1,1));
+        op->add_d(n,"log_epsc","log_rhoc",nuc.dlneps_lnrho(0)*ones(1,1));
+        op->add_d(n,"log_epsc","log_Tc",nuc.dlneps_lnT(0)*ones(1,1));
     }
 
 

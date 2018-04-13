@@ -41,7 +41,7 @@ class star2d {
 	composition_map comp; 
     double X0,Y0,Z0;
     double R,M;
-    double rhoc,Tc,pc;
+    double rhoc,Tc,pc,xic,epsc;
     double Omega,Omega_bk,Omegac;
    	double Ekman;
   	opa_struct opa;
