@@ -124,6 +124,7 @@ void star2d::copy(const star2d &A) {
 
     R=A.R;M=A.M;
     Tc=A.Tc;pc=A.pc;rhoc=A.rhoc;
+    xic=A.xic;epsc=A.epsc;
     X0=A.X0;Y0=A.Y0;Z0=A.Z0;
     surff=A.surff;
     conv=A.conv;

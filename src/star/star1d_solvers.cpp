@@ -724,18 +724,22 @@ void star1d::solve_Teff(solver *op) {
     int n=ndomains-1;
 
     Te=Teff()*ones(1,1);
-    F=SIG_SB*pow(Te,4);
+    F=SIG_SB*pow(Te,4)*R/xic/Tc;
 
-    op->bc_top1_add_d(n,"Teff","Teff",4*SIG_SB*pow(Te,3));
+    //op->bc_top1_add_d(n,"Teff","Teff",4*SIG_SB*pow(Te,3));
+    op->bc_top1_add_d(n,"Teff","Teff",4*F/Te);
     op->bc_top1_add_d(n,"Teff","log_Tc",-F);
+    op->bc_top1_add_d(n,"Teff","log_xic",-F);
     op->bc_top1_add_d(n,"Teff","log_R",F);
     op->bc_top1_add_d(n,"Teff","opa.xi",-F/opa.xi.row(-1));
 
-    q=opa.xi*Tc/R;
-    op->bc_top1_add_l(n,"Teff","T",q.row(-1),D.block(n).row(-1));
+    //q=opa.xi*Tc/R;
+    //op->bc_top1_add_l(n,"Teff","T",q.row(-1),D.block(n).row(-1));
+    op->bc_top1_add_l(n,"Teff","T",opa.xi.row(-1),D.block(n).row(-1));
 
-    q=-(D,T)*opa.xi;
-    op->bc_top1_add_d(n,"Teff","rz",Tc/R*q.row(-1));
+    //q=-(D,T)*opa.xi;
+    //op->bc_top1_add_d(n,"Teff","rz",Tc/R*q.row(-1));
+    op->bc_top1_add_d(n,"Teff","rz",F);
 
 /*    op->bc_top1_add_d(n,"Teff","Teff",4./Te);
     op->bc_top1_add_d(n,"Teff","log_Tc",-ones(1,1));
