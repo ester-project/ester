@@ -21,7 +21,7 @@ void star2d::fill() {
 	R=pow(M/m/rhoc,1./3.);
 
 	pi_c=(4*PI*GRAV*rhoc*rhoc*R*R)/pc;
-	Lambda=rhoc*R*R/Tc;
+	Lambda=epsc*rhoc*R*R/xic/Tc;
 
 	calc_veloc();
 	calc_units();
@@ -79,7 +79,7 @@ solver *star2d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 
-	nvar=33;
+	nvar=35; // we add log_epsc and log_xic as var dep
 	op=new solver;
 	op->init(ndomains+1,nvar+nvar_add,"full");
 
@@ -129,6 +129,8 @@ void star2d::register_variables(solver *op) {
 	op->regvar_dep("opa.xi");
 	op->regvar_dep("opa.k");
 	op->regvar_dep("nuc.eps");
+	op->regvar_dep("log_epsc");
+	op->regvar_dep("log_xic");
 	op->regvar_dep("s");
 	op->regvar("gamma");
 
@@ -276,8 +278,9 @@ void star2d::update_map(matrix dR) {
 
 }
 
-/// \brief insert the definitions depending on opacity and eos tables into the solver,
-/// and the definitions used by the mapping (eta,deta,Ri,dRi,...), and the entropy
+/// \brief insert the definitions depending on opacity and
+/// eos tables into the solver, and the definitions used by the
+/// mapping (eta,deta,Ri,dRi,...), and the entropy
 void star2d::solve_definitions(solver *op) {
 
 // EOS written rho(P,T). eos.chi_rho is from OPAL,
@@ -288,26 +291,33 @@ void star2d::solve_definitions(solver *op) {
 	op->add_d("rho","log_Tc",-rho*eos.d);
 	op->add_d("rho","log_rhoc",-rho);
 
-// Constitutive relation for opacity (xi); formal dependence xi=xi(rho,T)
+// Constitutive relation for thermal radiative conductivity
+// xi=16sigma*T^3/rho/k
 	op->add_d("opa.xi","rho",opa.dlnxi_lnrho*opa.xi/rho);
 	op->add_d("opa.xi","log_rhoc",opa.dlnxi_lnrho*opa.xi);
 	op->add_d("opa.xi","T",opa.dlnxi_lnT*opa.xi/T);
 	op->add_d("opa.xi","log_Tc",opa.dlnxi_lnT*opa.xi);
+	op->add_d("opa.xi","log_xic",-opa.xi);
 
-// Constitutive relation for thermal radiative conductivity k=16sigma*T^3/\rho/\xi
+// Constitutive relation for opacity (k); formal dependence k=k(rho,T)
 	op->add_d("opa.k","T",3*opa.k/T);
 	op->add_d("opa.k","log_Tc",3*opa.k);
 	op->add_d("opa.k","rho",-opa.k/rho);
 	op->add_d("opa.k","log_rhoc",-opa.k);
 	op->add_d("opa.k","opa.xi",-opa.k/opa.xi);
+	op->add_d("opa.k","log_xic",-opa.k);
 
-// Constitutive relation for nuclear heat generation; formal dependence nuc.eps=nuc.eps(rho,T)
+
+// Constitutive relation for nuclear heat generation;
+// formal dependence nuc.eps=nuc.eps(rho,T)
 	op->add_d("nuc.eps","rho",nuc.dlneps_lnrho*nuc.eps/rho);
 	op->add_d("nuc.eps","log_rhoc",nuc.dlneps_lnrho*nuc.eps);
 	op->add_d("nuc.eps","T",nuc.dlneps_lnT*nuc.eps/T);
 	op->add_d("nuc.eps","log_Tc",nuc.dlneps_lnT*nuc.eps);
+	op->add_d("nuc.eps","log_epsc",-nuc.eps);
 
-// Here we write the variation of r as a function of the variations of the mapping
+// Here we write the variation of r as a function of the
+// variations of the mapping
 // parameters according to equation 6.10 of the manual
 	op->add_d("r","eta",map.J[0]);
 	op->add_d("r","deta",map.J[1]);
@@ -904,9 +914,14 @@ void star2d::solve_dim(solver *op) {
 	op->set_rhs("m",rhs);
 
 // From the equation of state dln(rho_c)/dln(p_c) = 1/khi_rho(0)
+// same for xic and epsc
 	for(n=0;n<ndomains;n++) {
 		op->add_d(n,"log_rhoc","log_pc",1./eos.chi_rho(0)*ones(1,1));
 		op->add_d(n,"log_rhoc","log_Tc",-eos.d(0)*ones(1,1));
+        	op->add_d(n,"log_xic","log_rhoc",opa.dlnxi_lnrho(0)*ones(1,1));
+        	op->add_d(n,"log_xic","log_Tc",opa.dlnxi_lnT(0)*ones(1,1));
+        	op->add_d(n,"log_epsc","log_rhoc",nuc.dlneps_lnrho(0)*ones(1,1));
+        	op->add_d(n,"log_epsc","log_Tc",nuc.dlneps_lnT(0)*ones(1,1));
 	}
 
 // pi_c= 4*pi*G*rho_c^2/P_c
@@ -930,6 +945,8 @@ void star2d::solve_dim(solver *op) {
 		if(n==ndomains-1) {
 			op->add_d(n,"log_Tc","log_Tc",ones(1,1));
 			op->add_d(n,"log_Tc","log_rhoc",-ones(1,1));
+	                op->add_d(n,"log_Tc","log_epsc",-ones(1,1));
+			op->add_d(n,"log_Tc","log_xic",ones(1,1));
 			op->add_d(n,"log_Tc","Lambda",ones(1,1)/Lambda);
 			op->add_d(n,"log_Tc","log_R",-2*ones(1,1));
 		} else {
@@ -1143,10 +1160,11 @@ void star2d::solve_Teff(solver *op) {
 	matrix &rt=map.rt;
 
 	Te=Teff();
-	F=SIG_SB*pow(Te,4);
+	F=SIG_SB*pow(Te,4)*R/xic/Tc;
 
-	op->bc_top1_add_d(n,"Teff","Teff",4*SIG_SB*pow(Te,3));
+	op->bc_top1_add_d(n,"Teff","Teff",4*F/Te);
 	op->bc_top1_add_d(n,"Teff","log_Tc",-F);
+	op->bc_top1_add_d(n,"Teff","log_xic",-F);
 	op->bc_top1_add_d(n,"Teff","log_R",F);
 	op->bc_top1_add_d(n,"Teff","opa.xi",-F/opa.xi.row(-1));
 
@@ -1158,13 +1176,12 @@ void star2d::solve_Teff(solver *op) {
 	S.set_map(map);
 	S.set_value("T",T);
 	S.set_value("gamma",sqrt(1+rt*rt/r/r)); // Bug corrected 14/6/2015, MR
-	//S.set_value("gamma",sqrt(1-rt*rt/r/r)); // Looks like an error, should be sqrt(1+rt*rt/r/r)
 	n_(0)=Dz(S.r)/gamma_;n_(1)=0*S.one;n_(2)=0*S.one;
 
 	eq=(n_,grad(T_));
-	eq.bc_top1_add(op,n,"Teff","T",Tc/R*opa.xi.row(-1));
-	eq.bc_top1_add(op,n,"Teff","gamma",Tc/R*opa.xi.row(-1));
-	eq.bc_top1_add(op,n,"Teff","r",Tc/R*opa.xi.row(-1));
+	eq.bc_top1_add(op,n,"Teff","T",opa.xi.row(-1));
+	eq.bc_top1_add(op,n,"Teff","gamma",opa.xi.row(-1));
+	eq.bc_top1_add(op,n,"Teff","r",opa.xi.row(-1));
 
 	op->set_rhs("Teff",zeros(1,nth));
 

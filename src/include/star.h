@@ -69,7 +69,7 @@ class star2d {
 	} version;
 
 	struct units_struct {
-		double rho,p,phi,T,Omega,r,v,F;
+		double rho,p,phi,T,Omega,r,v,F,eps,xi;
 	} units;
 	void calc_units();
 

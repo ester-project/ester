@@ -37,7 +37,7 @@ solver *star1d::init_solver(int nvar_add) {
     int nvar;
     solver *op;
 
-    //nvar=27; we add lnepsc and lnxic as var dep
+    //nvar=27; we add log_epsc and log_xic as var dep
     nvar=29;
 
     op=new solver();

@@ -43,11 +43,14 @@ void star2d::calc_units() {
 	units.Omega=sqrt(pc/rhoc)/R;
 	units.v=sqrt(pc/rhoc);
 	units.F=pc/R/rhoc;
+	units.eps=epsc;
+	units.xi=xic;
 }
 
 double star2d::luminosity() const {
 
-	return 2*PI*(map.gl.I,(rho*nuc.eps*r*r*map.rz,map.leg.I_00))(0)*units.rho*units.r*units.r*units.r;
+	return 2*PI*(map.gl.I,(rho*nuc.eps*r*r*map.rz,map.leg.I_00))(0)*
+               units.rho*units.r*units.r*units.r*units.eps;
 
 }
 
@@ -141,7 +144,7 @@ matrix star2d::Teff() const {
 
 	matrix F;
 	
-	F=-opa.xi/sqrt(map.gzz)*(map.gzz*(D,T)+map.gzt*(T,Dt))/units.r*units.T;
+	F=-units.xi*opa.xi/sqrt(map.gzz)*(map.gzz*(D,T)+map.gzt*(T,Dt))/units.r*units.T;
 	F=F.row(nr-1)/SIG_SB;
 	
 	return pow(F,0.25);
