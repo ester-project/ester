@@ -49,7 +49,7 @@ void star1d::spectrum(figure *pfig,const matrix &y,const char *line) const {
 
 double star1d::luminosity() const {
 
-	return 4*PI*(map.gl.I,rho*nuc.eps*r*r)(0)*units.rho*units.r*units.r*units.r;
+	return 4*PI*(map.gl.I,rho*nuc.eps*r*r)(0)*units.rho*units.r*units.r*units.r*epsc;
 
 }
 
@@ -57,8 +57,7 @@ matrix star1d::Teff() const {
 
 	// return pow(luminosity()/4./PI/R/R/SIG_SB,0.25)*ones(1,1);
 	matrix F;
-	//F=-opa.xi*(D,T);
-	F=-opa.xi*( (D,T)+Pe*T*(D,entropy()) );
+	F=-xic*opa.xi*( (D,T)+Pe*T*(D,entropy()) );
     matrix teff = pow(F(-1)/SIG_SB*units.T/units.r,0.25)*ones(1,1);
     if (std::isnan(teff(0))) {
         ester_err("Teff is NaN (D,T) = %e", (D,T)(-1));

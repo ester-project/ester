@@ -6,7 +6,7 @@
 #include <string.h>
 #include "symbolic.h"
 
-static int iopt=1;
+static int iopt=0;
 static int ioptw=1;
 
 void star1d::fill() {
@@ -23,8 +23,8 @@ void star1d::fill() {
     R=pow(M/m/rhoc,1./3.);
 
     pi_c=(4*PI*GRAV*rhoc*rhoc*R*R)/pc;
-    //Lambda=rhoc*R*R/Tc;
     Lambda=epsc*rhoc*R*R/Tc/xic;
+	printf("lambda = %e\n",Lambda);
 
     calc_units();
 
@@ -49,7 +49,7 @@ solver *star1d::init_solver(int nvar_add) {
 	solver *op;
 
     //nvar=27; we add lnepsc and lnxic as var dep
-    nvar=29;
+    nvar=30;
 
 	op=new solver();
 	op->init(ndomains,nvar+nvar_add,"full");
@@ -182,7 +182,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 
     double q,h;
 
-    h=0.4;
+    h=0.2;
     if (ioptw) h=1.0;
 //	printf("it = %d\n",nit);
  // 	if (nit == 0) h=0.4;
@@ -202,6 +202,11 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     if (ioptw) while(exist(abs(h*dp)>q)) h/=2;
 
     dFlux=op->get_var("Flux");
+    FILE *ficflux = fopen("flux.txt", "a");
+    fprintf(ficflux, "flux it = %d\n", glit);
+    for(int k=0;k<nr;k++) fprintf(ficflux, "%d %e %e\n", k,map.r(k), dFlux(k));
+    fclose(ficflux);
+
     err2=max(abs(dFlux));err=err2>err?err2:err;
     error_map["Flux"](nit) = err2;
     if (ioptw) while(exist(abs(h*dFlux)>q)) h/=2;
@@ -268,8 +273,8 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     LOGW("|rhs| = %.3e (was %.3e) (h=%.1e)\n", norm_rhs1, norm_rhs0, h);
 
     bool check_rhs = false;
-    if (check_rhs) {
 
+    if (check_rhs) {
         LOGI("iter: %d\n", nit);
         LOGI("|Phi| = %e\n", norm(op->get_rhs("Phi")));
         LOGI("|log_p| = %e\n", norm(op->get_rhs("log_p")));
@@ -343,12 +348,11 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
                 fill();
             }
 #endif
-        }
-        else {
+        } else {
             LOGI("Hello |rhs| = %.2e (h=%e)\n", norm_rhs1, h);
         }
     }
-	FILE *entrop = fopen("entropie.txt", "a");
+FILE *entrop = fopen("entropie.txt", "a");
     matrix ss = entropy();
     fprintf(entrop, "entropy it = %d\n", glit);
     for(int k=0;k<nr;k++) fprintf(entrop, "%d %e %e\n", k,map.r(k), ss(k));
@@ -731,11 +735,12 @@ void star1d::solve_flux(solver *op) {
 	} else {
 	op->add_l("Flux","Flux",r,D);
 	op->add_d("Flux","Flux",2.*ones(nr,1));
-	op->add_d("Flux","r",(D,Flux) - rho*nuc.eps);
+	op->add_d("Flux","r",(D,Flux) - Lambda*rho*nuc.eps);
 	op->add_d("Flux","rz",-r*(D,Flux));
-	op->add_d("Flux","rho",-r*nuc.eps);
-	op->add_d("Flux","nuc.eps",-r*rho);
-	rhs_Flux=-(r*(D,Flux)+2.*Flux-r*rho*nuc.eps);
+	op->add_d("Flux","rho",-Lambda*r*nuc.eps);
+	op->add_d("Flux","nuc.eps",-Lambda*r*rho);
+	op->add_d("Flux","Lambda",-r*rho*nuc.eps);
+	rhs_Flux=-(r*(D,Flux)+2.*Flux-Lambda*r*rho*nuc.eps);
 	}
 
 	j0=0;
@@ -821,15 +826,14 @@ Pep.setblock(j0,j1,0,0,2*Peclet*ff*(Rcz-rr));
 	rhs_T=-((D,T)+Pe*T*(D,entropy())+Flux);
 	} else {
 	op->add_d("log_T","Flux",ones(nr,1));
-	op->add_l("log_T","T",opa.xi/Lambda,D);
-        op->add_d("log_T","T",opa.xi/Lambda*Pe*(D,entropy()));
-	op->add_d("log_T","r",opa.xi/Lambda*Pep*T*(D,entropy()));
-	op->add_l("log_T","s",opa.xi/Lambda*Pe*T,D);
+	op->add_l("log_T","T",opa.xi,D);
+        op->add_d("log_T","T",opa.xi*Pe*(D,entropy()));
+	op->add_d("log_T","r",opa.xi*Pep*T*(D,entropy()));
+	op->add_l("log_T","s",opa.xi*Pe*T,D);
 	op->add_d("log_T","rz",Flux);
-	op->add_d("log_T","Lambda",Flux/Lambda);
 	op->add_d("log_T","opa.xi",-Flux/opa.xi);
 
-	rhs_T=-(opa.xi/Lambda*((D,T)+Pe*T*(D,entropy()))+Flux);
+	rhs_T=-(opa.xi*((D,T)+Pe*T*(D,entropy()))+Flux);
 	}
 
 	j0=0;
@@ -911,8 +915,10 @@ void star1d::solve_dim(solver *op) {
         if(n==ndomains-1) {
             op->add_d(n,"log_Tc","log_Tc",ones(1,1));
             op->add_d(n,"log_Tc","log_rhoc",-ones(1,1));
-            op->add_d(n,"log_Tc","Lambda",ones(1,1)/Lambda);
+            op->add_d(n,"log_Tc","log_epsc",-ones(1,1));
             op->add_d(n,"log_Tc","log_R",-2*ones(1,1));
+            op->add_d(n,"log_Tc","log_xic",ones(1,1));
+            op->add_d(n,"log_Tc","Lambda",ones(1,1)/Lambda);
         } else {
             op->bc_top1_add_d(n,"log_Tc","log_Tc",ones(1,1));
             op->bc_top2_add_d(n,"log_Tc","log_Tc",-ones(1,1));
@@ -1000,7 +1006,7 @@ void star1d::solve_map(solver *op) {
                 eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
                 rhs(n+1)=-eq.eval()(j0);
             } else if (domain_type[n] == RADIATIVE) {
-                /*
+		/*
                    int nn=n;
                    op->reset(nn,"Ri");
                    eq.bc_top1_add(op,nn,"Ri","p",ones(1,nth));
@@ -1055,7 +1061,6 @@ void star1d::solve_Teff(solver *op) {
     Te=Teff()*ones(1,1);
     F=SIG_SB*pow(Te,4)*R/xic/Tc;
 
-    //op->bc_top1_add_d(n,"Teff","Teff",4*SIG_SB*pow(Te,3));
     op->bc_top1_add_d(n,"Teff","Teff",4*F/Te);
     op->bc_top1_add_d(n,"Teff","log_Tc",-F);
     op->bc_top1_add_d(n,"Teff","log_xic",-F);

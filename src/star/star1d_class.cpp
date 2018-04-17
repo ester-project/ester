@@ -251,6 +251,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 	}
 	if (*input_file) {
 		if(change_grid) {
+			printf("Change grid in 1D\n");
 			mapping map_new;
 			map_new=map;
 			map=map0;

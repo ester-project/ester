@@ -27,7 +27,8 @@ void star2d::new_check_map() {
 	//printf("izif size %d\n",izif.size());
 	//for (int iz=0;iz<ndomains-1;iz++) printf(" %d ",izif[iz]);
 	//printf("\n");
-	int n=izif[1],j0,k; // n is the index of the domain just below the interface
+	//printf("nzones %d\n",nzones);
+	int n=izif[nzones-2],j0,k; // n is the index of the domain just below the interface
         for(k=0,j0=0;k<n+1;k++) j0+=map.gl.npts[k]; // j0 is the radial index of the interface
 	
 	double p_drop=PRES(-1,0)/PRES(j0,0);
@@ -234,6 +235,7 @@ fclose(fic);
 // domain.
 
 void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
+details=0;
     remapper red(map); // declaration object of class remapper 
 
     if (details) printf("    Enter remap in star_map 1\n");
@@ -247,6 +249,8 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
         remap_domains(ndom_in,red); // the new R_i are now known
 
     map=red.get_map(); // update the mapping
+    if (details) for (int n=0;n<ndomains;n++)
+            printf("%d, domain_type = %d, r=%e\n",n,domain_type[n],map.gl.xif[n]);
     if (details) printf("mapping updated in remap in star_map 1\n");
     interp(&red); // interpolate the variable on the new update
 
@@ -258,6 +262,7 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
 // domain_type = integer for CC RZ CZ (see star.h)
 bool star2d::remap_domains(int ndom, remapper &red) {
 //	Count zones
+//details=1;
     int nzo=1;
     std::vector<int> index;	
 // Here look for interface between zones of different type.
@@ -715,7 +720,7 @@ if (les_zi[i] !=0. && les_zi[i] !=1.) {
 }
 if (details) printf("Number of interfaces calcule %d \n",n_interf);
 matrix bb=ones(2,1);
-bb(0,0)=2; bb(1,0)=n_interf;
+bb(0,0)=1; bb(1,0)=n_interf;
 n_interf=min(bb);
 if (details) printf("number of interfaces calcule %d \n",n_interf);
 

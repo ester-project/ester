@@ -88,6 +88,7 @@ star2d::star2d() : nr(map.gl.N), nth(map.leg.npts), nex(map.ex.gl.N),
     stratified_comp = 0;
     config.dump_iter = 0;
     al=0;
+    nzones=1;
 }
 
 star2d::~star2d() {
