@@ -196,7 +196,7 @@ double star2d::energy_test() const {
 	matrix Fz;
 	
 	e1=luminosity();
-	Fz=-opa.xi*(map.gzz*(D,T)+map.gzt*(T,Dt));
+	Fz=-xic*opa.xi*(map.gzz*(D,T)+map.gzt*(T,Dt));
 	e2=2*PI*((Fz*r*r*map.rz).row(nr-1),map.leg.I_00)(0)*units.T*units.r;
 	
 	return (e1-e2)/e1;

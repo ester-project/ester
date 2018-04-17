@@ -19,8 +19,8 @@ void star1d::fill() {
     R=pow(M/m/rhoc,1./3.);
 
     pi_c=(4*PI*GRAV*rhoc*rhoc*R*R)/pc;
-    //Lambda=rhoc*R*R/Tc;
     Lambda=epsc*rhoc*R*R/Tc/xic;
+	printf("lambda = %e\n",Lambda);
 
     calc_units();
 
@@ -613,8 +613,10 @@ void star1d::solve_dim(solver *op) {
         if(n==ndomains-1) {
             op->add_d(n,"log_Tc","log_Tc",ones(1,1));
             op->add_d(n,"log_Tc","log_rhoc",-ones(1,1));
-            op->add_d(n,"log_Tc","Lambda",ones(1,1)/Lambda);
+            op->add_d(n,"log_Tc","log_epsc",-ones(1,1));
             op->add_d(n,"log_Tc","log_R",-2*ones(1,1));
+            op->add_d(n,"log_Tc","log_xic",ones(1,1));
+            op->add_d(n,"log_Tc","Lambda",ones(1,1)/Lambda);
         } else {
             op->bc_top1_add_d(n,"log_Tc","log_Tc",ones(1,1));
             op->bc_top2_add_d(n,"log_Tc","log_Tc",-ones(1,1));
@@ -726,19 +728,12 @@ void star1d::solve_Teff(solver *op) {
     Te=Teff()*ones(1,1);
     F=SIG_SB*pow(Te,4)*R/xic/Tc;
 
-    //op->bc_top1_add_d(n,"Teff","Teff",4*SIG_SB*pow(Te,3));
     op->bc_top1_add_d(n,"Teff","Teff",4*F/Te);
     op->bc_top1_add_d(n,"Teff","log_Tc",-F);
     op->bc_top1_add_d(n,"Teff","log_xic",-F);
     op->bc_top1_add_d(n,"Teff","log_R",F);
     op->bc_top1_add_d(n,"Teff","opa.xi",-F/opa.xi.row(-1));
-
-    //q=opa.xi*Tc/R;
-    //op->bc_top1_add_l(n,"Teff","T",q.row(-1),D.block(n).row(-1));
     op->bc_top1_add_l(n,"Teff","T",opa.xi.row(-1),D.block(n).row(-1));
-
-    //q=-(D,T)*opa.xi;
-    //op->bc_top1_add_d(n,"Teff","rz",Tc/R*q.row(-1));
     op->bc_top1_add_d(n,"Teff","rz",F);
 
 /*    op->bc_top1_add_d(n,"Teff","Teff",4./Te);
