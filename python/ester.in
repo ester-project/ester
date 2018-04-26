@@ -181,9 +181,9 @@ class star2d:
         self.Lzcore     = self._s.Lzcore()
 # It = weights for computing theta-integrals, since polar and equatorial points
 # are used in the representation of the fields, the associated weights are zero
-        self.It         = _np.zeros(shape=(1, self.nth+2))
-        self.It[0, 1:self.nth+1] = _mat_to_numpy(self._s.map.leg.I_00)[0, :]
-        self.It         = _np.reshape(self.It,self.nth+2)
+        self.It         = _np.zeros(shape=(self.nth+2))
+	toto		=_mat_to_numpy(self._s.map.leg.I_00)
+        self.It[1:self.nth+1] = _np.reshape(toto,self.nth)
 
         ones = _wrapper.ones(1, self.nth)
         te = _wrapper.zeros(self.nth, 1)
