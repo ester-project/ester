@@ -165,7 +165,7 @@ fclose(NORMf);
 
 	double q,h;
 		
-	h=1;
+	h=0.1;
 	q=config.newton_dmax;
 	prev_global_err=global_err;
 	
@@ -183,39 +183,39 @@ FILE *fic=fopen("err.txt", "a");
         error_map["log_p"](nit) = err2;
 //  fprintf(fic,"err P = %e\n",err2);
 // if (err> 1e-0) for (int k=0;k<nr;k++) fprintf(fic,"%d %e \n",k,dp(k));
-	while(exist(abs(h*dp)>q)) h/=2;
+	//while(exist(abs(h*dp)>q)) h/=2;
 
 	dFlux=op->get_var("Flux");	
 	err2=max(abs(dFlux));err=err2>err?err2:err;
         error_map["Flux"](nit) = err2;
-	while(exist(abs(h*dFlux)>q)) h/=2;
+	//while(exist(abs(h*dFlux)>q)) h/=2;
 
 	dT=op->get_var("log_T");	
 	err2=max(abs(dT));err=err2>err?err2:err;
         error_map["log_T"](nit) = err2;
-	while(exist(abs(h*dT)>q)) h/=2;
+	//while(exist(abs(h*dT)>q)) h/=2;
 //  fprintf(fic,"err T = %e\n",err2);
 // if (err> 1e-0) for (int k=0;k<nr;k++) fprintf(fic,"%d %e \n",k,dT(k));
 
 // Compute dXh
 	dXh=op->get_var("lnXh");	
 	err2=max(abs(dXh));err=err2>err?err2:err;
-	while(exist(abs(h*dXh)>q)) h/=2;
+	//while(exist(abs(h*dXh)>q)) h/=2;
 // Compute dWr
 	dWr=op->get_var("Wr");	
 	err2=max(abs(dWr));err=err2>err?err2:err;
-	while(exist(abs(h*dWr)>q)) h/=2;
+	//while(exist(abs(h*dWr)>q)) h/=2;
 // End of dWr computation
 
 	dpc=op->get_var("log_pc");	
 	err2=fabs(dpc(0)/pc);err=err2>err?err2:err;
         error_map["log_pc"](nit) = err2;
-	while(fabs(h*dpc(0))>q*pc) h/=2;
+	//while(fabs(h*dpc(0))>q*pc) h/=2;
 
 	dTc=op->get_var("log_Tc");	
 	err2=fabs(dTc(0));err=err2>err?err2:err;
         error_map["log_Tc"](nit) = err2;
-	while(fabs(h*dTc(0))>q) h/=2;
+	//while(fabs(h*dTc(0))>q) h/=2;
 	
 	dRi=op->get_var("Ri");	
     error_map["Ri"](nit) = max(abs(dRi));

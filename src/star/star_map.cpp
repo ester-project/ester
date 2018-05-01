@@ -33,7 +33,7 @@ printf("seuil %e\n",seuil);
 		  if (details) printf("n_essai=%d\n",n_essai);
 		//if (n_essai < 20) {
 		//if (global_err < prev_global_err || global_err<1e-4) {
-		if (global_err < prev_global_err || global_err<1e-4) {
+		if (global_err < prev_global_err || global_err<2e-3) {
 		  if (details) printf("Number of zones unchanged: do nothing\n");
 		  if (details) printf("n_essai=%d\n",n_essai);
 		  return;
