@@ -138,7 +138,8 @@ void solver_full::lu_calc() {
     FILE *f = NULL;
 
     if (dump_jac) {
-        asprintf(&fname, "J-%d.txt", n++);
+        int nnn=asprintf(&fname, "J-%d.txt", n++);
+	if (nnn < 6) printf("error in asprintf\n");
         f = fopen(fname, "w");
     }
 

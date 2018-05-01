@@ -45,6 +45,7 @@ solver *star1d::init_solver(int nvar_add) {
 	solver *op;
 	
 	nvar=28; // two more variables added (lnXh and Wr)
+	//nvar=29; // one more variables added : Pe
 	
 	op=new solver();
 	op->init(ndomains,nvar+nvar_add,"full");
@@ -90,6 +91,7 @@ void star1d::register_variables(solver *op) {
 	op->regvar_dep("opa.xi");
 	op->regvar_dep("opa.k");
 	op->regvar_dep("nuc.eps");
+	//op->regvar("Pe");
 // Evolution of Xh
 	op->regvar("lnXh");
 	op->regvar("Wr");
@@ -319,7 +321,32 @@ double RGP=K_BOL/UMA;
 	op->add_d("nuc.eps","log_rhoc",nuc.dlneps_lnrho*nuc.eps);
 	op->add_d("nuc.eps","log_T",nuc.dlneps_lnT*nuc.eps);
 	op->add_d("nuc.eps","log_Tc",nuc.dlneps_lnT*nuc.eps);
-	
+/*	
+        Pe=zeros(nr,1);
+        int j0=0;
+	int nfc=0;
+        //Ici Pe est un mask 1 dans la ZC 0 ailleurs
+        for(int n=0;n<ndomains;n++) {
+                int ndom=map.gl.npts[n];
+                int j1=j0+ndom-1;
+                if (domain_type[n] == RADIATIVE) {
+                   Pe.setblock(j0,j1,0,0,zeros(ndom,1));
+                } else if (domain_type[n] == CORE) {
+                   Pe.setblock(j0,j1,0,0,zeros(ndom,1));
+                } else {
+		   if (nfc == 0) nfc=n; // nfc=first convective domain
+		   Rcz=map.gl.xif[nfc];
+                   Pe.setblock(j0,j1,0,0,ones(ndom,1));
+                }
+                j0+=ndom;
+        }
+
+for(int n=0;n<ndomains;n++) {
+        op->add_d(n,"Rcz","Ri",ones(1,1));
+    }
+	op->add_d("Pe","r",-2*Pe*map.r/(1.-Rcz*Rcz));
+	op->add_d("Pe","Rcz",2*Pe*(1.-map.r*map.r)/(1.-Rcz*Rcz)/(1.-Rcz*Rcz)*Rcz);
+*/
 }
 
 void star1d::solve_poisson(solver *op) {
@@ -670,17 +697,28 @@ void star1d::solve_temp(solver *op) {
                 if (domain_type[n] == RADIATIVE) {
                    Pe.setblock(j0,j1,0,0,zeros(ndom,1));
                 } else if (domain_type[n] == CORE) {
-                   Pe.setblock(j0,j1,0,0,1e3*ones(ndom,1));
+                   Pe.setblock(j0,j1,0,0,1e5*ones(ndom,1));
                 } else {
 		   if (nfc == 0) nfc=n; // nfc=first convective domain
-		   double eta=map.gl.xif[nfc];
-			if (n == nfc) printf("eta %e\n",eta);
-                   //Pe.setblock(j0,j1,0,0,Peclet*ones(ndom,1));
+		   Rcz=map.gl.xif[nfc];
+			if (n == nfc) printf("Rcz %e\n",Rcz);
 			matrix rr=map.r.block(j0,j1,0,0);
-                   Pe.setblock(j0,j1,0,0,Peclet*(1.-rr*rr)/(1.-eta*eta));
+                   Pe.setblock(j0,j1,0,0,Peclet*(1.-rr*rr)/(1.-Rcz*Rcz));
+                   //Pe.setblock(j0,j1,0,0,Peclet*ones(ndom,1));
                 }
                 j0+=ndom;
         }
+
+/*
+	double q=1;
+	Pe=Peclet/(1.+exp(q*(D,entropy())));
+	matrix fac=q*Pe*Pe/Peclet*exp(q*(D,entropy()));
+	matrix rhs_Pe=zeros(nr,1);
+	op->add_d("Pe","Pe",ones(nr,1));
+	op->add_l("Pe","s",fac,D);
+	op->set_rhs("Pe",rhs_Pe);
+*/
+	
 
 
 	matrix rhs_T,rhs_Lambda;
@@ -688,10 +726,13 @@ void star1d::solve_temp(solver *op) {
 	rhs_Lambda=zeros(ndomains,1);
 
 	op->add_d("log_T","Flux",ones(nr,1));
-	op->add_l("log_T","log_T",T,D);
-	op->add_d("log_T","log_T",-Flux);
+	//op->add_l("log_T","log_T",T,D); equivalent but 10 steps more
+	//op->add_d("log_T","log_T",-Flux); for convergence!
+	op->add_l("log_T","T",ones(nr,1),D);
+	op->add_d("log_T","T",Pe*(D,entropy()));
 	op->add_d("log_T","rz",Flux);
 	op->add_l("log_T","s",Pe*T,D);
+	//op->add_d("log_T","Pe",T*(D,entropy()));
 	rhs_T=-((D,T)+Pe*T*(D,entropy())+Flux);
 
 	j0=0;

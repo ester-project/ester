@@ -1388,7 +1388,7 @@ void solver::add(const char *eqn, const char *varn,const char *block_type,char t
 	for(k=0;k<nb;k++) {
 		j1=j0+def_nr[k]-1;
 		if(j1>=d->nrows()) {
-			sprintf(err_msg,"Matrix D has incorrect size");
+			sprintf(err_msg,"Matrix D has incorrect size(%d,%d)",j1,d->nrows());
 			error=1;
 			break;
 		}

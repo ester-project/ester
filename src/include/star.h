@@ -50,7 +50,7 @@ class star2d {
 	eos_struct eos;
 	atm_struct atm;
 	matrix ps,Ts;
-	double m,pi_c,Lambda;
+	double m,pi_c,Lambda,Rcz;
 	double surff;
 	int conv,nd_core;
 	int n_essai;
