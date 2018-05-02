@@ -1,10 +1,11 @@
 #include "ester-config.h"
 #include "star.h"
+#include "matplotlib.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include "symbolic.h"
 
-#include "matplotlib.h"
 
 void star1d::fill() {
 	Y0=1.-X0-Z0;
@@ -98,158 +99,280 @@ void star1d::register_variables(solver *op) {
 
 }
 
-FILE *RHS;
-FILE *NORM;
-FILE *NORMf;
-FILE *entrop;
 double star1d::solve(solver *op) {
     matrix_map error_map;
     return solve(op, error_map, 0);
 }
 
+
+void star1d::build_solver(solver *op) {
+    new_check_map();
+
+    op->reset();
+
+    solve_definitions(op);
+    solve_poisson(op);
+    solve_pressure(op);
+    solve_flux(op);
+    solve_temp(op);
+    solve_atm(op);
+    solve_dim(op);
+    solve_map(op);
+    solve_gsup(op);
+    solve_Teff(op);
+
+    solve_Xh(op);
+    solve_Wr(op);
+}
+
+double star1d::eval_norm_rhs(solver *op) {
+
+    double norm_rhs = .0;
+
+    norm_rhs += norm(op->get_rhs("Phi"));
+    norm_rhs += norm(op->get_rhs("log_p"));
+    norm_rhs += norm(op->get_rhs("pi_c"));
+    norm_rhs += norm(op->get_rhs("log_T"));
+    norm_rhs += norm(op->get_rhs("Lambda"));
+    norm_rhs += norm(op->get_rhs("Ri"));
+    norm_rhs += norm(op->get_rhs("dRi"));
+    norm_rhs += norm(op->get_rhs("log_pc"));
+    norm_rhs += norm(op->get_rhs("log_Tc"));
+    norm_rhs += norm(op->get_rhs("log_R"));
+    norm_rhs += norm(op->get_rhs("m"));
+    norm_rhs += norm(op->get_rhs("ps"));
+    norm_rhs += norm(op->get_rhs("Ts"));
+    // norm_rhs += norm(op->get_rhs("lum"));
+    // norm_rhs += norm(op->get_rhs("Frad"));
+    norm_rhs += norm(op->get_rhs("Teff"));
+    norm_rhs += norm(op->get_rhs("gsup"));
+
+    return norm_rhs;
+}
+
+
 double star1d::solve(solver *op, matrix_map& error_map, int nit) {
-	int info[5];
-	matrix rho_prec;
-	double err,err2;
-	
-//	printf("**********  start of star1d::solve\n");
-	//check_map();
-	RHS=fopen("all_rhs.txt","a");
-	entrop=fopen("entropie.txt","a");
-	NORM=fopen("fnorm.txt","a");
-	NORMf=fopen("normflux.txt","a");
+    int info[5];
+    matrix rho0;
+    double err,err2;
 
-	new_check_map();
-	
-	op->reset();
-	solve_definitions(op);
-	solve_poisson(op);
-	solve_pressure(op);
-	solve_flux(op);
-	solve_temp(op);
-	solve_atm(op);
-	solve_dim(op);
-	solve_map(op);
-	solve_gsup(op);
-	solve_Teff(op);
-// Evolution of Xh
-        solve_Xh(op);
-        solve_Wr(op);
-	
-	op->solve(info);
-	if (config.verbose == 19) printf("solve : solve done\n");
-	
-fclose(RHS);
-fclose(NORM);
-fclose(NORMf);
-// Some output verbose ----------------------
-	if (config.verbose) {
-		if(info[2]) {
-			printf("CGS Iteration: ");
-			if(info[4]>0) 
-				printf("Converged after %d iterations\n",info[4]);
-			else 
-				printf("Not converged (Error %d)\n",info[4]);
-		}
-		if(info[0]) 
-			printf("Solved using LU factorization\n");
-		if(info[1]) {
-			printf("CGS Refinement: ");
-			if(info[3]>0) 
-				printf("Converged after %d iterations\n",info[3]);
-			else
-				printf("Not converged (Error %d)\n",info[3]);
-		}
-	}
-// End  output verbose ----------------------
+    static double norm_rhs, norm_rhs1, norm_rhs2, new_norm_rhs;
+    static double lambda, lambda1, lambda2;
 
-	double q,h;
-		
-	h=0.1;
-	q=config.newton_dmax;
-	prev_global_err=global_err;
-	
-	matrix dphi,dp,dT,dXh,dpc,dTc,dRi,dWr,dFlux;
-	
-FILE *fic=fopen("err.txt", "a");
-	dphi=op->get_var("Phi");
-	err=max(abs(dphi/phi));
-        error_map["Phi"](nit) = err;
-//  fprintf(fic,"err phi = %e\n",err);
-// if (err> 1e-0) for (int k=0;k<nr;k++) fprintf(fic,"%d %e \n",k,dphi(k)/phi(k));
+    build_solver(op);
+    norm_rhs2 = norm_rhs1;
+    norm_rhs1 = this->eval_norm_rhs(op);
+    op->solve(info);
 
-	dp=op->get_var("log_p");
-	err2=max(abs(dp));err=err2>err?err2:err;
-        error_map["log_p"](nit) = err2;
-//  fprintf(fic,"err P = %e\n",err2);
-// if (err> 1e-0) for (int k=0;k<nr;k++) fprintf(fic,"%d %e \n",k,dp(k));
-	//while(exist(abs(h*dp)>q)) h/=2;
+    if (config.verbose) {
+        if(info[2]) {
+            printf("CGS Iteration: ");
+            if(info[4]>0)
+                printf("Converged after %d iterations\n",info[4]);
+            else
+                printf("Not converged (Error %d)\n",info[4]);
+        }
+        if(info[0])
+            printf("Solved using LU factorization\n");
+        if(info[1]) {
+            printf("CGS Refinement: ");
+            if(info[3]>0)
+                printf("Converged after %d iterations\n",info[3]);
+            else
+                printf("Not converged (Error %d)\n",info[3]);
+        }
+    }
 
-	dFlux=op->get_var("Flux");	
-	err2=max(abs(dFlux));err=err2>err?err2:err;
-        error_map["Flux"](nit) = err2;
-	//while(exist(abs(h*dFlux)>q)) h/=2;
+    double q,h;
 
-	dT=op->get_var("log_T");	
-	err2=max(abs(dT));err=err2>err?err2:err;
-        error_map["log_T"](nit) = err2;
-	//while(exist(abs(h*dT)>q)) h/=2;
-//  fprintf(fic,"err T = %e\n",err2);
-// if (err> 1e-0) for (int k=0;k<nr;k++) fprintf(fic,"%d %e \n",k,dT(k));
+    h=0.1;
+    q=config.newton_dmax;
 
-// Compute dXh
-	dXh=op->get_var("lnXh");	
-	err2=max(abs(dXh));err=err2>err?err2:err;
-	//while(exist(abs(h*dXh)>q)) h/=2;
-// Compute dWr
-	dWr=op->get_var("Wr");	
-	err2=max(abs(dWr));err=err2>err?err2:err;
-	//while(exist(abs(h*dWr)>q)) h/=2;
-// End of dWr computation
+    matrix dphi,dp,dT,dpc,dTc,dRi;
 
-	dpc=op->get_var("log_pc");	
-	err2=fabs(dpc(0)/pc);err=err2>err?err2:err;
-        error_map["log_pc"](nit) = err2;
-	//while(fabs(h*dpc(0))>q*pc) h/=2;
+    dphi=op->get_var("Phi");
+    err=max(abs(dphi/phi));
+    error_map["Phi"](nit) = err;
 
-	dTc=op->get_var("log_Tc");	
-	err2=fabs(dTc(0));err=err2>err?err2:err;
-        error_map["log_Tc"](nit) = err2;
-	//while(fabs(h*dTc(0))>q) h/=2;
-	
-	dRi=op->get_var("Ri");	
+    dp=op->get_var("log_p");
+    err2=max(abs(dp));err=err2>err?err2:err;
+    error_map["log_p"](nit) = err2;
+    while(exist(abs(h*dp)>q)) h/=2;
+
+    dT=op->get_var("log_T");
+    err2=max(abs(dT));err=err2>err?err2:err;
+    error_map["log_T"](nit) = err2;
+    while(exist(abs(h*dT)>q)) h/=2;
+
+    dpc=op->get_var("log_pc");
+    err2=fabs(dpc(0)/pc);err=err2>err?err2:err;
+    error_map["log_pc"](nit) = err2;
+    while(fabs(h*dpc(0))>q*pc) h/=2;
+
+    dTc=op->get_var("log_Tc");
+    err2=fabs(dTc(0));err=err2>err?err2:err;
+    error_map["log_Tc"](nit) = err2;
+    while(fabs(h*dTc(0))>q) h/=2;
+
+    dRi=op->get_var("Ri");
     error_map["Ri"](nit) = max(abs(dRi));
-  //fprintf(fic," it = %d  h=%e\n",glit,h);
-  //for (int k=0;k<ndomains;k++) fprintf(fic,"dR(%d)= %e, R= %e\n",k,dRi(k),map.R(k));
-	update_map(h*dRi);
-	
-	phi+=h*dphi;
-	p+=h*dp*p;
-	T+=h*dT*T;
-	Flux+=h*dFlux;
+    update_map(h*dRi);
 
-matrix ss=entropy();
-fprintf(entrop,"entropy it = %d\n",glit);
-for (int k=0;k<nr;k++) fprintf(entrop,"%d %e %e\n",k,map.r(k),ss(k));
-fclose(entrop);
-// Evolution of Xh, dXh is the variation on ln(Xh) assumed to be small
-	Xh+=h*dXh*Xh;
-	Wr+=h*dWr;
+    matrix_map save;
+    save["R"] = map.R;
+    save["phi"] = phi;
+    save["p"] = p;
+    save["T"] = T;
+    save["pc"] = pc*ones(1, 1);
+    save["Tc"] = Tc*ones(1, 1);
 
-	pc*=exp(h*dpc(0));
-	Tc*=exp(h*dTc(0));
+    phi+=h*dphi;
+    p+=h*dp*p;
+    T+=h*dT*T;
 
-	err2=max(abs(dRi));err=err2>err?err2:err;
-	
+    pc*=exp(h*dpc(0));
+    Tc*=exp(h*dTc(0));
 
-	rho_prec=rho;
+    err2=max(abs(dRi));err=err2>err?err2:err;
 
-	fill();
-	
-	err2=max(abs(rho-rho_prec));err=err2>err?err2:err;
-	
-fclose(fic);
-	return err;
+    rho0=rho;
+
+    fill();
+
+    err2=max(abs(rho-rho0));err=err2>err?err2:err;
+
+    bool check_rhs = true;
+    if (check_rhs) {
+
+        build_solver(op);
+        norm_rhs = this->eval_norm_rhs(op);
+
+        // LOGI("|Phi| = %e\n", norm(op->get_rhs("Phi")));
+        // LOGI("|log_p| = %e\n", norm(op->get_rhs("log_p")));
+        // LOGI("|pi_c| = %e\n", norm(op->get_rhs("pi_c")));
+        // LOGI("|log_T| = %e\n", norm(op->get_rhs("log_T")));
+        // LOGI("|Lambda| = %e\n", norm(op->get_rhs("Lambda")));
+        // LOGI("|Ri| = %e\n", norm(op->get_rhs("Ri")));
+        // LOGI("|dRi| = %e\n", norm(op->get_rhs("dRi")));
+        // LOGI("|log_pc| = %e\n", norm(op->get_rhs("log_pc")));
+        // LOGI("|log_Tc| = %e\n", norm(op->get_rhs("log_Tc")));
+        // LOGI("|Log_R| = %e\n", norm(op->get_rhs("log_R")));
+        // LOGI("|m| = %e\n", norm(op->get_rhs("m")));
+        // LOGI("|ps| = %e\n", norm(op->get_rhs("ps")));
+        // LOGI("|Ts| = %e\n", norm(op->get_rhs("Ts")));
+        // LOGI("|Lum| = %e\n", norm(op->get_rhs("lum")));
+        // LOGI("|Frad| = %e\n", norm(op->get_rhs("Frad")));
+        // LOGI("|Teff| = %e\n", norm(op->get_rhs("Teff")));
+        // LOGI("|gsup| = %e\n", norm(op->get_rhs("gsup")));
+
+        if (norm_rhs > norm_rhs1 && nit > 2) {
+            LOGW("|rhs| = %.2e (was %.2e) (h=%e)\n", norm_rhs, norm_rhs1, h);
+
+            double g0 = 0.5 * norm_rhs1*norm_rhs1;
+            double g1 = 0.5 * norm_rhs*norm_rhs;
+            // double gl1 = norm_rhs1*norm_rhs1;
+            // double gl2 = norm_rhs2*norm_rhs2;
+            double gp0 = -norm_rhs1*norm_rhs1;
+
+            // double scal = 1.0/(lambda1-lambda2);
+            // if (fabs(lambda2-lambda1) < 1e-10) scal = 0.5;
+            // double a = scal * (
+            //         1.0/(lambda1*lambda1)*(gl1-gpl*lambda1-g0)
+            //         - 1.0/(lambda2*lambda2)*(gl2-gpl*lambda2-g0)
+            //         );
+            // double b = scal * (
+            //         lambda1/(lambda2*lambda2)*(gl2-gpl*lambda2-g0)
+            //         - lambda2/(lambda1*lambda1)*(gl1-gpl*lambda1-g0)
+            //         );
+
+            // lambda = (-b + sqrt(b*b-3*a*gpl))/(3*a);
+            lambda = -gp0 / (2*(g1-g0-gp0));
+
+            if (lambda < 0.1) lambda = 0.1;
+            if (lambda > 0.5) lambda = 0.5;
+
+            LOGI("iter: %d,    lambda=%e\n", nit, lambda);
+            LOGI("iter: %d,   lambda1=%e\n", nit, lambda1);
+            LOGI("iter: %d,   lambda2=%e\n", nit, lambda2);
+            // LOGI("iter: %d,         a=%e\n", nit, a);
+            // LOGI("iter: %d,         b=%e\n", nit, b);
+            LOGI("iter: %d,        g0=%e\n", nit, g0);
+            LOGI("iter: %d,        g1=%e\n", nit, g1);
+            // LOGI("iter: %d,       gl1=%e\n", nit, gl1);
+            // LOGI("iter: %d,       gl2=%e\n", nit, gl2);
+            LOGI("iter: %d,       gp0=%e\n", nit, gp0);
+            LOGI("iter: %d,    |rhs2|=%e\n", nit, norm_rhs2);
+            LOGI("iter: %d,    |rhs1|=%e\n", nit, norm_rhs1);
+            LOGI("iter: %d,     |rhs|=%e\n", nit, norm_rhs);
+            LOGI("\n");
+
+            if (isnan(lambda)) {
+                ester_err("lambda is NaN\n");
+            }
+
+            if (nit > 0) {
+                if (nit < 3) {
+                    lambda2 = 0.1;
+                    lambda1 = 0.9;
+                }
+                else {
+                    lambda2 = lambda1;
+                    lambda1 = lambda;
+                }
+            }
+
+            map.R = save["R"];
+            map.remap();
+            update_map(lambda*h*dRi);
+
+            phi = lambda*h*dphi + save["phi"];
+            p = lambda*h*dp*p + save["p"];
+            T = lambda*h*dT*T + save["T"];
+
+            pc = exp(lambda*h*dpc(0)) * save["pc"](0);
+            Tc = exp(lambda*h*dTc(0)) * save["Tc"](0);
+
+            fill();
+
+            build_solver(op);
+            new_norm_rhs = this->eval_norm_rhs(op);
+            LOGI("g(lamdba) = %e\n", new_norm_rhs);
+#if 0
+            if (new_norm_rhs > norm_rhs1) {
+                if (lambda < 0.1) lambda = 0.1;
+                if (lambda > 0.5) lambda = 0.5;
+
+                map.R = save["R"];
+                map.remap();
+                update_map(lambda*h*dRi);
+
+                phi = lambda*h*dphi + save["phi"];
+                p = lambda*h*dp*p + save["p"];
+                T = lambda*h*dT*T + save["T"];
+
+                pc = exp(lambda*h*dpc(0)) * save["pc"](0);
+                Tc = exp(lambda*h*dTc(0)) * save["Tc"](0);
+
+                fill();
+            }
+#endif
+        }
+        else {
+            LOGI("|rhs| = %.2e (h=%e)\n", norm_rhs, h);
+            if (nit > 3) {
+                lambda2 = lambda1;
+                lambda1 = lambda;
+                lambda = h;
+            }
+        }
+    }
+	FILE *entrop = fopen("entropie.txt", "a");
+    matrix ss = entropy();
+    fprintf(entrop, "entropy it = %d\n", glit);
+    for(int k=0;k<nr;k++) fprintf(entrop, "%d %e %e\n", k,map.r(k), ss(k));
+    fclose(entrop);
+
+    return err;
 }
 
 void star1d::update_map(matrix dR) {
@@ -673,11 +796,6 @@ void star1d::solve_flux(solver *op) {
 	}  // End of loop on domains rank
 	
 	op->set_rhs("Flux",rhs_Flux);
-double F2=0;
-for (int k=0;k<nr;k++) F2=F2+rhs_Flux(k)*rhs_Flux(k);
-fprintf(NORM,"it = %d Nflux = %e\n",glit,F2);
-fprintf(NORMf," %d %e\n",glit,F2);
-
 }
 //--------------------------END of solve_Flux-------------------------------------------
 //--------------------------solve Temperature-------------------------------------------
@@ -708,7 +826,6 @@ void star1d::solve_temp(solver *op) {
                 }
                 j0+=ndom;
         }
-
 /*
 	double q=1;
 	Pe=Peclet/(1.+exp(q*(D,entropy())));
@@ -762,9 +879,6 @@ void star1d::solve_temp(solver *op) {
 	
 	op->set_rhs("log_T",rhs_T);
 	op->set_rhs("Lambda",rhs_Lambda);
-double F2=0;
-for (int k=0;k<nr;k++) F2=F2+rhs_T(k)*rhs_T(k);
-fprintf(NORM,"it = %d NT    = %e\n",glit,F2);
 }
 
 
@@ -840,96 +954,96 @@ void star1d::solve_dim(solver *op) {
 }
 //------------------------------------------------------------------------
 void star1d::solve_map(solver *op) {
-	int k,n,j0,j1,ndom;
-	matrix rhs;
-	
-	rhs=zeros(ndomains,1);
-// Enforce the definition dRi=R(i+1)-Ri
-	for(n=0;n<ndomains;n++) {
-		op->bc_top1_add_d(n,"dRi","dRi",ones(1,1));
-		op->bc_top1_add_d(n,"dRi","Ri",ones(1,1));
-		if(n<ndomains-1) op->bc_top2_add_d(n,"dRi","Ri",-ones(1,1));
-	}	
-	op->set_rhs("dRi",rhs);
-	
-	
-	rhs=zeros(ndomains,1);
-	int nzones=zone_type.size();
+    int k,n,j0,j1,ndom;
+    matrix rhs;
 
-	j0=0;
-	for(n=0;n<ndomains;n++) {
-// place the domains radii "Ri" so as to equalize the PRES drop,
-// between 2 adjacent domains
-		ndom=map.gl.npts[n];
-		if(n==0) op->add_d(n,"Ri","Ri",ones(1,1));
-		else {
-			matrix delta;
-			j1=j0+ndom-1;
-			delta=zeros(1,map.gl.npts[n]); delta(0)=1;delta(-1)=-1;
-			op->bc_bot2_add_l(n,"Ri",LOG_PRES,ones(1,1),delta); // LOG_PRES="log_T"
-			delta=zeros(1,map.gl.npts[n-1]); delta(0)=1;delta(-1)=-1;
-			op->bc_bot1_add_l(n,"Ri",LOG_PRES,-ones(1,1),delta);
-			rhs(n)=log(PRES(j1))-log(PRES(j0))-log(PRES(j0-1))+log(PRES(j0-map.gl.npts[n-1]));
-		}
-		j0+=ndom;
-	}
-	
-if(nzones>1) {
-		
-		symbolic S;
-		sym p_,s_,eq;
-		p_=S.regvar("p"); s_=S.regvar("s");
-		S.set_map(map); S.set_value("p",p); S.set_value("s",entropy());
-		eq=(grad(p_),grad(s_));
-		//eq=(grad(p_),grad(s_))/S.r/S.r;
-	
-// Take care of convective layers
-// number of zones=number of interface+1 (the surface)
-// izif = index of zone interface = index of the domain immediately below the interface
-// Example: izif(0)=0 indicates that the first interface is above domain 0
-//          izif(1)=8 says that second interface is above domain 8
-//		printf("XXXXX domain_type (%d) = %d\n",izif[iz],domain_type[izif[iz]]);
+    rhs=zeros(ndomains,1);
+    // Enforce the definition dRi=R(i+1)-Ri
+    for(n=0;n<ndomains;n++) {
+        op->bc_top1_add_d(n,"dRi","dRi",ones(1,1));
+        op->bc_top1_add_d(n,"dRi","Ri",ones(1,1));
+        if(n<ndomains-1) op->bc_top2_add_d(n,"dRi","Ri",-ones(1,1));
+    }	
+    op->set_rhs("dRi",rhs);
 
-		for (int iz=0;iz<nzones-1;iz++) { // we scan the zone interfaces
-			n=izif[iz]; // n is the index of the domain just below the interface
-		        for(k=0,j0=0;k<n+1;k++) j0+=map.gl.npts[k]; // j0 is the radial index of the interface
 
-			if (domain_type[n] == CORE) {
-		          op->reset(n+1,"Ri");
-			  eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
-			  eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
-			  eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
-		          rhs(n+1)=-eq.eval()(j0);	
-			} else if (domain_type[n] == RADIATIVE) {
-/*
-			  int nn=n;
-		          op->reset(nn,"Ri");
-			  eq.bc_top1_add(op,nn,"Ri","p",ones(1,nth));
-			  eq.bc_top1_add(op,nn,"Ri","s",ones(1,nth));
-			  eq.bc_top1_add(op,nn,"Ri","r",ones(1,nth));
-		          rhs(nn)=-eq.eval()(j0);	
-*/
-		          op->reset(n+1,"Ri");
-			  eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
-			  eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
-			  eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
-		          rhs(n+1)=-eq.eval()(j0);	
+    rhs=zeros(ndomains,1);
+    int nzones=zone_type.size();
 
-			} else if (domain_type[n] == CONVECTIVE) {
-		          op->reset(n+1,"Ri");
-			  eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
-			  eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
-			  eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
-		          rhs(n+1)=-eq.eval()(j0);	
-			} else {
-			  printf("There is a pb in domain_type");
-			  exit(0);
-			}
-		}
+    j0=0;
+    for(n=0;n<ndomains;n++) {
+        // place the domains radii "Ri" so as to equalize the PRES drop,
+        // between 2 adjacent domains
+        ndom=map.gl.npts[n];
+        if(n==0) op->add_d(n,"Ri","Ri",ones(1,1));
+        else {
+            matrix delta;
+            j1=j0+ndom-1;
+            delta=zeros(1,map.gl.npts[n]); delta(0)=1;delta(-1)=-1;
+            op->bc_bot2_add_l(n,"Ri",LOG_PRES,ones(1,1),delta); // LOG_PRES="log_T"
+            delta=zeros(1,map.gl.npts[n-1]); delta(0)=1;delta(-1)=-1;
+            op->bc_bot1_add_l(n,"Ri",LOG_PRES,-ones(1,1),delta);
+            rhs(n)=log(PRES(j1))-log(PRES(j0))-log(PRES(j0-1))+log(PRES(j0-map.gl.npts[n-1]));
+        }
+        j0+=ndom;
+    }
 
-	} // end of nzones>1
-	
-	op->set_rhs("Ri",rhs);
+    if(nzones>1) {
+
+        symbolic S;
+        sym p_,s_,eq;
+        p_=S.regvar("p"); s_=S.regvar("s");
+        S.set_map(map); S.set_value("p",p); S.set_value("s",entropy());
+        eq=(grad(p_),grad(s_));
+        //eq=(grad(p_),grad(s_))/S.r/S.r;
+
+        // Take care of convective layers
+        // number of zones=number of interface+1 (the surface)
+        // izif = index of zone interface = index of the domain immediately below the interface
+        // Example: izif(0)=0 indicates that the first interface is above domain 0
+        //          izif(1)=8 says that second interface is above domain 8
+        //		printf("XXXXX domain_type (%d) = %d\n",izif[iz],domain_type[izif[iz]]);
+
+        for (int iz=0;iz<nzones-1;iz++) { // we scan the zone interfaces
+            n=izif[iz]; // n is the index of the domain just below the interface
+            for(k=0,j0=0;k<n+1;k++) j0+=map.gl.npts[k]; // j0 is the radial index of the interface
+
+            if (domain_type[n] == CORE) {
+                op->reset(n+1,"Ri");
+                eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
+                eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
+                eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
+                rhs(n+1)=-eq.eval()(j0);	
+            } else if (domain_type[n] == RADIATIVE) {
+                /*
+                   int nn=n;
+                   op->reset(nn,"Ri");
+                   eq.bc_top1_add(op,nn,"Ri","p",ones(1,nth));
+                   eq.bc_top1_add(op,nn,"Ri","s",ones(1,nth));
+                   eq.bc_top1_add(op,nn,"Ri","r",ones(1,nth));
+                   rhs(nn)=-eq.eval()(j0);	
+                   */
+                op->reset(n+1,"Ri");
+                eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
+                eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
+                eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
+                rhs(n+1)=-eq.eval()(j0);	
+
+            } else if (domain_type[n] == CONVECTIVE) {
+                op->reset(n+1,"Ri");
+                eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
+                eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
+                eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
+                rhs(n+1)=-eq.eval()(j0);	
+            } else {
+                printf("There is a pb in domain_type");
+                exit(0);
+            }
+        }
+
+    } // end of nzones>1
+
+    op->set_rhs("Ri",rhs);
 }
 
 void star1d::solve_gsup(solver *op) {

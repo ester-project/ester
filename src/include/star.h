@@ -117,16 +117,19 @@ class star2d {
 	virtual void solve_mov(solver *);
 	virtual void solve_temp(solver *);
 	virtual void solve_dim(solver *);
-	virtual void solve_map(solver *);
-	virtual void solve_Omega(solver *);
-	virtual void solve_gsup(solver *);
-	virtual void solve_Teff(solver *);
-	virtual void solve_definitions(solver *);
-	virtual void solve_atm(solver *);
-	virtual void solve_Xh(solver *);
-	//virtual void solve_Wr(solver *);
-	
-	virtual void update_map(matrix dR);
+    virtual void solve_map(solver *);
+    virtual void solve_Omega(solver *);
+    virtual void solve_gsup(solver *);
+    virtual void solve_Teff(solver *);
+    virtual void solve_definitions(solver *);
+    virtual void solve_atm(solver *);
+    virtual void solve_Xh(solver *);
+    //virtual void solve_Wr(solver *);
+
+    virtual double eval_norm_rhs(solver *);
+    virtual void build_solver(solver *);
+
+    virtual void update_map(matrix dR);
 	
 	virtual void calc_veloc();
 	
@@ -210,19 +213,21 @@ class star1d : public star2d {
 	virtual void register_variables(solver *op);
 	virtual double solve(solver *);
 	virtual double solve(solver *, matrix_map& error, int);
-	virtual void solve_poisson(solver *);
-	virtual void solve_pressure(solver *);
-	//virtual void solve_temp(solver *);
-	virtual void solve_temp(solver *);
-	virtual void solve_flux(solver *);
-	virtual void solve_dim(solver *);
-	virtual void solve_map(solver *);
-	virtual void solve_definitions(solver *);
-	virtual void solve_Teff(solver *);
-	virtual void solve_gsup(solver *);
-	virtual void solve_Xh(solver *);
-	virtual void solve_Wr(solver *);
-	
+    virtual void solve_poisson(solver *);
+    virtual void solve_pressure(solver *);
+    //virtual void solve_temp(solver *);
+    virtual void solve_temp(solver *);
+    virtual void solve_flux(solver *);
+    virtual void solve_dim(solver *);
+    virtual void solve_map(solver *);
+    virtual void solve_definitions(solver *);
+    virtual void solve_Teff(solver *);
+    virtual void solve_gsup(solver *);
+    virtual void solve_Xh(solver *);
+    virtual void solve_Wr(solver *);
+    virtual double eval_norm_rhs(solver *);
+    virtual void build_solver(solver *);
+
 	virtual void update_map(matrix dR);
 
 	virtual matrix N2() const;

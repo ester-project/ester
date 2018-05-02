@@ -176,6 +176,62 @@ double star2d::solve(solver *op) {
     return solve(op, error_map, 0);
 }
 
+void star2d::build_solver(solver *op) {
+
+	new_check_map();
+
+// Clear up the preceding equations (clear up is not necessary
+// if the system is linear) reset does not clear up the LU factorization
+// which can be reused:
+	op->reset();
+
+	if(config.verbose) {printf("Writing equations...");fflush(stdout);}
+	solve_definitions(op);
+	solve_poisson(op);
+	solve_mov(op);
+	solve_temp(op);
+	solve_dim(op);
+	solve_map(op);
+	solve_Omega(op);
+	solve_atm(op);
+	solve_gsup(op);
+	solve_Teff(op);
+	if(config.verbose) printf("Done\n");
+
+}
+
+double star2d::eval_norm_rhs(solver *op) {
+
+    double norm_rhs = .0;
+
+    norm_rhs += norm(op->get_rhs("Phi"));
+    norm_rhs += norm(op->get_rhs("log_p"));
+    norm_rhs += norm(op->get_rhs("pi_c"));
+    norm_rhs += norm(op->get_rhs("log_T"));
+    norm_rhs += norm(op->get_rhs("Lambda"));
+    norm_rhs += norm(op->get_rhs("Ri"));
+    norm_rhs += norm(op->get_rhs("dRi"));
+    norm_rhs += norm(op->get_rhs("log_pc"));
+    norm_rhs += norm(op->get_rhs("log_Tc"));
+    norm_rhs += norm(op->get_rhs("log_R"));
+    norm_rhs += norm(op->get_rhs("m"));
+    norm_rhs += norm(op->get_rhs("ps"));
+    norm_rhs += norm(op->get_rhs("Ts"));
+    norm_rhs += norm(op->get_rhs("lum"));
+    norm_rhs += norm(op->get_rhs("Frad"));
+    norm_rhs += norm(op->get_rhs("Teff"));
+    norm_rhs += norm(op->get_rhs("gsup"));
+    norm_rhs += norm(op->get_rhs("eta"));
+    norm_rhs += norm(op->get_rhs("deta"));
+    norm_rhs += norm(op->get_rhs("Omega"));
+    norm_rhs += norm(op->get_rhs("w"));
+    norm_rhs += norm(op->get_rhs("G"));
+    norm_rhs += norm(op->get_rhs("gamma"));
+
+    return norm_rhs;
+}
+
+
 /// \brief Performs one step of the Newton algorithm to compute the star's
 /// internal structure.
 double star2d::solve(solver *op, matrix_map& error_map, int nit) {

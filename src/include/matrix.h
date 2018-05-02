@@ -377,5 +377,6 @@ public:
     }
 };
 
+double norm(const matrix& a);
 
 #endif
