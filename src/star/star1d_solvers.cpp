@@ -44,24 +44,24 @@ void star1d::fill() {
 solver *star1d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
-	
+
 	nvar=28; // two more variables added (lnXh and Wr)
 	//nvar=29; // one more variables added : Pe
-	
+
 	op=new solver();
 	op->init(ndomains,nvar+nvar_add,"full");
-	
+
 	op->maxit_ref=10;op->use_cgs=0;op->maxit_cgs=20;
 	op->rel_tol=1e-12;op->abs_tol=1e-20;
 	register_variables(op);
-	
+
 	return op;
 }
 
 void star1d::register_variables(solver *op) {
 	int i,var_nr[ndomains];
-	
-	for(i=0;i<ndomains;i++) 
+
+	for(i=0;i<ndomains;i++)
 		var_nr[i]=map.gl.npts[i];
 	op->set_nr(var_nr);
 
@@ -185,10 +185,10 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 
     double q,h;
 
-    h=0.1;
+    h=1e-1;
     q=config.newton_dmax;
 
-    matrix dphi,dp,dT,dpc,dTc,dRi;
+    matrix dphi, dp, dT, dXh, dpc, dTc, dRi, dWr, dFlux;
 
     dphi=op->get_var("Phi");
     err=max(abs(dphi/phi));
@@ -199,10 +199,24 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     error_map["log_p"](nit) = err2;
     while(exist(abs(h*dp)>q)) h/=2;
 
+    dFlux=op->get_var("Flux");
+    err2=max(abs(dFlux));err=err2>err?err2:err;
+    error_map["Flux"](nit) = err2;
+    while(exist(abs(h*dFlux)>q)) h/=2;
+
     dT=op->get_var("log_T");
     err2=max(abs(dT));err=err2>err?err2:err;
     error_map["log_T"](nit) = err2;
     while(exist(abs(h*dT)>q)) h/=2;
+
+    dXh=op->get_var("lnXh");
+    err2=max(abs(dXh));err=err2>err?err2:err;
+    while(exist(abs(h*dXh)>q)) h/=2;
+
+    // Compute dWr
+    dWr=op->get_var("Wr");
+    err2=max(abs(dWr));err=err2>err?err2:err;
+    while(exist(abs(h*dWr)>q)) h/=2;
 
     dpc=op->get_var("log_pc");
     err2=fabs(dpc(0)/pc);err=err2>err?err2:err;
@@ -225,13 +239,20 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     save["T"] = T;
     save["pc"] = pc*ones(1, 1);
     save["Tc"] = Tc*ones(1, 1);
+    save["Flux"] = dFlux;
+    save["lnXh"] = dXh;
+    save["Wr"] = dWr;
 
     phi+=h*dphi;
     p+=h*dp*p;
     T+=h*dT*T;
+    Flux+=h*dFlux;
 
     pc*=exp(h*dpc(0));
     Tc*=exp(h*dTc(0));
+
+    Xh+=h*dXh*Xh;
+    Wr+=h*dWr;
 
     err2=max(abs(dRi));err=err2>err?err2:err;
 
@@ -332,6 +353,11 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
             pc = exp(lambda*h*dpc(0)) * save["pc"](0);
             Tc = exp(lambda*h*dTc(0)) * save["Tc"](0);
 
+            Flux = save["Flux"] + lambda*h*dFlux;
+            Xh = save["lnXh"] + lambda*h*dXh*Xh;
+            Wr = save["Wr"] + lambda*h*dWr;
+
+
             fill();
 
             build_solver(op);
@@ -395,23 +421,23 @@ void star1d::update_map(matrix dR) {
 void star1d::solve_definitions(solver *op) {
 
 	op->add_d("T","log_T",T);
-	
+
 	op->add_d("rho","p",rho/eos.chi_rho/p);
 	op->add_d("rho","log_T",-rho*eos.d);
 	op->add_d("rho","log_pc",rho/eos.chi_rho);
 	op->add_d("rho","log_Tc",-rho*eos.d);
 	op->add_d("rho","log_rhoc",-rho);
-	
+
 	op->add_d("r","Ri",map.J[0]);
 	op->add_d("r","dRi",map.J[1]);
 	op->add_d("r","Ri",map.J[2]);
 	op->add_d("r","dRi",map.J[3]);
-	
+
 	op->add_d("rz","Ri",(D,map.J[0]));
 	op->add_d("rz","dRi",(D,map.J[1]));
 	op->add_d("rz","Ri",(D,map.J[2]));
 	op->add_d("rz","dRi",(D,map.J[3]));
-	
+
 	//	Valid only for homogeneus composition !!!!!!
 // MR we rescale entropy with the ideal gas constant
 // changed in star2d_extra.cpp & star2d_solver
@@ -427,24 +453,24 @@ double RGP=K_BOL/UMA;
 	op->add_d("s","log_pc",-eos.del_ad);
 	*/
 
-// Expression of \delta\khi (thermal conductivity)	
+// Expression of \delta\khi (thermal conductivity)
 	op->add_d("opa.xi","rho",opa.dlnxi_lnrho*opa.xi/rho);
 	op->add_d("opa.xi","log_rhoc",opa.dlnxi_lnrho*opa.xi);
 	op->add_d("opa.xi","log_T",opa.dlnxi_lnT*opa.xi);
 	op->add_d("opa.xi","log_Tc",opa.dlnxi_lnT*opa.xi);
-	
-// Expression of \delta\kappa (opacity) 	
+
+// Expression of \delta\kappa (opacity)
 	op->add_d("opa.k","log_T",3*opa.k);
 	op->add_d("opa.k","log_Tc",3*opa.k);
 	op->add_d("opa.k","rho",-opa.k/rho);
 	op->add_d("opa.k","log_rhoc",-opa.k);
 	op->add_d("opa.k","opa.xi",-opa.k/opa.xi);
-	
+
 	op->add_d("nuc.eps","rho",nuc.dlneps_lnrho*nuc.eps/rho);
 	op->add_d("nuc.eps","log_rhoc",nuc.dlneps_lnrho*nuc.eps);
 	op->add_d("nuc.eps","log_T",nuc.dlneps_lnT*nuc.eps);
 	op->add_d("nuc.eps","log_Tc",nuc.dlneps_lnT*nuc.eps);
-/*	
+/*
         Pe=zeros(nr,1);
         int j0=0;
 	int nfc=0;
@@ -631,7 +657,7 @@ void star1d::solve_Xh(solver *op) {
 
 if (delta != 0.) { // unsteady case  ************************************
     matrix rhs_conv=-((log(Xh)-log(Xh0))/delta+factor*L_core/M_core/Xh);
-    j0=0; 
+    j0=0;
     for(n=0;n<conv;n++) { // Take care of the CC domains
         ndom=map.gl.npts[n];
           op->reset(n,"lnXh");
@@ -658,7 +684,7 @@ if (delta != 0.) { // unsteady case  ************************************
     rhs(j0) = -(map.D,log(Xh))(j0-1)+(map.D,log(Xh))(j0);
 	                     }
                  } else { // the steady case *******************************
-     j0=0; 
+     j0=0;
      op->bc_bot2_add_l(0,"lnXh","lnXh",ones(1,1),map.D.block(0).row(0));
      rhs(0) = -(map.D,log(Xh))(0);
      for(n=0;n<ndomains-1;n++){
@@ -752,10 +778,10 @@ void star1d::solve_Wr(solver *op) {
 
 void star1d::solve_flux(solver *op) {
 	int n,j0,j1,ndom;
-	
+
 	matrix rhs_Flux;
 	rhs_Flux=zeros(nr,1);
-	
+
 
 // Equation for the flux=-DT
 	op->add_d("Flux","r",(D,Flux) + (D,opa.xi)/opa.xi*Flux - Lambda*rho*nuc.eps/opa.xi);
@@ -766,10 +792,10 @@ void star1d::solve_flux(solver *op) {
 	op->add_d("Flux","rho",-Lambda*r*nuc.eps/opa.xi);
 	op->add_d("Flux","nuc.eps",-Lambda*r*rho/opa.xi);
 	op->add_d("Flux","opa.xi",(-r*Flux*(D,opa.xi) + Lambda*r*rho*nuc.eps) /opa.xi/opa.xi);
-	op->add_l("Flux","opa.xi",Flux*r/opa.xi, D);	// 	
+	op->add_l("Flux","opa.xi",Flux*r/opa.xi, D);	//
 	rhs_Flux=-(r*(D,Flux)+(2.+r*(D,opa.xi)/opa.xi)*Flux-Lambda*r*rho*nuc.eps/opa.xi);
 
-	
+
 	j0=0;
 	for(n=0;n<ndomains;n++) {
 		ndom=map.gl.npts[n];
@@ -794,7 +820,7 @@ void star1d::solve_flux(solver *op) {
 		} // End of options on n==0, n==ndomains-1, else
 		j0+=ndom;
 	}  // End of loop on domains rank
-	
+
 	op->set_rhs("Flux",rhs_Flux);
 }
 //--------------------------END of solve_Flux-------------------------------------------
@@ -802,9 +828,9 @@ void star1d::solve_flux(solver *op) {
 
 void star1d::solve_temp(solver *op) {
 	int n,j0,j1,ndom;
-	
+
 // We first compute the mask of convective/radiative domains
-//        printf("Check Peclet = %e\n",Peclet);   
+//        printf("Check Peclet = %e\n",Peclet);
         Pe=zeros(nr,1);
         j0=0;
 	int nfc=0;
@@ -835,8 +861,6 @@ void star1d::solve_temp(solver *op) {
 	op->add_l("Pe","s",fac,D);
 	op->set_rhs("Pe",rhs_Pe);
 */
-	
-
 
 	matrix rhs_T,rhs_Lambda;
 	rhs_T=zeros(nr,1);
@@ -876,7 +900,6 @@ void star1d::solve_temp(solver *op) {
 		} // End of options on n==0, n==ndomains-1, else
 		j0+=ndom;
 	}  // End of loop on domains rank
-	
 	op->set_rhs("log_T",rhs_T);
 	op->set_rhs("Lambda",rhs_Lambda);
 }
@@ -963,7 +986,7 @@ void star1d::solve_map(solver *op) {
         op->bc_top1_add_d(n,"dRi","dRi",ones(1,1));
         op->bc_top1_add_d(n,"dRi","Ri",ones(1,1));
         if(n<ndomains-1) op->bc_top2_add_d(n,"dRi","Ri",-ones(1,1));
-    }	
+    }
     op->set_rhs("dRi",rhs);
 
 
@@ -1013,7 +1036,7 @@ void star1d::solve_map(solver *op) {
                 eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
                 eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
                 eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
-                rhs(n+1)=-eq.eval()(j0);	
+                rhs(n+1)=-eq.eval()(j0);
             } else if (domain_type[n] == RADIATIVE) {
                 /*
                    int nn=n;
@@ -1021,20 +1044,20 @@ void star1d::solve_map(solver *op) {
                    eq.bc_top1_add(op,nn,"Ri","p",ones(1,nth));
                    eq.bc_top1_add(op,nn,"Ri","s",ones(1,nth));
                    eq.bc_top1_add(op,nn,"Ri","r",ones(1,nth));
-                   rhs(nn)=-eq.eval()(j0);	
+                   rhs(nn)=-eq.eval()(j0);
                    */
                 op->reset(n+1,"Ri");
                 eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
                 eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
                 eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
-                rhs(n+1)=-eq.eval()(j0);	
+                rhs(n+1)=-eq.eval()(j0);
 
             } else if (domain_type[n] == CONVECTIVE) {
                 op->reset(n+1,"Ri");
                 eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
                 eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
                 eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
-                rhs(n+1)=-eq.eval()(j0);	
+                rhs(n+1)=-eq.eval()(j0);
             } else {
                 printf("There is a pb in domain_type");
                 exit(0);
