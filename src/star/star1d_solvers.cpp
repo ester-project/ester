@@ -1,10 +1,11 @@
 #include "ester-config.h"
 #include "star.h"
+#include "matplotlib.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include "symbolic.h"
 
-#include "matplotlib.h"
 
 void star1d::fill() {
     Y0=1.-X0-Z0;
@@ -20,7 +21,6 @@ void star1d::fill() {
 
     pi_c=(4*PI*GRAV*rhoc*rhoc*R*R)/pc;
     Lambda=epsc*rhoc*R*R/Tc/xic;
-	printf("lambda = %e\n",Lambda);
 
     calc_units();
 
@@ -94,21 +94,12 @@ double star1d::solve(solver *op) {
     return solve(op, error_map, 0);
 }
 
-FILE *NORM;
-FILE *NORMf;
-FILE *qfic;
 
-double star1d::solve(solver *op, matrix_map& error_map, int nit) {
-    int info[5];
-    matrix rho0;
-    double err,err2;
-
-	NORM=fopen("fnorm.txt","a");
-	NORMf=fopen("norm.txt","a");
-        qfic=fopen("rhst.txt", "a");
+void star1d::build_solver(solver *op) {
     check_map();
 
     op->reset();
+
     solve_definitions(op);
     solve_poisson(op);
     solve_pressure(op);
@@ -118,10 +109,46 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     solve_map(op);
     solve_gsup(op);
     solve_Teff(op);
+}
+
+double star1d::eval_norm_rhs(solver *op) {
+
+    double norm_rhs = .0;
+
+    norm_rhs += norm(op->get_rhs("Phi"));
+    norm_rhs += norm(op->get_rhs("log_p"));
+    norm_rhs += norm(op->get_rhs("pi_c"));
+    norm_rhs += norm(op->get_rhs("log_T"));
+    norm_rhs += norm(op->get_rhs("Lambda"));
+    norm_rhs += norm(op->get_rhs("Ri"));
+    norm_rhs += norm(op->get_rhs("dRi"));
+    norm_rhs += norm(op->get_rhs("log_pc"));
+    norm_rhs += norm(op->get_rhs("log_Tc"));
+    norm_rhs += norm(op->get_rhs("log_R"));
+    norm_rhs += norm(op->get_rhs("m"));
+    norm_rhs += norm(op->get_rhs("ps"));
+    norm_rhs += norm(op->get_rhs("Ts"));
+    norm_rhs += norm(op->get_rhs("lum"));
+    norm_rhs += norm(op->get_rhs("Frad"));
+    norm_rhs += norm(op->get_rhs("Teff"));
+    norm_rhs += norm(op->get_rhs("gsup"));
+
+    return norm_rhs;
+}
+
+
+double star1d::solve(solver *op, matrix_map& error_map, int nit) {
+    int info[5];
+    matrix rho0;
+    double err,err2;
+
+    static double norm_rhs, norm_rhs1, norm_rhs2, new_norm_rhs;
+    static double lambda, lambda1, lambda2;
+
+    build_solver(op);
+    norm_rhs2 = norm_rhs1;
+    norm_rhs1 = this->eval_norm_rhs(op);
     op->solve(info);
-    fclose(NORM);
-    fclose(NORMf);
-    fclose(qfic);
 
     if (config.verbose) {
         if(info[2]) {
@@ -145,6 +172,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     double q,h;
 
     h=1;
+    // h=0.5;
     q=config.newton_dmax;
 
     matrix dphi,dp,dT,dpc,dTc,dRi;
@@ -177,6 +205,14 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     error_map["Ri"](nit) = max(abs(dRi));
     update_map(h*dRi);
 
+    matrix_map save;
+    save["R"] = map.R;
+    save["phi"] = phi;
+    save["p"] = p;
+    save["T"] = T;
+    save["pc"] = pc*ones(1, 1);
+    save["Tc"] = Tc*ones(1, 1);
+
     phi+=h*dphi;
     p+=h*dp*p;
     T+=h*dT*T;
@@ -191,6 +227,132 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     fill();
 
     err2=max(abs(rho-rho0));err=err2>err?err2:err;
+
+    bool check_rhs = true;
+    if (check_rhs) {
+
+        build_solver(op);
+        norm_rhs = this->eval_norm_rhs(op);
+
+        // LOGI("|Phi| = %e\n", norm(op->get_rhs("Phi")));
+        // LOGI("|log_p| = %e\n", norm(op->get_rhs("log_p")));
+        // LOGI("|pi_c| = %e\n", norm(op->get_rhs("pi_c")));
+        // LOGI("|log_T| = %e\n", norm(op->get_rhs("log_T")));
+        // LOGI("|Lambda| = %e\n", norm(op->get_rhs("Lambda")));
+        // LOGI("|Ri| = %e\n", norm(op->get_rhs("Ri")));
+        // LOGI("|dRi| = %e\n", norm(op->get_rhs("dRi")));
+        // LOGI("|log_pc| = %e\n", norm(op->get_rhs("log_pc")));
+        // LOGI("|log_Tc| = %e\n", norm(op->get_rhs("log_Tc")));
+        // LOGI("|Log_R| = %e\n", norm(op->get_rhs("log_R")));
+        // LOGI("|m| = %e\n", norm(op->get_rhs("m")));
+        // LOGI("|ps| = %e\n", norm(op->get_rhs("ps")));
+        // LOGI("|Ts| = %e\n", norm(op->get_rhs("Ts")));
+        // LOGI("|Lum| = %e\n", norm(op->get_rhs("lum")));
+        // LOGI("|Frad| = %e\n", norm(op->get_rhs("Frad")));
+        // LOGI("|Teff| = %e\n", norm(op->get_rhs("Teff")));
+        // LOGI("|gsup| = %e\n", norm(op->get_rhs("gsup")));
+
+        if (norm_rhs > norm_rhs1 && nit > 2) {
+            LOGW("|rhs| = %.2e (was %.2e) (h=%e)\n", norm_rhs, norm_rhs1, h);
+
+            double g0 = 0.5 * norm_rhs1*norm_rhs1;
+            double g1 = 0.5 * norm_rhs*norm_rhs;
+            // double gl1 = norm_rhs1*norm_rhs1;
+            // double gl2 = norm_rhs2*norm_rhs2;
+            double gp0 = -norm_rhs1*norm_rhs1;
+
+            // double scal = 1.0/(lambda1-lambda2);
+            // if (fabs(lambda2-lambda1) < 1e-10) scal = 0.5;
+            // double a = scal * (
+            //         1.0/(lambda1*lambda1)*(gl1-gpl*lambda1-g0)
+            //         - 1.0/(lambda2*lambda2)*(gl2-gpl*lambda2-g0)
+            //         );
+            // double b = scal * (
+            //         lambda1/(lambda2*lambda2)*(gl2-gpl*lambda2-g0)
+            //         - lambda2/(lambda1*lambda1)*(gl1-gpl*lambda1-g0)
+            //         );
+
+            // lambda = (-b + sqrt(b*b-3*a*gpl))/(3*a);
+            lambda = -gp0 / (2*(g1-g0-gp0));
+
+            if (lambda < 0.1) lambda = 0.1;
+            if (lambda > 0.5) lambda = 0.5;
+
+            LOGI("iter: %d,    lambda=%e\n", nit, lambda);
+            LOGI("iter: %d,   lambda1=%e\n", nit, lambda1);
+            LOGI("iter: %d,   lambda2=%e\n", nit, lambda2);
+            // LOGI("iter: %d,         a=%e\n", nit, a);
+            // LOGI("iter: %d,         b=%e\n", nit, b);
+            LOGI("iter: %d,        g0=%e\n", nit, g0);
+            LOGI("iter: %d,        g1=%e\n", nit, g1);
+            // LOGI("iter: %d,       gl1=%e\n", nit, gl1);
+            // LOGI("iter: %d,       gl2=%e\n", nit, gl2);
+            LOGI("iter: %d,       gp0=%e\n", nit, gp0);
+            LOGI("iter: %d,    |rhs2|=%e\n", nit, norm_rhs2);
+            LOGI("iter: %d,    |rhs1|=%e\n", nit, norm_rhs1);
+            LOGI("iter: %d,     |rhs|=%e\n", nit, norm_rhs);
+            LOGI("\n");
+
+            if (isnan(lambda)) {
+                ester_err("lambda is NaN\n");
+            }
+
+            if (nit > 0) {
+                if (nit < 3) {
+                    lambda2 = 0.1;
+                    lambda1 = 0.9;
+                }
+                else {
+                    lambda2 = lambda1;
+                    lambda1 = lambda;
+                }
+            }
+
+            map.R = save["R"];
+            map.remap();
+            update_map(lambda*h*dRi);
+
+            phi = lambda*h*dphi + save["phi"];
+            p = lambda*h*dp*p + save["p"];
+            T = lambda*h*dT*T + save["T"];
+
+            pc = exp(lambda*h*dpc(0)) * save["pc"](0);
+            Tc = exp(lambda*h*dTc(0)) * save["Tc"](0);
+
+            fill();
+
+            build_solver(op);
+            new_norm_rhs = this->eval_norm_rhs(op);
+            LOGI("g(lamdba) = %e\n", new_norm_rhs);
+#if 0
+            if (new_norm_rhs > norm_rhs1) {
+                if (lambda < 0.1) lambda = 0.1;
+                if (lambda > 0.5) lambda = 0.5;
+
+                map.R = save["R"];
+                map.remap();
+                update_map(lambda*h*dRi);
+
+                phi = lambda*h*dphi + save["phi"];
+                p = lambda*h*dp*p + save["p"];
+                T = lambda*h*dT*T + save["T"];
+
+                pc = exp(lambda*h*dpc(0)) * save["pc"](0);
+                Tc = exp(lambda*h*dTc(0)) * save["Tc"](0);
+
+                fill();
+            }
+#endif
+        }
+        else {
+            LOGI("|rhs| = %.2e (h=%e)\n", norm_rhs, h);
+            if (nit > 3) {
+                lambda2 = lambda1;
+                lambda1 = lambda;
+                lambda = h;
+            }
+        }
+    }
 
     return err;
 
@@ -303,10 +465,6 @@ void star1d::solve_poisson(solver *op) {
         j0+=map.gl.npts[n];
     }
     op->set_rhs("Phi",rhs);
-double F2=0;
-for (int k=0;k<nr;k++) F2=F2+rhs(k)*rhs(k);
-fprintf(NORM,"it = %d Nphi    = %e\n",glit,F2);
-fprintf(NORMf," %d %e\n",glit,F2);
 }
 
 void star1d::solve_pressure(solver *op) {
@@ -344,11 +502,6 @@ void star1d::solve_pressure(solver *op) {
     }
     op->set_rhs(eqn,rhs_p);
     op->set_rhs("pi_c",rhs_pi_c);
-double F2=0;
-for (int k=0;k<nr;k++) F2=F2+rhs_p(k)*rhs_p(k);
-fprintf(NORM,"it = %d Np    = %e\n",glit,F2);
-fprintf(NORMf," %d %e\n",glit,F2);
-
 }
 
 
@@ -549,19 +702,6 @@ void star1d::solve_temp(solver *op) {
     op->set_rhs(eqn,rhs_T);
     op->set_rhs("Lambda",rhs_Lambda);
 
-double F2=0;
-for (int k=0;k<nr;k++) F2=F2+rhs_T(k)*rhs_T(k);
-fprintf(NORM,"it = %d NT    = %e\n",glit,F2);
-fprintf(NORMf," %d %e\n",glit,F2);
-F2=0;
-for (int k=0;k<ndomains;k++) F2=F2+rhs_Lambda(k)*rhs_Lambda(k);
-fprintf(NORM,"it = %d lambda  = %e\n",glit,F2);
-fprintf(NORMf," %d %e\n",glit,F2);
-
-fprintf(qfic," it = %d\n",glit);
-for (int k=0;k<nr;k++) fprintf(qfic,"%d rhst=%e r=%e\n",k,rhs_T(k),map.r(k));
-for (int k=0;k<ndomains;k++) fprintf(qfic,"%d rhs_lam=%e r=%e\n",k,rhs_Lambda(k),map.r(k));
-
 }
 
 
@@ -690,9 +830,6 @@ for (int k=0;k<ndomains;k++) F2=F2+rhs(k)*rhs(k);
     }
     op->set_rhs("Ri",rhs);
 
-for (int k=0;k<ndomains;k++) F2=F2+rhs(k)*rhs(k);
-fprintf(NORM,"it = %d Nmap    = %e\n",glit,F2);
-fprintf(NORMf," %d %e\n",glit,F2);
 }
 
 void star1d::solve_gsup(solver *op) {

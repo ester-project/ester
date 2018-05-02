@@ -1,6 +1,7 @@
 #include "ester-config.h"
 #include "utils.h"
 #include "matrix.h"
+#include "lapack.h"
 #include <stdlib.h>
 #include <cmath>
 #include <stdio.h>
@@ -1549,5 +1550,10 @@ int isequal(const matrix &a, const matrix &b) {
 }
 
 
-
+double norm(const matrix& a) {
+    int m = a.nrows();
+    int n = a.ncols();
+    char norm = 'F';
+    return dlange_(&norm, &m, &n, a.data(), &n, NULL);
+}
 
