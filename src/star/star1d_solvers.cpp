@@ -185,7 +185,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 
     double q,h;
 
-    h=1e-1;
+    h=1;
     q=config.newton_dmax;
 
     matrix dphi, dp, dT, dXh, dpc, dTc, dRi, dWr, dFlux;
@@ -262,7 +262,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 
     err2=max(abs(rho-rho0));err=err2>err?err2:err;
 
-    bool check_rhs = true;
+    bool check_rhs = false;
     if (check_rhs) {
 
         build_solver(op);
@@ -327,7 +327,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
             LOGI("iter: %d,     |rhs|=%e\n", nit, norm_rhs);
             LOGI("\n");
 
-            if (isnan(lambda)) {
+            if (std::isnan(lambda)) {
                 ester_err("lambda is NaN\n");
             }
 
