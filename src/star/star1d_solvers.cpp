@@ -847,7 +847,8 @@ void star1d::solve_temp(solver *op) {
 		   Rcz=map.gl.xif[nfc];
 			if (n == nfc) printf("Rcz %e\n",Rcz);
 			matrix rr=map.r.block(j0,j1,0,0);
-                   Pe.setblock(j0,j1,0,0,Peclet*(1.-rr*rr)/(1.-Rcz*Rcz));
+                   Pe.setblock(j0,j1,0,0,Peclet*(1.-rr)/(1.-Rcz)/(1.-Rcz)*(1.+rr-2*Rcz));
+                   //Pe.setblock(j0,j1,0,0,Peclet*(1.-rr*rr)/(1.-Rcz*Rcz));
                    //Pe.setblock(j0,j1,0,0,Peclet*ones(ndom,1));
                 }
                 j0+=ndom;

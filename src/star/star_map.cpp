@@ -18,27 +18,57 @@ void star2d::new_check_map() {
 	}
 
 	//if (global_err < 1e-4) { // look for new convective regions and eventually remap the star
-	if (n_essai == 0) seuil=1e-2;
+	if (n_essai == 0) seuil=1e2;
 	if (n_essai > 0) seuil=1e-2;
 printf("global errors %e %e\n",prev_global_err,global_err);
+
+// Check the "PRESSURE" drop from bot CZ to surface
+	int n=izif[1],j0,k; // n is the index of the domain just below the interface
+        for(k=0,j0=0;k<n+1;k++) j0+=map.gl.npts[k]; // j0 is the radial index of the interface
+	
+	double p_drop=PRES(-1,0)/PRES(j0,0);
+	int ndom=ndomains-n;
+	double p_dm=exp(ndom*log(PRES(-1,0))/ndomains); //expected drop
+	if (p_dm > p_drop) { // PRES drop is too important in CZ, redist domain
+           if (details) printf("check_map: PRES drop high : REDISTRIBUTE DOMAINS\n");
+    	   p_inter = zeros(nzones, nth);
+	   for (int iz=0;iz<nzones-1;iz++) { // we scan the zone interfaces
+                n=izif[iz]; // n is the index of the domain just below the interface
+                for(k=0,j0=0;k<n+1;k++) j0+=map.gl.npts[k];
+	  	p_inter(iz,0)=PRES(j0,0);
+	   }
+	   p_inter(nzones-1,0)=PRES(-1,0);
+	   pif=New_distribute_domains(ndomains,p_inter);
+	   R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0)));
+	   red=new remapper(map);
+	   red->set_R(R);
+	   map=red->get_map(); // generate r,r_z,...
+	   interp(red);
+           delete red;
+	   return;
+	}
+
+
 	if (global_err < seuil) { // look for new convective regions and eventually remap the star
 	   // Find the zone boundaries and the associated pressures
 	   // and output zone_type as global var.
-printf("seuil %e\n",seuil);
+ 	   printf("seuil %e\n",seuil);
 	   int nzones_av=zone_type.size();
-	   find_zones(R_inter, p_inter);
+
+	   find_zones(R_inter, p_inter); // defines R,p_inter
+
 	   int nzones_ap=zone_type.size();
 	   if (nzones_av == nzones_ap) {
 		n_essai=n_essai+1;
 		  if (details) printf("n_essai=%d\n",n_essai);
 		//if (n_essai < 20) {
-		//if (global_err < prev_global_err || global_err<1e-4) {
 		if (global_err < prev_global_err || global_err<2e-3) {
 		  if (details) printf("Number of zones unchanged: do nothing\n");
 		  if (details) printf("n_essai=%d\n",n_essai);
 		  return;
 		}
 	   }
+/*
 	   // Redistribute the domains and output izif (index of zone interface)
 	   // as a global var.
            if (details) printf("check_map: REDISTRIBUTE DOMAINS\n");
@@ -59,6 +89,7 @@ for (int k=0;k<=ndomains;k++) fprintf(fic,"k= %d R= %e \n",k,R(k,0));
 fclose(fic);
 }
 	   delete red;
+*/
 	} else return; // else do nothing
 }
 
