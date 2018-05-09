@@ -83,7 +83,6 @@ void star1d::register_variables(solver *op) {
 	op->regvar("m");
 	op->regvar("ps");
 	op->regvar("Ts");
-//	op->regvar("lum");
 	op->regvar("Flux");
 	op->regvar_dep("rho");
 	op->regvar_dep("s");
@@ -135,17 +134,9 @@ double star1d::eval_norm_rhs(solver *op) {
     norm_rhs += norm(op->get_rhs("log_T"));
     norm_rhs += norm(op->get_rhs("Lambda"));
     norm_rhs += norm(op->get_rhs("Ri"));
-    norm_rhs += norm(op->get_rhs("dRi"));
-    norm_rhs += norm(op->get_rhs("log_pc"));
-    norm_rhs += norm(op->get_rhs("log_Tc"));
-    norm_rhs += norm(op->get_rhs("log_R"));
-    norm_rhs += norm(op->get_rhs("m"));
-    norm_rhs += norm(op->get_rhs("ps"));
-    norm_rhs += norm(op->get_rhs("Ts"));
-    // norm_rhs += norm(op->get_rhs("lum"));
-    // norm_rhs += norm(op->get_rhs("Frad"));
-    norm_rhs += norm(op->get_rhs("Teff"));
-    norm_rhs += norm(op->get_rhs("gsup"));
+    norm_rhs += norm(op->get_rhs("Flux"));
+    norm_rhs += norm(op->get_rhs("lnXh"));
+    norm_rhs += norm(op->get_rhs("Wr"));
 
     return norm_rhs;
 }
@@ -156,12 +147,12 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     matrix rho0;
     double err,err2;
 
-    static double norm_rhs, norm_rhs1, norm_rhs2, new_norm_rhs;
-    static double lambda, lambda1, lambda2;
+    static double norm_rhs0, norm_rhs1, norm_rhs_new;
+    static double lambda; //, lambda1, lambda2;
 
     build_solver(op);
-    norm_rhs2 = norm_rhs1;
-    norm_rhs1 = this->eval_norm_rhs(op);
+
+    norm_rhs0 = this->eval_norm_rhs(op);
     op->solve(info);
 
     if (config.verbose) {
@@ -170,6 +161,8 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
             if(info[4]>0)
                 printf("Converged after %d iterations\n",info[4]);
             else
+
+
                 printf("Not converged (Error %d)\n",info[4]);
         }
         if(info[0])
@@ -185,7 +178,12 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 
     double q,h;
 
-    h=1;
+    h=1.0;
+    h=0.4;
+	printf("it = %d\n",nit);
+//	if (nit == 0) h=0.4;
+//	else h=0.5;
+
     q=config.newton_dmax;
 
     matrix dphi, dp, dT, dXh, dpc, dTc, dRi, dWr, dFlux;
@@ -197,36 +195,36 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     dp=op->get_var("log_p");
     err2=max(abs(dp));err=err2>err?err2:err;
     error_map["log_p"](nit) = err2;
-    while(exist(abs(h*dp)>q)) h/=2;
+   //while(exist(abs(h*dp)>q)) h/=2;
 
     dFlux=op->get_var("Flux");
     err2=max(abs(dFlux));err=err2>err?err2:err;
     error_map["Flux"](nit) = err2;
-    while(exist(abs(h*dFlux)>q)) h/=2;
+   //while(exist(abs(h*dFlux)>q)) h/=2;
 
     dT=op->get_var("log_T");
     err2=max(abs(dT));err=err2>err?err2:err;
     error_map["log_T"](nit) = err2;
-    while(exist(abs(h*dT)>q)) h/=2;
+   //while(exist(abs(h*dT)>q)) h/=2;
 
     dXh=op->get_var("lnXh");
     err2=max(abs(dXh));err=err2>err?err2:err;
-    while(exist(abs(h*dXh)>q)) h/=2;
+   //while(exist(abs(h*dXh)>q)) h/=2;
 
     // Compute dWr
     dWr=op->get_var("Wr");
     err2=max(abs(dWr));err=err2>err?err2:err;
-    while(exist(abs(h*dWr)>q)) h/=2;
+   //while(exist(abs(h*dWr)>q)) h/=2;
 
     dpc=op->get_var("log_pc");
     err2=fabs(dpc(0)/pc);err=err2>err?err2:err;
     error_map["log_pc"](nit) = err2;
-    while(fabs(h*dpc(0))>q*pc) h/=2;
+   //while(fabs(h*dpc(0))>q*pc) h/=2;
 
     dTc=op->get_var("log_Tc");
     err2=fabs(dTc(0));err=err2>err?err2:err;
     error_map["log_Tc"](nit) = err2;
-    while(fabs(h*dTc(0))>q) h/=2;
+   //while(fabs(h*dTc(0))>q) h/=2;
 
     dRi=op->get_var("Ri");
     error_map["Ri"](nit) = max(abs(dRi));
@@ -239,9 +237,9 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     save["T"] = T;
     save["pc"] = pc*ones(1, 1);
     save["Tc"] = Tc*ones(1, 1);
-    save["Flux"] = dFlux;
-    save["lnXh"] = dXh;
-    save["Wr"] = dWr;
+    save["Flux"] = Flux;
+    save["lnXh"] = Xh;
+    save["Wr"] = Wr;
 
     phi+=h*dphi;
     p+=h*dp*p;
@@ -262,85 +260,45 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 
     err2=max(abs(rho-rho0));err=err2>err?err2:err;
 
+    build_solver(op);
+    norm_rhs1 = this->eval_norm_rhs(op);
+    LOGW("|rhs| = %.3e (was %.3e) (h=%.1e)\n", norm_rhs1, norm_rhs0, h);
+
     bool check_rhs = false;
     if (check_rhs) {
 
-        build_solver(op);
-        norm_rhs = this->eval_norm_rhs(op);
+/*
+        LOGI("iter: %d\n", nit);
+        LOGI("|Phi| = %e\n", norm(op->get_rhs("Phi")));
+        LOGI("|log_p| = %e\n", norm(op->get_rhs("log_p")));
+        LOGI("|pi_c| = %e\n", norm(op->get_rhs("pi_c")));
+        LOGI("|log_T| = %e\n", norm(op->get_rhs("log_T")));
+        LOGI("|Flux| = %e\n", norm(op->get_rhs("Flux")));
+        LOGI("|Lambda| = %e\n", norm(op->get_rhs("Lambda")));
+        LOGI("|Ri| = %e\n", norm(op->get_rhs("Ri")));
+        LOGI("|lnXh| = %e\n", norm(op->get_rhs("lnXh")));
+        LOGI("|Wr| = %e\n", norm(op->get_rhs("Wr")));
+*/
+        if (norm_rhs1 > norm_rhs0 && nit > 2) {
+            LOGW("|rhs| = %.3e (was %.3e) (h=%.1e)\n", norm_rhs1, norm_rhs0, h);
 
-        // LOGI("|Phi| = %e\n", norm(op->get_rhs("Phi")));
-        // LOGI("|log_p| = %e\n", norm(op->get_rhs("log_p")));
-        // LOGI("|pi_c| = %e\n", norm(op->get_rhs("pi_c")));
-        // LOGI("|log_T| = %e\n", norm(op->get_rhs("log_T")));
-        // LOGI("|Lambda| = %e\n", norm(op->get_rhs("Lambda")));
-        // LOGI("|Ri| = %e\n", norm(op->get_rhs("Ri")));
-        // LOGI("|dRi| = %e\n", norm(op->get_rhs("dRi")));
-        // LOGI("|log_pc| = %e\n", norm(op->get_rhs("log_pc")));
-        // LOGI("|log_Tc| = %e\n", norm(op->get_rhs("log_Tc")));
-        // LOGI("|Log_R| = %e\n", norm(op->get_rhs("log_R")));
-        // LOGI("|m| = %e\n", norm(op->get_rhs("m")));
-        // LOGI("|ps| = %e\n", norm(op->get_rhs("ps")));
-        // LOGI("|Ts| = %e\n", norm(op->get_rhs("Ts")));
-        // LOGI("|Lum| = %e\n", norm(op->get_rhs("lum")));
-        // LOGI("|Frad| = %e\n", norm(op->get_rhs("Frad")));
-        // LOGI("|Teff| = %e\n", norm(op->get_rhs("Teff")));
-        // LOGI("|gsup| = %e\n", norm(op->get_rhs("gsup")));
+            double g0 = 0.5 * norm_rhs0*norm_rhs0;
+            double g1 = 0.5 * norm_rhs1*norm_rhs1;
+            //double gp0 = -norm_rhs0*norm_rhs0;
 
-        if (norm_rhs > norm_rhs1 && nit > 2) {
-            LOGW("|rhs| = %.2e (was %.2e) (h=%e)\n", norm_rhs, norm_rhs1, h);
-
-            double g0 = 0.5 * norm_rhs1*norm_rhs1;
-            double g1 = 0.5 * norm_rhs*norm_rhs;
-            // double gl1 = norm_rhs1*norm_rhs1;
-            // double gl2 = norm_rhs2*norm_rhs2;
-            double gp0 = -norm_rhs1*norm_rhs1;
-
-            // double scal = 1.0/(lambda1-lambda2);
-            // if (fabs(lambda2-lambda1) < 1e-10) scal = 0.5;
-            // double a = scal * (
-            //         1.0/(lambda1*lambda1)*(gl1-gpl*lambda1-g0)
-            //         - 1.0/(lambda2*lambda2)*(gl2-gpl*lambda2-g0)
-            //         );
-            // double b = scal * (
-            //         lambda1/(lambda2*lambda2)*(gl2-gpl*lambda2-g0)
-            //         - lambda2/(lambda1*lambda1)*(gl1-gpl*lambda1-g0)
-            //         );
-
-            // lambda = (-b + sqrt(b*b-3*a*gpl))/(3*a);
-            lambda = -gp0 / (2*(g1-g0-gp0));
+            lambda = g0 / (g1+g0);
 
             if (lambda < 0.1) lambda = 0.1;
             if (lambda > 0.5) lambda = 0.5;
 
-            LOGI("iter: %d,    lambda=%e\n", nit, lambda);
-            LOGI("iter: %d,   lambda1=%e\n", nit, lambda1);
-            LOGI("iter: %d,   lambda2=%e\n", nit, lambda2);
-            // LOGI("iter: %d,         a=%e\n", nit, a);
-            // LOGI("iter: %d,         b=%e\n", nit, b);
-            LOGI("iter: %d,        g0=%e\n", nit, g0);
-            LOGI("iter: %d,        g1=%e\n", nit, g1);
-            // LOGI("iter: %d,       gl1=%e\n", nit, gl1);
-            // LOGI("iter: %d,       gl2=%e\n", nit, gl2);
-            LOGI("iter: %d,       gp0=%e\n", nit, gp0);
-            LOGI("iter: %d,    |rhs2|=%e\n", nit, norm_rhs2);
-            LOGI("iter: %d,    |rhs1|=%e\n", nit, norm_rhs1);
-            LOGI("iter: %d,     |rhs|=%e\n", nit, norm_rhs);
-            LOGI("\n");
+            LOGI("iter: %d,  lambda=%e\n", nit, lambda);
+            LOGI("iter: %d,        N0=%e\n", nit, sqrt(2*g0));
+            LOGI("iter: %d,        N1=%e\n", nit, sqrt(2*g1));
 
             if (std::isnan(lambda)) {
                 ester_err("lambda is NaN\n");
             }
 
-            if (nit > 0) {
-                if (nit < 3) {
-                    lambda2 = 0.1;
-                    lambda1 = 0.9;
-                }
-                else {
-                    lambda2 = lambda1;
-                    lambda1 = lambda;
-                }
-            }
 
             map.R = save["R"];
             map.remap();
@@ -361,10 +319,10 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
             fill();
 
             build_solver(op);
-            new_norm_rhs = this->eval_norm_rhs(op);
-            LOGI("g(lamdba) = %e\n", new_norm_rhs);
+            norm_rhs_new = this->eval_norm_rhs(op);
+            LOGI("N(lambda) = %e\n", norm_rhs_new);
 #if 0
-            if (new_norm_rhs > norm_rhs1) {
+            if (norm_rhs_new > norm_rhs1) {
                 if (lambda < 0.1) lambda = 0.1;
                 if (lambda > 0.5) lambda = 0.5;
 
@@ -384,12 +342,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 #endif
         }
         else {
-            LOGI("|rhs| = %.2e (h=%e)\n", norm_rhs, h);
-            if (nit > 3) {
-                lambda2 = lambda1;
-                lambda1 = lambda;
-                lambda = h;
-            }
+            LOGI("Hello |rhs| = %.2e (h=%e)\n", norm_rhs1, h);
         }
     }
 	FILE *entrop = fopen("entropie.txt", "a");
@@ -404,13 +357,13 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 void star1d::update_map(matrix dR) {
     if(ndomains==1) return;
 
-    double h=1,dmax=config.newton_dmax;
+    double h=0.4,dmax=config.newton_dmax;
 
     matrix R0;
     R0=map.R;
     dR=dR.concatenate(zeros(1,1));
     dR(0)=0;
-    while(exist(abs(h*dR)>dmax*R0)) h/=2;
+    //while(exist(abs(h*dR)>dmax*R0)) h/=2;
     map.R+=h*dR;
     while(map.remap()) {
         h/=2;

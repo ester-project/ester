@@ -17,18 +17,26 @@ void star2d::new_check_map() {
                 zone_type = std::vector<int>(1);
 	}
 
-	//if (global_err < 1e-4) { // look for new convective regions and eventually remap the star
-	if (n_essai == 0) seuil=1e2;
+	if (n_essai == 0) seuil=1e-2;
 	if (n_essai > 0) seuil=1e-2;
-printf("global errors %e %e\n",prev_global_err,global_err);
+//printf("global errors %e %e\n",prev_global_err,global_err);
 
 // Check the "PRESSURE" drop from bot CZ to surface
+// At the beginning izif=0, thus n=0 and j0=number of pts of 1st domain
+// hence p_drop > p_dm, always.
+	//printf("izif size %d\n",izif.size());
+	//for (int iz=0;iz<ndomains-1;iz++) printf(" %d ",izif[iz]);
+	//printf("\n");
 	int n=izif[1],j0,k; // n is the index of the domain just below the interface
         for(k=0,j0=0;k<n+1;k++) j0+=map.gl.npts[k]; // j0 is the radial index of the interface
 	
 	double p_drop=PRES(-1,0)/PRES(j0,0);
 	int ndom=ndomains-n;
 	double p_dm=exp(ndom*log(PRES(-1,0))/ndomains); //expected drop
+	//printf("j0 = %d ndom= %d\n",j0,ndom);
+	//printf("pdrop = %e\n",p_drop);
+	//printf("pdm   = %e\n",p_dm);
+
 	if (p_dm > p_drop) { // PRES drop is too important in CZ, redist domain
            if (details) printf("check_map: PRES drop high : REDISTRIBUTE DOMAINS\n");
     	   p_inter = zeros(nzones, nth);
@@ -55,22 +63,22 @@ printf("global errors %e %e\n",prev_global_err,global_err);
  	   printf("seuil %e\n",seuil);
 	   int nzones_av=zone_type.size();
 
-	   find_zones(R_inter, p_inter); // defines R,p_inter
+	   nzones=find_zones(R_inter, p_inter); // defines R,p_inter
 
 	   int nzones_ap=zone_type.size();
 	   if (nzones_av == nzones_ap) {
 		n_essai=n_essai+1;
 		  if (details) printf("n_essai=%d\n",n_essai);
-		//if (n_essai < 20) {
-		if (global_err < prev_global_err || global_err<2e-3) {
+		  if (global_err < prev_global_err || global_err<2e-3) {
 		  if (details) printf("Number of zones unchanged: do nothing\n");
-		  if (details) printf("n_essai=%d\n",n_essai);
 		  return;
 		}
 	   }
-/*
-	   // Redistribute the domains and output izif (index of zone interface)
-	   // as a global var.
+
+// The global error is low enough, find_zone was called
+// and the number of zones has changed so we redistribute the domains
+// Also output izif (index of zone interface) as a global var.
+
            if (details) printf("check_map: REDISTRIBUTE DOMAINS\n");
 	   n_essai=0;
 	   pif=New_distribute_domains(ndomains,p_inter);
@@ -82,6 +90,14 @@ printf("global errors %e %e\n",prev_global_err,global_err);
 	// Install the new mapping and do interpolation for this mapping
 	   map=red->get_map(); // generate r,r_z,...
 	   interp(red);
+	   printf("DISTRIBUTION OF DOMAINS IN ZONES nzones=%d\n",nzones);
+	   for (int iz=0;iz<nzones;iz++) {
+		if (iz == 0) ndom=izif[iz]+1;
+		if (iz != 0) ndom=izif[iz]-izif[iz-1];
+		printf(" iz=%d ndom=%d, ",iz,ndom);
+	   }
+	   printf("\n");
+
 if (details) {
 FILE *fic=fopen("new_R.txt", "a");
 fprintf(fic,"it= %d\n",glit);
@@ -89,7 +105,7 @@ for (int k=0;k<=ndomains;k++) fprintf(fic,"k= %d R= %e \n",k,R(k,0));
 fclose(fic);
 }
 	   delete red;
-*/
+
 	} else return; // else do nothing
 }
 
