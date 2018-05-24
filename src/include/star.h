@@ -39,9 +39,10 @@ class star2d {
 	virtual void copy(const star2d &);
 	void init1d(const star1d &A,int npts_th,int npts_ex);
 	virtual bool check_tag(const char *tag) const;
+	virtual std::string get_tag() const;
 	virtual void write_tag(OUTFILE *fp) const;
 	virtual void write_eqs(solver *op);
-	virtual double update_solution(solver *op, double &h);
+	virtual double update_solution(solver *op, double &h, matrix_map& error, int nit);
 	virtual void read_vars(INFILE *fp);
 	virtual void write_vars(OUTFILE *fp) const;
   public:
@@ -118,6 +119,7 @@ class star2d {
 	
 	virtual solver *init_solver(int nvar_add=0);
 	virtual double solve(solver *);
+	virtual double solve(solver *, matrix_map& error, int);
 	virtual void register_variables(solver *op);
 	
 	virtual void solve_poisson(solver *);
@@ -173,11 +175,11 @@ class star2d {
 	virtual int check_convec(double &p_cc, matrix &Rcc);
 	virtual void update_domain_weights();
 	
-	void draw(figure *,const matrix &,int parity=0) const;
-	void drawi(figure *,const matrix &,int sr,int st,int parity=0) const;
-	void drawc(figure *,const matrix &,int ncontours,int parity=0) const;
-	void drawci(figure *,const matrix &,int sr,int st,int ncontours,int parity=0) const;
-	void spectrum(figure *,const matrix &,int parity=0) const;
+	// void draw(figure *,const matrix &,int parity=0) const;
+	// void drawi(figure *,const matrix &,int sr,int st,int parity=0) const;
+	// void drawc(figure *,const matrix &,int ncontours,int parity=0) const;
+	// void drawci(figure *,const matrix &,int sr,int st,int ncontours,int parity=0) const;
+	// void spectrum(figure *,const matrix &,int parity=0) const;
 
 	matrix kconv() const;
 	void add_kconv(solver *op,const char *eqn,const matrix &d);
@@ -187,11 +189,14 @@ class star2d {
 
     void hdf5_write(const char *filename) const;
     int hdf5_read(const char *input_file, int dim);
+
+    virtual void plot(const matrix_map&);
 };
 
 class star1d : public star2d {
   protected:
     virtual bool check_tag(const char *tag) const;
+    virtual std::string get_tag() const;
 	virtual void write_tag(OUTFILE *fp) const;
   public:	
   	// star1d_class.cpp
@@ -209,6 +214,7 @@ class star1d : public star2d {
 	virtual solver *init_solver(int nvar_add=0);
 	virtual void register_variables(solver *op);
 	virtual double solve(solver *);
+	virtual double solve(solver *, matrix_map& error, int);
 	virtual void solve_poisson(solver *);
 	virtual void solve_pressure(solver *);
 	virtual void solve_temp(solver *);
@@ -227,9 +233,12 @@ class star1d : public star2d {
 	
 	virtual void fill();
 	
-	void spectrum(figure *,const matrix &,const char *line="") const;
+	// void spectrum(figure *,const matrix &,const char *line="") const;
 	
 
+    virtual void plot(const matrix_map&);
+
+    matrix spectrum(const matrix&);
 };
 
 class star_evol : public star2d {
@@ -242,7 +251,7 @@ protected:
 	virtual void read_vars(INFILE *fp);
 	virtual void write_vars(OUTFILE *fp) const;
 	virtual void write_eqs(solver *op);
-	virtual double update_solution(solver *op, double &h);
+	virtual double update_solution(solver *op, double &h, matrix_map& error, int nit);
 	virtual void copy(const star_evol &);
 	virtual void calcTimeDerivs();
 public:
@@ -269,7 +278,8 @@ public:
     virtual void solve_cont(solver *);
     virtual void solve_temp(solver *);
     virtual void solve_mov(solver *);
-    virtual double solve(solver *);
+    using star2d::solve;
+    virtual double solve(solver *, matrix_map& error, int);
 
     virtual void reset_time_solver(SDIRK_solver *);
 

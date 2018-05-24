@@ -3,7 +3,6 @@
 
 #include "matrix.h"
 #include "numdiff.h"
-#include "graphics.h"
 #include "solver.h"
 
 #define MAP_BONAZZOLA 0
@@ -33,12 +32,12 @@ class mapping {
     	matrix r,rz,rzz,rt,rtt,rzt,gzz,gzt,gtt;
     	diff_gl gl;
     	matrix J[4];
-    	
+
     	operator mapping();
     	friend class mapping;
     } ex;
     const int &nex;
-    
+
     mapping();
   	~mapping();
   	mapping(const mapping &);
@@ -52,28 +51,28 @@ class mapping {
   	void set_mode(int mode);
     int init();
     int remap();
-    
-    matrix eval(const matrix &y,const matrix &ri, const matrix &thi,int parity=0) const; 
-    
-    
+
+    matrix eval(const matrix &y,const matrix &ri, const matrix &thi,int parity=0) const;
+
+
     matrix dr(const matrix &) const;
     matrix dt(const matrix &) const;
     matrix dt_odd(const matrix &) const;
     matrix dt2(const matrix &) const;
-    
+
     matrix stream(const matrix &Fz,matrix &Ft) const;
     matrix stream(const matrix &Fz) const;
-    matrix zeta_to_r(const matrix &z) const;	
-    
-    	
+    matrix zeta_to_r(const matrix &z) const;
+
+
 	matrix draw0(const matrix &A,int parity,matrix &x,matrix &y) const;
-	void draw(figure *pfig,const matrix &A,int parity=0) const;
-	matrix drawi0(const matrix &A,int sr,int st,int parity,matrix &x,matrix &y) const;
-	void drawi(figure *pfig,const matrix &A,int sr,int st,int parity=0) const;
-	void drawc(figure *pfig,const matrix &A,int ncontours,int parity=0) const;
-	void drawci(figure *pfig,const matrix &A,int sr,int st,int ncontours,int parity=0) const;
-	void spectrum(figure *pfig,const matrix &y,int parity=0) const;
-	
+	// void draw(figure *pfig,const matrix &A,int parity=0) const;
+	// matrix drawi0(const matrix &A,int sr,int st,int parity,matrix &x,matrix &y) const;
+	// void drawi(figure *pfig,const matrix &A,int sr,int st,int parity=0) const;
+	// void drawc(figure *pfig,const matrix &A,int ncontours,int parity=0) const;
+	// void drawci(figure *pfig,const matrix &A,int sr,int st,int ncontours,int parity=0) const;
+	// void spectrum(figure *pfig,const matrix &y,int parity=0) const;
+
 	friend class ext_map;
 
 };

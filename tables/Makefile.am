@@ -1,2 +1,2 @@
-SUBDIRS = cesam_nuc houdek/v9 opal
+SUBDIRS = cesam houdek/v9 opal freeeos
 

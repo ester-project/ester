@@ -12,7 +12,6 @@
 /// nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere,
 /// flatness, scaled keplerian angular velocity
 void star2d::fill() {
-    DEBUG_FUNCNAME;
 	Y0=1.-X0-Z0;
 	//init_comp();
 
@@ -26,7 +25,7 @@ void star2d::fill() {
 
 	pi_c=(4*PI*GRAV*rhoc*rhoc*R*R)/pc;
 	Lambda=rhoc*R*R/Tc;
-	
+
 	calc_units();
 
 	atmosphere();
@@ -51,7 +50,7 @@ void star2d::init_comp() {
     for (int i=0; i<conv; i++) {
         n += map.gl.npts[i];
     }
-	
+
     if(stratified_comp == 0) {
         comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
     }
@@ -71,27 +70,24 @@ void star2d::init_comp() {
 }
 
 solver *star2d::init_solver(int nvar_add) {
-    DEBUG_FUNCNAME;
 	int nvar;
 	solver *op;
 
 	nvar=37;
-
 	op=new solver;
 	op->init(ndomains+1,nvar+nvar_add,"full");
-	
+
 	op->maxit_ref=10;op->use_cgs=1;op->maxit_cgs=20;op->debug=0;
 	op->rel_tol=1e-12;op->abs_tol=1e-20;
 	register_variables(op);
-	
+
 	return op;
 }
 
 void star2d::register_variables(solver *op) {
-    DEBUG_FUNCNAME;
 	int i,var_nr[ndomains+1];
-	
-	for(i=0;i<ndomains;i++) 
+
+	for(i=0;i<ndomains;i++)
 		var_nr[i]=map.gl.npts[i];
 	var_nr[ndomains]=nex;
 	op->set_nr(var_nr);
@@ -132,6 +128,13 @@ void star2d::register_variables(solver *op) {
 	op->regvar_dep("log_Re");
 	op->regvar("sin_vangle");
 	op->regvar_dep("cos_vangle");
+
+
+}
+
+double star2d::solve(solver *op) {
+    matrix_map error_map;
+    return solve(op, error_map, 0);
 }
 
 void star2d::write_eqs(solver *op) {
@@ -177,7 +180,7 @@ void star2d::write_eqs(solver *op) {
 #endif
 }
 
-double star2d::update_solution(solver *op, double &h) {
+double star2d::update_solution(solver *op, double &h, matrix_map& error_map, int nit) {
 
 	double err,err2,dmax;
 
@@ -189,21 +192,30 @@ double star2d::update_solution(solver *op, double &h) {
 	dphi=op->get_var("Phi").block(0,nr-1,0,-1);
 	dphiex=op->get_var("Phi").block(nr,nr+nex-1,0,-1);
 	err=max(abs(dphi/phi));
+    error_map["Phi"](nit) = err;
+
 	//printf("err(phi)=%e\n",err);
 	dp=op->get_var("p");
 	err2=max(abs(dp/p));err=err2>err?err2:err;
+    error_map["p"](nit) = err2;
 	while(exist(abs(h*dp/p)>dmax)) h/=2;
+
 	//printf("err(p)=%e\n",err2);
 	dT=op->get_var("T");
 	err2=max(abs(dT/T));err=err2>err?err2:err;
+    error_map["T"](nit) = err2;
 	while(exist(abs(h*dT/T)>dmax)) h/=2;
+
 	//printf("err(T)=%e\n",err2);
 	dpc=op->get_var("log_pc");
 	err2=fabs(dpc(0));err=err2>err?err2:err;
+    error_map["log_pc"](nit) = err2;
 	while(fabs(h*dpc(0))>dmax) h/=2;
+
 	//printf("err(pc)=%e\n",err2);
 	dTc=op->get_var("log_Tc");
 	err2=fabs(dTc(0));err=err2>err?err2:err;
+    error_map["log_Tc"](nit) = err2;
 	while(fabs(h*dTc(0))>dmax) h/=2;
 	//printf("err(Tc)=%e\n",err2);
 
@@ -220,6 +232,7 @@ double star2d::update_solution(solver *op, double &h) {
 
 	matrix dRi;
 	dRi=op->get_var("Ri");
+    error_map["Ri"](nit) = max(abs(dRi));
 	update_map(h*dRi);
 	err2=max(abs(dRi));err=err2>err?err2:err;
 
@@ -228,8 +241,7 @@ double star2d::update_solution(solver *op, double &h) {
 
 /// \brief Performs one step of the Newton algorithm to compute the star's
 /// internal structure.
-double star2d::solve(solver *op) {
-    DEBUG_FUNCNAME;
+double star2d::solve(solver *op, matrix_map& error_map, int nit) {
 	int info[5];
 
 	if(Omega==0 && Omega_bk != 0) {
@@ -273,7 +285,7 @@ double star2d::solve(solver *op) {
 // End  output verbose ----------------------
 
 	double h = 1.;
-	double err = update_solution(op, h);
+	double err = update_solution(op, h, error_map, nit);
 
 	matrix rho0=rho;
 
@@ -289,9 +301,8 @@ double star2d::solve(solver *op) {
 // a different relaxation parameter "h".
 
 void star2d::update_map(matrix dR) {
-    DEBUG_FUNCNAME;
 	double h=1,dmax=config.newton_dmax;
-	
+
 	matrix R0;
 	R0=map.R;
 	dR.setrow(0,zeros(1,nth));
@@ -307,7 +318,6 @@ void star2d::update_map(matrix dR) {
 /// \brief insert the definitions depending on opacity and eos tables into the solver,
 /// and the definitions used by the mapping (eta,deta,Ri,dRi,...), and the entropy
 void star2d::solve_definitions(solver *op) {
-    DEBUG_FUNCNAME;
 
 // EOS written rho(P,T). eos.chi_rho is from OPAL,
 // and eos.d=chi_t/chi_rho
@@ -316,47 +326,47 @@ void star2d::solve_definitions(solver *op) {
 	op->add_d("rho","log_pc",rho/eos.chi_rho);
 	op->add_d("rho","log_Tc",-rho*eos.d);
 	op->add_d("rho","log_rhoc",-rho);
-	
+
 // Constitutive relation for opacity (xi); formal dependence xi=xi(rho,T)
 	op->add_d("opa.xi","rho",opa.dlnxi_lnrho*opa.xi/rho);
 	op->add_d("opa.xi","log_rhoc",opa.dlnxi_lnrho*opa.xi);
 	op->add_d("opa.xi","T",opa.dlnxi_lnT*opa.xi/T);
 	op->add_d("opa.xi","log_Tc",opa.dlnxi_lnT*opa.xi);
-	
+
 // Constitutive relation for thermal radiative conductivity k=16sigma*T^3/\rho/\xi
 	op->add_d("opa.k","T",3*opa.k/T);
 	op->add_d("opa.k","log_Tc",3*opa.k);
 	op->add_d("opa.k","rho",-opa.k/rho);
 	op->add_d("opa.k","log_rhoc",-opa.k);
 	op->add_d("opa.k","opa.xi",-opa.k/opa.xi);
-	
+
 // Constitutive relation for nuclear heat generation; formal dependence nuc.eps=nuc.eps(rho,T)
 	op->add_d("nuc.eps","rho",nuc.dlneps_lnrho*nuc.eps/rho);
 	op->add_d("nuc.eps","log_rhoc",nuc.dlneps_lnrho*nuc.eps);
 	op->add_d("nuc.eps","T",nuc.dlneps_lnT*nuc.eps/T);
 	op->add_d("nuc.eps","log_Tc",nuc.dlneps_lnT*nuc.eps);
-	
+
 // Here we write the variation of r as a function of the variations of the mapping
 // parameters according to equation 6.10 of the manual
 	op->add_d("r","eta",map.J[0]);
 	op->add_d("r","deta",map.J[1]);
 	op->add_d("r","Ri",map.J[2]);
 	op->add_d("r","dRi",map.J[3]);
-	
+
 // same as above but for the last vacuum domain
 	op->add_d(ndomains,"r","eta",map.ex.J[0]);
 	op->add_d(ndomains,"r","Ri",map.ex.J[2]);
-	
+
 // same as for r but for rz
 	op->add_d("rz","eta",(D,map.J[0]));
 	op->add_d("rz","deta",(D,map.J[1]));
 	op->add_d("rz","Ri",(D,map.J[2]));
 	op->add_d("rz","dRi",(D,map.J[3]));
-	
+
 // last domain for rz
 	op->add_d(ndomains,"rz","eta",(Dex,map.ex.J[0]));
 	op->add_d(ndomains,"rz","Ri",(Dex,map.ex.J[2]));
-	
+
 // From the variation of entropy with respect to the variation of pressure and
 // temperature but valid only for homogeneus composition !!!!!!
 	op->add_d("s","T",eos.cp/T);
@@ -430,11 +440,10 @@ void star2d::solve_vangle(solver *op) {
 
 /// \brief Writes Poisson equation and interface conditions into the solver.
 void star2d::solve_poisson(solver *op) {
-    DEBUG_FUNCNAME;
 	matrix q,rhs1,rhs2,rhs;
 	int n,j0;
 	matrix &rz=map.rz;
-	
+
 	symbolic S;
 	sym lap_phi;
 	{
@@ -445,14 +454,14 @@ void star2d::solve_poisson(solver *op) {
 
 	S.set_value("Phi",phi);
 	S.set_map(map);
-	
+
 	lap_phi.add(op,"Phi","Phi");
 // The equation is named Phi and depends on variable tagged "Phi"
 	lap_phi.add(op,"Phi","r");
 // The equation is named Phi and depends on variable tagged "r"
 
 	rhs1=-lap_phi.eval()+pi_c*rho; // Expression of the RHS inside the star
-	
+
 	//rho
 	op->add_d("Phi","rho",-pi_c*ones(nr,nth));  // Coefficient of delta rho
 
@@ -467,13 +476,13 @@ void star2d::solve_poisson(solver *op) {
 	lap_phi.add_ex(op,ndomains,"Phi","Phi");
 // add exterior domain with variable tagged "r":
 	lap_phi.add_ex(op,ndomains,"Phi","r");
-	
+
 	rhs2=-lap_phi.eval();     // Expression of RHS outside the star (rho=0)
-	
+
 	rhs=zeros(nr+nex,nth);          // set the RHS vector
 	rhs.setblock(0,nr-1,0,-1,rhs1);
 	rhs.setblock(nr,nr+nex-1,0,-1,rhs2);
-	
+
 	j0=0;
 
 // Loop on the domains from n=0 to n=ndomains
@@ -507,7 +516,7 @@ void star2d::solve_poisson(solver *op) {
 // for all stellar domains, at the bottom (1/rz)d(delta phi)/dzeta
 // is continuuous (left block assoc. with domain n-1)
 	op->bc_bot1_add_l(n,"Phi","Phi",-1/rz.row(j0-1),D.block(n-1).row(-1));
-			
+
 // Functional derivative of "1/rz times dphi/dzeta",s
 // complements the interface cond. (Right cond. block n)
 	if(n<ndomains) op->bc_bot2_add_d(n,"Phi","rz",-1/rz.row(j0)/rz.row(j0)*(D,phi).row(j0));
@@ -515,22 +524,22 @@ void star2d::solve_poisson(solver *op) {
 
 // For all stellar domain Left cond. in block n-1 of the complement of IC
   op->bc_bot1_add_d(n,"Phi","rz",1/rz.row(j0-1)/rz.row(j0-1)*(D,phi).row(j0-1));
-			
+
 // set the interface conditions in the RHS
 	if(n<ndomains)
       rhs.setrow(j0,-(D,phi).row(j0)/rz.row(j0)+(D,phi).row(j0-1)/rz.row(j0-1));
 	else
       rhs.setrow(j0,-(Dex,phiex).row(0)/map.ex.rz.row(0)+(D,phi).row(j0-1)/rz.row(j0-1));
 		} // end of block n#0
-		
+
 // Continuity of Phi imposed on top of the domains
 // left condition for Jacobian (in domain n-1):
-	op->bc_top1_add_d(n,"Phi","Phi",ones(1,nth)); 
+	op->bc_top1_add_d(n,"Phi","Phi",ones(1,nth));
 
 // Right condition for Jacobian (in domain n)
 	if(n<ndomains) op->bc_top2_add_d(n,"Phi","Phi",-ones(1,nth));
 
-// Prepare the RHS for the continuity of phi 
+// Prepare the RHS for the continuity of phi
    if(n<ndomains) rhs.setrow(j0+map.gl.npts[n]-1,-phi.row(j0+map.gl.npts[n]-1));
    else rhs.setrow(nr+nex-1,-phiex.row(nex-1)); // left terms of the last domain
    if(n<ndomains-1) rhs.setrow(j0+map.gl.npts[n]-1,rhs.row(j0+map.gl.npts[n]-1)
@@ -624,7 +633,6 @@ void star2d::solve_cont(solver *op) {
 }
 
 void star2d::solve_mov(solver *op) {
-    DEBUG_FUNCNAME;
 	static bool eqinit = false;
 	static symbolic S;
 	static sym eq_phi, bc_w, ic_w, ic_t, ic_dt, ic_visc, bc_t, eqmov_r, eqmov_t;
@@ -914,8 +922,6 @@ void star2d::solve_mov(solver *op) {
 	}
 	op->set_rhs("vt",rhs);
 
-
-
 }
 
 
@@ -1059,16 +1065,14 @@ void star2d::solve_temp(solver *op) {
 	}
 	op->set_rhs("Lambda", rhs);
 
-
 }
 
 /// \brief Writes the equations for the dimensional quantities (T_c, rho_c, R, etc.)
 
 void star2d::solve_dim(solver *op) {
-    DEBUG_FUNCNAME;
 	int n,j0;
 	matrix q,rhs;
-	
+
 	rhs=zeros(ndomains,1);
 	j0=0;
 // Expression of the mass integral m=intvol rho 2*pi*r^2*rz*sin(th)*dth
@@ -1079,19 +1083,19 @@ void star2d::solve_dim(solver *op) {
 		//r (rz)
 		op->bc_bot2_add_lri(n,"m","r",-2*PI*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(2*r*map.rz*rho).block(j0,j0+map.gl.npts[n]-1,0,-1));
 		op->bc_bot2_add_lri(n,"m","rz",-2*PI*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(r*r*rho).block(j0,j0+map.gl.npts[n]-1,0,-1));
-		
+
 		if(n) op->bc_bot1_add_d(n,"m","m",-ones(1,1));
 		j0+=map.gl.npts[n];
 	}
 	op->set_rhs("m",rhs);
-	
+
 // From the equation of state dln(rho_c)/dln(p_c) = 1/khi_rho(0)
 	for(n=0;n<ndomains;n++) {
 		op->add_d(n,"log_rhoc","log_pc",1./eos.chi_rho(0)*ones(1,1));
 		op->add_d(n,"log_rhoc","log_Tc",-eos.d(0)*ones(1,1));
 	}
 
-// pi_c= 4*pi*G*rho_c^2/P_c	
+// pi_c= 4*pi*G*rho_c^2/P_c
 	rhs=zeros(ndomains,1);
 	for(n=0;n<ndomains;n++) {
 		if(n==ndomains-1) {
@@ -1105,7 +1109,7 @@ void star2d::solve_dim(solver *op) {
 		}
 	}
 	op->set_rhs("log_pc",rhs);
-	
+
 // T_c = rho_cR^2/Lambda
 	rhs=zeros(ndomains,1);
 	for(n=0;n<ndomains;n++) {
@@ -1120,7 +1124,7 @@ void star2d::solve_dim(solver *op) {
 		}
 	}
 	op->set_rhs("log_Tc",rhs);
-	
+
 // M = rho_c*R^3*m
 	rhs=zeros(ndomains,1);
 	for(n=0;n<ndomains;n++) {
@@ -1141,7 +1145,6 @@ void star2d::solve_dim(solver *op) {
 /// There are geometrical relations and physical relations placing the physical interfaces
 /// on surfaces zeta=cst. Option also to define the stellar surface as a tau=cst or P=cst
 void star2d::solve_map(solver *op) {
-    DEBUG_FUNCNAME;
 	int n,j0;
 	matrix Ri,rhs,TT,q;
 
@@ -1162,7 +1165,7 @@ void star2d::solve_map(solver *op) {
 		op->bc_top2_add_d(n,"deta","eta",-ones(1,1));
 	}
 	op->set_rhs("deta",rhs);
-	
+
 	rhs=zeros(ndomains,nth);
 	for(n=0;n<ndomains;n++) {
 		op->bc_top1_add_d(n,"dRi","dRi",ones(1,nth));
@@ -1181,10 +1184,10 @@ void star2d::solve_map(solver *op) {
 	}
 	op->add_d(ndomains,"eta","eta",ones(1,1));
 	op->set_rhs("eta",rhs);
-	
+
 	Ri=map.R;
 	rhs=zeros(ndomains+1,nth);
-	
+
 	op->add_d(0,"Ri","Ri",ones(1,nth));
 //for(n=1;n<=ndomains;n++) op->add_d(n,"Ri","Ri",ones(1,nth));op->set_rhs("Ri",rhs);return;
 	j0=map.gl.npts[0];
@@ -1202,7 +1205,7 @@ void star2d::solve_map(solver *op) {
 			eq.bc_bot2_add(op,n,"Ri","p",ones(1,nth));
 			eq.bc_bot2_add(op,n,"Ri","s",ones(1,nth));
 			eq.bc_bot2_add(op,n,"Ri","r",ones(1,nth));
-		
+
 			rhs.setrow(n,-eq.eval().row(j0));
 		} else {
 			#ifdef T_CONSTANT_DOMAINS
@@ -1249,9 +1252,9 @@ void star2d::solve_map(solver *op) {
 	op->bc_bot1_add_r(n,"Ri","p",-(1-q)*(1.-PHOTOSPHERE),TT);
 	rhs.setrow(n,rhs.row(n)+(1-q)*(1.-PHOTOSPHERE)*(-p.row(-1)+(p.row(-1),TT)));
 	#endif
-	
+
 	op->set_rhs("Ri",rhs);
-	
+
 }
 
 
@@ -1259,7 +1262,6 @@ void star2d::solve_map(solver *op) {
 
 /// \brief Equation setting the equatorial angular velocity
 void star2d::solve_Omega(solver *op) {
-    DEBUG_FUNCNAME;
 	int n;
 	matrix rhs;
 
@@ -1286,13 +1288,12 @@ void star2d::solve_Omega(solver *op) {
 /// \brief Equation giving the effective surface gravity gsup
 /// gsup=(-\vn\cdot\grad P)/rho
 void star2d::solve_gsup(solver *op) {
-    DEBUG_FUNCNAME;
 	matrix q,g;
 	int n=ndomains-1;
 	matrix &rt=map.rt;
-	
+
 	g=gsup();
-	
+
 	op->bc_top1_add_d(n,"gsup","gsup",ones(1,nth));
 	op->bc_top1_add_d(n,"gsup","log_pc",-g);
 	op->bc_top1_add_d(n,"gsup","log_rhoc",g);
@@ -1309,28 +1310,27 @@ void star2d::solve_gsup(solver *op) {
 	S.set_value("gamma",sqrt(1+rt*rt/r/r));  // Bug corrected 14/6/2015, MR
 	//S.set_value("gamma",sqrt(1-rt*rt/r/r));  // Looks like an error, should be sqrt(1+rt*rt/r/r)
 	n_(0)=Dz(S.r)/gamma_;n_(1)=0*S.one;n_(2)=0*S.one;
-	
+
 	eq=(n_,grad(p_));
 	eq.bc_top1_add(op,n,"gsup","p",pc/R/rhoc/rho.row(-1));
 	eq.bc_top1_add(op,n,"gsup","gamma",pc/R/rhoc/rho.row(-1));
 	eq.bc_top1_add(op,n,"gsup","r",pc/R/rhoc/rho.row(-1));
-	
-	op->set_rhs("gsup",zeros(1,nth));	
-		
-		
+
+	op->set_rhs("gsup",zeros(1,nth));
+
+
 }
 
 /// \brief Equation setting the surface effective temperature
 /// Derived from sigma T_e^4 = -xi\vn\cdot\gradT
 void star2d::solve_Teff(solver *op) {
-    DEBUG_FUNCNAME;
 	matrix q,Te,F;
 	int n=ndomains-1;
 	matrix &rt=map.rt;
-	
+
 	Te=Teff();
 	F=SIG_SB*pow(Te,4);
-	
+
 	op->bc_top1_add_d(n,"Teff","Teff",4*SIG_SB*pow(Te,3));
 	op->bc_top1_add_d(n,"Teff","log_Tc",-F);
 	op->bc_top1_add_d(n,"Teff","log_R",F);
@@ -1346,16 +1346,16 @@ void star2d::solve_Teff(solver *op) {
 	S.set_value("gamma",sqrt(1+rt*rt/r/r)); // Bug corrected 14/6/2015, MR
 	//S.set_value("gamma",sqrt(1-rt*rt/r/r)); // Looks like an error, should be sqrt(1+rt*rt/r/r)
 	n_(0)=Dz(S.r)/gamma_;n_(1)=0*S.one;n_(2)=0*S.one;
-	
+
 	eq=(n_,grad(T_));
 	eq.bc_top1_add(op,n,"Teff","T",Tc/R*opa.xi.row(-1));
 	eq.bc_top1_add(op,n,"Teff","gamma",Tc/R*opa.xi.row(-1));
 	eq.bc_top1_add(op,n,"Teff","r",Tc/R*opa.xi.row(-1));
-	
+
 	op->set_rhs("Teff",zeros(1,nth));
-		
-		
-		
+
+
+
 }
 
 /// \brief Equation setting the 'simple' atmosphere model equations
@@ -1365,13 +1365,13 @@ void star2d::solve_atm(solver *op) {
 
 	if(!strcmp(atm.name,"simple")) {
 		int n=ndomains-1, n_atm=3;
-	
+
 		op->bc_top1_add_d(n,"ps","ps",1/ps);
 		op->bc_top1_add_d(n,"ps","gsup",-1/gsup());
 		op->bc_top1_add_d(n,"ps","opa.k",1/opa.k.row(-1));
 		op->bc_top1_add_d(n,"ps","log_pc",ones(1,nth));
 		op->set_rhs("ps",zeros(1,nth));
-	
+
 		op->bc_top1_add_d(n,"Ts","Ts",1/Ts);
 		op->bc_top1_add_d(n,"Ts","p",-1/p.row(-1)/(n_atm+1));
 		op->bc_top1_add_d(n,"Ts","ps",1/ps/(n_atm+1));
@@ -1384,13 +1384,13 @@ void star2d::solve_atm(solver *op) {
 
 	matrix q;
 	int n=ndomains-1;
-	
+
 	op->bc_top1_add_d(n,"ps","ps",1/ps);
 	op->bc_top1_add_d(n,"ps","gsup",-atm.dlnps_lng/gsup());
 	op->bc_top1_add_d(n,"ps","Teff",-atm.dlnps_lnTeff/Teff());
 	op->bc_top1_add_d(n,"ps","log_pc",ones(1,nth));
 	op->set_rhs("ps",zeros(1,nth));
-	
+
 	op->bc_top1_add_d(n,"Ts","Ts",1/Ts);
 	op->bc_top1_add_d(n,"Ts","p",-0.25/p.row(-1));
 	op->bc_top1_add_d(n,"Ts","ps",0.25/ps);
@@ -1398,7 +1398,7 @@ void star2d::solve_atm(solver *op) {
 	op->bc_top1_add_d(n,"Ts","Teff",-atm.dlnTs_lnTeff/Teff());
 	op->bc_top1_add_d(n,"Ts","log_Tc",ones(1,nth));
 	op->set_rhs("Ts",zeros(1,nth));
-	
+
 }
 
 

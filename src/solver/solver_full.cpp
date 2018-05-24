@@ -122,7 +122,7 @@ matrix solver_full::solve(const matrix &rhs) {
 void dump_mat(FILE *f, matrix& m, int ioff, int joff) {
     for (int i=0; i<m.nrows(); i++) {
         for (int j=0; j<m.ncols(); j++) {
-            if (m(i, j) > 0.0)
+            if (fabs(m(i, j)) > 0.0)
                 fprintf(f, "%d\t%d\t%e\n", i+ioff, j+joff, m(i, j));
         }
     }
@@ -225,7 +225,7 @@ void solver_full::lu_block(int i) {
 	ipiv[i]=new int[n];
 	dgetrf_(&n,&n,m[i].data(),&n,ipiv[i],&info);
 	ipiv_flag(i)=1;
-	
+
 	if(verbose) {
 		dgecon_(&norm,&n,m[i].data(),&n,&anorm,&rcond,work,iwork,&info);
 		printf("Block %d rcond: %e\n",i,rcond);
@@ -236,16 +236,30 @@ void solver_full::lu_block(int i) {
 void solver_full::solve_block(int i,char trans,matrix &x) {
 
 	int n,nrhs,info=0;
-	
+    matrix xx = x;
 	
 	if(trans=='T') x=x*c[i];
 	else x=x*r[i];
+
+    if (std::isnan(max(abs(x)))) {
+        ester_err("NaN in RHS solve block %d\n", i);
+    }
 	
 	n=m[i].nrows();nrhs=x.ncols();
 	dgetrs_(&trans,&n,&nrhs,m[i].data(),&n,ipiv[i],x.data(),&n,&info);
-	
-	if(trans=='T') x=x*r[i];
-	else x=x*c[i];
+
+    if (std::isnan(max(abs(x)))) {
+        LOGE("NaN in solve block %d\n", i);
+        for (int ii=0; ii<xx.ncols()*xx.nrows(); ii++) {
+            if (std::isnan(xx(ii)))
+                LOGE("rhs(%3d) = %e\n", ii, xx(ii));
+        }
+        ester_err("NaN found in solve_block");
+    }
+
+
+    if(trans=='T') x=x*r[i];
+    else x=x*c[i];
 
 }
 

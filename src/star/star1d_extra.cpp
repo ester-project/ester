@@ -1,6 +1,7 @@
 #include "ester-config.h"
 #include"star.h"
 
+#if 0
 void star1d::spectrum(figure *pfig,const matrix &y,const char *line) const {
 
 	matrix ys,x;
@@ -29,6 +30,7 @@ void star1d::spectrum(figure *pfig,const matrix &y,const char *line) const {
 	}
 	pfig->hold(0);
 }
+#endif
 
 double star1d::luminosity() const {
 
@@ -38,10 +40,14 @@ double star1d::luminosity() const {
 
 matrix star1d::Teff() const {
 
-	//return pow(luminosity()/4./PI/R/R/SIG_SB,0.25)*ones(1,1);
+	// return pow(luminosity()/4./PI/R/R/SIG_SB,0.25)*ones(1,1);
 	matrix F;
 	F=-opa.xi*(D,T);
-	return pow(F(-1)/SIG_SB*units.T/units.r,0.25)*ones(1,1);
+    matrix teff = pow(F(-1)/SIG_SB*units.T/units.r,0.25)*ones(1,1);
+    if (std::isnan(teff(0))) {
+        ester_err("Teff is NaN (D,T) = %e", (D,T)(-1));
+    }
+	return teff;
 
 }
 

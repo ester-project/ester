@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "star.h"
 #include "read_config.h"
+#include "matplotlib.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -19,28 +20,37 @@ int main(int argc,char *argv[]) {
 	double t_plot;
 	configuration config(argc,argv);
 	tiempo t;
-	figure *fig = NULL;
+	// figure *fig = NULL;
 	
 	signal(SIGINT,sig_handler);
+
+    plt::figure(1, 10, 4);
 	
 	t.start();
 		
-	if(config.verbose) {
-		fig=new figure(config.plot_device);
-		fig->subplot(2,2);
-	}
+	// if(config.verbose) {
+	// 	fig=new figure(config.plot_device);
+	// 	fig->subplot(2,2);
+	// }
 	
 	star2d A;
 	solver *op;
-
+	
 	if(A.init(config.input_file,config.param_file,argc,argv)) {
         ester_err("Could not initialize star");
         return 1;
     }
-
+	
 	nit=0;
-
+	
 	matrix tt(config.maxit+1,1),error(config.maxit+1,1);
+    matrix_map error_map;
+    error_map["Phi"] = zeros(config.maxit+1, 1);
+    error_map["p"] = zeros(config.maxit+1, 1);
+    error_map["T"] = zeros(config.maxit+1, 1);
+    error_map["log_pc"] = zeros(config.maxit+1, 1);
+    error_map["log_Tc"] = zeros(config.maxit+1, 1);
+    error_map["Ri"] = zeros(config.maxit+1, 1);
 
 	t_plot=0;
 	last_it=nit>=config.maxit;
@@ -54,7 +64,7 @@ int main(int argc,char *argv[]) {
 	if(*config.input_file==0) {
 		A.core_convec=0;
 	}
-
+	
     while(!last_it) {
         if (A.config.dump_iter) {
             char *filename = NULL;
@@ -72,7 +82,7 @@ int main(int argc,char *argv[]) {
             A.core_convec=core_convec_set;
 		}
 		
-		err=A.solve(op);
+		err=A.solve(op, error_map, nit-1);
 
 		tt(nit-1)=t.value();
 		error(nit-1)=err;
@@ -83,17 +93,21 @@ int main(int argc,char *argv[]) {
 			printf("\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,1-1./A.map.leg.eval_00(A.r.row(-1),PI/2)(0),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
 
 			if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
+#if 0
 				fig->semilogy(error.block(0,nit-1,0,0));
 				fig->label("Iteration number","Relative error","");
 				fig->colorbar();
-				A.spectrum(fig,A.vt,11);
-				fig->label("Stream function (normalized spectrum)","","");
+				A.spectrum(fig,A.rho);
+				fig->label("Density (normalized spectrum)","","");
 				fig->colorbar();
 				A.drawi(fig,A.w,100,64);
 				fig->label("Differential rotation","","");
-				A.drawi(fig,A.vr,100,64);
+				A.drawci(fig,A.G,100,64,15,11);
 				fig->label("Meridional circulation","","");
 				t_plot=tt(nit-1);
+#else
+                A.plot(error_map.block(0, nit-1, 0, 0));
+#endif
 			}
 
 		}
@@ -121,19 +135,22 @@ int main(int argc,char *argv[]) {
 		printf("rhoc=%e Tc=%e pc=%e\n",A.rhoc,A.Tc,A.pc);
 		if(A.conv) printf("R. conv. core (p)=%3.3f Rsun\n",*(A.map.gl.xif+A.conv)*A.R/R_SUN);
 		printf("Virial test: %e Energy test: %e\n",A.virial(),A.energy_test());
+        printf("\n");
 	}
 
 	A.write(config.output_file,config.output_mode);
 
-	if(config.verbose) {
-		delete fig;
-	}
+	// if(config.verbose) {
+	// 	delete fig;
+	// }
 
 	delete op;
 	t.stop();
 	if(config.verbose) 
-		printf("%2.2f seconds\n\n",t.value());	
-	
+		printf("%2.2f seconds\n",t.value());
+
+    plt::show(true);
+
 	return 0;
 }
 

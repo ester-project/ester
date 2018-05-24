@@ -22,7 +22,7 @@ extern const double L_SUN=3.8396e33;
 #include "matrix.h"
 
 extern "C"
-char *ester_version() {
+const char *ester_version() {
     return VERSION;
 }
 

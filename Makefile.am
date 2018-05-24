@@ -12,7 +12,8 @@ CLEANFILES  = $(bin_SCRIPTS)
 do_subst = sed -e 's,[@]datadir[@],$(datadir),g' \
                -e 's,[@]extension[@],$(extension),g'   \
                -e 's,[@]prefix[@],$(prefix),g'   \
-               -e 's,[@]PYTHON[@],$(PYTHON),g'
+               -e 's,[@]PYTHON[@],$(PYTHON),g' \
+               -e 's,[@]PYTHON_VERSION[@],$(PYTHON_VERSION),g'
 
 ester_visu.py: python/ester_visu.in Makefile
 	$(do_subst) < $< > $@

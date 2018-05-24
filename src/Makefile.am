@@ -3,16 +3,16 @@ AM_CXXFLAGS=-Wall
 
 BUILT_SOURCES	= main/read_config.cpp
 
-AM_CPPFLAGS = -I$(srcdir)/include
-AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam_nuc
+AM_CPPFLAGS = -I$(srcdir)/include -I$(srcdir)/graphics
+AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam
 
 bin_PROGRAMS		= star1d star2d version star_evol ester_info gen_output
 
 star1d_LDADD		= libester.la
 star2d_LDADD		= libester.la
-gen_output_LDADD	= libester.la physics/libnuc_cesam.la
+gen_output_LDADD	= libester.la physics/libphysics.la
 version_LDADD		= libester.la
-star_evol_LDADD		= libester.la
+star_evol_LDADD		= libester.la physics/libphysics.la
 ester_info_LDADD	= libester.la
 
 
@@ -23,12 +23,15 @@ gen_output_SOURCES	= main/gen_output.cpp
 version_SOURCES		= main/version.cpp
 ester_info_SOURCES	= main/ester-info.cpp
 
-EXTRA_DIST	= $(srcdir)/main/ester.in				\
-			  $(srcdir)/include/lapack.h			\
-			  $(srcdir)/include/utils.h
+EXTRA_DIST	= $(srcdir)/main/ester.in		\
+			  $(srcdir)/main/cesam_to_ester.in		\
+			  $(srcdir)/include/lapack.h	\
+			  $(srcdir)/include/utils.h		\
+			  $(srcdir)/include/stack.h		\
+			  $(srcdir)/graphics/matplotlib.h
 
 
-bin_SCRIPTS	= main/ester
+bin_SCRIPTS	= main/ester main/cesam_to_ester
 CLEANFILES  = $(bin_SCRIPTS)
 
 do_subst = sed -e 's,[@]datadir[@],$(datadir),g' \
@@ -38,9 +41,12 @@ do_subst = sed -e 's,[@]datadir[@],$(datadir),g' \
 main/ester: main/ester.in Makefile
 	$(do_subst) < $< > $@
 
+main/cesam_to_ester: main/cesam_to_ester.in Makefile
+	$(do_subst) < $< > $@
+
 lib_LTLIBRARIES			= libester.la
 libester_la_SOURCES		= global/global.cpp									\
-                          graphics/graphics.cpp								\
+                          graphics/matplotlib.cpp							\
                           mapping/mapping.cpp mapping/remapper.cpp 			\
                           matrix/mat_math.cpp matrix/matrix_block_diag.cpp	\
                           matrix/matrix.cpp matrix/matrix_map.cpp			\
@@ -56,25 +62,29 @@ libester_la_SOURCES		= global/global.cpp									\
                           star/star_map.cpp star/star_phys.cpp 				\
                           symbolic/rational.cpp symbolic/symbolic.cpp		\
                           symbolic/sym.cpp symbolic/sym_expr.cpp			\
-                          symbolic/sym_tens.cpp symbolic/sym_vec.cpp        \
-                          physics/composition.cpp
+                          symbolic/sym_tens.cpp symbolic/sym_vec.cpp		\
+						  utils/stack.cpp utils/debug.cpp
 
-libester_la_LIBADD = physics/libnuc_cesam.la				\
-					 ../tables/cesam_nuc/libnuc.la			\
+libester_la_LIBADD = physics/libphysics.la				\
+					 ../tables/freeeos/libfreeeos.la	\
+					 ../tables/cesam/libcesam.la		\
 					 ../tables/houdek/v9/lib/libopint.la
 
 library_includedir  	= $(includedir)/
-library_include_HEADERS = $(srcdir)/include/constants.h \
-						  $(srcdir)/include/ester.h		\
-						  $(srcdir)/include/mapping.h	\
-						  $(srcdir)/include/numdiff.h	\
-						  $(srcdir)/include/physics.h	\
-						  $(srcdir)/include/star.h		\
-						  $(srcdir)/include/debug.h		\
-						  $(srcdir)/include/graphics.h	\
-						  $(srcdir)/include/matrix.h	\
-						  $(srcdir)/include/parser.h	\
-						  $(srcdir)/include/solver.h	\
-						  $(srcdir)/include/symbolic.h	\
-						  $(srcdir)/include/read_config.h
+library_include_HEADERS = $(srcdir)/include/constants.h 	\
+						  $(srcdir)/include/ester.h			\
+						  $(srcdir)/include/mapping.h		\
+						  $(srcdir)/include/numdiff.h		\
+						  $(srcdir)/include/physics.h		\
+						  $(srcdir)/include/star.h			\
+						  $(srcdir)/include/debug.h			\
+						  $(srcdir)/include/utils.h			\
+						  $(srcdir)/include/stack.h			\
+						  $(srcdir)/graphics/matplotlib.h	\
+						  $(srcdir)/include/matrix.h		\
+						  $(srcdir)/include/parser.h		\
+						  $(srcdir)/include/solver.h		\
+						  $(srcdir)/include/symbolic.h		\
+						  $(srcdir)/include/read_config.h 	\
+						  $(builddir)/../ester-config.h
 

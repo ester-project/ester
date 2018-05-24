@@ -10,7 +10,7 @@ c     See subroutine esac for definitions
       iorder=9  ! gives all 1st and 2nd order data. See instructions
 c                  in esac.
       irad=1     ! add radiation  corrections
-        if (x .eq. 0.0) stop
+c        if (x .eq. 0.0) stop "x=0.0 in EOS5_xtrin"
       if (fixedTP .eq. 'yes' ) then
       r=rhoofp (x,ztab,t6,p,irad)  ! calculate density (r) for fixed P.
       endif

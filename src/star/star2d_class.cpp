@@ -3,10 +3,11 @@
 #include "matrix.h"
 #include "star.h"
 #include <string.h>
-#include <stdlib.h>
+#include <cstdlib>
 #ifdef USE_HDF5
 #include <H5Cpp.h>
 #endif
+#include "matplotlib.h"
 
 star2d::star2d() : nr(map.gl.N), nth(map.leg.npts), nex(map.ex.gl.N),
     ndomains(map.gl.ndomains), r(map.r), z(map.z), th(map.th), Dt(map.Dt),
@@ -36,8 +37,8 @@ star2d::star2d(const star2d &A) : nr(map.gl.N), nth(map.leg.npts),
     Dt(map.Dt), Dt2(map.Dt2), zex(map.ex.z), Dex(map.ex.D), rex(map.ex.r),
     D(map.D) {
 
-    copy(A);
-}
+        copy(A);
+    }
 
 star2d &star2d::operator=(const star2d &A) {
 
@@ -150,6 +151,8 @@ void star2d::hdf5_write(const char *filename) const {
     write_attr(star, "env_convec",  integer,    &env_convec);
     write_attr(star, "stratified_comp", integer, &stratified_comp);
     write_attr(star, "xif",         real,       map.gl.xif, map.ndomains+1);
+    write_attr(star, "domain_weight", real,     domain_weight.data(), map.ndomains);
+    write_attr(star, "age",         real,       &age);
     write_attr(star, "M",           real,       &M);
     write_attr(star, "R",           real,       &R);
     write_attr(star, "X0",          real,       &X0);
@@ -161,6 +164,12 @@ void star2d::hdf5_write(const char *filename) const {
     write_attr(star, "Omega",       real, &Omega);
     write_attr(star, "Omega_bk",    real, &Omega_bk);
     //write_attr(star, "Ekman",       real, &Ekman);
+    write_attr(star, "reynolds_v", real, &reynolds_v);
+    write_attr(star, "reynolds_h", real, &reynolds_h);
+    write_attr(star, "visc_v", real, &visc_v);
+    write_attr(star, "visc_h", real, &visc_h);
+    write_attr(star, "diffusion_v", real, &diffusion_v);
+    write_attr(star, "diffusion_h", real, &diffusion_h);
     write_attr(star, "min_core_size", real, &min_core_size);
     double ek = this->virial_L()/2;
     write_attr(star, "Ek",          real, &ek);
@@ -181,6 +190,10 @@ void star2d::hdf5_write(const char *filename) const {
     strtype = H5::StrType(H5::PredType::C_S1, strlen(atm.name)+1);
     write_attr(star, "atm.name", strtype, atm.name);
 
+    std::string tag = get_tag();
+    strtype = H5::StrType(H5::PredType::C_S1, tag.length()+1);
+    write_attr(star, "tag", strtype, tag.c_str());
+
     matrix_map fields;
     fields["r"] = r;
     fields["z"] = z;
@@ -193,6 +206,8 @@ void star2d::hdf5_write(const char *filename) const {
     fields["T"] = T;
     //fields["G"] = G;
     fields["w"] = w;
+    fields["vr"] = vr;
+    fields["vt"] = vt;
     fields["X"] = comp.X();
     fields["Y"] = comp.Y();
     fields["Z"] = comp.Z();
@@ -206,7 +221,6 @@ void star2d::hdf5_write(const char *filename) const {
 }
 
 void star2d::write(const char *output_file, char mode) const {
-    DEBUG_FUNCNAME;
     OUTFILE fp;
 
     if (isHDF5Name(output_file)) {
@@ -305,11 +319,8 @@ int read_field(H5::Group grp, const char *name, matrix &field) {
 #endif
 
 int star2d::hdf5_read(const char *input_file, int dim) {
-    DEBUG_FUNCNAME;
 #ifdef USE_HDF5
-#ifndef DEBUG
     H5::Exception::dontPrint();
-#endif
 
     H5::H5File file;
     H5std_string buf;
@@ -318,7 +329,6 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     catch (H5::FileIException e) {
         ester_err("Could not open file `%s'", input_file);
-        exit(EXIT_FAILURE);
     }
     H5::Group star;
     try {
@@ -326,17 +336,23 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     catch (H5::Exception) {
         ester_err("Could not open '/star' in `%s'", input_file);
-        exit(EXIT_FAILURE);
     }
 
     int ndoms;
     if (read_attr(star, "nth", &map.leg.npts)) {
         ester_err("could not read 'nth' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
     }
-    if ((map.leg.npts == 1 && dim == 2) || (map.leg.npts > 1 && dim == 1)) {
-        return 1;
+    if (read_attr<H5std_string&>(star, "tag", buf)) {
+    	ester_warn("Could not read 'tag' from file `%s'", input_file);
+    	if ((map.leg.npts == 1 && dim == 2) || (map.leg.npts > 1 && dim == 1)) {
+    		return 1;
+    	}
     }
+    else {
+    	if (dim == 1 && buf != "star1d") return 1;
+    	if (dim == 2 && buf != "star2d") return 1;
+    }
+
     if (read_attr<H5std_string&>(star, "version", buf)) {
         ester_warn("Could not read 'version' from file `%s'", input_file);
         version.name = "unknown";
@@ -358,6 +374,9 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     if (read_attr(star, "nex", map.ex.gl.npts)) {
         ester_err("Could not read 'nex' from file `%s'", input_file);
         exit(EXIT_FAILURE);
+    }
+    if (read_attr(star, "age", &age)) {
+    	age = 0;
     }
     if (read_attr(star, "M", &M)) {
         ester_warn("Could not read 'M' from file `%s'", input_file);
@@ -385,6 +404,10 @@ int star2d::hdf5_read(const char *input_file, int dim) {
             if (n < conv) domain_type[n] = CORE;
             else domain_type[n] = RADIATIVE;
         }
+    }
+    domain_weight.resize(ndomains);
+    if (read_attr(star, "domain_weight", &domain_weight[0])) {
+    	domain_weight = init_domain_weight(domain_type);
     }
     if (read_attr(star, "surff", &surff)) {
         ester_warn("Could not read 'surff' from file `%s'", input_file);
@@ -431,7 +454,31 @@ int star2d::hdf5_read(const char *input_file, int dim) {
 //    if (read_attr(star, "Ekman", &Ekman)) {
 //        ester_warn("Could not read 'Ekman' from file `%s'", input_file);
 //        Ekman = .0;
-//    }
+    //    }
+    if (read_attr(star, "reynolds_v", &reynolds_v)) {
+    	ester_warn("Could not read 'reynolds_v' from file `%s'", input_file);
+    	reynolds_v = 1e9;
+    }
+    if (read_attr(star, "reynolds_h", &reynolds_h)) {
+    	ester_warn("Could not read 'reynolds_h' from file `%s'", input_file);
+    	reynolds_h = 1e7;
+    }
+    if (read_attr(star, "visc_v", &visc_v)) {
+    	ester_warn("Could not read 'visc_v' from file `%s'", input_file);
+    	visc_v = 1e7;
+    }
+    if (read_attr(star, "visc_h", &visc_h)) {
+    	ester_warn("Could not read 'visc_h' from file `%s'", input_file);
+    	visc_h = 1e8;
+    }
+    if (read_attr(star, "diffusion_v", &diffusion_v)) {
+    	ester_warn("Could not read 'diffusion_v' from file `%s'", input_file);
+    	diffusion_v = 1e4;
+    }
+    if (read_attr(star, "diffusion_h", &diffusion_h)) {
+    	ester_warn("Could not read 'diffusion_h' from file `%s'", input_file);
+    	diffusion_h = 1e5;
+    }
     if (read_attr(star, "core_convec", &core_convec)) {
         ester_warn("Could not read 'core_convec' from file `%s'", input_file);
         core_convec = 1;
@@ -452,25 +499,19 @@ int star2d::hdf5_read(const char *input_file, int dim) {
 
     if (read_field(star, "phi", phi)) {
         ester_err("Could not read field 'phi' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
     }
     if (read_field(star, "p", p)) {
         ester_err("Could not read field 'p' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
     }
     if (read_field(star, "T", T)) {
         ester_err("Could not read field 'T' from file `%s'", input_file);
-        T = zeros(nr, nth);
-        exit(EXIT_FAILURE);
     }
     if (read_field(star, "phiex", phiex)) {
         ester_warn("Could not read field 'phiex' from file `%s'", input_file);
-        phiex = zeros(nr, nth);
+        phiex = zeros(nex, nth);
     }
     if (read_field(star, "R", map.R)) {
         ester_err("Could not read field 'R' from file `%s'", input_file);
-        map.R = zeros(nr, nth);
-        exit(EXIT_FAILURE);
     }
     if (map.R.nrows() < map.ndomains+1)
         map.R = zeros(1,nth).concatenate(map.R);
@@ -479,13 +520,33 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_warn("Could not read field 'w' from file `%s'", input_file);
         w = zeros(nr, nth);
     }
+    if (read_field(star, "vr", vr)) {
+    	ester_warn("Could not read field 'vr' from file `%s'", input_file);
+    	vr = zeros(nr, nth);
+    }
+    if (read_field(star, "vt", vt)) {
+    	ester_warn("Could not read field 'vt' from file `%s'", input_file);
+    	vt = zeros(nr, nth);
+    }
 //    if (read_field(star, "G", G)) {
 //        ester_warn("Could not read field 'G' from file `%s'", input_file);
 //        G = zeros(nr, nth);
 //    }
-    if (read_field(star, "X", comp["H"])) {
+
+    matrix X, Z;
+    if (read_field(star, "X", X)) {
         ester_warn("Could not read field 'X' from file `%s'", input_file);
-        comp["H"] = zeros(nr, nth);
+        X = X0*ones(nr, nth);
+    }
+    if (read_field(star, "Z", Z)) {
+    	ester_warn("Could not read field 'Z' from file `%s'", input_file);
+    	Z = Z0*ones(nr, nth);
+    }
+    comp=initial_composition(X0,Z0)*ones(nr,nth);
+    for (int i=0; i<nr; i++) {
+    	for(int j=0; j<nth; j++) {
+    		comp(i, j) = initial_composition(X(i,j), Z(i,j));
+    	}
     }
 
     fill();
@@ -493,12 +554,10 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     return 0;
 #else
     ester_err("Could not read from hdf5 file: HDF5 is not enabled");
-    return 1; // return 1 (failure) if HDF5 is not enabled
 #endif
 }
 
 int star2d::read(const char *input_file, int dim) {
-    DEBUG_FUNCNAME;
     char tag[32];
     int ndom;
     INFILE fp;
@@ -545,11 +604,10 @@ int star2d::read(const char *input_file, int dim) {
     char *buf = NULL;
     if (version.svn) {
         if (asprintf(&buf, "%d.%d rev %d",
-                version.major,
-                version.minor,
-                version.rev) == -1) {
+                    version.major,
+                    version.minor,
+                    version.rev) == -1) {
             ester_err("out of memory");
-            exit(EXIT_FAILURE);
         }
     }
     else {
@@ -558,7 +616,6 @@ int star2d::read(const char *input_file, int dim) {
                     version.minor,
                     version.rev) == -1) {
             ester_err("out of memory");
-            exit(EXIT_FAILURE);
         }
     }
     version.name = std::string(buf);
@@ -638,23 +695,24 @@ void star2d::read_vars(INFILE *fp) {}
 void star2d::write_vars(OUTFILE *fp) const {}
 
 void star2d::write_tag(OUTFILE *fp) const {
-    DEBUG_FUNCNAME;
     char tag[7]="star2d";
 
     fp->write("tag",tag,7);
 
 }
 
+std::string star2d::get_tag() const {
+    return std::string("star2d");
+}
+
 bool star2d::check_tag(const char *tag) const {
-    DEBUG_FUNCNAME;
-        if(strcmp(tag,"star2d")) return false;
+    if(strcmp(tag,"star2d")) return false;
     return true;
 
 }
 /*
 int star2d::read_old(const char *input_file){
-    DEBUG_FUNCNAME;
-        FILE *fp;
+    FILE *fp;
     char tag[7],mode,*c;
     int ndom;
 
@@ -794,8 +852,7 @@ int star2d::read_old(const char *input_file){
 }
 */
 int star2d::init(const char *input_file,const char *param_file,int argc,char *argv[]) {
-    DEBUG_FUNCNAME;
-        cmdline_parser cmd;
+    cmdline_parser cmd;
     file_parser fp;
     char *arg,*val,default_params[256];
     mapping map0;
@@ -812,7 +869,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
                 if(*param_file) {
                     if(fp.open(param_file)) {
                         while((k=fp.get(arg,val))) {
-                            if(!strcmp(arg,"nth")&&val) nt=atoi(val);		
+                            if(!strcmp(arg,"nth")&&val) nt=atoi(val);
                             if(!strcmp(arg,"nex")&&val) next=atoi(val);
                         }
                         fp.close();
@@ -820,21 +877,19 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
                 }
                 cmd.open(argc,argv);
                 while(cmd.get(arg,val)) {
-                    if(!strcmp(arg,"nth")&&val) nt=atoi(val);		
+                    if(!strcmp(arg,"nth")&&val) nt=atoi(val);
                     if(!strcmp(arg,"nex")&&val) next=atoi(val);
                 }
                 cmd.close();
                 init1d(in1d, nt, next);
             } else {
                 ester_err("Error reading input file: %s", input_file);
-                return 1;
             }
         }
         map0=map;
     } else {
         if(!fp.open(default_params)) {
             ester_err("Can't open default parameters file %s\n", default_params);
-            return 1;
         }
         else {
             while((k=fp.get(arg,val))) {
@@ -906,7 +961,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
             map_new=map;
             map=map0;
             remap(map_new.ndomains,map_new.gl.npts,map_new.nt,map_new.nex);
-        } 
+        }
         /*if(version.rev<=71) { // Force remapping for old files
             int npts[ndomains+1];
             for(int n=0;n<ndomains;n++) npts[n]=map.npts[n];
@@ -935,8 +990,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 
 // used when computing a 2D model from a 1D model
 void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
-    DEBUG_FUNCNAME;
-        matrix thd;
+    matrix thd;
     char *arg,*val,default_params[256];
     int k;
     file_parser fp;
@@ -945,13 +999,13 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 
     *this=A;
 
-    phiex=phi(nr-1)/map.ex.r;	
-    Omega_bk=0;	
+    phiex=phi(nr-1)/map.ex.r;
+    Omega_bk=0;
     Omega=0;
 
     if(fp.open(default_params)) {
         while((k=fp.get(arg,val))) {
-            if(!strcmp(arg,"nth")&&val&&npts_th==-1) npts_th=atoi(val);		
+            if(!strcmp(arg,"nth")&&val&&npts_th==-1) npts_th=atoi(val);
             if(!strcmp(arg,"nex")&&val&&npts_ex==-1) npts_ex=atoi(val);
             if(!strcmp(arg,"Omega_bk")&&val) Omega_bk=atof(val);
             if(!strcmp(arg,"reynolds_v")&&val) reynolds_v=atof(val);
@@ -962,6 +1016,9 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
             if(!strcmp(arg,"diffusion_h")&&val) diffusion_h=atof(val);
         }
         fp.close();
+    }
+    else {
+    	ester_err("Can't open default 2d parameters file %s\n", default_params);
     }
 
     if(npts_th==-1) npts_th=24;
@@ -975,9 +1032,9 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 }
 
 void star2d::interp(remapper *red) {
-    DEBUG_FUNCNAME;
 
     p=red->interp(p);
+
     phi=red->interp(phi);
     T=red->interp(T);
     w=red->interp(w);
@@ -985,14 +1042,13 @@ void star2d::interp(remapper *red) {
     vr=red->interp(vr);
     comp=red->interp(comp);
     phiex=red->interp_ex(phiex);
-    fill(); // recompute the microphysic variables
+    fill(); // recompute the micro-physics variables
 
 }
 
 extern bool dump_jac;
 int star2d::check_arg(char *arg,char *val,int *change_grid) {
-    DEBUG_FUNCNAME;
-        int err=0,i;
+    int err=0,i;
     char *tok;
 
     if(!strcmp(arg,"ndomains")) {
@@ -1012,7 +1068,7 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
             *(map.gl.npts+i)=atoi(tok);
             tok=strtok(NULL,",");
             i++;
-        }	
+        }
         if(i==1) {
             for(i=1;i<map.gl.ndomains;i++) {
                 *(map.gl.npts+i)=*map.gl.npts;
@@ -1139,7 +1195,6 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
 
 // dump_info used by 'ester info'
 void star2d::dump_info() {
-    DEBUG_FUNCNAME;
     printf("ESTER 2d model file");
     printf(" (Version %s)\n", version.name.c_str());
     // printf("\n2d ESTER model file (Version %d.%d rev %d",
@@ -1238,3 +1293,67 @@ void star2d::dump_info() {
 
 }
 
+void star2d::plot(const matrix_map& error) {
+
+    matrix theta = vector(0, 2*M_PI, 64);
+    matrix r = map.leg.eval_00(this->r, theta);
+    matrix w = map.leg.eval_00(this->w, theta);
+
+    matrix cost = cos(theta);
+    matrix sint = sin(theta);
+
+    matrix x = r*sint;
+    matrix y = r*cost;
+
+    plt::clf();
+
+    plt::subplot(231);
+    plt::pcolormesh(x, y, w);
+    plt::colorbar();
+    plt::axis("scaled");
+
+    matrix r_e = map.leg.eval_00(this->r, M_PI/2.0);
+    matrix rho_e = map.leg.eval_00(this->rho, M_PI/2.0);
+    matrix T_e = map.leg.eval_00(this->T, M_PI/2.0);
+    matrix p_e = map.leg.eval_00(this->p, M_PI/2.0);
+
+    plt::subplot(232);
+    plt::plot(r_e, rho_e, "$\\rho_{eq}$");
+    plt::plot(r_e, T_e, "$T_{eq}$");
+    plt::plot(r_e, p_e, "$p_{eq}$");
+    plt::legend();
+
+
+    plt::subplot(233, true);
+    std::ostringstream str_stream;
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << Tc;
+    plt::text(0.0, .3, std::string("$T_c$:   ") + str_stream.str());
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << pc;
+    plt::text(0.0, .2, std::string("$p_c$:   ") + str_stream.str());
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << rhoc;
+    plt::text(0.0, 0.1, std::string("$\\rho_c$:  ") + str_stream.str());
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << pi_c;
+    plt::text(0.0, 0.0, std::string("$\\pi_c$: ") + str_stream.str());
+
+    if (error["Phi"].ncols()*error["Phi"].nrows() > 0) {
+        plt::subplot(223);
+        plt::semilogy(error["Phi"], "error $\\Phi$");
+        plt::semilogy(error["p"], "error $p$");
+        plt::legend();
+    }
+
+    plt::draw();
+    plt::pause();
+}

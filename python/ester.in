@@ -2,7 +2,8 @@
 
 import numpy as _np
 import matplotlib.pyplot as _plt
-import ester_wrap as _wrapper
+from . import ester_wrap as _wrapper
+_wrapper.plt_init(True)
 
 SIG_SB = 5.670400e-5;
 K_BOL = 1.3806503e-16;
@@ -14,7 +15,6 @@ C_LIGHT = 2.99792458e10;
 M_SUN = 1.9891e33;
 R_SUN = 6.95508e10;
 L_SUN = 3.8396e33;
-
 
 def _mat_to_numpy(mat):
     nr = mat.nrows()
@@ -80,7 +80,7 @@ class star2d:
         self.R          = self._s.R
         self.z          = _mat_to_numpy(self._s.z)
 
-        self.G          = _mat_to_numpy(self._s.G)
+        #self.G          = _mat_to_numpy(self._s.G)
         self.N2         = _mat_to_numpy(self._s.N2())
         self.T          = _mat_to_numpy(self._s.T)
         self.X          = _mat_to_numpy(self._s.comp.X())
@@ -111,7 +111,7 @@ class star2d:
         self.conduct    = _mat_to_numpy(self._s.opa.xi)
 
         if interpolate:
-            self.G          = self.interp(self.G, 1)
+            #self.G          = self.interp(self.G, 1)
             self.N2         = self.interp(self.N2)
             self.T          = self.interp(self.T)
             self.X          = self.interp(self.X)
@@ -141,7 +141,7 @@ class star2d:
             self.conduct    = self.interp(self.conduct)
 
 
-	self.Dt		= _mat_to_numpy(self._s.Dt) #theta derivative
+        self.Dt         = _mat_to_numpy(self._s.Dt) #theta derivative
         self.r          = _mat_to_numpy(self._s.r)
         self.rt         = _np.dot(self.r, self.Dt)
         self.rz         = _mat_to_numpy(self._s.map.rz)
@@ -214,6 +214,15 @@ class star2d:
         """
         m = _wrapper.matrix()
         self._s.map.leg.eval_00(_wrapper.ones(1, self.nth), theta, m)
+        return _mat_to_numpy(m)
+
+    def leg_eval_matrix_antisym(self, theta):
+        """
+        this function returns a matrix to be used to evaluate a derivative at the given
+        colatitude theta
+        """
+        m = _wrapper.matrix()
+        self._s.map.leg.eval_11(_wrapper.ones(1, self.nth), theta, m)
         return _mat_to_numpy(m)
 
 class star1d(star2d):

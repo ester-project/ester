@@ -192,13 +192,13 @@ void star_evol::write_eqs(solver *op) {
 #endif
 }
 
-double star_evol::update_solution(solver *op, double &h) {
+double star_evol::update_solution(solver *op, double &h, matrix_map& error_map, int nit) {
 	double dmax=config.newton_dmax;
 
 	matrix dX = op->get_var("X");
 	while(exist(abs(h*dX)>dmax)) h /= 2;
 
-	double err = star2d::update_solution(op, h);
+	double err = star2d::update_solution(op, h, error_map, nit);
 
 	dX = max(dX, -comp["H"]/h);
 	double err2 = max(abs(dX));
@@ -295,7 +295,6 @@ void star_evol::calc_units() {
 }
 
 void star_evol::solve_definitions(solver *op) {
-    DEBUG_FUNCNAME;
 
     star2d::solve_definitions(op);
 
@@ -340,7 +339,6 @@ void star_evol::solve_dim(solver *op) {
 }
 
 void star_evol::solve_Omega(solver *op) {
-	DEBUG_FUNCNAME;
 
 	matrix rhs;
 	int n;
@@ -367,7 +365,6 @@ void star_evol::solve_Omega(solver *op) {
 }
 
 void star_evol::solve_X(solver *op) {
-	DEBUG_FUNCNAME;
     double Q=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
     double diff_coeff_conv = 1e11; // PARAMETER
 
@@ -523,7 +520,6 @@ void star_evol::solve_X(solver *op) {
 }
 
 void star_evol::solve_cont(solver *op) {
-	DEBUG_FUNCNAME;
 
 	star2d::solve_cont(op);
 
@@ -637,7 +633,6 @@ void star_evol::solve_cont(solver *op) {
 }
 
 void star_evol::solve_temp(solver *op) {
-	DEBUG_FUNCNAME;
 	star2d::solve_temp(op);
 
 	static symbolic S;
@@ -714,7 +709,6 @@ void star_evol::solve_temp(solver *op) {
 }
 
 void star_evol::solve_mov(solver *op) {
-    DEBUG_FUNCNAME;
 
     star2d::solve_mov(op);
 
@@ -832,21 +826,10 @@ int star_evol::remove_convective_core() {
 	return 1;
 }
 
-double star_evol::solve(solver *op) {
+double star_evol::solve(solver *op, matrix_map& error_map, int nit) {
 
-	//static figure fig("/XSERVE");
-
-	//matrix q0 = cos(vangle);
-	double err = star2d::solve(op);
+	double err = star2d::solve(op, error_map, nit);
 	calcTimeDerivs(); // For storage
-	//matrix q = cos(vangle);
-	//matrix dq = op->get_var("vr");
-	//fig.axis(0, nr, -15, 0);
-	//fig.semilogy(abs(q-q0), "b");
-	//fig.hold(1);
-	//fig.semilogy(abs(dq), "r");
-	//fig.hold(0);
-
 
 	return err;
 }

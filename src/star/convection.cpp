@@ -127,10 +127,10 @@ matrix star2d::kconv() const {
 	matrix kc;
 	kc=opa.xi*Phi/rho/eos.cp;
 	
-	static figure fig("/XSERVE");
-	fig.subplot(2,1);
-	fig.semilogx(T,kc);
-	fig.semilogx(T,N2());
+	// static figure fig("/XSERVE");
+	// fig.subplot(2,1);
+	// fig.semilogx(T,kc);
+	// fig.semilogx(T,N2());
 	
 	
 	return kc;

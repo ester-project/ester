@@ -17,5 +17,6 @@ public:
 	~configuration(){};
 	void missing_argument(const char *arg);
 	int check_arg(const char *arg,const char *val);
+    bool noplot;
 };
 

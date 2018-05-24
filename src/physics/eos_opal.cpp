@@ -3,6 +3,9 @@
 #include "physics.h"
 #include "constants.h"
 
+#include <iostream>
+#include <cmath>
+
 extern"C" {
 	void zfs_interp_eos5_(double *z);
 	void eos5_xtrin_(double *x,double *ztab,double *t6,double *p,double *r);
@@ -16,15 +19,15 @@ extern"C" {
 
 int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos) {
-
+    
     matrix t6,p_mb;
     int i,N,error=0;
     
     static double Z_table=-99;
-    
+
     t6=T*1e-6;
     p_mb=p*1e-12;
-    
+
     if(Z!=Z_table) {
     	lreadco_.itime=0;
     	zfs_interp_eos5_(&Z);
@@ -35,7 +38,7 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	printf("Can't initialize OPAL EOS table\n");
     	return error;
     }
-    
+
     rho.dim(T.nrows(),T.ncols());
     eos.s.dim(T.nrows(),T.ncols());
     eos.G1.dim(T.nrows(),T.ncols());
@@ -54,7 +57,6 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
 	double Xi,Zi,t6i,p_mbi,rhoi;
     for(i=0;i<N;i++) {
     	Xi=X(i);Zi=Z;t6i=t6(i);p_mbi=p_mb(i);
-    	if (Xi == 0) Xi = 1e-10; // OPAL crash if X = 0 ???
     	eos5_xtrin_(&Xi,&Zi,&t6i,&p_mbi,&rhoi);
     	rho(i)=rhoi;
     	eos.s(i)=1e6*(*(eeos_.eos+2));
@@ -66,6 +68,14 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	eos.cv(i)=1e6*(*(eeos_.eos+4));
     	eos.chi_rho(i)=*(eeos_.eos+5);
     	eos.chi_T(i)=*(eeos_.eos+6);
+        if (fabs(rhoi - (-9e99)) < 1e-10) {
+            ester_err(
+                    "Values outside OPAL eos table:\n"
+                    "  X = %e\n"
+                    "  Z = %e\n"
+                    "  T = %e\n"
+                    "  p = %e", Xi, Zi, t6i, p_mbi);
+        }
     }
     if(exist(rho==-9e99)) {
         ester_err("Values outside OPAL eos table");

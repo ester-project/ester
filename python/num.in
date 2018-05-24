@@ -1,0 +1,36 @@
+import numpy as np
+
+def polint(xa, ya, n, x):
+    dif=abs(x-xa[0])
+    c = np.zeros(n+1)
+    d = np.zeros(n+1)
+    ns = 1
+    for i in range(1, n+1):
+        dift = abs(x-xa[i-1])
+        if dift < dif:
+            ns = i
+            dif = dift
+        c[i-1] = ya[i-1]
+        d[i-1] = ya[i-1]
+
+    y = ya[ns-1]
+    ns = ns - 1
+    for m in range(1, n):
+        for i in range(1, n-m+1):
+            ho = xa[i-1] - x
+            hp = xa[i+m-1] - x
+            w = c[i] - d[i-1]
+            den = ho - hp
+            if den == .0:
+                print('x: %s' % str(xa))
+                raise Exception('Error in polint')
+            den = w/den
+            d[i-1] = hp*den
+            c[i-1] = ho*den
+        if 2*ns < n-m:
+            dy = c[ns]
+        else:
+            dy = d[ns-1]
+            ns = ns-1
+        y = y + dy
+    return y

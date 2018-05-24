@@ -1,0 +1,13 @@
+#!@PYTHON@
+
+import sys
+from ester.cesam import cesam_to_ester
+
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print('Usage: %s <cesam_model>' % sys.argv[0])
+        sys.exit(1)
+    cesam_model = sys.argv[1]
+    output = cesam_model.replace('.osc', '.h5')
+    print('Converting `%s\' to `%s\'' % (cesam_model, output))
+    cesam_to_ester(cesam_model, output, True)

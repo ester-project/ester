@@ -1,6 +1,7 @@
 #include "ester-config.h"
-#include"star.h"
+#include "star.h"
 
+#if 0
 void star2d::draw(figure *pfig,const matrix &A,int parity) const {
 	
 	map.draw(pfig,A,parity);
@@ -30,6 +31,7 @@ void star2d::spectrum(figure *pfig,const matrix &y,int parity) const {
 
 	map.spectrum(pfig,y,parity);
 }
+#endif
 
 void star2d::calc_units() {
 

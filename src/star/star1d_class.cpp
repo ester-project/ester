@@ -1,23 +1,21 @@
 #include "ester-config.h"
 #include "utils.h"
 #include "star.h"
+#include "matplotlib.h"
+
 #include <string.h>
 #include <stdlib.h>
 
 star1d::star1d() {
-    DEBUG_FUNCNAME;
 }
 
 star1d::~star1d() {
-    DEBUG_FUNCNAME;
 }
 
 star1d::star1d(const star1d &A) : star2d(A) {
-    DEBUG_FUNCNAME;
 }
 
 star1d &star1d::operator=(const star1d &A) {
-    DEBUG_FUNCNAME;
 	star2d::operator=(A);
 	
 	return *this;
@@ -25,20 +23,21 @@ star1d &star1d::operator=(const star1d &A) {
 }
 
 void star1d::write_tag(OUTFILE *fp) const {
-    DEBUG_FUNCNAME;
 	char tag[7]="star1d";
 	
 	fp->write("tag",tag,7);
 }
 
+std::string star1d::get_tag() const {
+    return std::string("star1d");
+}
+
 bool star1d::check_tag(const char *tag) const {
-    DEBUG_FUNCNAME;
 	if(strcmp(tag,"star1d")) return false;
 	return true;
 }
 /*
 int star1d::read_old(const char *input_file) {
-    DEBUG_FUNCNAME;
 	FILE *fp;
 	char tag[7],mode,*c;
 	int ndom,i;
@@ -161,12 +160,10 @@ int star1d::read_old(const char *input_file) {
 }*/
 
 int star1d::read(const char *input_file, int dim) {
-    DEBUG_FUNCNAME;
     return star2d::read(input_file, 1);
 }
 
 int star1d::init(const char *input_file,const char *param_file,int argc,char *argv[]) {
-    DEBUG_FUNCNAME;
 	cmdline_parser cmd;
 	file_parser fp;
 	char *arg,*val,default_params[256];
@@ -193,11 +190,11 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 					printf("Syntax error in parameters file %s, line %d\n",param_file,k);
 					if(i==2) {
 						printf("Error: Argument to '%s' missing\n",arg);
-						return 1;
+						exit(EXIT_FAILURE);
 					}
 					if(i==1) {
 						printf("Unknown parameter %s\n",arg);
-						return 1;
+						exit(EXIT_FAILURE);
 					}
 				}
 			}
@@ -205,7 +202,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		}
 		change_grid=0;
 	}
-	
+
 	if(*param_file) {
 		if(!fp.open(param_file)) { 
 			printf("Can't open parameters file %s\n",param_file);
@@ -217,11 +214,11 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 					printf("Sintax error in parameters file %s, line %d\n",param_file,k);
 					if(i==2) {
 						printf("Error: Argument to '%s' missing\n",arg);
-						return 1;
+						exit(EXIT_FAILURE);
 					}
 					if(i==1) {
 						printf("Unknown parameter %s\n",arg);
-						return 1;
+						exit(EXIT_FAILURE);
 					}
 				}
 			}
@@ -235,11 +232,11 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		err_code=check_arg(arg,val,&change_grid);
 		if(err_code==2) {
 			fprintf(stderr,"Error: Argument to '%s' missing\n",arg);
-			return 1;
+            exit(EXIT_FAILURE);
 		}
 		if(err_code==1) {
 			fprintf(stderr,"Unknown parameter '%s'\n",arg);
-			return 1;
+            exit(EXIT_FAILURE);
 		}
 		cmd.ack(arg,val);
 	}
@@ -274,12 +271,11 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 	
 	init_comp();
 	fill();
-	
+
 	return 0;
 }
 
 int star1d::check_arg(char *arg,char *val,int *change_grid) {
-    DEBUG_FUNCNAME;
 	if(!strcmp(arg,"nth")) {
 		return 1;
 	} else if(!strcmp(arg,"nex")) {
@@ -294,7 +290,6 @@ int star1d::check_arg(char *arg,char *val,int *change_grid) {
 }
 
 void star1d::dump_info() {
-    DEBUG_FUNCNAME;
     printf("ESTER 1d model file");
     printf(" (Version %s)\n", version.name.c_str());
 	// printf("\n1d ESTER model file  (Version %d.%d rev %d",version.major,version.minor,version.rev);
@@ -355,4 +350,85 @@ void star1d::dump_info() {
 	
 }
 
+matrix star1d::spectrum(const matrix& var) {
+    matrix spec;
+    spec = (map.gl.P, var, map.leg.P_00);
+    int j = 0;
+    for (int i=0; i<ndomains; i++) {
+        spec.setblock(j, j+map.gl.npts[i]-1, 0, -1,
+                spec.block(j, j+map.gl.npts[i]-1, 0, -1)/max(spec.block(j, j+map.gl.npts[i]-1, 0, -1))
+                );
+        j += map.gl.npts[i];
+    }
+    return abs(spec);
+}
 
+void star1d::plot(const matrix_map& error) {
+
+    plt::clf();
+
+    plt::subplot(231);
+    // plt::title(std::string("iter: ") + std::to_string(nit));
+    plt::plot(r, rho, "$\\rho$");
+    plt::plot(r, T, "$T$");
+    plt::plot(r, p, "$p$");
+    plt::legend();
+    for (int i=0; i<ndomains; i++) {
+        plt::axvline(map.gl.xif[i]);
+    }
+    plt::axvline(1.0);
+
+    plt::subplot(232);
+    // plt::title(std::string("iter: ") + std::to_string(nit));
+    plt::plot(r, phi, "$\\Phi$");
+    plt::legend();
+
+    plt::subplot(233, true);
+    std::ostringstream str_stream;
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << Tc;
+    plt::text(0.0, .3, std::string("$T_c$:   ") + str_stream.str());
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << pc;
+    plt::text(0.0, .2, std::string("$p_c$:   ") + str_stream.str());
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << rhoc;
+    plt::text(0.0, 0.1, std::string("$\\rho_c$:  ") + str_stream.str());
+
+    str_stream.clear();
+    str_stream.str("");
+    str_stream << pi_c;
+    plt::text(0.0, 0.0, std::string("$\\pi_c$: ") + str_stream.str());
+
+    if (error["Phi"].ncols()*error["Phi"].nrows() > 0 && error["Phi"](0) > .0) {
+        plt::subplot(223);
+        plt::title("Error");
+        plt::semilogy(error["Phi"], "$\\Phi$");
+        plt::semilogy(error["log_p"], "$\\ln p$");
+        plt::semilogy(error["log_T"], "$\\ln T$");
+        // plt::semilogy(error["log_pc"], "error $log_{p_c}$");
+        plt::semilogy(error["log_Tc"], "$\\ln T_c$");
+        // plt::semilogy(error["Ri"], "error $R_i$");
+        plt::legend("lower left");
+    }
+
+    plt::subplot(224);
+    plt::title("Spectrum");
+    plt::semilogy(spectrum(rho), "$\\rho$");
+    int n = 0;
+    plt::axvline(n);
+    for (int i=0; i<ndomains; i++) {
+        n += map.gl.npts[i];
+        plt::axvline(n);
+    }
+    plt::legend();
+
+    plt::draw();
+    plt::pause();
+}

@@ -47,6 +47,8 @@ int opa_houdek(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa);
 int opa_kramer(const matrix &T,const matrix &rho,
 		opa_struct &opa);
+int opa_cesam(const matrix& X, double Z, const matrix& T, const matrix& rho,
+		opa_struct& opa);
 
 int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);	
@@ -62,6 +64,8 @@ int eos_idealrad(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos);
 int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos);
+int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
+		matrix &rho, eos_struct &eos);
 
 int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm);

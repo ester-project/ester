@@ -32,30 +32,60 @@ AC_PROG_AWK
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
+AC_CHECK_PROG([ADDR2LINE], [addr2line], [yes], [no])
+CXXFLAGS="$CXXFLAGS -std=c++11"
+
+AS_IF([test "x$ADDR2LINE" == "xyes"],
+      [AC_DEFINE([HAVE_ADDR2LINE], [1], [addr2line is installed])])
 
 AM_PATH_PYTHON(2.3)
 AX_PKG_SWIG([1.3.17], [have_swig="yes"], [have_swig="no"])
 
 AM_CONDITIONAL(HAVE_SWIG, [test "x$have_swig" == "xyes"])
 
+AC_ARG_ENABLE([plt],
+              AS_HELP_STRING([--disable-plt],
+                             [Enable/disable matplotlib support]))
+
+AC_ARG_VAR([PYTHON_CONFIG], [Path to python-config])
+AC_PATH_PROGS([PYTHON_CONFIG],
+              [python$PYTHON_VERSION-config python-config],
+              [no],
+              [`dirname $PYTHON`])
 AS_IF([test "x$PYTHON" != "x:"],
-      [PYTHONINC=`$PYTHON -c "from distutils import sysconfig; print(sysconfig.get_python_inc())"`
-       CPPFLAGS="$CPPFLAGS -I$PYTHONINC"])
+      [PYTHONINC=`$PYTHON -c "from distutils import sysconfig; \
+       print(sysconfig.get_python_inc())"`
+       NUMPYINC=`$PYTHON -c "from numpy import get_include; print(get_include())"`
+       CPPFLAGS="$CPPFLAGS -I$PYTHONINC -I$NUMPYINC"
+       PYTHONLIBS=`$PYTHON_CONFIG --ldflags`
+       LIBS+=" $PYTHONLIBS"])
+
+AS_IF([test "x$enable_plt" != "xno"],
+    [enable_plt="yes"
+     AC_MSG_CHECKING([for numpy API version])
+     AC_COMPILE_IFELSE(
+                       [AC_LANG_SOURCE([
+                        #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+                        #include <numpy/arrayobject.h>
+                        void main(void) {
+                        int i = NPY_ARRAY_FARRAY_RO;
+                        }
+                        ])],
+                        [numpy_api=1.7],
+                        [numpy_api=deprecated])
+     AC_MSG_RESULT($numpy_api)]
+     AC_DEFINE([ENABLE_PLT], [1], [Enable matplotlib grahpical output]),
+    [enable_plt="no"])
+
+AS_IF([test "x$numpy_api" == "xdeprecated"],
+      [AC_DEFINE([USE_DEPRECATED_NUMPY], [1],
+                 [Use deprecated (<1.7) numpy A API])])
+
 
 # Checks for libraries.
 
 # Checks for header files.
-have_pgplot="no"
 AC_LANG_PUSH([C++])
-AC_CHECK_HEADERS([cpgplot.h],
-                 [AC_DEFINE([USE_PGPLOT], [1], [enable pgplot support])
-                  AC_SEARCH_LIBS([pgebuf_], [pgplot cpgplot],
-                                 [LIBS="$LIBS -lgfortran -lX11"], [],
-                                 [-lgfortran -lX11])
-                  AC_SEARCH_LIBS([cpgebuf], [cpgplot],
-                              [have_pgplot="yes"],
-                              [AC_ERROR(cpgplot library not found)],
-                              [-lpgplot -lgfortran -lX11])])
 
 AC_CHECK_HEADERS([stddef.h stdlib.h string.h sys/time.h])
 AC_CHECK_HEADERS([cblas.h lapack.h])
@@ -88,7 +118,7 @@ AC_COMPILE_IFELSE(
                    [have_mkl=no])
 AC_MSG_RESULT($have_mkl)
 
-AS_IF([test "x$have_cblas" == "xno" -a "x$have_blas" == "xno" -a "x$have_lapack" == "xno"],
+AS_IF([test "x$have_mkl" == "xyes" -a "x$have_cblas" == "xno" -a "x$have_blas" == "xno" -a "x$have_lapack" == "xno"],
       [AC_SEARCH_LIBS([dgetrf_], [mkl_rt],
                [have_mkl=yes
                 AC_DEFINE([USE_MKL], [1],
@@ -114,42 +144,19 @@ AC_ARG_ENABLE([hdf5],
               AS_HELP_STRING([--enable-hdf5],
                              [Enable HDF5 support]))
 
-AX_LIB_HDF5([serial])
-extension="out"
 AS_IF([test "x$enable_hdf5" != "xno"],
-      [AC_MSG_CHECKING([whether we can link against hdf5 libraries])
-      AS_IF([test "x$HDF5_LIBS" != "x"],
-            [LIBS="$LIBS $HDF5_LIBS -lhdf5_cpp"
-             CPPFLAGS="$CPPFLAGS $HDF5_CPPFLAGS"
-             LDFLAGS="$LDFLAGS $HDF5_LDFLAGS"])
-       AC_LINK_IFELSE(
-                      [AC_LANG_SOURCE([
-                       #include <H5Cpp.h>
-                       int main(void) {}
-                       ])],
-                       [h5cxx_works="yes"],
-                       [h5cxx_works="no"])
-       AC_MSG_RESULT($h5cxx_works)
-       AC_MSG_CHECKING([whether h5cc works])
-       AC_LANG_PUSH([C])
-       AC_LINK_IFELSE(
-                      [AC_LANG_SOURCE([
-                       #include <hdf5.h>
-                       int main(void) {}
-                       ])],
-                       [h5cc_works="yes"],
-                       [h5cc_works="no"])
-       AC_LANG_POP([C])
-       AC_MSG_RESULT($h5cc_works)
-       AS_IF([test "x$h5cxx_works" == "xno" -o "x$h5cc_works" == "xno"],
-             [enable_hdf5="no"
-              extension="out"],
-             [enable_hdf5="yes"
-              extension="h5"
-              AC_DEFINE([USE_HDF5], [1], [Enable hdf5 support]) ])],
-   [enable_hdf5="no"])
+      [AX_LIB_HDF5([serial])
+       extension="out"
+       AS_IF([test "x$with_hdf5" == "xyes"],
+             [extension="h5"
+              CPPFLAGS="$CPPFLAGS $HDF5_CPPFLAGS"
+              LDFLAGS="$LDFLAGS $HDF5_LDFLAGS"
+              LIBS="$LIBS -lhdf5_cpp $HDF5_LIBS"
+              AC_DEFINE([USE_HDF5], [1], [Enable hdf5 support])],
+              [extension="out"])],
+     [with_hdf5="no"])
 
-AM_CONDITIONAL(USE_HDF5, [test "x$enable_hdf5" == "xyes"])
+AM_CONDITIONAL(USE_HDF5, [test "x$with_hdf5" == "xyes"])
 
 AC_SUBST(extension)
 
@@ -160,7 +167,8 @@ AC_CHECK_FUNCS([floor gettimeofday pow sqrt strtoul])
 
 AC_CONFIG_FILES([Makefile
                  tables/Makefile
-                 tables/cesam_nuc/Makefile
+                 tables/cesam/Makefile
+                 tables/freeeos/Makefile
                  tables/houdek/v9/Makefile
                  tables/houdek/v9/lib/Makefile
                  tables/opal/Makefile
@@ -258,14 +266,15 @@ ester-$VERSION build configuration:
 prefix:     $prefix
 FC:         $FC
 CPPFLAGS:   $CPPFLAGS
+LDFLAGS:    $LDFLAGS
 CXX:        $CXX
 CXXFLAGS:   $CXXFLAGS
 LIBS:       $LIBS
-pgplot:     $have_pgplot
-HDF5:       $enable_hdf5
+HDF5:       $with_hdf5
 swig:       $have_swig
 python:     $PYTHON_VERSION
 py module:  $pymodule
+matplotlib: $enable_plt
 -------------------------------------------------------------------------------
 
 EOF

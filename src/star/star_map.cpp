@@ -30,7 +30,6 @@ void star2d::update_domain_weights() {
 // take a model and modify the resolution (nth, ndomains, number of
 
 void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
-    DEBUG_FUNCNAME;
     remapper red(map);  // declaration object of class remapper
 
     red.set_ndomains(ndom_in);
@@ -48,7 +47,6 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
 
 
 void star2d::check_map() {
-    DEBUG_FUNCNAME;
 
     update_domain_weights();
 
@@ -245,7 +243,6 @@ matrix star2d::get_new_boundaries(matrix pzone, matrix Rzone, std::vector<int> n
 }
 
 matrix star2d::find_boundary(double pif) {
-    DEBUG_FUNCNAME;
 
     matrix zi(1, nth);
     for(int j=0;j<nth;j++) {
@@ -282,7 +279,6 @@ matrix star2d::find_boundary(double pif) {
 // check_convec detects the appearance of a convective core but is not
 // used to move the core boundary
 int star2d::check_convec(double &p_cc, matrix &Rcc) {
-    DEBUG_FUNCNAME;
     if(!core_convec) return 0; // core_covec: input param to disable CC
 
     if(conv) {
