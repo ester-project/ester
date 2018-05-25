@@ -131,7 +131,7 @@ int main(int argc,char *argv[]) {
 		printf("Virial test: %e Energy test: %e\n",A.virial(),A.energy_test());
 		int jc=0;
 		for (int n=0;n<A.nd_core;n++) jc+=A.map.gl.npts[n];
-		if(A.nd_core != 0) printf("r_cz=%3.3f Rsun\n",(A.r(jc))*A.R/R_SUN);
+		if(A.nd_core != 0) printf("r_cc=%3.3f Rsun\n",A.r(jc));
 	}
 	delete op;
 	A.write(config.output_file,config.output_mode);
