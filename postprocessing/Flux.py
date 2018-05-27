@@ -5,20 +5,31 @@
 
 import sys
 from ester import *
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
+from matplotlib.pyplot import *
 import numpy as np
 
+
+a=star1d('toto.h5')
+#a=star1d('M14s20e4ND.h5')
+#a=star1d('M14s12e4ND.h5')
+#a=star1d('M14sPe1e5b.h5')
+#a=star1d('M2s.h5')
+#a=star1d('M14gPe.h5')
+#a=star1d('M14sPe5000b.h5')
 #a=star1d('M2ideal')
 #a=star1d('M199s.h5')
-a=star1d('toto.h5')
+#a=star1d('M19Pe100.h5')
+#a=star1d('M2m.h5')
+#a=star1d('M19P10HR.h5')
 UMA=1.67353249e-24
 RGP=K_BOL/UMA
 print 'Teff = ',a.Teff
 Teff=(a.L/4/np.pi/a.R**2/SIG_SB)**0.25
-print 'Teff calc = ',Teff
-plt.close()
+print 'Teff calc from L = ',Teff
+close()
 
-Pe=np.reshape(0*a.r,a.nr,1)
+Pe=np.reshape(a.Pe,a.nr,1)
 cp=np.reshape(a.cp,a.nr,1)
 
 # computes the jfirst grid points
@@ -30,15 +41,24 @@ for i in np.arange(a.ndomains-1)+1:
 try:
  Peclet=a.Peclet
 except:
+ print 'no Peclet'
  Peclet=0.
 
+try:
+ F=np.reshape(a.Flux,a.nr,1)
+except:
+ print 'no Flux'
+ F=0.
+
+'''
 for i in range(a.ndomains-1) : 
   j0=jfirst[i]
   j1=jfirst[i+1]-1
   if (i==0) :
-        Pe[j0:j1]=100.*Peclet #*cp[j0:j1]/RGP
+        Pe[j0:j1]=1000. #*Peclet #*cp[j0:j1]/RGP
   if (i==9) :
-        Pe[j0:j1]=Peclet #*cp[j0:j1]/RGP
+        Pe[j0:j1]=0. #Peclet #*cp[j0:j1]/RGP
+'''
 
 r=np.reshape(a.r,a.nr,1)
 xi=np.reshape(a.conduct,a.nr,1)
@@ -49,22 +69,41 @@ xi_e=xi*(1.+Pe)
 xi_t=xi*Pe
 gradt=a.Tc*np.reshape(np.dot(a.D,a.T),a.nr,1)/a.R
 gradT=np.reshape(np.dot(a.D,a.T),a.nr,1)
+gradp=np.reshape(np.dot(a.D,a.p),a.nr,1)
+
+Teff=(-gradt[-1]*xi[-1]/SIG_SB)**0.25
+print 'Teff calc from -xi*gradT = ',Teff
+Teff=(F[-1]*xi[-1]*a.Tc/a.R/SIG_SB)**0.25
+print 'Teff calc from Flux = ',Teff
 grads=np.reshape(np.dot(a.D,a.s),a.nr,1)
 gradlnp=np.reshape(np.dot(a.D,a.p)/a.p,a.nr,1)/a.R
-#Flux=-4*np.pi*(xi_e*gradt-xi_t*temp*del_ad*gradlnp)*r**2*a.R**2/a.L
-Flux=-(Pe*T*grads+gradT)*xi*r**2/xi[300]
-Fc=-(Pe*T*grads)*xi*r**2/xi[300]
-Frad=-(gradT)*xi*r**2/xi[300]
-#Flux=-4*np.pi*xi*gradt*r**2*a.R**2/a.L
 
-nst=250
-nf=360
-plt.plot(r[nst:nf],Flux[nst:nf])
-plt.plot(r[nst:nf],Frad[nst:nf])
-plt.plot(r[nst:nf],Fc[nst:nf])
+Flux=F*r**2*xi/xi[300] # The flux
+Frad=-(gradT)*xi*r**2/xi[300]
+Fc=Flux-Frad
+Fs=-Pe*T*grads*r**2*xi/xi[300]
+Fgt=-gradT*r**2
+
+
+nd=5
+nst=jfirst[nd]
+nf=len(r)-1
+#pflux, =plt.plot(r[nst:nf],Flux[nst:nf],'ro')
+#pradi, =plt.plot(r[nst:nf],Frad[nst:nf])
+#pconv, =plt.plot(r[nst:nf],Fc[nst:nf])
+#ps, =plt.plot(r[nst:nf],Fs[nst:nf])
+pflux, =plot(r[nst:nf],Flux[nst:nf],'ro')
+pradi, =plot(r[nst:nf],Frad[nst:nf])
+pconv, =plot(r[nst:nf],Fc[nst:nf])
+#ps, =plot(r[nst:nf],Fs[nst:nf])
+#pnew, =plt.plot(r[nst:nf],Fnew[nst:nf],'--')
+
+legend([pflux,pradi,pconv],["Flux","Frad","Fconv"],loc=3)
+#plt.plot(r[nst:nf],Fgt[nst:nf],'ro')
+
 idom=range(a.ndomains+1)
 #for i in range(a.ndomains+1) : 
-for i in idom[9:10] : 
-    plt.axvline(x=a.xif[i],ls=':')
+for i in idom[nd:a.ndomains] : 
+    axvline(x=a.xif[i],ls=':')
 
-plt.show()
+show()
