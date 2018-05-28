@@ -443,7 +443,7 @@ void star1d::plot(const matrix_map& error) {
 
     plt::subplot(224);
     plt::title("Spectrum");
-    plt::semilogy(spectrum(rho), "$\\rho$");
+    plt::semilogy(spectrum(Flux), "Flux");
     int n = 0;
     plt::axvline(n);
     for (int i=0; i<ndomains; i++) {

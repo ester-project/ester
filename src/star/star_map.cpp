@@ -183,6 +183,7 @@ for (int k=0;k<nzo;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
                 izif[0]=ki;
 		if (details) printf("izif (%d) = %d\n",0,ki);
            // First zone done
+	   // Deal with the following zones
 		for (iz=1; iz<nzo; iz++) {
 			for (k=ki;k<ki+ndz[iz];k++) {
 				double a=log(p_inter(iz)/p_inter(iz-1))/ndz[iz];
@@ -192,6 +193,7 @@ for (int k=0;k<nzo;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 			izif[iz]=ki;
 			if (details) printf("izif (%d) = %d\n",iz,ki);
 		}
+		
            // All zones done
 // last interface is the surface and not account by the foregoing algo
 		pif(ndom-1)=p_inter(nzo-1);
@@ -674,7 +676,6 @@ int k_rad=0;
 // We first detect the number of true interfaces using the last latitude
 // point (-1), which is the closest one to the pole.
     n = 0;
-    //for (int i=itest_sch; i<=nl; i++) {  // we stop the search at nl or nl-1
     for (int i=itest_sch; i<nr; i++) {  
         if (schw(i-1, -1) * schw(i, -1) < 0 ) {
                 n++;
@@ -718,8 +719,6 @@ bb(0,0)=2; bb(1,0)=n_interf;
 n_interf=min(bb);
 if (details) printf("number of interfaces calcule %d \n",n_interf);
 
-//n_interf=3; //min(3*ones(1,1),n_interf*ones(1,1));
-
 // Now we set the values of r_inter and p_inter
 // which include the true surface
     r_inter = zeros(n_interf+1, nth);
@@ -731,10 +730,10 @@ if (details) printf("number of interfaces calcule %d \n",n_interf);
            p_inter(i, j) = map.gl.eval(PRES.col(j), zi)(0);
       }
     }
-
 // We add the surface as the last r_inter
     r_inter.setrow(-1, z(-1) * ones(1, nth));
     p_inter.setrow(-1, PRES(-1) * ones(1, nth));
+//if (details) printf("p_inter i= %d, %e\n",n_interf,p_inter(-1,0));
 
 	if (details) { 
            std::cout << "CONV: " << CONVECTIVE << ", ";

@@ -178,8 +178,8 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 
     double q,h;
 
-    h=0.3;
     h=1.0;
+    h=0.4;
 //	printf("it = %d\n",nit);
  // 	if (nit == 0) h=0.4;
   //	else h=0.5;
@@ -195,35 +195,35 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     dp=op->get_var("log_p");
     err2=max(abs(dp));err=err2>err?err2:err;
     error_map["log_p"](nit) = err2;
-  while(exist(abs(h*dp)>q)) h/=2;
+//  while(exist(abs(h*dp)>q)) h/=2;
 
     dFlux=op->get_var("Flux");
     err2=max(abs(dFlux));err=err2>err?err2:err;
     error_map["Flux"](nit) = err2;
-  while(exist(abs(h*dFlux)>q)) h/=2;
+//  while(exist(abs(h*dFlux)>q)) h/=2;
 
     dT=op->get_var("log_T");
     err2=max(abs(dT));err=err2>err?err2:err;
     error_map["log_T"](nit) = err2;
-  while(exist(abs(h*dT)>q)) h/=2;
+//  while(exist(abs(h*dT)>q)) h/=2;
 
     dXh=op->get_var("lnXh");
     err2=max(abs(dXh));err=err2>err?err2:err;
-  while(exist(abs(h*dXh)>q)) h/=2;
+//  while(exist(abs(h*dXh)>q)) h/=2;
 
     dWr=op->get_var("Wr");
     err2=max(abs(dWr));err=err2>err?err2:err;
-  while(exist(abs(h*dWr)>q)) h/=2;
+//  while(exist(abs(h*dWr)>q)) h/=2;
 
     dpc=op->get_var("log_pc");
     err2=fabs(dpc(0)/pc);err=err2>err?err2:err;
     error_map["log_pc"](nit) = err2;
-  while(fabs(h*dpc(0))>q*pc) h/=2;
+//  while(fabs(h*dpc(0))>q*pc) h/=2;
 
     dTc=op->get_var("log_Tc");
     err2=fabs(dTc(0));err=err2>err?err2:err;
     error_map["log_Tc"](nit) = err2;
-  while(fabs(h*dTc(0))>q) h/=2;
+//  while(fabs(h*dTc(0))>q) h/=2;
 
     dRi=op->get_var("Ri");
     error_map["Ri"](nit) = max(abs(dRi));
@@ -356,14 +356,14 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 void star1d::update_map(matrix dR) {
     if(ndomains==1) return;
 
-    //double h=0.4,dmax=config.newton_dmax;
-    double h=1,dmax=config.newton_dmax;
+    double h=0.4,dmax=config.newton_dmax;
+    //double h=1,dmax=config.newton_dmax;
 
     matrix R0;
     R0=map.R;
     dR=dR.concatenate(zeros(1,1));
     dR(0)=0;
-    while(exist(abs(h*dR)>dmax*R0)) h/=2;
+//    while(exist(abs(h*dR)>dmax*R0)) h/=2;
     map.R+=h*dR;
     while(map.remap()) {
         h/=2;
@@ -423,39 +423,11 @@ double RGP=K_BOL/UMA;
 	op->add_d("nuc.eps","log_rhoc",nuc.dlneps_lnrho*nuc.eps);
 	op->add_d("nuc.eps","log_T",nuc.dlneps_lnT*nuc.eps);
 	op->add_d("nuc.eps","log_Tc",nuc.dlneps_lnT*nuc.eps);
-/*
-        Pe=zeros(nr,1);
-        int j0=0;
-	int nfc=0;
-        //Ici Pe est un mask 1 dans la ZC 0 ailleurs
-        for(int n=0;n<ndomains;n++) {
-                int ndom=map.gl.npts[n];
-                int j1=j0+ndom-1;
-                if (domain_type[n] == RADIATIVE) {
-                   Pe.setblock(j0,j1,0,0,zeros(ndom,1));
-                } else if (domain_type[n] == CORE) {
-                   Pe.setblock(j0,j1,0,0,zeros(ndom,1));
-                } else {
-		   if (nfc == 0) nfc=n; // nfc=first convective domain
-		   Rcz=map.gl.xif[nfc];
-                   Pe.setblock(j0,j1,0,0,ones(ndom,1));
-                }
-                j0+=ndom;
-        }
-
-for(int n=0;n<ndomains;n++) {
-        op->add_d(n,"Rcz","Ri",ones(1,1));
-    }
-	op->add_d("Pe","r",-2*Pe*map.r/(1.-Rcz*Rcz));
-	op->add_d("Pe","Rcz",2*Pe*(1.-map.r*map.r)/(1.-Rcz*Rcz)/(1.-Rcz*Rcz)*Rcz);
-*/
 }
 
 void star1d::solve_poisson(solver *op) {
     int n,j0;
     matrix rhs;
-
-    // printf("r(0) = %e\n", r(0));
 
     matrix r0 = r;
     r0(0) = 1e-10;
@@ -764,10 +736,6 @@ void star1d::solve_flux(solver *op) {
         op->bc_top1_add_l(n,"Flux","log_p",-fac*ones(1,1),D.block(n).row(-1));
         rhs_Flux(-1)=-( ((D,T)/T)(-1)-fac*((D,p)/p)(-1) );
 
-                //} else if (n==0) { // central domain
-		  //op->bc_bot2_add_d(n,"Flux","Flux",ones(1,1));
-		  //rhs_Flux(0)=-Flux(0);
-
                 } else { // care of other domains
 
                         op->bc_top1_add_d(n,"Flux","Flux",ones(1,1));
@@ -835,9 +803,7 @@ void star1d::solve_temp(solver *op) {
                         rhs_T(j0)=1.-T(j0);
 
 			op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
-			rhs_Lambda(0)=-(D,T)(0);
-			//op->bc_bot2_add_d(n,"Lambda","Flux",ones(1,1));
-			//rhs_Lambda(0)=-Flux(0);
+			rhs_Lambda(0)=-(D,T)(0); // needed to impose Flux=-DT at r=0
 
                 } else {
 
