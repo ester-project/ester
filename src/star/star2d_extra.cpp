@@ -205,8 +205,8 @@ double star2d::energy_test() const {
 	matrix Fz;
 	
 	e1=luminosity();
-	//Fz=-opa.xi*(map.gzz*((D,T)+Pe*T*(D,entropy()))+map.gzt*((T,Dt)+Pe*T*(entropy(),Dt)));
-	Fz=-opa.xi*(map.gzz*((D,T)+0*T*(D,entropy()))+map.gzt*((T,Dt)+0*T*(entropy(),Dt)));
+	Fz=-opa.xi*(map.gzz*((D,T)+Pe*T*(D,entropy()))+map.gzt*((T,Dt)+Pe*T*(entropy(),Dt)));
+	//Fz=-opa.xi*(map.gzz*((D,T)+0*T*(D,entropy()))+map.gzt*((T,Dt)+0*T*(entropy(),Dt)));
 	e2=2*PI*((Fz*r*r*map.rz).row(nr-1),map.leg.I_00)(0)*units.T*units.r;
 	
 	return (e1-e2)/e1;

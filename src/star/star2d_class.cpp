@@ -87,6 +87,7 @@ star2d::star2d() : nr(map.gl.N), nth(map.leg.npts), nex(map.ex.gl.N),
     version.svn=0;
     stratified_comp = 0;
     config.dump_iter = 0;
+    al=0;
 }
 
 star2d::~star2d() {
@@ -157,6 +158,7 @@ void star2d::copy(const star2d &A) {
     details=A.details;	   // do not forget to copy !!
     n_essai=A.n_essai;	   // do not forget to copy !!
     Peclet=A.Peclet;	   // do not forget to copy !!
+    al=A.al;	   // do not forget to copy !!
     global_err=A.global_err;	   // do not forget to copy !!
     prev_global_err=A.prev_global_err;	   // do not forget to copy !!
 
@@ -219,6 +221,7 @@ printf("start hdf5_write\n");
     write_attr(star, "stratified_comp", integer, &stratified_comp);
     write_attr(star, "xif",         real,       map.gl.xif, map.ndomains+1);
     write_attr(star, "Peclet",      real,       &Peclet);
+    write_attr(star, "al",          real,       &al);
     write_attr(star, "M",           real,       &M);
     write_attr(star, "R",           real,       &R);
     write_attr(star, "X0",          real,       &X0);
@@ -296,6 +299,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("nth",&map.leg.npts,1);
     fp.write("nex",map.ex.gl.npts,1);
     fp.write("Peclet",&Peclet);
+    fp.write("al",&al);
     fp.write("M",&M);
     fp.write("R",&R);
     fp.write("X0",&X0);
@@ -429,6 +433,9 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     if (read_attr(star, "Peclet", &Peclet)) {
         ester_warn("Could not read 'Peclet' from file `%s'", input_file);
+    }
+    if (read_attr(star, "al", &al)) {
+        ester_warn("Could not read 'al' from file `%s'", input_file);
     }
     if (read_attr(star, "M", &M)) {
         ester_warn("Could not read 'M' from file `%s'", input_file);
@@ -600,6 +607,8 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
 
     fill();
+//	Flux=Flux*opa.xi/Lambda;
+
 printf("I read 6 zone_type.size/nzones= %d\n",nzones);
  	      printf("in hdf5_read Tc=%e\n",Tc);
 for (int n=0;n<nzones;n++) printf("zone_type[%d] = %d\n",n,zone_type[n]);
@@ -683,6 +692,7 @@ int star2d::read(const char *input_file, int dim) {
     if(fp.read("nth",&map.leg.npts)) map.leg.npts=1;
     fp.read("nex",map.ex.gl.npts);
     fp.read("Peclet",&Peclet);
+    fp.read("al",&al);
     fp.read("M",&M);
     fp.read("R",&R);
     if(fp.read("X0",&X0)) fp.read("X",&X0);
@@ -1232,6 +1242,10 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
     else if(!strcmp(arg,"Pe")) { // Peclet added
         if(val==NULL) return 2;
         Peclet=atof(val);
+    }
+    else if(!strcmp(arg,"al")) { // al added
+        if(val==NULL) return 2;
+        al=atof(val);
     }
     else if(!strcmp(arg,"min_core_size")) {
         if(val==NULL) return 2;
