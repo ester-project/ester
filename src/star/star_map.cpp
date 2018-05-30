@@ -109,6 +109,7 @@ fclose(fic);
 
 	} else return; // else do nothing
 }
+//-----------------------------------------------------------------------------
 
 matrix star2d::New_distribute_domains(int ndom,matrix p_inter) {
 // ndom ==> input
@@ -226,6 +227,7 @@ fclose(fic);
     return pif;
 }
 
+//-----------------------------------------------------------------------------
 
 // take a model and modify the resolution (nth, ndomains, number of
 // points in each domain) 
@@ -235,10 +237,11 @@ fclose(fic);
 // domain.
 
 void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
-details=0;
+details=1;
     remapper red(map); // declaration object of class remapper 
 
     if (details) printf("    Enter remap in star_map 1\n");
+	if (details) printf("ndom_old=%d, ndom_new=%d\n",ndomains,ndom_in);
     red.set_ndomains(ndom_in);
     red.set_npts(npts_in);
     red.set_nt(nth_in);
@@ -257,12 +260,13 @@ details=0;
 	if (details) printf("    Leave remap in star_map 1\n");
 }
 
+//-----------------------------------------------------------------------------
 // Some domains have boundaries imposed by the physics and these
 // boundaries cannot be moved (ex. CC & RZ interface).
 // domain_type = integer for CC RZ CZ (see star.h)
 bool star2d::remap_domains(int ndom, remapper &red) {
 //	Count zones
-//details=1;
+details=1;
     int nzo=1;
     std::vector<int> index;	
 // Here look for interface between zones of different type.
@@ -315,8 +319,16 @@ if (details) printf("++++++ remap_domains and redistribute domains\n");
         domain_type_new[n]=domain_type[index[izone]];
         if(n==index_new[izone]) izone++;
     }
-
     domain_type=domain_type_new;
+
+// Update index of zone interface (izif)
+    izif.resize(ndom);
+	for(int n=0,izone=0;n<ndom-1;n++) {
+	   if (domain_type[n] != domain_type[n+1]) {
+		izif[izone]=n;
+		izone++;
+	   }
+	}
     conv=0;
     int n=0;
     while(domain_type[n++]==CORE) conv++; // update of the conv variable
@@ -324,6 +336,7 @@ if (details) printf("++++++ remap_domains and redistribute domains\n");
 if (details) printf("++++++ remap_domains end with redistributed domains\n");
     return true;
 }
+//-----------------------------------------------------------------------------
 
 // if check_only 'True', return the indices of the zones interfaces
 // usually used with check_only "false" to 
@@ -415,6 +428,7 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
     return index;
 
 }
+//-----------------------------------------------------------------------------
 
 // give a function logTi(theta) and find the associated zeta_i(theta_k) of the surface
 // PRES(zeta,theta_k)=logTi(theta_k)
@@ -465,6 +479,7 @@ matrix star2d::find_boundaries(const matrix &logTi) const {
     return zi;
 }
 
+//-----------------------------------------------------------------------------
 // First version of find_boundaries but still used in check_map
 // to do could be replaced by the new find_boundaries...?
 // Find iso "PRES" from the value of pif(idom)
@@ -506,6 +521,7 @@ matrix star2d::find_boundaries_old(matrix pif) const {
     }
     return R;
 }
+//-----------------------------------------------------------------------------
 
 
 matrix star2d::solve_temp_rad() {
@@ -552,6 +568,7 @@ matrix star2d::solve_temp_rad() {
 
     return op.get_var("T");
 }
+//-----------------------------------------------------------------------------
 
 //int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter)
 int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
@@ -759,7 +776,6 @@ if (details) printf("number of interfaces calcule %d \n",n_interf);
                 0., r_inter(0, j), zone_type[0]);
 
     last_zi = r_inter(0, j);
-    //for (int i=1; i<3; i++) { // nb of zones limited to 3
     for (int i=1; i<n_interf+1; i++) {
         if ( zone_type[i-1] == CORE || zone_type[i-1] == CONVECTIVE) {
             zone_type[i] = RADIATIVE;
@@ -776,3 +792,4 @@ if (details) printf("End of find_zones: number of zones =%d \n",n_interf+1);
 
     return n_interf+1; // return the number of zones
 }
+//-----------------------------------------------------------------------------

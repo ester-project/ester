@@ -7,7 +7,7 @@
 #include "symbolic.h"
 
 static int iopt=0;
-static int ioptw=1;
+static int ioptw=0;
 
 void star1d::fill() {
 	Y0=1.-X0-Z0;
@@ -970,11 +970,13 @@ void star1d::solve_map(solver *op) {
         else {
             matrix delta;
             j1=j0+ndom-1;
-            delta=zeros(1,map.gl.npts[n]); delta(0)=1;delta(-1)=-1;
+            delta=zeros(1,ndom); delta(0)=1; delta(-1)=-1;
             op->bc_bot2_add_l(n,"Ri",LOG_PRES,ones(1,1),delta); // LOG_PRES="log_T"
-            delta=zeros(1,map.gl.npts[n-1]); delta(0)=1;delta(-1)=-1;
+
+	    int ndomp=map.gl.npts[n-1];
+            delta=zeros(1,ndomp); delta(0)=1; delta(-1)=-1;
             op->bc_bot1_add_l(n,"Ri",LOG_PRES,-ones(1,1),delta);
-            rhs(n)=log(PRES(j1))-log(PRES(j0))-log(PRES(j0-1))+log(PRES(j0-map.gl.npts[n-1]));
+            rhs(n)=log(PRES(j1)/PRES(j0))-log(PRES(j0-1)/PRES(j0-ndomp));
         }
         j0+=ndom;
     }
@@ -998,6 +1000,9 @@ void star1d::solve_map(solver *op) {
         for (int iz=0;iz<nzones-1;iz++) { // we scan the zone interfaces
             n=izif[iz]; // n is the index of the domain just below the interface
             for(k=0,j0=0;k<n+1;k++) j0+=map.gl.npts[k]; // j0 is the radial index of the interface
+		printf("nzones =  %d\n",nzones);
+		printf("interface above domain %d\n",n);
+		printf("j0= %d\n",j0);
 
             if (domain_type[n] == CORE) {
                 op->reset(n+1,"Ri");
@@ -1006,19 +1011,19 @@ void star1d::solve_map(solver *op) {
                 eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
                 rhs(n+1)=-eq.eval()(j0);
             } else if (domain_type[n] == RADIATIVE) {
-		/*
                    int nn=n;
                    op->reset(nn,"Ri");
                    eq.bc_top1_add(op,nn,"Ri","p",ones(1,nth));
                    eq.bc_top1_add(op,nn,"Ri","s",ones(1,nth));
                    eq.bc_top1_add(op,nn,"Ri","r",ones(1,nth));
-                   rhs(nn)=-eq.eval()(j0);
-                   */
+                   rhs(nn)=-eq.eval()(j0-1);
+		/*
                 op->reset(n+1,"Ri");
                 eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
                 eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
                 eq.bc_bot2_add(op,n+1,"Ri","r",ones(1,nth));
                 rhs(n+1)=-eq.eval()(j0);
+                   */
 
             } else if (domain_type[n] == CONVECTIVE) {
                 op->reset(n+1,"Ri");

@@ -187,6 +187,8 @@ class star2d:
         self.rhoc       = self._s.rhoc
         self.Tc         = self._s.Tc
         self.pc         = self._s.pc
+        self.xic        = self._s.xic
+        self.epsc       = self._s.epsc
         self.M          = self._s.M
         self.Peclet     = self._s.Peclet
         self.L          = self._s.luminosity()
