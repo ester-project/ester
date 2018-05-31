@@ -40,10 +40,10 @@ int main(int argc,char *argv[]) {
 		} else if(!strcmp(arg,"min_step")) {
 			if(val==NULL) err_code=2;
 			else minStep=atof(val);
-		} else if(!strcmp(arg,"min_error")) {
+		} else if(!strcmp(arg,"min_error")) { // Newton error
 			if(val==NULL) err_code=2;
 			else min_max_err=atof(val);
-		} else if(!strcmp(arg,"max_error")) {
+		} else if(!strcmp(arg,"max_error")) { // Newton error
 			if(val==NULL) err_code=2;
 			else max_max_err=atof(val);
 		} else err_code=1;
@@ -139,7 +139,7 @@ int main(int argc,char *argv[]) {
 			continue;
 		}
 
-		if(state == RK_STEP) {
+		if(state == RK_STEP) { // Final step of the 3 RK steps (save the results)
 			stage = 0;
 			if (max_err < min_max_err) {
 				step *= 2;

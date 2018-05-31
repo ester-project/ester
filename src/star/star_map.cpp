@@ -6,7 +6,7 @@ extern "C" {
 }
 
 std::vector<double> star2d::init_domain_weight(std::vector<int> &domain_type_new) {
-
+// Control the pressure drop in each domain
 	int ndom = domain_type_new.size();
 	std::vector<double> domain_weight_new(ndom, 1.);
 	int n = 0;

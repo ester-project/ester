@@ -645,18 +645,18 @@ void star2d::solve_mov(solver *op) {
 		sym w = S.regvar("w");  // Differential Rotation
 		sym rho = S.regvar("rho"); // Density
 		sym phi = S.regvar("Phi"); // Gravitational Potential
-		sym reynolds_v = S.regconst("reynolds_v");
-		sym reynolds_h = S.regconst("reynolds_h");
+		sym reynolds_v = S.regconst("reynolds_v"); // Re_vertical
+		sym reynolds_h = S.regconst("reynolds_h"); // Re_Horiz.
 		sym Re = exp(S.regconst("log_Re"));
 		sym visc_ratio = S.regconst("visc_ratio"); // nu_v/nu_h
-		sym sin_vangle = S.regvar("sin_vangle");
-		sym cos_vangle = S.regvar("cos_vangle");
+		sym sin_vangle = S.regvar("sin_vangle");   // sin(v)
+		sym cos_vangle = S.regvar("cos_vangle"); // v= angle(e_r,-gradP)
 
 		sym_vec phivec(COVARIANT);
 		phivec(0) = 0*S.one; phivec(1) = 0*S.one; phivec(2) = S.r*sin(S.theta);
 		sym_vec rvec = grad(S.r);
-		sym_vec thvec = cross(phivec, rvec);
-		sym_vec nvec = grad(S.zeta);
+		sym_vec thvec = cross(phivec, rvec); // rvec=e_r
+		sym_vec nvec = grad(S.zeta); // nvec = E^\zeta normalized
 		nvec = nvec / sqrt((nvec, nvec));
 		sym_vec tvec = cross(phivec, nvec);
 
@@ -665,17 +665,20 @@ void star2d::solve_mov(solver *op) {
 		s = S.r*sin(S.theta);
 		svec = grad(s);
 		V = vr*rvec + vt*thvec;
-
+// define v_vec perp isobar h_vec// isobar
 		sym_vec v_vec = cos_vangle*rvec - sin_vangle*thvec;
 		sym_vec h_vec = sin_vangle*rvec + cos_vangle*thvec;
 
 		// The momentum equation  is eqmov=0; it gives the pressure
 		sym_vec eqmov = grad(p)/rho + grad(phi) - s*w*w*svec;
 
+// nu_mc = tensorial kin. viscosity
+// Re=R*R/visc_h/MYR = diffusion time in Myrs
+// reynolds_v = true Reynolds number
 		sym_tens nu_mc = tensor(v_vec, v_vec)*Re/reynolds_v + tensor(h_vec, h_vec)*Re/reynolds_h + tensor(phivec, phivec)*Re/reynolds_h;
 		sym_tens SS = (grad(V), nu_mc.T()) + (nu_mc, grad(V).T()) - rational(2, 3)*S.g*(nu_mc%grad(V));;
 		//sym_tens SS = stress(V);
-		sym_vec visc = (div(rho*SS))/rho;
+		sym_vec visc = (div(rho*SS))/rho; // viscous force/rho
 
 		sym_vec eqmov_visc = covariant(eqmov - visc);
 		eqmov_r = eqmov_visc(0);
@@ -686,20 +689,20 @@ void star2d::solve_mov(solver *op) {
 		sym_tens nu = tensor(v_vec, v_vec)*visc_ratio/Re + tensor(h_vec, h_vec)/Re;
 		eq_phi = rho*(V, grad(s*s*w)) - div(s*s*rho*(nu, grad(w)));
 
-		ic_t = (tvec, V);
-		ic_visc = ((SS, nvec), tvec);
-		ic_dt = S.Dz(vt)/S.rz;
+		ic_t = (tvec, V);  // tangential comp of V (iso zeta)
+		ic_visc = ((SS, nvec), tvec); // tangential comp of stress on isozeta
+		ic_dt = S.Dz(vt)/S.rz; // dv_theta/dr 
 
-		ic_w = S.Dz(w)/S.rz;
+		ic_w = S.Dz(w)/S.rz; // dOmega/dr
 
-		bc_t = ic_visc;
-		bc_w = (nvec, grad(w));
+		bc_t = ic_visc;  // associated boundary condition
+		bc_w = (nvec, grad(w)); // stress-free for Omega
 	}
 
 	int j0;
 
 	S.set_value("p",p);
-	S.set_value("vt",vt,11);
+	S.set_value("vt",vt,11); // 11= symmetry  of v_theta
 	S.set_value("vr", vr);
 	S.set_value("w",w);
 	S.set_value("rho",rho);
@@ -708,13 +711,13 @@ void star2d::solve_mov(solver *op) {
 	S.set_value("reynolds_h", reynolds_h*ones(1,1));
 	S.set_value("log_Re", log(R*R/visc_h/MYR)*ones(1,1));
 	S.set_value("visc_ratio", visc_v/visc_h*ones(1,1));
-	S.set_value("sin_vangle", sin(vangle), 11);
+	S.set_value("sin_vangle", sin(vangle), 11);// 11= symmetry  of v_theta
 	S.set_value("cos_vangle", cos(vangle));
 
 	S.set_map(map);
 
 	op->add_d("p","log_p",p);
-	op->add_d("log_Re", "log_R", 2*ones(nr, nth));
+	op->add_d("log_Re", "log_R", 2*ones(nr, nth)); // comfort equation
 
 // First component of the equation of motion tagged "log_p"
 // we explicit the dependences
@@ -825,8 +828,15 @@ void star2d::solve_mov(solver *op) {
 			op->bc_bot2_add_d(n, "w", "w", ones(1, nth));
 			op->bc_bot2_add_d(n, "w", "Omega0", -ones(1, nth));
 			rhs.setrow(j0, zeros(1, nth));
+// Omega0 is an auxiliary variable to impose at equator both Omega=Omega(input) and
+// stress-free condition
+// So there is an extra-scalar equation for Omega0
+// cf Lambda equation at center.
+
+// w(theta=pi/2,r=1)=w_eq imposed from input
 		}
 		else {
+// continuity of Omega at interface
 			op->bc_bot2_add_d(n, "w", "w", ones(1, nth));
 			op->bc_bot1_add_d(n, "w", "w", -ones(1, nth));
 			rhs.setrow(j0, -w.row(j0) + w.row(j0-1));
@@ -837,6 +847,7 @@ void star2d::solve_mov(solver *op) {
 			rhs.setrow(j1, -bc_w.eval().row(-1));
 		}
 		else {
+// continuity of dOmega/dr at interface
 			ic_w.bc_top1_add(op, n, "w", "w");
 			ic_w.bc_top1_add(op, n, "w", "r");
 			ic_w.bc_top2_add(op, n, "w", "w", -ones(1, nth));
@@ -863,7 +874,7 @@ void star2d::solve_mov(solver *op) {
 	}
 	op->set_rhs("Omega0", rhs);
 
-	//G - Meridional circulation
+	//Vtheta - Meridional circulation
 	rhs=op->get_rhs("vt");
 	matrix ic_t_val = ic_t.eval();
 	matrix ic_dt_val = ic_dt.eval();
@@ -877,6 +888,7 @@ void star2d::solve_mov(solver *op) {
 			rhs.setrow(j0, -vt.row(j0));
 		}
 		else if (n == conv){
+		// impose continuity of tangential velocity
 			ic_t.bc_bot2_add(op, n, "vt", "vt");
 			ic_t.bc_bot2_add(op, n, "vt", "vr");
 			ic_t.bc_bot2_add(op, n, "vt", "r");
@@ -892,9 +904,9 @@ void star2d::solve_mov(solver *op) {
 		}
 
 		if (n == ndomains-1) {
-			bc_t.bc_top1_add(op, n, "vt", "p");
+			bc_t.bc_top1_add(op, n, "vt", "p"); // ? may be not necessary
 			bc_t.bc_top1_add(op, n, "vt", "rho");
-			bc_t.bc_top1_add(op, n, "vt", "Phi");
+			bc_t.bc_top1_add(op, n, "vt", "Phi"); // ?
 			bc_t.bc_top1_add(op, n, "vt", "w");
 			bc_t.bc_top1_add(op, n, "vt", "r");
 			bc_t.bc_top1_add(op, n, "vt", "vr");
@@ -927,7 +939,7 @@ void star2d::solve_mov(solver *op) {
 
 void star2d::solve_temp(solver *op) {
 
-	double xi_conv = 1.e13; // PARAMETER
+	double xi_conv = 1.e13; // PARAMETER dimensional 
 
 	static symbolic S;
 	static sym eq, icflux;
@@ -1057,6 +1069,7 @@ void star2d::solve_temp(solver *op) {
 		if (n == 0) {
 			op->bc_bot2_add_r(n, "Lambda", "T", ones(1,1), map.It/2.);
 			rhs(n) = 1. - (T.row(0), map.It)(0)/2.;
+			// we use an average value of the central temperature 2=int_0^pi sintheta dtheta
 		}
 		else {
 			op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));

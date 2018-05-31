@@ -3,6 +3,7 @@
 #include "star.h"
 #include <omp.h>
 
+// constructor from scratch
 star_evol::star_evol() : star2d() {
 
 	check_map_enable = false;
@@ -14,11 +15,12 @@ star_evol::star_evol() : star2d() {
 	lnrhoc0 = 0.;
 	lnpc0 = 0.;
 	lnTc0 = 0.;
-	mH0 = 0.;
+	mH0 = 0.; // total mass of hydrogen to monitor the consumption of H
 	mH = 0.;
 }
 
 star_evol::star_evol(const star2d &A) : star2d(A) {
+// constructor from a star2d object
 
 	check_map_enable = false;
 
@@ -69,7 +71,7 @@ void star_evol::copy(const star_evol &A) {
 }
 
 void star_evol::read_vars(INFILE *fp) {
-
+// just work for binary files not .h5 files (yet)
 	if(fp->read("dXdt", &dXdt)) dXdt = zeros(nr, nth);
 	if(fp->read("drhodt", &drhodt)) drhodt = zeros(nr, nth);
 	if(fp->read("dpdt", &dpdt)) dpdt = zeros(nr, nth);
@@ -82,7 +84,7 @@ void star_evol::read_vars(INFILE *fp) {
 }
 
 void star_evol::write_vars(OUTFILE *fp) const {
-
+// just work for binary files not .h5 files (yet)
 	fp->write("dXdt", &dXdt);
 	fp->write("drhodt", &drhodt);
 	fp->write("dpdt", &dpdt);
@@ -102,6 +104,7 @@ void star_evol::fill() {
 }
 
 void star_evol::calcTimeDerivs() {
+// Compute the time derivatives just for output
 	static symbolic S;
 	static sym derivt;
 	static bool sym_inited = false;
@@ -128,7 +131,7 @@ void star_evol::calcTimeDerivs() {
 
 	S.set_value("val", comp["H"]);
 	S.set_value("val0", Xprev);
-	dXdt = derivt.eval();
+	dXdt = derivt.eval(); // as evluated by the RK method
 
 	S.set_value("val", rho);
 	S.set_value("val0", rho0);
@@ -156,12 +159,12 @@ void star_evol::init_comp() {
 
 }
 
-solver * star_evol::init_solver(int nvar_add) {
-	return star2d::init_solver(nvar_add+4);
+solver * star_evol::init_solver(int nvar_add) { // initialisation of solver
+	return star2d::init_solver(nvar_add+4); // add 4 variables
 }
 
 void star_evol::register_variables(solver *op) {
-
+// the 4 additional variables
 	star2d::register_variables(op);
 	op->regvar("X");
 	op->regvar("Xc");
@@ -198,7 +201,7 @@ double star_evol::update_solution(solver *op, double &h, matrix_map& error_map, 
 	matrix dX = op->get_var("X");
 	while(exist(abs(h*dX)>dmax)) h /= 2;
 
-	double err = star2d::update_solution(op, h, error_map, nit);
+	double err = star2d::update_solution(op, h, error_map, nit); // call of star2d part
 
 	dX = max(dX, -comp["H"]/h);
 	double err2 = max(abs(dX));
@@ -206,11 +209,14 @@ double star_evol::update_solution(solver *op, double &h, matrix_map& error_map, 
 	comp["He4"] -= h*dX;
 	comp["H"] += h*dX;
 
+// Rem: the conservationn of total mass is insured by the mass conservation equation
+// as ang. Mom.
 	M *= exp(h*op->get_var("log_M")(0));
 
 	return err;
 }
 
+// Functions to initialize the time-stepper
 SDIRK_solver* star_evol::init_time_solver() {
 	SDIRK_solver *rk = new SDIRK_solver();
 	rk->init(11, "sdirk3");
@@ -219,6 +225,7 @@ SDIRK_solver* star_evol::init_time_solver() {
 }
 
 void star_evol::register_variables(SDIRK_solver *rk) {
+// check_map is call only once at every time step
 	check_map_enable = true;
 	check_map();
 	check_map_enable = false;
@@ -233,10 +240,11 @@ void star_evol::register_variables(SDIRK_solver *rk) {
 	rk->regvar("log_p", log(p));
 	rk->regvar("log_pc", log(pc)*ones(1,1));
 	rk->regvar("w", w);
-	rk->regvar("phi", phi);
+	rk->regvar("phi", phi); // not used in the time-stepping but used for output
 }
 
 void star_evol::init_step(SDIRK_solver *rk) {
+// used at every time step
 	delta = rk->get_delta();
 	age = rk->get_t();
 
@@ -254,7 +262,8 @@ void star_evol::init_step(SDIRK_solver *rk) {
 }
 
 void star_evol::finish_step(SDIRK_solver *rk, int state) {
-	if (state == RK_STEP) {
+// finish the time step after the Newton iteration
+	if (state == RK_STEP) { // check_map is call only once in the 3 steps of the RK time-step
 		check_map_enable = true;
 		check_map();
 		check_map_enable = false;
@@ -275,6 +284,7 @@ void star_evol::finish_step(SDIRK_solver *rk, int state) {
 }
 
 void star_evol::reset_time_solver(SDIRK_solver *rk) {
+// Needed for a restart
 	finish_step(rk, -1);
 	rk->reset();
 }
@@ -306,6 +316,7 @@ void star_evol::solve_definitions(solver *op) {
     matrix rho2;
     strcpy(eos2.name, eos.name);
     eos_calc(comp2.X(), Z0, T*Tc, p*pc, rho2, eos2);
+// Derivative with respect to X, should be in physics...
     matrix drhodX = (rho2/rhoc - rho)/1e-4;
     drhocdX = (rho2(0,0) - rhoc) / 1e-4;
     op->add_d("rho", "X", drhodX);
@@ -339,7 +350,7 @@ void star_evol::solve_dim(solver *op) {
 }
 
 void star_evol::solve_Omega(solver *op) {
-
+// Needed for "programming" reasons....
 	matrix rhs;
 	int n;
 	
@@ -366,7 +377,7 @@ void star_evol::solve_Omega(solver *op) {
 
 void star_evol::solve_X(solver *op) {
     double Q=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
-    double diff_coeff_conv = 1e11; // PARAMETER
+    double diff_coeff_conv = 1e11; // PARAMETER dimensional
 
     static symbolic S;
     static sym eq, flux, gradX;
@@ -436,6 +447,7 @@ void star_evol::solve_X(solver *op) {
     matrix diff_v = ones(nr, nth) * diffusion_v;
     matrix diff_h = ones(nr, nth) * diffusion_h;
     if (conv) {
+// Diffusion in the core which is enhanced!!
     	int nc = 0;
     	for (int n = 0; n < conv; n++) nc += map.npts[n];
     	diff_v.setblock(0, nc-1, 0, -1, ones(nc, nth) * diff_coeff_conv);
@@ -497,7 +509,7 @@ void star_evol::solve_X(solver *op) {
     	else {
     		gradX.bc_top1_add(op, n, "X", "X");
     		gradX.bc_top1_add(op, n, "X", "r");
-    		rhs.setrow(j1, -gradX_val.row(-1));
+    		rhs.setrow(j1, -gradX_val.row(-1)); // no flux at the surface
     	}
     	j0 += map.npts[n];
     }
@@ -506,6 +518,7 @@ void star_evol::solve_X(solver *op) {
 
 
     rhs=zeros(ndomains,1);
+// Central X needed for rho_c
     for(int n = 0; n < ndomains; n++) {
     	if(n == 0) {
     		op->bc_bot2_add_d(n, "Xc", "Xc", ones(1,1));
@@ -519,6 +532,7 @@ void star_evol::solve_X(solver *op) {
 
 }
 
+// Continuity equation
 void star_evol::solve_cont(solver *op) {
 
 	star2d::solve_cont(op);
@@ -581,7 +595,8 @@ void star_evol::solve_cont(solver *op) {
 			rhs.setrow(j0, zeros(1, nth));
 		}
 
-		if (n == conv-1) {
+		if (n == conv-1) { // conv-1 domain just below interface
+			// Here we impose mass flux continuity
 			flux.bc_top1_add(op, n, "vr", "rho");
 			flux.bc_top1_add(op, n, "vr", "log_R");
 			flux.bc_top1_add(op, n, "vr", "r");
@@ -591,6 +606,7 @@ void star_evol::solve_cont(solver *op) {
 			rhs.setrow(j1, -flux_val.row(j1) + flux_val.row(j1+1));
 		}
 		else if (n == ndomains - 1) {
+			// Here zero mass flux
 			flux.bc_top1_add(op, n, "vr", "rho");
 			flux.bc_top1_add(op, n, "vr", "log_R");
 			flux.bc_top1_add(op, n, "vr", "r");
@@ -604,7 +620,10 @@ void star_evol::solve_cont(solver *op) {
 
 	op->set_rhs("vr", op->get_rhs("vr") + rhs);
 
+// Now we need to regularize continuity equation at the center where rho/r
+// is singular
 	for(int n = 0; n < ndomains; n++) {
+// We first apply the definition of reg_cont:
 		if(n == 0) {
 			reg_cont.bc_bot2_add(op, 0, "reg_cont", "vr");
 			reg_cont.bc_bot2_add(op, 0, "reg_cont", "rho");
@@ -618,6 +637,8 @@ void star_evol::solve_cont(solver *op) {
 	}
 	op->set_rhs("reg_cont", zeros(ndomains, nth));
 
+// Then we say that Mass Flux is zero at center, in fact that rec_cont averaged over sphere
+// is zero
 	rhs=zeros(ndomains,1);
 	for(int n = 0; n < ndomains; n++) {
 		if(n == ndomains - 1) {
@@ -694,8 +715,8 @@ void star_evol::solve_temp(solver *op) {
 	eq.add(op, "log_T", "log_R");
 	eq.add(op, "log_T", "r");
 
-	matrix rhs = op->get_rhs("log_T");
-	matrix rhs2 = -eq.eval();
+	matrix rhs = op->get_rhs("log_T"); // recup from the steady operator
+	matrix rhs2 = -eq.eval(); //
 	int j0 = 0;
 	for (int n = 0; n < ndomains; n++) {
 		int j1 = j0 + map.npts[n] - 1;
@@ -710,7 +731,7 @@ void star_evol::solve_temp(solver *op) {
 
 void star_evol::solve_mov(solver *op) {
 
-    star2d::solve_mov(op);
+    star2d::solve_mov(op); // use first the steady operator
 
     if(Omega == 0) return;
 
@@ -718,7 +739,7 @@ void star_evol::solve_mov(solver *op) {
 	static symbolic S;
 	static sym eq, bc_t_add, eq_t;
 
-	if(!sym_inited) {
+	if(!sym_inited) { // add the time derivative of Omega
 		sym_inited = true;
 
 		sym w = S.regvar("w");
@@ -779,12 +800,15 @@ void star_evol::solve_mov(solver *op) {
 	}
 
 	rhs = rhs + rhs2;
+// Now we need to change the central condition for Omega
+// dOmega/dr=0 at centre.
 	op->reset_bc_bot(0, "w");
 	op->bc_bot2_add_l(0, "w", "w", ones(1, nth), D.block(0).row(0));
 	rhs.setrow(0, -(D, w).row(0));
 
 	op->set_rhs("w", rhs);
 
+// Remove Omega0 equation
 	op->reset("Omega0");
 	op->bc_bot2_add_d(0, "Omega0", "Omega0", ones(1,1));
 	op->set_rhs("Omega0", zeros(1,1));
@@ -815,17 +839,19 @@ void star_evol::solve_mov(solver *op) {
 
 
 int star_evol::remove_convective_core() {
-	if (conv>1) {
+	if (conv>1) { // see star_map
 		star2d::remove_convective_core();
 		return 0;
 	}
 	double dp0 = -log(p(map.npts[0], 0));
 	double dp1 = -dp0 - log(p(map.npts[0]+map.npts[1], 0));
-	domain_weight[0] = domain_weight[1]*dp1/dp0;
+	domain_weight[0] = domain_weight[1]*dp1/dp0; // adapt the pressure drop in each domain
+	// here we want to keep the same size of the domain once the core has disappeared
 	star2d::remove_convective_core();
 	return 1;
 }
 
+// The Newton solver:
 double star_evol::solve(solver *op, matrix_map& error_map, int nit) {
 
 	double err = star2d::solve(op, error_map, nit);
