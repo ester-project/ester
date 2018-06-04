@@ -35,14 +35,14 @@ class star2d {
   	const int &nr,&nth,&nex,&ndomains;
 	const matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
 	const matrix_block_diag &D;
-    matrix rho,phi,p,T,Xh,Xh_prec,Xh0,rho0,Wr,r0,schwarz;
+    matrix rho,phi,p,T,Xh,Xh_prec,Xh0,rho0,Wr,r0,schwarz,Pe,Pep;
     matrix phiex;
 	matrix vr,vt,G,w;
 	composition_map comp; 
     double X0,Y0,Z0;
     double X_core,X_core_prec,M_core,M_core_prec;
-    double R,M,R0,Peclet;
-    double rhoc,rhoc0,Tc,pc;
+    double R,M,R0,Peclet,al;
+    double rhoc,rhoc0,Tc,pc,xic,epsc;
     double Omega,Omega_bk,Omegac;
    	double Ekman;
   	opa_struct opa;
@@ -50,7 +50,7 @@ class star2d {
 	eos_struct eos;
 	atm_struct atm;
 	matrix ps,Ts;
-	double m,pi_c,Lambda;
+	double m,pi_c,Lambda,Rcz;
 	double surff;
 	int conv,nd_core;
 	int n_essai;
