@@ -87,6 +87,7 @@ star2d::star2d() : nr(map.gl.N), nth(map.leg.npts), nex(map.ex.gl.N),
     version.svn=0;
     stratified_comp = 0;
     config.dump_iter = 0;
+	nzones=1;
 }
 
 star2d::~star2d() {
@@ -126,6 +127,7 @@ void star2d::copy(const star2d &A) {
 
     R=A.R;M=A.M;
     Tc=A.Tc;pc=A.pc;rhoc=A.rhoc;
+    xic=A.xic;epsc=A.epsc;
     X0=A.X0;Y0=A.Y0;Z0=A.Z0;
     surff=A.surff;
     conv=A.conv;
@@ -155,6 +157,8 @@ void star2d::copy(const star2d &A) {
     details=A.details;	   // do not forget to copy !!
     n_essai=A.n_essai;	   // do not forget to copy !!
     Peclet=A.Peclet;	   // do not forget to copy !!
+    al=A.al;	   // do not forget to copy !!
+    global_err=A.global_err;	   // do not forget to copy !!
 
 }
 

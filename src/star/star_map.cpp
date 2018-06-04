@@ -8,6 +8,7 @@ extern "C" {
 
 void star2d::new_check_map() {
         matrix pif,R_inter,p_inter;
+	double seuil;
         remapper *red;
         matrix R(ndomains+1,nth);
 	R=zeros(ndomains+1,nth);
@@ -16,24 +17,72 @@ void star2d::new_check_map() {
                 zone_type = std::vector<int>(1);
 	}
 
-	if (global_err < 1e-4) { // look for new convective regions and eventually remap the star
+	if (n_essai == 0) seuil=1e-2;
+	if (n_essai > 0) seuil=1e-2;
+//printf("global errors %e %e\n",prev_global_err,global_err);
+
+// Check the "PRESSURE" drop from bot CZ to surface
+// At the beginning izif=0, thus n=0 and j0=number of pts of 1st domain
+// hence p_drop > p_dm, always.
+	//printf("izif size %d\n",izif.size());
+	//for (int iz=0;iz<ndomains-1;iz++) printf(" %d ",izif[iz]);
+	//printf("\n");
+	//printf("nzones %d\n",nzones);
+	int n=izif[nzones-2],j0,k; // n is the index of the domain just below the interface
+        for(k=0,j0=0;k<n+1;k++) j0+=map.gl.npts[k]; // j0 is the radial index of the interface
+	
+	double p_drop=PRES(-1,0)/PRES(j0,0);
+	int ndom=ndomains-n;
+	double p_dm=exp(ndom*log(PRES(-1,0))/ndomains); //expected drop
+	//printf("j0 = %d ndom= %d\n",j0,ndom);
+	//printf("pdrop = %e\n",p_drop);
+	//printf("pdm   = %e\n",p_dm);
+
+	if (p_dm > p_drop) { // PRES drop is too important in CZ, redist domain
+           if (details) printf("check_map: PRES drop high : REDISTRIBUTE DOMAINS\n");
+    	   p_inter = zeros(nzones, nth);
+	   for (int iz=0;iz<nzones-1;iz++) { // we scan the zone interfaces
+                n=izif[iz]; // n is the index of the domain just below the interface
+                for(k=0,j0=0;k<n+1;k++) j0+=map.gl.npts[k];
+	  	p_inter(iz,0)=PRES(j0,0);
+	   }
+	   p_inter(nzones-1,0)=PRES(-1,0);
+	   pif=New_distribute_domains(ndomains,p_inter);
+	   R.setblock(1,-2,0,-1,find_boundaries_old(pif.block(0,-2,0,0)));
+	   red=new remapper(map);
+	   red->set_R(R);
+	   map=red->get_map(); // generate r,r_z,...
+	   interp(red);
+           delete red;
+	   return;
+	}
+
+
+	if (global_err < seuil) { // look for new convective regions and eventually remap the star
 	   // Find the zone boundaries and the associated pressures
 	   // and output zone_type as global var.
+ 	   printf("seuil %e\n",seuil);
 	   int nzones_av=zone_type.size();
-	   find_zones(R_inter, p_inter);
+
+	   nzones=find_zones(R_inter, p_inter); // defines R,p_inter
+
 	   int nzones_ap=zone_type.size();
 	   if (nzones_av == nzones_ap) {
-if (details) printf("Number of zones unchanged: do something\n");
 		n_essai=n_essai+1;
 		  if (details) printf("n_essai=%d\n",n_essai);
-		if (n_essai >0) {
+		  //if (global_err < prev_global_err || global_err<2e-3) {
+		  if (global_err < 2e-3 || global_err<2e-3) {
 		  if (details) printf("Number of zones unchanged: do nothing\n");
-		  if (details) printf("n_essai=%d\n",n_essai);
 		  return;
 		}
 	   }
-	   // Redistribute the domains and output izif (index of zone interface)
-	   // as a global var.
+
+// The global error is low enough, find_zone was called
+// and the number of zones has changed so we redistribute the domains
+// Also output izif (index of zone interface) as a global var.
+
+           if (details) printf("check_map: REDISTRIBUTE DOMAINS\n");
+	   n_essai=0;
 	   pif=New_distribute_domains(ndomains,p_inter);
 	   // fill the matrix R with the radii of the first interface
 	   // to the lat interface, so 1==> -2, for all theta 0==>-1
@@ -43,6 +92,14 @@ if (details) printf("Number of zones unchanged: do something\n");
 	// Install the new mapping and do interpolation for this mapping
 	   map=red->get_map(); // generate r,r_z,...
 	   interp(red);
+	   printf("DISTRIBUTION OF DOMAINS IN ZONES nzones=%d\n",nzones);
+	   for (int iz=0;iz<nzones;iz++) {
+		if (iz == 0) ndom=izif[iz]+1;
+		if (iz != 0) ndom=izif[iz]-izif[iz-1];
+		printf(" iz=%d ndom=%d, ",iz,ndom);
+	   }
+	   printf("\n");
+
 if (details) {
 FILE *fic=fopen("new_R.txt", "a");
 fprintf(fic,"it= %d\n",glit);
@@ -50,8 +107,10 @@ for (int k=0;k<=ndomains;k++) fprintf(fic,"k= %d R= %e \n",k,R(k,0));
 fclose(fic);
 }
 	   delete red;
+
 	} else return; // else do nothing
 }
+//-----------------------------------------------------------------------------
 
 matrix star2d::New_distribute_domains(int ndom,matrix p_inter) {
 // ndom ==> input
@@ -127,6 +186,7 @@ for (int k=0;k<nzo;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
                 izif[0]=ki;
 		if (details) printf("izif (%d) = %d\n",0,ki);
            // First zone done
+	   // Deal with the following zones
 		for (iz=1; iz<nzo; iz++) {
 			for (k=ki;k<ki+ndz[iz];k++) {
 				double a=log(p_inter(iz)/p_inter(iz-1))/ndz[iz];
@@ -136,6 +196,7 @@ for (int k=0;k<nzo;k++) fprintf(fic,"zone %d ==> %d domains \n",k,ndz[k]);
 			izif[iz]=ki;
 			if (details) printf("izif (%d) = %d\n",iz,ki);
 		}
+		
            // All zones done
 // last interface is the surface and not account by the foregoing algo
 		pif(ndom-1)=p_inter(nzo-1);
@@ -167,6 +228,7 @@ fclose(fic);
     return pif;
 }
 
+//-----------------------------------------------------------------------------
 
 // take a model and modify the resolution (nth, ndomains, number of
 // points in each domain) 
@@ -176,28 +238,36 @@ fclose(fic);
 // domain.
 
 void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
+details=1;
     remapper red(map); // declaration object of class remapper 
 
-    if (details) printf("    Enter remap in star_map\n");
+    if (details) printf("    Enter remap in star_map 1\n");
+	if (details) printf("ndom_old=%d, ndom_new=%d\n",ndomains,ndom_in);
     red.set_ndomains(ndom_in);
     red.set_npts(npts_in);
     red.set_nt(nth_in);
     red.set_nex(nex_in);
+    if (details) printf("    sets done in remap in star_map 1\n");
 
     if(ndom_in!=ndomains) 
         remap_domains(ndom_in,red); // the new R_i are now known
 
     map=red.get_map(); // update the mapping
+    if (details) for (int n=0;n<ndomains;n++)
+            printf("%d, domain_type = %d, r=%e\n",n,domain_type[n],map.gl.xif[n]);
+    if (details) printf("mapping updated in remap in star_map 1\n");
     interp(&red); // interpolate the variable on the new update
 
-	if (details) printf("    Leave remap in star_map\n");
+	if (details) printf("    Leave remap in star_map 1\n");
 }
 
+//-----------------------------------------------------------------------------
 // Some domains have boundaries imposed by the physics and these
 // boundaries cannot be moved (ex. CC & RZ interface).
 // domain_type = integer for CC RZ CZ (see star.h)
 bool star2d::remap_domains(int ndom, remapper &red) {
 //	Count zones
+details=1;
     int nzo=1;
     std::vector<int> index;	
 // Here look for interface between zones of different type.
@@ -250,8 +320,16 @@ if (details) printf("++++++ remap_domains and redistribute domains\n");
         domain_type_new[n]=domain_type[index[izone]];
         if(n==index_new[izone]) izone++;
     }
-
     domain_type=domain_type_new;
+
+// Update index of zone interface (izif)
+    izif.resize(ndom);
+	for(int n=0,izone=0;n<ndom-1;n++) {
+	   if (domain_type[n] != domain_type[n+1]) {
+		izif[izone]=n;
+		izone++;
+	   }
+	}
     conv=0;
     int n=0;
     while(domain_type[n++]==CORE) conv++; // update of the conv variable
@@ -259,6 +337,7 @@ if (details) printf("++++++ remap_domains and redistribute domains\n");
 if (details) printf("++++++ remap_domains end with redistributed domains\n");
     return true;
 }
+//-----------------------------------------------------------------------------
 
 // if check_only 'True', return the indices of the zones interfaces
 // usually used with check_only "false" to 
@@ -350,6 +429,7 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
     return index;
 
 }
+//-----------------------------------------------------------------------------
 
 // give a function logTi(theta) and find the associated zeta_i(theta_k) of the surface
 // PRES(zeta,theta_k)=logTi(theta_k)
@@ -400,6 +480,7 @@ matrix star2d::find_boundaries(const matrix &logTi) const {
     return zi;
 }
 
+//-----------------------------------------------------------------------------
 // First version of find_boundaries but still used in check_map
 // to do could be replaced by the new find_boundaries...?
 // Find iso "PRES" from the value of pif(idom)
@@ -441,6 +522,7 @@ matrix star2d::find_boundaries_old(matrix pif) const {
     }
     return R;
 }
+//-----------------------------------------------------------------------------
 
 
 matrix star2d::solve_temp_rad() {
@@ -487,11 +569,12 @@ matrix star2d::solve_temp_rad() {
 
     return op.get_var("T");
 }
+//-----------------------------------------------------------------------------
 
 //int star2d::find_zones(matrix& r_inter, std::vector<int>& zone_type, matrix& p_inter)
 int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
     double last_zi, zi;
-    matrix schw, dschw,bv2,schwBP;
+    matrix schw, dschw,bv2,schwBP,schwFEL;
 
     matrix T_rad = solve_temp_rad();
 
@@ -514,17 +597,18 @@ int star2d::find_zones(matrix& r_inter, matrix& p_inter) {
 **/
 
 // Paco's version
-//    schw=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
-//        -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
+      schwFEL=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
+        -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
+      schwFEL.setrow(0, zeros(1, nth));
 
 // We evaluate the Schwarzschild criterion from the radiative solution T_rad
       schwBP = -(map.gzz*(D, p)+map.gzt*(p, Dt))*((D, T_rad)/T_rad-eos.del_ad*(D, log(p))) -
           (map.gzt*(D, p)+map.gtt*(p, Dt))*((T_rad, Dt)/T_rad-eos.del_ad*(log(p), Dt));
+      schwBP.setrow(0, zeros(1, nth));
 
 
     //for (int k=0;k<nr;k++) fprintf(fic,"i= %d schw= %e T=%e, p=%e, na=%e, gzz=%e\n",k,schw(k,-1),T_rad(k,-1),p(k,-1),eos.del_ad(k,-1),map.gzz(k,-1));
 
-    schwBP.setrow(0, zeros(1, nth));
     //schw = schw/r/r;
     //schw.setrow(0, zeros(1, nth));
     //schw.setrow(0, -(D.row(0), schw)/D(0, 0));
@@ -570,13 +654,14 @@ int k_rad=0;
 	if (fabs(bv2f(k,-1)) < 1.0e-3 ) schw(k,-1)=-1e-3;
     }
 // pas de filtrage
-	schw=schwBP;
+	//schw=schwBP;
+	schw=schwFEL;
 
 
 
     FILE *fic = fopen("schwi.txt", "a");
 	fprintf(fic,"it= %d\n",glit);
-    for (int k=0;k<nr;k++) fprintf(fic,"%d  %e %e %e %e\n",k,r(k,-1),schwBP(k,-1),bv2(k,-1),bv2f(k,-1));
+    for (int k=0;k<nr;k++) fprintf(fic,"%d r=%e schw=%e bv2=%e %e\n",k,r(k,-1),schw(k,-1),bv2(k,-1),bv2f(k,-1));
     fclose(fic);
 
     //dschw = (D, schw);
@@ -614,7 +699,6 @@ int k_rad=0;
 // We first detect the number of true interfaces using the last latitude
 // point (-1), which is the closest one to the pole.
     n = 0;
-    //for (int i=itest_sch; i<=nl; i++) {  // we stop the search at nl or nl-1
     for (int i=itest_sch; i<nr; i++) {  
         if (schw(i-1, -1) * schw(i, -1) < 0 ) {
                 n++;
@@ -658,8 +742,6 @@ bb(0,0)=2; bb(1,0)=n_interf;
 n_interf=min(bb);
 if (details) printf("number of interfaces calcule %d \n",n_interf);
 
-//n_interf=3; //min(3*ones(1,1),n_interf*ones(1,1));
-
 // Now we set the values of r_inter and p_inter
 // which include the true surface
     r_inter = zeros(n_interf+1, nth);
@@ -671,10 +753,10 @@ if (details) printf("number of interfaces calcule %d \n",n_interf);
            p_inter(i, j) = map.gl.eval(PRES.col(j), zi)(0);
       }
     }
-
 // We add the surface as the last r_inter
     r_inter.setrow(-1, z(-1) * ones(1, nth));
     p_inter.setrow(-1, PRES(-1) * ones(1, nth));
+//if (details) printf("p_inter i= %d, %e\n",n_interf,p_inter(-1,0));
 
 	if (details) { 
            std::cout << "CONV: " << CONVECTIVE << ", ";
@@ -695,7 +777,6 @@ if (details) printf("number of interfaces calcule %d \n",n_interf);
                 0., r_inter(0, j), zone_type[0]);
 
     last_zi = r_inter(0, j);
-    //for (int i=1; i<3; i++) { // nb of zones limited to 3
     for (int i=1; i<n_interf+1; i++) {
         if ( zone_type[i-1] == CORE || zone_type[i-1] == CONVECTIVE) {
             zone_type[i] = RADIATIVE;
@@ -712,3 +793,4 @@ if (details) printf("End of find_zones: number of zones =%d \n",n_interf+1);
 
     return n_interf+1; // return the number of zones
 }
+//-----------------------------------------------------------------------------

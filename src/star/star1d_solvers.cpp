@@ -727,7 +727,7 @@ FILE *fic=fopen("new_rhs_lamb.txt", "a");
 			rhs_T(-1)=Ts(0)-T(-1);
                         op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                         op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
-                        if (details) printf("LAST DOM n=%d T bot T top \n",n);
+//                        if (details) printf("LAST DOM n=%d T bot T top \n",n);
                 } else { // Now domains are not first and not last!
                            op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                            op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
