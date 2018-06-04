@@ -642,67 +642,7 @@ void star1d::new_solve_temp(solver *op) {
 FILE *fic=fopen("new_rhs_lamb.txt", "a");
 	strcpy(eqn,"log_T");
 	
-	//Luminosity
-/*
-	matrix rhs_lum,lum;
-	
-	lum=zeros(ndomains,1);
-	j0=0;
-        fact=4*PI*Lambda;
-	for(n=0;n<ndomains;n++) {
-	   ndom=map.gl.npts[n];
-	   j1=j0+ndom-1;
-	   if(n) lum(n)=lum(n-1);
-	   lum(n)+=fact*(map.gl.I.block(0,0,j0,j1),(rho*nuc.eps*r*r).block(j0,j1,0,0))(0);
-	   j0+=ndom;
-	}
-
-	rhs_lum=zeros(ndomains,1);
-	j0=0;
-	for(n=0;n<ndomains;n++) {
-		ndom=map.gl.npts[n];
-		j1=j0+ndom-1;
-		op->bc_bot2_add_d(n,"lum","lum",ones(1,1));
-		op->bc_bot2_add_li(n,"lum","rho",-fact*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*nuc.eps).block(j0,j1,0,0));
-		op->bc_bot2_add_li(n,"lum","nuc.eps",-fact*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*rho).block(j0,j1,0,0));
-		op->bc_bot2_add_d(n,"lum","Lambda",-4*PI*(map.gl.I.block(0,0,j0,j1),(rho*nuc.eps*r*r).block(j0,j1,0,0)));
-		//r (rz)
-		op->bc_bot2_add_li(n,"lum","r",-fact*ones(1,1),map.gl.I.block(0,0,j0,j1),(2*r*rho*nuc.eps).block(j0,j1,0,0));
-		op->bc_bot2_add_li(n,"lum","rz",-fact*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*rho*nuc.eps).block(j0,j1,0,0));
-			
-		if(n) op->bc_bot1_add_d(n,"lum","lum",-ones(1,1));
-		j0+=ndom;
-	}
-	op->set_rhs("lum",rhs_lum);
-	
-	//Frad
-	
-	matrix rhs_Frad,Frad;
-	
-	Frad=-opa.xi*(D,T);
-	rhs_Frad=zeros(ndomains*2-1,1);
-	j0=0;
-	for(n=0;n<ndomains;n++) {
-		j1=j0+map.gl.npts[n]-1;
-		
-		if(n) op->bc_bot2_add_d(n,"Frad","Frad",ones(1,1));
-		op->bc_top1_add_d(n,"Frad","Frad",ones(1,1));
-		
-		if(n) op->bc_bot2_add_l(n,"Frad","T",opa.xi.row(j0),D.block(n).row(0));
-		op->bc_top1_add_l(n,"Frad","T",opa.xi.row(j1),D.block(n).row(-1));
-				
-		if(n) op->bc_bot2_add_d(n,"Frad","opa.xi",(D,T).row(j0));
-		op->bc_top1_add_d(n,"Frad","opa.xi",(D,T).row(j1));
-		
-		if(n) op->bc_bot2_add_d(n,"Frad","rz",Frad.row(j0));
-		op->bc_top1_add_d(n,"Frad","rz",Frad.row(j1));
-	
-		j0=j1+1;
-	}
-	op->set_rhs("Frad",rhs_Frad);
-*/	
 	//Temperature
-	
 	
 	matrix rhs_T,rhs_Lambda;
 	rhs_T=zeros(nr,1);
@@ -777,12 +717,7 @@ FILE *fic=fopen("new_rhs_lamb.txt", "a");
 
                            op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
                            rhs_Lambda(0)=-(D,T)(0);
-			//}
-			//if (domain_type[n] == CORE) {
-			   //if (details) printf("CORE n= %d lambda top\n",n);
-                           //op->bc_top1_add_d(n,"Lambda","Lambda",ones(1,1));
-                           //op->bc_top2_add_d(n,"Lambda","Lambda",-ones(1,1));
-			//}
+
                 } else if (n==ndomains-1) { // care of the last domain
                         op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
                         op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
@@ -811,20 +746,6 @@ FILE *fic=fopen("new_rhs_lamb.txt", "a");
 	}  // End of loop on domains rank
 fclose(fic);
 
-/*
-    matrix schw;
-
-    schw=-(map.gzz*(D,p)+map.gzt*(p,Dt))*((D,log(T))-eos.del_ad*(D,log(p)))
-        -(map.gzt*(D,p)+map.gtt*(p,Dt))*((log(T),Dt)-eos.del_ad*(log(p),Dt));
-    schw.setrow(0,zeros(1,nth));
-    schw=schw/r/r;
-    schw.setrow(0,zeros(1,nth));
-    schw.setrow(0,-(D.row(0),schw)/D(0,0));
-    FILE *ficsch=fopen("nSchwi.txt", "w");
-    fprintf(ficsch," it = %d\n",glit);
-    for (int k=0;k<nr;k++) fprintf(ficsch,"i= %d schwi= %e \n",k,schw(k,-1));
-    fclose(ficsch);
-*/
 fprintf(RHS," it = %d\n",glit);
 for (int k=0;k<nr;k++) fprintf(RHS,"RHS T %d, %e \n",k,rhs_T(k));
 fprintf(RHS,"RHS T END\n");
@@ -963,10 +884,10 @@ void star1d::solve_map(solver *op) {
 //            printf("XXXXX domain_type (%d) = %d\n",izif[iz],domain_type[izif[iz]]);
 
 
+        printf("nzones =  %d\n",nzones);
         for (int iz=0;iz<nzones-1;iz++) { // we scan the zone interfaces
             n=izif[iz]; // n is the index of the domain just below the interface
             for(k=0,j0=0;k<n+1;k++) j0+=map.gl.npts[k]; // j0 is the radial index of the interface
-                printf("nzones =  %d\n",nzones);
                 printf("interface above domain %d\n",n);
                 printf("j0= %d\n",j0);
 

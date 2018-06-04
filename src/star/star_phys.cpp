@@ -13,6 +13,8 @@ void star2d::opacity() {
 	int error;
 
 	error=opa_calc(comp.X(),Z0,Tc*T,rhoc*rho,opa);
+        xic=opa.xi(0);
+        opa.xi=opa.xi/xic;
 
 	if(error) exit(1);
 
@@ -23,6 +25,8 @@ void star2d::nuclear() {
 	int error;
 
 	error=nuc_calc(comp,T*Tc,rho*rhoc,nuc);
+        epsc=nuc.eps(0);
+        nuc.eps=nuc.eps/epsc;
 
 	if(error) exit(1);
 
