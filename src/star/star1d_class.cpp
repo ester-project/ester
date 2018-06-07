@@ -398,9 +398,15 @@ void star1d::plot(const matrix_map& error) {
     }
     plt::subplot(222);
 // Explanation: divide the screen into 2 lines 3 columns and set in subplot 2
-    // plt::title(std::string("iter: ") + std::to_string(nit));
-    plt::plot(r, phi, "$\\Phi$");
-    plt::legend("lower right");
+// plt::title(std::string("iter: ") + std::to_string(nit));
+    int nd=4;
+    int j0=0;
+    for(int n=0;n<nd;n++) j0+=map.gl.npts[n];
+    plt::plot(r.block(j0,nr-1,0,0),entropy().block(j0,nr-1,0,0), "s");
+    for (int i=nd; i<ndomains; i++) {
+        plt::axvline(map.gl.xif[i]);
+    }
+plt::legend("lower right");
 
 /*
     plt::subplot(233, true);

@@ -22,7 +22,6 @@ void star1d::fill() {
 
     pi_c=(4*PI*GRAV*rhoc*rhoc*R*R)/pc;
     Lambda=epsc*rhoc*R*R/Tc/xic;
-        printf("lambda = %e\n",Lambda);
 
     calc_units();
 
@@ -46,7 +45,7 @@ solver *star1d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 	
-	nvar=30; // two more variables added (lnXh and Wr)
+	nvar=31; // two more variables added (lnXh and Wr)
 		// et lnepsc, lnxic
 	
 	op=new solver();
@@ -84,9 +83,10 @@ void star1d::register_variables(solver *op) {
 	op->regvar("m");
 	op->regvar("ps");
 	op->regvar("Ts");
-	op->regvar_dep("Pe");
 	op->regvar_dep("rho");
 	op->regvar_dep("s");
+	op->regvar_dep("Pe");
+	op->regvar("Flux");
 	op->regvar("Teff");
 	op->regvar("gsup");
 	op->regvar_dep("opa.xi");
@@ -123,8 +123,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 	solve_definitions(op);
 	solve_poisson(op);
 	solve_pressure(op);
-	new_solve_temp(op);
-	//solve_temp(op);
+	solve_temp(op);
 	solve_atm(op);
 	solve_dim(op);
 	solve_map(op);
@@ -287,7 +286,7 @@ void star1d::solve_definitions(solver *op) {
 	op->add_d("rz","Ri",(D,map.J[2]));
 	op->add_d("rz","dRi",(D,map.J[3]));
 	
-	//	Valid only for homogeneus composition !!!!!!
+//	Valid only for homogeneus composition !!!!!!
 // MR we rescale entropy with the ideal gas constant
 // changed in star2d_extra.cpp & star2d_solver
 double RGP=K_BOL/UMA;
@@ -336,7 +335,7 @@ double RGP=K_BOL/UMA;
                    Pe.setblock(j0,j1,0,0,zeros(ndom,1));
                    Pep.setblock(j0,j1,0,0,zeros(ndom,1));
                 } else if (domain_type[n] == CORE) {
-                   Pe.setblock(j0,j1,0,0,1e5*ones(ndom,1));
+                   Pe.setblock(j0,j1,0,0,1e3*ones(ndom,1));
                    Pep.setblock(j0,j1,0,0,zeros(ndom,1));
                 } else {
                    if (nfc == 0) nfc=n; // nfc=first convective domain
@@ -349,9 +348,9 @@ double RGP=K_BOL/UMA;
                 }
                 j0+=ndom;
         }
-
-
         op->add_d("Pe","r",Pep);
+
+
 }
 
 void star1d::solve_poisson(solver *op) {
@@ -635,7 +634,7 @@ void star1d::solve_Wr(solver *op) {
 	op->set_rhs("Wr",rhs);
 }
 
-void star1d::new_solve_temp(solver *op) {
+void star1d::solve_temp(solver *op) {
 	int n,j0,j1,ndom;
 	char eqn[8];
 	
@@ -676,47 +675,41 @@ FILE *fic=fopen("new_rhs_lamb.txt", "a");
 	op->add_d(eqn,"rho",Lambda*nuc.eps);	
 	op->add_d(eqn,"Lambda",rho*nuc.eps);
 	rhs_T+=-Lambda*rho*nuc.eps;
-	
-	printf("Peclet = %e\n",Peclet);	
-	
-// Initialize the RHS of Lambda equation
-	
-// Scan now all the domains to impose the interface conditions according to the
-// domain type.
-	j0=0;
-	for(n=0;n<ndomains;n++) {
-		ndom=map.gl.npts[n];
-		j1=j0+ndom-1;
-		//printf("n = %d, domain_type=%d\n",n,domain_type[n]);
-                if(n==0) { // care of the first and central domain
-                        op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
-                        rhs_T(j0)=1.-T(j0);
-//			if (domain_type[n] == RADIATIVE) {
-			  //if (details) printf("ZONE RADIATIVE n= %d DT top\n",n);
-// MR: if there are chemical discontinuities then impose the continuity of
-//     the local flux rather than the temperature derivative
-		/*
-			  op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
-			  op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
-			  op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
-			  op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
-			  op->bc_top1_add_d(n,eqn,"rz",-opa.xi(j1)*(D,T).row(j1));
-			  op->bc_top2_add_d(n,eqn,"rz",opa.xi(j1+1)*(D,T).row(j1+1));
-			  rhs_T(j1)=-opa.xi(j1)*(D,T)(j1)+opa.xi(j1+1)*(D,T)(j1+1);
-		*/
-			  op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
-			  op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
-			  op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
-			  op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
-			  rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
 
-// MR: the variations of rz during the iterations are crucial to take intot account the 
+// We introduce the Flux variable to ease the writing of interface conditions
+
+	matrix ss=entropy();
+	matrix Flux=-opa.xi*((D,T)+Pe*T*(D,ss));
+
+	op->add_d("Flux","Flux",ones(nr,1));
+	op->add_d("Flux","opa.xi",(D,T)+Pe*T*(D,ss));
+	op->add_d("Flux","rz",-opa.xi*((D,T)+Pe*T*(D,ss)));
+	op->add_l("Flux","T",opa.xi,D);
+	op->add_d("Flux","T",opa.xi*Pe*(D,ss));
+	op->add_l("Flux","s",opa.xi*Pe*T,D);
+	op->add_d("Flux","Pe",opa.xi*T*(D,ss));
+	op->set_rhs("Flux",zeros(nr,1));
+
+// Note: The variations of rz during the iterations are crucial to take intot account the 
 //     changes of the mapping due to the distribution of domains that equalize the pressure
 //     or temperature drop in a domain. In fine, when converged rz=1 in 1D, but rz should
 //     be allowed to vary during iterations.
 
-                           op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
-                           rhs_Lambda(0)=-(D,T)(0);
+// Scan now all the domains to impose boundary or interface conditions
+	j0=0;
+	for(n=0;n<ndomains;n++) {
+		ndom=map.gl.npts[n];
+		j1=j0+ndom-1;
+                if(n==0) { // care of the first and central domain
+                        op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
+                        rhs_T(j0)=1.-T(j0);
+
+                        op->bc_top1_add_d(n,eqn,"Flux",ones(1,1));
+                        op->bc_top2_add_d(n,eqn,"Flux",-ones(1,1));
+                        rhs_T(j1)=-Flux(j1)+Flux(j1+1);
+
+			op->bc_bot2_add_l(n,"Lambda","T",ones(1,1),D.block(0).row(0));
+			rhs_Lambda(0)=-(D,T)(0);
 
                 } else if (n==ndomains-1) { // care of the last domain
                         op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
@@ -727,34 +720,33 @@ FILE *fic=fopen("new_rhs_lamb.txt", "a");
 			rhs_T(-1)=Ts(0)-T(-1);
                         op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                         op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
-//                        if (details) printf("LAST DOM n=%d T bot T top \n",n);
                 } else { // Now domains are not first and not last!
-                           op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
-                           op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
+			op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
+			op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
 
-                           op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
-                           op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
-                           rhs_T(j0)=-T(j0)+T(j0-1);
+			op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
+			op->bc_bot1_add_d(n,eqn,"T",-ones(1,1));
+			rhs_T(j0)=-T(j0)+T(j0-1);
 
-			   op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
-			   op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
-			   op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j1));
-			   op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j1+1));
-			   rhs_T(j1)=-(D,T)(j1)+(D,T)(j1+1);
+                        op->bc_top1_add_d(n,eqn,"Flux",ones(1,1));
+                        op->bc_top2_add_d(n,eqn,"Flux",-ones(1,1));
+                        rhs_T(j1)=-Flux(j1)+Flux(j1+1);
+
 		} // End of options on n==0, n==ndomains-1, else
 		j0+=ndom;
 	}  // End of loop on domains rank
 fclose(fic);
 
-fprintf(RHS," it = %d\n",glit);
-for (int k=0;k<nr;k++) fprintf(RHS,"RHS T %d, %e \n",k,rhs_T(k));
-fprintf(RHS,"RHS T END\n");
+fprintf(RHS,"# it = %d\n",glit);
+//for (int k=0;k<nr;k++) fprintf(RHS,"RHS T %d, %e \n",k,rhs_T(k));
+for (int k=0;k<nr;k++) fprintf(RHS,"%d, %e, %e \n",k,Flux(k),ss(k));
+//fprintf(RHS,"Solve T END\n");
 	
 	op->set_rhs(eqn,rhs_T);
 	op->set_rhs("Lambda",rhs_Lambda);
 
 }
-//--------------------------END of NEW_solve_temp-------------------------------------------
+//--------------------------END of solve_temp-------------------------------------------
 
 
 void star1d::solve_dim(solver *op) {
@@ -884,12 +876,12 @@ void star1d::solve_map(solver *op) {
 //            printf("XXXXX domain_type (%d) = %d\n",izif[iz],domain_type[izif[iz]]);
 
 
-        printf("nzones =  %d\n",nzones);
+        //printf("nzones =  %d\n",nzones);
         for (int iz=0;iz<nzones-1;iz++) { // we scan the zone interfaces
             n=izif[iz]; // n is the index of the domain just below the interface
             for(k=0,j0=0;k<n+1;k++) j0+=map.gl.npts[k]; // j0 is the radial index of the interface
-                printf("interface above domain %d\n",n);
-                printf("j0= %d\n",j0);
+                //printf("interface above domain %d\n",n);
+                //printf("j0= %d\n",j0);
 
             if (domain_type[n] == CORE) {
                 op->reset(n+1,"Ri");
@@ -913,6 +905,8 @@ void star1d::solve_map(solver *op) {
                    */
 
             } else if (domain_type[n] == CONVECTIVE) {
+                printf("I should not be there %d\n",n);
+                printf("j0= %d\n",j0);
                 op->reset(n+1,"Ri");
                 eq.bc_bot2_add(op,n+1,"Ri","p",ones(1,nth));
                 eq.bc_bot2_add(op,n+1,"Ri","s",ones(1,nth));
