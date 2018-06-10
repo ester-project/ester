@@ -45,7 +45,7 @@ solver *star1d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 	
-	nvar=31; // two more variables added (lnXh and Wr)
+	nvar=32; // two more variables added (lnXh and Wr)
 		// et lnepsc, lnxic
 	
 	op=new solver();
@@ -86,6 +86,7 @@ void star1d::register_variables(solver *op) {
 	op->regvar_dep("rho");
 	op->regvar_dep("s");
 	op->regvar_dep("Pe");
+	op->regvar("Rcz");
 	op->regvar("Flux");
 	op->regvar("Teff");
 	op->regvar("gsup");
@@ -325,7 +326,8 @@ double RGP=K_BOL/UMA;
 // We first compute the Peclet distribution
         Pe=zeros(nr,1);
         Pep=zeros(nr,1);
-	int n,j0,j1,ndom;
+        matrix Pepeta=zeros(nr,1);
+	int n,j0,j1,ndom,jj0,jj1;
         int nfc=0;
         j0=0;
         for(n=0;n<ndomains;n++) {
@@ -334,9 +336,11 @@ double RGP=K_BOL/UMA;
                 if (domain_type[n] == RADIATIVE) {
                    Pe.setblock(j0,j1,0,0,zeros(ndom,1));
                    Pep.setblock(j0,j1,0,0,zeros(ndom,1));
+                   Pepeta.setblock(j0,j1,0,0,zeros(ndom,1));
                 } else if (domain_type[n] == CORE) {
                    Pe.setblock(j0,j1,0,0,1e3*ones(ndom,1));
                    Pep.setblock(j0,j1,0,0,zeros(ndom,1));
+                   Pepeta.setblock(j0,j1,0,0,zeros(ndom,1));
                 } else {
                    if (nfc == 0) nfc=n; // nfc=first convective domain
                    Rcz=map.gl.xif[nfc];
@@ -345,10 +349,26 @@ double RGP=K_BOL/UMA;
                    matrix rr=map.r.block(j0,j1,0,0);
 		   Pe.setblock(j0,j1,0,0,Peclet*(1.-Rcz*Rcz*ff+2*Rcz*ff*rr-ff*rr*rr));
 		   Pep.setblock(j0,j1,0,0,2*Peclet*ff*(Rcz-rr));
+		   Pepeta.setblock(j0,j1,0,0,2*Peclet*ff*(rr-Rcz)*(1.-rr)/(1.-Rcz));
+		   jj0=j0; jj1=j1;
                 }
                 j0+=ndom;
         }
         op->add_d("Pe","r",Pep);
+//        op->add_d("Pe","Ri",Pep);
+//nfc = first convective domain
+	op->add_d(nfc, "Rcz", "Rcz", ones(1, 1));
+	op->add_d(nfc, "Rcz", "Ri", -ones(1, 1));
+	
+        op->add_d(nfc,"Pe","Rcz",Pepeta.block(jj0,jj1,0,0));
+
+	for (n=nfc+1; n<ndomains; n++) {
+    	 op->bc_bot2_add_d(n, "Rcz", "Rcz", ones(1,1) );
+    	 op->bc_bot1_add_d(n, "Rcz", "Rcz", -ones(1,1) );
+	}
+
+//rhs = zeros(number of convective domains, 1);
+	op->set_rhs("Rcz",zeros(3,1));
 
 
 }
@@ -664,7 +684,7 @@ FILE *fic=fopen("new_rhs_lamb.txt", "a");
 
 	div_Frad=div(xi_*grad(T_)+xi_*Pe_*T_*grad(s_));
 	
-	div_Frad.add(op,eqn,"T",ones(nr,1));
+	div_Frad.add(op,eqn,"T");
 	div_Frad.add(op,eqn,"opa.xi",ones(nr,1));
 	div_Frad.add(op,eqn,"s",ones(nr,1));
 	div_Frad.add(op,eqn,"r",ones(nr,1));
@@ -683,7 +703,7 @@ FILE *fic=fopen("new_rhs_lamb.txt", "a");
 
 	op->add_d("Flux","Flux",ones(nr,1));
 	op->add_d("Flux","opa.xi",(D,T)+Pe*T*(D,ss));
-	op->add_d("Flux","rz",-opa.xi*((D,T)+Pe*T*(D,ss)));
+	op->add_d("Flux","rz",Flux);
 	op->add_l("Flux","T",opa.xi,D);
 	op->add_d("Flux","T",opa.xi*Pe*(D,ss));
 	op->add_l("Flux","s",opa.xi*Pe*T,D);
@@ -739,7 +759,7 @@ fclose(fic);
 
 fprintf(RHS,"# it = %d\n",glit);
 //for (int k=0;k<nr;k++) fprintf(RHS,"RHS T %d, %e \n",k,rhs_T(k));
-for (int k=0;k<nr;k++) fprintf(RHS,"%d, %e, %e \n",k,Flux(k),ss(k));
+for (int k=0;k<nr;k++) fprintf(RHS,"%d, %e, %e \n",k,Flux(k),Pep(k));
 //fprintf(RHS,"Solve T END\n");
 	
 	op->set_rhs(eqn,rhs_T);
@@ -750,18 +770,19 @@ for (int k=0;k<nr;k++) fprintf(RHS,"%d, %e, %e \n",k,Flux(k),ss(k));
 
 
 void star1d::solve_dim(solver *op) {
-    int n,j0;
+    int n,j0,j1,ndom;
     matrix q,rhs;
 
+// Definition of total mass m_n=m_{n-1}+\int 4pi*r^2*dr
     rhs=zeros(ndomains,1);
     j0=0;
     for(n=0;n<ndomains;n++) {
+	ndom=map.gl.npts[n];
+	j1=j0+ndom-1;
         op->bc_bot2_add_d(n,"m","m",ones(1,1));
-        //rho
-        op->bc_bot2_add_li(n,"m","rho",-4*PI*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(r*r).block(j0,j0+map.gl.npts[n]-1,0,0));
-        //r (rz)
-        op->bc_bot2_add_li(n,"m","r",-4*PI*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(2*r*rho).block(j0,j0+map.gl.npts[n]-1,0,0));
-        op->bc_bot2_add_li(n,"m","rz",-4*PI*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(r*r*rho).block(j0,j0+map.gl.npts[n]-1,0,0));
+        op->bc_bot2_add_li(n,"m","rho",-4*PI*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r).block(j0,j1,0,0));
+        op->bc_bot2_add_li(n,"m","r",-4*PI*ones(1,1),map.gl.I.block(0,0,j0,j1),(2*r*rho).block(j0,j1,0,0));
+        op->bc_bot2_add_li(n,"m","rz",-4*PI*ones(1,1),map.gl.I.block(0,0,j0,j1),(r*r*rho).block(j0,j1,0,0));
 
         if(n) op->bc_bot1_add_d(n,"m","m",-ones(1,1));
         j0+=map.gl.npts[n];
@@ -961,7 +982,7 @@ void star1d::solve_Teff(solver *op) {
     q=Pe*opa.xi*(D,entropy());
     op->bc_top1_add_d(n,"Teff","T",q.row(-1));
     q=Pe*opa.xi*T;
-    op->bc_top1_add_l(n,"Teff","T",q.row(-1),D.block(n).row(-1));
+    op->bc_top1_add_l(n,"Teff","s",q.row(-1),D.block(n).row(-1));
 
     op->set_rhs("Teff",zeros(1,1));
 }

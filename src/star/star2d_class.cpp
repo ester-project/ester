@@ -117,6 +117,7 @@ void star2d::copy(const star2d &A) {
     Wr=A.Wr;
     rho=A.rho;
     comp=A.comp;
+    Pe=A.Pe;
 
     opa=A.opa;
     eos=A.eos;
@@ -261,6 +262,7 @@ printf("start hdf5_write\n");
     fields["p"] = p;
     fields["T"] = T;
     fields["s"] = entropy();
+    fields["Pe"] = Pe;
     fields["G"] = G;
     fields["w"] = w;
     fields["X"] = comp.X();
@@ -557,6 +559,9 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     if (read_field(star, "T", T)) {
         ester_err("Could not read field 'T' from file `%s'", input_file);
+    }
+    if (read_field(star, "Pe", Pe)) {
+        ester_err("Could not read field 'Pe' from file `%s'", input_file);
     }
     if (read_field(star, "phiex", phiex)) {
         ester_warn("Could not read field 'phiex' from file `%s'", input_file);
@@ -1094,6 +1099,7 @@ void star2d::interp(remapper *red) {
         p=red->interp(p);
     phi=red->interp(phi);
     T=red->interp(T);
+    Pe=red->interp(Pe);
     Xh=red->interp(Xh);
     Xh_prec=Xh;
     Wr=red->interp(Wr); // necessary for output
