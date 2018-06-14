@@ -86,7 +86,7 @@ void star1d::register_variables(solver *op) {
 	op->regvar_dep("rho");
 	op->regvar_dep("s");
 	op->regvar_dep("Pe");
-	op->regvar("Rcz");
+//	op->regvar("Rcz");
 	op->regvar("Flux");
 	op->regvar("Teff");
 	op->regvar("gsup");
@@ -345,7 +345,7 @@ double RGP=K_BOL/UMA;
                    if (nfc == 0) nfc=n; // nfc=first convective domain
                    Rcz=map.gl.xif[nfc];
                    double ff=(1.-al)/(1.-Rcz)/(1.-Rcz);
-                   if (n == nfc) printf("Rcz %e\n",Rcz);
+//                   if (n == nfc) printf("Rcz %e, nfc=%d\n",Rcz,nfc);
                    matrix rr=map.r.block(j0,j1,0,0);
 		   Pe.setblock(j0,j1,0,0,Peclet*(1.-Rcz*Rcz*ff+2*Rcz*ff*rr-ff*rr*rr));
 		   Pep.setblock(j0,j1,0,0,2*Peclet*ff*(Rcz-rr));
@@ -357,6 +357,7 @@ double RGP=K_BOL/UMA;
         op->add_d("Pe","r",Pep);
 //        op->add_d("Pe","Ri",Pep);
 //nfc = first convective domain
+/*
 	op->add_d(nfc, "Rcz", "Rcz", ones(1, 1));
 	op->add_d(nfc, "Rcz", "Ri", -ones(1, 1));
 	
@@ -368,8 +369,8 @@ double RGP=K_BOL/UMA;
 	}
 
 //rhs = zeros(number of convective domains, 1);
-	op->set_rhs("Rcz",zeros(3,1));
-
+	op->set_rhs("Rcz",zeros(ndomains-nfc,1));
+*/
 
 }
 
@@ -709,6 +710,22 @@ FILE *fic=fopen("new_rhs_lamb.txt", "a");
 	op->add_l("Flux","s",opa.xi*Pe*T,D);
 	op->add_d("Flux","Pe",opa.xi*T*(D,ss));
 	op->set_rhs("Flux",zeros(nr,1));
+/*
+//Version sans entropy
+
+	matrix ss=entropy();
+	//matrix Flux=-opa.xi*((D,T)+Pe*T*(D,ss));
+	matrix Flux=-opa.xi*((D,T)+Pe*T*eos.cp*((D,T)/T-eos.del_ad*(D,p)/p));
+        double RGP=K_BOL/UMA; // Ideal gas constant
+
+	op->add_d("Flux","Flux",ones(nr,1));
+	op->add_d("Flux","opa.xi",-Flux/opa.xi);
+	op->add_d("Flux","rz",Flux);
+	op->add_l("Flux","T",opa.xi*(1+Pe*eos.cp/RGP),D);
+	op->add_d("Flux","T",-opa.xi*Pe*eos.cp/RGP*eos.del_ad*(D,p)/p);
+	op->add_l("Flux","log_p",-opa.xi*Pe*T*eos.cp/RGP*eos.del_ad,D);
+	op->set_rhs("Flux",zeros(nr,1));
+*/
 
 // Note: The variations of rz during the iterations are crucial to take intot account the 
 //     changes of the mapping due to the distribution of domains that equalize the pressure
