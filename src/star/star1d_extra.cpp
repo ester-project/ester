@@ -53,12 +53,18 @@ double star1d::luminosity() const {
 
 }
 
+FILE *fic;
+
 matrix star1d::Teff() const {
 
 	// return pow(luminosity()/4./PI/R/R/SIG_SB,0.25)*ones(1,1);
 	matrix F;
 	//F=-opa.xi*(D,T);
 	F=-xic*opa.xi*( (D,T)+Pe*T*(D,entropy()) );
+//fic=fopen("Flux.teff","a");
+//for (int k=0;k<nr;k++) fprintf(fic,"Pe %d, %e \n",k,Pe(k));
+//fclose(fic);
+
     matrix teff = pow(F(-1)/SIG_SB*units.T/units.r,0.25)*ones(1,1);
     if (std::isnan(teff(0))) {
         ester_err("Teff is NaN (D,T) = %e", (D,T)(-1));

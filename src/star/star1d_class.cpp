@@ -271,6 +271,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		M_core_prec=0;
 		G=0*T;
 		w=0*T;
+		Pe=0*T;
 		conv=0;
 		nd_core=0;
 		domain_type.resize(ndomains);

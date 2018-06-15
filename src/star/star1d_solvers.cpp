@@ -45,7 +45,7 @@ solver *star1d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 	
-	nvar=32; // two more variables added (lnXh and Wr)
+	nvar=33; // two more variables added (lnXh and Wr)
 		// et lnepsc, lnxic
 	
 	op=new solver();
@@ -662,43 +662,7 @@ void star1d::solve_temp(solver *op) {
 FILE *fic=fopen("new_rhs_lamb.txt", "a");
 	strcpy(eqn,"log_T");
 	
-	//Temperature
-	
-	matrix rhs_T,rhs_Lambda;
-	rhs_T=zeros(nr,1);
-	rhs_Lambda=zeros(ndomains,1);
-
-	symbolic S;
-	sym T_,xi_,Pe_,s_;
-	sym div_Frad;
-	
-	S.set_map(map);
-	T_=S.regvar("T");
-	xi_=S.regvar("opa.xi");
-	s_=S.regvar("s");
-	Pe_=S.regvar("Pe");
-
-	S.set_value("T",T);
-	S.set_value("opa.xi",opa.xi);
-	S.set_value("s",entropy());
-	S.set_value("Pe",Pe);
-
-	div_Frad=div(xi_*grad(T_)+xi_*Pe_*T_*grad(s_));
-	
-	div_Frad.add(op,eqn,"T");
-	div_Frad.add(op,eqn,"opa.xi",ones(nr,1));
-	div_Frad.add(op,eqn,"s",ones(nr,1));
-	div_Frad.add(op,eqn,"r",ones(nr,1));
-	div_Frad.add(op,eqn,"Pe",ones(nr,1));
-	rhs_T-=div_Frad.eval();
-
-	op->add_d(eqn,"nuc.eps",Lambda*rho);
-	op->add_d(eqn,"rho",Lambda*nuc.eps);	
-	op->add_d(eqn,"Lambda",rho*nuc.eps);
-	rhs_T+=-Lambda*rho*nuc.eps;
-
-// We introduce the Flux variable to ease the writing of interface conditions
-
+// We introduce the Flux variable to ease the writing
 	matrix ss=entropy();
 	matrix Flux=-opa.xi*((D,T)+Pe*T*(D,ss));
 
@@ -710,6 +674,65 @@ FILE *fic=fopen("new_rhs_lamb.txt", "a");
 	op->add_l("Flux","s",opa.xi*Pe*T,D);
 	op->add_d("Flux","Pe",opa.xi*T*(D,ss));
 	op->set_rhs("Flux",zeros(nr,1));
+	
+	matrix rhs_T,rhs_Lambda;
+	rhs_T=zeros(nr,1);
+	rhs_Lambda=zeros(ndomains,1);
+
+	static symbolic S;
+	static sym eq;
+	static bool sym_inited = false;
+	if (!sym_inited) {
+		sym Fr = S.regvar("Flux");
+		sym_vec rvec = grad(S.r);
+		sym_vec F_ = Fr*rvec;
+		eq = div(-F_);
+		sym_inited = true;
+	}
+
+	S.set_value("Flux", Flux);
+	S.set_map(map);
+
+	eq.add(op, eqn, "Flux");
+	eq.add(op, eqn, "r");
+	rhs_T = -eq.eval();
+	op->add_d(eqn,"nuc.eps",Lambda*rho);
+	op->add_d(eqn,"rho",Lambda*nuc.eps);	
+	op->add_d(eqn,"Lambda",rho*nuc.eps);
+	rhs_T+=-Lambda*rho*nuc.eps;
+
+/*
+	symbolic S;
+	sym T_,xi_,Pe_,s_;
+	sym div_Frad;
+	
+	S.set_map(map);
+	T_=S.regvar("T");
+	xi_=S.regvar("opa.xi");
+	s_=S.regvar("s");
+	Pe_=S.regvar("Pe");
+
+	S.set_value("Flux",Flux);
+	S.set_value("T",T);
+	S.set_value("opa.xi",opa.xi);
+	S.set_value("s",entropy());
+	S.set_value("Pe",Pe);
+
+	div_Frad=div(xi_*grad(T_)+xi_*Pe_*T_*grad(s_));
+
+	div_Frad.add(op,eqn,"T");
+	div_Frad.add(op,eqn,"opa.xi",ones(nr,1));
+	div_Frad.add(op,eqn,"s",ones(nr,1));
+	div_Frad.add(op,eqn,"r",ones(nr,1));
+	div_Frad.add(op,eqn,"Pe",ones(nr,1));
+	rhs_T-=div_Frad.eval();
+
+	op->add_d(eqn,"nuc.eps",Lambda*rho);
+	op->add_d(eqn,"rho",Lambda*nuc.eps);	
+	op->add_d(eqn,"Lambda",rho*nuc.eps);
+	rhs_T+=-Lambda*rho*nuc.eps;
+*/
+
 /*
 //Version sans entropy
 
@@ -979,11 +1002,19 @@ void star1d::solve_gsup(solver *op) {
 }
 
 void star1d::solve_Teff(solver *op) {
-    matrix q,Te,F;
+    matrix q,Te;
     int n=ndomains-1;
 
+/*
+	matrix ss=entropy();
+	matrix Flux=-opa.xi*((D,T)+Pe*T*(D,ss));
+        Te=Teff()*ones(1,1)/Tc;
+        op->bc_top1_add_d(n,"Teff","Teff",4*Flux.row(-1)/Te);
+        op->bc_top1_add_d(n,"Teff","Flux",-ones(1,1));
+*/
+
     Te=Teff()*ones(1,1);
-    F=SIG_SB*pow(Te,4)*R/xic/Tc;
+    matrix F=SIG_SB*pow(Te,4)*R/xic/Tc;
 
     op->bc_top1_add_d(n,"Teff","Teff",4*F/Te);
     op->bc_top1_add_d(n,"Teff","log_Tc",-F);
@@ -996,11 +1027,10 @@ void star1d::solve_Teff(solver *op) {
 // Pe(r) is known from solve_temp
     q=Pep*T*opa.xi*(D,entropy());
     op->bc_top1_add_d(n,"Teff","r",q.row(-1));
-    q=Pe*opa.xi*(D,entropy());
-    op->bc_top1_add_d(n,"Teff","T",q.row(-1));
-    q=Pe*opa.xi*T;
-    op->bc_top1_add_l(n,"Teff","s",q.row(-1),D.block(n).row(-1));
-
+    //q=Pe*opa.xi*(D,entropy());
+    //op->bc_top1_add_d(n,"Teff","T",q.row(-1));
+    //q=Pe*opa.xi*T;
+    //op->bc_top1_add_l(n,"Teff","s",q.row(-1),D.block(n).row(-1));
     op->set_rhs("Teff",zeros(1,1));
 }
 
