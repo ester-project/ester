@@ -124,6 +124,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 	solve_definitions(op);
 	solve_poisson(op);
 	solve_pressure(op);
+	//solve_flux(op);
 	solve_temp(op);
 	solve_atm(op);
 	solve_dim(op);
@@ -655,13 +656,16 @@ void star1d::solve_Wr(solver *op) {
 	op->set_rhs("Wr",rhs);
 }
 
+//void star1d::solve_flux(solver *op) {
+
+	
+//}
+
 void star1d::solve_temp(solver *op) {
 	int n,j0,j1,ndom;
 	char eqn[8];
 	
-FILE *fic=fopen("new_rhs_lamb.txt", "a");
 	strcpy(eqn,"log_T");
-	
 // We introduce the Flux variable to ease the writing
 	matrix ss=entropy();
 	matrix Flux=-opa.xi*((D,T)+Pe*T*(D,ss));
@@ -701,54 +705,6 @@ FILE *fic=fopen("new_rhs_lamb.txt", "a");
 	op->add_d(eqn,"Lambda",rho*nuc.eps);
 	rhs_T+=-Lambda*rho*nuc.eps;
 
-/*
-	symbolic S;
-	sym T_,xi_,Pe_,s_;
-	sym div_Frad;
-	
-	S.set_map(map);
-	T_=S.regvar("T");
-	xi_=S.regvar("opa.xi");
-	s_=S.regvar("s");
-	Pe_=S.regvar("Pe");
-
-	S.set_value("Flux",Flux);
-	S.set_value("T",T);
-	S.set_value("opa.xi",opa.xi);
-	S.set_value("s",entropy());
-	S.set_value("Pe",Pe);
-
-	div_Frad=div(xi_*grad(T_)+xi_*Pe_*T_*grad(s_));
-
-	div_Frad.add(op,eqn,"T");
-	div_Frad.add(op,eqn,"opa.xi",ones(nr,1));
-	div_Frad.add(op,eqn,"s",ones(nr,1));
-	div_Frad.add(op,eqn,"r",ones(nr,1));
-	div_Frad.add(op,eqn,"Pe",ones(nr,1));
-	rhs_T-=div_Frad.eval();
-
-	op->add_d(eqn,"nuc.eps",Lambda*rho);
-	op->add_d(eqn,"rho",Lambda*nuc.eps);	
-	op->add_d(eqn,"Lambda",rho*nuc.eps);
-	rhs_T+=-Lambda*rho*nuc.eps;
-*/
-
-/*
-//Version sans entropy
-
-	matrix ss=entropy();
-	//matrix Flux=-opa.xi*((D,T)+Pe*T*(D,ss));
-	matrix Flux=-opa.xi*((D,T)+Pe*T*eos.cp*((D,T)/T-eos.del_ad*(D,p)/p));
-        double RGP=K_BOL/UMA; // Ideal gas constant
-
-	op->add_d("Flux","Flux",ones(nr,1));
-	op->add_d("Flux","opa.xi",-Flux/opa.xi);
-	op->add_d("Flux","rz",Flux);
-	op->add_l("Flux","T",opa.xi*(1+Pe*eos.cp/RGP),D);
-	op->add_d("Flux","T",-opa.xi*Pe*eos.cp/RGP*eos.del_ad*(D,p)/p);
-	op->add_l("Flux","log_p",-opa.xi*Pe*T*eos.cp/RGP*eos.del_ad,D);
-	op->set_rhs("Flux",zeros(nr,1));
-*/
 
 // Note: The variations of rz during the iterations are crucial to take intot account the 
 //     changes of the mapping due to the distribution of domains that equalize the pressure
@@ -795,7 +751,6 @@ FILE *fic=fopen("new_rhs_lamb.txt", "a");
 		} // End of options on n==0, n==ndomains-1, else
 		j0+=ndom;
 	}  // End of loop on domains rank
-fclose(fic);
 
 fprintf(RHS,"# it = %d\n",glit);
 //for (int k=0;k<nr;k++) fprintf(RHS,"RHS T %d, %e \n",k,rhs_T(k));
