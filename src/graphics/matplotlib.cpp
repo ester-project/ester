@@ -9,7 +9,9 @@
 #include <numpy/arrayobject.h>
 
 #include <sstream>
+#include <iostream>
 #endif
+
 
 std::map<std::string, PyObject *> plt::py;
 std::vector<std::string> plt::functions = {
@@ -35,7 +37,9 @@ std::vector<std::string> plt::functions = {
     "figure",
     "axis",
     "pause"};
+
 bool plt::noplot = false;
+PyObject *plt::matplotlib = nullptr;
 
 #if ENABLE_PLT
 static PyObject *import_module(const std::string& name) {
@@ -70,6 +74,8 @@ import_array_wrapper() {
 }
 #endif
 
+
+
 void plt::init(bool noplot) {
 #if ENABLE_PLT
     plt::noplot = noplot;
@@ -78,8 +84,6 @@ void plt::init(bool noplot) {
 
     static bool init = false;
     if (init == false) {
-
-        bool close = false;
 
 #if PY_MAJOR_VERSION >= 3
         Py_SetProgramName((wchar_t *) std::wstring(L"ester").c_str());
@@ -90,7 +94,7 @@ void plt::init(bool noplot) {
 
         import_array_wrapper();
 
-        PyObject *matplotlib = import_module("matplotlib");
+        matplotlib = import_module("matplotlib");
         if (!matplotlib) {
             ester_warn("import matplotlib failed");
             PyErr_PrintEx(0);
@@ -122,28 +126,6 @@ void plt::init(bool noplot) {
             }
         }
 
-        // PyObject *gcf = PyObject_GetAttrString(pyplot, std::string("gcf").c_str());
-        // PyObject *args = PyTuple_New(0);
-        // res = PyObject_CallObject(gcf, args);
-        // Py_DECREF(args);
-        // if (res) {
-        //     PyObject *set_size = PyObject_GetAttrString(res, std::string("set_size_inches").c_str());
-        //     if (set_size) {
-        //         PyObject *args = PyTuple_New(2);
-        //         PyTuple_SetItem(args, 0, PyFloat_FromDouble(12.8));
-        //         PyTuple_SetItem(args, 1, PyFloat_FromDouble(4.8));
-        //         PyObject *r = PyObject_CallObject(set_size, args);
-        //         Py_DECREF(args);
-        //         if (r) Py_DECREF(r);
-        //         Py_DECREF(res);
-        //         Py_DECREF(set_size);
-        //     }
-        // }
-
-        atexit(Py_Finalize);
-        if (close == false) {
-            atexit(plt::block);
-        }
         init = true;
     }
 #endif
@@ -381,6 +363,8 @@ void plt::pause(double t) {
 #if ENABLE_PLT
     if (noplot) return;
 
+    return;
+
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, PyFloat_FromDouble(t));
     call("pause", args);
@@ -414,9 +398,55 @@ void plt::subplot(int subplot, bool clear_axis) {
 
 void plt::draw() {
 #if ENABLE_PLT
-    if (noplot) return;
 
-    call("draw");
+    if (noplot || matplotlib == nullptr) return;
+
+     PyObject* rc = PyObject_GetAttrString(matplotlib, "rcParams");
+     if (!rc) {
+         ester_warn("call to draw() failed\n");
+         return;
+     }
+
+     PyObject *backendString = PyUnicode_FromString("backend");
+     assert(backendString);
+
+     PyObject *backend = PyObject_GetItem(rc, backendString);
+     if (!backend) {
+         ester_warn("call to draw() failed\n");
+         return;
+     }
+
+     // skip the backend in _matplotlib.rcsetup.interactive_bk: test
+
+     PyObject *pylabHelpers = PyObject_GetAttrString(matplotlib, "_pylab_helpers");
+     assert(pylabHelpers);
+     PyObject *gcf = PyObject_GetAttrString(pylabHelpers, "Gcf");
+     assert(gcf);
+     PyObject *figManager = PyObject_CallMethod(gcf, "get_active", nullptr);
+
+     if (figManager) {
+         PyObject *canvas = PyObject_GetAttrString(figManager, "canvas");
+         assert(canvas);
+
+         PyObject *figure = PyObject_GetAttrString(canvas, "figure");
+         assert(figure);
+         PyObject *stale = PyObject_GetAttrString(figure, "stale");
+
+         if (stale) {
+             PyObject_CallMethod(canvas, "draw_idle", nullptr);
+         }
+         PyObject_CallMethod(canvas, "start_event_loop", "d", 1e-2);
+     }
+
+    // backend = _plt.rcParams['backend']
+    // if backend in _matplotlib.rcsetup.interactive_bk:
+    //     figManager = _matplotlib._pylab_helpers.Gcf.get_active()
+    //     if figManager is not None:
+    //         canvas = figManager.canvas
+    //         if canvas.figure.stale:
+    //             canvas.draw_idle()
+    //         canvas.start_event_loop(1e-2)
+    //         return
 #endif
 }
 

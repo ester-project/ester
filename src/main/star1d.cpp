@@ -80,8 +80,10 @@ int main(int argc,char *argv[]) {
     int last_plot_it = -100;
 
     if (config.noplot == false) {
+        plt::init();
         plt::figure(1, 10, 4);
         A.plot(error_map.block(0, nit-1, 0 ,0));
+        plt::show();
     }
 
     while(!last_it) {

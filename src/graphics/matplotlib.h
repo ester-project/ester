@@ -24,6 +24,8 @@ class plt {
         static void block();
         static bool noplot;
 
+        static PyObject *matplotlib;
+
     public:
         static void init(bool noplot = false);
         static void subplot(int, bool clear_axis = false);
