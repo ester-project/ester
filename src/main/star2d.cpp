@@ -106,6 +106,11 @@ int main(int argc,char *argv[]) {
 				fig->label("Meridional circulation","","");
 				t_plot=tt(nit-1);
 #else
+                static bool plotOpen = false;
+                if (plotOpen == false) {
+                    plt::show();
+                    plotOpen = true;
+                }
                 A.plot(error_map.block(0, nit-1, 0, 0));
 #endif
 			}
