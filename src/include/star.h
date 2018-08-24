@@ -41,7 +41,7 @@ class star2d {
 	composition_map comp; 
     double X0,Y0,Z0;
     double X_core,X_core_prec,M_core,M_core_prec;
-    double R,M,R0,Peclet,al;
+    double R,M,R0,Peclet,Pec,al;
     double rhoc,rhoc0,Tc,pc,xic,epsc;
     double Omega,Omega_bk,Omegac;
    	double Ekman;
@@ -116,6 +116,7 @@ class star2d {
 	virtual void solve_poisson(solver *);
 	virtual void solve_mov(solver *);
 	virtual void solve_temp(solver *);
+	virtual void solve_pec(solver *);
 //	virtual void solve_flux(solver *);
 	virtual void solve_dim(solver *);
 	virtual void solve_map(solver *);

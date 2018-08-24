@@ -61,6 +61,7 @@ int main(int argc,char *argv[]) {
         error_map["log_pc"] = zeros(config.maxit+1, 1);
         error_map["log_Tc"] = zeros(config.maxit+1, 1);
         error_map["Ri"] = zeros(config.maxit+1, 1);
+        error_map["Pec"] = zeros(config.maxit+1, 1);
 
 	last_it=nit>=config.maxit; // last_it=0 normally
 	op=A.init_solver();
@@ -117,7 +118,7 @@ int main(int argc,char *argv[]) {
             return 1;
         }
 
-  	if (nit > 200) last_it=1;
+  	if (nit > 1000) last_it=1;
 	} // End of the while loop
 
 	if(config.verbose) {
@@ -125,9 +126,11 @@ int main(int argc,char *argv[]) {
 				A.M/M_SUN,A.R/R_SUN,A.luminosity()/L_SUN,A.Teff()(0));
 		printf("X=%3.3f (Xc/X=%3.3f) Z=%3.3f\n",A.X0,A.Xc,A.Z0);
 		printf("rhoc=%e Tc=%e pc=%e\n",A.rhoc,A.Tc,A.pc);
+		printf("Rcz=%e \n",A.Rcz);
 		int jc=0;
 		for (int n=0;n<A.nd_core;n++) jc+=A.map.gl.npts[n];
 		if(A.nd_core != 0) printf("r_cz=%3.3f Rsun\n",(A.r(jc))*A.R/R_SUN);
+		printf("Virial test: %e Energy test: %e\n",A.virial(),A.energy_test());
 	}
 	delete op;
 	A.write(config.output_file,config.output_mode);

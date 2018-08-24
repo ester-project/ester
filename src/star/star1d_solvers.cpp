@@ -45,7 +45,7 @@ solver *star1d::init_solver(int nvar_add) {
 	int nvar;
 	solver *op;
 	
-	nvar=33; // two more variables added (lnXh and Wr)
+	nvar=34; // two more variables added (lnXh and Wr)
 		// et lnepsc, lnxic
 	
 	op=new solver();
@@ -81,13 +81,15 @@ void star1d::register_variables(solver *op) {
 	op->regvar("log_Tc");
 	op->regvar("log_R");
 	op->regvar("m");
+//	op->regvar("lum");
 	op->regvar("ps");
 	op->regvar("Ts");
 	op->regvar_dep("rho");
 	op->regvar_dep("s");
-	op->regvar_dep("Pe");
 //	op->regvar("Rcz");
 	op->regvar("Flux");
+	op->regvar("Pe");
+	op->regvar("Pec");
 	op->regvar("Teff");
 	op->regvar("gsup");
 	op->regvar_dep("opa.xi");
@@ -125,6 +127,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 	solve_poisson(op);
 	solve_pressure(op);
 	//solve_flux(op);
+	solve_pec(op);
 	solve_temp(op);
 	solve_atm(op);
 	solve_dim(op);
@@ -168,7 +171,7 @@ fclose(RHS);
 
 	q=config.newton_dmax;
 	
-	matrix dphi,dp,dT,dXh,dpc,dTc,dRi,dWr;
+	matrix dphi,dp,dT,dXh,dpc,dTc,dRi,dWr,dPec;
 	
 FILE *fic=fopen("err.txt", "a");
 	dphi=op->get_var("Phi");
@@ -216,6 +219,11 @@ FILE *fic=fopen("err.txt", "a");
         error_map["log_Tc"](nit) = err2;
 	if (ioptw) while(fabs(h*dTc(0))>q) h/=2;
 	
+	dPec=op->get_var("Pec");	
+	err2=fabs(dPec(0));err=err2>err?err2:err;
+        error_map["Pec"](nit) = err2;
+	if (ioptw) while(fabs(h*dPec(0))>q) h/=2;
+	
 	dRi=op->get_var("Ri");	
     error_map["Ri"](nit) = max(abs(dRi));
   fprintf(fic," it = %d  h=%e\n",glit,h);
@@ -234,6 +242,8 @@ fclose(entrop);
 
 	pc*=exp(h*dpc(0));
 	Tc*=exp(h*dTc(0));
+	Pec+=h*dPec(0);
+	//Pec*=exp(h*dPec(0));
 
 	err2=max(abs(dRi));err=err2>err?err2:err;
 	
@@ -326,11 +336,13 @@ double RGP=K_BOL/UMA;
 	
 // We first compute the Peclet distribution
         Pe=zeros(nr,1);
+/*
         Pep=zeros(nr,1);
         matrix Pepeta=zeros(nr,1);
 	int n,j0,j1,ndom,jj0,jj1;
         int nfc=0;
         j0=0;
+	al=0.0;
         for(n=0;n<ndomains;n++) {
                 ndom=map.gl.npts[n];
                 j1=j0+ndom-1;
@@ -345,17 +357,23 @@ double RGP=K_BOL/UMA;
                 } else {
                    if (nfc == 0) nfc=n; // nfc=first convective domain
                    Rcz=map.gl.xif[nfc];
-                   double ff=(1.-al)/(1.-Rcz)/(1.-Rcz);
+                   double ff=1./(1.-Rcz)/(1.-Rcz);
 //                   if (n == nfc) printf("Rcz %e, nfc=%d\n",Rcz,nfc);
                    matrix rr=map.r.block(j0,j1,0,0);
-		   Pe.setblock(j0,j1,0,0,Peclet*(1.-Rcz*Rcz*ff+2*Rcz*ff*rr-ff*rr*rr));
+		   Pe.setblock(j0,j1,0,0,Peclet*(1.-al)*(1.-Rcz*Rcz*ff+2*Rcz*ff*rr-ff*rr*rr)+al*Peclet);
+// Peclet is not zero at surface but al*Peclet
 		   Pep.setblock(j0,j1,0,0,2*Peclet*ff*(Rcz-rr));
 		   Pepeta.setblock(j0,j1,0,0,2*Peclet*ff*(rr-Rcz)*(1.-rr)/(1.-Rcz));
+//		   Pe.setblock(j0,j1,0,0,Peclet/2*(1.+cos(PI*(rr-Rcz)/(1.-Rcz))));
+//		   Pep.setblock(j0,j1,0,0,-PI*Peclet/2/(1.-Rcz)*sin(PI*(rr-Rcz)/(1.-Rcz)));
+//		   Pe.setblock(j0,j1,0,0,Peclet*sin(PI*(rr-Rcz)/(1.-Rcz))*sin(PI*(rr-Rcz)/(1.-Rcz)));
+//		   Pep.setblock(j0,j1,0,0,PI*Peclet*2/(1.-Rcz)*sin(PI*(rr-Rcz)/(1.-Rcz))*cos(PI*(rr-Rcz)/(1.-Rcz)));
 		   jj0=j0; jj1=j1;
                 }
                 j0+=ndom;
         }
-        op->add_d("Pe","r",Pep);
+*/
+
 //        op->add_d("Pe","Ri",Pep);
 //nfc = first convective domain
 /*
@@ -661,13 +679,41 @@ void star1d::solve_Wr(solver *op) {
 	
 //}
 
+void star2d::solve_pec(solver *op) {
+        matrix rhs;
+        rhs=zeros(ndomains,1);
+
+        for(int n=0;n<ndomains-1;n++) {
+                op->bc_top1_add_d(n,"Pec","Pec",ones(1,1));
+                op->bc_top2_add_d(n,"Pec","Pec",-ones(1,1));
+        }
+        op->bc_top1_add_d(ndomains-1,"Pec","Pec",ones(1,1));
+        rhs(ndomains-1)=-Pec+Peclet;
+        //rhs(ndomains-1)=-Pec+log(Peclet);
+        op->set_rhs("Pec",rhs);
+
+}
+
 void star1d::solve_temp(solver *op) {
 	int n,j0,j1,ndom;
 	char eqn[8];
-	
 	strcpy(eqn,"log_T");
+	
+	double ds0=0.2;
+	matrix Peps,argu,ss=entropy();
+
+	argu=(D,ss)/ds0;
+	//Pe=exp(Pec)/2*(1.-tanh(argu));
+	//Peps=-exp(Pec)/2/cosh(argu)/cosh(argu)/ds0;
+	Pe=Pec/2*(1.-tanh(argu));
+	Peps=-Pec/2/cosh(argu)/cosh(argu)/ds0;
+	op->add_d("Pe","Pe",ones(nr,1));
+	op->add_d("Pe","Pec",-0.5*(1.-tanh(argu)));
+	//op->add_d("Pe","Pec",-0.5*exp(Pec)*(1.-tanh(argu)));
+        op->add_l("Pe","s",Peps,D);
+	op->set_rhs("Pe",zeros(nr,1));
+
 // We introduce the Flux variable to ease the writing
-	matrix ss=entropy();
 	matrix Flux=-opa.xi*((D,T)+Pe*T*(D,ss));
 
 	op->add_d("Flux","Flux",ones(nr,1));
@@ -678,6 +724,7 @@ void star1d::solve_temp(solver *op) {
 	op->add_l("Flux","s",opa.xi*Pe*T,D);
 	op->add_d("Flux","Pe",opa.xi*T*(D,ss));
 	op->set_rhs("Flux",zeros(nr,1));
+
 	
 	matrix rhs_T,rhs_Lambda;
 	rhs_T=zeros(nr,1);
@@ -754,7 +801,7 @@ void star1d::solve_temp(solver *op) {
 
 fprintf(RHS,"# it = %d\n",glit);
 //for (int k=0;k<nr;k++) fprintf(RHS,"RHS T %d, %e \n",k,rhs_T(k));
-for (int k=0;k<nr;k++) fprintf(RHS,"%d, %e, %e \n",k,Flux(k),Pep(k));
+//for (int k=0;k<nr;k++) fprintf(RHS,"%d, %e, %e \n",k,Flux(k),Pep(k));
 //fprintf(RHS,"Solve T END\n");
 	
 	op->set_rhs(eqn,rhs_T);
@@ -862,6 +909,7 @@ void star1d::solve_map(solver *op) {
 	for(n=0;n<ndomains;n++) {
 // place the domains radii "Ri" so as to equalize the PRES drop,
 // between 2 adjacent domains
+// Here LOG_PRES="log_T" (see star.h)
 		ndom=map.gl.npts[n];
 		if(n==0) op->add_d(n,"Ri","Ri",ones(1,1));
 		else {
@@ -883,6 +931,16 @@ void star1d::solve_map(solver *op) {
 		p_=S.regvar("p"); s_=S.regvar("s");
 		S.set_map(map); S.set_value("p",p); S.set_value("s",entropy());
 		eq=(grad(p_),grad(s_));
+/* chantier
+		t_=S.regvar("T")
+		rho_=S.regvar("rho")
+		m_=S.regvar("m")
+		pic_=S.regvar("pi_c")
+		xi_=S.regvar("opa.xi")
+		lam_=S.regvar("Lambda")
+		lum_=S.regvar("lum")
+		eqb=lam_*lum_-pic_*xi_*rho_*t_*m_/p_*del_ad
+*/
 	
 // Take care of convective layers
 // number of zones=number of interface+1 (the surface)
@@ -981,12 +1039,13 @@ void star1d::solve_Teff(solver *op) {
 // new term from convective flux
 // Pe(r) is known from solve_temp
     q=Pep*T*opa.xi*(D,entropy());
-    op->bc_top1_add_d(n,"Teff","r",q.row(-1));
-    //q=Pe*opa.xi*(D,entropy());
-    //op->bc_top1_add_d(n,"Teff","T",q.row(-1));
-    //q=Pe*opa.xi*T;
-    //op->bc_top1_add_l(n,"Teff","s",q.row(-1),D.block(n).row(-1));
-    op->set_rhs("Teff",zeros(1,1));
+//	printf("check q %e Pep %e T %e opa.xi %e Ds %e\n",q(-1),Pep(-1),T(-1),opa.xi(-1), (D,entropy())(-1));
+//    op->bc_top1_add_d(n,"Teff","r",q.row(-1));
+//    q=Pe*opa.xi*(D,entropy());
+//    op->bc_top1_add_d(n,"Teff","T",q.row(-1));
+//    q=Pe*opa.xi*T;
+//    op->bc_top1_add_l(n,"Teff","s",q.row(-1),D.block(n).row(-1));
+//    op->set_rhs("Teff",zeros(1,1));
 }
 
 

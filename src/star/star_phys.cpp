@@ -59,6 +59,7 @@ void star2d::atmosphere() {
 		matrix q;
 		q=surff*p.row(-1)/ps;
 		Ts=pow(q,0.25)*Teff()/Tc;
+		//Ts=pow(q,0.4)*Teff()/Tc; // solar value
 		return;
 	}
 

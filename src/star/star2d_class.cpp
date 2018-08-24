@@ -145,6 +145,7 @@ void star2d::copy(const star2d &A) {
 
     Omega=A.Omega;Omega_bk=A.Omega_bk;
     Ekman=A.Ekman;
+    Rcz=A.Rcz;
 
     core_convec=A.core_convec;
     env_convec=A.env_convec;
@@ -228,6 +229,7 @@ printf("start hdf5_write\n");
     write_attr(star, "surff",       real,       &surff);
     write_attr(star, "Tc",          real,       &Tc);
     write_attr(star, "pc",          real,       &pc);
+    write_attr(star, "Rcz",         real,       &Rcz);
     write_attr(star, "Omega",       real, &Omega);
     write_attr(star, "Omega_bk",    real, &Omega_bk);
     write_attr(star, "Ekman",       real, &Ekman);
@@ -427,6 +429,9 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     if (read_attr(star, "Peclet", &Peclet)) {
         ester_warn("Could not read 'Peclet' from file `%s'", input_file);
+    } else {
+	//Pec=log(Peclet);
+	Pec=Peclet;
     }
     if (read_attr(star, "M", &M)) {
         ester_warn("Could not read 'M' from file `%s'", input_file);
@@ -485,6 +490,9 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     if (read_attr(star, "pc", &pc)) {
         ester_warn("Could not read 'pc' from file `%s'", input_file);
+    }
+    if (read_attr(star, "Rcz", &Rcz)) {
+        ester_warn("Could not read 'Rcz' from file `%s'", input_file);
     }
 
     if (read_attr<H5std_string&>(star, "opa.name", buf)) {
