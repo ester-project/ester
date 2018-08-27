@@ -417,15 +417,12 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     map.gl.set_ndomains(ndoms);
     if (read_attr(star, "npts", map.gl.npts)) {
         ester_err("Could not read 'npts' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
     }
     if (read_attr(star, "xif", &map.gl.xif[0])) {
         ester_err("Could not read 'xif' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
     }
     if (read_attr(star, "nex", map.ex.gl.npts)) {
         ester_err("Could not read 'nex' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
     }
     if (read_attr(star, "Peclet", &Peclet)) {
         ester_warn("Could not read 'Peclet' from file `%s'", input_file);
@@ -449,17 +446,17 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_warn("Could not read 'Xc' from file `%s'", input_file);
     }
     if (read_attr(star, "conv", &conv)) {
-        ester_err("Could not read 'conv' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
+        ester_warn("Could not read 'conv' from file `%s'", input_file);
     }
     if (read_attr(star, "nd_core", &nd_core)) {
-        ester_err("Could not read 'nd_core' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
+        ester_warn("Could not read 'nd_core' from file `%s'", input_file);
+	printf("Hello no nd_core");
+    //    exit(EXIT_FAILURE);
     }
 
     domain_type.resize(ndomains);
     if (read_attr(star, "domain_type", &domain_type[0])) {
-        ester_err("Could not read 'domain_type' from file `%s'", input_file);
+        ester_warn("Could not read 'domain_type' from file `%s'", input_file);
 	printf("I use the old setup\n");
         for (int n=0; n<ndomains; n++) {
             if (n < conv) domain_type[n] = CORE;
@@ -467,19 +464,16 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         }
     }
     if (read_attr(star, "nzones", &nzones)) {
-        ester_err("Could not read 'nzones' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
+        ester_warn("Could not read 'nzones' from file `%s'", input_file);
     }
 	zone_type.resize(nzones);
     if (read_attr(star, "zone_type", &zone_type[0])) {
-        ester_err("Could not read 'zone_type' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
+        ester_warn("Could not read 'zone_type' from file `%s'", input_file);
     }
 
     izif.resize(ndomains);
     if (read_attr(star, "izif", &izif[0])) {
-        ester_err("Could not read 'izif' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
+        ester_warn("Could not read 'izif' from file `%s'", input_file);
     }
 
     if (read_attr(star, "surff", &surff)) {
@@ -556,20 +550,18 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_err("Could not read field 'p' from file `%s'", input_file);
     }
     if (read_field(star, "Xh", Xh)) {
-        ester_err("Could not read field 'Xh' from file `%s'", input_file);
+        ester_warn("Could not read field 'Xh' from file `%s'", input_file);
         Xh = zeros(nr, nth);
-        exit(EXIT_FAILURE);
     }
     if (read_field(star, "Wr", Wr)) {
-        ester_err("Could not read field 'Wr' from file `%s'", input_file);
+        ester_warn("Could not read field 'Wr' from file `%s'", input_file);
         Wr = zeros(nr, nth);
-        exit(EXIT_FAILURE);
     }
     if (read_field(star, "T", T)) {
         ester_err("Could not read field 'T' from file `%s'", input_file);
     }
     if (read_field(star, "Pe", Pe)) {
-        ester_err("Could not read field 'Pe' from file `%s'", input_file);
+        ester_warn("Could not read field 'Pe' from file `%s'", input_file);
     }
     if (read_field(star, "phiex", phiex)) {
         ester_warn("Could not read field 'phiex' from file `%s'", input_file);

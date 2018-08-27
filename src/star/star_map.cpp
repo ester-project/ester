@@ -17,8 +17,8 @@ void star2d::new_check_map() {
                 zone_type = std::vector<int>(1);
 	}
 
-	if (n_essai == 0) seuil=1e-6;
-	if (n_essai > 0) seuil=1e-6;
+	if (n_essai == 0) seuil=1e-2;
+	if (n_essai > 0) seuil=1e-2;
 //printf("global errors %e %e\n",prev_global_err,global_err);
 
 // Check the "PRESSURE" drop from bot CZ to surface
