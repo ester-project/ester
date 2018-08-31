@@ -20,7 +20,6 @@ int eos_idealrad(const matrix &X,double Z,const matrix &T,const matrix &p,
 	eos.chi_T=4-3*b;
 	eos.chi_rho=b;
 //eos.s=K_BOL/mu/HYDROGEN_MASS*log(pow(T,1.5)/rho)+4.*A_RAD/3.*T*T*T/rho;
-	double RGP=K_BOL/UMA;
 	eos.s=(K_BOL/mu/UMA*log(pow(T,1.5)/rho)+4.*A_RAD/3.*T*T*T/rho)/RGP;
 	
 	return 0;

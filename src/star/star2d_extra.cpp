@@ -115,7 +115,6 @@ matrix star2d::entropy() const {
 //	Valid only for homogeneus composition !!!!!!
 
 	matrix s(nr,nth),rhs;
-	double RGP=K_BOL/UMA; // Ideal gas constant
 
 	solver op;
 	op.init(ndomains,1,"full");

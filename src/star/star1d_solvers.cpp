@@ -9,7 +9,7 @@
 static int iopt=0;
 // iopt=0 the flux is defined as Flux=-xi*DT-xi*Pe*T*Ds (best solution)
 // iopt=1 the flux is defined as Flux=-DT-Pe*T*Ds
-static int ioptw=0;
+static int ioptw=1;
 // ioptw=1: use a variable h, Newton-step
 // ioptw=0: use a fixed h, ==> loses quadratic convergence, but more robust
 
@@ -28,7 +28,7 @@ void star1d::fill() {
 
     pi_c=(4*PI*GRAV*rhoc*rhoc*R*R)/pc;
     Lambda=epsc*rhoc*R*R/Tc/xic;
-	printf("lambda = %e\n",Lambda);
+//	printf("lambda = %e\n",Lambda);
 
     calc_units();
 
@@ -274,7 +274,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 
     build_solver(op);
     norm_rhs1 = this->eval_norm_rhs(op);
-    LOGW("|rhs| = %.3e (was %.3e) (h=%.1e)\n", norm_rhs1, norm_rhs0, h);
+//    LOGW("|rhs| = %.3e (was %.3e) (h=%.1e)\n", norm_rhs1, norm_rhs0, h);
 
     bool check_rhs = false;
 
@@ -407,7 +407,6 @@ void star1d::solve_definitions(solver *op) {
 	//	Valid only for homogeneus composition !!!!!!
 // MR we rescale entropy with the ideal gas constant
 // changed in star2d_extra.cpp & star2d_solver
-double RGP=K_BOL/UMA;
 	op->add_d("s","log_T",eos.cp/RGP);
 	op->add_d("s","log_Tc",eos.cp/RGP);
 	op->add_d("s","log_p",-eos.cp*eos.del_ad/RGP);
