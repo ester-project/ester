@@ -560,6 +560,9 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     if (read_field(star, "T", T)) {
         ester_err("Could not read field 'T' from file `%s'", input_file);
     }
+    if (read_field(star, "s", ss)) {
+        ester_warn("Could not read field 's' from file `%s'", input_file);
+    }
     if (read_field(star, "Pe", Pe)) {
         ester_warn("Could not read field 'Pe' from file `%s'", input_file);
     }

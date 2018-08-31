@@ -261,6 +261,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		map.leg.npts=1;
 		map.init();
 		T=1-0.5*r*r;
+		ss=0.*T;
 		p=T;
 		phi=-T;
 		Xh=X0*ones(nr,1);

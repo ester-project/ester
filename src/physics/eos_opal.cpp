@@ -55,7 +55,6 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     N=T.nrows()*T.ncols();
 
 	double Xi,Zi,t6i,p_mbi,rhoi;
-	double RGP=K_BOL/UMA;
     for(i=0;i<N;i++) {
     	Xi=X(i);Zi=Z;t6i=t6(i);p_mbi=p_mb(i);
     	eos5_xtrin_(&Xi,&Zi,&t6i,&p_mbi,&rhoi);

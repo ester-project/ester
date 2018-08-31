@@ -381,7 +381,6 @@ void star2d::solve_definitions(solver *op) {
 // temperature but valid only for homogeneus composition !!!!!!
 // MR: we rescale entropy with the ideal gas constant
 // changed in star2d_extra.cpp & star2d_solver
-double RGP=K_BOL/UMA;
         op->add_d("s","log_T",eos.cp/RGP);
         op->add_d("s","log_Tc",eos.cp/RGP);
         op->add_d("s","log_p",-eos.cp*eos.del_ad/RGP);

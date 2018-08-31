@@ -9,6 +9,7 @@ extern const double PI=acos(-1);
 extern const double SIG_SB=5.670400e-5;
 extern const double K_BOL=1.3806503e-16;
 extern const double UMA=1.660538922e-24; // Atomic Mass Unit cgs
+extern const double RGP=K_BOL/UMA;
 extern const double HYDROGEN_MASS=1.67353249e-24;
 extern const double A_RAD=7.565767e-15;
 extern const double GRAV=6.67384e-8;

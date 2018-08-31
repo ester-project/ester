@@ -85,7 +85,8 @@ void star1d::register_variables(solver *op) {
 	op->regvar("ps");
 	op->regvar("Ts");
 	op->regvar_dep("rho");
-	op->regvar_dep("s");
+	op->regvar("s");
+//	op->regvar_dep("s");
 //	op->regvar("Rcz");
 	op->regvar("Flux");
 //	op->regvar("Pe");
@@ -128,6 +129,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 	solve_pressure(op);
 	//solve_flux(op);
 	solve_pec(op);
+	solve_entropy(op);
 	solve_temp(op);
 	solve_atm(op);
 	solve_dim(op);
@@ -171,7 +173,7 @@ fclose(RHS);
 
 	q=config.newton_dmax;
 	
-	matrix dphi,dp,dT,dXh,dpc,dTc,dRi,dWr,dPec;
+	matrix dphi,dp,dT,dXh,dpc,dTc,dRi,dWr,dPec,ds;
 	
 FILE *fic=fopen("err.txt", "a");
 	dphi=op->get_var("Phi");
@@ -193,6 +195,13 @@ FILE *fic=fopen("err.txt", "a");
   fprintf(fic,"err T = %e\n",err2);
  if (err> 1e-0) for (int k=0;k<nr;k++) fprintf(fic,"%d %e \n",k,dT(k));
 	if (ioptw) while(exist(abs(h*dT)>q)) h/=2;
+
+	ds=op->get_var("s");	
+	err2=max(abs(ds));err=err2>err?err2:err;
+        error_map["s"](nit) = err2;
+  fprintf(fic,"s = %e\n",err2);
+ if (err> 1e-0) for (int k=0;k<nr;k++) fprintf(fic,"%d %e \n",k,ds(k));
+	if (ioptw) while(exist(abs(h*ds)>q)) h/=2;
 
 // Compute dXh
 	dXh=op->get_var("lnXh");	
@@ -222,7 +231,7 @@ FILE *fic=fopen("err.txt", "a");
 	dPec=op->get_var("Pec");	
 	err2=fabs(dPec(0));err=err2>err?err2:err;
         error_map["Pec"](nit) = err2;
-	if (ioptw) while(fabs(h*dPec(0))>q) h/=2;
+	if (ioptw) while(fabs(h*dPec(0)/Pec)>q) h/=2;
 	
 	dRi=op->get_var("Ri");	
     error_map["Ri"](nit) = max(abs(dRi));
@@ -233,6 +242,7 @@ FILE *fic=fopen("err.txt", "a");
 	phi+=h*dphi;
 	p+=h*dp*p;
 	T+=h*dT*T;
+	ss+=h*ds;
 
 fclose(entrop);
 
@@ -301,17 +311,16 @@ void star1d::solve_definitions(solver *op) {
 //	Valid only for homogeneus composition !!!!!!
 // MR we rescale entropy with the ideal gas constant
 // changed in star2d_extra.cpp & star2d_solver
-double RGP=K_BOL/UMA;
+/*
 	op->add_d("s","log_T",eos.cp/RGP);
 	op->add_d("s","log_Tc",eos.cp/RGP);
 	op->add_d("s","log_p",-eos.cp*eos.del_ad/RGP);
 	op->add_d("s","log_pc",-eos.cp*eos.del_ad/RGP);
-	/*
 	op->add_d("s","log_T",ones(nr,1));
 	op->add_d("s","log_Tc",ones(nr,1));
 	op->add_d("s","log_p",-eos.del_ad);
 	op->add_d("s","log_pc",-eos.del_ad);
-	*/
+*/
 
 // Expression of \delta\khi (thermal conductivity)	
 	op->add_d("opa.xi","rho",opa.dlnxi_lnrho*opa.xi/rho);
@@ -694,6 +703,35 @@ void star2d::solve_pec(solver *op) {
 
 }
 
+void star2d::solve_entropy(solver *op) {
+
+// We introduce the entropy variable to ease solving
+	matrix rhs_s=zeros(nr,1);
+	op->add_l("s","s",ones(nr,1),D);
+	op->add_l("s","log_T",-eos.cp/RGP,D);
+	op->add_l("s","log_p",eos.del_ad*eos.cp/RGP,D);
+//	rhs_s=-((D,ss)-eos.cp/RGP*(D,T)/T+eos.del_ad*eos.cp/RGP*(D,p)/p);
+
+	int j0=0;
+	for(int n=0;n<ndomains;n++) {
+		int ndom=map.gl.npts[n];
+                if(n==0) { // care of the first and central domain s(0)=0
+
+                        op->bc_bot2_add_d(n,"s","s",ones(1,1));
+                        rhs_s(j0)=-ss(j0);
+
+                } else { // entropy continuous
+                        op->bc_bot2_add_d(n,"s","s",ones(1,1));
+                        op->bc_bot1_add_d(n,"s","s",-ones(1,1));
+                        rhs_s(j0)=-ss(j0)+ss(j0-1);
+
+		} // End of options on n==0, else
+		j0+=ndom;
+	}  // End of loop on domains rank
+
+	op->set_rhs("s",rhs_s);
+}
+
 void star1d::solve_temp(solver *op) {
 	int n,j0,j1,ndom;
 	char eqn[8];
@@ -711,9 +749,8 @@ void star1d::solve_temp(solver *op) {
         op->add_l("Pe","s",Peps,D);
 	op->set_rhs("Pe",zeros(nr,1));
 */
-
 // We introduce the Flux variable to ease the writing
-	matrix ss=entropy();
+//	ss=entropy();
 	matrix Flux=-opa.xi*((D,T)+Pe*T*(D,ss));
 
 	op->add_d("Flux","Flux",ones(nr,1));
@@ -783,6 +820,7 @@ void star1d::solve_temp(solver *op) {
 			rhs_T(-1)=Ts(0)-T(-1);
                         op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
                         op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
+
                 } else { // Now domains are not first and not last!
 			op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
 			op->bc_bot1_add_d(n,"Lambda","Lambda",-ones(1,1));
@@ -800,7 +838,7 @@ void star1d::solve_temp(solver *op) {
 	}  // End of loop on domains rank
 
 fprintf(RHS,"# it = %d\n",glit);
-//for (int k=0;k<nr;k++) fprintf(RHS,"RHS T %d, %e \n",k,rhs_T(k));
+for (int k=0;k<nr;k++) fprintf(RHS,"RHS T %d, %e \n",k,rhs_T(k));
 //for (int k=0;k<nr;k++) fprintf(RHS,"%d, %e, %e \n",k,Flux(k),Pep(k));
 //fprintf(RHS,"Solve T END\n");
 	
