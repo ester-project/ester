@@ -147,6 +147,7 @@ void star2d::copy(const star2d &A) {
 
     Omega=A.Omega;Omega_bk=A.Omega_bk;
     Ekman=A.Ekman;
+    Rcz=A.Rcz;
 
     core_convec=A.core_convec;
     env_convec=A.env_convec;
@@ -223,6 +224,7 @@ printf("start hdf5_write\n");
     write_attr(star, "stratified_comp", integer, &stratified_comp);
     write_attr(star, "xif",         real,       map.gl.xif, map.ndomains+1);
     write_attr(star, "Peclet",      real,       &Peclet);
+    write_attr(star, "Rcz",         real,       &Rcz);
     write_attr(star, "al",          real,       &al);
     write_attr(star, "M",           real,       &M);
     write_attr(star, "R",           real,       &R);
@@ -435,6 +437,9 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     if (read_attr(star, "Peclet", &Peclet)) {
         ester_warn("Could not read 'Peclet' from file `%s'", input_file);
+    }
+    if (read_attr(star, "Rcz", &Rcz)) {
+        ester_warn("Could not read 'Rcz' from file `%s'", input_file);
     }
     if (read_attr(star, "al", &al)) {
         ester_warn("Could not read 'al' from file `%s'", input_file);

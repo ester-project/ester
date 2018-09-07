@@ -129,6 +129,7 @@ int main(int argc,char *argv[]) {
 		printf("X=%3.3f (Xc/X=%3.3f) Z=%3.3f\n",A.X0,A.Xc,A.Z0);
 		printf("rhoc=%e Tc=%e pc=%e\n",A.rhoc,A.Tc,A.pc);
 		printf("Virial test: %e Energy test: %e\n",A.virial(),A.energy_test());
+		printf("Rcz=%e \n",A.Rcz);
 		int jc=0;
 		for (int n=0;n<A.nd_core;n++) jc+=A.map.gl.npts[n];
 		if(A.nd_core != 0) printf("r_cc=%3.3f Rsun\n",A.r(jc));

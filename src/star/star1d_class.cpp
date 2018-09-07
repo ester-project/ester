@@ -357,6 +357,7 @@ void star1d::dump_info() {
 	printf("\tenv_convec = %d\n",env_convec);
 	printf("\tmin_core_size = %e\n",min_core_size);
 	printf("\tPeclet = %e\n",Peclet);
+	printf("\tRcz = %e\n",Rcz);
 	printf("\tal = %e\n",al);
 	printf("\n");
 	

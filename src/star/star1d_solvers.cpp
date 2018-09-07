@@ -9,7 +9,7 @@
 static int iopt=0;
 // iopt=0 the flux is defined as Flux=-xi*DT-xi*Pe*T*Ds (best solution)
 // iopt=1 the flux is defined as Flux=-DT-Pe*T*Ds
-static int ioptw=1;
+static int ioptw=0;
 // ioptw=1: use a variable h, Newton-step
 // ioptw=0: use a fixed h, ==> loses quadratic convergence, but more robust
 
@@ -797,7 +797,7 @@ void star1d::solve_temp(solver *op) {
                    Pe.setblock(j0,j1,0,0,zeros(ndom,1));
                    Pep.setblock(j0,j1,0,0,zeros(ndom,1));
                 } else if (domain_type[n] == CORE) {
-                   Pe.setblock(j0,j1,0,0,1e5*ones(ndom,1));
+                   Pe.setblock(j0,j1,0,0,1e4*ones(ndom,1));
                    Pep.setblock(j0,j1,0,0,zeros(ndom,1));
                 } else {
 		   if (nfc == 0) nfc=n; // nfc=first convective domain
