@@ -65,7 +65,8 @@ libester_la_SOURCES		= global/global.cpp									\
                           symbolic/rational.cpp symbolic/symbolic.cpp		\
                           symbolic/sym.cpp symbolic/sym_expr.cpp			\
                           symbolic/sym_tens.cpp symbolic/sym_vec.cpp		\
-						  utils/stack.cpp utils/debug.cpp
+						  utils/stack.cpp utils/debug.cpp \
+						  star/polytrope.cpp
 
 libester_la_LIBADD = physics/libphysics.la				\
 					 ../tables/freeeos/libfreeeos.la	\

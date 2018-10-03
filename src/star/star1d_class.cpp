@@ -252,9 +252,28 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 	} else {
 		map.leg.npts=1;
 		map.init();
+#if 1
+        double n = 1.5;
+        n = 3.;
+        matrix h = solve_poly1d(n, 1e-10, 40, 1e-1);
+
+        mapping map;
+        map.set_ndomains(1);
+        map.set_npts(40);
+        map.gl.set_xif(0., 1.);
+        map.set_nt(1);
+        map.init();
+
+        h = map.gl.eval(h, this->map.r);
+
+        p = pow(h, n+1);
+        rho = pow(h, n);
+        T = p/rho;
+#else
 		T=1-0.5*r*r;
 		p=T;
 		phi=-T;
+#endif
 		G=0*T;
 		w=0*T;
 		conv=0;

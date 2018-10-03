@@ -233,6 +233,8 @@ public:
     // void init_comp();
 };
 
-#endif
 
+matrix solve_poly1d(double n, double tol, int nr, double hsurf);
+
+#endif
 
