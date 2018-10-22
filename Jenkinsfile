@@ -57,7 +57,7 @@ pipeline {
             }
         }
         failure {
-            mail to: 'bertrand.putigny@gmail.com',
+            mail to: 'ester-dev@irap.omp.eu',
                  subject: "Failed Jenkins pipeline: ${currentBuild.fullDisplayName}",
                  body: "Something is wrong with ${env.BUILD_URL}"
         }
