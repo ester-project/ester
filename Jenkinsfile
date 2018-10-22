@@ -40,7 +40,7 @@ pipeline {
         stage('Read reference') {
             steps {
                 dir('build-gnu') {
-                    sh "./bin/ester 2d -noplot -i ../references/M5-2d.h5 -o M5-2d.h5"
+                    sh "./bin/ester info ../references/M5-omega0.8.h5"
                 }
             }
         }
