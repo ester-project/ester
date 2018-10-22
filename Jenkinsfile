@@ -13,7 +13,7 @@ pipeline {
             }
         }
 
-        stage('Test GNU') {
+        stage('Build with GNU') {
             steps {
                 sh 'mkdir -p build-gnu'
                 dir('build-gnu') {
@@ -25,7 +25,7 @@ pipeline {
             }
         }
 
-        stage('Test Clang') {
+        stage('Build with Clang') {
             steps {
                 sh 'mkdir -p build-clang'
                 dir('build-clang') {
@@ -36,6 +36,15 @@ pipeline {
                 }
             }
         }
+
+        stage('Read reference') {
+            steps {
+                dir('build-gnu') {
+                    sh "./bin/ester 2d -noplot -i ../references/M5-2d.h5 -o M5-2d.h5"
+                }
+            }
+        }
+
     }
 
     post {
