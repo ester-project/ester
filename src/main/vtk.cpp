@@ -32,15 +32,18 @@ int main(int argc, char *argv[]) {
         fprintf(f, "POINTS %d FLOAT\n", n[0]*n[1]*n[2]);
 
         for (auto i=0; i<n[0]; i++) {
-            double r = i/(double) (n[0]-1);
+            double zeta = i/(double) (n[0]-1);
             for (auto j=0; j<n[1]; j++) {
                 double theta = M_PI * j/(double) (n[1]-1);
+                double r = zeta*A.map.leg.eval_00(A.map.r, theta)(-1);
                 for (auto k=0; k<n[2]; k++) {
+
                     double phi = 2*M_PI * k/(double) (n[2]-1);
 
                     double x = r*sin(theta)*cos(phi);
                     double y = r*sin(theta)*sin(phi);
                     double z = r*cos(theta);
+
                     fprintf(f, "%f %f %f\n", x, y, z);
                 }
             }
