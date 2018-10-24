@@ -59,6 +59,11 @@ elif command=='info':
 	out=call([prefix+"/bin/"+cmd]+sys.argv[2:])
 	sys.exit(out)
 	
+elif command=='vtk':
+	cmd="ester_vtk"
+	out=call([prefix+"/bin/"+cmd]+sys.argv[2:])
+	sys.exit(out)
+	
 elif command=='version':
 	cmd="version"
 	call([prefix+"/bin/"+cmd]+sys.argv[2:])

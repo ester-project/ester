@@ -6,7 +6,7 @@ BUILT_SOURCES	= main/read_config.cpp
 AM_CPPFLAGS = -I$(srcdir)/include -I$(srcdir)/graphics
 AM_CPPFLAGS +=-I$(top_srcdir)/tables/cesam
 
-bin_PROGRAMS		= star1d star2d version star_evol ester_info gen_output
+bin_PROGRAMS		= star1d star2d version star_evol ester_info gen_output ester_vtk
 
 star1d_LDADD		= libester.la
 star2d_LDADD		= libester.la
@@ -14,6 +14,7 @@ gen_output_LDADD	= libester.la physics/libphysics.la
 version_LDADD		= libester.la
 star_evol_LDADD		= libester.la
 ester_info_LDADD	= libester.la
+ester_vtk_LDADD		= libester.la
 
 
 star1d_SOURCES		= main/star1d.cpp main/read_config.cpp
@@ -22,6 +23,7 @@ star_evol_SOURCES	= main/star_evol.cpp main/read_config.cpp
 gen_output_SOURCES	= main/gen_output.cpp
 version_SOURCES		= main/version.cpp
 ester_info_SOURCES	= main/ester-info.cpp
+ester_vtk_SOURCES	= main/vtk.cpp
 
 EXTRA_DIST	= $(srcdir)/main/ester.in		\
 			  $(srcdir)/main/cesam_to_ester.in		\
