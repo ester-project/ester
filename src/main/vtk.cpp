@@ -21,8 +21,14 @@ int main(int argc, char *argv[]) {
     star2d A;
     if(A.read(argv[1]) == 0) {
 
-        int n[3] = {16, 32, 32}; // Add equator and pole
+        int n[3] = {16, 129, 256}; // model resolution radius, theta phi
+                                   // odd number in theta to have value on the
+                                   // equator
 
+        matrix Tr, Tt; // interpolation matrices
+        matrix zetas, thetas; // matrices grid points coordinates
+        zetas = ones(n[0], 1);
+        thetas = ones(1, n[1]);
 
         FILE * f = fopen(argv[3], "w");
         fprintf(f, "# vtk DataFile Version 3.1\n");
@@ -33,9 +39,12 @@ int main(int argc, char *argv[]) {
 
         for (auto i=0; i<n[0]; i++) {
             double zeta = i/(double) (n[0]-1);
+            zetas(i) = zeta;
             for (auto j=0; j<n[1]; j++) {
                 double theta = M_PI * j/(double) (n[1]-1);
-                double r = zeta*A.map.leg.eval_00(A.map.r, theta)(-1);
+                double r = zeta*A.map.leg.eval_00(A.map.r.row(-1), theta)(0);
+                if (i == 0)
+                    thetas(j) = theta;
                 for (auto k=0; k<n[2]; k++) {
 
                     double phi = 2*M_PI * k/(double) (n[2]-1);
@@ -49,7 +58,13 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        fprintf(f, "\nCELLS %d %d\n", (n[0]-1)*(n[1]-1)*(n[2]-1), 9*(n[0]-1)*(n[1]-1)*(n[2]-1));
+        A.map.gl.eval(A.T, zetas, Tr);
+        A.map.leg.eval_00(A.T, thetas, Tt);
+
+        fprintf(f, "\nCELLS %d %d\n",
+                (n[0]-1)*(n[1]-1)*(n[2]-1),
+                9*(n[0]-1)*(n[1]-1)*(n[2]-1));
+
         for (auto i=0; i<n[0]-1; i++) {
             for (auto j=0; j<n[1]-1; j++) {
                 for (auto k=0; k<n[2]-1; k++) {
@@ -76,9 +91,11 @@ int main(int argc, char *argv[]) {
             }
         }
 
+
         std::map<std::string, matrix> exportedFields;
-        exportedFields["temperature"] = A.T;
-        exportedFields["density"] = A.rho;
+        exportedFields["T"] = A.T;
+        exportedFields["rho"] = A.rho;
+        exportedFields["p"] = A.p;
         exportedFields["eps"] = A.nuc.eps;
         exportedFields["w"] = A.w;
 
@@ -88,14 +105,13 @@ int main(int argc, char *argv[]) {
             fprintf(f, "SCALARS %s FLOAT\n", field.first.c_str());
             fprintf(f, "LOOKUP_TABLE DEFAULT\n");
 
+            // interpolate fields on the new Cartesian grid
+            matrix T = (Tr, field.second, Tt);
+
             for (auto i=0; i<n[0]; i++) {
-                double r = i/(double) (n[0]-1);
-                matrix T = A.map.gl.eval(field.second, r);
                 for (auto j=0; j<n[1]; j++) {
-                    double theta = M_PI * j/(double) (n[1]-1);
-                    double t = A.map.leg.eval_00(T, theta)(0);
                     for (auto k=0; k<n[2]; k++) {
-                        fprintf(f, "%f\n", t);
+                        fprintf(f, "%f\n", T(i, j));
                     }
                 }
             }
