@@ -9,28 +9,50 @@ void help() {
 
 int main(int argc, char *argv[]) {
 
-    if (argc !=  4) {
+    // model resolution radius, theta phi
+    // odd number in theta to have value on the equator
+    int n[3] = {32, 129, 256};
+
+    char c;
+
+    FILE *f = nullptr;
+    char *input_model = nullptr;
+
+    while ((c = getopt(argc, argv, "o:")) != -1) {
+        switch (c) {
+            case 'o':
+                f = fopen(optarg, "w");
+                break;
+            default:
+                help();
+                return 1;
+        }
+    }
+
+    for (auto index=optind; index<argc; index++) {
+        if (input_model != nullptr) {
+            help();
+            return 1;
+        }
+        input_model = argv[index];
+    }
+
+    if (f == nullptr || input_model == nullptr) {
         help();
         return 1;
     }
-    if (argv[2][0] != '-' && argv[2][1] != 'o') {
-        help();
-        return 1;
-    }
+
+
+
 
     star2d A;
-    if(A.read(argv[1]) == 0) {
-
-        int n[3] = {16, 129, 256}; // model resolution radius, theta phi
-                                   // odd number in theta to have value on the
-                                   // equator
+    if(A.read(input_model) == 0) {
 
         matrix Tr, Tt; // interpolation matrices
         matrix zetas, thetas; // matrices grid points coordinates
         zetas = ones(n[0], 1);
         thetas = ones(1, n[1]);
 
-        FILE * f = fopen(argv[3], "w");
         fprintf(f, "# vtk DataFile Version 3.1\n");
         fprintf(f, "ESTER model %s\n", argv[1]);
         fprintf(f, "ASCII\n");
