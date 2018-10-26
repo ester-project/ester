@@ -43,6 +43,7 @@ pipeline {
             steps {
                 dir('build-gnu') {
                     sh "./bin/ester info ../references/M5-omega0.8.h5"
+                    sh "./bin/ester vtk ../references/M5-omega0.8.h5 -o M5-omega0.8.vtk"
                 }
             }
         }
