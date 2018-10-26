@@ -115,11 +115,14 @@ int main(int argc, char *argv[]) {
 
 
         std::map<std::string, matrix> exportedFields;
-        exportedFields["T"] = A.T;
-        exportedFields["rho"] = A.rho;
-        exportedFields["p"] = A.p;
+        exportedFields["T"] = A.T*A.Tc;
+        exportedFields["rho"] = A.rho*A.rhoc;
+        exportedFields["p"] = A.p*A.pc;
         exportedFields["eps"] = A.nuc.eps;
         exportedFields["w"] = A.w;
+        exportedFields["kappa"] = A.opa.k;
+        exportedFields["Phi"] = A.phi;
+        exportedFields["G"] = A.G;
 
         fprintf(f, "\nPOINT_DATA %d\n", n[0]*n[1]*n[2]);
 
