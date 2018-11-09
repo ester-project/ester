@@ -33,7 +33,7 @@ configuration::configuration(int argc,char *argv[]) {
 	else {
 		while((k=fp.get(arg,val))) {
 			if((i=check_arg(arg,val))) {
-				printf("Sintax error in configuration file %s, line %d\n",file,k);
+				printf("Syntax error in configuration file %s, line %d\n",file,k);
 				if(i==2) missing_argument(arg);
 				if(i==1) {
 					printf("Unknown parameter %s\n",arg);
@@ -138,7 +138,5 @@ int configuration::check_arg(const char *arg,const char *val) {
 }
 
 void configuration::missing_argument(const char *arg) {
-
 	ester_err("Error: Argument to '%s' missing", arg);
-	exit(1);
 }

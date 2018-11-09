@@ -106,10 +106,3 @@ void file_parser::close() {
 	
 }
 
-
-
-
-
-
-
-

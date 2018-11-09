@@ -915,16 +915,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
             remap(ndomains-1,map.npts,map.nt,map.nex);
         }
     } else {
-        map.init();
-        T=1-0.5*r*r;
-        p=T;
-        phi=-T;
-        phiex=zeros(nex,nth);
-        w=zeros(nr,nth);
-        G=zeros(nr,nth);
-        conv=0;
-        domain_type.resize(ndomains);
-        for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
+        ester_err("2d models should use an input model");
     }
     init_comp();
     fill();
@@ -1101,6 +1092,9 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
         ester_warn("ESTER is not built with HDF5 support:\n%s",
                 "the -dump_iter option will be inefective");
 #endif
+    }
+    else if (!strcmp(arg, "init_poly")) {
+        config.init_poly = true;
     }
     else err=1;
 
