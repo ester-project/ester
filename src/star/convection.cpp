@@ -1,6 +1,8 @@
+#ifndef WITH_CMAKE
 #include "ester-config.h"
-#include"star.h"
-#include<stdlib.h>
+#endif
+#include "star.h"
+#include <stdlib.h>
 
 
 /*

@@ -1,9 +1,11 @@
+#ifndef WITH_CMAKE
 #include "ester-config.h"
-#include"star.h"
-#include<stdlib.h>
-#include<sys/time.h>
-#include<string.h>
-#include"symbolic.h"
+#endif
+#include "star.h"
+#include <stdlib.h>
+#include <sys/time.h>
+#include <string.h>
+#include "symbolic.h"
 
 /// \brief Initialize star's chemical composition, equation of state, opacity,
 /// nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere,

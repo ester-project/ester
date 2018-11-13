@@ -1,8 +1,10 @@
+#ifndef WITH_CMAKE
 #include "ester-config.h"
-#include<cmath>
-#include<stdio.h>
-#include<stdlib.h>
-#include"matrix.h"
+#endif
+#include <cmath>
+#include <stdio.h>
+#include <stdlib.h>
+#include "matrix.h"
 
 
 matrix cos(const matrix &a) {

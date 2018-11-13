@@ -15,7 +15,7 @@ pipeline {
             }
         }
 
-        stage('Build with GNU') {
+        stage('Autotools build with GNU') {
             steps {
                 sh 'mkdir -p build-gnu'
                 dir('build-gnu') {
@@ -26,12 +26,34 @@ pipeline {
                 }
             }
         }
+        stage('CMake build with GNU') {
+            steps {
+                sh 'mkdir -p cmake-build-gnu'
+                dir('cmake-build-gnu') {
+                    sh "cmake -DCMAKE_INSTALL_PREFIX=\$PWD .."
+                    sh "make -j4 && make install"
+                    sh "./bin/ester 1d -noplot -o M5-1d.h5"
+                    sh "./bin/ester 2d -noplot -i M5-1d.h5 -o M5-omega0.8.h5 -Omega_bk 0.8"
+                }
+            }
+        }
 
-        stage('Build with Clang') {
+        stage('Autotools build with Clang') {
             steps {
                 sh 'mkdir -p build-clang'
                 dir('build-clang') {
                     sh "../configure CC=clang CXX=clang++ FC=gfortran --prefix=\$(pwd)/"
+                    sh "make -j4 && make install"
+                    sh "./bin/ester 1d -noplot -o M5-1d.h5"
+                    sh "./bin/ester 2d -noplot -i M5-1d.h5 -o M5-omega0.8.h5 -Omega_bk 0.8"
+                }
+            }
+        }
+        stage('CMake build with Clang') {
+            steps {
+                sh 'mkdir -p cmake-build-clang'
+                dir('build-clang') {
+                    sh "cmake -DCMAKE_INSTALL_PREFIX=\$PWD -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang .."
                     sh "make -j4 && make install"
                     sh "./bin/ester 1d -noplot -o M5-1d.h5"
                     sh "./bin/ester 2d -noplot -i M5-1d.h5 -o M5-omega0.8.h5 -Omega_bk 0.8"
@@ -58,11 +80,12 @@ pipeline {
             dir('build-clang') {
                 deleteDir()
             }
-        }
-        failure {
-            mail to: 'ester-dev@irap.omp.eu',
-                 subject: "Failed Jenkins pipeline: ${currentBuild.fullDisplayName}",
-                 body: "Something is wrong with ${env.BUILD_URL}"
+            dir('cmake-build-clang') {
+                deleteDir()
+            }
+            dir('cmake-build-clang') {
+                deleteDir()
+            }
         }
     }
 }

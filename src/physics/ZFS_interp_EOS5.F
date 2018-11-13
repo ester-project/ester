@@ -1,4 +1,6 @@
+#ifndef WITH_CMAKE
 #include "ester-config.h"
+#endif
 	  subroutine ZFS_interp_EOS5(zz)
 
 c    This program interpolates EOS5_* files to make a table for the

@@ -20,7 +20,7 @@ _ester_wrap_la_LIBADD = $(top_builddir)/src/libester.la
 
 if HAVE_SWIG
 ester_wrap.cpp: $(SWIG_SRC)
-	$(SWIG) -c++ -python $(SWIG_PYTHON_OPT) -I$(top_srcdir) -o $@ $<
+	$(SWIG) -c++ -python $(SWIG_PYTHON_OPT) -I$(top_srcdir)/src/include -I$(top_srcdir)/src/graphics -o $@ $<
 else
 ester_wrap.cpp: $(srcdir)/ester_wrap.cxx
 	cp $< $@

@@ -821,7 +821,7 @@ c.....	  Dlog(k)/Dlog(R) smoothed in both log(T6) and Log(R).
 	END SUBROUTINE t6rinterp
 
 c************************************************************************
-
+#if 0
 	SUBROUTINE readco
 	
 c..... The purpose of this subroutine is to read the data tables
@@ -1001,6 +1001,7 @@ c	    the x=0  low T data cannot be smoothed
 	RETURN
       
 	END SUBROUTINE readco
+#endif
 
 c************************************************************************
 

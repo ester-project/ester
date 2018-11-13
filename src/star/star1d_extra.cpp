@@ -1,5 +1,7 @@
+#ifndef WITH_CMAKE
 #include "ester-config.h"
-#include"star.h"
+#endif
+#include "star.h"
 
 #if 0
 void star1d::spectrum(figure *pfig,const matrix &y,const char *line) const {

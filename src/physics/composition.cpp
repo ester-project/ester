@@ -1,4 +1,6 @@
+#ifndef WITH_CMAKE
 #include "ester-config.h"
+#endif
 #include "physics.h"
 
 double_map initial_composition(double X, double Z) {

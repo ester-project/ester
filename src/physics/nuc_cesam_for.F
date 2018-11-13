@@ -1,4 +1,6 @@
+#ifndef WITH_CMAKE
 #include "ester-config.h"
+#endif
 	subroutine nuc_cesam_init
       
 	USE mod_donnees, ONLY : lit_nl, nchim, nom_fich2, w_rot

@@ -1,4 +1,6 @@
+#ifndef WITH_CMAKE
 #include "ester-config.h"
+#endif
 
         subroutine init_cesam_opa()
             use mod_opa

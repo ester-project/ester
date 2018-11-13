@@ -197,7 +197,7 @@ AS_IF([test "x$ac_cv_fc_compiler_gnu" == "xyes"], [
               FFLAGS="$FFLAGS -fdefault-real-8"
               FFLAGS="$FFLAGS -fdefault-double-8"
               FFLAGS="$FFLAGS -ffixed-line-length-none"
-              FFLAGS="$FFLAGS -O -c -w"
+              FFLAGS="$FFLAGS -O -w"
               FFLAGS="$FFLAGS -fd-lines-as-comments"],
              [AC_ERROR($FC does not support -fno-align-commons)])],
        [FFLAGS="$FFLAGS -r8 -nowarn -fpp -extend-source"])
