@@ -533,6 +533,7 @@ void plt::figure(const int& id, int width, int height) {
 }
 
 void plt::axis(const double& x0, const double& x1, const double& y0, const double& y1) {
+    if (noplot) return;
 #if ENABLE_PLT
     PyObject *args = PyTuple_New(1);
     PyObject *list = PyList_New(4);
@@ -548,6 +549,7 @@ void plt::axis(const double& x0, const double& x1, const double& y0, const doubl
 }
 
 void plt::axis(const std::string& a) {
+    if (noplot) return;
 #if ENABLE_PLT
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, PyUnicode_FromString(a.c_str()));
@@ -557,6 +559,7 @@ void plt::axis(const std::string& a) {
 
 void plt::clim(const double& z0, const double& z1) {
 #if ENABLE_PLT
+    if (noplot) return;
     PyObject *args = PyTuple_New(1);
     PyObject *list = PyList_New(2);
 
