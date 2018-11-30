@@ -115,11 +115,11 @@ import_array_wrapper() {
 
 
 void plt::init(bool noplot) {
-#if ENABLE_PLT
     plt::noplot = noplot;
 
     if (noplot) return;
 
+#if ENABLE_PLT
     static bool init = false;
     if (init == false) {
 
@@ -168,7 +168,7 @@ void plt::init(bool noplot) {
     }
 #endif
 #ifdef USE_VTK
-    if (renderWindow != nullptr || noplot) return;
+    if (noplot) return;
 
     viewport[0] = 0.;
     viewport[1] = 1.;
@@ -741,6 +741,7 @@ void plt::show(bool block) {
     call("show", args, kwargs);
 #endif
 #ifdef USE_VTK
+    if (renderWindowInteractor == nullptr) return;
     if (block == true)
         renderWindowInteractor->Start();
     else
@@ -813,6 +814,7 @@ void plt::subplot(int subplot, bool clear_axis) {
 }
 
 void plt::draw() {
+    if (noplot) return;
 #if ENABLE_PLT
 
     if (noplot || matplotlib == nullptr) return;
@@ -865,7 +867,7 @@ void plt::draw() {
     //         return
 #endif
 #ifdef USE_VTK
-     renderWindow->Render();
+     if (renderWindow != nullptr) renderWindow->Render();
 #endif
 }
 

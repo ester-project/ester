@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.7)
-
 add_library(cesam SHARED
     cesam/mod_variables.f
     cesam/mod_kind.f
