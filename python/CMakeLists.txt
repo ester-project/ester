@@ -7,15 +7,6 @@ if(${HDF5_FOUND})
     include_directories(${HDF5_INCLUDE_DIRS})
 endif()
 
-# if(${SWIG_FOUND})
-#     add_custom_target(ester_wrap ALL
-#         COMMAND ${SWIG_EXECUTABLE} -c++ -python -I${CMAKE_SOURCE_DIR}/src/include -I${CMAKE_SOURCE_DIR}/src/graphics -o ester_wrap.cpp ${CMAKE_SOURCE_DIR}/python/ester.i)
-# else()
-#     add_custom_target(ester_wrap ALL
-#         COMMAND cp ${CMAKE_SOURCE_DIR}/python/ester_wrap.cxx ester_wrap.cpp &&
-#         cp ${CMAKE_SOURCE_DIR}/python/ester_wrap.py ester_wrap.in)
-# endif()
-
 add_custom_target(__init__.py ALL
     COMMAND sed -e 's,[@]PYTHON[@],${PYTHON_EXECUTABLE},g' ${CMAKE_SOURCE_DIR}/python/ester.in > __init__.py)
 

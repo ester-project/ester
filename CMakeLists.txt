@@ -40,9 +40,10 @@ if(BLAS_LIBRARIES MATCHES "mkl")
 endif()
 find_package(LAPACK REQUIRED)
 find_package(PythonLibs REQUIRED)
-find_package(SWIG)
+find_package(SWIG REQUIRED)
 find_package(PythonInterp REQUIRED)
 find_package(HDF5 COMPONENTS CXX)
+find_package(VTK 6.3)
 
 if(HDF5_FOUND)
     add_definitions(-DUSE_HDF5)
@@ -51,6 +52,12 @@ if(HDF5_FOUND)
     set(EXT "h5")
 else()
     set(EXT "bin")
+endif()
+
+if(VTK_FOUND)
+    add_definitions(-DUSE_VTK)
+    include(${VTK_USE_FILE})
+    set(LIBS "${LIBS};${VTK_LIBRARIES}")
 endif()
 
 
@@ -66,7 +73,7 @@ add_definitions(-DWITH_CMAKE)
 add_definitions(-DVERSION="${PROJECT_VERSION}")
 add_definitions(-DESTER_DATADIR="${CMAKE_INSTALL_PREFIX}/share")
 add_definitions(-DPACKAGE_VERSION="${PROJECT_VERSION}")
-add_definitions(-DENABLE_PLT)
+# add_definitions(-DENABLE_PLT)
 
 add_library(ester SHARED
     src/global/global.cpp

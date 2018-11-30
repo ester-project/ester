@@ -382,9 +382,9 @@ void star1d::plot(const matrix_map& error) {
 
     plt::subplot(231);
     // plt::title(std::string("iter: ") + std::to_string(nit));
-    plt::plot(r, rho, "$\\rho$");
-    plt::plot(r, T, "$T$");
-    plt::plot(r, p, "$p$");
+    plt::plot(r, rho, "rho");
+    plt::plot(r, T, "T");
+    plt::plot(r, p, "p");
     plt::legend();
     for (int i=0; i<ndomains; i++) {
         plt::axvline(map.gl.xif[i]);
@@ -393,7 +393,7 @@ void star1d::plot(const matrix_map& error) {
 
     plt::subplot(232);
     // plt::title(std::string("iter: ") + std::to_string(nit));
-    plt::plot(r, phi, "$\\Phi$");
+    plt::plot(r, phi, "Phi");
     plt::legend();
 
     plt::subplot(233, true);
@@ -402,38 +402,38 @@ void star1d::plot(const matrix_map& error) {
     str_stream.clear();
     str_stream.str("");
     str_stream << Tc;
-    plt::text(0.0, .3, std::string("$T_c$:   ") + str_stream.str());
+    plt::text(0.0, .3, std::string("T_c:   ") + str_stream.str());
 
     str_stream.clear();
     str_stream.str("");
     str_stream << pc;
-    plt::text(0.0, .2, std::string("$p_c$:   ") + str_stream.str());
+    plt::text(0.0, .2, std::string("p_c:   ") + str_stream.str());
 
     str_stream.clear();
     str_stream.str("");
     str_stream << rhoc;
-    plt::text(0.0, 0.1, std::string("$\\rho_c$:  ") + str_stream.str());
+    plt::text(0.0, 0.1, std::string("rho_c:  ") + str_stream.str());
 
     str_stream.clear();
     str_stream.str("");
     str_stream << pi_c;
-    plt::text(0.0, 0.0, std::string("$\\pi_c$: ") + str_stream.str());
+    plt::text(0.0, 0.0, std::string("pi_c: ") + str_stream.str());
 
-    if (error["Phi"].ncols()*error["Phi"].nrows() > 0 && error["Phi"](0) > .0) {
+    if (error["Phi"].ncols()*error["Phi"].nrows() > 2 && error["Phi"](0) > .0) {
         plt::subplot(223);
-        plt::title("Error");
-        plt::semilogy(error["Phi"], "$\\Phi$");
-        plt::semilogy(error["log_p"], "$\\ln p$");
-        plt::semilogy(error["log_T"], "$\\ln T$");
+        plt::semilogy(error["Phi"], "Phi");
+        plt::semilogy(error["log_p"], "ln p");
+        plt::semilogy(error["log_T"], "ln T");
         // plt::semilogy(error["log_pc"], "error $log_{p_c}$");
-        plt::semilogy(error["log_Tc"], "$\\ln T_c$");
+        plt::semilogy(error["log_Tc"], "ln T_c");
         // plt::semilogy(error["Ri"], "error $R_i$");
         plt::legend("lower left");
+        plt::title("Error");
     }
 
     plt::subplot(224);
+    plt::semilogy(spectrum(rho), "rho");
     plt::title("Spectrum");
-    plt::semilogy(spectrum(rho), "$\\rho$");
     int n = 0;
     plt::axvline(n);
     for (int i=0; i<ndomains; i++) {

@@ -14,6 +14,42 @@
 #include <iostream>
 #endif
 
+#if USE_VTK
+#include <vtkProperty.h>
+#include <vtkPolyData.h>
+#include <vtkSmartPointer.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkActor.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkTable.h>
+#include <vtkChartXY.h>
+#include <vtkContextActor.h>
+#include <vtkContextScene.h>
+#include <vtkPlot.h>
+#include <vtkFloatArray.h>
+#include <vtkAxis.h>
+#include <vtkRendererCollection.h>
+#include <vtkTextActor.h>
+#include <vtkTextProperty.h>
+
+double plt::viewport[4];
+vtkSmartPointer<vtkRenderWindow> plt::renderWindow;
+vtkSmartPointer<vtkRenderWindowInteractor> plt::renderWindowInteractor;
+vtkSmartPointer<vtkChartXY> plt::chart;
+vtkSmartPointer<vtkRenderer> plt::textRenderer;
+int plt::ncolor;
+
+double colors[12] = {1, 0, 0,
+    0, 1, 0,
+    0, 0, 1,
+    0, 0, 0,
+};
+const int maxColor = 4;
+
+#endif
+
 
 std::map<std::string, PyObject *> plt::py;
 std::vector<std::string> plt::functions = {
@@ -131,6 +167,27 @@ void plt::init(bool noplot) {
         init = true;
     }
 #endif
+#ifdef USE_VTK
+    if (renderWindow != nullptr || noplot) return;
+
+    viewport[0] = 0.;
+    viewport[1] = 1.;
+    viewport[2] = 0.;
+    viewport[3] = 1.;
+
+    renderWindow =
+        vtkSmartPointer<vtkRenderWindow>::New();
+    renderWindow->SetSize(768, 575);
+
+    renderWindowInteractor =
+        vtkSmartPointer<vtkRenderWindowInteractor>::New();
+
+    renderWindowInteractor->SetRenderWindow(renderWindow);
+    renderWindow->SetWindowName("ESTER");
+
+    chart = nullptr;
+    textRenderer = nullptr;
+#endif
 }
 
 PyObject *matrix_to_py(const matrix& m) {
@@ -154,8 +211,9 @@ PyObject *matrix_to_py(const matrix& m) {
 }
 
 void plt::plot(const matrix& x, std::string label, std::string style) {
-#if ENABLE_PLT
     if (noplot) return;
+    if (x.nrows() < 2) return;
+#if ENABLE_PLT
 
     PyObject *pyx = matrix_to_py(x);
 
@@ -168,11 +226,68 @@ void plt::plot(const matrix& x, std::string label, std::string style) {
 
     call("plot", args, kwargs);
 #endif
+#ifdef USE_VTK
+    for (auto j=0; j<x.ncols(); j++) {
+        vtkSmartPointer<vtkTable> table =
+            vtkSmartPointer<vtkTable>::New();
+
+        vtkSmartPointer<vtkFloatArray> arrX =
+            vtkSmartPointer<vtkFloatArray>::New();
+        arrX->SetName("");
+        table->AddColumn(arrX);
+
+        vtkSmartPointer<vtkFloatArray> arrY =
+            vtkSmartPointer<vtkFloatArray>::New();
+        arrY->SetName(label.c_str());
+        table->AddColumn(arrY);
+
+        table->SetNumberOfRows(x.nrows());
+        for (auto i=0; i<x.nrows(); i++) {
+            table->SetValue(i, 0, i);
+            table->SetValue(i, 1, x(i, j));
+        }
+
+
+        if (chart == nullptr) {
+            vtkSmartPointer<vtkRenderer> renderer =
+                vtkSmartPointer<vtkRenderer>::New();
+
+            renderWindow->AddRenderer(renderer);
+            renderer->SetViewport(viewport);
+            renderer->SetBackground(1, 1, 1);
+
+            chart = vtkSmartPointer<vtkChartXY>::New();
+
+            chart->GetAxis(vtkAxis::BOTTOM)->SetTitle("");
+            chart->GetAxis(vtkAxis::LEFT)->SetTitle("");
+
+            vtkSmartPointer<vtkContextScene> chartScene = vtkSmartPointer<vtkContextScene>::New();
+            vtkSmartPointer<vtkContextActor> chartActor = vtkSmartPointer<vtkContextActor>::New();
+
+            chartScene->AddItem(chart);
+            chartActor->SetScene(chartScene);
+
+            renderer->AddActor(chartActor);
+            chartScene->SetRenderer(renderer);
+        }
+
+        vtkPlot *line = chart->AddPlot(vtkChart::LINE);
+        line->SetColor(colors[ncolor], colors[ncolor+1], colors[ncolor+2]);
+        line->SetInputData(table, 0, 1);
+
+    }
+
+
+    ncolor = (ncolor + 3)%(3*maxColor);
+#endif
 }
 
 void plt::plot(const matrix& x, const matrix& y, std::string label, std::string style) {
-#if ENABLE_PLT
+    assert(x.nrows() == y.nrows());
+    assert(x.ncols() == y.ncols());
     if (noplot) return;
+    if (x.nrows() < 2) return;
+#if ENABLE_PLT
 
     PyObject *pyx = matrix_to_py(x);
     PyObject *pyy = matrix_to_py(y);
@@ -187,11 +302,69 @@ void plt::plot(const matrix& x, const matrix& y, std::string label, std::string 
 
     call("plot", args, kwargs);
 #endif
+
+#ifdef USE_VTK
+    init();
+
+    for (auto j=0; j<x.ncols(); j++) {
+        vtkSmartPointer<vtkTable> table =
+            vtkSmartPointer<vtkTable>::New();
+
+        vtkSmartPointer<vtkFloatArray> arrX =
+            vtkSmartPointer<vtkFloatArray>::New();
+        arrX->SetName("");
+        table->AddColumn(arrX);
+
+        vtkSmartPointer<vtkFloatArray> arrY =
+            vtkSmartPointer<vtkFloatArray>::New();
+        arrY->SetName(label.c_str());
+        table->AddColumn(arrY);
+
+        table->SetNumberOfRows(x.nrows());
+        for (auto i=0; i<x.nrows(); i++) {
+            table->SetValue(i, 0, x(i, j));
+            table->SetValue(i, 1, y(i, j));
+        }
+
+
+        if (chart == nullptr) {
+            vtkSmartPointer<vtkRenderer> renderer =
+                vtkSmartPointer<vtkRenderer>::New();
+
+            renderWindow->AddRenderer(renderer);
+            renderer->SetViewport(viewport);
+            renderer->SetBackground(1, 1, 1);
+
+            chart = vtkSmartPointer<vtkChartXY>::New();
+
+            chart->GetAxis(vtkAxis::BOTTOM)->SetTitle("");
+            chart->GetAxis(vtkAxis::LEFT)->SetTitle("");
+
+            vtkSmartPointer<vtkContextScene> chartScene = vtkSmartPointer<vtkContextScene>::New();
+            vtkSmartPointer<vtkContextActor> chartActor = vtkSmartPointer<vtkContextActor>::New();
+
+            chartScene->AddItem(chart);
+            chartActor->SetScene(chartScene);
+
+            renderer->AddActor(chartActor);
+            chartScene->SetRenderer(renderer);
+        }
+
+        vtkPlot *line = chart->AddPlot(vtkChart::LINE);
+        line->SetColor(colors[ncolor], colors[ncolor+1], colors[ncolor+2]);
+        line->SetInputData(table, 0, 1);
+
+    }
+
+
+    ncolor = (ncolor + 3)%(3*maxColor);
+#endif
 }
 
 void plt::semilogx(const matrix& x, std::string label) {
-#if ENABLE_PLT
     if (noplot) return;
+    if (x.nrows() < 2) return;
+#if ENABLE_PLT
 
     PyObject *pyx = matrix_to_py(x);
 
@@ -202,12 +375,71 @@ void plt::semilogx(const matrix& x, std::string label) {
     PyDict_SetItemString(kwargs, "label", PyUnicode_FromString(label.c_str()));
 
     call("semilogx", args, kwargs);
+#endif
+#ifdef USE_VTK
+    for (auto j=0; j<x.ncols(); j++) {
+        vtkSmartPointer<vtkTable> table =
+            vtkSmartPointer<vtkTable>::New();
+
+        vtkSmartPointer<vtkFloatArray> arrX =
+            vtkSmartPointer<vtkFloatArray>::New();
+        arrX->SetName("");
+        table->AddColumn(arrX);
+
+        vtkSmartPointer<vtkFloatArray> arrY =
+            vtkSmartPointer<vtkFloatArray>::New();
+        arrY->SetName(label.c_str());
+        table->AddColumn(arrY);
+
+        table->SetNumberOfRows(x.nrows());
+        for (auto i=0; i<x.nrows(); i++) {
+            table->SetValue(i, 0, i);
+            table->SetValue(i, 1, x(i, j));
+        }
+
+
+        if (chart == nullptr) {
+            vtkSmartPointer<vtkRenderer> renderer =
+                vtkSmartPointer<vtkRenderer>::New();
+
+            renderWindow->AddRenderer(renderer);
+            renderer->SetViewport(viewport);
+            renderer->SetBackground(1, 1, 1);
+
+            chart = vtkSmartPointer<vtkChartXY>::New();
+
+            chart->GetAxis(vtkAxis::BOTTOM)->SetTitle("");
+            chart->GetAxis(vtkAxis::LEFT)->SetTitle("");
+
+            chart->GetAxis(vtkAxis::BOTTOM)->SetLogScale(true);
+
+            vtkSmartPointer<vtkContextScene> chartScene = vtkSmartPointer<vtkContextScene>::New();
+            vtkSmartPointer<vtkContextActor> chartActor = vtkSmartPointer<vtkContextActor>::New();
+
+            chartScene->AddItem(chart);
+            chartActor->SetScene(chartScene);
+
+            renderer->AddActor(chartActor);
+            chartScene->SetRenderer(renderer);
+        }
+
+        vtkPlot *line = chart->AddPlot(vtkChart::LINE);
+        line->SetColor(colors[ncolor], colors[ncolor+1], colors[ncolor+2]);
+        line->SetInputData(table, 0, 1);
+
+    }
+
+
+    ncolor = (ncolor + 3)%(3*maxColor);
 #endif
 }
 
 void plt::semilogx(const matrix& x, const matrix& y, std::string label) {
-#if ENABLE_PLT
+    assert(x.nrows() == y.nrows());
+    assert(x.ncols() == y.ncols());
     if (noplot) return;
+    if (x.nrows() < 2) return;
+#if ENABLE_PLT
 
     PyObject *pyx = matrix_to_py(x);
     PyObject *pyy = matrix_to_py(y);
@@ -221,11 +453,68 @@ void plt::semilogx(const matrix& x, const matrix& y, std::string label) {
 
     call("semilogx", args, kwargs);
 #endif
+#ifdef USE_VTK
+    for (auto j=0; j<x.ncols(); j++) {
+        vtkSmartPointer<vtkTable> table =
+            vtkSmartPointer<vtkTable>::New();
+
+        vtkSmartPointer<vtkFloatArray> arrX =
+            vtkSmartPointer<vtkFloatArray>::New();
+        arrX->SetName("");
+        table->AddColumn(arrX);
+
+        vtkSmartPointer<vtkFloatArray> arrY =
+            vtkSmartPointer<vtkFloatArray>::New();
+        arrY->SetName(label.c_str());
+        table->AddColumn(arrY);
+
+        table->SetNumberOfRows(x.nrows());
+        for (auto i=0; i<x.nrows(); i++) {
+            table->SetValue(i, 0, x(i, j));
+            table->SetValue(i, 1, y(i, j));
+        }
+
+
+        if (chart == nullptr) {
+            vtkSmartPointer<vtkRenderer> renderer =
+                vtkSmartPointer<vtkRenderer>::New();
+
+            renderWindow->AddRenderer(renderer);
+            renderer->SetViewport(viewport);
+            renderer->SetBackground(1, 1, 1);
+
+            chart = vtkSmartPointer<vtkChartXY>::New();
+
+            chart->GetAxis(vtkAxis::BOTTOM)->SetTitle("");
+            chart->GetAxis(vtkAxis::LEFT)->SetTitle("");
+
+            chart->GetAxis(vtkAxis::BOTTOM)->SetLogScale(true);
+
+            vtkSmartPointer<vtkContextScene> chartScene = vtkSmartPointer<vtkContextScene>::New();
+            vtkSmartPointer<vtkContextActor> chartActor = vtkSmartPointer<vtkContextActor>::New();
+
+            chartScene->AddItem(chart);
+            chartActor->SetScene(chartScene);
+
+            renderer->AddActor(chartActor);
+            chartScene->SetRenderer(renderer);
+        }
+
+        vtkPlot *line = chart->AddPlot(vtkChart::LINE);
+        line->SetColor(colors[ncolor], colors[ncolor+1], colors[ncolor+2]);
+        line->SetInputData(table, 0, 1);
+
+    }
+
+
+    ncolor = (ncolor + 3)%(3*maxColor);
+#endif
 }
 
 void plt::semilogy(const matrix& x, std::string label) {
-#if ENABLE_PLT
     if (noplot) return;
+    if (x.nrows() < 2) return;
+#if ENABLE_PLT
 
     PyObject *pyx = matrix_to_py(x);
 
@@ -237,11 +526,70 @@ void plt::semilogy(const matrix& x, std::string label) {
 
     call("semilogy", args, kwargs);
 #endif
+#ifdef USE_VTK
+    for (auto j=0; j<x.ncols(); j++) {
+        vtkSmartPointer<vtkTable> table =
+            vtkSmartPointer<vtkTable>::New();
+
+        vtkSmartPointer<vtkFloatArray> arrX =
+            vtkSmartPointer<vtkFloatArray>::New();
+        arrX->SetName("");
+        table->AddColumn(arrX);
+
+        vtkSmartPointer<vtkFloatArray> arrY =
+            vtkSmartPointer<vtkFloatArray>::New();
+        arrY->SetName(label.c_str());
+        table->AddColumn(arrY);
+
+        table->SetNumberOfRows(x.nrows());
+        for (auto i=0; i<x.nrows(); i++) {
+            table->SetValue(i, 0, i);
+            table->SetValue(i, 1, x(i, j));
+        }
+
+
+        if (chart == nullptr) {
+            vtkSmartPointer<vtkRenderer> renderer =
+                vtkSmartPointer<vtkRenderer>::New();
+
+            renderWindow->AddRenderer(renderer);
+            renderer->SetViewport(viewport);
+            renderer->SetBackground(1, 1, 1);
+
+            chart = vtkSmartPointer<vtkChartXY>::New();
+
+            chart->GetAxis(vtkAxis::BOTTOM)->SetTitle("");
+            chart->GetAxis(vtkAxis::LEFT)->SetTitle("");
+
+            chart->GetAxis(vtkAxis::LEFT)->SetLogScale(true);
+
+            vtkSmartPointer<vtkContextScene> chartScene = vtkSmartPointer<vtkContextScene>::New();
+            vtkSmartPointer<vtkContextActor> chartActor = vtkSmartPointer<vtkContextActor>::New();
+
+            chartScene->AddItem(chart);
+            chartActor->SetScene(chartScene);
+
+            renderer->AddActor(chartActor);
+            chartScene->SetRenderer(renderer);
+        }
+
+        vtkPlot *line = chart->AddPlot(vtkChart::LINE);
+        line->SetColor(colors[ncolor], colors[ncolor+1], colors[ncolor+2]);
+        line->SetInputData(table, 0, 1);
+
+    }
+
+
+    ncolor = (ncolor + 3)%(3*maxColor);
+#endif
 }
 
 void plt::semilogy(const matrix& x, const matrix& y, std::string label) {
-#if ENABLE_PLT
+    assert(x.nrows() == y.nrows());
+    assert(x.ncols() == y.ncols());
     if (noplot) return;
+    if (x.nrows() < 2) return;
+#if ENABLE_PLT
 
     PyObject *pyx = matrix_to_py(x);
     PyObject *pyy = matrix_to_py(y);
@@ -255,11 +603,17 @@ void plt::semilogy(const matrix& x, const matrix& y, std::string label) {
 
     call("semilogy", args, kwargs);
 #endif
+#ifdef USE_VTK
+    ester_warn("semilogy not yet implemented");
+#endif
 }
 
 void plt::loglog(const matrix& x, const matrix& y, std::string label) {
-#if ENABLE_PLT
+    assert(x.nrows() == y.nrows());
+    assert(x.ncols() == y.ncols());
     if (noplot) return;
+    if (x.nrows() < 2) return;
+#if ENABLE_PLT
 
     PyObject *pyx = matrix_to_py(x);
     PyObject *pyy = matrix_to_py(y);
@@ -273,11 +627,14 @@ void plt::loglog(const matrix& x, const matrix& y, std::string label) {
 
     call("loglog", args, kwargs);
 #endif
+#ifdef USE_VTK
+    ester_warn("loglog not yet implemented");
+#endif
 }
 
 void plt::legend(std::string loc) {
-#if ENABLE_PLT
     if (noplot) return;
+#if ENABLE_PLT
 
     if (loc == "") {
         call("legend");
@@ -290,80 +647,115 @@ void plt::legend(std::string loc) {
         call("legend", args, kwargs);
     }
 #endif
+#ifdef USE_VTK
+    if (chart != nullptr) {
+        chart->SetShowLegend(true);
+    }
+#endif
 }
 
 void plt::colorbar() {
-#if ENABLE_PLT
     if (noplot) return;
+#if ENABLE_PLT
 
     call("colorbar");
+#endif
+#ifdef USE_VTK
+    ester_warn("colorbar not yet implemented");
 #endif
 }
 
 void plt::title(const std::string& title) {
-#if ENABLE_PLT
     if (noplot) return;
+#if ENABLE_PLT
 
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, PyUnicode_FromString(title.c_str()));
     call("title", args);
 #endif
+#ifdef USE_VTK
+    if (chart != nullptr) {
+        chart->SetTitle(title);
+    }
+    else {
+        ester_warn("Cannot set chart title (%s) before calls to \"plot\", \"semilogx\"...",
+                title.c_str());
+    }
+#endif
 }
 
 void plt::clf() {
-#if ENABLE_PLT
     if (noplot) return;
-
+#if ENABLE_PLT
     call("clf");
+#endif
+#ifdef USE_VTK
+    if (renderWindow != nullptr) {
+        while (auto renderer = renderWindow->GetRenderers()->GetNextItem()) {
+            renderWindow->RemoveRenderer(renderer);
+        }
+    }
 #endif
 }
 
 void plt::ion() {
-#if ENABLE_PLT
     if (noplot) return;
+#if ENABLE_PLT
 
     call("ion");
+#endif
+#ifdef USE_VTK
+    ester_warn("ion not yet implemented");
 #endif
 }
 
 void plt::ioff() {
-#if ENABLE_PLT
     if (noplot) return;
+#if ENABLE_PLT
 
     call("ioff");
+#endif
+#ifdef USE_VTK
+    ester_warn("ioff not yet implemented");
 #endif
 }
 
 void plt::close() {
-#if ENABLE_PLT
     if (noplot) return;
+#if ENABLE_PLT
 
     call("close");
+#endif
+#ifdef USE_VTK
+    ester_warn("close not yet implemented");
 #endif
 }
 
 void plt::show(bool block) {
-#if ENABLE_PLT
     if (noplot) return;
+#if ENABLE_PLT
 
     PyObject *args = PyTuple_New(0);
     PyObject *kwargs = PyDict_New();
     PyDict_SetItemString(kwargs, "block", PyBool_FromLong((long) block));
     call("show", args, kwargs);
 #endif
-}
-
-void plt::block() {
-#if ENABLE_PLT
-    if (noplot) return;
-
-    show(true);
+#ifdef USE_VTK
+    if (block == true)
+        renderWindowInteractor->Start();
+    else
+        renderWindowInteractor->Render();
 #endif
 }
 
-void plt::pause(double t) {
-#if ENABLE_PLT
+void plt::block() {
     if (noplot) return;
+    show(true);
+}
+
+void plt::pause(double t) {
+    if (noplot) return;
+#if ENABLE_PLT
 
     return;
 
@@ -371,11 +763,14 @@ void plt::pause(double t) {
     PyTuple_SetItem(args, 0, PyFloat_FromDouble(t));
     call("pause", args);
 #endif
+#ifdef USE_VTK
+     renderWindow->Render();
+#endif
 }
 
 void plt::subplot(int subplot, bool clear_axis) {
-#if ENABLE_PLT
     if (noplot) return;
+#if ENABLE_PLT
 
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, PyLong_FromLong((long) subplot));
@@ -395,6 +790,25 @@ void plt::subplot(int subplot, bool clear_axis) {
         ester_warn("matplotlib.pyplot.pause failed");
         PyErr_PrintEx(0);
     }
+#endif
+#ifdef USE_VTK
+    init();
+
+    int nr =  subplot / 100;
+    int nc =  (subplot - nr*100) / 10;
+    int i =  subplot%10 - 1;
+
+    int ix = i%nc;
+    int iy = (nr-1) - i/nc;
+
+    viewport[0] = ix * 1.0/nc;
+    viewport[1] = iy * 1.0/nr;
+    viewport[2] = (ix+1) * 1.0/nc;
+    viewport[3] = (iy+1) * 1.0/nr;
+
+    chart = nullptr;
+    textRenderer = nullptr;
+    ncolor = 0;
 #endif
 }
 
@@ -450,11 +864,14 @@ void plt::draw() {
     //         canvas.start_event_loop(1e-2)
     //         return
 #endif
+#ifdef USE_VTK
+     renderWindow->Render();
+#endif
 }
 
 void plt::axvline(double x) {
-#if ENABLE_PLT
     if (noplot) return;
+#if ENABLE_PLT
 
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, PyFloat_FromDouble(x));
@@ -464,11 +881,37 @@ void plt::axvline(double x) {
     PyDict_SetItemString(kwargs, "alpha", PyFloat_FromDouble(0.5));
     call("axvline", args, kwargs);
 #endif
+#ifdef USE_VTK
+    if (chart != nullptr && false) {
+        vtkSmartPointer<vtkTable> table =
+            vtkSmartPointer<vtkTable>::New();
+
+        vtkSmartPointer<vtkFloatArray> arrX =
+            vtkSmartPointer<vtkFloatArray>::New();
+        arrX->SetName("");
+        table->AddColumn(arrX);
+
+        vtkSmartPointer<vtkFloatArray> arrY =
+            vtkSmartPointer<vtkFloatArray>::New();
+        arrY->SetName("-");
+        table->AddColumn(arrY);
+
+        table->SetNumberOfRows(2);
+
+        table->SetValue(0, 0, x);
+        table->SetValue(0, 1, chart->GetAxis(vtkAxis::LEFT)->GetMinimum());
+        table->SetValue(1, 0, x);
+        table->SetValue(1, 1, chart->GetAxis(vtkAxis::LEFT)->GetMaximum());
+        vtkPlot *line = chart->AddPlot(vtkChart::LINE);
+        line->SetColor(0.5, 0.5, 0.5);
+        line->SetInputData(table, 0, 1);
+    }
+#endif
 }
 
 void plt::axhline(double y) {
-#if ENABLE_PLT
     if (noplot) return;
+#if ENABLE_PLT
 
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, PyFloat_FromDouble(y));
@@ -478,27 +921,50 @@ void plt::axhline(double y) {
     PyDict_SetItemString(kwargs, "alpha", PyFloat_FromDouble(0.5));
     call("axhline", args, kwargs);
 #endif
+#ifdef USE_VTK
+    ester_warn("axhline not yet implemented");
+#endif
 }
 
 void plt::text(double x, double y, std::string text) {
-#if ENABLE_PLT
     if (noplot) return;
-
+#if ENABLE_PLT
     PyObject *args = PyTuple_New(3);
     PyTuple_SetItem(args, 0, PyFloat_FromDouble(x));
     PyTuple_SetItem(args, 1, PyFloat_FromDouble(y));
     PyTuple_SetItem(args, 2, PyUnicode_FromString(text.c_str()));
     call("text", args);
 #endif
+#ifdef USE_VTK
+      vtkSmartPointer<vtkTextActor> textActor = vtkSmartPointer<vtkTextActor>::New();
+      std::string line = text;
+      for (auto i=0.0; i<y; i+=0.1)
+          line.append("\n");
+      textActor->SetInput(line.c_str());
+      textActor->GetTextProperty()->SetFontSize(12);
+      textActor->GetTextProperty()->SetColor(0.0, 0.0, 0.0);
+
+      if (textRenderer == nullptr) {
+          textRenderer =
+              vtkSmartPointer<vtkRenderer>::New();
+          renderWindow->AddRenderer(textRenderer);
+          textRenderer->SetViewport(viewport);
+          textRenderer->SetBackground(1, 1, 1);
+      }
+      textRenderer->AddActor2D(textActor);
+#endif
 }
 
 void plt::savefig(const std::string& filename) {
-#if ENABLE_PLT
     if (noplot) return;
+#if ENABLE_PLT
 
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, PyUnicode_FromString(filename.c_str()));
     call("savefig", args);
+#endif
+#ifdef USE_VTK
+    ester_warn("savefig not yet implemented");
 #endif
 }
 
@@ -524,8 +990,8 @@ void plt::call(const std::string& name, PyObject *args, PyObject *kwargs) {
 }
 
 void plt::pcolormesh(const matrix& x, const matrix& y, const matrix& c) {
-#if ENABLE_PLT
     if (noplot) return;
+#if ENABLE_PLT
 
     PyObject *pyx = matrix_to_py(x);
     PyObject *pyy = matrix_to_py(y);
@@ -538,11 +1004,14 @@ void plt::pcolormesh(const matrix& x, const matrix& y, const matrix& c) {
 
     call("pcolormesh", args);
 #endif
+#ifdef USE_VTK
+    ester_warn("pcolormesh not yet implemented");
+#endif
 }
 
 void plt::figure(const int& id, int width, int height) {
-#if ENABLE_PLT
     if (noplot) return;
+#if ENABLE_PLT
 
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, PyLong_FromLong(id));
@@ -559,9 +1028,24 @@ void plt::figure(const int& id, int width, int height) {
         call("figure", args);
     }
 #endif
+#ifdef USE_VTK
+    renderWindow =
+        vtkSmartPointer<vtkRenderWindow>::New();
+    renderWindow->SetSize(width*100, height*100);
+
+    renderWindowInteractor =
+        vtkSmartPointer<vtkRenderWindowInteractor>::New();
+
+    renderWindowInteractor->SetRenderWindow(renderWindow);
+    renderWindow->SetWindowName("ESTER");
+
+    chart = nullptr;
+    textRenderer = nullptr;
+#endif
 }
 
 void plt::axis(const double& x0, const double& x1, const double& y0, const double& y1) {
+    if (noplot) return;
 #if ENABLE_PLT
     PyObject *args = PyTuple_New(1);
     PyObject *list = PyList_New(4);
@@ -574,12 +1058,24 @@ void plt::axis(const double& x0, const double& x1, const double& y0, const doubl
     PyTuple_SetItem(args, 0, list);
     call("axis", args);
 #endif
+#ifdef USE_VTK
+    if (chart != nullptr) {
+        chart->GetAxis(vtkAxis::BOTTOM)->SetMinimum(x0);
+        chart->GetAxis(vtkAxis::BOTTOM)->SetMaximum(x1);
+        chart->GetAxis(vtkAxis::LEFT)->SetMinimum(y0);
+        chart->GetAxis(vtkAxis::LEFT)->SetMaximum(y1);
+    }
+#endif
 }
 
 void plt::axis(const std::string& a) {
+    if (noplot) return;
 #if ENABLE_PLT
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, PyUnicode_FromString(a.c_str()));
     call("axis", args);
+#endif
+#ifdef USE_VTK
+    ester_warn("axis not yet implemented");
 #endif
 }

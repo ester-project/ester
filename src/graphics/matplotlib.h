@@ -11,6 +11,12 @@
 #define PyObject void
 #endif
 
+#ifdef USE_VTK
+#include <vtkRenderWindow.h>
+#include <vtkSmartPointer.h>
+#include <vtkChartXY.h>
+#endif
+
 #include "utils.h"
 #include "matrix.h"
 
@@ -27,6 +33,15 @@ class plt {
         static bool noplot;
 
         static PyObject *matplotlib;
+
+#ifdef USE_VTK
+        static double viewport[4];
+        static vtkSmartPointer<vtkRenderWindow> renderWindow;
+        static vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor;
+        static vtkSmartPointer<vtkChartXY> chart;
+        static vtkSmartPointer<vtkRenderer> textRenderer;
+        static int ncolor;
+#endif
 
     public:
         static void init(bool noplot = false);

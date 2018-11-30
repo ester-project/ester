@@ -106,7 +106,6 @@ int main(int argc,char *argv[]) {
             if(config.verbose) {
                 printf("it=%d err=%e\n",nit,err);
             }
-
             if (config.noplot == false && (nit+1 - last_plot_it > config.plot_interval || last_it)) {
                 last_plot_it = nit;
                 A.plot(error_map.block(0, nit-1, 0 ,0));
