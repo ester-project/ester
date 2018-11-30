@@ -43,7 +43,7 @@ find_package(PythonLibs REQUIRED)
 find_package(SWIG REQUIRED)
 find_package(PythonInterp REQUIRED)
 find_package(HDF5 COMPONENTS CXX)
-find_package(VTK 6.3)
+# find_package(VTK 6.3)
 
 if(HDF5_FOUND)
     add_definitions(-DUSE_HDF5)
@@ -58,6 +58,8 @@ if(VTK_FOUND)
     add_definitions(-DUSE_VTK)
     include(${VTK_USE_FILE})
     set(LIBS "${LIBS};${VTK_LIBRARIES}")
+else()
+    add_definitions(-DENABLE_PLT)
 endif()
 
 
@@ -73,7 +75,6 @@ add_definitions(-DWITH_CMAKE)
 add_definitions(-DVERSION="${PROJECT_VERSION}")
 add_definitions(-DESTER_DATADIR="${CMAKE_INSTALL_PREFIX}/share")
 add_definitions(-DPACKAGE_VERSION="${PROJECT_VERSION}")
-# add_definitions(-DENABLE_PLT)
 
 add_library(ester SHARED
     src/global/global.cpp
@@ -185,14 +186,13 @@ install(TARGETS ester star1d star2d star_evol version gen_output ester_info este
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib)
 
-set(CPACK_GENERATOR "TBZ2")
-set(CPACK_SOURCE_GENERATOR "TBZ2")
-set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
-
-set(CPACK_SOURCE_IGNORE_FILES
-  "/.git/;${CPACK_SOURCE_IGNORE_FILES}")
-
-include(CPack)
-
+# set(CPACK_GENERATOR "TBZ2")
+# set(CPACK_SOURCE_GENERATOR "TBZ2")
+# set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
+# set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
+# set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
+#
+# set(CPACK_SOURCE_IGNORE_FILES
+#   "/.git/;${CPACK_SOURCE_IGNORE_FILES}")
+#
+# include(CPack)
