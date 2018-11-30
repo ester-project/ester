@@ -53,5 +53,10 @@ pipeline {
                 deleteDir()
             }
         }
+        failure {
+            mail to: 'ester-dev@irap.omp.eu',
+                 subject: "Jenkins build failed: ${currentBuild.fullDisplayName}",
+                 body: "Something is wrong with ${env.BUILD_URL}"
+        }
     }
 }
