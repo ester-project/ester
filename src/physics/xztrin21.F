@@ -533,7 +533,6 @@ c                  with a return
       end
 
 c***********************************************************************
-#if 0
       subroutine t6rinterp(slr,slt)
 c     The purpose of this subroutine is to interpolate in logT6 and logR
       save
@@ -650,7 +649,6 @@ c.....        Dlog(k)/Dlog(R) smoothed in both log(T6) and Log(R).
           endif
       return
       end
-#endif
 
 c
 c**********************************************************************
@@ -779,7 +777,6 @@ c           the X=0  low T data cannot be smoothed
       end
 c
 c***********************************************************************
-#if 0
       function quad(ic,i,x,y1,y2,y3,x1,x2,x3)
 c..... this function performs a quadratic interpolation.
       save
@@ -808,7 +805,6 @@ c..... this function performs a quadratic interpolation.
       quad=c1+x*(c2+x*c3)
       return
       end
-#endif
 c
 c***********************************************************************
       block data xztrin21_block_data
