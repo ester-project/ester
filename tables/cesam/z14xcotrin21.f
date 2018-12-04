@@ -6264,30 +6264,30 @@ c
       end
 c
 c******************************************************************************
+
+      subroutine readco(z,kallrd,khighz,iu_lo)
+c     ========================================
 c
-c       subroutine readco(z,kallrd,khighz,iu_lo)
-c c     ========================================
-c c
-c c..... The purpose of this subroutine is to read the data tables; actually,
-c c      it just calls READEXCO to do the work, setting [O/Fe] = 0.0
-c c
-c c Z is the metallicity; opacities will be interpolated (quadratically) in Z if
-c c   necessary, with values of Z from 0.0 to 0.1 being allowed.
-c c kallrd is ignored (it is present only for backward compatibility).
-c c if khighz = 0 , then the file GN93hz is not used; else, GN93hz (or GS98hz,
-c c   for khighz < 0) may be used for the case C=O=0.0 to get improved opacities.
-c c iu_lo is the unit number from which the lowest Z-value files are read;
-c c   units iu_lo thru iu_lo+3 may be needed.
-c c
-c c===
-c       call readexco(z,kallrd,MAX(MIN(khighz,1),-1),iu_lo,0.0)
-c c
-c       return
-c       end
+c..... The purpose of this subroutine is to read the data tables; actually,
+c      it just calls READEXCO to do the work, setting [O/Fe] = 0.0
 c
+c Z is the metallicity; opacities will be interpolated (quadratically) in Z if
+c   necessary, with values of Z from 0.0 to 0.1 being allowed.
+c kallrd is ignored (it is present only for backward compatibility).
+c if khighz = 0 , then the file GN93hz is not used; else, GN93hz (or GS98hz,
+c   for khighz < 0) may be used for the case C=O=0.0 to get improved opacities.
+c iu_lo is the unit number from which the lowest Z-value files are read;
+c   units iu_lo thru iu_lo+3 may be needed.
+c
+c===
+      call readexco(z,kallrd,MAX(MIN(khighz,1),-1),iu_lo,0.0)
+c
+      return
+      end
+
 c******************************************************************************
 c
-#if 0
+#if 1
       subroutine readexco(z,kallrd,khighz,iu_lo,ofebrack)
 c     ===================================================
 c

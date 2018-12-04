@@ -825,7 +825,7 @@ c***********************************************************************
       end
 c
 c***********************************************************************
-#if 0
+#if 1
       subroutine opaltab
 C
 C  CODE FOR FITTING AND SMOOTHING OPAL DATA. ADAPTED FROM A CODE
@@ -997,37 +997,37 @@ C
 #endif
 C
 C*********************************************************************
-c       SUBROUTINE SPLINE(X,Y,N,Y2)
-c       PARAMETER (NMAX=100)
-c       DIMENSION X(N),Y(N),Y2(N),U(NMAX)
-c C
-c C     FIRST DERIVATIVES AT END POINTS USING CUBIC FIT
-c          YP1=((Y(3)-Y(1))*(X(2)-X(1))**2
-c      +   -(Y(2)-Y(1))*(X(3)-X(1))**2)/
-c      +   ((X(3)-X(1))*(X(2)-X(1))*(X(2)-X(3)))
-c          YPN=((Y(N-2)-Y(N))*(X(N-1)-X(N))**2
-c      +   -(Y(N-1)-Y(N))*(X(N-2)-X(N))**2)/
-c      +   ((X(N-2)-X(N))*(X(N-1)-X(N))*(X(N-1)-X(N-2)))
-c C
-c       Y2(1)=-0.5
-c       U(1)=(3./(X(2)-X(1)))*((Y(2)-Y(1))/(X(2)-X(1))-YP1)
-c       DO 11 I=2,N-1
-c         SIG=(X(I)-X(I-1))/(X(I+1)-X(I-1))
-c         P=SIG*Y2(I-1)+2.
-c         Y2(I)=(SIG-1.)/P
-c         U(I)=(6.*((Y(I+1)-Y(I))/(X(I+1)-X(I))-(Y(I)-Y(I-1))
-c      *      /(X(I)-X(I-1)))/(X(I+1)-X(I-1))-SIG*U(I-1))/P
-c 11    CONTINUE
-c       QN=0.5
-c       UN=(3./(X(N)-X(N-1)))*(YPN-(Y(N)-Y(N-1))/(X(N)-X(N-1)))
-c       Y2(N)=(UN-QN*U(N-1))/(QN*Y2(N-1)+1.)
-c       DO 12 K=N-1,1,-1
-c         Y2(K)=Y2(K)*Y2(K+1)+U(K)
-c 12    CONTINUE
-c       RETURN
-c       END
+      SUBROUTINE SPLINE(X,Y,N,Y2)
+      PARAMETER (NMAX=100)
+      DIMENSION X(N),Y(N),Y2(N),U(NMAX)
+C
+C     FIRST DERIVATIVES AT END POINTS USING CUBIC FIT
+         YP1=((Y(3)-Y(1))*(X(2)-X(1))**2
+     +   -(Y(2)-Y(1))*(X(3)-X(1))**2)/
+     +   ((X(3)-X(1))*(X(2)-X(1))*(X(2)-X(3)))
+         YPN=((Y(N-2)-Y(N))*(X(N-1)-X(N))**2
+     +   -(Y(N-1)-Y(N))*(X(N-2)-X(N))**2)/
+     +   ((X(N-2)-X(N))*(X(N-1)-X(N))*(X(N-1)-X(N-2)))
+C
+      Y2(1)=-0.5
+      U(1)=(3./(X(2)-X(1)))*((Y(2)-Y(1))/(X(2)-X(1))-YP1)
+      DO 11 I=2,N-1
+        SIG=(X(I)-X(I-1))/(X(I+1)-X(I-1))
+        P=SIG*Y2(I-1)+2.
+        Y2(I)=(SIG-1.)/P
+        U(I)=(6.*((Y(I+1)-Y(I))/(X(I+1)-X(I))-(Y(I)-Y(I-1))
+     *      /(X(I)-X(I-1)))/(X(I+1)-X(I-1))-SIG*U(I-1))/P
+11    CONTINUE
+      QN=0.5
+      UN=(3./(X(N)-X(N-1)))*(YPN-(Y(N)-Y(N-1))/(X(N)-X(N-1)))
+      Y2(N)=(UN-QN*U(N-1))/(QN*Y2(N-1)+1.)
+      DO 12 K=N-1,1,-1
+        Y2(K)=Y2(K)*Y2(K+1)+U(K)
+12    CONTINUE
+      RETURN
+      END
 C*********************************************************************
-#if 0
+#if 1
       SUBROUTINE SPLINT(XA,YA,N,Y2A,X,Y,YP)
       DIMENSION XA(N),YA(N),Y2A(N)
       KLO=1
@@ -1054,7 +1054,7 @@ C*********************************************************************
       END
 #endif
 C*********************************************************************
-#if 0
+#if 1
       SUBROUTINE FITY
 C
 C  THIS ROUTINE MAKES SPLINE FITS FOR F AND FX, AND OBTAINS
@@ -1282,116 +1282,116 @@ C
 #endif
 
 C*********************************************************************
-c       SUBROUTINE SMOOTH
-c C
-c C  THIS SUBROUTINE USES A 2-DIMENSIONAL GENERALISATION OF THE SMOOTHING
-c C  TECHNIQUES DESCRIBED ON PP. 644 TO 649 OF Numerical Recipes.
-c C
-c C  CONSIDER THE 25 POINTS DEFINED BY
-c C       I+n, n=-2,-1,0,1,2 AND J+m, m=-2,-1,0,1,2.
-c C  THE FUNCTION TO BE SMOOTHED IS FITTED TO A BI-CUBIC, INVOLVING
-c C  16 COEFFICIENTS, USING TECHNIQUES OF LEAST-SQUARES. THE SMOOTHED
-c C  FUNCTION (TEMPORARILY STORED IN FXY) IS GIVEN BY THE FITTED VALUE
-c C  AT THE POINT I AND J.
-c C
-c C  THE FITTING IS SHIFTED FOR POINTS CLOSE TO BOUNDARIES.
-c C
-c C
-c       PARAMETER(IPR=20)
-c C
-c       COMMON/CST/NRL,RLS,nset,tmax  ! modified
-c       COMMON/CF/F(85,IPR),FX(85,IPR),FY(85,IPR),FXY(85,IPR)
-c C
-c       DIMENSION GAM(6)
-c       DATA GAM/+0.0073469388,-0.0293877551,-0.0416326531,
-c      +         +0.1175510204,+0.1665306122,+0.2359183673/
-c       DIMENSION BET(11)
-c       DATA BET/
-c      + -0.0048979592,-0.0661224490,-0.0293877551,+0.0195918367,
-c      +  0.2644897959,+0.1175510204,-0.0783673469,+0.0277551020,
-c      +  0.3746938776,+0.1665306122,-0.1110204082/
-c       DIMENSION ALP(11)
-c       DATA ALP/
-c      + -0.0844897959,-0.0048979592,+0.0073469388,+0.0012244898,
-c      +  0.3379591837,+0.0195918367,-0.0293877551,+0.4787755102,
-c      +  0.0277551020,-0.0416326531,-0.0069387755/
-c C
-c C
-c       DO 20 I=3,nset-2 
-c C
-c          J=1
-c          FXY(I,J)=
-c      +    ALP(1)*( F(I-2,J  )+F(I+2,J  ) )
-c      +   +ALP(2)*( F(I-2,J+1)+F(I+2,J+1)+F(I-2,J+3)+F(I+2,J+3)
-c      +          +F(I-1,J+4)+F(I+1,J+4) )
-c      +   +ALP(3)*( F(I-2,J+2)+F(I+2,J+2) )
-c      +   +ALP(4)*( F(I-2,J+4)+F(I+2,J+4) )
-c      +   +ALP(5)*( F(I-1,J  )+F(I+1,J  ) )
-c      +   +ALP(6)*( F(I-1,J+1)+F(I+1,J+1)+F(I-1,J+3)+F(I+1,J+3) )
-c      +   +ALP(7)*( F(I-1,J+2)+F(I+1,J+2) )
-c      +   +ALP(8)*  F(I  ,J  )
-c      +   +ALP(9)*( F(I  ,J+1)+F(I  ,J+3) )
-c      +   +ALP(10)* F(I  ,J+2) +ALP(11)*F(I  ,J+4)
-c C
-c          J=2
-c          FXY(I,J)=
-c      +    BET(1)*( F(I-2,J-1)+F(I+2,J-1)+F(I-2,J+3)+F(I+2,J+3) )
-c      +   +BET(2)*( F(I-2,J  )+F(I+2,J  ) )
-c      +   +BET(3)*( F(I-2,J+1)+F(I+2,J+1) )
-c      +   +BET(4)*( F(I-2,J+2)+F(I+2,J+2)+F(I-1,J-1)+F(I+1,J-1)
-c      +            +F(I-1,J+3)+F(I+1,J+3) )
-c      +   +BET(5)*( F(I-1,J  )+F(I+1,J  ) )
-c      +   +BET(6)*( F(I-1,J+1)+F(I+1,J+1) )
-c      +   +BET(7)*( F(I-1,J+2)+F(I+1,J+2) )
-c      +   +BET(8)*( F(I  ,J-1)+F(I  ,J+3) )
-c      +   +BET(9)*F(I  ,J  ) +BET(10)*F(I  ,J+1) +BET(11)*F(I  ,J+2)
-c C
-c          DO 10 J=3,NRL-2
-c             FXY(I,J)=
-c      +         GAM(1)*( F(I-2,J-2)+F(I-2,J+2)+F(I+2,J-2)+F(I+2,J+2) )
-c      +        +GAM(2)*( F(I-2,J+1)+F(I-2,J-1)+F(I-1,J-2)+F(I-1,J+2)
-c      +                 +F(I+1,J-2)+F(I+1,J+2)+F(I+2,J-1)+F(I+2,J+1) )
-c      +        +GAM(3)*( F(I-2,J  )+F(I+2,J  )+F(I  ,J-2)+F(I  ,J+2) )
-c      +        +GAM(4)*( F(I-1,J-1)+F(I-1,J+1)+F(I+1,J-1)+F(I+1,J+1) )
-c      +        +GAM(5)*( F(I-1,J  )+F(I  ,J-1)+F(I  ,J+1)+F(I+1,J  ) )
-c      +        +GAM(6)*  F(I  ,J  )
-c    10    CONTINUE
-c C
-c          J=NRL-1
-c          FXY(I,J)=
-c      +     BET(1)*( F(I-2,J+1)+F(I+2,J+1)+F(I-2,J-3)+F(I+2,J-3) )
-c      +    +BET(2)*( F(I-2,J  )+F(I+2,J  ) )
-c      +    +BET(3)*( F(I-2,J-1)+F(I+2,J-1) )
-c      +    +BET(4)*( F(I-2,J-2)+F(I+2,J-2)+F(I-1,J+1)+F(I+1,J+1)
-c      +             +F(I-1,J-3)+F(I+1,J-3) )
-c      +    +BET(5)*( F(I-1,J  )+F(I+1,J  ) )
-c      +    +BET(6)*( F(I-1,J-1)+F(I+1,J-1) )
-c      +    +BET(7)*( F(I-1,J-2)+F(I+1,J-2) )
-c      +    +BET(8)*( F(I  ,J+1)+F(I  ,J-3) )
-c      +    +BET(9)*F(I  ,J  ) +BET(10)*F(I  ,J-1) +BET(11)*F(I  ,J-2)
-c C
-c          J=NRL
-c          FXY(I,J)=
-c      +     ALP(1)*( F(I-2,J  )+F(I+2,J  ) )
-c      +    +ALP(2)*( F(I-2,J-1)+F(I+2,J-1)+F(I-2,J-3)+F(I+2,J-3)
-c      +             +F(I-1,J-4)+F(I+1,J-4) )
-c      +    +ALP(3)*( F(I-2,J-2)+F(I+2,J-2) )
-c      +    +ALP(4)*( F(I-2,J-4)+F(I+2,J-4) )
-c      +    +ALP(5)*( F(I-1,J  )+F(I+1,J  ) )
-c      +    +ALP(6)*( F(I-1,J-1)+F(I+1,J-1)+F(I-1,J-3)+F(I+1,J-3) )
-c      +    +ALP(7)*( F(I-1,J-2)+F(I+1,J-2) )
-c      +    +ALP(8)*  F(I  ,J  )
-c      +    +ALP(9)*( F(I  ,J-1)+F(I  ,J-3) )
-c      +    +ALP(10)* F(I  ,J-2) +ALP(11)*F(I  ,J-4)
-c C
-c    20 CONTINUE
-c C
-c       DO 40 I=3,nset-2   ! modified
-c          DO 30 J=1,NRL
-c             F(I,J)=FXY(I,J)
-c    30    CONTINUE
-c    40 CONTINUE
-c C
-c       RETURN
-c       END
+      SUBROUTINE SMOOTH
 C
+C  THIS SUBROUTINE USES A 2-DIMENSIONAL GENERALISATION OF THE SMOOTHING
+C  TECHNIQUES DESCRIBED ON PP. 644 TO 649 OF Numerical Recipes.
+C
+C  CONSIDER THE 25 POINTS DEFINED BY
+C       I+n, n=-2,-1,0,1,2 AND J+m, m=-2,-1,0,1,2.
+C  THE FUNCTION TO BE SMOOTHED IS FITTED TO A BI-CUBIC, INVOLVING
+C  16 COEFFICIENTS, USING TECHNIQUES OF LEAST-SQUARES. THE SMOOTHED
+C  FUNCTION (TEMPORARILY STORED IN FXY) IS GIVEN BY THE FITTED VALUE
+C  AT THE POINT I AND J.
+C
+C  THE FITTING IS SHIFTED FOR POINTS CLOSE TO BOUNDARIES.
+C
+C
+      PARAMETER(IPR=20)
+C
+      COMMON/CST/NRL,RLS,nset,tmax  ! modified
+      COMMON/CF/F(85,IPR),FX(85,IPR),FY(85,IPR),FXY(85,IPR)
+C
+      DIMENSION GAM(6)
+      DATA GAM/+0.0073469388,-0.0293877551,-0.0416326531,
+     +         +0.1175510204,+0.1665306122,+0.2359183673/
+      DIMENSION BET(11)
+      DATA BET/
+     + -0.0048979592,-0.0661224490,-0.0293877551,+0.0195918367,
+     +  0.2644897959,+0.1175510204,-0.0783673469,+0.0277551020,
+     +  0.3746938776,+0.1665306122,-0.1110204082/
+      DIMENSION ALP(11)
+      DATA ALP/
+     + -0.0844897959,-0.0048979592,+0.0073469388,+0.0012244898,
+     +  0.3379591837,+0.0195918367,-0.0293877551,+0.4787755102,
+     +  0.0277551020,-0.0416326531,-0.0069387755/
+C
+C
+      DO 20 I=3,nset-2 
+C
+         J=1
+         FXY(I,J)=
+     +    ALP(1)*( F(I-2,J  )+F(I+2,J  ) )
+     +   +ALP(2)*( F(I-2,J+1)+F(I+2,J+1)+F(I-2,J+3)+F(I+2,J+3)
+     +          +F(I-1,J+4)+F(I+1,J+4) )
+     +   +ALP(3)*( F(I-2,J+2)+F(I+2,J+2) )
+     +   +ALP(4)*( F(I-2,J+4)+F(I+2,J+4) )
+     +   +ALP(5)*( F(I-1,J  )+F(I+1,J  ) )
+     +   +ALP(6)*( F(I-1,J+1)+F(I+1,J+1)+F(I-1,J+3)+F(I+1,J+3) )
+     +   +ALP(7)*( F(I-1,J+2)+F(I+1,J+2) )
+     +   +ALP(8)*  F(I  ,J  )
+     +   +ALP(9)*( F(I  ,J+1)+F(I  ,J+3) )
+     +   +ALP(10)* F(I  ,J+2) +ALP(11)*F(I  ,J+4)
+C
+         J=2
+         FXY(I,J)=
+     +    BET(1)*( F(I-2,J-1)+F(I+2,J-1)+F(I-2,J+3)+F(I+2,J+3) )
+     +   +BET(2)*( F(I-2,J  )+F(I+2,J  ) )
+     +   +BET(3)*( F(I-2,J+1)+F(I+2,J+1) )
+     +   +BET(4)*( F(I-2,J+2)+F(I+2,J+2)+F(I-1,J-1)+F(I+1,J-1)
+     +            +F(I-1,J+3)+F(I+1,J+3) )
+     +   +BET(5)*( F(I-1,J  )+F(I+1,J  ) )
+     +   +BET(6)*( F(I-1,J+1)+F(I+1,J+1) )
+     +   +BET(7)*( F(I-1,J+2)+F(I+1,J+2) )
+     +   +BET(8)*( F(I  ,J-1)+F(I  ,J+3) )
+     +   +BET(9)*F(I  ,J  ) +BET(10)*F(I  ,J+1) +BET(11)*F(I  ,J+2)
+C
+         DO 10 J=3,NRL-2
+            FXY(I,J)=
+     +         GAM(1)*( F(I-2,J-2)+F(I-2,J+2)+F(I+2,J-2)+F(I+2,J+2) )
+     +        +GAM(2)*( F(I-2,J+1)+F(I-2,J-1)+F(I-1,J-2)+F(I-1,J+2)
+     +                 +F(I+1,J-2)+F(I+1,J+2)+F(I+2,J-1)+F(I+2,J+1) )
+     +        +GAM(3)*( F(I-2,J  )+F(I+2,J  )+F(I  ,J-2)+F(I  ,J+2) )
+     +        +GAM(4)*( F(I-1,J-1)+F(I-1,J+1)+F(I+1,J-1)+F(I+1,J+1) )
+     +        +GAM(5)*( F(I-1,J  )+F(I  ,J-1)+F(I  ,J+1)+F(I+1,J  ) )
+     +        +GAM(6)*  F(I  ,J  )
+   10    CONTINUE
+C
+         J=NRL-1
+         FXY(I,J)=
+     +     BET(1)*( F(I-2,J+1)+F(I+2,J+1)+F(I-2,J-3)+F(I+2,J-3) )
+     +    +BET(2)*( F(I-2,J  )+F(I+2,J  ) )
+     +    +BET(3)*( F(I-2,J-1)+F(I+2,J-1) )
+     +    +BET(4)*( F(I-2,J-2)+F(I+2,J-2)+F(I-1,J+1)+F(I+1,J+1)
+     +             +F(I-1,J-3)+F(I+1,J-3) )
+     +    +BET(5)*( F(I-1,J  )+F(I+1,J  ) )
+     +    +BET(6)*( F(I-1,J-1)+F(I+1,J-1) )
+     +    +BET(7)*( F(I-1,J-2)+F(I+1,J-2) )
+     +    +BET(8)*( F(I  ,J+1)+F(I  ,J-3) )
+     +    +BET(9)*F(I  ,J  ) +BET(10)*F(I  ,J-1) +BET(11)*F(I  ,J-2)
+C
+         J=NRL
+         FXY(I,J)=
+     +     ALP(1)*( F(I-2,J  )+F(I+2,J  ) )
+     +    +ALP(2)*( F(I-2,J-1)+F(I+2,J-1)+F(I-2,J-3)+F(I+2,J-3)
+     +             +F(I-1,J-4)+F(I+1,J-4) )
+     +    +ALP(3)*( F(I-2,J-2)+F(I+2,J-2) )
+     +    +ALP(4)*( F(I-2,J-4)+F(I+2,J-4) )
+     +    +ALP(5)*( F(I-1,J  )+F(I+1,J  ) )
+     +    +ALP(6)*( F(I-1,J-1)+F(I+1,J-1)+F(I-1,J-3)+F(I+1,J-3) )
+     +    +ALP(7)*( F(I-1,J-2)+F(I+1,J-2) )
+     +    +ALP(8)*  F(I  ,J  )
+     +    +ALP(9)*( F(I  ,J-1)+F(I  ,J-3) )
+     +    +ALP(10)* F(I  ,J-2) +ALP(11)*F(I  ,J-4)
+C
+   20 CONTINUE
+C
+      DO 40 I=3,nset-2   ! modified
+         DO 30 J=1,NRL
+            F(I,J)=FXY(I,J)
+   30    CONTINUE
+   40 CONTINUE
+C
+      RETURN
+      END
+
