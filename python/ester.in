@@ -69,6 +69,7 @@ class star2d:
         self.opa = self._s.opa.name
         self.eos = self._s.eos.name
         self.nuc = self._s.nuc.name
+        self.age = self._s.age
 
         P_eq            = _wrapper.matrix()
         self._s.map.leg.eval_00(_wrapper.ones(1, self.nth), _np.pi/2, P_eq)
