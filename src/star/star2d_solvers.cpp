@@ -343,7 +343,7 @@ void star2d::solve_definitions(solver *op) {
 /// \brief Writes Poisson equation and interface conditions into the solver.
 void star2d::solve_poisson(solver *op) {
 	matrix q,rhs1,rhs2,rhs;
-	int n,j0;
+	int n,j0,j1;
 	matrix &rz=map.rz;
 
 	symbolic S;
@@ -400,6 +400,7 @@ void star2d::solve_poisson(solver *op) {
 // i.e. continuity of Phi and (1/rz)*dphi/dzeta
 
 	for(n=0;n<ndomains+1;n++) {
+	  j1=j0+map.gl.npts[n]-1; // end point of the domain 'n'
 	  if(n==0) {
 // First start with the bottom conditions
 // In the first domain we demand that dphi/dzeta
@@ -442,14 +443,13 @@ void star2d::solve_poisson(solver *op) {
 	if(n<ndomains) op->bc_top2_add_d(n,"Phi","Phi",-ones(1,nth));
 
 // Prepare the RHS for the continuity of phi
-   if(n<ndomains) rhs.setrow(j0+map.gl.npts[n]-1,-phi.row(j0+map.gl.npts[n]-1));
+   //if(n<ndomains) rhs.setrow(j0+map.gl.npts[n]-1,-phi.row(j0+map.gl.npts[n]-1));
+   if(n<ndomains) rhs.setrow(j1,-phi.row(j1));
    else rhs.setrow(nr+nex-1,-phiex.row(nex-1)); // left terms of the last domain
-   if(n<ndomains-1) rhs.setrow(j0+map.gl.npts[n]-1,rhs.row(j0+map.gl.npts[n]-1)
-	+phi.row(j0+map.gl.npts[n])); // add the right term
+   if(n<ndomains-1) rhs.setrow(j1,rhs.row(j1)+phi.row(j1+1)); // add the right term
 // add the right term for the last stellar domain but here the
 // right term is phiex:
-   else if(n==ndomains-1) rhs.setrow(j0+map.gl.npts[n]-1,
-    rhs.row(j0+map.gl.npts[n]-1)+phiex.row(0));
+   else if(n==ndomains-1) rhs.setrow(j1,rhs.row(j1)+phiex.row(0));
    if(n<ndomains) j0+=map.gl.npts[n];
 // Note the Right BC for phi is phi(infty)=0,
 // so no right term in the rhs of the n==ndomain case
@@ -664,12 +664,14 @@ void star2d::solve_temp(solver *op) {
 // for each domain we compute the luminosity at the upper boundary
 // lum(n) =int_0^pi\int_0^eta_n 2*pi*r^2*rz*rho*eps dzeta sin(theta)dtheta
 	double fac=2*PI*Lambda;
+	matrix I_00=map.leg.I_00;
+	matrix fact=fac*ones(1,1),m2pi=2*PI*ones(1,1);
 
 	for(n=0;n<ndomains;n++) {
 		j1=j0+map.gl.npts[n]-1;
 		if(n) lum(n)=lum(n-1);
 		lum(n)+=fac*(map.gl.I.block(0,0,j0,j1),
-			(rho*nuc.eps*r*r*rz).block(j0,j1,0,-1),map.leg.I_00)(0);
+			(rho*nuc.eps*r*r*rz).block(j0,j1,0,-1),I_00)(0);
 		j0+=map.gl.npts[n];
 	}
 
@@ -677,19 +679,18 @@ void star2d::solve_temp(solver *op) {
 // Since this equation is a one-line matrix, it is implemented as a BC
 	rhs_lum=zeros(ndomains,1);
 	j0=0;
-	for(n=0;n<ndomains;n++) {
-		j1=j0+map.gl.npts[n]-1;
-		matrix Integ_bl=map.gl.I.block(0,0,j0,j1);
-		op->bc_bot2_add_d(n,"lum","lum",ones(1,1));
-		op->bc_bot2_add_lri(n,"lum","rho",-fac*ones(1,1),Integ_bl,map.leg.I_00,(r*r*rz*nuc.eps).block(j0,j1,0,-1));
-		op->bc_bot2_add_lri(n,"lum","nuc.eps",-fac*ones(1,1),Integ_bl,map.leg.I_00,(r*r*rz*rho).block(j0,j1,0,-1));
-		op->bc_bot2_add_d(n,"lum","Lambda",-2*PI*(Integ_bl,(rho*nuc.eps*r*r*rz).block(j0,j1,0,-1),map.leg.I_00));
-//metric terms from dV
-		op->bc_bot2_add_lri(n,"lum","r",-fac*ones(1,1),Integ_bl,map.leg.I_00,(2*r*rz*rho*nuc.eps).block(j0,j1,0,-1));
-		op->bc_bot2_add_lri(n,"lum","rz",-fac*ones(1,1),Integ_bl,map.leg.I_00,(r*r*rho*nuc.eps).block(j0,j1,0,-1));
+	for (n=0;n<ndomains;n++) {
+	 j1=j0+map.gl.npts[n]-1;
+	 matrix I_bl=map.gl.I.block(0,0,j0,j1);
+	 op->bc_bot2_add_d(n,"lum","lum",ones(1,1));
+	 op->bc_bot2_add_lri(n,"lum","rho",-fact,I_bl,I_00,(r*r*rz*nuc.eps).block(j0,j1,0,-1));
+	 op->bc_bot2_add_lri(n,"lum","nuc.eps",-fact,I_bl,I_00,(r*r*rz*rho).block(j0,j1,0,-1));
+	 op->bc_bot2_add_d(n,"lum","Lambda",-2*PI*(I_bl,(rho*nuc.eps*r*r*rz).block(j0,j1,0,-1),I_00));
+	 op->bc_bot2_add_lri(n,"lum","r",-fact,I_bl,I_00,(2*r*rz*rho*nuc.eps).block(j0,j1,0,-1));
+	 op->bc_bot2_add_lri(n,"lum","rz",-fact,I_bl,I_00,(r*r*rho*nuc.eps).block(j0,j1,0,-1));
 
-		if(n) op->bc_bot1_add_d(n,"lum","lum",-ones(1,1));
-		j0+=map.gl.npts[n];
+	 if(n) op->bc_bot1_add_d(n,"lum","lum",-ones(1,1));
+	 j0+=map.gl.npts[n];
 	}
 	op->set_rhs("lum",rhs_lum);
 
@@ -749,8 +750,9 @@ void star2d::solve_temp(solver *op) {
 	j0=0;
 // define the grid-points belonging to the core
 	for(n=0;n<ndomains;n++) {
-		if(n<conv) qcore.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth));
-		else qenv.setblock(j0,j0+map.gl.npts[n]-1,0,-1,ones(map.gl.npts[n],nth));
+		j1=j0+map.gl.npts[n]-1;
+		if(n<conv) qcore.setblock(j0,j1,0,-1,ones(map.gl.npts[n],nth));
+		else qenv.setblock(j0,j1,0,-1,ones(map.gl.npts[n],nth));
 		j0+=map.gl.npts[n];
 	}
 
@@ -868,11 +870,11 @@ void star2d::solve_temp(solver *op) {
 				rhs_Lambda(0)=-((D,T).row(0),q)(0);
 			} else { // The domain above the CC is not the central domain
                                  // The Lambda eqn says that the total radiative flux is the luminosity at the boundary
-				op->bc_bot2_add_ri(n,"Lambda","Frad",2*PI*ones(1,1),map.leg.I_00,(r*r*rz).row(j0));
-				op->bc_bot2_add_ri(n,"Lambda","r",2*PI*ones(1,1),map.leg.I_00,(Frad*2*r*rz).row(j0));
-				op->bc_bot2_add_ri(n,"Lambda","rz",2*PI*ones(1,1),map.leg.I_00,(Frad*r*r).row(j0));
+				op->bc_bot2_add_ri(n,"Lambda","Frad",m2pi,I_00,(r*r*rz).row(j0));
+				op->bc_bot2_add_ri(n,"Lambda","r",m2pi,I_00,(Frad*2*r*rz).row(j0));
+				op->bc_bot2_add_ri(n,"Lambda","rz",m2pi,I_00,(Frad*r*r).row(j0));
 				op->bc_bot1_add_d(n,"Lambda","lum",-ones(1,1));
-				rhs_Lambda(n)=-2*PI*(Frad.row(j0)*(r*r*rz).row(j0),map.leg.I_00)(0)+lum(n-1);
+				rhs_Lambda(n)=-2*PI*(Frad.row(j0)*(r*r*rz).row(j0),I_00)(0)+lum(n-1);
 			}
 		} else { // In all other domains continuity of Lambda is imposed at the bottom of the domain
 			op->bc_bot2_add_d(n,"Lambda","Lambda",ones(1,1));
@@ -890,22 +892,22 @@ void star2d::solve_temp(solver *op) {
 /// \brief Writes the equations for the dimensional quantities (T_c, rho_c, R, etc.)
 
 void star2d::solve_dim(solver *op) {
-	int n,j0;
+	int n,j0,j1;
 	matrix q,rhs;
 
 	rhs=zeros(ndomains,1);
 	j0=0;
 // Expression of the mass integral m=intvol rho 2*pi*r^2*rz*sin(th)*dth
-	for(n=0;n<ndomains;n++) {
-		op->bc_bot2_add_d(n,"m","m",ones(1,1));
-		//rho
-		op->bc_bot2_add_lri(n,"m","rho",-2*PI*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(r*r*map.rz).block(j0,j0+map.gl.npts[n]-1,0,-1));
-		//r (rz)
-		op->bc_bot2_add_lri(n,"m","r",-2*PI*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(2*r*map.rz*rho).block(j0,j0+map.gl.npts[n]-1,0,-1));
-		op->bc_bot2_add_lri(n,"m","rz",-2*PI*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(r*r*rho).block(j0,j0+map.gl.npts[n]-1,0,-1));
-
-		if(n) op->bc_bot1_add_d(n,"m","m",-ones(1,1));
-		j0+=map.gl.npts[n];
+        matrix I_00=map.leg.I_00,m2pi=2*PI*ones(1,1);
+	for (n=0;n<ndomains;n++) {
+	    j1=j0+map.gl.npts[n]-1;
+	    matrix I_bl=map.gl.I.block(0,0,j0,j1);
+	    op->bc_bot2_add_d(n,"m","m",ones(1,1));
+	    op->bc_bot2_add_lri(n,"m","rho",-m2pi,I_bl,I_00,(r*r*map.rz).block(j0,j1,0,-1));
+	    op->bc_bot2_add_lri(n,"m","r",-m2pi,I_bl,I_00,(2*r*map.rz*rho).block(j0,j1,0,-1));
+	    op->bc_bot2_add_lri(n,"m","rz",-m2pi,I_bl,I_00,(r*r*rho).block(j0,j1,0,-1));
+	    if(n) op->bc_bot1_add_d(n,"m","m",-ones(1,1));
+	    j0+=map.gl.npts[n];
 	}
 	op->set_rhs("m",rhs);
 
