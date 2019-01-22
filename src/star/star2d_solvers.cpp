@@ -647,7 +647,7 @@ void star2d::solve_mov(solver *op) {
 /// \brief Writes temperature and luminosity equations and interface conditions
 /// into the solver.
 void star2d::solve_temp(solver *op) {
-	int n,j0;
+	int n,j0,j1;
 	matrix q;
 	char eqn[8];
 	matrix &gzz=map.gzz, &gzt=map.gzt, &rz=map.rz;
@@ -663,10 +663,13 @@ void star2d::solve_temp(solver *op) {
 	j0=0;
 // for each domain we compute the luminosity at the upper boundary
 // lum(n) =int_0^pi\int_0^eta_n 2*pi*r^2*rz*rho*eps dzeta sin(theta)dtheta
+	double fac=2*PI*Lambda;
+
 	for(n=0;n<ndomains;n++) {
+		j1=j0+map.gl.npts[n]-1;
 		if(n) lum(n)=lum(n-1);
-		lum(n)+=2*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),
-			(rho*nuc.eps*r*r*rz).block(j0,j0+map.gl.npts[n]-1,0,-1),map.leg.I_00)(0);
+		lum(n)+=fac*(map.gl.I.block(0,0,j0,j1),
+			(rho*nuc.eps*r*r*rz).block(j0,j1,0,-1),map.leg.I_00)(0);
 		j0+=map.gl.npts[n];
 	}
 
@@ -675,13 +678,15 @@ void star2d::solve_temp(solver *op) {
 	rhs_lum=zeros(ndomains,1);
 	j0=0;
 	for(n=0;n<ndomains;n++) {
+		j1=j0+map.gl.npts[n]-1;
+		matrix Integ_bl=map.gl.I.block(0,0,j0,j1);
 		op->bc_bot2_add_d(n,"lum","lum",ones(1,1));
-		op->bc_bot2_add_lri(n,"lum","rho",-2*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(r*r*rz*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,-1));
-		op->bc_bot2_add_lri(n,"lum","nuc.eps",-2*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(r*r*rz*rho).block(j0,j0+map.gl.npts[n]-1,0,-1));
-		op->bc_bot2_add_d(n,"lum","Lambda",-2*PI*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(rho*nuc.eps*r*r*rz).block(j0,j0+map.gl.npts[n]-1,0,-1),map.leg.I_00));
+		op->bc_bot2_add_lri(n,"lum","rho",-fac*ones(1,1),Integ_bl,map.leg.I_00,(r*r*rz*nuc.eps).block(j0,j1,0,-1));
+		op->bc_bot2_add_lri(n,"lum","nuc.eps",-fac*ones(1,1),Integ_bl,map.leg.I_00,(r*r*rz*rho).block(j0,j1,0,-1));
+		op->bc_bot2_add_d(n,"lum","Lambda",-2*PI*(Integ_bl,(rho*nuc.eps*r*r*rz).block(j0,j1,0,-1),map.leg.I_00));
 //metric terms from dV
-		op->bc_bot2_add_lri(n,"lum","r",-2*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(2*r*rz*rho*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,-1));
-		op->bc_bot2_add_lri(n,"lum","rz",-2*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),map.leg.I_00,(r*r*rho*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,-1));
+		op->bc_bot2_add_lri(n,"lum","r",-fac*ones(1,1),Integ_bl,map.leg.I_00,(2*r*rz*rho*nuc.eps).block(j0,j1,0,-1));
+		op->bc_bot2_add_lri(n,"lum","rz",-fac*ones(1,1),Integ_bl,map.leg.I_00,(r*r*rho*nuc.eps).block(j0,j1,0,-1));
 
 		if(n) op->bc_bot1_add_d(n,"lum","lum",-ones(1,1));
 		j0+=map.gl.npts[n];
@@ -693,7 +698,6 @@ void star2d::solve_temp(solver *op) {
 // intsurf Frad dS = Lum ; note that here dS=2*pi*r^2*rz*sin(th)*dth
 
 	matrix rhs_Frad,Frad;
-	int j1;
 
 	Frad=-opa.xi*(gzz*(D,T)+gzt*(T,Dt)); // explicit expression of Frad
 	rhs_Frad=zeros(ndomains*2-1,nth);
@@ -819,8 +823,12 @@ void star2d::solve_temp(solver *op) {
 	map.leg.eval_00(th,0,TT);
 
 // Interface and boundary conditions for the temperature
+// j0 is the first point of the domain
+// j1 is the last point of the domain
 	j0=0;
 	for(n=0;n<ndomains;n++) {
+                j1=j0+map.gl.npts[n]-1;
+
 		if(n==0) { // In the first domain T(0)=1
 			op->bc_bot2_add_d(n,eqn,"T",ones(1,nth));
 			rhs_T.setrow(j0,1-T.row(j0));
@@ -832,20 +840,16 @@ void star2d::solve_temp(solver *op) {
         // Radiative envelope: the continuity of (1/rz)(dT/dzeta) is imposed
 		if(n>=conv) {
 			if(n<ndomains-1) {
-				/*op->bc_top1_add_d(n,eqn,"Frad",rz.row(j0+map.gl.npts[n]-1));
-				op->bc_top2_add_d(n,eqn,"Frad",-rz.row(j0+map.gl.npts[n]-1));
-				op->bc_top1_add_d(n,eqn,"rz",Frad.row(j0+map.gl.npts[n]-1));
-				op->bc_top2_add_d(n,eqn,"rz",-Frad.row(j0+map.gl.npts[n]-1));
-
-				rhs_T.setrow(j0+map.gl.npts[n]-1,
-					-Frad.row(j0+map.gl.npts[n]-1)*rz.row(j0+map.gl.npts[n]-1)
-					+Frad.row(j0+map.gl.npts[n])*rz.row(j0+map.gl.npts[n]));*/
-				op->bc_top1_add_l(n,eqn,"T",1/rz.row(j0+map.gl.npts[n]-1),D.block(n).row(-1));
-				op->bc_top1_add_d(n,eqn,"rz",-((D,T)/rz/rz).row(j0+map.gl.npts[n]-1));
-				op->bc_top2_add_l(n,eqn,"T",-1/rz.row(j0+map.gl.npts[n]),D.block(n+1).row(0));
-				op->bc_top2_add_d(n,eqn,"rz",((D,T)/rz/rz).row(j0+map.gl.npts[n]));
-				rhs_T.setrow(j0+map.gl.npts[n]-1,
-					((D,T)/rz).row(j0+map.gl.npts[n])-((D,T)/rz).row(j0+map.gl.npts[n]-1));
+			 /*op->bc_top1_add_d(n,eqn,"Frad",rz.row(j1));
+			   op->bc_top2_add_d(n,eqn,"Frad",-rz.row(j1));
+			   op->bc_top1_add_d(n,eqn,"rz",Frad.row(j1));
+			   op->bc_top2_add_d(n,eqn,"rz",-Frad.row(j1));
+			   rhs_T.setrow(j1,-Frad.row(j1)*rz.row(j1)+Frad.row(j1+1)*rz.row(j1+1));*/
+				op->bc_top1_add_l(n,eqn,"T",1/rz.row(j1),D.block(n).row(-1));
+				op->bc_top1_add_d(n,eqn,"rz",-((D,T)/rz/rz).row(j1));
+				op->bc_top2_add_l(n,eqn,"T",-1/rz.row(j1+1),D.block(n+1).row(0));
+				op->bc_top2_add_d(n,eqn,"rz",((D,T)/rz/rz).row(j1+1));
+				rhs_T.setrow(j1,((D,T)/rz).row(j1+1)-((D,T)/rz).row(j1));
 			} else { // In the last domain set the upper BC T=Ts
 				op->bc_top1_add_d(n,eqn,"T",ones(1,nth));
 				op->bc_top1_add_d(n,eqn,"Ts",-ones(1,nth));
