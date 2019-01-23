@@ -330,7 +330,7 @@ void star1d::solve_pressure(solver *op) {
 
 
 void star1d::solve_temp(solver *op) {
-    int n,j0;
+    int n,j0,j1;
     matrix q;
     char eqn[8];
 
@@ -344,22 +344,26 @@ void star1d::solve_temp(solver *op) {
     lum=zeros(ndomains,1);
     j0=0;
     for(n=0;n<ndomains;n++) {
+	j1=j0+map.gl.npts[n]-1;
         if(n) lum(n)=lum(n-1);
-        lum(n)+=4*PI*Lambda*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),
-            (rho*nuc.eps*r*r).block(j0,j0+map.gl.npts[n]-1,0,0))(0);
+        lum(n)+=4*PI*Lambda*(map.gl.I.block(0,0,j0,j1),
+            (rho*nuc.eps*r*r).block(j0,j1,0,0))(0);
         j0+=map.gl.npts[n];
     }
 
     rhs_lum=zeros(ndomains,1);
     j0=0;
+    matrix coef=-4*PI*Lambda*ones(1,1);
     for(n=0;n<ndomains;n++) {
+	j1=j0+map.gl.npts[n]-1;
+	matrix I_bl=map.gl.I.block(0,0,j0,j1);
         op->bc_bot2_add_d(n,"lum","lum",ones(1,1));
-        op->bc_bot2_add_li(n,"lum","rho",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(r*r*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,0));
-        op->bc_bot2_add_li(n,"lum","nuc.eps",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(r*r*rho).block(j0,j0+map.gl.npts[n]-1,0,0));
-        op->bc_bot2_add_d(n,"lum","Lambda",-4*PI*(map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(rho*nuc.eps*r*r).block(j0,j0+map.gl.npts[n]-1,0,0)));
+        op->bc_bot2_add_li(n,"lum","rho",coef,I_bl,(r*r*nuc.eps).block(j0,j1,0,0));
+        op->bc_bot2_add_li(n,"lum","nuc.eps",coef,I_bl,(r*r*rho).block(j0,j1,0,0));
+        op->bc_bot2_add_d(n,"lum","Lambda",-4*PI*(I_bl,(rho*nuc.eps*r*r).block(j0,j1,0,0)));
         //r (rz)
-        op->bc_bot2_add_li(n,"lum","r",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(2*r*rho*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,0));
-        op->bc_bot2_add_li(n,"lum","rz",-4*PI*Lambda*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(r*r*rho*nuc.eps).block(j0,j0+map.gl.npts[n]-1,0,0));
+        op->bc_bot2_add_li(n,"lum","r",coef,I_bl,(2*r*rho*nuc.eps).block(j0,j1,0,0));
+        op->bc_bot2_add_li(n,"lum","rz",coef,I_bl,(r*r*rho*nuc.eps).block(j0,j1,0,0));
 
         if(n) op->bc_bot1_add_d(n,"lum","lum",-ones(1,1));
         j0+=map.gl.npts[n];
@@ -369,7 +373,6 @@ void star1d::solve_temp(solver *op) {
     //Frad
 
     matrix rhs_Frad,Frad;
-    int j1;
 
     Frad=-opa.xi*(D,T);
     rhs_Frad=zeros(ndomains*2-1,1);
@@ -403,8 +406,9 @@ void star1d::solve_temp(solver *op) {
     qcore=qenv;
     j0=0;
     for(n=0;n<ndomains;n++) {
-        if(n<conv) qcore.setblock(j0,j0+map.gl.npts[n]-1,0,0,ones(map.gl.npts[n],1));
-        else qenv.setblock(j0,j0+map.gl.npts[n]-1,0,0,ones(map.gl.npts[n],1));
+        j1=j0+map.gl.npts[n]-1;
+        if(n<conv) qcore.setblock(j0,j1,0,0,ones(map.gl.npts[n],1));
+        else qenv.setblock(j0,j1,0,0,ones(map.gl.npts[n],1));
         j0+=map.gl.npts[n];
     }
 
@@ -479,6 +483,7 @@ void star1d::solve_temp(solver *op) {
 
     j0=0;
     for(n=0;n<ndomains;n++) {
+        j1=j0+map.gl.npts[n]-1;
         if(!n) {
             op->bc_bot2_add_d(n,eqn,"T",ones(1,1));
             rhs_T(j0)=1-T(j0);
@@ -489,12 +494,21 @@ void star1d::solve_temp(solver *op) {
         }
         if(n>=conv) {
             if(n<ndomains-1) {
-                op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
+/*              op->bc_top1_add_l(n,eqn,"T",ones(1,1),D.block(n).row(-1));
                 op->bc_top2_add_l(n,eqn,"T",-ones(1,1),D.block(n+1).row(0));
                 op->bc_top1_add_d(n,eqn,"rz",-(D,T).row(j0+map.gl.npts[n]-1));
                 op->bc_top2_add_d(n,eqn,"rz",(D,T).row(j0+map.gl.npts[n]));
+                rhs_T(j0+map.gl.npts[n]-1)=-(D,T)(j0+map.gl.npts[n]-1)+(D,T)(j0+map.gl.npts[n]);*/
+// MR: We impose the continuity of the flux instead of the temperature derivative
+// in 1D rz=1 on the domains boundaries
+                op->bc_top1_add_l(n,eqn,"T",opa.xi.row(j1),D.block(n).row(-1));
+                op->bc_top1_add_d(n,eqn,"rz",-(opa.xi*(D,T)).row(j1));
+                op->bc_top1_add_d(n,eqn,"opa.xi",(D,T).row(j1));
+                op->bc_top2_add_l(n,eqn,"T",-opa.xi.row(j1+1),D.block(n+1).row(0));
+                op->bc_top2_add_d(n,eqn,"rz",(opa.xi*(D,T)).row(j1+1));
+                op->bc_top2_add_d(n,eqn,"opa.xi",-(D,T).row(j1+1));
+                rhs_T.setrow(j1,(opa.xi*(D,T)).row(j1+1)-(opa.xi*(D,T)).row(j1));
 
-                rhs_T(j0+map.gl.npts[n]-1)=-(D,T)(j0+map.gl.npts[n]-1)+(D,T)(j0+map.gl.npts[n]);
             } else {
                 op->bc_top1_add_d(n,eqn,"T",ones(1,1));
                 op->bc_top1_add_d(n,eqn,"Ts",-ones(1,1));
@@ -530,18 +544,19 @@ void star1d::solve_temp(solver *op) {
 
 
 void star1d::solve_dim(solver *op) {
-    int n,j0;
+    int n,j0,j1;
     matrix q,rhs;
 
     rhs=zeros(ndomains,1);
     j0=0;
     for(n=0;n<ndomains;n++) {
+        j1=j0+map.gl.npts[n]-1;
+	matrix I_bl=map.gl.I.block(0,0,j0,j1);
+	matrix coef=-4*PI*ones(1,1);
         op->bc_bot2_add_d(n,"m","m",ones(1,1));
-        //rho
-        op->bc_bot2_add_li(n,"m","rho",-4*PI*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(r*r).block(j0,j0+map.gl.npts[n]-1,0,0));
-        //r (rz)
-        op->bc_bot2_add_li(n,"m","r",-4*PI*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(2*r*rho).block(j0,j0+map.gl.npts[n]-1,0,0));
-        op->bc_bot2_add_li(n,"m","rz",-4*PI*ones(1,1),map.gl.I.block(0,0,j0,j0+map.gl.npts[n]-1),(r*r*rho).block(j0,j0+map.gl.npts[n]-1,0,0));
+        op->bc_bot2_add_li(n,"m","rho",coef,I_bl,(r*r).block(j0,j1,0,0));
+        op->bc_bot2_add_li(n,"m","r",coef,I_bl,(2*r*rho).block(j0,j1,0,0));
+        op->bc_bot2_add_li(n,"m","rz",coef,I_bl,(r*r*rho).block(j0,j1,0,0));
 
         if(n) op->bc_bot1_add_d(n,"m","m",-ones(1,1));
         j0+=map.gl.npts[n];
@@ -598,7 +613,7 @@ void star1d::solve_dim(solver *op) {
 }
 
 void star1d::solve_map(solver *op) {
-    int n,j0;
+    int n,j0,j1;
     matrix rhs;
 
     rhs=zeros(ndomains,1);
@@ -612,6 +627,7 @@ void star1d::solve_map(solver *op) {
     rhs=zeros(ndomains,1);
     j0=0;
     for(n=0;n<ndomains;n++) {
+        j1=j0+map.gl.npts[n]-1;
         if(!n) op->add_d(n,"Ri","Ri",ones(1,1));
         else {
             matrix delta;
@@ -619,7 +635,7 @@ void star1d::solve_map(solver *op) {
             op->bc_bot2_add_l(n,"Ri",LOG_PRES,ones(1,1),delta);
             delta=zeros(1,map.gl.npts[n-1]);delta(0)=1;delta(-1)=-1;
             op->bc_bot1_add_l(n,"Ri",LOG_PRES,-ones(1,1),delta);
-            rhs(n)=log(PRES(j0+map.gl.npts[n]-1))-log(PRES(j0))-log(PRES(j0-1))+log(PRES(j0-map.gl.npts[n-1]));
+            rhs(n)=log(PRES(j1))-log(PRES(j0))-log(PRES(j0-1))+log(PRES(j0-map.gl.npts[n-1]));
         }
         j0+=map.gl.npts[n];
     }
