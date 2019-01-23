@@ -48,7 +48,24 @@ void star2d::init_comp() {
     for (int i=0; i<conv; i++) {
         n += map.gl.npts[i];
     }
+// and put some fraction Xc of X_envelope in the core 
+    comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
 
+// Put a special composition in the last domain: Daniel's request
+/*	printf("WARNING : Daniel's superstar computed!\n");
+
+    n = 0; // Count the number of points to the before before last domain
+    for (int i=0; i<ndomains-4; i++) {
+        n += map.gl.npts[i];
+    }
+	printf(" in init_comp n=%d, nr=%d\n",n,nr);
+//	double x=0.70,z=0.02;
+	double x=X0*0.50,z=0.02;
+        comp.setblock(0,n-1,0,-1,initial_composition(x,z)*ones(n,nth));
+	comp.setblock(n,nr-1,0,-1,initial_composition(X0,Z0)*ones(nr-n,nth));
+*/
+
+/* Delphine's attempt
     if(stratified_comp == 0) {
         comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
     }
@@ -65,6 +82,7 @@ void star2d::init_comp() {
             l += m;
         }
     }
+*/
 }
 
 void star2d::calc_veloc() {
