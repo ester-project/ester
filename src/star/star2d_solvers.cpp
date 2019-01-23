@@ -846,12 +846,20 @@ void star2d::solve_temp(solver *op) {
 			   op->bc_top2_add_d(n,eqn,"Frad",-rz.row(j1));
 			   op->bc_top1_add_d(n,eqn,"rz",Frad.row(j1));
 			   op->bc_top2_add_d(n,eqn,"rz",-Frad.row(j1));
-			   rhs_T.setrow(j1,-Frad.row(j1)*rz.row(j1)+Frad.row(j1+1)*rz.row(j1+1));*/
+			   rhs_T.setrow(j1,-Frad.row(j1)*rz.row(j1)+Frad.row(j1+1)*rz.row(j1+1));
 				op->bc_top1_add_l(n,eqn,"T",1/rz.row(j1),D.block(n).row(-1));
 				op->bc_top1_add_d(n,eqn,"rz",-((D,T)/rz/rz).row(j1));
 				op->bc_top2_add_l(n,eqn,"T",-1/rz.row(j1+1),D.block(n+1).row(0));
 				op->bc_top2_add_d(n,eqn,"rz",((D,T)/rz/rz).row(j1+1));
-				rhs_T.setrow(j1,((D,T)/rz).row(j1+1)-((D,T)/rz).row(j1));
+				rhs_T.setrow(j1,((D,T)/rz).row(j1+1)-((D,T)/rz).row(j1));*/
+// MR: We impose the continuity of the flux instead of the temperature derivative
+		op->bc_top1_add_l(n,eqn,"T",(opa.xi/rz).row(j1),D.block(n).row(-1));
+		op->bc_top1_add_d(n,eqn,"rz",-(opa.xi*(D,T)/rz/rz).row(j1));
+		op->bc_top1_add_d(n,eqn,"opa.xi",((D,T)/rz).row(j1));
+		op->bc_top2_add_l(n,eqn,"T",-(opa.xi/rz).row(j1+1),D.block(n+1).row(0));
+		op->bc_top2_add_d(n,eqn,"rz",(opa.xi*(D,T)/rz/rz).row(j1+1));
+		op->bc_top2_add_d(n,eqn,"opa.xi",-((D,T)/rz).row(j1+1));
+		rhs_T.setrow(j1,(opa.xi*(D,T)/rz).row(j1+1)-(opa.xi*(D,T)/rz).row(j1));
 			} else { // In the last domain set the upper BC T=Ts
 				op->bc_top1_add_d(n,eqn,"T",ones(1,nth));
 				op->bc_top1_add_d(n,eqn,"Ts",-ones(1,nth));
@@ -869,7 +877,7 @@ void star2d::solve_temp(solver *op) {
 				op->bc_bot2_add_lr(n,"Lambda","T",ones(1,1),D.block(0).row(0),q);
 				rhs_Lambda(0)=-((D,T).row(0),q)(0);
 			} else { // The domain above the CC is not the central domain
-                                 // The Lambda eqn says that the total radiative flux is the luminosity at the boundary
+                // The Lambda eqn says that the total radiative flux is the luminosity at the boundary
 				op->bc_bot2_add_ri(n,"Lambda","Frad",m2pi,I_00,(r*r*rz).row(j0));
 				op->bc_bot2_add_ri(n,"Lambda","r",m2pi,I_00,(Frad*2*r*rz).row(j0));
 				op->bc_bot2_add_ri(n,"Lambda","rz",m2pi,I_00,(Frad*r*r).row(j0));
