@@ -132,7 +132,8 @@ add_library(ester SHARED
     src/physics/EOS5_xtrin.F
     src/physics/xztrin21.F
     src/physics/ZFS_interp_EOS5.F)
-target_link_libraries(ester cesam freeeos opint)
+target_link_libraries(ester cesam freeeos opint
+    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 
 add_custom_target(star_cfg ALL
     COMMAND sed -e 's,[@]extension[@],${EXT},g' < ${CMAKE_SOURCE_DIR}/config/star.cfg.in  > star.cfg
