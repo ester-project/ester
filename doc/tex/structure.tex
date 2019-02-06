@@ -460,7 +460,7 @@ triangular relation.
 \bigskip
 Opacity and nuclear heat production depend on $\rho$ and $T$. So for both of
 these quantities we have the formal relation $f=f(\rho,T)$. For instance, for
-opacity, denoted $\kappa$ (denoted {\tt opa.xi} in the code) we get
+opacity, denoted $\kappa$ (denoted {\tt opa.k} in the code) we get
 
 \[ \delta\kappa = \frac{\partial\kappa}{\partial\rho_*}\delta\rho_* +
 \frac{\partial\kappa}{\partial T_*}\delta T_*\]
@@ -472,7 +472,7 @@ get:
 \kappa\frac{\partial\ln\kappa}{\partial\ln\rho}\delta\ln\rho_c +
 \kappa\frac{\partial\ln\kappa}{\partial\ln T}\delta\ln T +
 \kappa\frac{\partial\ln\kappa}{\partial\ln T}\delta\ln T_c\]
-For radiative conductivity (denoted {\tt opa.k} in the code), its expression
+For radiative conductivity (denoted {\tt opa.xi} in the code), its expression
 
 \[ \chi_r = \frac{16\sigma T^3}{3\rho\kappa}\]
 leads to the following contribution

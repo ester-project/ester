@@ -13,13 +13,15 @@ above $\sim 2 M_\odot$.
 Presently, chemical evolution is not included, but it can be faked
 by tweaking the fractional abundance of hydrogen in the convective core.
 
-For a detailed description of the physics involved in the models, 
-see Rieutord \& Espinosa Lara 2013
-(\href{http://arxiv.org/abs/1208.4926}{arXiv:1208.4926}, LNP 865, p.49) and
-Espinosa Lara \& Rieutord 2013
-(\href{http://arxiv.org/abs/1212.0778}{arXiv:1212.0778}, in A\&A 552, A35).
-The code is still in development, so new functionality will be added in
-future versions.
+For a detailed description of the physics involved
+in the models, see Rieutord \& Espinosa Lara 2013
+(\href{http://arxiv.org/abs/1208.4926}{arXiv:1208.4926},
+LNP 865, p.49), Espinosa Lara \& Rieutord 2013
+(\href{http://arxiv.org/abs/1212.0778}{arXiv:1212.0778},
+in A\&A 552, A35) and Rieutord et al. 2016
+(\href{http://userpages.irap.omp.eu/~mrieutord/articles/2016JCP.pdf}),
+in J. Comp. Phys. vol.  318, 277-304.  The code is still in development,
+so new functionality will be added in future versions.
 
 To execute the program, use the following syntax:
 \begin{shell}
@@ -64,10 +66,10 @@ from the solution.
 \item {\tt output\_mode} (default {\tt b}). Type of the output file {\tt b} for binary
 and {\tt t} for text output.
 \item {\tt verbose} (default 1). Level of verbosity, from 0 (quiet) to 4.
-\item {\tt plot\_device} (default {\tt /XSERVE}. Plotting device for PGPLOT, 
-see the documentation of PGPLOT for details. For output in a X window use {\tt /XSERVE}.
-To disable the graphic output use {\tt /NULL}.
-\item {\tt plot\_interval} (default 10). Minimum time in seconds to update the graphic output.
+%\item {\tt plot\_device} (default {\tt /XSERVE}. Plotting device for PGPLOT, 
+%see the documentation of PGPLOT for details. For output in a X window use {\tt /XSERVE}.
+%To disable the graphic output use {\tt /NULL}.
+%\item {\tt plot\_interval} (default 10). Minimum time in seconds to update the graphic output.
 \end{itemize}
 
 All these options can be specified in the file 
@@ -90,7 +92,7 @@ stellar model to be calculated (see below).
 \item[] {\tt -p} {\it file}. Same as {\tt -param\_file} {\it file}.
 \item[] {\tt -ascii}. Same as {\tt -output\_mode t}.
 \item[] {\tt -binary}. Same as {\tt -output\_mode b}.
-\item[] {\tt -noplot}. Same as {\tt -plot\_device /NULL}.
+\item[] {\tt -noplot}. disable runtime plotting %Same as {\tt -plot\_device /NULL}.
 \item[] {\tt -v}{\it n}. Same as {\tt -verbose} {\it n}.
 \end{itemize}
 
@@ -187,10 +189,39 @@ If some parameters are omitted, the program will take the value from the input f
 {\tt -input\_file} or {\tt -i}) or from the default parameters file in 
 {\tt ester/config/1d\_default.par} when no input file is specified.
 
+\bigskip
+{\bf Chemical composition:} The chemical composition is
+
+\begin{center}
+
+\begin{tabular}{c|l}
+\hline
+	   &   \\
+	Element & Mass fraction \\
+	   &   \\
+        H  & X \\
+        He3  & 3.15247417638132e-04*(1.-X-Z) \\
+        He4  & (1.-X-Z)-X(He3) \\
+        C12  & Z*1.71243418737847e-01 \\
+        C13  & Z*2.06388003380057e-03 \\
+        N14  & Z*5.29501630871695e-02 \\
+        N15  & Z*2.08372414940812e-04 \\
+        O16  & Z*4.82006487350336e-01 \\
+        O17  & Z*1.95126448826986e-04 \\
+	   &   \\
+\hline
+\end{tabular}
+
+\end{center}
+
+which actually corresponds to the one given by
+\cite{GN93}
+
+
 
 \section{{\tt ester 2d} input parameters}
 
-{\tt ester 2d} needs an input model which can be a non-rotating 1D model
+{\tt ester 2d} needs a non-rotating 1D model
 calculated with {\tt ester 1d} or a previous 2D-model.
 
 The program {\tt ester 2d} admits the same parameters than {\tt ester 1d}
