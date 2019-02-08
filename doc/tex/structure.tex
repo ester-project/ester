@@ -459,28 +459,42 @@ triangular relation.
 
 \bigskip
 Opacity and nuclear heat production depend on $\rho$ and $T$. So for both of
-these quantities we have the formal relation $f=f(\rho,T)$. For instance, for
-opacity, denoted $\kappa$ (denoted {\tt opa.k} in the code) we get
+these quantities we have the formal relation $f=f(\rho,T)$. We note that
+radiative conductivity reads:
 
-\[ \delta\kappa = \frac{\partial\kappa}{\partial\rho_*}\delta\rho_* +
-\frac{\partial\kappa}{\partial T_*}\delta T_*\]
+\[ \chi_r = \frac{16\sigma T^3}{3\rho\kappa}\]
+so that
+
+\[ \ln\chi_r = 3\ln T-\ln\rho-\ln\kappa+\cst\]
+hence
+
+\[ \frac{\partial\ln\chi}{\partial\ln\rho} =
+-1-\frac{\partial\ln\kappa}{\partial\ln\rho}, \qquad
+\frac{\partial\ln\chi}{\partial\ln T} = 3-
+\frac{\partial\ln\kappa}{\partial\ln T}\]
+where the partial derivatives of $\ln\kappa$ are given by opacity
+tables.
+
+In the code {\tt opa.k} is the opacity and {\tt opa.xi} is the radiative
+conductivity. We write
+
+\[ \delta\chi = \frac{\partial\chi}{\partial\rho_*}\delta\rho_* +
+\frac{\partial\chi}{\partial T_*}\delta T_*\]
 Noting that $\rho_*=\rho_c\rho$ and $T_*=T_cT$, after some manipulations we
 get:
 
-\[ \delta\kappa =
-\frac{\kappa}{\rho}\frac{\partial\ln\kappa}{\partial\ln\rho}\delta\rho +
-\kappa\frac{\partial\ln\kappa}{\partial\ln\rho}\delta\ln\rho_c +
-\kappa\frac{\partial\ln\kappa}{\partial\ln T}\delta\ln T +
-\kappa\frac{\partial\ln\kappa}{\partial\ln T}\delta\ln T_c\]
-For radiative conductivity (denoted {\tt opa.xi} in the code), its expression
-
-\[ \chi_r = \frac{16\sigma T^3}{3\rho\kappa}\]
-leads to the following contribution
-
-\[ \frac{\delta \chi_r}{\chi_r} = 3\delta\ln T+3\delta\ln T_c
--\frac{1}{\rho}\delta\rho - \delta\ln\rho_c - \frac{1}{\kappa}\delta\kappa\]
+\[ \delta\chi =
+\frac{\chi}{\rho}\frac{\partial\ln\chi}{\partial\ln\rho}\delta\rho +
+\chi\frac{\partial\ln\chi}{\partial\ln\rho}\delta\ln\rho_c +
+\chi\frac{\partial\ln\chi}{\partial\ln T}\delta\ln T +
+\chi\frac{\partial\ln\chi}{\partial\ln T}\delta\ln T_c\]
 where we took into account that $\rho$ and $T$ are non-dimensional.
+The variation of opacity is then given by
 
+\[ \frac{\delta \kappa}{\kappa} = 3\delta\ln T+3\delta\ln T_c
+-\frac{1}{\rho}\delta\rho - \delta\ln\rho_c - \frac{1}{\chi}\delta\chi\]
+
+\bigskip
 As far as entropy is concerned, we express its dependence with temperature and
 pressure:
 
