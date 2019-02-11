@@ -327,13 +327,13 @@ void star2d::solve_definitions(solver *op) {
 	op->add_d("rho","log_Tc",-rho*eos.d);
 	op->add_d("rho","log_rhoc",-rho);
 
-// Constitutive relation for opacity (xi); formal dependence xi=xi(rho,T)
+// Constitutive relation for thermal radiative conductivity with xi=xi(rho,T)
 	op->add_d("opa.xi","rho",opa.dlnxi_lnrho*opa.xi/rho);
 	op->add_d("opa.xi","log_rhoc",opa.dlnxi_lnrho*opa.xi);
 	op->add_d("opa.xi","T",opa.dlnxi_lnT*opa.xi/T);
 	op->add_d("opa.xi","log_Tc",opa.dlnxi_lnT*opa.xi);
 
-// Constitutive relation for thermal radiative conductivity k=16sigma*T^3/\rho/\xi
+// Constitutive relation for opacity (k) k=16sigma*T^3/rho/xi
 	op->add_d("opa.k","T",3*opa.k/T);
 	op->add_d("opa.k","log_Tc",3*opa.k);
 	op->add_d("opa.k","rho",-opa.k/rho);
@@ -414,6 +414,8 @@ void star2d::calc_vangle() {
 	vangle.setrow(0, zeros(1, nth));
 }
 
+///\brief vangle is the angle between e_r and the
+/// normal of an isobar. Positive in the northern hemisphere
 void star2d::solve_vangle(solver *op) {
 	static symbolic S;
 	static bool sym_inited = false;
@@ -555,6 +557,7 @@ void star2d::solve_poisson(solver *op) {
 	op->set_rhs("Phi",rhs);
 }
 
+///\brief Solve the continuity equation
 void star2d::solve_cont(solver *op) {
 
 	static symbolic S;
@@ -656,8 +659,8 @@ void star2d::solve_mov(solver *op) {
 		phivec(0) = 0*S.one; phivec(1) = 0*S.one; phivec(2) = S.r*sin(S.theta);
 		sym_vec rvec = grad(S.r);
 		sym_vec thvec = cross(phivec, rvec); // rvec=e_r
-		sym_vec nvec = grad(S.zeta); // nvec = E^\zeta normalized
-		nvec = nvec / sqrt((nvec, nvec));
+		sym_vec nvec = grad(S.zeta);
+		nvec = nvec / sqrt((nvec, nvec)); // nvec = E^zeta normalized
 		sym_vec tvec = cross(phivec, nvec);
 
 		sym_vec V, svec;

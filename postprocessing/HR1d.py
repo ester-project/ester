@@ -25,7 +25,8 @@ for filename in lis:
 	#print filename
 	a=star2d(filename)
 	nth=a.nth
-	print 'Age = ',a.age,' Xc = ',a.X[0,0],' Tc = ',a.Tc,' rho_c=',a.rhoc,'opa(surf) = ',a.opacity[-1,0]
+	#print 'Age = ',a.age,' Xc = ',a.X[0,0],' Tc = ',a.Tc,' rho_c=',a.rhoc,'opa(surf) = ',a.opacity[-1,0]
+	print 'Age = ',a.age,' Xc = ',a.X[0,0],' Tc = ',a.Tc,' rho_c=',a.rhoc,'Lum = ',a.L/L_SUN
 	te[i]=a.Teff[0,0]
 	age[i]=a.age
 	lum[i]=math.log10(a.L/L_SUN)
@@ -52,11 +53,11 @@ print te[5],lum[5],age[5]
 
 for k in range(i):
 	if (k%10 == 0):
-		text=plt.annotate(' age = %.1f'%age[k],(te[k],lum[k]),fontsize=18) #,xytext=(-2,1))
-		if (age[k] <=10):
-			text.set_rotation(-45)
-		else:
-			text.set_rotation(-65)
-
+		text=plt.annotate(' age = %.2f'%age[k],(te[k],lum[k]),fontsize=18) #,xytext=(-2,1))
+		dy=(lum[k+1]-lum[k])/(ymm-ym)
+		dx=(te[k+1]-te[k])/(xmm-xm)
+		angle=-180./np.pi*np.arctan(dy/dx)-90.
+		#print 'angle=',angle
+		text.set_rotation(angle)
 
 plt.show()
