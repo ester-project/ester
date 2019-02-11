@@ -34,9 +34,13 @@ void star1d::spectrum(figure *pfig,const matrix &y,const char *line) const {
 
 double star1d::luminosity() const {
 
-	return 4*PI*(map.gl.I,rho*nuc.eps*r*r)(0)*units.rho*units.r*units.r*units.r;
+//	return 4*PI*(map.gl.I,rho*nuc.eps*r*r)(0)*units.rho*units.r*units.r*units.r;
+        matrix Fz=-opa.xi*(map.gzz*(D,T)+map.gzt*(T,Dt));
+        return 2*PI*((Fz*r*r*map.rz).row(nr-1),map.leg.I_00)(0)*units.T*units.r;
+
 
 }
+
 
 matrix star1d::Teff() const {
 
