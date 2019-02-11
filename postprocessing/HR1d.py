@@ -13,6 +13,7 @@ plt.switch_backend('TKAgg')
 sigma=SIG_SB
 #liste=commands.getoutput('ls *ev_000*.h5')
 liste=commands.getoutput('ls *ev_0*.h5')
+MYRS=365.25*86400*1e6
 
 lis=liste.split()
 
@@ -26,10 +27,21 @@ for filename in lis:
 	a=star2d(filename)
 	nth=a.nth
 	#print 'Age = ',a.age,' Xc = ',a.X[0,0],' Tc = ',a.Tc,' rho_c=',a.rhoc,'opa(surf) = ',a.opacity[-1,0]
-	print 'Age = ',a.age,' Xc = ',a.X[0,0],' Tc = ',a.Tc,' rho_c=',a.rhoc,'Lum = ',a.L/L_SUN
+	lu=a.L/L_SUN
 	te[i]=a.Teff[0,0]
 	age[i]=a.age
 	lum[i]=math.log10(a.L/L_SUN)
+	if (i==0) : 
+		E=10.**lum[i]*L_SUN*age[i]*MYRS
+		#print 'Energy emitted (ergs) = %.3e'%E
+	if (i>0) : 
+		L0=10.**lum[i-1]*L_SUN
+		L1=10.**lum[i]*L_SUN
+		L=(L0+L1)/2
+		E=E+L*(age[i]-age[i-1])*MYRS
+		#print 'Energy emitted (ergs) = %.3e'%E
+	print i,'Age = %.3f'%a.age,' Xc = %.2e'%a.X[0,0],' Tc = %.3e'%a.Tc,' rho_c = %.2f'%a.rhoc,'Lum = %.2f'%lu, \
+                'E emitted = %.3e'%E
         i=i+1
 
 print 'nombre de modeles =',i

@@ -20,7 +20,7 @@ int main(int argc,char *argv[]) {
 	cmdline_parser cmd;
 
 	double step=1, age=0;
-	double maxStep = 10, minStep = 1e-3;
+	double maxStep = 10, minStep = 1e-4;
 	double min_max_err = 1e-2, max_max_err = 5e-2;
 	
 	char *arg,*val;
