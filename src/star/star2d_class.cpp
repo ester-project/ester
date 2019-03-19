@@ -1141,6 +1141,10 @@ void star2d::dump_info() {
     printf("\tPeriod (c) = %.5f days\n",2*PI/w(0,0)/units.Omega/3600./24.);
     printf("\tLz = %e erg·s\n",Lz());
     printf("\tj  = %e cm2/s (Lz/M)\n",Lz()/M);
+    printf("\tIz  = %e g.cm2 (Axial moment of inertia)\n",Iz());
+    printf("\tIc  = %e g.cm2 (Central moment of inertia)\n",Ic());
+    printf("\tJ2  = %e (First multipolar coef. of the grav.  field from inertia moments)\n",(1.5*Iz()-Ic())/M/R/R/re/re);
+    printf("\tJ2 bis = %e (First multipolar coef. of the grav. field direct calculation)\n",J2MR2()/M/R/R/re/re);
     printf("\tT  = %e erg   (Kinetic energy)\n",virial_L()/2);
     printf("\tT/W = %e\n",virial_L()/virial_W()/2);
     printf("\tKelvin-Helmholtz Time = %e yrs\n",virial_3P()/luminosity()/2/365.25/86400.);
