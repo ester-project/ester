@@ -10,7 +10,6 @@ import math
 import commands
 
 sigma=SIG_SB
-liste=commands.getoutput('ls $HOME/uqbar/ESTER/Z0.014/M5_film/M5Xc1sol6565_film_0*')
 path='/home/rieutord/Ester/local/runs/olympe/Achernar2D/'
 lpath=len(path)
 liste=commands.getoutput('ls '+path+'Ach2D_ev_0*')

@@ -9,7 +9,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
-filename='M5_O95'
+path='/home/rieutord/Ester/local/runs/olympe/Achernar2D/'
+filename=path+'Ach2D_ev_0000.h5'
+
 a=star2d(filename)
 
 nth=a.nth
@@ -21,8 +23,8 @@ omega=Omega_scale*a.w
 print 'omega pole',omega[-1,nth+1]
 print 'omega equator',omega[-1,0]
 
-x=a.r*np.sin(a.th)/R_SUN
-y=a.r*np.cos(a.th)/R_SUN
+x=a.R*a.r*np.sin(a.th)/R_SUN
+y=a.R*a.r*np.cos(a.th)/R_SUN
 x=np.c_[x,-x[:,-2::-1],-x[:,1:],x[:,-2::-1]]
 y=np.c_[y,y[:,-2::-1],-y[:,1:],-y[:,-2::-1]]
 pi=math.acos(-1)/3600.
