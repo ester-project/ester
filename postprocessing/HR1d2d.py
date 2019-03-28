@@ -86,20 +86,18 @@ xm=12000 #min(te)-1000
 xmm=22000 #max(te)+1000
 ym=900. #min(lum)-0.05
 ymm=3000. #max(lum)+0.05
-plt.figure(1,figsize=(14,14))
+#plt.figure(1,figsize=(14,14))
 fts=18
 
 plt.xlim(xmin=xmm,xmax=xm)      # set a userdefined x-range
 plt.ylim(ymin= ym,ymax=ymm)      # set a userdefined y-range
-#plt.xticks(fontsize=18) #, rotation=90)
 plt.xticks(1000*(12+2*np.arange(6)),('12','14','16','18','20','22'),fontsize=fts)
 plt.yticks(1000*(1+np.arange(3)),('1000','2000','3000'),fontsize=fts)
-#plt.yticks(fontsize=18) #, rotation=90)
 
-plt.xlabel(r'$T_{\mathrm{eff}}$',fontsize=18)     #labeling the plot
-plt.ylabel(r'$L/L_\odot$',fontsize=18)
+plt.xlabel(r'$T_{\mathrm{eff}}$',fontsize=fts)     #labeling the plot
+plt.ylabel(r'$L/L_\odot$',fontsize=fts)
 plt.title('Evolution of a 6.22 M$_\odot$ with $\Omega=0$, $\Omega_0/\Omega_c=0.4$\
-             $\Omega_0/\Omega_c=0.5$')
+ and $\Omega_0/\Omega_c=0.5$',fontsize=fts)
 
 plt.plot(te,lum,'k.')
 plt.plot(te2D,lum2D,'ro')
@@ -120,7 +118,7 @@ for k in range(i1d-1):
 			ha='left'
 			va='top'
 		if age[k] < 50 or age[k] > 53.9:
-			text=plt.annotate(' age = %.2f'%age[k],(te[k],lum[k]),fontsize=18, \
+			text=plt.annotate(' age = %.2f'%age[k],(te[k],lum[k]),fontsize=fts, \
 	           horizontalalignment=ha, verticalalignment=va) #,xytext=(-2,1))
 			dy=(lum[k+1]-lum[k])/(ymm-ym)
 			dx=(te[k+1]-te[k])/(xmm-xm)
@@ -141,7 +139,7 @@ for k in range(i-1):
 			va='top'
 		#if age2D[k] < 50 or age2D[k] > 53.9:
 		if age2D[k] > 48:
-			text=plt.annotate(' age = %.2f'%age2D[k],(te2D[k],lum2D[k]),fontsize=18, \
+			text=plt.annotate(' age = %.2f'%age2D[k],(te2D[k],lum2D[k]),fontsize=fts, \
 	           horizontalalignment=ha, verticalalignment=va) #,xytext=(-2,1))
 			dy=(lum2D[k+1]-lum2D[k])/(ymm-ym)
 			dx=(te2D[k+1]-te2D[k])/(xmm-xm)
@@ -199,12 +197,11 @@ for k in range(i-1):
 			ha='left'
 			va='top'
 		if age2D[k] < 50 or age2D[k] > 53.9:
-			text=plt.annotate(' age = %.2f'%age2D[k],(te2D[k],lum2D[k]),fontsize=18, \
-	           horizontalalignment=ha, verticalalignment=va) #,xytext=(-2,1))
+			text=plt.annotate(' age = %.2f'%age2D[k],(te2D[k],lum2D[k]),fontsize=fts, \
+	           horizontalalignment=ha, verticalalignment=va)
 			dy=(lum2D[k+1]-lum2D[k])/(ymm-ym)
 			dx=(te2D[k+1]-te2D[k])/(xmm-xm)
 			angle=-180./np.pi*np.arctan(dy/dx)-90.
-			#print 'angle=',angle
 			text.set_rotation(angle)
 
 plt.show()
