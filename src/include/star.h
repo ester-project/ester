@@ -136,6 +136,9 @@ class star2d {
         virtual double Mcore() const;
         virtual double Lzcore() const;
         virtual matrix Rcore() const;
+        virtual double Iz() const;
+        virtual double Ic() const;
+        virtual double J2MR2() const;
 
         virtual void fill();
 

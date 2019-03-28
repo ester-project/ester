@@ -54,10 +54,26 @@ double star2d::luminosity() const {
 }
 
 double star2d::Lz() const {
-
+// Axial angular momentum
 	return 2*PI*(map.gl.I,(rho*w*r*r*sin(th)*sin(th)*r*r*map.rz,map.leg.I_00))(0)*units.rho*units.Omega*
 		pow(units.r,5);
 
+}
+
+double star2d::Iz() const {
+// Axial moment of inertia
+	return 2*PI*(map.gl.I,(rho*r*r*sin(th)*sin(th)*r*r*map.rz,map.leg.I_00))(0)*units.rho*
+		pow(units.r,5);
+}
+
+double star2d::Ic() const {
+// Central moment of inertia
+	return 2*PI*(map.gl.I,(rho*r*r*r*r*map.rz,map.leg.I_00))(0)*units.rho*pow(units.r,5);
+}
+
+double star2d::J2MR2() const {
+// The J2 coefficient times MR**2
+	return PI*(map.gl.I,(rho*r*r*r*r*map.rz*(1.-3*cos(th)*cos(th)),map.leg.I_00))(0)*units.rho*pow(units.r,5);
 }
 
 
