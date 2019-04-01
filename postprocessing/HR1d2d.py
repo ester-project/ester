@@ -58,7 +58,8 @@ liste=commands.getoutput('ls '+path+'Ach2D_ev_0*.h5')
 lis=liste.split()
 
 te2D=[0.0 for i in range(len(lis))]
-t_app=[0.0 for i in range(len(lis))]
+t_app_eq=[0.0 for i in range(len(lis))]
+t_app_pole=[0.0 for i in range(len(lis))]
 lum2D=[0.0 for i in range(len(lis))]
 lum_app_pole=[0.0 for i in range(len(lis))]
 lum_app_eq=[0.0 for i in range(len(lis))]
@@ -75,10 +76,10 @@ for filename in lis:
         lum2D[i]=a.L/L_SUN
         print filename[lpath:],' Temp eff =',te2D[i],'lum = ',lum2D[i],' Req = ',a.Re/R_SUN
         app_l= a.apparent_luminosity(0) # polar app. luminosity
-        t_app[i]=(L_SUN*app_l/surf/sigma)**0.25
+        t_app_pole[i]=(L_SUN*app_l/surf/sigma)**0.25
         lum_app_pole[i]=app_l
         app_l= a.apparent_luminosity(90) # equat. app. luminosity
-        t_app[i]=(L_SUN*app_l/surf/sigma)**0.25
+        t_app_eq[i]=(L_SUN*app_l/surf/sigma)**0.25
         lum_app_eq[i]=app_l
         i=i+1
 
@@ -101,8 +102,8 @@ plt.title('Evolution of a 6.22 M$_\odot$ with $\Omega=0$, $\Omega_0/\Omega_c=0.4
 
 plt.plot(te,lum,'k.')
 plt.plot(te2D,lum2D,'ro')
-plt.plot(t_app,lum_app_pole,'r--')
-plt.plot(t_app,lum_app_eq,'r--')
+plt.plot(t_app_pole,lum_app_pole,'r--')
+plt.plot(t_app_eq,lum_app_eq,'r--')
 #plt.yscale('log')
 
 for k in range(i1d-1):
@@ -154,7 +155,8 @@ liste=commands.getoutput('ls '+path+'Ach2DO5_ev_0*.h5')
 lis=liste.split()
 
 te2D=[0.0 for i in range(len(lis))]
-t_app=[0.0 for i in range(len(lis))]
+t_app_pole=[0.0 for i in range(len(lis))]
+t_app_eq=[0.0 for i in range(len(lis))]
 lum2D=[0.0 for i in range(len(lis))]
 lum_app_pole=[0.0 for i in range(len(lis))]
 lum_app_eq=[0.0 for i in range(len(lis))]
@@ -171,17 +173,17 @@ for filename in lis:
         lum2D[i]=a.L/L_SUN
         print filename[lpath:],' Temp eff =',te2D[i],'lum = ',lum2D[i],' Req = ',a.Re/R_SUN
         app_l= a.apparent_luminosity(0) # polar app. luminosity
-        t_app[i]=(L_SUN*app_l/surf/sigma)**0.25
+        t_app_pole[i]=(L_SUN*app_l/surf/sigma)**0.25
         lum_app_pole[i]=app_l
         app_l= a.apparent_luminosity(90) # equat. app. luminosity
-        t_app[i]=(L_SUN*app_l/surf/sigma)**0.25
+        t_app_eq[i]=(L_SUN*app_l/surf/sigma)**0.25
         lum_app_eq[i]=app_l
         i=i+1
 
 print i-1
 plt.plot(te2D,lum2D,'go')
-plt.plot(t_app,lum_app_pole,'g--')
-plt.plot(t_app,lum_app_eq,'g--')
+plt.plot(t_app_pole,lum_app_pole,'g--')
+plt.plot(t_app_eq,lum_app_eq,'g--')
 
 
 for k in range(i-1):
