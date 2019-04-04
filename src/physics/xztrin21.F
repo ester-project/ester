@@ -1,4 +1,7 @@
+!/ To keep compatibility with configure
+#ifndef WITH_CMAKE
 #include "ester-config.h"
+#endif
       subroutine instruct
 c-----VERSION of October 5, 1995-----------------------------------------
 c-----------------------------------------------------------------------

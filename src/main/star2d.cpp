@@ -1,4 +1,7 @@
+// To keep compatibility with configure
+#ifndef WITH_CMAKE
 #include "ester-config.h"
+#endif
 #include "utils.h"
 #include "star.h"
 #include "read_config.h"

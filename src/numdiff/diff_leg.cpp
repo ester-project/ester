@@ -1,4 +1,7 @@
+// To keep compatibility with configure
+#ifndef WITH_CMAKE
 #include "ester-config.h"
+#endif
 #include "numdiff.h"
 #include "constants.h"
 #include "utils.h"
