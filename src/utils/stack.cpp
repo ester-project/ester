@@ -1,4 +1,7 @@
+// To keep compatibility with configure
+#ifndef WITH_CMAKE
 #include "config.h"
+#endif
 #include "stack.h"
 
 #include <stdlib.h>

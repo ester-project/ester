@@ -33,21 +33,21 @@
 %ignore star2d::config_struct;
 
 %{
-#include "../src/include/matrix.h"
-#include "../src/include/star.h"
-#include "../src/include/physics.h"
-#include "../src/include/mapping.h"
-#include "../src/include/numdiff.h"
-#include "../src/graphics/matplotlib.h"
+#include "matrix.h"
+#include "star.h"
+#include "physics.h"
+#include "mapping.h"
+#include "numdiff.h"
+#include "matplotlib.h"
 %}
 
 %include "carrays.i"
 %array_class(double, doubleArray);
 %array_class(int, intArray);
 
-%include "../src/include/matrix.h"
-%include "../src/include/physics.h"
-%include "../src/include/mapping.h"
-%include "../src/include/numdiff.h"
-%include "../src/include/star.h"
-%include "../src/graphics/matplotlib.h"
+%include "matrix.h"
+%include "physics.h"
+%include "mapping.h"
+%include "numdiff.h"
+%include "star.h"
+%include "matplotlib.h"
