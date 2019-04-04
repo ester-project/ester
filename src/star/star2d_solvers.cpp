@@ -65,7 +65,7 @@ void star2d::init_comp() {
         comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
 
 // Put a special composition in the last domain: Daniel's request
-
+/*
 	printf("WARNING : Daniel's superstar computed!\n");
 
     n = 0; // Count the number of points to the before before last domain
@@ -77,7 +77,7 @@ void star2d::init_comp() {
 	double x=X0*0.50,z=0.02;
         comp.setblock(0,n-1,0,-1,initial_composition(x,z)*ones(n,nth));
         comp.setblock(n,nr-1,0,-1,initial_composition(X0,Z0)*ones(nr-n,nth));
-
+*/
 
 
 
