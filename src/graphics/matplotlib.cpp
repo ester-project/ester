@@ -1,4 +1,6 @@
+#ifndef WITH_CMAKE
 #include "ester-config.h"
+#endif
 #include "matplotlib.h"
 
 #if ENABLE_PLT

@@ -1,4 +1,6 @@
+#ifndef WITH_CMAKE
 #include "ester-config.h"
+#endif
 #include "utils.h"
 #include "matrix.h"
 #include "constants.h"

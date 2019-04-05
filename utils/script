@@ -1,0 +1,17 @@
+#!/bin/tcsh
+
+set cfiles=`find . -name \*.cpp -exec egrep -l -i ester-config {} \;`
+set hfiles=`find . -name \*.h -exec egrep -l -i ester-config {} \;`
+set Ffiles=`find . -name \*.F -exec egrep -l -i ester-config {} \;`
+
+foreach i ($cfiles $hfiles $Ffiles);
+
+sed '1i\#ifndef WITH_CMAKE\' $i > toto
+sed '3i\#endif\' toto > $i
+echo $i
+
+end
+rm toto
+# this script of MR was written to keep
+# the compatibility with the configure setup
+# while moving to the cmake setup

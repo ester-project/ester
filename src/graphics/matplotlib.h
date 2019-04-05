@@ -1,7 +1,9 @@
 #ifndef MATPLOTLIB_H
 #define MATPLOTLIB_H
 
+#ifndef WITH_CMAKE
 #include "ester-config.h"
+#endif
 
 #if ENABLE_PLT
 #include <Python.h>

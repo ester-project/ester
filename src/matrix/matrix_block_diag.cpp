@@ -1,4 +1,6 @@
+#ifndef WITH_CMAKE
 #include "ester-config.h"
+#endif
 #include "matrix.h"
 
 extern "C" {

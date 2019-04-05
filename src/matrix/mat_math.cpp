@@ -1,4 +1,6 @@
+#ifndef WITH_CMAKE
 #include "ester-config.h"
+#endif
 #include<cmath>
 #include<stdio.h>
 #include<stdlib.h>
