@@ -12,7 +12,7 @@
 static int iopt=0;
 // iopt=0 the flux is defined as Flux=-xi*DT-xi*Pe*T*Ds (best solution)
 // iopt=1 the flux is defined as Flux=-DT-Pe*T*Ds
-static int ioptw=0;
+static int ioptw=1;
 // ioptw=1: use a variable h, Newton-step
 // ioptw=0: use a fixed h, ==> loses quadratic convergence, but more robust
 

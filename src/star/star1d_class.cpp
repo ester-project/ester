@@ -282,6 +282,12 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
 		phiex=zeros(map.nex,map.nt);
                 Wr=zeros(nr,1);	// initialize radial mass flux Wr=rho*Vr
+		if (M <1.01*M_SUN) {
+		   printf("la masse %e \n",M);
+		   for(int n=0;n<ndomains;n++) domain_type[n]=CORE;
+		   domain_type[ndomains-1]=RADIATIVE;
+	   for(int n=0;n<ndomains;n++) printf("dom type %d %d \n",n,domain_type[n]);
+		}
 	}
 	
 	init_comp();
@@ -388,6 +394,7 @@ void star1d::plot(const matrix_map& error) {
 
     plt::clf();
 
+    plt::figure(0,30,30);
     plt::subplot(221);
 // subplot(231) divide the screen into 2 lines 3 columns and set in subplot 1
     //plt::plot(r, rho, "$\\rho$");

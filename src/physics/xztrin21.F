@@ -316,8 +316,20 @@ c
 c
 c..... Determine log R and log T6 grid points to use in the
 c      interpolation.
-      if((slt .lt. alt(1)).or.(slt .gt. alt(nt))) go to 62
-      if((slr .lt. alr (1)).or.(slr .gt. alr(nre))) go to 62
+      if((slt .lt. alt(1)).or.(slt .gt. alt(nt))) then
+	print*,'log(t6) conditions not verified'
+	print*,'log(t6) = ',slt
+	print*,'OPAL min value of log(t6) = ',alt(1)
+	print*,'OPAL max value of log(t6) = ',alt(nt)
+	go to 62
+      endif
+      if((slr .lt. alr(1)).or.(slr .gt. alr(nre))) then
+	print*,'log(r) conditions not verified:'
+	print*,'log(r) = ',slr
+	print*,'OPAL min value of log(r) = ',alr(1)
+	print*,'OPAL max value of log(r) = ',alr(nre)
+	go to 62
+      endif
 c
 c
 c

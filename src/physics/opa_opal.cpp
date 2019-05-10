@@ -35,17 +35,19 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 
 	int i,N,error=0;
 	matrix dlnkT,dlnkrho;
+    	double t6;
 
 	opa.k.dim(T.nrows(),T.ncols());
 	dlnkT.dim(T.nrows(),T.ncols());
 	dlnkrho.dim(T.nrows(),T.ncols());
 	N=T.nrows()*T.ncols();
 	double dlogkt,dlogkr;
-//	FILE *fic=fopen("av_opa.txt","a");
-//	fprintf(fic,"in opa_opal\n");	
+	FILE *fic=fopen("av_opa.txt","a");
+	fprintf(fic,"in opa_opal\n");	
 	for(i=0;i<N;i++) {
-//		fprintf(fic,"%d  X= %e, T= %e, rho= %e\n",i,X(i),T(i),rho(i));
+		t6=T(i)*1e-6;
 		opa.k(i)=opa_opal_i(X(i),Z,T(i),rho(i),dlogkt,dlogkr);
+	fprintf(fic,"%d X= %.2f, T=%10.3e, rho=%9.2e, r=%10.3e, opa=%10.3e,%10.3e,%10.3e\n",i,X(i),T(i),rho(i),rho(i)/t6/t6/t6,opa.k(i),dlogkt,dlogkr);
 		if(opa.k(i)==-99) error=1;
 		dlnkT(i)=dlogkt;
 		dlnkrho(i)=dlogkr;
@@ -57,9 +59,9 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
             printf("  rho = %e\n", rho(i));
             print_stack();
             exit(EXIT_FAILURE);
-        }
+        	  }
 	}
-//	fclose(fic);
+	fclose(fic);
 	opa.k=pow(10,opa.k);
 	dlnkT-=3*dlnkrho;
 	opa.xi=16*SIG_SB*pow(T,3)/(3*opa.k*rho);
