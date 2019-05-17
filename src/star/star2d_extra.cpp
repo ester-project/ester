@@ -148,6 +148,37 @@ matrix star2d::entropy() const {
 	return s;
 }
 
+matrix star2d::Lum() const {
+
+// Luminosity as a function of the radial coordinate
+
+	matrix lu(nr,nth),rhs;
+
+	solver op;
+	op.init(ndomains,1,"full");
+	op.maxit_ref=10;op.use_cgs=0;
+	op.rel_tol=1e-12;op.abs_tol=1e-20;
+	op.regvar("lu");op.set_nr(map.gl.npts);
+	
+	op.add_l("lu","lu",ones(nr,1),D);
+	rhs=4*PI*rho*r*r*nuc.eps;
+	op.bc_bot2_add_d(0,"lu","lu",ones(1,1));
+	rhs.setrow(0,zeros(1,nth));
+	int j0=map.gl.npts[0];
+	for(int n=1;n<ndomains;n++) {
+		op.bc_bot2_add_d(n,"lu","lu",ones(1,1));
+		op.bc_bot1_add_d(n,"lu","lu",-ones(1,1));
+		rhs.setrow(j0,zeros(1,nth));
+		j0+=map.gl.npts[n];
+	}
+	for(int j=0;j<nth;j++) {
+		op.set_rhs("lu",rhs.col(j));
+		op.solve();
+		lu.setcol(j,op.get_var("lu"));
+	}
+	return lu;
+}
+
 matrix star2d::Teff() const {
 
 	matrix F;

@@ -800,7 +800,7 @@ void star1d::solve_temp(solver *op) {
                    Pe.setblock(j0,j1,0,0,zeros(ndom,1));
                    Pep.setblock(j0,j1,0,0,zeros(ndom,1));
                 } else if (domain_type[n] == CORE) {
-                   Pe.setblock(j0,j1,0,0,1e4*ones(ndom,1));
+                   Pe.setblock(j0,j1,0,0,1e0*ones(ndom,1));
                    Pep.setblock(j0,j1,0,0,zeros(ndom,1));
                 } else {
 		   if (nfc == 0) nfc=n; // nfc=first convective domain

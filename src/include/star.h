@@ -134,6 +134,7 @@ class star2d {
 	virtual void calc_veloc();
 	
 	virtual matrix entropy() const;
+	virtual matrix Lum() const;
 	virtual double luminosity() const;
 	virtual matrix Teff() const;
 	virtual matrix N2() const;

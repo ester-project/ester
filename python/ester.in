@@ -106,6 +106,7 @@ class star2d:
         self.chi_rho    = _mat_to_numpy(self._s.eos.chi_rho)
         self.d          = _mat_to_numpy(self._s.eos.d)
         self.s          = _mat_to_numpy(self._s.entropy())
+        self.Lum        = _mat_to_numpy(self._s.Lum())
         self.vr         = _mat_to_numpy(self._s.vr)
         self.vt         = _mat_to_numpy(self._s.vt)
         self.opacity    = _mat_to_numpy(self._s.opa.k)
