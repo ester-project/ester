@@ -282,7 +282,7 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
 		phiex=zeros(map.nex,map.nt);
                 Wr=zeros(nr,1);	// initialize radial mass flux Wr=rho*Vr
-		if (M <1.01*M_SUN) {
+		if (M <0.95*M_SUN) {
 		   printf("la masse %e \n",M);
 		   for(int n=0;n<ndomains;n++) domain_type[n]=CORE;
 		   domain_type[ndomains-1]=RADIATIVE;

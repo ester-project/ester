@@ -728,6 +728,7 @@ void star1d::solve_flux(solver *op) {
 
 // Equation for the flux
 	if (iopt) {
+// iopt=1 the flux is defined as Flux=-DT-Pe*T*Ds
 	op->add_d("Flux","r",(D,Flux) + (D,opa.xi)/opa.xi*Flux - Lambda*rho*nuc.eps/opa.xi);
 	op->add_l("Flux","Flux",r,D);
 	op->add_d("Flux","Flux",2.+r*(D,opa.xi)/opa.xi);
@@ -797,7 +798,7 @@ void star1d::solve_temp(solver *op) {
                 ndom=map.gl.npts[n];
                 j1=j0+ndom-1;
                 if (domain_type[n] == RADIATIVE) {
-                   Pe.setblock(j0,j1,0,0,zeros(ndom,1));
+                   Pe.setblock(j0,j1,0,0,0.01*ones(ndom,1));
                    Pep.setblock(j0,j1,0,0,zeros(ndom,1));
                 } else if (domain_type[n] == CORE) {
                    Pe.setblock(j0,j1,0,0,1e0*ones(ndom,1));
@@ -822,7 +823,8 @@ Pep.setblock(j0,j1,0,0,2*Peclet*ff*(Rcz-rr));
 	rhs_T=zeros(nr,1);
 	rhs_Lambda=zeros(ndomains,1);
 
-	if (iopt) {
+	if (iopt==1) {
+// iopt=1 the flux is defined as Flux=-DT-Pe*T*Ds
 	op->add_d("log_T","Flux",ones(nr,1));
 	op->add_l("log_T","T",ones(nr,1),D);
 	op->add_d("log_T","T",Pe*(D,entropy()));
@@ -830,7 +832,8 @@ Pep.setblock(j0,j1,0,0,2*Peclet*ff*(Rcz-rr));
 	op->add_d("log_T","r",Pep*T*(D,entropy()));
 	op->add_l("log_T","s",Pe*T,D);
 	rhs_T=-((D,T)+Pe*T*(D,entropy())+Flux);
-	} else {
+	} else if (iopt==0) {
+// iopt=0 the flux is defined as Flux=-xi*DT-xi*Pe*T*Ds (best solution)
 	op->add_d("log_T","Flux",ones(nr,1));
 	op->add_l("log_T","T",opa.xi,D);
         op->add_d("log_T","T",opa.xi*Pe*(D,entropy()));
@@ -840,6 +843,18 @@ Pep.setblock(j0,j1,0,0,2*Peclet*ff*(Rcz-rr));
 	op->add_d("log_T","opa.xi",-Flux/opa.xi);
 
 	rhs_T=-(opa.xi*((D,T)+Pe*T*(D,entropy()))+Flux);
+	} else {
+// iopt=2 the flux is defined as Flux=-xi*Pe*T*Ds
+// where grad s is replaced by (grad lnT-na_a*grad lnP)
+	op->add_d("log_T","Flux",ones(nr,1));
+	op->add_d("log_T","opa.xi",-Flux/opa.xi);
+	op->add_l("log_T","T",opa.xi*Pe,D);
+        op->add_d("log_T","T",-opa.xi*Pe*eos.del_ad*(D,log(p)));
+        op->add_l("log_T","log_p",-opa.xi*Pe*eos.del_ad*T,D);
+	op->add_d("log_T","rz",Flux);
+
+	rhs_T=-(Flux+opa.xi*Pe*((D,T)-eos.del_ad*T*(D,log(p))));
+
 	}
 
 	j0=0;
