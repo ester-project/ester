@@ -155,6 +155,10 @@ install(FILES
     config/2d_default.par
     DESTINATION share/ester/)
 
+add_executable(polytrope1d src/main/polytrope1d.cpp)
+target_link_libraries(polytrope1d ester
+    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+
 add_executable(star1d src/main/star1d.cpp)
 target_link_libraries(star1d ester
     ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
@@ -183,7 +187,7 @@ add_executable(ester_vtk src/main/vtk.cpp)
 target_link_libraries(ester_vtk ester
     ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 
-install(TARGETS ester star1d star2d star_evol version gen_output ester_info ester_vtk
+install(TARGETS ester polytrope1d star1d star2d star_evol version gen_output ester_info ester_vtk
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib)
 
