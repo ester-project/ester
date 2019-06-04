@@ -103,7 +103,7 @@ matrix solve_poly1d(double n, double tol, int nr, double hsurf) {
         Phi += relax*dPhi;
         Phi0 += relax*op.get_var("Phi0")(0);
         Lambda += relax*op.get_var("Lambda")(0);
-	printf("it = %d, Lambda =  %e\n",it,Lambda);
+	//printf("it = %d, Lambda =  %e\n",it,Lambda);
 
         it++;
     }
@@ -122,7 +122,7 @@ matrix solve_poly1d(double n, double tol, int nr, double hsurf) {
     int maxit = 100;
     // Newton method to find ri such that: h(ri) = hsurf
     while (fabs(hi - hsurf) > 1e-12 && ++nit < maxit) {
-	printf("err %e Lambda = %e \n",fabs(hi - hsurf),Lambda);
+	//printf("err %e Lambda = %e \n",fabs(hi - hsurf),Lambda);
         ri += (hsurf - hi)/dhi;
         hi = map.gl.eval(h, ri)(0);
         dhi = map.gl.eval(dh, ri)(0);

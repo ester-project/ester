@@ -7,7 +7,7 @@
 #include "symbolic.h"
 
 #include "matplotlib.h"
-
+//---------------------------------------------------------------------
 void star1d::fill() {
     Y0=1.-X0-Z0;
     init_comp();
@@ -33,7 +33,7 @@ void star1d::fill() {
     Omega=0;Omega_bk=0;Ekman=0;Omegac=0;
 
 }
-
+//---------------------------------------------------------------------
 solver *star1d::init_solver(int nvar_add) {
     int nvar;
     solver *op;
@@ -49,7 +49,7 @@ solver *star1d::init_solver(int nvar_add) {
 
     return op;
 }
-
+//---------------------------------------------------------------------
 void star1d::register_variables(solver *op) {
     int i,var_nr[ndomains];
 
@@ -77,21 +77,21 @@ void star1d::register_variables(solver *op) {
     op->regvar("Ts");
     op->regvar("lum");
     op->regvar("Frad");
-    op->regvar_dep("rho");
-    op->regvar_dep("s");
     op->regvar("Teff");
     op->regvar("gsup");
+    op->regvar_dep("rho");
+    op->regvar_dep("s");
     op->regvar_dep("opa.xi");
     op->regvar_dep("opa.k");
     op->regvar_dep("nuc.eps");
 
 }
-
+//---------------------------------------------------------------------
 double star1d::solve(solver *op) {
     matrix_map error_map;
     return solve(op, error_map, 0);
 }
-
+//---------------------------------------------------------------------
 double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     int info[5];
     matrix rho0;
@@ -184,7 +184,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     return err;
 
 }
-
+//---------------------------------------------------------------------
 void star1d::update_map(matrix dR) {
     if(ndomains==1) return;
 
@@ -201,13 +201,26 @@ void star1d::update_map(matrix dR) {
         map.R=R0+h*dR;
     }
 }
-
+//---------------------------------------------------------------------
 void star1d::solve_definitions(solver *op) {
+// substitution of the dep variables by their expression
+// with the basic variables
+// dependent variables are: p, T, rho, ln_rhoc, s, xi, k, eps
+// r and rz.
+
+    op->add_d("p","log_p",p);
+    op->add_d("T","log_T",T);
+
     op->add_d("rho","p",rho/eos.chi_rho/p);
     op->add_d("rho","log_T",-rho*eos.d);
     op->add_d("rho","log_pc",rho/eos.chi_rho);
     op->add_d("rho","log_Tc",-rho*eos.d);
     op->add_d("rho","log_rhoc",-rho);
+
+    for(int n=0;n<ndomains;n++) {
+     op->add_d(n,"log_rhoc","log_pc",1./eos.chi_rho(0)*ones(1,1));
+     op->add_d(n,"log_rhoc","log_Tc",-eos.d(0)*ones(1,1));
+    }
 
     op->add_d("r","Ri",map.J[0]);
     op->add_d("r","dRi",map.J[1]);
@@ -220,17 +233,17 @@ void star1d::solve_definitions(solver *op) {
     op->add_d("rz","dRi",(D,map.J[3]));
 
     //    Valid only for homogeneus composition !!!!!!
-    op->add_d("s","T",eos.cp/T);
+    op->add_d("s","log_T",eos.cp);
     op->add_d("s","log_Tc",eos.cp);
-    op->add_d("s","p",-eos.cp*eos.del_ad/p);
+    op->add_d("s","log_p",-eos.cp*eos.del_ad);
     op->add_d("s","log_pc",-eos.cp*eos.del_ad);
 
     op->add_d("opa.xi","rho",opa.dlnxi_lnrho*opa.xi/rho);
     op->add_d("opa.xi","log_rhoc",opa.dlnxi_lnrho*opa.xi);
-    op->add_d("opa.xi","T",opa.dlnxi_lnT*opa.xi/T);
+    op->add_d("opa.xi","log_T",opa.dlnxi_lnT*opa.xi);
     op->add_d("opa.xi","log_Tc",opa.dlnxi_lnT*opa.xi);
 
-    op->add_d("opa.k","T",3*opa.k/T);
+    op->add_d("opa.k","log_T",3*opa.k);
     op->add_d("opa.k","log_Tc",3*opa.k);
     op->add_d("opa.k","rho",-opa.k/rho);
     op->add_d("opa.k","log_rhoc",-opa.k);
@@ -238,11 +251,11 @@ void star1d::solve_definitions(solver *op) {
 
     op->add_d("nuc.eps","rho",nuc.dlneps_lnrho*nuc.eps/rho);
     op->add_d("nuc.eps","log_rhoc",nuc.dlneps_lnrho*nuc.eps);
-    op->add_d("nuc.eps","T",nuc.dlneps_lnT*nuc.eps/T);
+    op->add_d("nuc.eps","log_T",nuc.dlneps_lnT*nuc.eps);
     op->add_d("nuc.eps","log_Tc",nuc.dlneps_lnT*nuc.eps);
 
 }
-
+//---------------------------------------------------------------------
 void star1d::solve_poisson(solver *op) {
     int n,j0;
     matrix rhs;
@@ -290,13 +303,12 @@ void star1d::solve_poisson(solver *op) {
     }
     op->set_rhs("Phi",rhs);
 }
-
+//---------------------------------------------------------------------
 void star1d::solve_pressure(solver *op) {
     int n,j0;
     matrix rhs_p,rhs_pi_c;
     char eqn[8];
 
-    op->add_d("p","log_p",p);
     strcpy(eqn,"log_p");
 
     op->add_l(eqn,"p",ones(nr,1),D);
@@ -327,14 +339,12 @@ void star1d::solve_pressure(solver *op) {
     op->set_rhs(eqn,rhs_p);
     op->set_rhs("pi_c",rhs_pi_c);
 }
-
-
+//---------------------------------------------------------------------
 void star1d::solve_temp(solver *op) {
     int n,j0,j1;
     matrix q;
     char eqn[8];
 
-    op->add_d("T","log_T",T);
     strcpy(eqn,"log_T");
 
     //Luminosity
@@ -476,9 +486,6 @@ void star1d::solve_temp(solver *op) {
     //rhs_T+=-qcore*(D,eos.s);
     rhs_T+=-qcore*(D,entropy());
 
-
-
-
     rhs_Lambda=zeros(ndomains,1);
 
     j0=0;
@@ -541,13 +548,14 @@ void star1d::solve_temp(solver *op) {
     op->set_rhs("Lambda",rhs_Lambda);
 
 }
-
-
+//---------------------------------------------------------------------
 void star1d::solve_dim(solver *op) {
-    int n,j0,j1;
-    matrix q,rhs;
+// write the equations defining the global variables:
+// Radius, R, Tc, Pc and non-dim mass.
 
-    rhs=zeros(ndomains,1);
+    int n,j0,j1;
+    matrix rhs=zeros(ndomains,1);
+
     j0=0;
     for(n=0;n<ndomains;n++) {
         j1=j0+map.gl.npts[n]-1;
@@ -564,13 +572,6 @@ void star1d::solve_dim(solver *op) {
     op->set_rhs("m",rhs);
 
     for(n=0;n<ndomains;n++) {
-        op->add_d(n,"log_rhoc","log_pc",1./eos.chi_rho(0)*ones(1,1));
-        op->add_d(n,"log_rhoc","log_Tc",-eos.d(0)*ones(1,1));
-    }
-
-
-    rhs=zeros(ndomains,1);
-    for(n=0;n<ndomains;n++) {
         if(n==ndomains-1) {
             op->add_d(n,"log_pc","log_pc",ones(1,1));
             op->add_d(n,"log_pc","pi_c",ones(1,1)/pi_c);
@@ -583,7 +584,6 @@ void star1d::solve_dim(solver *op) {
     }
     op->set_rhs("log_pc",rhs);
 
-    rhs=zeros(ndomains,1);
     for(n=0;n<ndomains;n++) {
         if(n==ndomains-1) {
             op->add_d(n,"log_Tc","log_Tc",ones(1,1));
@@ -597,7 +597,6 @@ void star1d::solve_dim(solver *op) {
     }
     op->set_rhs("log_Tc",rhs);
 
-    rhs=zeros(ndomains,1);
     for(n=0;n<ndomains;n++) {
         if(n==ndomains-1) {
             op->add_d(n,"log_R","log_R",3*ones(1,1));
@@ -611,12 +610,10 @@ void star1d::solve_dim(solver *op) {
     op->set_rhs("log_R",rhs);
 
 }
-
+//---------------------------------------------------------------------
 void star1d::solve_map(solver *op) {
     int n,j0,j1;
-    matrix rhs;
-
-    rhs=zeros(ndomains,1);
+    matrix rhs=zeros(ndomains,1);
     for(n=0;n<ndomains;n++) {
         op->bc_top1_add_d(n,"dRi","dRi",ones(1,1));
         op->bc_top1_add_d(n,"dRi","Ri",ones(1,1));
@@ -624,7 +621,6 @@ void star1d::solve_map(solver *op) {
     }
     op->set_rhs("dRi",rhs);
 
-    rhs=zeros(ndomains,1);
     j0=0;
     for(n=0;n<ndomains;n++) {
         j1=j0+map.gl.npts[n]-1;
@@ -662,33 +658,23 @@ void star1d::solve_map(solver *op) {
     }
     op->set_rhs("Ri",rhs);
 }
-
+//---------------------------------------------------------------------
 void star1d::solve_gsup(solver *op) {
-    matrix q,g;
+// Comfort equation
+// Code the equation gsup=4*pi*G*rho_c*R*m
+// "gsup" is used in the pressure BC in solve_atm
+
+    matrix g=gsup()*ones(1,1);
+
     int n=ndomains-1;
-
-    g=gsup()*ones(1,1);
-    /*
-    op->bc_top1_add_d(n,"gsup","gsup",ones(1,1));
-    op->bc_top1_add_d(n,"gsup","log_pc",-g);
-    op->bc_top1_add_d(n,"gsup","log_rhoc",g);
-    op->bc_top1_add_d(n,"gsup","log_R",g);
-
-    q=-pc/R/rhoc*ones(1,1);
-    op->bc_top1_add_l(n,"gsup","Phi",q,D.block(n).row(-1));
-
-    q=(D,phi);
-    op->bc_top1_add_d(n,"gsup","rz",pc/R/rhoc*q.row(-1));
-    */
     op->bc_top1_add_d(n,"gsup","gsup",1./g);
     op->bc_top1_add_d(n,"gsup","log_rhoc",-ones(1,1));
     op->bc_top1_add_d(n,"gsup","log_R",-ones(1,1));
     op->bc_top1_add_d(n,"gsup","m",-ones(1,1)/m);
 
     op->set_rhs("gsup",zeros(1,1));
-
 }
-
+//---------------------------------------------------------------------
 void star1d::solve_Teff(solver *op) {
     matrix q,Te,F;
     int n=ndomains-1;
@@ -710,14 +696,11 @@ void star1d::solve_Teff(solver *op) {
 /*    op->bc_top1_add_d(n,"Teff","Teff",4./Te);
     op->bc_top1_add_d(n,"Teff","log_Tc",-ones(1,1));
     op->bc_top1_add_d(n,"Teff","log_R",ones(1,1));
-    op->bc_top1_add_d(n,"Teff","lum",-ones(1,1)/luminosity()*R*Tc);*/
-
-
+    op->bc_top1_add_d(n,"Teff","lum",-ones(1,1)/luminosity()*R*Tc);
+*/
     op->set_rhs("Teff",zeros(1,1));
-
 }
-
-
+//---------------------------------------------------------------------
 void star1d::check_jacobian(solver *op,const char *eqn) {
     star1d B;
     matrix rhs,drhs,drhs2,qq;
