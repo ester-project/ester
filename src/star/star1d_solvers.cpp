@@ -586,10 +586,13 @@ void star1d::solve_dim(solver *op) {
 
     for(n=0;n<ndomains;n++) {
         if(n==ndomains-1) {
-            op->add_d(n,"log_Tc","log_Tc",ones(1,1));
-            op->add_d(n,"log_Tc","log_rhoc",-ones(1,1));
-            op->add_d(n,"log_Tc","Lambda",ones(1,1)/Lambda);
-            op->add_d(n,"log_Tc","log_R",-2*ones(1,1));
+// New formulation (more consistent) added for log_Tc
+// add_d ==> bc_top1_add_d
+// to be done elsewhere
+            op->bc_top1_add_d(n,"log_Tc","log_Tc",ones(1,1));
+            op->bc_top1_add_d(n,"log_Tc","log_rhoc",-ones(1,1));
+            op->bc_top1_add_d(n,"log_Tc","Lambda",ones(1,1)/Lambda);
+            op->bc_top1_add_d(n,"log_Tc","log_R",-2*ones(1,1));
         } else {
             op->bc_top1_add_d(n,"log_Tc","log_Tc",ones(1,1));
             op->bc_top2_add_d(n,"log_Tc","log_Tc",-ones(1,1));
