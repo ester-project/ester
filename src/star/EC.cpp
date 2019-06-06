@@ -16,8 +16,6 @@ matrix solve_ester_cesam(double M, double tol, int nr) {
     map.set_nt(1); // 1d
     map.init();
 
-    sym sym_lnT = S.regvar("lnT");
-    sym sym_x = S.regvar("x");
 
 // The structure differential equations
 
@@ -54,53 +52,13 @@ matrix solve_ester_cesam(double M, double tol, int nr) {
     op.set_nr(map.npts);
 
     while(error>tol && it<10000) {
-        // Put the current values of variables in the symbolic object
-        S.set_value("lnP", log(P));
-        S.set_value("lnT", log(T));
-        S.set_value("x", x);
-        S.set_value("lam", lam);
-        S.set_value("rhoc", rhoc*ones(1, 1)); // Note that the assigned value should be of type matrix
-        S.set_value("Tc", Tc*ones(1, 1));
-        S.set_value("R", R*ones(1, 1));
-        S.set_value("Lum", Lum*ones(1, 1));
-
         op.reset(); // Delete the equations of the previous iteration
 
-        // Define the equation for "Phi", here we will use the symbolic object to automatically calculate
-        // the required terms
 
 
 
 
-        eq.add(&op, "Phi", "Lambda"); // Add the jacobian of eq with respect to "Lambda"
-        eq.add(&op, "Phi", "Phi0"); // Add the jacobian of eq with respect to "Phi0"
 
-        // Add the boundary conditions
-        op.bc_bot2_add_l(0, "Phi", "Phi", ones(1, 1), map.D.block(0).row(0));
-        op.bc_top1_add_l(0, "Phi", "Phi", ones(1, 1), map.D.block(0).row(-1));
-        op.bc_top1_add_d(0, "Phi", "Phi", ones(1, 1));
-
-        // RHS for "Phi"
-        matrix rhs = -eq.eval();
-        rhs(0) = -(map.D, Phi)(0);
-        rhs(-1) = -(map.D, Phi)(-1) - Phi(-1);
-        op.set_rhs("Phi", rhs);
-
-        // Equation for "Phi0":    dPhi(0) - dPhi0 = -( Phi(0) - Phi0 )
-        // We add it as a boundary condition at the bottom of the domain. This way, it uses the value of "Phi" at r = 0
-        op.bc_bot2_add_d(0, "Phi0", "Phi", ones(1, 1));
-        op.bc_bot2_add_d(0, "Phi0", "Phi0", -ones(1, 1));
-        op.set_rhs("Phi0", -(Phi(0) - Phi0) * ones(1, 1));
-
-
-        // Equation for "Lambda", recall that Lambda = 1./(Phi(1)-Phi(0)), so we will use the equation
-        // 		Lambda * (dPhi(1) - dPhi0) + dLambda * ( Phi(1)-Phi0 ) = -( Lambda*(Phi(1)-Phi0) - 1)
-        // We add it as a boundary condition at the top of the domain. This way, it uses the value of "Phi" at r = 1
-        // ("Phi0" is defined in the whole domain)
-        op.bc_top1_add_d(0, "Lambda", "Phi", Lambda*ones(1, 1));
-        op.bc_top1_add_d(0, "Lambda", "Phi0", -Lambda*ones(1, 1));
-        op.bc_top1_add_d(0, "Lambda", "Lambda", (Phi(-1)-Phi0)*ones(1, 1));
-        op.set_rhs("Lambda", -(Lambda*(Phi(-1)-Phi0) -1) * ones(1, 1));
 
         op.solve(); // Solve the equations
 
@@ -144,11 +102,9 @@ matrix solve_ester_cesam(double M, double tol, int nr) {
 
     matrix h2 = map.gl.eval(h, map.r*ri);
 
-    // printf("h(r=%e) = %e\n", ri, hi);
-
     return h2;
 }
-
+//--------------------------------------------------------------------
 void solve_lnp(solver *op) {
 // set the pressure equation
     symbolic S;
@@ -157,19 +113,18 @@ void solve_lnp(solver *op) {
     sym sym_P = exp(sym_lnP);
     sym sym_x = S.regvar("x");
     sym sym_R = S.regconst("R");
-    sym sym_Pc = S.regconst("Pc");
+    sym sym_Pc = exp(S.regconst("lnPc"));
     sym sym_kappa_s = S.regvar("kappa_s");
     sym _fac1 = S.regconst("fac1")
     sym _fac2 = S.regconst("fac2")
 
-    
     sym eqP = Dz(sym_lnP)+_fac1/pow(sym_R,4)/sym_Pc/sym_P*pow(sym_mu/sym_x,2);
     sym bcP = sym_P - _fac2/sym_Pc/sym_kappa_s/sym_R/sym_R;
 
     S.set_map(map);
-    S.set_value("Pc",Pc);
+    S.set_value("lnPc",lnPc);
     S.set_value("R",R);
-    S.set_value("lnP",log(P));
+    S.set_value("lnP",lnP);
     S.set_value("mu", mu);
     S.set_value("fac1", 3*GRAV*M*M/8/PI);
     S.set_value("fac2", 2*GRAV*M/3);
@@ -181,29 +136,29 @@ void solve_lnp(solver *op) {
     eqP.add(op, "lnP", "Pc");
     rhs=-eqP.eval();
 
-
 // Central BC
     op->bc_bot2_add_d(0,"lnP","lnP",ones(1,1));
-    rhs(0)=-log(P(0));
+    rhs(0)=-lnP(0);
 
 // Surface BC
     bcP.bc_top1_add(op, "lnP", "Pc");
     bcP.bc_top1_add(op, "lnP", "R");
     bcP.bc_top1_add(op, "lnP", "kappa_s");
-    rhs(-1)=-(P(-1)-2*GRAV*M/3/Pc/kappa(-1)/R/R);
+    //rhs(-1)=-(P(-1)-2*GRAV*M/3/Pc/kappa(-1)/R/R);
     rhs(-1)=-bcP.eval()(-1); // est-ce possible ?
-    op->set_rhs(rhs);
+    op->set_rhs("lnP",rhs);
 }
 //-------------------------------------------------------------------
 void solve_lnT(solver *op) {
 // Set the temperature equation
 
+    matrix rhs;
     symbolic S;
     sym sym_mu=S.r;
     sym sym_lnP = S.regvar("lnP");
     sym sym_P = exp(sym_lnP);
     sym sym_lnT = S.regvar("lnT");
-    sym sym_T = exp(sym_lnT);
+    sym sym_T = exp(sym_lnT); //    relation (1)
     sym sym_nabla = S.regvar("nabla");
     sym sym_lam = S.regvar("lam");
 
@@ -219,28 +174,32 @@ void solve_lnT(solver *op) {
     sym eqT = Dz(sym_lnT) - sym_nabla*Dz(sym_lnP);
     sym eq_nabla = sym_nabla - sym_Lum/4/PI/GRAV/M*sym_P*sym_Pc
          /sym_rho/sym_rhoc/sym_Tc/sym_T/sym_xi*pow(sym_lam/sym_mu,1.5);
+    sym bcT = sym_T - pow(sym_lum/4/PI/SIG_SB,0.25)/sym_Tc/sqrt(sym_R);
 
     S.set_map(map);
-    S.set_value("lnP",log(P));
+    S.set_value("lnP",lnP);
     S.set_value("mu", mu);
     S.set_value("Pc",Pc);
     S.set_value("rho",rho);
     S.set_value("rhoc",rhoc);
-    S.set_value("T",T);
+    S.set_value("lnT",lnT);
+// est-ce qu'il faut un set_value pour T où est-ce que (1) suffit ?
+// meme question pour P.
     S.set_value("Tc",Tc);
     S.set_value("xi",opa.xi);
     S.set_value("lam",lam);
+    S.set_value("nabla",nabla);
 // We now make the insertion into the jacobian
     eqT.add(op, "lnT", "lnT");
     eqT.add(op, "lnT", "lnP"); 
     eqT.add(op, "lnT", "nabla");
     rhs=-eqT.eval();
-    op->set_rhs(rhs);
+    op->set_rhs("lnT",rhs);
 
     eq_nabla.add(op, "nabla", "nabla");
-    eq_nabla.add(op, "nabla", "P");
+    eq_nabla.add(op, "nabla", "lnP");
     eq_nabla.add(op, "nabla", "Pc");
-    eq_nabla.add(op, "nabla", "T");
+    eq_nabla.add(op, "nabla", "lnT");
     eq_nabla.add(op, "nabla", "Tc");
     eq_nabla.add(op, "nabla", "rho");
     eq_nabla.add(op, "nabla", "xi");
@@ -248,11 +207,24 @@ void solve_lnT(solver *op) {
     eq_nabla.add(op, "nabla", "mu");
     eq_nabla.add(op, "nabla", "lum");
     eq_nabla.add(op, "nabla", "rhoc");
+    rhs=zeros(nr,1);
+    op->set_rhs("nabla",rhs);
 
+// Central BC
+    op->bc_bot2_add_d(0,"lnT","lnT",ones(1,1));
+    rhs(0)=-lnT(0);
+
+// Surface BC
+    bcT.bc_top1_add(op, "lnT", "Lum");
+    bcT.bc_top1_add(op, "lnT", "Tc");
+    bcT.bc_top1_add(op, "lnT", "R");
+    rhs(-1)=-bcT.eval()(-1); // est-ce possible ?
+    op->set_rhs("lnT",rhs);
 }
 //-------------------------------------------------------------------
 void solve_x(solver *op) {
 // Set the x-variable equation
+    matrix rhs;
     symbolic S;
     sym sym_mu=S.r;
     sym sym_x = S.regvar("x");
@@ -269,8 +241,6 @@ void solve_x(solver *op) {
     S.set_value("rhoc",rhoc);
     S.set_value("mu", mu);
     S.set_value("x", x);
-    S.set_value("fac1", 3*GRAV*M*M/8/PI);
-    S.set_value("fac2", 2*GRAV*M/3);
 // We now make the insertion into the jacobian
     eqx.add(op, "x", "x"); 
     eqx.add(op, "x", "mu");
@@ -278,7 +248,17 @@ void solve_x(solver *op) {
     eqx.add(op, "x", "rhoc");
     eqx.add(op, "x", "R");
     rhs=-eqx.eval();
+    op->set_rhs("x",rhs);
 
+// Central BC
+    op->bc_bot2_add_d(0,"x","x",ones(1,1));
+    rhs(0)=-x(0);
+
+// Surface BC
+    op->bc_top1_add(0, "x", "x",ones(1,1));
+    rhs(-1)=1d0-x(-1);
+
+    op->set_rhs("x",rhs);
 }
 //-------------------------------------------------------------------
 void solve_lam(solver *op) {
@@ -291,8 +271,51 @@ void solve_lam(solver *op) {
     sym sym_Lum = S.regconst("Lum");
     sym eqL = Dz(sym_lam) - M/sym_Lum*sym_eps*sqrt(sym_mu/sym_lam);
 // We now make the insertion into the jacobian
-        eqL.add(op, "lam", "lam");
-        eqL.add(op, "lam", "mu");
-        eqL.add(op, "lam", "eps");
-        eqL.add(op, "lam", "Lum");
+    eqL.add(op, "lam", "lam");
+    eqL.add(op, "lam", "mu");
+    eqL.add(op, "lam", "eps");
+    eqL.add(op, "lam", "Lum");
+    rhs=-eqL.eval();
+    op->set_rhs("lam",rhs);
+
+// Central BC
+    op->bc_bot2_add_d(0,"lam","lam",ones(1,1));
+    rhs(0)=-lam(0);
+
+// Surface BC
+    op->bc_top1_add(0, "lam", "lam",ones(1,1));
+    rhs(-1)=1d0-lam(-1);
+}
+
+void solve_definitions(solver *op) {
+
+        op->add_d("T","lnT",T);
+        op->add_d("P","lnP",P);
+
+        op->add_d("rho","lnP",rho/eos.chi_rho);
+        op->add_d("rho","lnT",-rho*eos.d);
+        op->add_d("rho","lnPc",rho/eos.chi_rho);
+        op->add_d("rho","lnTc",-rho*eos.d);
+        op->add_d("rho","ln_rhoc",-rho);
+
+// Expression of \delta\khi (thermal conductivity)      
+        op->add_d("xi","rho",opa.dlnxi_lnrho*opa.xi/rho);
+        op->add_d("xi","ln_rhoc",opa.dlnxi_lnrho*opa.xi);
+        op->add_d("xi","lnT",opa.dlnxi_lnT*opa.xi);
+        op->add_d("xi","lnTc",opa.dlnxi_lnT*opa.xi);
+        op->add_d("xi","ln_xic",-opa.xi);
+
+// Expression of \delta\kappa (opacity)         
+        op->add_d("opa.k","lnT",3*opa.k);
+        op->add_d("opa.k","lnTc",3*opa.k);
+        op->add_d("opa.k","rho",-opa.k/rho);
+        op->add_d("opa.k","ln_rhoc",-opa.k);
+        op->add_d("opa.k","xi",-opa.k/opa.xi);
+        op->add_d("opa.k","ln_xic",-opa.k);
+
+        op->add_d("nuc.eps","rho",nuc.dlneps_lnrho*nuc.eps/rho);
+        op->add_d("nuc.eps","ln_rhoc",nuc.dlneps_lnrho*nuc.eps);
+        op->add_d("nuc.eps","lnT",nuc.dlneps_lnT*nuc.eps);
+        op->add_d("nuc.eps","lnTc",nuc.dlneps_lnT*nuc.eps);
+        op->add_d("nuc.eps","ln_epsc",-nuc.eps);
 }
