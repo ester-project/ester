@@ -112,28 +112,39 @@ int main(int argc,char *argv[]) {
 }
 //--------------------------------------------------------------------
 void solve_lnp(solver *op) {
+// First the non-dimensional factor:
+// Mass and Radius in solar units, Central pressure in 1e17 cgs
+    double P_ref=1e17;
+    double kappa_ref=0.1;
+    double fac1=3*GRAV*M_SUN*M_SUN/8/PI/pow(R_SUN,4)/P_ref;
+// fac1=0.0134698
+    double fac2=2*GRAV*M_SUN/3/P_ref/kappa_ref/R_SUN/R_SUN;
+// fac2=1.82952e-12
+
 // set the pressure equation
     symbolic S;
     sym sym_mu=S.r;
     sym sym_lnP = S.regvar("lnP");
     sym sym_P = exp(sym_lnP);  // valid syntax ??
     sym sym_x = S.regvar("x");
-    sym sym_R = S.regconst("R");
+    sym sym_lnR = log(S.regconst("R")); // valid syntax ??
     sym sym_Pc = exp(S.regconst("lnPc"));  // valid syntax ??
-    sym sym_kappa_s = S.regvar("opa.k");
-    sym _fac1 = S.regconst("fac1")
-    sym _fac2 = S.regconst("fac2")
+    sym log_kappa = log(S.regvar("opa.k"));
+    sym _fac1 = S.regconst("fac1");
+    sym log_fac2 = log(S.regconst("fac2"));
+    sym log_M = log(S.regconst("M"));
 
     sym eqP = Dz(sym_lnP)+_fac1/pow(sym_R,4)/sym_Pc/sym_P*pow(sym_mu/sym_x,2);
-    sym bcP = sym_P - _fac2/sym_Pc/sym_kappa_s/sym_R/sym_R;
+    sym bcP = sym_lnP - log_fac2-log_M+sym_lnPc+log_kappa+2*sym_lnR;
 
     S.set_map(map);
     S.set_value("lnPc",log(Pc));
     S.set_value("R",R);
     S.set_value("lnP",lnP);
     S.set_value("mu", mu);
-    S.set_value("fac1", 3*GRAV*M*M/8/PI);
-    S.set_value("fac2", 2*GRAV*M/3);
+    S.set_value("fac1", fac1);
+    S.set_value("fac2", fac2);
+    S.set_value("M", M);
 // We now make the insertion into the jacobian
     eqP.add(op, "lnP", "lnP");
     eqP.add(op, "lnP", "mu"); 
@@ -157,44 +168,59 @@ void solve_lnp(solver *op) {
 //-------------------------------------------------------------------
 void solve_lnT(solver *op) {
 // Set the temperature equation
+// Luminosity, Mass and Radius in solar units
+    double P_ref=1e17;
+    double kappa_ref=0.1;
+    double T_ref=1e6;
+    double rho_ref=1e1;
+    double xi_ref=1e14;
+    double log_fac=log(L_SUN/4/PI/GRAV/M_SUN*P_ref/T_ref/rho_ref/xi_ref);
+// fac=230.167
+    double log_fac_bc=log(pow(L_SUN/4/PI/SIG_SB/R_SUN/R_SUN,0.25)/T_ref);
+// fac_bc=5.77716e-3
 
     matrix rhs;
     symbolic S;
     sym sym_mu=S.r;
-    sym sym_lnP = S.regvar("lnP");
-    sym sym_P = exp(sym_lnP);
-    sym sym_lnT = S.regvar("lnT");
-    sym sym_T = exp(sym_lnT); //    relation (1)
-    sym sym_nabla = S.regvar("nabla");
     sym sym_lam = S.regvar("lam");
+    sym log_P = S.regvar("lnP");
+    sym log_T = S.regvar("lnT");
+    sym log_rho = S.regvar("lnrho");
+    sym log_xi = S.regvar("lnxi");
+    sym sym_nabla = S.regvar("nabla");
+    sym log_nabla = log(S.regvar("nabla"));
 
-// Some dependent variables
-    sym sym_rho = S.regvar("rho");
-    sym sym_xi = S.regvar("xi");
 // The global scalars
-    sym sym_Pc = S.regconst("Pc");
-    sym sym_rhoc = S.regconst("rhoc");
-    sym sym_Tc = S.regconst("Tc");
-    sym sym_Lum = S.regconst("Lum");
+    sym log_fac = S.regconst("log_fac");
+    sym log_facbc = S.regconst("log_facbc");
+    sym log_Pc = S.regconst("lnPc");
+    sym log_rhoc = S.regconst("lnrhoc");
+    sym log_Tc = S.regconst("lnTc");
+    sym log_L = log(S.regconst("Lum"));
+    sym log_R = log(S.regconst("R"));
+    sym log_M = log(S.regconst("M"));
 
     sym eqT = Dz(sym_lnT) - sym_nabla*Dz(sym_lnP);
-    sym eq_nabla = sym_nabla - sym_Lum/4/PI/GRAV/M*sym_P*sym_Pc
-         /sym_rho/sym_rhoc/sym_Tc/sym_T/sym_xi*pow(sym_lam/sym_mu,1.5);
-    sym bcT = sym_T - pow(sym_lum/4/PI/SIG_SB,0.25)/sym_Tc/sqrt(sym_R);
+
+    sym eq_nabla = log_nabla - log_fac-log_Lum-log_M-log_Pc+log_rhoc
+     +log_Tc-log_P+log_xi+log_rho+log_T-1.5*log(sym_lam/sym_mu);
+
+    sym bcT = sym_lnT - log_facbc-0.25*log_L+0.5*log_R+log_Tc;
 
     S.set_map(map);
     S.set_value("lnP",lnP);
-    S.set_value("mu", mu);
-    S.set_value("Pc",Pc);
-    S.set_value("rho",rho);
-    S.set_value("rhoc",rhoc);
     S.set_value("lnT",lnT);
-// est-ce qu'il faut un set_value pour T où est-ce que (1) suffit ?
-// meme question pour P.
-    S.set_value("Tc",Tc);
-    S.set_value("xi",opa.xi);
+    S.set_value("mu", mu);
     S.set_value("lam",lam);
+    S.set_value("rho",rho);
     S.set_value("nabla",nabla);
+    S.set_value("lnrhoc",log(rhoc));
+    S.set_value("lnTc",log(Tc));
+    S.set_value("lnPc",log(Pc));
+    S.set_value("lnxi",log(opa.xi));
+    S.set_value("M",M);
+    S.set_value("log_fac",log_fac);
+    S.set_value("log_fac_bc",log_fac_bc);
 // We now make the insertion into the jacobian
     eqT.add(op, "lnT", "lnT");
     eqT.add(op, "lnT", "lnP"); 
@@ -204,15 +230,15 @@ void solve_lnT(solver *op) {
 
     eq_nabla.add(op, "nabla", "nabla");
     eq_nabla.add(op, "nabla", "lnP");
-    eq_nabla.add(op, "nabla", "Pc");
+    eq_nabla.add(op, "nabla", "lnPc");
     eq_nabla.add(op, "nabla", "lnT");
-    eq_nabla.add(op, "nabla", "Tc");
-    eq_nabla.add(op, "nabla", "rho");
-    eq_nabla.add(op, "nabla", "xi");
+    eq_nabla.add(op, "nabla", "lnTc");
+    eq_nabla.add(op, "nabla", "lnrho");
+    eq_nabla.add(op, "nabla", "lnrhoc");
+    eq_nabla.add(op, "nabla", "lnxi");
     eq_nabla.add(op, "nabla", "lam");
     eq_nabla.add(op, "nabla", "mu");
     eq_nabla.add(op, "nabla", "lum");
-    eq_nabla.add(op, "nabla", "rhoc");
     rhs=zeros(nr,1);
     op->set_rhs("nabla",rhs);
 
@@ -230,6 +256,9 @@ void solve_lnT(solver *op) {
 //-------------------------------------------------------------------
 void solve_x(solver *op) {
 // Set the x-variable equation
+    double rho_ref=1e1;
+    double fac=3*M_SUN/8/PI/pow(R_SUN,3)/rho_ref;
+// fac=0.07057
     matrix rhs;
     symbolic S;
     sym sym_mu=S.r;
@@ -238,7 +267,7 @@ void solve_x(solver *op) {
     sym sym_rhoc = S.regconst("rhoc");
     sym sym_R = S.regconst("R");
 
-    sym eqx = Dz(sym_x) - 3*M/8/PI/pow(sym_R,3)/sym_rhoc/sym_rho
+    sym eqx = Dz(sym_x) - fac*M/pow(sym_R,3)/sym_rhoc/sym_rho
                             *sqrt(sym_mu/sym_x);
 
     S.set_map(map);
@@ -269,13 +298,24 @@ void solve_x(solver *op) {
 //-------------------------------------------------------------------
 void solve_lam(solver *op) {
 // Set the luminosity-variable equation
+    double eps_ref=1e3;
+    double fac=M_SUN/L_SUN*eps_ref;
+// fac=518.049
 
     symbolic S;
     sym sym_mu=S.r;
     sym sym_eps = S.regvar("eps");
     sym sym_lam = S.regvar("lam");
     sym sym_Lum = S.regconst("Lum");
-    sym eqL = Dz(sym_lam) - M/sym_Lum*sym_eps*sqrt(sym_mu/sym_lam);
+    sym eqL = Dz(sym_lam) - fac*M/sym_Lum*sym_eps*sqrt(sym_mu/sym_lam);
+
+    S.set_map(map);
+    S.set_value("R",R);
+    S.set_value("lnrho",log(rho));
+    S.set_value("lnrhoc",log(rhoc));
+    S.set_value("mu", mu);
+    S.set_value("lam", lam);
+// We now make the insertion into the jacobian
 // We now make the insertion into the jacobian
     eqL.add(op, "lam", "lam");
     eqL.add(op, "lam", "mu");
