@@ -1,78 +1,106 @@
-#include "ester.h"
-// #include "matplotlib.h"
+#include "constants.h"
+#include "mapping.h"
+#include "matrix.h"
+#include "numdiff.h"
+#include "parser.h"
+#include "physics.h"
+#include "solver.h"
+#include "symbolic.h"
 
 #include <cstdlib>
 
-matrix solve_ester_cesam(double M, double tol, int nr) {
-    // Create a mapping
+int main(int argc,char *argv[]) {
 
     symbolic::spherical = true; // a definir initialement
 
-    printf("parametres: tol %e, nr %d\n",tol,nr);
+    int nr=100;
+    int ndomains=1;
     mapping map;
-    map.set_ndomains(1);
+    map.set_ndomains(ndomains);
     map.set_npts(nr);
-    map.gl.set_xif(0., 1.); // This changes the values of zeta of the limits of the domain directly (do it before map.init())
+    map.gl.set_xif(0., 1.);
     map.set_nt(1); // 1d
     map.init();
 
 
-// The structure differential equations
 
-// Additional equation for nabla
-
-// Create numerical variables for the solution with the initial guesses
-    matrix T = 1.-0.5*map.r*map.r;
-    matrix P = T;
-
-    double error = 1.;
+// the initial guesses
+    matrix lnT = log(1.-0.5*map.r*map.r);
+    matrix lnP = lnT;
+    matrix x = map.r;
+    matrix lam = map.r;
     double M = 5*M_SUN;
-    int it = 0;
 
-    // Create a solver for the three variables. The size of each variable is determined by the
-    // solver object based on the size of the equations that we will define for them.
-    // The "Phi" equation will have nr x 1 points while for "Phi0" and "Lambda" we will introduce
-    // only boundary conditions, so the resulting equations will have 1 x 1 size
-    star1d A;
-    solver *op;
-    op=A.init_solver()
-    op->regvar("lnP");
-    op->regvar("lnT");
-    op->regvar("x");
-    op->regvar("lam");
-    op->regvar("rhoc");
-    op->regvar("Tc");
-    op->regvar("R");
-    op->regvar("Lum");
-    op->regvar("xi");
-    op->regvar("eps");
-    op->regvar("rho");
-    op->regvar("nabla");
-
+// Initialize the solver
+    solver op;
+    int nvar=16;
+    op.init(ndomains,nvar,"full")
     op.set_nr(map.npts);
 
+    op.regvar("lnP");
+    op.regvar("lnT");
+    op.regvar("x");
+    op.regvar("lam");
+    op.regvar("lnPc");
+    op.regvar("lnTc");
+    op.regvar("lnR");
+    op.regvar("lnLum");
+    op.regvar_dep("P");
+    op.regvar_dep("T");
+    op.regvar_dep("rho");
+    op.regvar_dep("lnrho");
+    op.regvar_dep("lnrhoc");
+    op.regvar_dep("lnxi");
+    op.regvar_dep("lnxic");
+    op.regvar_dep("eps");
+    op.regvar_dep("nabla");
+
+
+    int it = 0;
+    double error = 1.;
     while(error>tol && it<10000) {
+
         op.reset(); // Delete the equations of the previous iteration
 
-
-
-
-
-
+	solve_definitions(op);
+	solve_lnP(op);
+	solve_lnT(op);
+	solve_x(op);
+	solve_lam(op);
 
         op.solve(); // Solve the equations
 
-        matrix dPhi = op.get_var("Phi");
-        error = max(abs(dPhi));  // Calculate the error (absolute)
+// get the variations
+        matrix dlnP = op.get_var("lnP");
+        matrix dlnT = op.get_var("lnT");
+        matrix dx = op.get_var("x");
+        matrix dlam = op.get_var("lam");
+// Variations on the global scalar constant
+// ont-elles besoin d'etre des matrix ????
+        matrix dlnPc = op.get_var("lnPc");
+        matrix dlnTc = op.get_var("lnTc");
+        matrix dR = op.get_var("R");
+        matrix dL = op.get_var("Lum");
+
+// get the amplitude of the variation on the lnT field
+	error=max(abs(dlnT));
 
         double relax = 1.;
         if(error>0.01) relax = 0.2; // Relax if error too large
 
-        // Update variables
-        Phi += relax*dPhi;
-        Phi0 += relax*op.get_var("Phi0")(0);
-        Lambda += relax*op.get_var("Lambda")(0);
-	//printf("it = %d, Lambda =  %e\n",it,Lambda);
+// Update main variables
+        lnT += relax*dlnT;
+        lnP += relax*dlnP;
+        x += relax*dx;
+        lam += relax*dlam;
+        R += relax*op.get_var("R"); // matrix pas matrix ??
+        lnTc += relax*op.get_var("lnTc");
+        lnPc += relax*op.get_var("lnPc");
+        Lum += relax*op.get_var("Lum");
+	printf("it = %d  lnTc = %e\n",it,lnTc);
+
+// update all the dependent fields: xi,eps,rho, etc...
+	fields();
 
         it++;
     }
@@ -81,28 +109,6 @@ matrix solve_ester_cesam(double M, double tol, int nr) {
         ester_err("No converge\n");
     }
 
-    matrix h = 1.0 - (Phi - Phi(0))*Lambda;
-    double ri = .5;
-    double hi = map.gl.eval(h, ri)(0);
-    matrix dh = (map.D, h);
-    double dhi = map.gl.eval(dh, ri)(0);
-
-    int nit = 0;
-    int maxit = 100;
-    // Newton method to find ri such that: h(ri) = hsurf
-    while (fabs(hi - hsurf) > 1e-12 && ++nit < maxit) {
-	//printf("err %e Lambda = %e \n",fabs(hi - hsurf),Lambda);
-        ri += (hsurf - hi)/dhi;
-        hi = map.gl.eval(h, ri)(0);
-        dhi = map.gl.eval(dh, ri)(0);
-    }
-    if (nit >= maxit) {
-        ester_err("No convergence finding polytrope surface such that h(surface) = %e", hsurf);
-    }
-
-    matrix h2 = map.gl.eval(h, map.r*ri);
-
-    return h2;
 }
 //--------------------------------------------------------------------
 void solve_lnp(solver *op) {
@@ -110,11 +116,11 @@ void solve_lnp(solver *op) {
     symbolic S;
     sym sym_mu=S.r;
     sym sym_lnP = S.regvar("lnP");
-    sym sym_P = exp(sym_lnP);
+    sym sym_P = exp(sym_lnP);  // valid syntax ??
     sym sym_x = S.regvar("x");
     sym sym_R = S.regconst("R");
-    sym sym_Pc = exp(S.regconst("lnPc"));
-    sym sym_kappa_s = S.regvar("kappa_s");
+    sym sym_Pc = exp(S.regconst("lnPc"));  // valid syntax ??
+    sym sym_kappa_s = S.regvar("opa.k");
     sym _fac1 = S.regconst("fac1")
     sym _fac2 = S.regconst("fac2")
 
@@ -122,7 +128,7 @@ void solve_lnp(solver *op) {
     sym bcP = sym_P - _fac2/sym_Pc/sym_kappa_s/sym_R/sym_R;
 
     S.set_map(map);
-    S.set_value("lnPc",lnPc);
+    S.set_value("lnPc",log(Pc));
     S.set_value("R",R);
     S.set_value("lnP",lnP);
     S.set_value("mu", mu);
@@ -133,7 +139,7 @@ void solve_lnp(solver *op) {
     eqP.add(op, "lnP", "mu"); 
     eqP.add(op, "lnP", "x"); 
     eqP.add(op, "lnP", "R");
-    eqP.add(op, "lnP", "Pc");
+    eqP.add(op, "lnP", "lnPc");
     rhs=-eqP.eval();
 
 // Central BC
@@ -141,9 +147,9 @@ void solve_lnp(solver *op) {
     rhs(0)=-lnP(0);
 
 // Surface BC
-    bcP.bc_top1_add(op, "lnP", "Pc");
+    bcP.bc_top1_add(op, "lnP", "lnPc");
     bcP.bc_top1_add(op, "lnP", "R");
-    bcP.bc_top1_add(op, "lnP", "kappa_s");
+    bcP.bc_top1_add(op, "lnP", "opa.k");
     //rhs(-1)=-(P(-1)-2*GRAV*M/3/Pc/kappa(-1)/R/R);
     rhs(-1)=-bcP.eval()(-1); // est-ce possible ?
     op->set_rhs("lnP",rhs);
@@ -291,31 +297,97 @@ void solve_definitions(solver *op) {
 
         op->add_d("T","lnT",T);
         op->add_d("P","lnP",P);
+        op->add_d("rho","lnrho",rho);
 
-        op->add_d("rho","lnP",rho/eos.chi_rho);
-        op->add_d("rho","lnT",-rho*eos.d);
-        op->add_d("rho","lnPc",rho/eos.chi_rho);
-        op->add_d("rho","lnTc",-rho*eos.d);
-        op->add_d("rho","ln_rhoc",-rho);
+        op->add_d("lnrho","lnP",1./eos.chi_rho);
+        op->add_d("lnrho","lnT",-eos.d);
+        op->add_d("lnrho","lnPc",1./eos.chi_rho);
+        op->add_d("lnrho","lnTc",-eos.d);
+        op->add_d("lnrho","ln_rhoc",-ones(nr,1));
 
 // Expression of \delta\khi (thermal conductivity)      
-        op->add_d("xi","rho",opa.dlnxi_lnrho*opa.xi/rho);
-        op->add_d("xi","ln_rhoc",opa.dlnxi_lnrho*opa.xi);
-        op->add_d("xi","lnT",opa.dlnxi_lnT*opa.xi);
-        op->add_d("xi","lnTc",opa.dlnxi_lnT*opa.xi);
-        op->add_d("xi","ln_xic",-opa.xi);
+        op->add_d("lnxi","lnrho",opa.dlnxi_lnrho);
+        op->add_d("lnxi","ln_rhoc",opa.dlnxi_lnrho);
+        op->add_d("lnxi","lnT",opa.dlnxi_lnT);
+        op->add_d("lnxi","lnTc",opa.dlnxi_lnT);
+        op->add_d("lnxi","ln_xic",-ones(nr,1));
 
 // Expression of \delta\kappa (opacity)         
         op->add_d("opa.k","lnT",3*opa.k);
         op->add_d("opa.k","lnTc",3*opa.k);
-        op->add_d("opa.k","rho",-opa.k/rho);
+        op->add_d("opa.k","lnrho",-opa.k);
         op->add_d("opa.k","ln_rhoc",-opa.k);
-        op->add_d("opa.k","xi",-opa.k/opa.xi);
+        op->add_d("opa.k","lnxi",-opa.k);
         op->add_d("opa.k","ln_xic",-opa.k);
 
-        op->add_d("nuc.eps","rho",nuc.dlneps_lnrho*nuc.eps/rho);
+        op->add_d("nuc.eps","lnrho",nuc.dlneps_lnrho*nuc.eps);
         op->add_d("nuc.eps","ln_rhoc",nuc.dlneps_lnrho*nuc.eps);
         op->add_d("nuc.eps","lnT",nuc.dlneps_lnT*nuc.eps);
         op->add_d("nuc.eps","lnTc",nuc.dlneps_lnT*nuc.eps);
         op->add_d("nuc.eps","ln_epsc",-nuc.eps);
+}
+
+void fields(){
+
+        Y0=1.-X0-Z0;
+        init_comp();
+        eq_state();
+	opacity();
+	nuclear();
+	atmosphere();
+
+}
+
+void opacity() {
+        int error;
+
+        error=opa_calc(comp.X(),Z0,Tc*T,rhoc*rho,opa);
+        xic=opa.xi(0);
+        opa.xi=opa.xi/xic;
+
+        if(error) exit(1);
+}
+
+void nuclear() {
+        int error;
+
+        error=nuc_calc(comp,T*Tc,rho*rhoc,nuc);
+        epsc=nuc.eps(0);
+        nuc.eps=nuc.eps/epsc;
+
+        if(error) exit(1);
+}
+
+void eq_state() {
+   int error;
+
+   matrix rhoc_m(1,1);
+   eos_calc(comp.X()(0,0)*ones(1,1),Z0,ones(1,1)*Tc,ones(1,1)*pc,rhoc_m,eos);
+   rhoc=rhoc_m(0);
+
+   error=eos_calc(comp.X(),Z0,T*Tc,p*pc,rho,eos);
+
+   rho=rho/rhoc;
+
+   if(error) exit(1);
+}
+
+void atmosphere() {
+        int error;
+        if(!strcmp(atm.name,"simple")) {
+                ps=surff*gsup()/opa.k.row(-1)/pc;
+                matrix q;
+                q=surff*p.row(-1)/ps;
+                Ts=pow(q,0.25)*Teff()/Tc;
+                return;
+        }
+
+        error=atm_calc(comp.X(),Z0,gsup(),Teff(),eos.name,opa.name,atm);
+
+        if(error) exit(1);
+
+        matrix q;
+        ps=surff*atm.ps/pc;
+        q=surff*p.row(-1)/ps;//q=ones(1,nth);
+        Ts=pow(q,0.25)*atm.Ts/Tc;
 }
