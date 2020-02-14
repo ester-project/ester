@@ -16,6 +16,7 @@ dlnrho=np.dot(a.D,lnrho)    # radial derivative of ln(rho)
 
 lnp=np.log(a.p)
 dlnp=np.dot(a.D,lnp)
+Pr_rad=a.cp*a.T/5/C_LIGHT**2
 
 phi=a.phi		   # gravitational potential
 dphi=np.dot(a.D,phi)	   # gravity
