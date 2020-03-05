@@ -22,7 +22,7 @@ v=np.concatenate([w[0:nth-1],v]) # angle theta pi (South pole) to 0
 
 r_sud=a.r[-1,:]
 r_nord=a.r[-1,nth:0:-1]
-r=np.concatenate([r_nord,r_sud])/a.Re
+r=np.concatenate([r_nord,r_sud])
 
 teff_rsh=np.reshape(a.Teff,nth)
 teff_ext=np.concatenate([teff_rsh[nth:0:-1],teff_rsh])
@@ -33,8 +33,7 @@ y = np.outer(np.sin(u), r*np.sin(v))
 z = np.outer(np.ones(np.size(u)), r*np.cos(v))
 Teff = np.outer(np.ones(np.size(u)), teff_ext)
 
-N=1-(Teff/Teff.max())**4 # so that white of "Blues" shows the max of
-Teff
+N=1-(Teff/Teff.max())**4 # so that white of "Blues" shows the max of Teff
 m=cm.ScalarMappable(cmap=cm.Blues, norm = pltc.Normalize(vmin=0,vmax=1.,clip=False))
 
 m.set_array(N)
@@ -56,5 +55,4 @@ incl=90-i
 ax.view_init(elev=incl,azim=60)  # view angle, here azim is arbitrary
                                  # the star is axisymmetric!
 plt.axis('image')
-srtnum='{0:03}'.format(i)
 plt.show()
