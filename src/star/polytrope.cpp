@@ -5,6 +5,7 @@
 
 matrix solve_poly1d(double n, double tol, int nr, double hsurf) {
     // Create a mapping
+    printf("parametres: n = %e tol %e, nr %d, hsurf %e\n",n,tol,nr,hsurf);
     mapping map;
     map.set_ndomains(1);
     map.set_npts(nr);
@@ -28,7 +29,6 @@ matrix solve_poly1d(double n, double tol, int nr, double hsurf) {
     sym symPhi = S.regvar("Phi");
     sym symLambda = S.regvar("Lambda");
     sym symPhi0 = S.regvar("Phi0");
-
     sym eq = lap(symPhi) - pow(1 - symLambda * (symPhi-symPhi0), n); // This is our equation
 
     // Create numerical variables for the solution with the initial guesses
@@ -103,6 +103,7 @@ matrix solve_poly1d(double n, double tol, int nr, double hsurf) {
         Phi += relax*dPhi;
         Phi0 += relax*op.get_var("Phi0")(0);
         Lambda += relax*op.get_var("Lambda")(0);
+	//printf("it = %d, Lambda =  %e\n",it,Lambda);
 
         it++;
     }
@@ -121,6 +122,7 @@ matrix solve_poly1d(double n, double tol, int nr, double hsurf) {
     int maxit = 100;
     // Newton method to find ri such that: h(ri) = hsurf
     while (fabs(hi - hsurf) > 1e-12 && ++nit < maxit) {
+	//printf("err %e Lambda = %e \n",fabs(hi - hsurf),Lambda);
         ri += (hsurf - hi)/dhi;
         hi = map.gl.eval(h, ri)(0);
         dhi = map.gl.eval(dh, ri)(0);
