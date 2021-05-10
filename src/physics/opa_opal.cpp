@@ -7,6 +7,9 @@
 #include "physics.h"
 #include <cmath>
 
+#include <iostream>
+using namespace std;
+
 extern"C" {
 	void opac_(int *izi,int *mzin,double *X,double *t6,double *r);
 	void opacgn93_(double *Z,double *X,double *t6,double *r);
@@ -61,6 +64,8 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	opa.xi=16*SIG_SB*pow(T,3)/(3*opa.k*rho);
 	opa.dlnxi_lnrho=-1-dlnkrho;
     opa.dlnxi_lnT=3-dlnkT;
+    printf("Centre:  T = %e rho = %e kap = %e, dlnxi_lnT = %e, dlnxi_lnrho = %e \n", T(1), rho(1), opa.k(1), opa.dlnxi_lnT(1), opa.dlnxi_lnrho(1));          
+    printf("Surface: T = %e rho = %e kap = %e, dlnxi_lnT = %e, dlnxi_lnrho = %e \n", T(-1), rho(-1), opa.k(-1), opa.dlnxi_lnT(-1), opa.dlnxi_lnrho(-1));            
 
 	return error;
 

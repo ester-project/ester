@@ -8,6 +8,13 @@
 #include <string.h>
 #include <stdlib.h>
 
+//Added Joey
+#include <iostream>
+#include <vector>
+#include <sstream>
+#include <fstream>
+// End of edit.
+
 star1d::star1d() {
 }
 
@@ -34,7 +41,38 @@ bool star1d::check_tag(const char *tag) const {
     if(strcmp(tag, "star1d")) return false;
     return true;
 }
+/// Added Joey
+int getNearest(int ix, int iy, double x, double y, double target) {
+   if (target - x >= y - target)
+      return iy;
+   else
+      return ix;
+}
 
+int getNearestElement(double arr[], int n, double target) {
+   //int n = sizeof(arr) / sizeof(arr[0]);
+   if (target <= arr[0])
+      return 0;
+   if (target >= arr[n - 1])
+      return n - 1;
+   int left = 0, right = n, mid = 0;
+   while (left < right) {
+      mid = (left + right) / 2;
+      if (arr[mid] == target)
+         return mid;
+      if (target < arr[mid]) {
+         if (mid > 0 && target > arr[mid - 1])
+            return getNearest(mid -1, mid, arr[mid - 1], arr[mid], target);
+            right = mid;
+      } else {
+         if (mid < n - 1 && target < arr[mid + 1])
+            return getNearest(mid, mid+1, arr[mid], arr[mid + 1], target);
+         left = mid + 1;
+      }
+   }
+   return mid;
+}
+// end.
 int star1d::read_old(const char *input_file) {
     FILE *fp;
     char tag[7], mode, *c;
@@ -260,7 +298,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
         if (config.init_poly) {
             double n = 1.5;
             n = 3.;
-            matrix h = solve_poly1d(n, 1e-10, 40, 1e-1);
+            matrix h = solve_poly1d(n, 1e-10, 40, 1e-1); //1e-1
 
             mapping map;
             map.set_ndomains(1);
@@ -274,6 +312,70 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
             p = pow(h, n+1);
             rho = pow(h, n);
             T = p/rho;
+
+
+            // Added Joey
+            std::fstream in("/users/p0107/mombarg/runs/MESA_T-rho-P_M300Z200X700fov001_Xc699.txt");
+            std::string line;            
+            std::vector<double> rnorma;
+            std::vector<double> Ta;
+            std::vector<double> rhoa;
+            std::vector<double> Pa;
+            int i = 0;
+
+            while (std::getline(in, line))
+            {
+                double rnormi, Ti, rhoi, Pi;
+                std::stringstream ss(line);
+
+                //rnorma.push_back(std::vector<double>());
+                //Ta.push_back(std::vector<double>());
+                //rhoa.push_back(std::vector<double>());
+                //Pa.push_back(std::vector<double>());
+                while (ss >> rnormi >> Ti >> rhoi >> Pi)
+                {
+                    rnorma.push_back(rnormi);
+                    Ta.push_back(Ti);
+                    rhoa.push_back(rhoi);
+                    Pa.push_back(Pi);                
+                }
+                ++i;
+            }
+            int nn, nmax;
+            nmax=r.nrows()*r.ncols();
+
+            for(nn=0;nn<nmax;nn++) {
+            double r1, r2, rj; 
+            int ir1, ir2; 
+            rj = r(nn);   
+            double* rnormaa = &rnorma[0];
+            double* Taa = &Ta[0];
+            double* rhoaa = &rhoa[0];
+            double* Paa = &Pa[0];
+            ir1 = getNearestElement(&rnorma[0], rnorma.size(), rj);
+            r1 = rnormaa[ir1];           
+            if (r1 < rj){
+                    ir2 = ir1 + 1;
+            }
+            else  {
+                if (ir1 == 0){
+                    ir2 = 1;
+                }
+                else{
+                ir2 = ir1;
+                ir1 = ir1 - 1;
+                }
+            } 
+            double Tj, rhoj, Pj;
+            Tj   = Taa[ir1] + (Taa[ir2] - Taa[ir1])/(rnormaa[ir2] - rnormaa[ir1]) * (rj - rnormaa[ir1]);
+            rhoj = rhoaa[ir1] + (rhoaa[ir2] - rhoaa[ir1])/(rnormaa[ir2] - rnormaa[ir1]) * (rj - rnormaa[ir1]); 
+            Pj   = Paa[ir1] + (Paa[ir2] - Paa[ir1])/(rnormaa[ir2] - rnormaa[ir1]) * (rj - rnormaa[ir1]); 
+
+            //printf("Tjo = %e, Tjn = %e, dT = %e, T0 = %e, r1 = %e, rj = %e \n", T(nn), Tj, Taa[ir2] - Taa[ir1], Taa[ir1], rnormaa[ir1], rj);
+            //T(nn) = Tj; rho(nn) = rhoj; p(nn) = Pj;
+
+            }
+            // End of edit.
         }
         G=0*T;
         w=0*T;
