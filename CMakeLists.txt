@@ -5,6 +5,8 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
     message(FATAL_ERROR "In-source builds not allowed.")
 endif()
 
+set(-DBLAS_LIBRARIES=$LIB/libopenblas.so)
+set(-DLAPACK_LIBRARIES=/usr/lib/liblapack.dll.a)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)

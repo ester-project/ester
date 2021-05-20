@@ -1,6 +1,6 @@
 # Star1d/2d configuration file
 
-maxit=1000           # 200 Maximum number of iterations
+maxit=250           # 200 Maximum number of iterations
 minit=1             # Minimum number of iterations
 tol=1e-8            # 1e-8 Relative tolerance
 newton_dmax=0.5     # 0.5 Maximum relative change per iteration allowed
