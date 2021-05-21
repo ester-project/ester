@@ -26,6 +26,7 @@ contains
           
             write(*,*) 'Opening file...'
             open(1, file = 'OP_mono_master_grid_MESA_emesh.txt', &
+            !open(1, file = '/gpfs/work/p0107/mombarg/OPmono_table/OP_mono_master_grid_MESA_emesh.txt', &
             form = 'formatted', action ='read')
             write(*,*) 'Loading OP mono data...'
             do ke =1, nel
