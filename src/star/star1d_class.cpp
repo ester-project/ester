@@ -357,8 +357,8 @@ void star1d::dump_info() {
     printf("\n");
 
     printf("Tests:\n\n");
-    printf("\tVirial test = %e\n", virial());
-    printf("\tEnergy test = %e\n", energy_test());
+    printf("\tVirial test = %e\n", test_virial);
+    printf("\tEnergy test = %e\n", test_energy);
     printf("\n");
 
 }

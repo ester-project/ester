@@ -130,6 +130,7 @@ class star2d {
         virtual double virial_ps() const;
         virtual double virial() const;
         virtual double energy_test() const;
+        double test_energy,test_virial;
         virtual matrix stream() const;
         virtual double apparent_luminosity(double i) const;
         virtual double Lz() const;
