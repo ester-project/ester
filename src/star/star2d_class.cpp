@@ -366,6 +366,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_err("Could not open '/star' in `%s'", input_file);
     }
 
+    printf("I start hdf5_read\n");
     int ndoms;
     if (read_attr(star, "nth", &map.leg.npts)) {
         ester_err("could not read 'nth' from file `%s'", input_file);
@@ -526,7 +527,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         comp["H"] = zeros(nr, nth);
     }
 
-    fill(); //no longer needed, MR le 21/5/2021
+    fill(); //no longer needed? MR le 21/5/2021
 
     return 0;
 #else
