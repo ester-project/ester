@@ -167,7 +167,7 @@ C      4 CNO sets, 4 X, 4 g, 4 T.
      &  eos_store_g(maxieos, maxindex_g),
      &  eos_store_x(maxieos, maxindex_x),
      &  eos_store_cno(maxieos, maxindex_cno),
-     &  dummy, eos_result(maxieos),
+     &  dummy(1), eos_result(maxieos),
      &  t, p, rho, qp, qt, tfuzz
       data tfuzz/1.d-5/
       character*200 title, file_name, line

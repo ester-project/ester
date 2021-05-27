@@ -60,7 +60,7 @@ C      initialize line search
       implicit none
       include 'bfgs.h'
       integer*4 n
-      real*8 p(n), x(n), xi, f, gradient
+      real*8 p(n), x(n), xi(1), f, gradient(1)
       character*(*) status, name
       save
 C      sanity checks:

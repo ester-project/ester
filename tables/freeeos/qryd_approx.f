@@ -95,8 +95,8 @@ C       internal variables:
      &  kn, hprime, gprime, occupation,
      &  lnoccupation, dlnoccupation(nb_local), dsummand(nb_local),
      &  dsummanda(nb_local), dsummand2(nb_local,nb_local),
-     &  lqryd, lqryda, lqrydb(nb_local),
-     &  lqryda2, lqrydab(nb_local), lqrydb2(nb_local,nb_local),
+     &  lqryd, lqryd_vec(1), lqryda, lqryda_vec(1), lqrydb(nb_local),
+     &  lqryda2, lqryda2_vec(1), lqrydab(nb_local), lqrydb2(nb_local,nb_local),
      &  lnoccupationa, dlnoccupationa(nb_local)
       integer*4 n, nzero, nmaxa
       real*8 exp_max, expmb1
@@ -121,7 +121,13 @@ C       and approximation
         if(nmax.lt.nmin_max) then
           stop 'qryd_approx: this case not programmed'
         elseif(nmax.le.300 000) then
-          call plsum(nmax+1, nmax+1, nmax, a, lqryd, lqryda, lqryda2)
+          lqryd_vec(1) = lqryd
+          lqryda_vec(1) = lqryda
+          lqryda2_vec(1) = lqryda2
+          call plsum(nmax+1, nmax+1, nmax, a, lqryd_vec, lqryda_vec, lqryda2_vec)
+          lqryd = lqryd_vec(1)
+          lqryda = lqryda_vec(1)
+          lqryda2 = lqryda2_vec(1)
           do n = nmin, nmin_max
             qryd(n) = qryd(n) - lqryd
             qryda(n) = qryda(n) - lqryda
