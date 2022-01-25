@@ -120,7 +120,7 @@ int main(int argc,char *argv[]) {
 			last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit;
 			if(config.verbose) {
 				printf("\tit=%d err=%e\n",nit,err);
-				//printf("\t\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,1-1./A.map.leg.eval_00(A.r.row(-1),PI/2)(0),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
+				printf("\t\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,1-1./A.map.leg.eval_00(A.r.row(-1),PI/2)(0),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
 			}
 			max_err = err > max_err ? err : max_err;
 			if (err > max_max_err && step > minStep) break;
@@ -202,7 +202,14 @@ int main(int argc,char *argv[]) {
 				plt::title("$V_r$");
 
 				plt::subplot(233);
+				std::string matrix_X_ilename = "Matrix_X_" + std::to_string((int)A.age);
+				FILE * fp_X = fopen (matrix_X_ilename.c_str(),"w");
+				std::string matrix_Vr_filename = "Matrix_Vr_" + std::to_string((int)A.age);
+				FILE * fp_Vr = fopen (matrix_Vr_filename.c_str(),"w");
+				X.write_fmt_equator("%e",fp_X);
+				vr.write_fmt_equator("%e",fp_Vr);
 				plt::pcolormesh(x, y, X);
+				
 				plt::clim(0, A.X0);
 				plt::colorbar();
 				plt::axis("scaled");
@@ -225,6 +232,8 @@ int main(int argc,char *argv[]) {
 				plt::title("$R_p / R_\\odot$");
 
 				plt::draw();
+				std::string filename = "plot_Age_" + std::to_string((int)A.age);
+				plt::savefig(filename);
 				plt::pause();
 
 /*

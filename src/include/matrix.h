@@ -25,6 +25,7 @@ public:
 	int read(int nrow,int ncol,FILE *fp,char mode='t');
 	int write(FILE *fp=stdout,char mode='t') const;
 	void write_fmt(const char *fmt,FILE *fp=stdout) const;
+	void write_fmt_equator(const char *fmt,FILE *fp=stdout) const;
 	void swap(matrix &);
 	void zero(int nrows,int ncols);
 	void values(double,...);

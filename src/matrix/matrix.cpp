@@ -268,6 +268,16 @@ void matrix::write_fmt(const char *fmt, FILE *fp) const {
     }
 }
 
+void matrix::write_fmt_equator(const char *fmt, FILE *fp) const {
+
+    int i, j;
+
+    for(i=0;i<nf;i++) {
+        fprintf(fp, fmt, (*this)(i, 0));
+        fprintf(fp, "\n");
+    }
+}
+
 
 /// \brief Swaps two matrices.
 void matrix::swap(matrix &a) {
