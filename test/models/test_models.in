@@ -135,9 +135,9 @@ par1d = datadir+"1d.par"
 par2d = datadir+"2d.par"
 
 def fail(cmd):
-    print "[Failed]"
-    print "Directory was: `" + check_dir + "'"
-    print "Command was: '" + cmd + "'"
+    print("[Failed]")
+    print("Directory was: `" + check_dir + "'")
+    print("Command was: '" + cmd + "'")
     sys.exit(1)
 
 def runCheck(check):
@@ -149,15 +149,15 @@ def runCheck(check):
     if check['output'] != "":
         run_cmd += " -o " + check['output']
 
-    print check['name']
-    print "  run:\t\t", # we need the last comma to avoid newline
+    print(check['name'])
+    print("  run:\t\t",) # we need the last comma to avoid newline
     sys.stdout.flush()
 
     devnull = open("/dev/null", "w")
     code = call(run_cmd.split(), stdout=devnull)
     devnull.close()
     if code == 0:
-        print "[OK]"
+        print("[OK]")
     else:
         fail(run_cmd)
 
@@ -165,7 +165,7 @@ def runCheck(check):
     fin = open(check['template'], "r")
     checkFile = check['output']+".check"
 
-    print "  output:\t", # we need the last comma to avoid newline
+    print("  output:\t",) # we need the last comma to avoid newline
     sys.stdout.flush()
 
     fout = open(checkFile, "w")
@@ -173,16 +173,16 @@ def runCheck(check):
     fin.close()
     fout.close()
     if code == 0:
-        print "[OK]"
+        print("[OK]")
     else:
         fail(run_cmd)
 
-    print "  compare:\t", # we need the last comma to avoid newline
+    print("  compare:\t",) # we need the last comma to avoid newline
     sys.stdout.flush()
 
     fcmp = compare(checkFile, check['ref'])
     if fcmp == True:
-        print "[OK]"
+        print("[OK]")
     else:
         fail(run_cmd)
 
