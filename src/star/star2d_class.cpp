@@ -425,25 +425,25 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_warn("Could not read 'opa.name' from file `%s'", input_file);
         buf = H5std_string("opal");
     }
-    strncpy(opa.name, buf.c_str(), 15);
+    strncpy(opa.name, buf.c_str(), sizeof(opa.name));
 
     if (read_attr<H5std_string&>(star, "eos.name", buf)) {
         ester_warn("Could not read 'eos.name' from file `%s'", input_file);
         buf = H5std_string("opal");
     }
-    strncpy(eos.name, buf.c_str(), 15);
+    strncpy(eos.name, buf.c_str(), sizeof(eos.name));
 
     if (read_attr<H5std_string&>(star, "nuc.name", buf)) {
         ester_warn("Could not read 'nuc.name' from file `%s'", input_file);
         buf = H5std_string("simple");
     }
-    strncpy(nuc.name, buf.c_str(), 15);
+    strncpy(nuc.name, buf.c_str(), sizeof(nuc.name));
 
     if (read_attr<H5std_string&>(star, "atm.name", buf)) {
         ester_warn("Could not read 'atm.name' from file `%s'", input_file);
         buf = H5std_string("simple");
     }
-    strncpy(atm.name, buf.c_str(), 15);
+    strncpy(atm.name, buf.c_str(), sizeof(atm.name));
 
     if (read_attr(star, "Omega", &Omega)) {
         ester_warn("Could not read 'Omega' from file `%s'", input_file);
