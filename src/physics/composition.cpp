@@ -6,6 +6,8 @@
 double_map initial_composition(double X, double Z) {
 	double_map comp;
 	
+// The mixture below has an unidentified origin but is close to the one
+// of Grevesse & Sauval 1998.
 	comp["H"]=X;
 	comp["He3"]=3.15247417638132e-04*(1.-X-Z);
 	comp["He4"]=(1.-X-Z)-comp["He3"];
