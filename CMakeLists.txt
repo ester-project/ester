@@ -129,6 +129,10 @@ add_library(ester SHARED
     src/physics/nuc_simple.cpp
     src/physics/opa_opmono.cpp
     src/physics/opa_opmono.F90
+    src/physics/bicub_db.f
+    src/physics/mesa_opacity_modules.F90
+    src/physics/opa_opmesa.cpp
+    src/physics/opa_opmesa.F90
     src/physics/cubic_interpolator.f90
     src/physics/opmono_modules.F90
     src/physics/opa_cesam.cpp

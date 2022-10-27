@@ -11,6 +11,9 @@
 #include <string.h>
 #include <iomanip>
 #include <signal.h>
+#include <fstream>
+#include <iostream>
+using namespace std;
 
 int killed=0;
 
@@ -35,6 +38,7 @@ int main(int argc,char *argv[]) {
 
     int nit,last_it;
     double err;
+    ostringstream oss;
     tiempo t;
     // double t_plot;
 
@@ -88,6 +92,8 @@ int main(int argc,char *argv[]) {
         plt::show();
     }
 
+    double sol_mult;
+
     while(!last_it) {
 
         try {
@@ -97,14 +103,28 @@ int main(int argc,char *argv[]) {
             }
             nit++;
             //A.check_jacobian(op,"log_T");exit(0);
-
-            err=A.solve(op, error_map, nit-1);
+            sol_mult = err<1?err:1;
+            sol_mult = pow(sol_mult,3);
+            sol_mult = sol_mult>0.01?sol_mult:0.01;
+            err=A.solve(op, error_map, nit-1, sol_mult);
 
             tt(nit-1)=t.value();
             error(nit-1)=err;
             last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit || killed;
             if(config.verbose) {
                 printf("it=%d err=%e\n",nit,err);
+
+                        ofstream outf;
+                        oss.str("");
+                        oss << "/users/p0107/mombarg/runs/op_mesa/it_files/it" << nit << ".txt";
+                        string out_filename = oss.str();
+                        outf.open(out_filename);
+                        for (int i=0; i<A.T.nrows(); i++) {
+                        outf << log10(A.T(i,0)*A.Tc) << ' ' << log10(A.rho(i,0)*A.rhoc)  << ' ' << log10(A.opa.k(i,0)) << '\n';
+                        }
+                        outf.close();
+                cout << out_filename << endl;
+
             }
             if (config.noplot == false && (nit+1 - last_plot_it > config.plot_interval || last_it)) {
                 last_plot_it = nit;
