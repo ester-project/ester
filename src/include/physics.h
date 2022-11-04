@@ -51,6 +51,8 @@ int opa_cesam(const matrix& X, double Z, const matrix& T, const matrix& rho,
 		opa_struct& opa);
 int opa_opmono(const matrix& X, double Z, const matrix& T, const matrix& rho,
 		opa_struct& opa);
+int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
+		opa_struct& opa);
 
 int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);	
