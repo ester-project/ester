@@ -193,7 +193,7 @@ class star1d : public star2d {
         virtual solver *init_solver(int nvar_add=0);
         virtual void register_variables(solver *op);
         virtual double solve(solver *);
-        virtual double solve(solver *, matrix_map& error, int);
+        virtual double solve(solver *, matrix_map& error, int, double);
         virtual void solve_poisson(solver *);
         virtual void solve_pressure(solver *);
         virtual void solve_temp(solver *);

@@ -16,4 +16,5 @@ libphysics_la_SOURCES = nuc_cesam_for.F EOS5_xtrin.F		\
 						opa_cesam_for.F90 eos_freeeos.cpp   \
 						opa_opmono.F90 opa_opmono.cpp       \
 						cubic_interpolator.f90              \
-						opmono_modules.f90
+						opmono_modules.f90                  
+

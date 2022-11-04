@@ -364,12 +364,13 @@ c
 
    61 write(*,'(" Mass fractions exceed unity (61)")')
       stop
-c   62 write(*,'(" T6/LogR outside of table range (62)")')
-   62  eos(1)=-9e99;
+   62 write(*,'(" T6/LogR outside of table range (62)")')
+      eos(1)=-9e99;
       return
-c   65 write(*,'("T6/log rho in empty region od table (65)")')
-c      write (*,'("xh,t6,r=", 3e12.4)') xh,t6,r
-   65   eos(1)=-9e99;
+   65 write(*,'("T6/log rho in empty region of table (65)")')
+      !write (*,'("xh,t6,r=", 3e12.4)') xh,t6,r
+      write (*,'("xh,log_T,log_Rho=", 3e12.4)') xh,log10(t6)+6,log10(r)
+      eos(1)=-9e99;
       return
    66 write(*,'(" Z does not match Z in EOS5_data* files you are",
      . " using (66)")')
