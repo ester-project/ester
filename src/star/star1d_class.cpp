@@ -315,6 +315,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
 
 
             // Added Joey
+/*
             std::fstream in("/users/p0107/mombarg/runs/MESA_T-rho-P_M300Z200X700fov001_Xc699.txt");
             std::string line;            
             std::vector<double> rnorma;
@@ -376,6 +377,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
 
             }
             // End of edit.
+*/
         }
         G=0*T;
         w=0*T;
@@ -459,8 +461,8 @@ void star1d::dump_info() {
     printf("\n");
 
     printf("Tests:\n\n");
-    printf("\tVirial test = %e\n", virial());
-    printf("\tEnergy test = %e\n", energy_test());
+    printf("\tVirial test = %e\n", test_virial);
+    printf("\tEnergy test = %e\n", test_energy);
     printf("\n");
 
 }

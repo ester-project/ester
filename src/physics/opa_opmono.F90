@@ -14,6 +14,7 @@
             real(kind=dp), save :: X_prev = -1
             logical :: loaded_op_master = .false.
             logical :: use_OPmono = .false.
+            !logical :: use_OPmono = .true. ! read the big file....
 
             integer , pointer, save :: izz(:),ite(:),jne(:)
             real(kind=dp), pointer, save :: sig(:,:,:)

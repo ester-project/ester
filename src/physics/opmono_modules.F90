@@ -25,7 +25,8 @@ contains
             FMT = '(i2,1x,i3,1x,i3,1x,F14.10,1x,F14.10,10000(1x,E12.6E3),10000(1x,E13.6E3))'
           
             write(*,*) 'Opening file...'
-            open(1, file = '/gpfs/work/p0107/mombarg/OPmono_table/OP_mono_master_grid_MESA_emesh.txt', &
+            open(1, file = 'OP_mono_master_grid_MESA_emesh.txt', &
+            !open(1, file = '/gpfs/work/p0107/mombarg/OPmono_table/OP_mono_master_grid_MESA_emesh.txt', &
             form = 'formatted', action ='read')
             write(*,*) 'Loading OP mono data...'
             do ke =1, nel
@@ -67,7 +68,7 @@ contains
               write(*,*) 'Opening file...'
               !open(1, file = '/gpfs/work/p0107/mombarg/OPmono_table/OP_lkap_A09_X700Z200.txt', &
               !form = 'formatted', action ='read')              
-              open(1, file = '/tmpdir/mombarg/ester/OP_tables/OP_lkap_A09_X700Z200.txt', &
+              open(1, file = 'OP_lkap_A09_X700Z200.txt', &
               form = 'formatted', action ='read')
               write(*,*) 'Loading OP quick data...'
               do n =1,np

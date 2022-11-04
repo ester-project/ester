@@ -141,6 +141,7 @@ int main(int argc,char *argv[]) {
 		printf("X=%3.4f (Xc/X=%3.4f) Z=%3.4f\n",A.X0,A.Xc,A.Z0);
 		printf("rhoc=%e Tc=%e pc=%e\n",A.rhoc,A.Tc,A.pc);
 		if(A.conv) printf("R. conv. core (p)=%3.3f Rsun\n",*(A.map.gl.xif+A.conv)*A.R/R_SUN);
+                A.test_virial=A.virial(); A.test_energy=A.energy_test();
 		printf("Virial test: %e Energy test: %e\n",A.virial(),A.energy_test());
         printf("\n");
 	}

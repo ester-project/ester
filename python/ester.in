@@ -73,6 +73,8 @@ class star2d:
         self.P_eq       = _mat_to_numpy(P_eq)
         self.P_po       = _mat_to_numpy(P_po)
 
+        self.test_virial= self._s.test_virial
+        self.test_energy= self._s.test_energy
         self.R          = self._s.R
         self.z          = _mat_to_numpy(self._s.z)
 

@@ -215,6 +215,8 @@ void star2d::hdf5_write(const char *filename) const {
     write_attr(star, "min_core_size", real, &min_core_size);
     double ek = this->virial_L()/2;
     write_attr(star, "Ek",          real, &ek);
+    write_attr(star, "test_virial", real, &test_virial);
+    write_attr(star, "test_energy", real, &test_energy);
 
     H5::StrType strtype;
     strtype = H5::StrType(H5::PredType::C_S1, strlen(version.name.c_str())+1);
@@ -364,6 +366,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_err("Could not open '/star' in `%s'", input_file);
     }
 
+    printf("I start hdf5_read\n");
     int ndoms;
     if (read_attr(star, "nth", &map.leg.npts)) {
         ester_err("could not read 'nth' from file `%s'", input_file);
@@ -462,6 +465,14 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_warn("Could not read 'Omega_bk' from file `%s'", input_file);
         Omega_bk = .0;
     }
+    if (read_attr(star, "test_virial", &test_virial)) {
+        ester_warn("Could not read 'test_virial' from file `%s'", input_file);
+        test_virial = .0;
+    }
+    if (read_attr(star, "test_energy", &test_energy)) {
+        ester_warn("Could not read 'test_energy' from file `%s'", input_file);
+        test_energy = .0;
+    }
     if (read_attr(star, "Ekman", &Ekman)) {
         ester_warn("Could not read 'Ekman' from file `%s'", input_file);
         Ekman = .0;
@@ -516,7 +527,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         comp["H"] = zeros(nr, nth);
     }
 
-    fill();
+    fill(); //no longer needed? MR le 21/5/2021
 
     return 0;
 #else
@@ -1194,8 +1205,8 @@ void star2d::dump_info() {
     printf("\n");
 
     printf("Tests:\n\n");
-    printf("\tVirial test = %e\n",virial());
-    printf("\tEnergy test = %e\n",energy_test());
+    printf("\tVirial test = %e\n",test_virial);
+    printf("\tEnergy test = %e\n",test_energy);
 
 }
 
