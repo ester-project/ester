@@ -128,6 +128,11 @@ add_library(ester SHARED
     src/physics/opa_cesam.cpp
     src/physics/opa_houdek.cpp
     src/physics/opa_cesam_for.F90
+    src/physics/bicub_db.f
+    src/physics/mesa_opacity_modules.F90
+    src/physics/opa_opmesa.cpp
+    src/physics/opa_opmesa.F90
+    src/physics/cubic_interpolator.f90    
     src/physics/nuc_cesam_for.F
     src/physics/EOS5_xtrin.F
     src/physics/xztrin21.F

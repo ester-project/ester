@@ -7,6 +7,9 @@
 #include<string.h>
 #include"symbolic.h"
 
+#include <iostream>
+using namespace std;
+
 #include <omp.h>
 #define TNEW
 
@@ -207,6 +210,7 @@ double star2d::update_solution(solver *op, double &h, matrix_map& error_map, int
 	err2=max(abs(dT/T));err=err2>err?err2:err;
     error_map["T"](nit) = err2;
 	while(exist(abs(h*dT/T)>dmax)) h/=2;
+
 
 	//printf("err(T)=%e\n",err2);
 	dpc=op->get_var("log_pc");

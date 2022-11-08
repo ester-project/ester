@@ -11,6 +11,10 @@
 #include <string.h>
 #include <signal.h>
 
+#include <fstream>
+#include <iostream>
+using namespace std;
+
 int killed=0;
 
 void sig_handler(int sig);
@@ -21,6 +25,8 @@ int main(int argc,char *argv[]) {
 	double err=1;
 	double t_plot;
 	configuration config(argc,argv);
+	ostringstream oss;
+
 	tiempo t;
 	// figure *fig = NULL;
 	
@@ -93,6 +99,17 @@ int main(int argc,char *argv[]) {
 		if(config.verbose) {
 			printf("it=%d err=%e (%2.2fs)\n",nit,err,t.value());
 			printf("\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,1-1./A.map.leg.eval_00(A.r.row(-1),PI/2)(0),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
+
+                ofstream outf;
+                oss.str("");
+                oss << "/users/p0107/mombarg/runs/evol_mesa/it_files/it" << nit << ".txt";
+                string out_filename = oss.str();
+                outf.open(out_filename);
+                for (int i=0; i<A.T.nrows(); i++) {
+                    outf << log10(A.T(i,0)*A.Tc) << ' ' << log10(A.rho(i,0)*A.rhoc)  << ' ' << log10(A.opa.k(i,0)) << '\n';
+                }
+                outf.close();
+                cout << out_filename << endl;
 
 			if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
 #if 0

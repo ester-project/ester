@@ -49,7 +49,9 @@ int opa_kramer(const matrix &T,const matrix &rho,
 		opa_struct &opa);
 int opa_cesam(const matrix& X, double Z, const matrix& T, const matrix& rho,
 		opa_struct& opa);
-
+int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
+		opa_struct& opa);
+		
 int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);	
 int nuc_cesam(const composition_map &comp,const matrix &T,const matrix &rho,
