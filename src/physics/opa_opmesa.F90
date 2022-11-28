@@ -172,9 +172,6 @@
                                           (1-alpha)*kap_highT2*dlnkap_rad_dlnRho_highT2)/kap_highT
                 logkap_highT = log10(kap_highT)
 
-                logkap_highT = logkap_highT1
-                dlnkap_rad_dlnT_highT = dlnkap_rad_dlnT_highT1
-                dlnkap_rad_dlnRho_highT = dlnkap_rad_dlnRho_highT1
 
               if (ierr == 1) then
                 logkap_highT = 1d99
@@ -236,9 +233,10 @@
          endif
           
           call init_potekhin(ierr)
+          !write(*,*) 'ester', zbar, logRho, logT 
           call do_electron_conduction_potekhin( &
                 zbar, logRho, logT, log_kap_ec, dlnkap_ec_dlnRho, dlnkap_ec_dlnT, ierr)
-           
+          
           call combine_rad_with_conduction( &
                 logRho, logT, &
                 log_kap_rad, dlnkap_rad_dlnRho, dlnkap_rad_dlnT, &

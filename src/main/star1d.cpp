@@ -114,15 +114,15 @@ int main(int argc,char *argv[]) {
             if(config.verbose) {
                 printf("it=%d err=%e\n",nit,err);
 
-                        ofstream outf;
-                        oss.str("");
-                        oss << "/users/p0107/mombarg/runs/op_mesa/it_files/it" << nit << ".txt";
-                        string out_filename = oss.str();
-                        outf.open(out_filename);
-                        for (int i=0; i<A.T.nrows(); i++) {
-                        outf << log10(A.T(i,0)*A.Tc) << ' ' << log10(A.rho(i,0)*A.rhoc)  << ' ' << log10(A.opa.k(i,0)) << '\n';
-                        }
-                        outf.close();
+                ofstream outf;
+                oss.str("");
+                oss << "/users/p0107/mombarg/runs/evol_mesa/it_files/it" << nit << ".txt";
+                string out_filename = oss.str();
+                outf.open(out_filename);
+                for (int i=0; i<A.T.nrows(); i++) {
+                    outf << log10(A.T(i,0)*A.Tc) << ' ' << log10(A.rho(i,0)*A.rhoc)  << ' ' << log10(A.opa.k(i,0)) << '\n';
+                }
+                outf.close();
                 cout << out_filename << endl;
 
             }
