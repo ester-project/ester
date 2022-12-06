@@ -19,18 +19,22 @@ set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/modules)
 if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
     string(CONCAT CMAKE_Fortran_FLAGS
         "-g -O3"
-        " -fno-align-commons -fdefault-real-8 -fdefault-double-8"
+        " -fno-align-commons "
         " -ffixed-line-length-none -O -w -fd-lines-as-comments")
+#         "-g -O3"
+#         " -fno-align-commons -fdefault-real-8 -fdefault-double-8"
+#         " -ffixed-line-length-none -O -w -fd-lines-as-comments")
+#                 
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
     string(CONCAT CMAKE_Fortran_FLAGS
-        "-g -O3"
+        "-g -O3 "
         " -r8"
         " -nowarn -fpp -extend-source")
 else()
     message(FATAL_ERROR "Unknown Fortran compiler: ${CMAKE_Fortran_COMPILER_ID}")
 endif()
 
-set(CMAKE_CXX_FLAGS "-g")
+set(CMAKE_CXX_FLAGS "-g ")
 
 # Find libarries
 find_package(BLAS REQUIRED)
@@ -42,7 +46,8 @@ find_package(LAPACK REQUIRED)
 find_package(PythonLibs REQUIRED)
 find_package(SWIG REQUIRED)
 find_package(PythonInterp REQUIRED)
-find_package(HDF5 COMPONENTS CXX)
+# find_package(HDF5 COMPONENTS CXX)
+find_package(HDF5 COMPONENTS CXX Fortran)
 # find_package(VTK 6.3)
 
 if(HDF5_FOUND)
@@ -126,15 +131,21 @@ add_library(ester SHARED
     src/physics/nuc_cesam.cpp
     src/physics/nuc_simple.cpp
     src/physics/opa_cesam.cpp
+    src/physics/opa_mesa.cpp
     src/physics/opa_houdek.cpp
     src/physics/opa_cesam_for.F90
+    src/physics/opa_mesa_for.F90
     src/physics/nuc_cesam_for.F
     src/physics/EOS5_xtrin.F
     src/physics/xztrin21.F
     src/physics/ZFS_interp_EOS5.F)
-target_link_libraries(ester cesam freeeos opint
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 
+# add_executable()
+
+    
+target_link_libraries(ester cesam freeeos opint mesaEos mesaKapf mesaKapf90 mesaChem 
+    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+# mesaUtilsPrivate mesaUtilsPublic mesaConstPublic mesaMathPrivate mesaMathPublic mesaChemPrivate mesaChemPublic mesaKapPrivate mesaKapPublic
 add_custom_target(star_cfg ALL
     COMMAND sed -e 's,[@]extension[@],${EXT},g' < ${CMAKE_SOURCE_DIR}/config/star.cfg.in  > star.cfg
     )
@@ -186,6 +197,9 @@ target_link_libraries(ester_info ester
 add_executable(ester_vtk src/main/vtk.cpp)
 target_link_libraries(ester_vtk ester
     ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+
+SET_TARGET_PROPERTIES(ester PROPERTIES COMPILE_FLAGS "-fdefault-real-8 -fdefault-double-8")
+
 
 install(TARGETS ester polytrope1d star1d star2d star_evol version gen_output ester_info ester_vtk
     RUNTIME DESTINATION bin
