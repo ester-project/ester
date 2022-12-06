@@ -4,6 +4,8 @@
 #include "utils.h"
 #include "physics.h"
 #include <string.h>
+#include <iostream>
+using namespace std;
 
 int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa) {
@@ -18,6 +20,8 @@ int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
         error=opa_kramer(T,rho,opa);
 	} else if(!strcmp(opa.name,"cesam")) {
 		error=opa_cesam(X, Z, T, rho, opa);
+	} else if(!strcmp(opa.name,"opmesa")) {
+		error=opa_mesa(X, Z, T, rho, opa);
     } else {
         ester_err("Unknown opacity method: %s",opa.name);
     	return 1;
