@@ -405,7 +405,7 @@ SET_TARGET_PROPERTIES(mesaChem PROPERTIES COMPILE_FLAGS "-std=f2008 -Wno-uniniti
 
 SET_TARGET_PROPERTIES(mesaInterp1d PROPERTIES COMPILE_FLAGS "-std=f2008 -Wno-uninitialized -fno-range-check -fmax-errors=7 -fprotect-parens -fno-sign-zero -fbacktrace -ggdb -finit-real=snan -Wno-error=tabs -Wunused-value -W -Wno-compare-reals -Wno-unused-parameter -Wno-function-elimination -fimplicit-none -O3 -ftree-vectorize -c -ffree-form -ffree-line-length-none -x f95-cpp-input")
 
-SET_TARGET_PROPERTIES(mesaInterp2df PROPERTIES COMPILE_FLAGS "-std=f2008 -fallow-argument-mismatch -Wno-uninitialized -fno-range-check -fmax-errors=7 -fprotect-parens -fno-sign-zero -fbacktrace -ggdb -finit-real=snan -Wno-error=tabs -Wunused-value -W -Wno-compare-reals -Wno-unused-parameter -Wno-function-elimination -O3 -ftree-vectorize -c -ffixed-form -ffixed-line-length-none -x f95-cpp-input ")
+SET_TARGET_PROPERTIES(mesaInterp2df PROPERTIES COMPILE_FLAGS "-std=legacy  -Wno-uninitialized -fno-range-check -fmax-errors=7 -fprotect-parens -fno-sign-zero -fbacktrace -ggdb -finit-real=snan -Wno-error=tabs -Wunused-value -W -Wno-compare-reals -Wno-unused-parameter -Wno-function-elimination -O3 -ftree-vectorize -c -ffixed-form -ffixed-line-length-none -x f95-cpp-input ")
 
 SET_TARGET_PROPERTIES(mesaInterp2df90 PROPERTIES COMPILE_FLAGS "-std=f2008 -Wno-uninitialized -fno-range-check -fmax-errors=7 -fprotect-parens -fno-sign-zero -fbacktrace -ggdb -finit-real=snan -Wno-error=tabs -Wunused-value -W -Wno-compare-reals -Wno-unused-parameter -Wno-function-elimination -fimplicit-none -O3 -ftree-vectorize -c -ffixed-form -ffixed-line-length-none -x f95-cpp-input")
 
