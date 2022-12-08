@@ -491,7 +491,7 @@ target_link_libraries(mesaKapf mesaKapf90lib mesaEos mesaChem mesaNumf90 mesaNum
 
 target_link_libraries(mesaKapf90 mesaKapf mesaKapf90lib mesaEos mesaChem mesaNumf90 mesaNumf mesaMath mesaConst mesaUtils)
 
-target_link_libraries(mesaEos mesaChem mesaNumf90 mesaNumf mesaMath mesaConst mesaUtils)
+target_link_libraries(mesaEos mesaChem mesaNumf90 mesaNumf mesaMath mesaConst mesaUtils mesaInterp2df90 mesaInterp2df)
 
 include_directories(mesa/num/public)
 include_directories(mesa/num/private)
