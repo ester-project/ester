@@ -79,6 +79,7 @@ void star2d::copy(const star2d &A) {
     phiex=A.phiex;
     w=A.w;
     vr=A.vr;vt=A.vt;
+    vangle=A.vangle;
 
     Omega=A.Omega;Omega_bk=A.Omega_bk;Omegac=A.Omegac;
     reynolds_v = A.reynolds_v;
@@ -208,6 +209,7 @@ void star2d::hdf5_write(const char *filename) const {
     fields["T"] = T;
     //fields["G"] = G;
     fields["w"] = w;
+    fields["vangle"] = vangle;
     fields["vr"] = vr;
     fields["vt"] = vt;
     fields["X"] = comp.X();
@@ -521,6 +523,10 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     if (read_field(star, "w", w)) {
         ester_warn("Could not read field 'w' from file `%s'", input_file);
         w = zeros(nr, nth);
+    }
+    if (read_field(star, "vangle", vangle)) {
+    	ester_warn("Could not read field 'vangle' from file `%s'", input_file);
+    	vangle = zeros(nr, nth);
     }
     if (read_field(star, "vr", vr)) {
     	ester_warn("Could not read field 'vr' from file `%s'", input_file);
