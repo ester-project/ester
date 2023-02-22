@@ -71,6 +71,12 @@ include_directories(src/graphics)
 include_directories(${PYTHON_INCLUDE_DIRS})
 set(LIBS "${LIBS};${PYTHON_LIBRARIES}")
 
+if(DEFINED PYTHON_NUMPY_INCLUDE_DIR)
+    include_directories(${PYTHON_NUMPY_INCLUDE_DIR})
+else()
+    message(WARNING "PYTHON_NUMPY_INCLUDE_DIR not set, this may fail if numpy has been installed locally, using pip for example")
+endif()
+
 add_definitions(-DWITH_CMAKE)
 add_definitions(-DVERSION="${PROJECT_VERSION}")
 add_definitions(-DESTER_DATADIR="${CMAKE_INSTALL_PREFIX}/share")
