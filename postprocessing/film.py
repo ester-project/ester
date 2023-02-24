@@ -19,18 +19,18 @@ R_SUN=6.95508e10;
 liste=commands.getoutput('ls $HOME/uqbar/ESTER/Z0.014/M5_film/M5Xc1sol6565_film_0*')
 
 lis=liste.split()
-print 'nb of images ',len(lis)
+print('nb of images ',len(lis))
 
 te=[0.0 for i in range(len(lis))]
 
 i=0
 for filename in lis:
-	print filename
+	print(filename)
 	a=star2d(filename)
-	print 'Xc',i,a.Xc
+	print('Xc',i,a.Xc)
 	Req=a.Re/R_SUN
 	Rpol=a.Rp/R_SUN
-        print Req,Rpol
+        print(Req,Rpol)
        
 	x=a.r*np.sin(a.th)/R_SUN # en km
         y=a.r*np.cos(a.th)/R_SUN # en km
