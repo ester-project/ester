@@ -63,3 +63,7 @@ TAGS
 
 # swap files
 .*.swp
+
+# build and install folder
+build/*
+local/*
