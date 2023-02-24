@@ -41,7 +41,7 @@ m.set_array(N)
 
 i=112.
 
-print 'inclination angle i = ',i
+print('inclination angle i = ',i)
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 ax.plot_surface(x, y, z,  rstride=1, cstride=1, facecolors=m.to_rgba(N),linewidth=0, antialiased=True, shade=True, alpha=0.9) # alpha = opacity of the surface

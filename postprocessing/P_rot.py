@@ -15,11 +15,11 @@ a=star2d(filename)
 nth=a.nth
 Req=a.Re/R_SUN
 Rpol=a.Rp/R_SUN
-print 'check Req and Rpol',Req,Rpol,'in Rsun'
+print('check Req and Rpol',Req,Rpol,'in Rsun')
 Omega_scale=np.sqrt(a.pc/a.rhoc)/a.Rp
 omega=Omega_scale*a.w
-print 'omega pole',omega[-1,nth+1]
-print 'omega equator',omega[-1,0]
+print('omega pole',omega[-1,nth+1])
+print('omega equator',omega[-1,0])
 
 x=a.r*np.sin(a.th)/R_SUN
 y=a.r*np.cos(a.th)/R_SUN

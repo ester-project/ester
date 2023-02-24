@@ -8,7 +8,7 @@ from matplotlib import cm
 filename='M5_O95_nth30'
 a=star2d(filename) # open a 2D solution
 
-print 'Compute the 2D spectrum of the density'
+print('Compute the 2D spectrum of the density')
 
 # a.P is the projection matrix of the Gauss-Lobatto grid
 # a.P_00 is the projection matrix of the Gauss-Legendre grid for a field
@@ -16,7 +16,7 @@ print 'Compute the 2D spectrum of the density'
 
 
 sp_leg=np.zeros((a.nr,a.nth))
-print 'check the shape',sp_leg.shape
+print('check the shape',sp_leg.shape)
 
 # Gauss Legendre spectrum
 # we eliminate the pole/equator points that are respectively at a.nth+1
