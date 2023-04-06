@@ -1,16 +1,17 @@
-# Comoute the 1D Chebyshev spectrum of the density
+# Compute the 1D Chebyshev spectrum of the density
 
 from ester import *
 import matplotlib.pyplot as plt
 import numpy as np
 
 
-a=star1d('M5paper_OPAL') # open a 1D solution
+a=star1d('M3.h5') # open a 1D solution
 
-print 'Compute the Chebyshev spectrum of the density'
+print('Compute the Chebyshev spectrum of the density')
 
 # a.P is the projection matrix of the Gauss-Lobatto grid
 
+x=a.r**2
 sp1d=abs(np.dot(a.P,a.rho))
 jfirst=np.zeros(a.ndomains,dtype=np.int)
 

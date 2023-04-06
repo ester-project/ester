@@ -92,7 +92,7 @@ int main(int argc,char *argv[]) {
 		if(killed) last_it=1;
 		if(config.verbose) {
 			printf("it=%d err=%e (%2.2fs)\n",nit,err,t.value());
-			printf("\tOmega=%e (%2.2f%%) eps=%.4f M=%f\n",A.Omega,A.Omega/A.Omegac*100,1-1./A.map.leg.eval_00(A.r.row(-1),PI/2)(0),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
+			printf("\tOmega=%e (%2.2f%%) eps=%.2e M=%f\n",A.Omega,A.Omega/A.Omegac*100,1-1./A.map.leg.eval_00(A.r.row(-1),PI/2)(0),A.m*A.rhoc*A.R*A.R*A.R/M_SUN);
 
 			if(tt(nit-1)-t_plot>config.plot_interval||last_it) {
 #if 0
