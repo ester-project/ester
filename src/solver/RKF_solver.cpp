@@ -82,7 +82,7 @@ void RKF_solver::regvar(const char *var_name,const matrix &initial_value) {
 		}
 		j++;
 		if(j==nv) {
-			fprintf(stderr,"ERROR: Can't register variable (increase nvar)\n");
+			fprintf(stderr,"ERROR: Can't register variable (increase nvar) 1\n");
 			exit(1);
 		}
 	}	

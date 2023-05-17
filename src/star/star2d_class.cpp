@@ -206,7 +206,7 @@ void star2d::hdf5_write(const char *filename) const {
     fields["R"] = map.R;
     fields["p"] = p;
     fields["T"] = T;
-    //fields["G"] = G;
+    //fields["G"] = stream();
     fields["w"] = w;
     fields["vr"] = vr;
     fields["vt"] = vt;
@@ -215,6 +215,12 @@ void star2d::hdf5_write(const char *filename) const {
     fields["Z"] = comp.Z();
     fields["N2"] = N2();
     fields["nuc.eps"] = nuc.eps;
+    fields["diff_v"] = Dmix_v();
+    fields["diff_h"] = Dmix_h();
+    fields["N14"] = comp["N14"];
+    fields["O16"] = comp["O16"]; 
+
+
 
     for (matrix_map::iterator it=fields.begin(); it!=fields.end(); ++it) {
         write_field(star, it->first.c_str(), it->second);
@@ -279,6 +285,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("w",&w);
     fp.write("vr",&vr);
     fp.write("vt", &vt);
+    //fp.write("diff_v", &diff_v); //JM
     fp.write("comp",(matrix_map *)&comp);
 
     write_vars(&fp);
@@ -529,11 +536,13 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     if (read_field(star, "vt", vt)) {
     	ester_warn("Could not read field 'vt' from file `%s'", input_file);
     	vt = zeros(nr, nth);
-    }
+    }   
 //    if (read_field(star, "G", G)) {
 //        ester_warn("Could not read field 'G' from file `%s'", input_file);
 //        G = zeros(nr, nth);
 //    }
+
+    comp=initial_composition(X0,Z0)*ones(nr,nth);
 
     matrix X, Z;
     if (read_field(star, "X", X)) {
@@ -544,12 +553,30 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     	ester_warn("Could not read field 'Z' from file `%s'", input_file);
     	Z = Z0*ones(nr, nth);
     }
-    comp=initial_composition(X0,Z0)*ones(nr,nth);
-    for (int i=0; i<nr; i++) {
-    	for(int j=0; j<nth; j++) {
-    		comp(i, j) = initial_composition(X(i,j), Z(i,j));
-    	}
+
+
+    //for (int i=0; i<nr; i++) {
+    //	for(int j=0; j<nth; j++) {            
+    //		comp(i, j) = initial_composition(X(i,j), Z(i,j));
+    //	}
+    //}
+
+    int nc = 0;
+    for (int n = 0; n < conv; n++) nc += map.npts[n];
+    comp.setblock(0, nc-1, 0, -1, initial_composition_cno_cycle_core(X0,Z0)*ones(nc,nth));
+
+    if (read_field(star, "X", comp["H"])) {
+        ester_warn("Could not read field 'X' from file `%s'", input_file);
     }
+
+    if (read_field(star, "N14", comp["N14"])) {
+    	ester_warn("Could not read field 'N14' from file `%s'", input_file);
+    }
+
+    if (read_field(star, "O16", comp["O16"])) {
+    	ester_warn("Could not read field 'O16' from file `%s'", input_file);
+    }
+    comp["He4"] = 1 - comp["H"] - comp["He3"] - Z;
 
     fill();
 

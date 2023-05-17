@@ -32,7 +32,7 @@ int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,nuc
 	nuc.dlneps_lnT=nuc.pp/nuc.eps*(-2./3.+1.2*pow(T9,-1./3.))+
 		nuc.cno/nuc.eps*(-2./3.+15.228/3.*pow(T9,-1./3.)+
 		(0.027/3.*pow(T9,1./3.)-2.*0.778/3.*pow(T9,2./3.)-0.149*T9)/(1+0.027*pow(T9,1./3.)-0.778*pow(T9,2./3.)-0.149*T9));
-	
+
 	for(int i=0; i<nuc.eps.nrows(); i++)
 		for(int j=0; j<nuc.eps.ncols(); j++)
 			if (X(i,j)==0) nuc.dlneps_lnT(i,j) = 0;

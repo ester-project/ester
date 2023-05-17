@@ -513,7 +513,7 @@ c
       call t6rinterp(slr,slt)
       return
 
-   61 write(*,'(" Mass fractions exceed unity")')
+   61 write(*,'(" Mass fractions exceed unity z,zval,xh",e12.4,e12.4,e12.4)') zval,z,xh
 c                  with a return
       stop
 c    write(*,'(" T6/LogR outside of table range")')

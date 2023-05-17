@@ -309,7 +309,7 @@ void solver::regvar(const char *var_name,int dependent) {
 		}
 		j++;
 		if(j==nv) {
-			ester_err("ERROR: Can't register variable (increase nvar)");
+			ester_err("ERROR: Can't register variable (increase nvar) 3");
 			exit(1);
 		}
 	}

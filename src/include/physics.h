@@ -71,6 +71,6 @@ int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm);
 
 double_map initial_composition(double X,double Z);
-
+double_map initial_composition_cno_cycle_core(double X, double Z);
 #endif
 

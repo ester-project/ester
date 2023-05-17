@@ -32,6 +32,7 @@
 //#define PHOTOSPHERE 1
 //#define ASYMP_VISC
 
+
 class star1d;
 
 class star2d {
@@ -54,6 +55,7 @@ class star2d {
     matrix phiex;
 	matrix vr,vt,w;
 	matrix vangle;
+	matrix N2_prev;
 	composition_map comp; 
     double X0,Y0,Z0;
     double R,M;
@@ -142,6 +144,8 @@ class star2d {
 	virtual double luminosity() const;
 	virtual matrix Teff() const;
 	virtual matrix N2() const;
+	virtual matrix Dmix_v() const;
+	virtual matrix Dmix_h() const;
 	virtual matrix gsup() const;
 	virtual double virial_3P() const;
 	virtual double virial_L() const;
@@ -227,6 +231,7 @@ class star1d : public star2d {
 	virtual void update_map(matrix dR);
 
 	virtual matrix N2() const;
+
 	virtual double luminosity() const;
 	virtual matrix Teff() const;
 	virtual matrix gsup() const;
@@ -243,7 +248,7 @@ class star1d : public star2d {
 
 class star_evol : public star2d {
 protected:
-	matrix Xprev, r0, rho0, T0, lnp0, w0, phi0;
+	matrix Xprev, r0, rho0, T0, lnp0, w0, phi0, XNprev, N2_prev;
 	double lnR0, drhocdX, lnrhoc0, lnTc0, lnpc0;
 	double delta;
 	bool check_map_enable;
@@ -275,6 +280,7 @@ public:
     virtual void solve_dim(solver *);
     virtual void solve_Omega(solver *);
     virtual void solve_X(solver *);
+    virtual void solve_XN(solver *);
     virtual void solve_cont(solver *);
     virtual void solve_temp(solver *);
     virtual void solve_mov(solver *);

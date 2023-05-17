@@ -2,6 +2,7 @@
 #include "ester-config.h"
 #endif
 #include "star.h"
+#include<stdlib.h> //JM
 
 #if 0
 void star2d::draw(figure *pfig,const matrix &A,int parity) const {
@@ -105,6 +106,136 @@ matrix star2d::N2() const {
     
     return N2;
     
+}
+
+matrix star2d::Dmix_v() const {
+
+    double diff_coeff_conv = 1e13; // PARAMETER dimensional
+
+		matrix K;
+		K = opa.xi/eos.cp;
+	matrix dOmega_dr, Dmix_v_mean;
+	dOmega_dr  = (D, w)/map.rz; //(D, r); 
+	//dOmega_dth = (w,Dt);
+	matrix Dmix_v;
+	//Dmix_v = diffusion_v*(K)*r*r*dOmega_dr*dOmega_dr*units.Omega*units.Omega;
+	Dmix_v_mean = zeros(nr,1);
+	for (int l=0; l < nr; l++){
+		for (int k=0; k < nth; k++){
+			Dmix_v_mean(l) += K(l,k)*r(l,k)*r(l,k)*dOmega_dr(l,k)*dOmega_dr(l,k);
+		}
+	}
+	Dmix_v_mean /= nth;
+
+
+	//Dmix_v = diffusion_v*K*r*r*dOmega_dr_mean*dOmega_dr_mean*units.Omega*units.Omega;
+	Dmix_v = diffusion_v*Dmix_v_mean*units.Omega*units.Omega;
+
+    matrix diff_v = ones(nr, nth) * diffusion_v;
+    if (conv) {
+// Diffusion in the core which is enhanced!!
+    	int nc = 0;
+    	for (int n = 0; n < conv; n++) nc += map.npts[n];
+    	diff_v.setblock(0, nc-1, 0, -1, ones(nc, nth) * diff_coeff_conv);
+
+		int jcc=0;
+		//for(int n=0;n<conv;n++) jcc+=map.gl.npts[n];
+		//jcc--;
+		
+		//matrix hp;
+		//hp = -((D,p)/p + (p,Dt)/p); //-(D,p)/p;
+		//int jov = jcc;
+		//double rcc_p, rov, rov_n;
+		//double alpha_ov = 0.02;
+		//rcc_p=map.leg.eval_00(r.row(jcc)*units.r,0)(0);
+		//rov = rcc_p + alpha_ov*map.leg.eval_00((1/hp.row(jcc))*units.r,0)(0);
+		//for (int j = jcc; map.leg.eval_00(r.row(jov)*units.r,0)(0) < rov; j++) jov++; //jov += map.gl.npts[n];
+		//printf("nc = %i, jov = %i, rcc_p = %e, rov = %e, r(jov) = %e\n", jcc, jov, rcc_p, rov, map.leg.eval_00(r.row(jov)*units.r,0)(0));
+		//diff_v.setblock(jcc+1, jov-1, 0, -1, ones(jov-jcc+1, nth) * diff_coeff_conv * 0.1);
+    	//diff_h.setblock(nc, nov-1, 0, -1, ones(nov-nc, nth) * diff_coeff_conv);
+
+		//jov = jcc;
+		//double Dmix = diff_coeff_conv;
+		//for (int j = jcc+1; j < nr; j++) {
+		//	Dmix = diffusion_v + (diff_coeff_conv - diffusion_v) * exp(-2*(map.leg.eval_00(r.row(j)*units.r,0)(0) - rcc_p)/(alpha_ov * map.leg.eval_00((1/hp.row(jcc))*units.r,0)(0)));
+		//	diff_v.setblock(j, j, 0, -1, ones(1,nth) * Dmix);
+		//}
+		//double max_N2 = 0;
+		//for (int ii=nc; ii<nc+20; ii++){
+		//	if (N2()(ii,0) > max_N2) {
+		//		max_N2 = N2()(ii,0);
+		//	}
+		//}
+		if (max(dOmega_dr) > 0){
+			for (int j = nc; j < nr; j++) {			
+						if (N2()(j,0) <= 0) {
+							if (j > nc+10){
+							int n = 0, ne = 0;
+    						while (1) {
+								if (ne + map.npts[n] < j) {
+									ne += map.npts[n];
+									n++;
+								}
+								else{
+									break;
+								}
+							}
+							//diff_v.setblock(ne, -1, 0, -1, ones(nr-ne,nth) * Dmix_v(ne-1,0));
+							diff_v.setblock(ne, -1, 0, -1, ones(nr-ne,nth) * Dmix_v(ne-1));
+							break;
+							}
+						}
+						        diff_v.setblock(j, j, 0, -1, ones(1,nth) * Dmix_v(j));
+
+			}
+		}
+
+		}
+   
+    return diff_v;
+}
+
+matrix star2d::Dmix_h() const {
+
+    double diff_coeff_conv = 1e13; // PARAMETER dimensional
+	matrix dOmega_dth;
+	matrix K;
+	double theta;
+	K = opa.xi/eos.cp;
+    matrix diff_h = ones(nr, nth) * diffusion_h;
+//    if (conv) {
+//     // Diffusion in the core which is enhanced!!
+//    	int nc = 0;
+//    	for (int n = 0; n < conv; n++) nc += map.npts[n];
+//    	diff_h.setblock(0, nc-1, 0, -1, ones(nc, nth) * diff_coeff_conv);
+//
+//		int jcc=0;
+//		for(int n=0;n<conv;n++) jcc+=map.gl.npts[n];
+//		jcc--;
+//		
+//
+//		dOmega_dth = (w,Dt);
+//		matrix Dmix_h;
+//		Dmix_h = diffusion_h*(K)*r*r/(N2())*dOmega_dth*dOmega_dth*units.Omega*units.Omega;
+//
+//		for (int i =0; i < nth; i++){
+//			for (int j = jcc-1; j < nr; j++) {				
+//				if (N2()(j,i) > 0 && Dmix_h(j,i) > 0) {
+//					diff_h.setblock(j, j, i, i, ones(1,1) * Dmix_h(j,i));
+//				}
+//				else { 
+//					if (nr - j < 150) {
+//						diff_h.setblock(j, nr-1, i, i, ones(nr-j,1) * diff_coeff_conv); 
+//						break;
+//					} 	
+//					else {
+//						diff_h.setblock(j, j, i, i, ones(1,1) * diff_coeff_conv); 
+//					}			
+//				}
+//			}
+//		}
+//    }
+    return diff_h;
 }
 
 matrix star2d::entropy() const {

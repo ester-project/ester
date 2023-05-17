@@ -28,7 +28,7 @@ void star1d::fill() {
     atmosphere();
 
     phiex=phi(-1)/rex;
-    w=zeros(nr,1);vr=zeros(nr,1);vt=zeros(nr,1);
+    w=zeros(nr,1);vr=zeros(nr,1);vt=zeros(nr,1); //JM
 
     Omega=0;Omega_bk=0;Omegac=0;
 

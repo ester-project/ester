@@ -243,9 +243,9 @@ void solver_full::solve_block(int i,char trans,matrix &x) {
 	if(trans=='T') x=x*c[i];
 	else x=x*r[i];
 
-    if (std::isnan(max(abs(x)))) {
-        ester_err("NaN in RHS solve block %d\n", i);
-    }
+    //if (std::isnan(max(abs(x)))) {
+    //    ester_err("NaN in RHS solve block %d\n", i);
+    //}
 	
 	n=m[i].nrows();nrhs=x.ncols();
 	dgetrs_(&trans,&n,&nrhs,m[i].data(),&n,ipiv[i],x.data(),&n,&info);

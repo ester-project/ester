@@ -184,7 +184,7 @@ void SDIRK_solver::regvar(const char *var_name,const matrix &initial_value) {
 		}
 		j++;
 		if(j==nv) {
-			fprintf(stderr,"ERROR: Can't register variable (increase nvar)\n");
+			fprintf(stderr,"ERROR: Can't register variable (increase nvar) %i\n",nv);
 			exit(1);
 		}
 	}	

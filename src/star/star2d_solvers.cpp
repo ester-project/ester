@@ -54,8 +54,14 @@ void star2d::init_comp() {
     }
 
     if(stratified_comp == 0) {
+		printf("Calling initial_composition with Xc = %e.", Xc*X0);
         comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
     }
+	//else if (stratified_comp == 2)
+	//{
+	//	comp.setblock(0,n-1,0,-1,initial_composition_cno_cycle_core(Xc*X0,Z0)*ones(n,nth));	
+	//	printf("Converting C12 and O17 to N14 in core.");	
+	//}
     else {
         comp.setblock(0, n-1, 0, -1,
                 initial_composition(Xc*X0, Z0)*ones(n, nth));

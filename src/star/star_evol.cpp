@@ -49,6 +49,7 @@ star_evol &star_evol::operator=(const star_evol &A) {
 
 void star_evol::copy(const star_evol &A) {
 	Xprev = A.Xprev;
+	XNprev = A.XNprev;
 	r0 = A.r0;
 	rho0 = A.rho0;
 	T0 = A.T0;
@@ -63,6 +64,7 @@ void star_evol::copy(const star_evol &A) {
 	mH0 = A.mH0;
 	mH = A.mH;
 	age = A.age;
+	N2_prev = A.N2_prev;
 
 	dXdt = A.dXdt;
 	drhodt = A.drhodt;
@@ -162,13 +164,14 @@ void star_evol::init_comp() {
 }
 
 solver * star_evol::init_solver(int nvar_add) { // initialisation of solver
-	return star2d::init_solver(nvar_add+4); // add 4 variables
+	return star2d::init_solver(nvar_add+5); // add 4 variables
 }
 
 void star_evol::register_variables(solver *op) {
 // the 4 additional variables
 	star2d::register_variables(op);
 	op->regvar("X");
+	op->regvar("XN");
 	op->regvar("Xc");
 	op->regvar("log_M");
 	op->regvar("reg_cont");
@@ -181,11 +184,14 @@ void star_evol::write_eqs(solver *op) {
 	mkl_set_num_threads(1);   // Faster with 1 thread !?
 #endif
 #ifdef THREADS
-	int num_threads = 1;
+	int num_threads = 2;
 	std::thread t[num_threads];
 	t[0] = std::thread(&star_evol::solve_X, this, op);
+	t[1] = std::thread(&star_evol::solve_XN, this, op);
 #else
 	solve_X(op);
+	solve_XN(op);
+
 #endif
 	star2d::write_eqs(op);
 #ifdef THREADS
@@ -202,6 +208,7 @@ double star_evol::update_solution(solver *op, double &h, matrix_map& error_map, 
 
 	matrix dX = op->get_var("X");
 	while(exist(abs(h*dX)>dmax)) h /= 2;
+	matrix dXN = op->get_var("XN");
 
 	double err = star2d::update_solution(op, h, error_map, nit); // call of star2d part
 
@@ -210,6 +217,13 @@ double star_evol::update_solution(solver *op, double &h, matrix_map& error_map, 
 	err=err2>err?err2:err;
 	comp["He4"] -= h*dX;
 	comp["H"] += h*dX;
+
+	// The error of the solution is only based on the error from the hydrogen-mass fraction profile. 
+	// We assume all O16 that reacted is converted into N14, as the intermediate reactions are fast.
+	printf(", dXN = %e, N14 = %e", dXN(0,0), comp["O16"](0,0)*AMASS["N14"]/AMASS["O16"]);
+	dXN = min(dXN, comp["O16"]*AMASS["N14"]/AMASS["O16"]);
+	comp["O16"] -= h*dXN*AMASS["O16"]/AMASS["N14"];
+	comp["N14"] += h*dXN;	
 
 // Rem: the conservationn of total mass is insured by the mass conservation equation
 // as ang. Mom.
@@ -221,7 +235,7 @@ double star_evol::update_solution(solver *op, double &h, matrix_map& error_map, 
 // Functions to initialize the time-stepper
 SDIRK_solver* star_evol::init_time_solver() {
 	SDIRK_solver *rk = new SDIRK_solver();
-	rk->init(11, "sdirk3");
+	rk->init(13, "be"); //sdirk3
 	register_variables(rk);
 	return rk;
 }
@@ -233,6 +247,7 @@ void star_evol::register_variables(SDIRK_solver *rk) {
 	check_map_enable = false;
 
 	rk->regvar("X", comp.X());
+	rk->regvar("XN", comp["N14"]);
 	rk->regvar("lnR", log(R)*ones(1,1));
 	rk->regvar("r", r);
 	rk->regvar("rho", rho);
@@ -243,6 +258,7 @@ void star_evol::register_variables(SDIRK_solver *rk) {
 	rk->regvar("log_pc", log(pc)*ones(1,1));
 	rk->regvar("w", w);
 	rk->regvar("phi", phi); // not used in the time-stepping but used for output
+	rk->regvar("N2", N2());
 }
 
 void star_evol::init_step(SDIRK_solver *rk) {
@@ -251,6 +267,7 @@ void star_evol::init_step(SDIRK_solver *rk) {
 	age = rk->get_t();
 
 	Xprev = rk->get_var("X");
+	XNprev = rk->get_var("XN");
 	r0 = rk->get_var("r");
 	lnR0 = rk->get_var("lnR")(0);
 	rho0 = rk->get_var("rho");
@@ -261,6 +278,7 @@ void star_evol::init_step(SDIRK_solver *rk) {
 	lnpc0 = rk->get_var("log_pc")(0);
 	w0 = rk->get_var("w");
 	phi0 = rk->get_var("phi");
+	N2_prev = rk->get_var("N2");
 }
 
 void star_evol::finish_step(SDIRK_solver *rk, int state) {
@@ -272,6 +290,7 @@ void star_evol::finish_step(SDIRK_solver *rk, int state) {
 	}
 
 	rk->set_var("X", comp.X());
+	rk->set_var("XN", comp["N14"]);
 	rk->set_var("r", map.r);
 	rk->set_var("lnR", log(R)*ones(1,1));
 	rk->set_var("rho", rho);
@@ -282,6 +301,7 @@ void star_evol::finish_step(SDIRK_solver *rk, int state) {
 	rk->set_var("log_pc", log(pc)*ones(1,1));
 	rk->set_var("w", w);
 	rk->set_var("phi", phi);
+	rk->set_var("N2", N2());
 
 }
 
@@ -379,7 +399,7 @@ void star_evol::solve_Omega(solver *op) {
 
 void star_evol::solve_X(solver *op) {
     double Q=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
-    double diff_coeff_conv = 1e11; // PARAMETER dimensional
+    double diff_coeff_conv = 1e13; // Set the chemical diffusion coefficient in the core to a large value such that no chemical imhomogenities develop in the convective core. 
 
     static symbolic S;
     static sym eq, flux, gradX;
@@ -397,13 +417,15 @@ void star_evol::solve_X(solver *op) {
     	sym r0 = S.regvar("r0");
     	sym lnR0 = S.regconst("log_R0");
     	sym delta = S.regconst("delta");
-    	sym Dv = S.regconst("diffusion_v");
+    	sym Dv = S.regvar("diffusion_v");
     	sym Dh = S.regconst("diffusion_h");
     	sym sin_vangle = S.regvar("sin_vangle");
     	sym cos_vangle = S.regvar("cos_vangle");
     	sym MYR = S.regconst("MYR");
     	sym mH = S.regconst("mH");
     	sym Q = S.regconst("Q");
+
+
 
     	sym_vec phivec(COVARIANT);
     	phivec(0) = 0*S.one; phivec(1) = 0*S.one; phivec(2) = S.r*sin(S.theta);
@@ -420,7 +442,7 @@ void star_evol::solve_X(solver *op) {
     	sym_vec h_vec = sin_vangle*rvec + cos_vangle*thvec;
     	sym_tens D = tensor(v_vec, v_vec)*Dv + tensor(h_vec, h_vec)*Dh;
 
-    	eq = dXdt + 4*mH*MYR/Q*eps - MYR/R/R * div(rho*(D, grad(X)))/rho + (rhoV, grad(X))/rho;
+    	eq = dXdt + 4*mH*MYR/Q*eps - MYR/R/R * div(rho*(D, grad(X)))/rho + (rhoV, grad(X))/rho; 
     	sym_vec nvec = grad(S.zeta);
     	nvec = nvec / sqrt((nvec, nvec));
     	flux = - MYR/R/R*(nvec, (D, grad(X)));
@@ -446,18 +468,63 @@ void star_evol::solve_X(solver *op) {
 
     S.set_map(map);
 
+	matrix K;
+	K = opa.xi/eos.cp;
+	matrix dOmega_dr, Dmix_v_mean;
+	dOmega_dr  = (D, w)/map.rz; 
+	matrix Dmix_v;
+	Dmix_v_mean = zeros(nr,1);
+	for (int l=0; l < nr; l++){
+		for (int k=0; k < nth; k++){
+			Dmix_v_mean(l) += K(l,k)*r(l,k)*r(l,k)*dOmega_dr(l,k)*dOmega_dr(l,k);
+		}
+	}
+	Dmix_v_mean /= nth;
+
+	Dmix_v = diffusion_v*Dmix_v_mean*units.Omega*units.Omega;
+
     matrix diff_v = ones(nr, nth) * diffusion_v;
     matrix diff_h = ones(nr, nth) * diffusion_h;
+
     if (conv) {
 // Diffusion in the core which is enhanced!!
     	int nc = 0;
     	for (int n = 0; n < conv; n++) nc += map.npts[n];
     	diff_v.setblock(0, nc-1, 0, -1, ones(nc, nth) * diff_coeff_conv);
     	diff_h.setblock(0, nc-1, 0, -1, ones(nc, nth) * diff_coeff_conv);
+
+		//int jcc=0;
+		//for(int n=0;n<conv;n++) jcc+=map.gl.npts[n];
+		//jcc--;
+	
+
+		if (max(dOmega_dr) > 0){
+			for (int j = nc; j < nr; j++) {			
+						if (N2()(j,0) <= 0) {
+							if (j > nc+10){
+							int n = 0, ne = 0;
+    						while (1) {
+								if (ne + map.npts[n] < j) {
+									ne += map.npts[n];
+									n++;
+								}
+								else{
+									break;
+								}
+							}
+							diff_v.setblock(ne, -1, 0, -1, ones(nr-ne,nth) * Dmix_v(ne-1));
+							break;
+							}
+						}
+						diff_v.setblock(j, j, 0, -1, ones(1,nth) * Dmix_v(j));
+
+			}
+		}
     }
 
     S.set_value("diffusion_v", diff_v);
     S.set_value("diffusion_h", diff_h);
+
 
     eq.add(op, "X", "X");
     eq.add(op, "X", "nuc.eps");
@@ -531,6 +598,233 @@ void star_evol::solve_X(solver *op) {
     	}
     }
     op->set_rhs("Xc", rhs);
+
+}
+
+void star_evol::solve_XN(solver *op) {
+    double Q=(4*HYDROGEN_MASS-AMASS["He4"]*UMA)*C_LIGHT*C_LIGHT;
+    double diff_coeff_conv = 1e13; // PARAMETER dimensional
+
+    static symbolic S;
+    static sym eq, flux, gradXN;
+    static bool sym_inited = false;
+    if (!sym_inited) {
+    	sym XN = S.regvar("XN");
+		sym X = S.regconst("X");
+    	sym rho = S.regvar("rho");
+    	sym vr = S.regvar("vr");
+    	sym vt = S.regvar("vt");
+    	sym lnR = S.regconst("log_R");
+    	sym R = exp(lnR);
+    	sym r = S.r;
+    	sym XN0 = S.regvar("XN0");
+    	sym X0 = S.regvar("X0");
+    	sym r0 = S.regvar("r0");
+    	sym lnR0 = S.regconst("log_R0");
+    	sym delta = S.regconst("delta");
+    	sym Dv = S.regvar("diffusion_v");
+    	sym Dh = S.regconst("diffusion_h");
+    	sym sin_vangle = S.regvar("sin_vangle");
+    	sym cos_vangle = S.regvar("cos_vangle");
+    	sym MYR = S.regconst("MYR");
+    	sym mH = S.regconst("mH");
+    	sym Q = S.regconst("Q");
+		sym dXN14dt = S.regvar("dXN14dt");
+
+
+    	sym_vec phivec(COVARIANT);
+    	phivec(0) = 0*S.one; phivec(1) = 0*S.one; phivec(2) = S.r*sin(S.theta);
+    	sym_vec rvec = grad(S.r);
+    	sym_vec thvec = cross(phivec, rvec);
+
+    	sym_vec rhoV = rho*(vr*rvec + vt*thvec);
+
+    	sym drdt = (r-r0)/delta;
+    	sym dlnRdt = (lnR-lnR0)/delta;
+    	sym dXNdt = (XN-XN0)/delta - (drdt+r*dlnRdt)/S.rz*Dz(XN);
+    	sym dXdt = (X-X0)/delta - (drdt+r*dlnRdt)/S.rz*Dz(X);
+
+    	sym_vec v_vec = cos_vangle*rvec - sin_vangle*thvec;
+    	sym_vec h_vec = sin_vangle*rvec + cos_vangle*thvec;
+    	sym_tens D = tensor(v_vec, v_vec)*Dv + tensor(h_vec, h_vec)*Dh;
+
+    	eq = dXNdt - dXN14dt*MYR - MYR/R/R * div(rho*(D, grad(XN)))/rho + (rhoV, grad(XN))/rho; 
+    	sym_vec nvec = grad(S.zeta);
+    	nvec = nvec / sqrt((nvec, nvec));
+    	flux = - MYR/R/R*(nvec, (D, grad(XN)));
+    	gradXN = (nvec, grad(XN));
+    	sym_inited = true;
+    }
+
+    S.set_value("XN", comp["N14"]);
+	S.set_value("X", comp.X());
+    S.set_value("rho", rho);
+    S.set_value("vr", vr);
+    S.set_value("vt", vt, 11);
+    S.set_value("log_R", log(R)*ones(1,1));
+    S.set_value("delta", delta*ones(1,1));
+    S.set_value("XN0", XNprev);
+	S.set_value("X0", Xprev);
+    S.set_value("log_R0", lnR0*ones(1,1));
+    S.set_value("r0", r0);
+    S.set_value("MYR", MYR*ones(1,1));
+    S.set_value("mH", HYDROGEN_MASS*ones(1,1));
+    S.set_value("Q", Q*ones(1,1));
+    S.set_value("sin_vangle", sin(vangle), 11);
+    S.set_value("cos_vangle", cos(vangle));
+
+
+    S.set_map(map);
+
+	matrix K;
+	K = opa.xi/eos.cp;
+	matrix dOmega_dr, Dmix_v_mean;
+	dOmega_dr  = (D, w)/map.rz; 
+	matrix Dmix_v;
+	Dmix_v_mean = zeros(nr,1);
+	for (int l=0; l < nr; l++){
+		for (int k=0; k < nth; k++){
+			Dmix_v_mean(l) += K(l,k)*r(l,k)*r(l,k)*dOmega_dr(l,k)*dOmega_dr(l,k);
+		}
+	}
+	Dmix_v_mean /= nth;
+
+	Dmix_v = diffusion_v*Dmix_v_mean*units.Omega*units.Omega; 
+	// diffusion_v presents the eta parameter here. 
+	// This a free parameter to account for the fact that the brunt-vaisala frequency is not taken into account in the computation of the vertical diffusion coefficient.
+
+    matrix diff_v = ones(nr, nth) * diffusion_v;
+    matrix diff_h = ones(nr, nth) * diffusion_h;
+
+    if (conv) {
+// Diffusion in the core which is enhanced!!
+    	int nc = 0;
+    	for (int n = 0; n < conv; n++) nc += map.npts[n];
+    	diff_v.setblock(0, nc-1, 0, -1, ones(nc, nth) * diff_coeff_conv);
+    	diff_h.setblock(0, nc-1, 0, -1, ones(nc, nth) * diff_coeff_conv);
+
+		if (max(dOmega_dr) > 0){
+			for (int j = nc; j < nr; j++) {			
+						if (N2()(j,0) <= 0) {
+							if (j > nc+10){
+							int n = 0, ne = 0;
+    						while (1) {
+								if (ne + map.npts[n] < j) {
+									ne += map.npts[n];
+									n++;
+								}
+								else{
+									break;
+								}
+							}
+							diff_v.setblock(ne, -1, 0, -1, ones(nr-ne,nth) * Dmix_v(ne-1));
+							break;
+							}
+						}
+						        diff_v.setblock(j, j, 0, -1, ones(1,nth) * Dmix_v(j));
+
+			}
+		}
+
+
+    }
+
+	
+    S.set_value("diffusion_v", diff_v);
+    S.set_value("diffusion_h", diff_h);
+
+	// Below, the change in the N14 mass fraction due to nuclear burning is computed. We assume it is dominated by the reaction of O16 to F17, which decays to O17.
+	// O17 is then coverted to N14 via O17 + p --> N14 + He4. 
+	// The formula for lambda_O16_to_O17 comes from Angulo et al. 1999. (Which is in fact for the reaction of O16 to F17.)
+
+	double rec_NA = 1/6.02214076e23;
+	matrix lambda_O16_to_O17 = zeros(nr,nth);
+
+	for (int i =0; i < nth; i++){
+		for (int j = 0; j < nr; j++) {	
+				double T9 = T(j,i)/1e9*units.T;
+				lambda_O16_to_O17(j,i) = rec_NA * (7.37e7 * exp(-16.696*pow(T9,-1./3.))*pow(T9,-0.82));
+		}
+	}
+
+
+	matrix nH   = comp["H"]*rho*units.rho/(HYDROGEN_MASS);
+	matrix nO16 = comp["O16"]*rho*units.rho/(AMASS["O16"]*UMA); 
+	matrix dXN14dt = lambda_O16_to_O17 * nO16 * nH *(AMASS["N14"]*UMA)/(rho*units.rho);
+	S.set_value("dXN14dt", dXN14dt);
+	printf("dXNdt = %e, Xc = %e, XNc = %e, XOc = %e", dXN14dt(0,0)*MYR, comp["H"](0,0), comp["N14"](0,0), comp["O16"](0,0));
+
+    eq.add(op, "XN", "XN");
+    eq.add(op, "XN", "rho");
+    eq.add(op, "XN", "log_R");
+    eq.add(op, "XN", "r");
+    eq.add(op, "XN", "vr");
+    eq.add(op, "XN", "vt");
+    eq.add(op, "XN", "sin_vangle");
+    eq.add(op, "XN", "cos_vangle");
+
+    matrix rhs=-eq.eval();
+    matrix X = comp["N14"];
+    matrix dX = (D, X);
+    matrix flux_val = flux.eval();
+    matrix gradX_val = gradXN.eval();
+
+    int j0 = 0;
+    for (int n = 0; n < ndomains; n++) {
+    	int j1 = j0 + map.npts[n] - 1;
+
+    	if (n == conv && conv > 0) {
+    		flux.bc_bot2_add(op, n, "XN", "XN");
+    		flux.bc_bot2_add(op, n, "XN", "r");
+    		flux.bc_bot1_add(op, n, "XN", "XN", -ones(1,nth));
+    		flux.bc_bot1_add(op, n, "XN", "r", -ones(1,nth));
+    		rhs.setrow(j0, - flux_val.row(j0) + flux_val.row(j0-1));
+    	}
+    	else {
+    		op->bc_bot2_add_l(n, "XN", "XN", 1./map.rz.row(j0), D.block(n).row(0));
+    		op->bc_bot2_add_d(n, "XN", "rz", -1./map.rz.row(j0)/map.rz.row(j0)*dX.row(j0));
+    		rhs.setrow(j0, -dX.row(j0)/map.rz.row(j0)) ;
+    		if (n) {
+    			op->bc_bot1_add_l(n, "XN", "XN", -1./map.rz.row(j0-1), D.block(n-1).row(-1));
+    			op->bc_bot1_add_d(n, "XN", "rz", 1./map.rz.row(j0-1)/map.rz.row(j0-1)*dX.row(j0-1));
+    			rhs.setrow(j0, rhs.row(j0) + dX.row(j0-1)/map.rz.row(j0-1));
+    		}
+    	}
+    	if (n < ndomains - 1) {
+    		if (n == conv-1) {
+    			op->bc_top1_add_d(n, "XN", "XN", ones(1,nth));
+    			op->bc_top2_add_d(n, "XN", "XN", -ones(1,nth));
+    			rhs.setrow(j1, -X.row(j1) + X.row(j1+1));
+    		}
+    		else {
+    			op->bc_top1_add_d(n, "XN", "XN", ones(1,nth));
+    			op->bc_top2_add_d(n, "XN", "XN", -ones(1,nth));
+    			rhs.setrow(j1, -X.row(j1) + X.row(j1+1));
+    		}
+    	}
+    	else {
+    		gradXN.bc_top1_add(op, n, "XN", "XN");
+    		gradXN.bc_top1_add(op, n, "XN", "r");
+    		rhs.setrow(j1, -gradX_val.row(-1)); // no flux at the surface
+    	}
+    	j0 += map.npts[n];
+    }
+
+    op->set_rhs("XN",rhs);
+
+
+    rhs=zeros(ndomains,1);
+// Central X needed for rho_c
+//    for(int n = 0; n < ndomains; n++) {
+//    	if(n == 0) {
+//    		op->bc_bot2_add_d(n, "Xc", "Xc", ones(1,1));
+//    		op->bc_bot2_add_r(n, "Xc", "X", -ones(1,1), map.It/2.);
+//    	} else {
+//    		op->bc_bot2_add_d(n, "Xc", "Xc", ones(1,1));
+//    		op->bc_bot1_add_d(n, "Xc", "Xc", -ones(1,1));
+//    	}
+//    }
+//    op->set_rhs("Xc", rhs);
 
 }
 

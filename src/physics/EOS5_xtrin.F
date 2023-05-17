@@ -362,7 +362,7 @@ c
       endif
       return
 
-   61 write(*,'(" Mass fractions exceed unity (61)")')
+   61 write(*,'(" Mass fractions exceed unity (61) z,zval,xh",e12.4,e12.4,e12.4)') zval,z,xh
       stop
 c   62 write(*,'(" T6/LogR outside of table range (62)")')
    62  eos(1)=-9e99;
