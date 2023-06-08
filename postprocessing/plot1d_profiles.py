@@ -4,12 +4,14 @@
 from ester import *
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
+import os
 
-
-a=star1d('M5_50') # open a 1D solution
+path=os.path.expanduser( '~/Ester/runs/Master/')
+a=star1d(path+'M5.h5') # open a 1D solution
 
 Rayon=a.R/R_SUN
-print  Rayon # print the radius
+print(Rayon) # print the radius
 
 lnrho=np.log(a.rho)         # ln(rho)
 dlnrho=np.dot(a.D,lnrho)    # radial derivative of ln(rho)
@@ -22,7 +24,6 @@ phi=a.phi		   # gravitational potential
 dphi=np.dot(a.D,phi)	   # gravity
 
 plt.plot(a.r/a.R,dphi,'ro') # plot red dots
-plt.plot(dphi,'ro')
 #plt.yscale('log')        # if log scale needed
 #plt.xscale('log')
 
