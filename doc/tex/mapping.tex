@@ -816,6 +816,113 @@ are continuous and derivable scalar functions. For a physical boundary, it could
 some components of the vector
 field are continuous (or derivable) and others are not, then none of the above conditions is correct.
 
+\subsection{Meridional stream function}
+
+We consider the meridional velocity field only. Since the star is
+assumed axisymmetric and that we consider a steady state, the meridional
+velocity field verifies
+
+\beq \Div\vW = 0 \with \vW=\rho\vv \eeq
+This means that
+
+\beq \dzeta{\sqrt{g}W^\zeta} + \dtheta{\sqrt{g}W^\theta} = 0 \with
+\sqrt{g} = r^2r_\zeta\sth\eeq
+so we choose for the meridional stream function $\psi$ of the mass flux $\vW$
+
+\beq \dzeta{\psi} = \sqrt{g}W^\theta \andet \dtheta{\psi} =
+-\sqrt{g}W^\zeta\eeqn{stream}
+Let us check that $\psi$ is indeed the stream function of momentum meridional
+circulation $\vW$. For that, we should check that lines $\psi=\cst$ are
+tangent to the  vector $\vW$ or that
+
+\beq \left|\begin{array}{cc}
+w_r & dr \\
+w_\theta & rd\theta \end{array}\right|=0\quad \ssi \quad \vW \;{\rm parallel\;
+to\;} \dl
+\eeqn{determ}
+where $w_r$ and $w_\theta$ are spherical coordinates components of
+$\vW$. We note that these components are related to the contravariant
+ones by
+
+\[ W^\zeta = \frac{w_r}{r_\zeta} -\frac{r_\theta}{rr_\zeta}w_\theta
+\andet W^\theta = \frac{w_\theta}{r}\]
+hence we obtain
+
+\beq w_r =
+-\frac{1}{r^2\sth}\lp\dtheta{\psi}-\frac{r_\theta}{r_\zeta}\dzeta{\psi}\rp
+\andet w_\theta = \frac{1}{rr_\zeta\sth}\dzeta{\psi} \eeqn{w_sph}
+We therefore should prove that
+
+\[ d\psi = 0 \impl w_\theta dr - w_rrd\theta = 0\]
+or that
+
+\beq \frac{1}{rr_\zeta\sth}\dzeta{\psi}dr
++\frac{1}{r^2\sth}\lp\dtheta{\psi}-\frac{r_\theta}{r_\zeta}\dzeta{\psi}\rp
+rd\theta = 0 \eeqn{dpsi}
+We recall that the change of coordinates
+
+\[ (r,\theta,\varphi) \longrightarrow (\zeta,\theta',\varphi')\]
+with $\theta'=\theta$ and $\varphi'=\varphi$ implies that
+
+\[ \dr{\psi} = \frac{1}{r_\zeta}\dzeta{\psi} \andet \dtheta{\psi} =
+\frac{\partial \psi}{\partial\theta'} -
+\frac{r_\theta}{r_\zeta}\dzeta{\psi}\]
+so that \eq{dpsi} now reads
+
+\[ \frac{1}{r\sth}\dr{\psi}dr + \frac{1}{r^2\sth}\dtheta{\psi}rd\theta = 0\]
+or
+\[ \dr{\psi}dr + \dtheta{\psi}d\theta = 0 = d\psi\]
+so $\psi=\cst$ indeed describes the streamlines in a meridional plane.
+
+Now in the 2013 paper we wrote that
+
+\[ \vW = \rho\vv = \nabla\times(\psi\ephi)\]
+in that case $\psi$ is not a stream function since
+
+\[ w_\theta dr - w_rrd\theta\neq d\psi\]
+The correct expression is
+
+\[ \vW = \rho\vv = \nabla\times(\Psi\vE^\varphi)  = \nabla\times
+\frac{\Psi}{r\sth}\ephi\]
+In this case $\Psi$ is a true stream function. Indeed,
+
+\[ W^i = \frac{[i,j,\varphi]}{\sqrt{g}}\partial_j\Psi\]
+which yields
+
+\[ W^\zeta = \frac{1}{\sqrt{g}}\dtheta{\Psi} \andet W^\theta =
+-\frac{1}{\sqrt{g}}\dzeta{\Psi}\]
+which is the same as \eq{stream} up to the sign.
+
+
+\subsubsection{Computation of the stream function}
+
+If we solve for the velocity components we may wish to get the stream
+function which isocontours show the stream lines.
+
+
+We need to solve for $\psi$ and for that we use the decomposition on
+spherical harmonics. Inspired by the spherical geometry we set
+
+\beq \sqrt{g}W^\zeta = \sth\sum_\ell u^\ell(\zeta)\YLz\eeq
+\beq \sqrt{g}W^\theta = \sth\sum_\ell v^\ell(\zeta)\partial_\theta\YLz\eeq
+where $\YLz$ is the $m=0$ spherical harmonics of degree $\ell$. We now set
+
+\beq \psi(\zeta,\theta) = \sth\sum_\ell \psi^\ell(\zeta)\partial_\theta\YLz
+\eeq
+so that it turns out, finally, that
+
+\beq  \psi^\ell(\zeta) = \frac{u^\ell(\zeta)}{\ell(\ell+1)}
+\eeq
+So we just need to compute the $u^\ell(\zeta)$ on the radial grid. We
+recall that
+
+\beq W^\zeta = \frac{\rho}{r_\zeta}\lp v_r - \frac{r_\theta}{r}v_\theta\rp
+\eeq
+so that
+
+\beq u^\ell\YLz=\rho r^2\lp v_r - \frac{r_\theta}{r}v_\theta\rp\eeq
+hence requiring a Legendre transform to get the $u^\ell$ function.
+
 \pagebreak
 
 \section{Coordinate mapping in ESTER}
