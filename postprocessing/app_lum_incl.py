@@ -13,14 +13,14 @@ import matplotlib.pyplot as plt
 np=20
 lum_app=[0.0 for i in range(np)]
 angle=[float(i)/float(np-1)*90 for i in range(np)]
-a=star2d('Achernar2d')
-print 'Luminosity of the star (solar unit) =',a.L/L_SUN
-print ' '
+a=star2d('M3_O3.h5')
+print('Luminosity of the star (solar unit) =',a.L/L_SUN)
+print(' ')
 
 k=0
 for i in angle:
 	app_l= a.apparent_luminosity(i)
-	print i, 'angle in degrees, app lum =',app_l
+	print(i, 'angle in degrees, app lum =',app_l)
 	lum_app[k]=app_l
 	k=k+1
 
