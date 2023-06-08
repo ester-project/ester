@@ -1,4 +1,18 @@
-Installation:
+$ git clone https://github.com/ester-project/ester.git
+
+This will create a directory named ester that contains the source code of ESTER. Go to this directory, and create a build directory:
+
+$ cd ester
+mkdir build
+
+Configure and check all dependencies are installed
+
+Ensure you are in the build directory and run:
+
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/local
+
+Old installation:
 
 ESTER is available under the GPL Version 3 license. It is hosted either on
 on github (https://github.com/ester-project/ester).

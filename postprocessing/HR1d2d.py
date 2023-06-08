@@ -6,32 +6,37 @@
 
 from ester import *
 import matplotlib.pyplot as plt
-import numpy as np
-import commands
+from numpy import *
+import subprocess as cmd
+import os
+
+path0=os.path.expanduser( '~/Ester/')
+
 
 plt.close()
 #plt.switch_backend('TKAgg')
 sigma=SIG_SB
-#liste=commands.getoutput('ls *ev_000*.h5')
+#liste=cmd.getoutput('ls *ev_000*.h5')
 #---------------------- 1D models-----------------------------------
-path='/home/rieutord/Ester/local/runs/olympe/Ach3/'
+path=path0+'local/runs/Achernar/'
 lpath=len(path)
-liste=commands.getoutput('ls '+path+'*R_ev_00[0-4][0-9].h5')
-liste=commands.getoutput('ls '+path+'*R_ev_*.h5')
+liste=cmd.getoutput('ls '+path+'*_ev_*.h5')
 MYRS=365.25*86400*1e6
 
 lis=liste.split()
 
-te=[0.0 for i in range(len(lis))]
-lum=[0.0 for i in range(len(lis))]
-age=[0.0 for i in range(len(lis))]
+nf=len(lis)
+te=zeros(nf)
+lum=zeros(nf)
+age=zeros(nf)
 
 i=0
-for filename in lis:
-	a=star2d(filename)
+
+for filename in lis[0:10]:
+	a=star1d(filename)
 	lu=a.L/L_SUN
 	te[i]=a.Teff[0,0]
-	age[i]=a.age
+	age[i]=float(i) # fake
 	lum[i]=a.L/L_SUN
 	if (i==0) : 
 		E=lum[i]*L_SUN*age[i]*MYRS
@@ -43,38 +48,39 @@ for filename in lis:
 		E=E+L*(age[i]-age[i-1])*MYRS
 		#print 'Energy emitted (ergs) = %.3e'%E
 	Esun=E/C_LIGHT**2/M_SUN
-	print filename[lpath:],'Age = %.3f'%a.age,' Xc = %.2e'%a.X[0,0],' Tc = %.3e'%a.Tc,\
-         ' rho_c = %.2f'%a.rhoc,'Lum = %.2f'%lu #,'E emitted = %.3e'%Esun
-        i=i+1
+	print(filename[lpath:],'Age = %.3f'%age[i],' Xc = %.2e'%a.X[0,0],' Tc = %.3e'%a.Tc,\
+         ' rho_c = %.2f'%a.rhoc,'Lum = %.2f'%lu) #,'E emitted = %.3e'%Esun
+	i=i+1
 i1d=i
-print 'nombre de modeles 1D =',i1d
+print('nombre de modeles 1D =',i1d)
 
 #---------------------- 2D models-----------------------------------
 # we add 2D models
-path='/home/rieutord/Ester/local/runs/olympe/Achernar2D/'
+path=path0+'local/runs/olympe/Achernar2D_O4/'
 lpath=len(path)
-liste=commands.getoutput('ls '+path+'Ach2D_ev_0*.h5')
+liste=cmd.getoutput('ls '+path+'Ach2D_ev_0*.h5')
 
 lis=liste.split()
+nf=len(lis)
 
-te2D=[0.0 for i in range(len(lis))]
-t_app_eq=[0.0 for i in range(len(lis))]
-t_app_pole=[0.0 for i in range(len(lis))]
-lum2D=[0.0 for i in range(len(lis))]
-lum_app_pole=[0.0 for i in range(len(lis))]
-lum_app_eq=[0.0 for i in range(len(lis))]
-age2D=[0.0 for i in range(len(lis))]
+te2D=zeros(nf)
+t_app_eq=zeros(nf)
+t_app_pole=zeros(nf)
+lum2D=zeros(nf)
+lum_app_pole=zeros(nf)
+lum_app_eq=zeros(nf)
+age2D=zeros(nf)
 
 i=0
 for filename in lis:
         a=star2d(filename)
-	age2D[i]=a.age
-        integrand=a.r[a.nr-1,:]*np.sqrt(a.r[a.nr-1,:]**2+a.rt[a.nr-1,:]**2)
-        integrand=a.R**2*2*np.pi*integrand
-        surf=np.dot(integrand,a.It) # surface calculee
+        age2D[i]=a.age
+        integrand=a.r[a.nr-1,:]*sqrt(a.r[a.nr-1,:]**2+a.rt[a.nr-1,:]**2)
+        integrand=a.R**2*2*pi*integrand
+        surf=dot(integrand,a.It) # surface calculee
         te2D[i]=(a.L/surf/sigma)**0.25
         lum2D[i]=a.L/L_SUN
-        print filename[lpath:],' Temp eff =',te2D[i],'lum = ',lum2D[i],' Req = ',a.Re/R_SUN
+        print(filename[lpath:],' Temp eff =',te2D[i],'lum = ',lum2D[i],' Req = ',a.Re/R_SUN)
         app_l= a.apparent_luminosity(0) # polar app. luminosity
         t_app_pole[i]=(L_SUN*app_l/surf/sigma)**0.25
         lum_app_pole[i]=app_l
@@ -92,8 +98,8 @@ fts=18
 
 plt.xlim(xmin=xmm,xmax=xm)      # set a userdefined x-range
 plt.ylim(ymin= ym,ymax=ymm)      # set a userdefined y-range
-plt.xticks(1000*(12+2*np.arange(6)),('12','14','16','18','20','22'),fontsize=fts)
-plt.yticks(1000*(1+np.arange(3)),('1000','2000','3000'),fontsize=fts)
+plt.xticks(1000*(12+2*arange(6)),('12','14','16','18','20','22'),fontsize=fts)
+plt.yticks(1000*(1+arange(3)),('1000','2000','3000'),fontsize=fts)
 
 plt.xlabel(r'$T_{\mathrm{eff}}$',fontsize=fts)     #labeling the plot
 plt.ylabel(r'$L/L_\odot$',fontsize=fts)
@@ -123,7 +129,7 @@ for k in range(i1d-1):
 	           horizontalalignment=ha, verticalalignment=va) #,xytext=(-2,1))
 			dy=(lum[k+1]-lum[k])/(ymm-ym)
 			dx=(te[k+1]-te[k])/(xmm-xm)
-			angle=-180./np.pi*np.arctan(dy/dx)-90.
+			angle=-180./pi*arctan(dy/dx)-90.
 			#print 'angle=',angle
 			text.set_rotation(angle)
 for k in range(i-1):
@@ -144,34 +150,35 @@ for k in range(i-1):
 	           horizontalalignment=ha, verticalalignment=va) #,xytext=(-2,1))
 			dy=(lum2D[k+1]-lum2D[k])/(ymm-ym)
 			dx=(te2D[k+1]-te2D[k])/(xmm-xm)
-			angle=-180./np.pi*np.arctan(dy/dx)-90.
+			angle=-180./pi*arctan(dy/dx)-90.
 			text.set_rotation(angle)
 
 # Let's add another 2D track
-path='/home/rieutord/Ester/local/runs/olympe/Achernar2D_O5/'
+path=path0+'local/runs/olympe/Achernar2D_O5/'
 lpath=len(path)
-liste=commands.getoutput('ls '+path+'Ach2DO5_ev_0*.h5')
+liste=cmd.getoutput('ls '+path+'Ach2DO5_ev_0*.h5')
 
 lis=liste.split()
+nf=len(lis)
 
-te2D=[0.0 for i in range(len(lis))]
-t_app_pole=[0.0 for i in range(len(lis))]
-t_app_eq=[0.0 for i in range(len(lis))]
-lum2D=[0.0 for i in range(len(lis))]
-lum_app_pole=[0.0 for i in range(len(lis))]
-lum_app_eq=[0.0 for i in range(len(lis))]
-age2D=[0.0 for i in range(len(lis))]
+te2D=zeros(nf)
+t_app_pole=zeros(nf)
+t_app_eq=zeros(nf)
+lum2D=zeros(nf)
+lum_app_pole=zeros(nf)
+lum_app_eq=zeros(nf)
+age2D=zeros(nf)
 
 i=0
 for filename in lis:
         a=star2d(filename)
-	age2D[i]=a.age
-        integrand=a.r[a.nr-1,:]*np.sqrt(a.r[a.nr-1,:]**2+a.rt[a.nr-1,:]**2)
-        integrand=a.R**2*2*np.pi*integrand
-        surf=np.dot(integrand,a.It) # surface calculee
+        age2D[i]=a.age
+        integrand=a.r[a.nr-1,:]*sqrt(a.r[a.nr-1,:]**2+a.rt[a.nr-1,:]**2)
+        integrand=a.R**2*2*pi*integrand
+        surf=dot(integrand,a.It) # surface calculee
         te2D[i]=(a.L/surf/sigma)**0.25
         lum2D[i]=a.L/L_SUN
-        print filename[lpath:],' Temp eff =',te2D[i],'lum = ',lum2D[i],' Req = ',a.Re/R_SUN
+        print(filename[lpath:],' Temp eff =',te2D[i],'lum = ',lum2D[i],' Req = ',a.Re/R_SUN)
         app_l= a.apparent_luminosity(0) # polar app. luminosity
         t_app_pole[i]=(L_SUN*app_l/surf/sigma)**0.25
         lum_app_pole[i]=app_l
@@ -180,7 +187,7 @@ for filename in lis:
         lum_app_eq[i]=app_l
         i=i+1
 
-print i-1
+print(i-1)
 plt.plot(te2D,lum2D,'go')
 plt.plot(t_app_pole,lum_app_pole,'g--')
 plt.plot(t_app_eq,lum_app_eq,'g--')
@@ -203,7 +210,8 @@ for k in range(i-1):
 	           horizontalalignment=ha, verticalalignment=va)
 			dy=(lum2D[k+1]-lum2D[k])/(ymm-ym)
 			dx=(te2D[k+1]-te2D[k])/(xmm-xm)
-			angle=-180./np.pi*np.arctan(dy/dx)-90.
+			angle=-180./pi*arctan(dy/dx)-90.
 			text.set_rotation(angle)
 
 plt.show()
+
