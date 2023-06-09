@@ -874,9 +874,25 @@ or
 \[ \dr{\psi}dr + \dtheta{\psi}d\theta = 0 = d\psi\]
 so $\psi=\cst$ indeed describes the streamlines in a meridional plane.
 
+\subsubsection{Situation in the ESTER code (steady version)}
+
+In the code $G$ is called the stream function which is not. Actually, if
+we set
+
+\beq \psi = -r\sth G \eeq
+then we find
+
+\[ w_r = \frac{1}{r\sth}\dtheta{}(\sth G)
+-\frac{r_\theta}{rr_\zeta}\dzeta{G} \andet w_\theta =
+-\frac{1}{rr_\zeta}\dzeta{rG}\]
+which is what is coded in ESTER. $G$ is not a stream function since
+
+\[ d\psi= 0 \impl r\sth dG  +\sth Gdr + \cth Gd\theta =0\]
+so $dG\neq0$ on the streamlines.
+
 Now in the 2013 paper we wrote that
 
-\[ \vW = \rho\vv = \nabla\times(\psi\ephi)\]
+\[ \vW = \rho\vv = \nabla\times(\psi\ephi)\] 
 in that case $\psi$ is not a stream function since
 
 \[ w_\theta dr - w_rrd\theta\neq d\psi\]
@@ -892,6 +908,11 @@ which yields
 \[ W^\zeta = \frac{1}{\sqrt{g}}\dtheta{\Psi} \andet W^\theta =
 -\frac{1}{\sqrt{g}}\dzeta{\Psi}\]
 which is the same as \eq{stream} up to the sign.
+
+So the ESTER code is consistent with the paper since they agree on
+
+\[ \psi = G =\frac{\Psi}{r\sth}\]
+but $r\sth G = \cst$ should be used to draw the meridional streamlines.
 
 
 \subsubsection{Computation of the stream function}

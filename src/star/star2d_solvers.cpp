@@ -87,8 +87,10 @@ void star2d::init_comp() {
 }
 
 void star2d::calc_veloc() {
-// vr=rz*V^zeta vt=r*V^theta
-	vr=(G,map.leg.D_11)/r+(map.rt/r+cos(th)/sin(th))/r*G;
+// vr=rz*V^zeta+rt*V^theta,  vt=r*V^theta
+	//vr=(G,map.leg.D_11)/r+(map.rt/r+cos(th)/sin(th))/r*G;
+	//rt*V^theta is missing, corrected June 2023
+	vr=(G,map.leg.D_11)/r+cos(th)/sin(th)/r*G - map.rt/r/map.rz*(D,G);
 	vr.setrow(0,zeros(1,nth));
 	vr/=rho;
 	vt=-(D,G)/map.rz-1./r*G;
