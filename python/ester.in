@@ -200,10 +200,16 @@ class star2d:
         self._s.map.leg.eval_00(ones, 0, tp)
         self.Tp     = _mat_to_numpy(tp)
         self.P_00   = _mat_to_numpy(self._s.map.leg.P_00).transpose()
+        self.P1_00  = _mat_to_numpy(self._s.map.leg.P1_00).transpose()
+        self.P1_01  = _mat_to_numpy(self._s.map.leg.P1_01).transpose()
+        self.P1_10  = _mat_to_numpy(self._s.map.leg.P1_10).transpose()
+        self.P1_11  = _mat_to_numpy(self._s.map.leg.P1_11).transpose()
         self.P_01   = _mat_to_numpy(self._s.map.leg.P_01).transpose()
         self.P_10   = _mat_to_numpy(self._s.map.leg.P_10).transpose()
         self.P_11   = _mat_to_numpy(self._s.map.leg.P_11).transpose()
         self.P      = _mat_to_numpy(self._s.map.gl.P.full_matrix())
+        self.l_00   = _mat_to_numpy(self._s.map.leg.l_00()).transpose()
+        self.D_00   = _mat_to_numpy(self._s.map.leg.D_00).transpose()
 
     def apparent_luminosity(self, angle):
 # use of the C++ function apparent_luminosity of the ester library

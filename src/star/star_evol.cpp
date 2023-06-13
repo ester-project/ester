@@ -469,14 +469,14 @@ void star_evol::solve_X(solver *op) {
     S.set_map(map);
 
 	matrix K;
-	K = opa.xi/eos.cp;
+	K = opa.xi/(rho*units.rho*eos.cp);
 	matrix dOmega_dr, Dmix_v_mean;
-	dOmega_dr  = (D, w)/map.rz; 
+	dOmega_dr  = (map.gzz*(D,w)+map.gzt*(w,Dt))/sqrt(map.gzz);  
 	matrix Dmix_v;
 	Dmix_v_mean = zeros(nr,1);
 	for (int l=0; l < nr; l++){
 		for (int k=0; k < nth; k++){
-			Dmix_v_mean(l) += K(l,k)*r(l,k)*r(l,k)*dOmega_dr(l,k)*dOmega_dr(l,k);
+			Dmix_v_mean(l) += K(l,k)*r(l,k)*r(l,k)*dOmega_dr(l,k)*dOmega_dr(l,k); 
 		}
 	}
 	Dmix_v_mean /= nth;
@@ -493,10 +493,6 @@ void star_evol::solve_X(solver *op) {
     	diff_v.setblock(0, nc-1, 0, -1, ones(nc, nth) * diff_coeff_conv);
     	diff_h.setblock(0, nc-1, 0, -1, ones(nc, nth) * diff_coeff_conv);
 
-		//int jcc=0;
-		//for(int n=0;n<conv;n++) jcc+=map.gl.npts[n];
-		//jcc--;
-	
 
 		if (max(dOmega_dr) > 0){
 			for (int j = nc; j < nr; j++) {			
@@ -677,14 +673,15 @@ void star_evol::solve_XN(solver *op) {
     S.set_map(map);
 
 	matrix K;
-	K = opa.xi/eos.cp;
+	K = opa.xi/(rho*units.rho*eos.cp);
+
 	matrix dOmega_dr, Dmix_v_mean;
-	dOmega_dr  = (D, w)/map.rz; 
+	dOmega_dr  = (map.gzz*(D,w)+map.gzt*(w,Dt))/sqrt(map.gzz); 
 	matrix Dmix_v;
 	Dmix_v_mean = zeros(nr,1);
 	for (int l=0; l < nr; l++){
 		for (int k=0; k < nth; k++){
-			Dmix_v_mean(l) += K(l,k)*r(l,k)*r(l,k)*dOmega_dr(l,k)*dOmega_dr(l,k);
+			Dmix_v_mean(l) += K(l,k)*r(l,k)*r(l,k)*dOmega_dr(l,k)*dOmega_dr(l,k); 
 		}
 	}
 	Dmix_v_mean /= nth;
@@ -752,7 +749,7 @@ void star_evol::solve_XN(solver *op) {
 	matrix nO16 = comp["O16"]*rho*units.rho/(AMASS["O16"]*UMA); 
 	matrix dXN14dt = lambda_O16_to_O17 * nO16 * nH *(AMASS["N14"]*UMA)/(rho*units.rho);
 	S.set_value("dXN14dt", dXN14dt);
-	printf("dXNdt = %e, Xc = %e, XNc = %e, XOc = %e", dXN14dt(0,0)*MYR, comp["H"](0,0), comp["N14"](0,0), comp["O16"](0,0));
+	printf("dXNdt = %e, Xc = %e, XNc = %e, XOc = %e ", dXN14dt(0,0)*MYR, comp["H"](0,0), comp["N14"](0,0), comp["O16"](0,0));
 
     eq.add(op, "XN", "XN");
     eq.add(op, "XN", "rho");

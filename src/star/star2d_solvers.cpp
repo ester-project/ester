@@ -57,11 +57,10 @@ void star2d::init_comp() {
 		printf("Calling initial_composition with Xc = %e.", Xc*X0);
         comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
     }
-	//else if (stratified_comp == 2)
-	//{
-	//	comp.setblock(0,n-1,0,-1,initial_composition_cno_cycle_core(Xc*X0,Z0)*ones(n,nth));	
-	//	printf("Converting C12 and O17 to N14 in core.");	
-	//}
+	else if (stratified_comp == 2)
+	{
+		printf("Taking X profile from model.");	
+	}
     else {
         comp.setblock(0, n-1, 0, -1,
                 initial_composition(Xc*X0, Z0)*ones(n, nth));
@@ -658,7 +657,8 @@ void star2d::solve_mov(solver *op) {
 		sym phi = S.regvar("Phi"); // Gravitational Potential
 		sym reynolds_v = S.regconst("reynolds_v"); // Re_vertical
 		sym reynolds_h = S.regconst("reynolds_h"); // Re_Horiz.
-		sym Re = exp(S.regconst("log_Re"));
+		//sym Re = exp(S.regconst("log_Re"));
+		sym Re = exp(S.regvar("log_Re"));
 		sym visc_ratio = S.regconst("visc_ratio"); // nu_v/nu_h
 		sym sin_vangle = S.regvar("sin_vangle");   // sin(v)
 		sym cos_vangle = S.regvar("cos_vangle"); // v= angle(e_r,-gradP)
@@ -720,7 +720,17 @@ void star2d::solve_mov(solver *op) {
 	S.set_value("Phi",phi);
 	S.set_value("reynolds_v", reynolds_v*ones(1,1));
 	S.set_value("reynolds_h", reynolds_h*ones(1,1));
-	S.set_value("log_Re", log(R*R/visc_h/MYR)*ones(1,1));
+    matrix log_Re = log(R*R/visc_h/MYR)*ones(nr, nth);
+	double log_Re_conv = log(R*R/1e8/MYR); // Set the viscosity in the convective core to 1e11 cm^2/s. We assume the vertical and horizontal viscosity are equal.
+    // Viscosity in the core which is enhanced!!
+    //if (conv) {
+    //	int nc = 0;
+    //	for (int n = 0; n < conv; n++) nc += map.npts[n];
+    //	log_Re.setblock(0, nc-1, 0, -1, ones(nc, nth) * log_Re_conv);
+    //}
+	S.set_value("log_Re", log_Re);
+
+	//S.set_value("log_Re", log(R*R/visc_h/MYR)*ones(1,1));
 	S.set_value("visc_ratio", visc_v/visc_h*ones(1,1));
 	S.set_value("sin_vangle", sin(vangle), 11);// 11= symmetry  of v_theta
 	S.set_value("cos_vangle", cos(vangle));

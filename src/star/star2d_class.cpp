@@ -219,6 +219,7 @@ void star2d::hdf5_write(const char *filename) const {
     fields["diff_h"] = Dmix_h();
     fields["N14"] = comp["N14"];
     fields["O16"] = comp["O16"]; 
+    fields["Ktherm"] = opa.xi/eos.cp; 
 
 
 
