@@ -58,14 +58,17 @@ ls=cmd.getoutput('ls -v *.h5_*').split()
 
 lz=[]
 r=[]
-plt.figure(figsize=(12,12))
+plt.figure(1,figsize=(12,12))
 plt.rcParams.update({'font.size': 18})
 for fichier in ls:
-    print(fichier)
+    #print(fichier)
     lf,rf= eval_lz_domains(fichier)
+    lz.append(lf)
+    r.append(rf)
     plt.plot(rf,lf)
     plt.yscale('log')
     
+
 nfont=18
 plt.xticks(fontsize=nfont)
 plt.yticks(fontsize=nfont)
@@ -74,4 +77,15 @@ plt.ylabel('Lz / Domain',fontsize=nfont)
 plt.title('Evolution of the angular momentum per domain')
 plt.savefig('Lz_dom.png', bbox_inches=0)
     
+plt.figure(2,figsize=(12,12))
+nt=len(lz)
+data=zeros((nt,12))
+for it in range(nt):
+   for idom in range(12):
+      data[it,idom]=lz[it][idom] 
+
+for idom in range(12):
+   plt.plot(data[:,idom],label=str(idom))
+plt.yscale('log')
+plt.legend()
 plt.show()
