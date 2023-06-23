@@ -81,6 +81,7 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
     eos.cv.dim(T.nrows(), T.ncols());
     eos.chi_rho.dim(T.nrows(), T.ncols());
     eos.chi_T.dim(T.nrows(), T.ncols());
+    eos.prad.dim(T.nrows(), T.ncols()); // added MR june 2023
 
     for (int i=0; i<N; i++) {
 
@@ -139,6 +140,7 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
         eos.cv(i) = energy[2] * (1.0/t); // dE/dT (energy[2] is dE/dlnT)
         eos.chi_rho(i) = 1.0/density[1];   // dlogP/dlogRho
         eos.chi_T(i) = -density[2] / density[1];     // dlogP/dlogT
+        eos.prad(i)=A_RAD/3*pow(t,4); // added MR june 2023
     }
     delete[] eps;
 
