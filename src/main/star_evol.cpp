@@ -102,7 +102,20 @@ int main(int argc,char *argv[]) {
 			Lzc=Lzc.concatenate(A.Lzcore()*ones(1,1));
 		}
 		
-		sprintf(outfile, "%s_%04d", config.output_file, n);
+// new stuff imported from Paco's version
+                char *filename = strdup(config.output_file);
+                char *ext = strstr(filename, ".");
+                if (ext != NULL) {
+                                *ext = '\0';
+                                ext++;
+                                sprintf(outfile,"%s_%04d.%s",filename,n,ext);
+                }
+                else {
+                                sprintf(outfile,"%s_%04d",filename,n);
+                }
+
+                free(filename);
+                printf("Writing %s\n", outfile);
 		A.write(outfile, config.output_mode);
 		Xc-=dXc;
 		n++;
