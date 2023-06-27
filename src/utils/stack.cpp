@@ -9,6 +9,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <iomanip>
+#include <cstdint>
 
 inline std::string addr2str(uintptr_t addr) {
     std::ostringstream stream;
