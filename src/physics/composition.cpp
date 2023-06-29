@@ -2,28 +2,54 @@
 #include "ester-config.h"
 #endif
 #include "physics.h"
+#include "parser.h"
+
 
 double_map initial_composition(double X, double Z) {
 	double_map comp;
+	file_parser fp;
 	
-// The mixture below has an unidentified origin but is close to the one
-// of Grevesse & Sauval 1998.
-	comp["H"]=X;
-	comp["He3"]=3.15247417638132e-04*(1.-X-Z);
-	comp["He4"]=(1.-X-Z)-comp["He3"];
-	comp["C12"]=Z*1.71243418737847e-01;
-	comp["C13"]=Z*2.06388003380057e-03;
-	comp["N14"]=Z*5.29501630871695e-02;
-	comp["N15"]=Z*2.08372414940812e-04;
-	comp["O16"]=Z*4.82006487350336e-01;
-	comp["O17"]=Z*1.95126448826986e-04;
-	
-	double tot=comp.sum();
-	
-	comp["Ex"] =1-tot;
-	
-	return comp;
+	// The mixture below has an unidentified origin but is close to the one
+	// of Grevesse & Sauval 1998.
+	// comp["H"]=X;
+	// comp["He3"]=3.15247417638132e-04*(1.-X-Z);
+	// comp["He4"]=(1.-X-Z)-comp["He3"];
+	// comp["C12"]=Z*1.71243418737847e-01;
+	// comp["C13"]=Z*2.06388003380057e-03;
+	// comp["N14"]=Z*5.29501630871695e-02;
+	// comp["N15"]=Z*2.08372414940812e-04;
+	// comp["O16"]=Z*4.82006487350336e-01;
+	// comp["O17"]=Z*1.95126448826986e-04;
+	double Y = 1. - (X + Z);
 
+	comp["H"] = X;
+	comp["He3"] = 3.15247417638132e-04 * Y;
+	comp["He4"] = Y - comp["He3"];
+
+	// TODO: change this hardcoded
+	char file[] = "metal-mix.cfg";
+
+	char* arg = NULL;
+	char* val = NULL;
+
+	if(!fp.open(file)){
+		printf("Can't open configuration file %s\n", file);
+		perror("Error:");
+		exit(1);
+	} else {
+		int line;
+		while(line = fp.get(arg,val)) {
+			if(val == NULL){
+				printf("Syntax error in configuration file %s, line %d\n", file, line);
+				exit(1);
+			}
+			comp[arg] = Z * atof(val);
+		}
+	}
+	fp.close();
+	comp["Ex"] = 1 - comp.sum();
+
+	return comp;
 }
 
 matrix composition_map::X() const {
