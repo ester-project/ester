@@ -25,7 +25,9 @@ double_map initial_composition(double X, double Z) {
 
 	char* arg = NULL;
 	char* val = NULL;
-	std::set<std::string> metals = {"C12","C13","N14","N15","O16","O17","Ne","Na","Mg","AL","Si","P","S","Cl","A","Ca","Ti","Cr","Mn","Fe","Ni"};
+	std::set<std::string> metals = {"C12","C13","N14","N15","O16","O17","Ne20","Ne22","Na23",
+									"Mg24","Mg25","Mg26","Al27","Si28","P31","S32","Cl35","Cl37",
+									"A40","Ca40","Ti","Cr","Mn55","Fe","Ni"};
 	// Initialization of comp
 	for(std::string metal: metals){
 		comp[metal] = .0;
