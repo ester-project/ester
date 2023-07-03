@@ -14,6 +14,7 @@ double_map initial_composition(double X, double Z) {
 	double Y = 1. - (X + Z);
 
 	comp["H"] = X;
+	// TODO: should this one be hardcoded too?
 	comp["He3"] = 3.15247417638132e-04 * Y;
 	comp["He4"] = Y - comp["He3"];
 
