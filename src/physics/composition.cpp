@@ -1,6 +1,8 @@
 #ifndef WITH_CMAKE
 #include "ester-config.h"
 #endif
+#include <set>
+#include <string>
 #include "physics.h"
 #include "parser.h"
 
@@ -20,6 +22,11 @@ double_map initial_composition(double X, double Z) {
 
 	char* arg = NULL;
 	char* val = NULL;
+	std::set<std::string> metals = {"C12","C13","N14","N15","O16","O17","Ne","Na","Mg","AL","Si","P","S","Cl","A","Ca","Ti","Cr","Mn","Fe","Ni"};
+	// Initialization of comp
+	for(std::string metal: metals){
+		comp[metal] = .0;
+	}
 
 	if(!fp.open(file)){
 		printf("Can't open configuration file %s\n", file);
