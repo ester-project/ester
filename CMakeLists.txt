@@ -166,36 +166,28 @@ install(FILES
     DESTINATION share/ester/)
 
 add_executable(polytrope1d src/main/polytrope1d.cpp)
-target_link_libraries(polytrope1d ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(polytrope1d ester)
 
 add_executable(star1d src/main/star1d.cpp)
-target_link_libraries(star1d ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(star1d ester)
 
 add_executable(star2d src/main/star2d.cpp)
-target_link_libraries(star2d ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(star2d ester)
 
 add_executable(star_evol src/main/star_evol.cpp)
-target_link_libraries(star_evol ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(star_evol ester)
 
 add_executable(version src/main/version.cpp)
-target_link_libraries(version ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(version ester)
 
 add_executable(gen_output src/main/gen_output.cpp)
-target_link_libraries(gen_output ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(gen_output ester)
 
 add_executable(ester_info src/main/ester-info.cpp)
-target_link_libraries(ester_info ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(ester_info ester)
 
 add_executable(ester_vtk src/main/vtk.cpp)
-target_link_libraries(ester_vtk ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(ester_vtk ester)
 
 install(TARGETS ester polytrope1d star1d star2d star_evol version gen_output ester_info ester_vtk
     RUNTIME DESTINATION bin
