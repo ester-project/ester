@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.14)
 project(ester VERSION 1.2.0 LANGUAGES C CXX Fortran)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
@@ -8,11 +8,6 @@ endif()
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-if(CMAKE_VERSION VERSION_GREATER "3.12")
-    cmake_policy(VERSION 3.12)
-    cmake_policy(SET CMP0074 NEW)
-endif()
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/modules)
 
