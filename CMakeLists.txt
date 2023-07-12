@@ -155,9 +155,8 @@ add_custom_target(ester_bin ALL
     's,[@]datadir[@],${CMAKE_INSTALL_PREFIX}/share/ester,g' <
     ${CMAKE_SOURCE_DIR}/src/main/ester.in > ester)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ester
-    DESTINATION bin
-    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE)
+install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/ester
+    DESTINATION bin)
 
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/star.cfg
