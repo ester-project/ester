@@ -9,6 +9,7 @@
 #include "matplotlib.h"
 //---------------------------------------------------------------------
 void star1d::fill() {
+    printf("star1d::fill ");
     Y0=1.-X0-Z0;
     init_comp();
 
@@ -93,6 +94,7 @@ double star1d::solve(solver *op) {
 }
 //---------------------------------------------------------------------
 double star1d::solve(solver *op, matrix_map& error_map, int nit) {
+	printf("star1d::solve ");
     int info[5];
     matrix rho0;
     double err,err2;
@@ -177,6 +179,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 
     rho0=rho;
 
+    printf("from star1d::solve ->");
     fill();
 
     err2=max(abs(rho-rho0));err=err2>err?err2:err;
@@ -728,6 +731,7 @@ void star1d::check_jacobian(solver *op,const char *eqn) {
         B.map.remap();
     }
 
+    printf("from star1d::check_jacobian ->");
     B.fill();
 
     i=op->get_id("rho");

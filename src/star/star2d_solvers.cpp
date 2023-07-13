@@ -11,6 +11,7 @@
 /// nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere,
 /// flatness, scaled keplerian angular velocity
 void star2d::fill() {
+	printf("star2d::fill ");
 	Y0=1.-X0-Z0;
 	init_comp();
 
@@ -37,6 +38,7 @@ void star2d::fill() {
 }
 
 void star2d::init_comp() {
+	printf("star2d::init_comp! ");
 // Update the object comp
 
 	comp=initial_composition(X0,Z0)*ones(nr,nth);
@@ -166,6 +168,7 @@ double star2d::solve(solver *op) {
 /// \brief Performs one step of the Newton algorithm to compute the star's
 /// internal structure.
 double star2d::solve(solver *op, matrix_map& error_map, int nit) {
+	printf("star2d::solve ");
 	int info[5];
 	matrix rho0;
 	double err,err2,h,dmax;

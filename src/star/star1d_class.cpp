@@ -156,6 +156,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
     }
 
     init_comp();
+    printf("from star1d::init ->");
     fill();
 
     phi = solve_phi();
