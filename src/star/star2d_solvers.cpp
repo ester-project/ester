@@ -7,13 +7,12 @@
 #include <string.h>
 #include "symbolic.h"
 
-/// \brief Initialize star's chemical composition, equation of state, opacity,
+/// \brief Initialize star's equation of state, opacity,
 /// nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere,
 /// flatness, scaled keplerian angular velocity
 void star2d::fill() {
 	printf("star2d::fill ");
 	Y0=1.-X0-Z0;
-	init_comp();
 
 	eq_state();
 	opacity();

@@ -11,7 +11,6 @@
 void star1d::fill() {
     printf("star1d::fill ");
     Y0=1.-X0-Z0;
-    init_comp();
 
     eq_state();
 
