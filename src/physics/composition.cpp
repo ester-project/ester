@@ -3,12 +3,20 @@
 #endif
 #include <set>
 #include <string>
+#include "utils.h"
 #include "physics.h"
 #include "parser.h"
 
 bool _init_metals = true;
 
+bool first = true;
+
 double_map initial_composition(double X, double Z) {
+	if(!first){
+		//ester_err("initial_composition must be called only once");
+	}
+	first = false;
+
 	double_map comp;
 	file_parser fp;
 	
