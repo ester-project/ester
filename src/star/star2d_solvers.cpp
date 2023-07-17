@@ -51,40 +51,6 @@ void star2d::init_comp() {
     }
 // and put some fraction Xc of X_envelope in the core 
     comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
-
-// Put a special composition in the last domain: Daniel's request
-/*	printf("WARNING : Daniel's superstar computed!\n");
-
-    n = 0; // Count the number of points to the before before last domain
-    for (int i=0; i<ndomains-1; i++) {
-        n += map.gl.npts[i];
-    }
-	printf(" in init_comp n=%d, nr=%d\n",n,nr);
-//	double x=0.70,z=0.02;
-	double x=X0*0.10,z=0.062;
-        comp.setblock(0,n-1,0,-1,initial_composition(x,z)*ones(n,nth));
-	comp.setblock(n,nr-1,0,-1,initial_composition(X0,Z0)*ones(nr-n,nth));
-	printf(" in init_comp comp.X=%e, \n",comp.X()(0,0));
-*/
-
-/* Delphine's attempt
-    if(stratified_comp == 0) {
-        comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
-    }
-    else {
-        comp.setblock(0, n-1, 0, -1,
-                initial_composition(Xc*X0, Z0)*ones(n, nth));
-        int m = 0;
-        int l = n;
-        double a = (1.-exp((1.-(nr/n))))/(X0*(1.-Xc));
-        for(int i=conv+1; i<ndomains; i++) {
-            m = map.gl.npts[i];
-            comp.setblock(l, l+m-1, 0, -1,
-                    initial_composition(((Xc*X0)+((1./a)*(1.-exp((1.-(l/n)))))),Z0)*ones(m,nth));
-            l += m;
-        }
-    }
-*/
 }
 
 void star2d::calc_veloc() {
