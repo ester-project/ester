@@ -7,6 +7,12 @@
 #include <string.h>
 #include "symbolic.h"
 
+// TODO: apply the following move (at the end of the work)
+// The code between [BEGIN MOVE] and [END MODE] should be placed in star2d_class.cpp
+// it hasn't anything to do with solving, but is required by reading, and ester info for exmaple
+// whereas ester info doesn't require any other methods from star2d_solvers.cpp
+// [BEGIN MOVE]
+
 /// \brief Initialize star's equation of state, opacity,
 /// nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere,
 /// flatness, scaled keplerian angular velocity
@@ -53,6 +59,8 @@ void star2d::init_comp() {
     comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
 }
 
+// [END MOVE]
+
 void star2d::calc_veloc() {
 // vr=rz*V^zeta+rt*V^theta,  vt=r*V^theta
 	//vr=(G,map.leg.D_11)/r+(map.rt/r+cos(th)/sin(th))/r*G;
@@ -64,6 +72,7 @@ void star2d::calc_veloc() {
 	vt.setrow(0,zeros(1,nth));
 	vt/=rho;
 }
+
 
 solver *star2d::init_solver(int nvar_add) {
 	int nvar;
@@ -79,6 +88,7 @@ solver *star2d::init_solver(int nvar_add) {
 
 	return op;
 }
+
 
 void star2d::register_variables(solver *op) {
 	int i,var_nr[ndomains+1];
@@ -125,10 +135,12 @@ void star2d::register_variables(solver *op) {
 
 }
 
+
 double star2d::solve(solver *op) {
     matrix_map error_map;
     return solve(op, error_map, 0);
 }
+
 
 /// \brief Performs one step of the Newton algorithm to compute the star's
 /// internal structure.
@@ -249,8 +261,10 @@ double star2d::solve(solver *op, matrix_map& error_map, int nit) {
 
 }
 
+
 // Special treatment for updating R_i because we need
 // a different relaxation parameter "h".
+
 
 void star2d::update_map(matrix dR) {
 	double h=1,dmax=config.newton_dmax;
@@ -266,6 +280,7 @@ void star2d::update_map(matrix dR) {
 	}
 
 }
+
 
 /// \brief insert the definitions depending on opacity and eos tables into the solver,
 /// and the definitions used by the mapping (eta,deta,Ri,dRi,...), and the entropy
@@ -887,7 +902,6 @@ void star2d::solve_temp(solver *op) {
 
 
 /// \brief Writes the equations for the dimensional quantities (T_c, rho_c, R, etc.)
-
 void star2d::solve_dim(solver *op) {
 	int n,j0,j1;
 	matrix q,rhs;
@@ -1077,8 +1091,6 @@ void star2d::solve_map(solver *op) {
 }
 
 
-
-
 /// \brief Equation setting the equatorial angular velocity
 void star2d::solve_Omega(solver *op) {
 	int n;
@@ -1101,7 +1113,6 @@ void star2d::solve_Omega(solver *op) {
 	op->set_rhs("Omega",rhs);
 
 }
-
 
 
 /// \brief Equation giving the effective surface gravity gsup
@@ -1140,6 +1151,7 @@ void star2d::solve_gsup(solver *op) {
 
 }
 
+
 /// \brief Equation setting the surface effective temperature
 /// Derived from sigma T_e^4 = -xi\vn\cdot\gradT
 void star2d::solve_Teff(solver *op) {
@@ -1176,6 +1188,7 @@ void star2d::solve_Teff(solver *op) {
 
 
 }
+
 
 /// \brief Equation setting the 'simple' atmosphere model equations
 /// 'simple' == the polytropic model for the atmosphere

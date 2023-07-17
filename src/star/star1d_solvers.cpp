@@ -7,7 +7,13 @@
 #include "symbolic.h"
 
 #include "matplotlib.h"
-//---------------------------------------------------------------------
+
+// TODO: apply the following move (at the end of the work)
+// The code between [BEGIN MOVE] and [END MODE] should be placed in star2d_class.cpp
+// it hasn't anything to do with solving, but is required by reading, and ester info for exmaple
+// whereas ester info doesn't require any other methods from star2d_solvers.cpp
+// [BEGIN MOVE]
+
 void star1d::fill() {
     printf("star1d::fill ");
     Y0=1.-X0-Z0;
@@ -33,7 +39,9 @@ void star1d::fill() {
     Omega=0;Omega_bk=0;Ekman=0;Omegac=0;
 
 }
-//---------------------------------------------------------------------
+
+// [END MOVE]
+
 solver *star1d::init_solver(int nvar_add) {
     int nvar;
     solver *op;
@@ -49,7 +57,8 @@ solver *star1d::init_solver(int nvar_add) {
 
     return op;
 }
-//---------------------------------------------------------------------
+
+
 void star1d::register_variables(solver *op) {
     int i,var_nr[ndomains];
 
@@ -86,12 +95,14 @@ void star1d::register_variables(solver *op) {
     op->regvar_dep("nuc.eps");
 
 }
-//---------------------------------------------------------------------
+
+
 double star1d::solve(solver *op) {
     matrix_map error_map;
     return solve(op, error_map, 0);
 }
-//---------------------------------------------------------------------
+
+
 double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 	printf("star1d::solve ");
     int info[5];
@@ -186,7 +197,8 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     return err;
 
 }
-//---------------------------------------------------------------------
+
+
 void star1d::update_map(matrix dR) {
     if(ndomains==1) return;
 
@@ -203,7 +215,8 @@ void star1d::update_map(matrix dR) {
         map.R=R0+h*dR;
     }
 }
-//---------------------------------------------------------------------
+
+
 void star1d::solve_definitions(solver *op) {
 // substitution of the dep variables by their expression
 // with the basic variables
@@ -257,7 +270,8 @@ void star1d::solve_definitions(solver *op) {
     op->add_d("nuc.eps","log_Tc",nuc.dlneps_lnT*nuc.eps);
 
 }
-//---------------------------------------------------------------------
+
+
 void star1d::solve_poisson(solver *op) {
     int n,j0;
     matrix rhs;
@@ -305,7 +319,8 @@ void star1d::solve_poisson(solver *op) {
     }
     op->set_rhs("Phi",rhs);
 }
-//---------------------------------------------------------------------
+
+
 void star1d::solve_pressure(solver *op) {
     int n,j0;
     matrix rhs_p,rhs_pi_c;
@@ -341,7 +356,8 @@ void star1d::solve_pressure(solver *op) {
     op->set_rhs(eqn,rhs_p);
     op->set_rhs("pi_c",rhs_pi_c);
 }
-//---------------------------------------------------------------------
+
+
 void star1d::solve_temp(solver *op) {
     int n,j0,j1;
     matrix q;
@@ -550,7 +566,8 @@ void star1d::solve_temp(solver *op) {
     op->set_rhs("Lambda",rhs_Lambda);
 
 }
-//---------------------------------------------------------------------
+
+
 void star1d::solve_dim(solver *op) {
 // write the equations defining the global variables:
 // Radius, R, Tc, Pc and non-dim mass.
@@ -615,7 +632,8 @@ void star1d::solve_dim(solver *op) {
     op->set_rhs("log_R",rhs);
 
 }
-//---------------------------------------------------------------------
+
+
 void star1d::solve_map(solver *op) {
     int n,j0,j1;
     matrix rhs=zeros(ndomains,1);
@@ -663,7 +681,8 @@ void star1d::solve_map(solver *op) {
     }
     op->set_rhs("Ri",rhs);
 }
-//---------------------------------------------------------------------
+
+
 void star1d::solve_gsup(solver *op) {
 // Comfort equation
 // Code the equation gsup=4*pi*G*rho_c*R*m
@@ -679,7 +698,8 @@ void star1d::solve_gsup(solver *op) {
 
     op->set_rhs("gsup",zeros(1,1));
 }
-//---------------------------------------------------------------------
+
+
 void star1d::solve_Teff(solver *op) {
     matrix q,Te,F;
     int n=ndomains-1;
@@ -705,7 +725,8 @@ void star1d::solve_Teff(solver *op) {
 */
     op->set_rhs("Teff",zeros(1,1));
 }
-//---------------------------------------------------------------------
+
+
 void star1d::check_jacobian(solver *op,const char *eqn) {
     star1d B;
     matrix rhs,drhs,drhs2,qq;
