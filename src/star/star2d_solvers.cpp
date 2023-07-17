@@ -4,8 +4,10 @@
 #include "star.h"
 #include <stdlib.h>
 #include <sys/time.h>
+#include <set>
 #include <string.h>
 #include "symbolic.h"
+#include "utils.h"
 
 // TODO: apply the following move (at the end of the work)
 // The code between [BEGIN MOVE] and [END MODE] should be placed in star2d_class.cpp
@@ -41,6 +43,62 @@ void star2d::fill() {
 	Omegac=sqrt(pi_c*m/4/PI*(1-eps)*(1-eps)*(1-eps));
 
 }
+
+
+void star2d::init_metal_mix() {
+	// a security to avoid initializing multiple time the metal mix
+	// it should be done only once, then m_metal_mix should be used
+	if(!m_metal_mix.empty()){
+		ester_err("init_metal_mix must be called only once");
+	}
+
+	file_parser fp;
+
+	// TODO: change this hardcoded path
+	char file[] = "metal-mix.cfg";
+
+	char* arg = NULL;
+	char* val = NULL;
+	std::set<std::string> metals = {"C12","C13","N14","N15","O16","O17","Ne20","Ne22","Na23",
+									"Mg24","Mg25","Mg26","Al27","Si28","P31","S32","Cl35","Cl37",
+									"A40","Ca40","Ti","Cr","Mn55","Fe","Ni"};
+	// Initialization of m_metal_mix
+	for(std::string metal: metals){
+		m_metal_mix[metal] = .0;
+	}
+	double metals_fraction = .0;
+
+	if(!fp.open(file)){
+		printf("Can't open configuration file %s\n", file);
+		perror("Error:");
+		exit(1);
+	} else {
+		int line;
+		while(line = fp.get(arg,val)) {
+			if(val == NULL){
+				printf("Syntax error in configuration file %s, line %d\n", file, line);
+				exit(1);
+			}
+			if(metals.find(arg) == metals.end()){
+				// the metal specified in the config file isn't supported
+				printf("%s is unknown, possible metals composition are: ", val);
+				for(std::string metal: metals){
+					printf("%s ", metal);
+				}
+				puts("\n");
+				exit(1);
+			}
+			metals_fraction += atof(val);
+			m_metal_mix[arg] = Z0 * atof(val);
+		}
+	}
+	fp.close();
+
+	// will be removed:
+	printf("A config file %s has been used to config metal composition\n", file);
+	printf("The sum of metals fractions (of Z sum of metal mass fraction) is %f, and should be as close to 1 as possible.\n", metals_fraction);
+}
+
 
 void star2d::init_comp() {
 	printf("star2d::init_comp! ");
