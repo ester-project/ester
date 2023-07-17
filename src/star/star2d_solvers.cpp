@@ -20,7 +20,6 @@
 /// flatness, scaled keplerian angular velocity
 void star2d::fill() {
 	printf("star2d::fill ");
-	Y0=1.-X0-Z0;
 
 	eq_state();
 	opacity();
@@ -102,19 +101,35 @@ void star2d::init_metal_mix() {
 
 void star2d::init_comp() {
 	printf("star2d::init_comp! ");
-// Update the object comp
+	Y0 = 1. - (X0 + Z0);
 
-	comp=initial_composition(X0,Z0)*ones(nr,nth);
+	init_metal_mix();
+
+	// make a copy of m_metal_mix
+	double_map temp_chemical_mix = double_map(m_metal_mix);
+	// Note: A global chemical_mix (analog to metal_mix) would make no sense
+	// because H and He quantities can be different in different star's layers
+	// that's not the case (at the time with a static version of ESTER) of the metal mixture
+
+	temp_chemical_mix["H"] = X0;
+	// TODO: should the following be hardcoded?
+	temp_chemical_mix["He3"] = 3.15247417638132e-04 * Y0;
+	temp_chemical_mix["He4"] = Y0 - temp_chemical_mix["He3"];
+	// Note that the previous way of setting He3 He4 enforce He3+He4 = Y
+
+	// Init the object comp
+	comp = temp_chemical_mix*ones(nr,nth);
 
 	if(!conv) return;
 
-// Count the number of point in the core:
-    int n = 0;
-    for (int i=0; i<conv; i++) {
-        n += map.gl.npts[i];
-    }
-// and put some fraction Xc of X_envelope in the core 
-    comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
+	// Count the number of point in the core:
+	int n = 0;
+	for (int i=0; i<conv; i++) {
+		n += map.gl.npts[i];
+	}
+	// and put some fraction Xc of X_envelope in the core
+	temp_chemical_mix["H"] = Xc * X0;
+	comp.setblock(0, n-1, 0, -1, (temp_chemical_mix*ones(n,nth)));
 }
 
 // [END MOVE]

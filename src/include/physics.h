@@ -70,7 +70,5 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
 int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm);
 
-double_map initial_composition(double X,double Z);
-
 #endif
 
