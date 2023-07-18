@@ -36,7 +36,7 @@ int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa);
 int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos);
-int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
+int nuc_calc(const composition_map &, const matrix &T, const matrix &rho,
 		nuc_struct &nuc);
 int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm);

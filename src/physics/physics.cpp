@@ -48,15 +48,15 @@ int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
 
 }
 
-int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
+int nuc_calc(const composition_map &comp, const matrix &T, const matrix &rho,
 		nuc_struct &nuc) {
 
 	int error=0;
 
 	if(!strcmp(nuc.name,"simple")) {
-		error=nuc_simple(X,T,rho,nuc);
+		error = nuc_simple(comp, T, rho, nuc);
 	} else if(!strcmp(nuc.name,"cesam")) {
-		error=nuc_cesam(X,T,rho,nuc);
+		error = nuc_cesam(comp, T, rho, nuc);
     } else {
         ester_err("Unknown nuc. reac. type: %s",nuc.name);
     	return 1;
