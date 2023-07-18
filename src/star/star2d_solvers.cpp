@@ -102,6 +102,7 @@ void star2d::init_metal_mix() {
 void star2d::init_comp() {
 	printf("star2d::init_comp! ");
 	Y0 = 1. - (X0 + Z0);
+	m_He_isotopic_ratio = 3.15247417638132e-04;
 
 	init_metal_mix();
 
@@ -113,7 +114,7 @@ void star2d::init_comp() {
 
 	temp_chemical_mix["H"] = X0;
 	// TODO: should the following be hardcoded?
-	temp_chemical_mix["He3"] = 3.15247417638132e-04 * Y0;
+	temp_chemical_mix["He3"] = m_He_isotopic_ratio * Y0;
 	temp_chemical_mix["He4"] = Y0 - temp_chemical_mix["He3"];
 	// Note that the previous way of setting He3 He4 enforce He3+He4 = Y
 
