@@ -16,12 +16,25 @@ extern"C" {
 	} eeos_;
 }
 
+static double Z_OPAL = -1.;
+
 int eos_opal(const composition_map &chemical_comp, const matrix &T, const matrix &p,
 		matrix &rho, eos_struct &eos) {
-    
+
     matrix t6,p_mb;
     int N;
-    
+
+    if(Z_OPAL == -1.){
+        Z_OPAL = chemical_comp.Z()(0,0);
+        ester_warn(
+            "OPAL EOS doesn't support non-Z-Uniform stars (interpolation table computing is too long).\n"
+            "For **EOS ONLY** Z will be uniform.\n"
+            "Taking Z = Z(0,0) = %.6f",
+            Z_OPAL
+        );
+        zfs_interp_eos5_(&Z_OPAL);
+    }
+
     t6=T*1e-6;
     p_mb=p*1e-12;
 
@@ -40,15 +53,15 @@ int eos_opal(const composition_map &chemical_comp, const matrix &T, const matrix
     
     N=T.nrows()*T.ncols();
 
-	double Xi,Zi,t6i,p_mbi,rhoi;
+    double Xi, t6i, p_mbi, rhoi;
     for(int i = 0; i < N; i++) {
         Xi = chemical_comp.X()(i);
-        Zi = chemical_comp.Z()(i);
+
         t6i = t6(i);
         p_mbi = p_mb(i);
 
-        zfs_interp_eos5_(&Zi);
-        eos5_xtrin_(&Xi,&Zi,&t6i,&p_mbi,&rhoi);
+        // NOTE: Z_OPAL is used, not Z(i) see ester_warn above
+        eos5_xtrin_(&Xi,&Z_OPAL,&t6i,&p_mbi,&rhoi);
     	rho(i)=rhoi;
     	eos.s(i)=1e6*(*(eeos_.eos+2));
 		eos.G1(i)=*(eeos_.eos+7);
@@ -65,7 +78,7 @@ int eos_opal(const composition_map &chemical_comp, const matrix &T, const matrix
                     "  X = %e\n"
                     "  Z = %e\n"
                     "  T = %e\n"
-                    "  p = %e", Xi, Zi, t6i, p_mbi);
+                    "  p = %e", Xi, Z_OPAL, t6i, p_mbi);
         }
     }
     if(exist(rho==-9e99)) {
