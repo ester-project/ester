@@ -39,7 +39,6 @@ find_package(SWIG REQUIRED)
 find_package(PythonInterp REQUIRED)
 find_package(HDF5 REQUIRED COMPONENTS CXX)
 add_compile_definitions(USE_HDF5)
-set(EXT "h5")
 # find_package(VTK 6.3)
 
 if(NOT DEFINED CBLAS_LIBRARIES)
@@ -133,10 +132,6 @@ add_library(ester SHARED
 target_link_libraries(ester cesam freeeos opint
     ${OPTIONAL_LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${CBLAS_LIBRARIES} ${PYTHON_LIBRARIES} ${HDF5_LIBRARIES})
 
-add_custom_target(star_cfg ALL
-    COMMAND sed -e 's,[@]extension[@],${EXT},g' < ${CMAKE_SOURCE_DIR}/config/star.cfg.in  > star.cfg
-    )
-
 add_custom_target(ester_bin ALL
     COMMAND sed -e 's,[@]PYTHON[@],${PYTHON_EXECUTABLE},g' -e
     's,[@]prefix[@],${CMAKE_INSTALL_PREFIX},g' -e
@@ -147,7 +142,7 @@ install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/ester
     DESTINATION bin)
 
 install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/star.cfg
+    config/star.cfg
     config/1d_default.par
     config/2d_default.par
     DESTINATION share/ester/)
