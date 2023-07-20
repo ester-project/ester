@@ -185,14 +185,3 @@ target_link_libraries(ester_vtk ester)
 install(TARGETS ester polytrope1d star1d star2d star_evol version gen_output ester_info ester_vtk
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib)
-
-# set(CPACK_GENERATOR "TBZ2")
-# set(CPACK_SOURCE_GENERATOR "TBZ2")
-# set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
-# set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
-# set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
-#
-# set(CPACK_SOURCE_IGNORE_FILES
-#   "/.git/;${CPACK_SOURCE_IGNORE_FILES}")
-#
-# include(CPack)
