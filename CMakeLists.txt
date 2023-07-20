@@ -37,20 +37,13 @@ find_package(LAPACK REQUIRED)
 find_package(PythonLibs REQUIRED)
 find_package(SWIG REQUIRED)
 find_package(PythonInterp REQUIRED)
-find_package(HDF5 COMPONENTS CXX)
+find_package(HDF5 REQUIRED COMPONENTS CXX)
+add_compile_definitions(USE_HDF5)
+set(EXT "h5")
 # find_package(VTK 6.3)
 
 if(NOT DEFINED CBLAS_LIBRARIES)
     message(WARNING "CBLAS_LIBRARIES not specified in command line, trying to find it automatically (this may fail)")
-endif()
-
-if(HDF5_FOUND)
-    add_compile_definitions(USE_HDF5)
-    include_directories(${HDF5_INCLUDE_DIRS})
-    set(OPTIONAL_LIBS "${OPTIONAL_LIBS};${HDF5_LIBRARIES}")
-    set(EXT "h5")
-else()
-    set(EXT "bin")
 endif()
 
 if(VTK_FOUND)
@@ -68,6 +61,7 @@ add_subdirectory(python)
 include_directories(src/include)
 include_directories(src/graphics)
 include_directories(${PYTHON_INCLUDE_DIRS})
+include_directories(${HDF5_INCLUDE_DIRS})
 
 if(DEFINED PYTHON_NUMPY_INCLUDE_DIR)
     include_directories(${PYTHON_NUMPY_INCLUDE_DIR})
@@ -137,7 +131,7 @@ add_library(ester SHARED
     src/physics/xztrin21.F
     src/physics/ZFS_interp_EOS5.F)
 target_link_libraries(ester cesam freeeos opint
-    ${OPTIONAL_LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${CBLAS_LIBRARIES} ${PYTHON_LIBRARIES})
+    ${OPTIONAL_LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${CBLAS_LIBRARIES} ${PYTHON_LIBRARIES} ${HDF5_LIBRARIES})
 
 add_custom_target(star_cfg ALL
     COMMAND sed -e 's,[@]extension[@],${EXT},g' < ${CMAKE_SOURCE_DIR}/config/star.cfg.in  > star.cfg
