@@ -47,7 +47,7 @@ endif()
 if(HDF5_FOUND)
     add_compile_definitions(USE_HDF5)
     include_directories(${HDF5_INCLUDE_DIRS})
-    set(LIBS "${HDF5_LIBRARIES}")
+    set(OPTIONAL_LIBS "${OPTIONAL_LIBS};${HDF5_LIBRARIES}")
     set(EXT "h5")
 else()
     set(EXT "bin")
@@ -56,7 +56,7 @@ endif()
 if(VTK_FOUND)
     add_compile_definitions(USE_VTK)
     include(${VTK_USE_FILE})
-    set(LIBS "${LIBS};${VTK_LIBRARIES}")
+    set(OPTIONAL_LIBS "${OPTIONAL_LIBS};${VTK_LIBRARIES}")
 else()
     add_compile_definitions(ENABLE_PLT)
 endif()
@@ -68,7 +68,6 @@ add_subdirectory(python)
 include_directories(src/include)
 include_directories(src/graphics)
 include_directories(${PYTHON_INCLUDE_DIRS})
-set(LIBS "${LIBS};${PYTHON_LIBRARIES}")
 
 if(DEFINED PYTHON_NUMPY_INCLUDE_DIR)
     include_directories(${PYTHON_NUMPY_INCLUDE_DIR})
@@ -138,7 +137,7 @@ add_library(ester SHARED
     src/physics/xztrin21.F
     src/physics/ZFS_interp_EOS5.F)
 target_link_libraries(ester cesam freeeos opint
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${CBLAS_LIBRARIES})
+    ${OPTIONAL_LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${CBLAS_LIBRARIES} ${PYTHON_LIBRARIES})
 
 add_custom_target(star_cfg ALL
     COMMAND sed -e 's,[@]extension[@],${EXT},g' < ${CMAKE_SOURCE_DIR}/config/star.cfg.in  > star.cfg
