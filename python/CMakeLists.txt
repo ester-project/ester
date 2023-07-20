@@ -1,9 +1,6 @@
 add_definitions(-DWITH_CMAKE)
 add_definitions(-DENABLE_PLT)
-if(${HDF5_FOUND})
-    add_definitions(-DUSE_HDF5)
-    include_directories(${HDF5_INCLUDE_DIRS})
-endif()
+include_directories(${HDF5_INCLUDE_DIRS})
 
 add_custom_target(__init__.py ALL
     COMMAND sed -e 's,[@]PYTHON[@],${PYTHON_EXECUTABLE},g' ${CMAKE_SOURCE_DIR}/python/ester.in > __init__.py)

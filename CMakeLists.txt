@@ -38,7 +38,6 @@ find_package(PythonLibs REQUIRED)
 find_package(SWIG REQUIRED)
 find_package(PythonInterp REQUIRED)
 find_package(HDF5 REQUIRED COMPONENTS CXX)
-add_compile_definitions(USE_HDF5)
 # find_package(VTK 6.3)
 
 if(NOT DEFINED CBLAS_LIBRARIES)

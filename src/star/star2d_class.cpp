@@ -7,9 +7,7 @@
 
 #include <string.h>
 #include <cstdlib>
-#ifdef USE_HDF5
 #include <H5Cpp.h>
-#endif
 #include "matplotlib.h"
 
 matrix star2d::solve_phi() {
@@ -152,7 +150,6 @@ void star2d::copy(const star2d &A) {
 
 }
 
-#ifdef USE_HDF5
 template<typename T>
 void write_attr(H5::Group grp, const char *name, H5::DataType type,
         const T ptr, int n = 1) {
@@ -178,10 +175,8 @@ void write_field(H5::Group grp, const char *name, const matrix &field) {
             dataspace);
     dataset.write(field.data(), H5::PredType::IEEE_F64LE);
 }
-#endif
 
 void star2d::hdf5_write(const char *filename) const {
-#ifdef USE_HDF5
     H5::Exception::dontPrint();
 
     H5::H5File file(filename, H5F_ACC_TRUNC);
@@ -255,7 +250,6 @@ void star2d::hdf5_write(const char *filename) const {
     for (matrix_map::iterator it=fields.begin(); it!=fields.end(); ++it) {
         write_field(star, it->first.c_str(), it->second);
     }
-#endif
 }
 
 void star2d::write(const char *output_file, char mode) const {
@@ -313,7 +307,6 @@ void star2d::write(const char *output_file, char mode) const {
 
 }
 
-#ifdef USE_HDF5
 template<typename T>
 int read_attr(H5::Group grp, const char *name, T mem) {
     try {
@@ -344,10 +337,8 @@ int read_field(H5::Group grp, const char *name, matrix &field) {
     }
     return 0;
 }
-#endif
 
 int star2d::hdf5_read(const char *input_file, int dim) {
-#ifdef USE_HDF5
     H5::Exception::dontPrint();
 
     H5::H5File file;
@@ -529,9 +520,6 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     fill(); //no longer needed, MR le 21/5/2021
 
     return 0;
-#else
-    ester_err("Could not read from hdf5 file: HDF5 is not enabled");
-#endif
 }
 
 int star2d::read(const char *input_file, int dim) {
@@ -1100,10 +1088,6 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
     }
     else if(!strcmp(arg,"dump_iter")) {
         config.dump_iter = 1;
-#ifndef USE_HDF5
-        ester_warn("ESTER is not built with HDF5 support:\n%s",
-                "the -dump_iter option will be inefective");
-#endif
     }
     else if (!strcmp(arg, "init_poly")) {
         config.init_poly = true;
