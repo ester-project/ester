@@ -14,16 +14,13 @@ extern"C" {
 	extern struct{
 		double esact,eos[10];
 	} eeos_;
-	extern struct{
-		int itime;
-	} lreadco_;
 }
 
 int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos) {
     
     matrix t6,p_mb;
-    int i,N,error=0;
+    int N;
     
     static double Z_table=-99;
 
@@ -31,16 +28,10 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     p_mb=p*1e-12;
 
     if(Z!=Z_table) {
-    	lreadco_.itime=0;
     	zfs_interp_eos5_(&Z);
 	    Z_table=Z;
     }
     
-    if(error) {
-    	printf("Can't initialize OPAL EOS table\n");
-    	return error;
-    }
-
     rho.dim(T.nrows(),T.ncols());
     eos.s.dim(T.nrows(),T.ncols());
     eos.G1.dim(T.nrows(),T.ncols());
@@ -57,7 +48,7 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     N=T.nrows()*T.ncols();
 
 	double Xi,Zi,t6i,p_mbi,rhoi;
-    for(i=0;i<N;i++) {
+    for(int i = 0; i < N; i++) {
     	Xi=X(i);Zi=Z;t6i=t6(i);p_mbi=p_mb(i);
     	eos5_xtrin_(&Xi,&Zi,&t6i,&p_mbi,&rhoi);
     	rho(i)=rhoi;
