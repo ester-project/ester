@@ -186,7 +186,6 @@ class star1d : public star2d {
         star1d &operator=(const star1d &);
         virtual int init(const char *input_file, const char *param_file, int argc, char *argv[]);
         virtual int check_arg(char *arg, char *val, int *change_grid);
-        virtual int read_old(const char *input_file);
         virtual int read(const char *input_file, int dim = 1);
 
         virtual void dump_info();
