@@ -35,10 +35,12 @@ void star2d::eq_state() {
 	int error;
 
 	matrix rhoc_m(1,1);
-	eos_calc(comp.X()(0,0)*ones(1,1),Z0,ones(1,1)*Tc,ones(1,1)*pc,rhoc_m,eos);
-	rhoc=rhoc_m(0);
+	// TODO: is the following really usefull???
+	// couldn't we just get rhoc from rho(0) ??? instead of this weird call only computing central value
+	eos_calc(comp(0,0)*ones(1,1), Tc*ones(1,1), pc*ones(1,1), rhoc_m, eos);
+	rhoc = rhoc_m(0);
 
-	error=eos_calc(comp.X(),Z0,T*Tc,p*pc,rho,eos);
+	error = eos_calc(comp, T*Tc, p*pc, rho, eos);
 
 
 //	rhoc=rho(0);
@@ -61,7 +63,7 @@ void star2d::atmosphere() {
 	}
 
 
-	error=atm_calc(comp.X(),Z0,gsup(),Teff(),eos.name,opa.name,atm);
+	error = atm_calc(comp, gsup(), Teff(), eos.name, opa.name, atm);
 
 	if(error) exit(1);
 

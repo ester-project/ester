@@ -16,22 +16,15 @@ extern"C" {
 	} eeos_;
 }
 
-int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
-		matrix &rho,eos_struct &eos) {
+int eos_opal(const composition_map &chemical_comp, const matrix &T, const matrix &p,
+		matrix &rho, eos_struct &eos) {
     
     matrix t6,p_mb;
     int N;
     
-    static double Z_table=-99;
-
     t6=T*1e-6;
     p_mb=p*1e-12;
 
-    if(Z!=Z_table) {
-    	zfs_interp_eos5_(&Z);
-	    Z_table=Z;
-    }
-    
     rho.dim(T.nrows(),T.ncols());
     eos.s.dim(T.nrows(),T.ncols());
     eos.G1.dim(T.nrows(),T.ncols());
@@ -49,8 +42,13 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
 
 	double Xi,Zi,t6i,p_mbi,rhoi;
     for(int i = 0; i < N; i++) {
-    	Xi=X(i);Zi=Z;t6i=t6(i);p_mbi=p_mb(i);
-    	eos5_xtrin_(&Xi,&Zi,&t6i,&p_mbi,&rhoi);
+        Xi = chemical_comp.X()(i);
+        Zi = chemical_comp.Z()(i);
+        t6i = t6(i);
+        p_mbi = p_mb(i);
+
+        zfs_interp_eos5_(&Zi);
+        eos5_xtrin_(&Xi,&Zi,&t6i,&p_mbi,&rhoi);
     	rho(i)=rhoi;
     	eos.s(i)=1e6*(*(eeos_.eos+2));
 		eos.G1(i)=*(eeos_.eos+7);

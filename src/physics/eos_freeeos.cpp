@@ -47,7 +47,7 @@ void set_eps(double* eps, const double_map &local_chemical_mix) {
         eps[19] = local_chemical_mix["Ni"] / 58.693; // Ni //there are too many isotops
 }
 
-int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
+int eos_freeeos(const composition_map &chemical_comp, const matrix &T, const matrix &p,
         matrix &rho, eos_struct &eos) {
 
     double t;
@@ -127,12 +127,13 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
                 &iteration_count);
         rho(i) = rhoi;
         if (iteration_count < 0) {
+            // TODO: this makes no sense freeEOS has no tables...
             ester_err(
                     "Values outside freeEOS eos table:\n"
                     "  X = %e\n"
                     "  Z = %e\n"
                     "  T = %e\n"
-                    "  p = %e", X(i), Z, t, p(i));
+                    "  p = %e", chemical_comp.X()(i), chemical_comp.Z()(i), t, p(i));
         }
         eos.s(i) = entropy[0];
         eos.G1(i) = gamma1;

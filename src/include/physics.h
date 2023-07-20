@@ -34,12 +34,12 @@ public:
 
 int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa);
-int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
-		matrix &rho,eos_struct &eos);
+int eos_calc(const composition_map &, const matrix &T, const matrix &p,
+		matrix &rho, eos_struct &eos);
 int nuc_calc(const composition_map &, const matrix &T, const matrix &rho,
 		nuc_struct &nuc);
-int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
-		const char *eos_name,const char *opa_name,atm_struct &atm);
+int atm_calc(const composition_map &, const matrix &g, const matrix &Teff,
+		const char *eos_name, const char *opa_name, atm_struct &atm);
 
 int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa);
@@ -58,17 +58,17 @@ int nuc_cesam(const composition_map &comp,const matrix &T,const matrix &rho,
 int nuc_cesam_dcomp(composition_map &comp,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);
 
-int eos_ideal(const matrix &X,double Z,const matrix &T,const matrix &p,
-		matrix &rho,eos_struct &eos);
-int eos_idealrad(const matrix &X,double Z,const matrix &T,const matrix &p,
-		matrix &rho,eos_struct &eos);
-int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
-		matrix &rho,eos_struct &eos);
-int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
+int eos_ideal(const composition_map &, const matrix &T, const matrix &p,
+		matrix &rho, eos_struct &eos);
+int eos_idealrad(const composition_map &, const matrix &T, const matrix &p,
+		matrix &rho, eos_struct &eos);
+int eos_opal(const composition_map &, const matrix &T, const matrix &p,
+		matrix &rho, eos_struct &eos);
+int eos_freeeos(const composition_map &, const matrix &T, const matrix &p,
 		matrix &rho, eos_struct &eos);
 
-int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
-		const char *eos_name,const char *opa_name,atm_struct &atm);
+int atm_onelayer(const composition_map &, const matrix &g, const matrix &Teff,
+		const char *eos_name, const char *opa_name, atm_struct &atm);
 
 #endif
 
