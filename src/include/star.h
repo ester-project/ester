@@ -91,8 +91,9 @@ class star2d {
         virtual int init(const char *input_file, const char *param_file, int argc, char *argv[]);
         virtual int check_arg(char *arg, char *val, int *change_grid);
         virtual int read(const char *input_file, int dim = 2);
-        virtual int read_old(const char *input_file);
+        int hdf5_read(const char *input_file, int dim);
         virtual void write(const char *output_file, char output_mode='b') const;
+        void hdf5_write(const char *filename) const;
         virtual void interp(remapper *red);
 
         virtual void dump_info();
@@ -165,9 +166,6 @@ class star2d {
         // void kconv_common(matrix &kc, matrix &Ja, matrix &Jb, symbolic &S, sym &a_, sym &b_) const;
 
         virtual void check_jacobian(solver *op, const char *eqn);
-
-        void hdf5_write(const char *filename) const;
-        int hdf5_read(const char *input_file, int dim);
 
         matrix solve_phi(); // used to calculate initial solution for phi based on rho
 
