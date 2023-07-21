@@ -18,7 +18,7 @@ Other valid parameters are:
 
    -o outfile : The default is outfile=input_file
 
-and other parameters inherited from ester 2d (-output_mode, -verbose, ...).
+and other parameters inherited from ester 2d (-verbose, ...).
 However, it is not possible to change model parameters with ester evol (as mass,
 resolution, etc.).
 The output is a series of files output_XXXX, where XXXX is an index number,

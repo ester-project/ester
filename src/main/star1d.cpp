@@ -130,7 +130,7 @@ int main(int argc,char *argv[]) {
         if(A.conv) printf("r_cz=%3.3f Rsun\n",*(A.map.gl.xif+A.conv)*A.R/R_SUN);
     }
     delete op;
-    A.write(config.output_file,config.output_mode);
+    A.write(config.output_file);
 
     // if(config.verbose) {
     //     delete fig;

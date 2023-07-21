@@ -252,7 +252,7 @@ void star2d::hdf5_write(const char *filename) const {
     }
 }
 
-void star2d::write(const char *output_file, char mode) const {
+void star2d::write(const char *output_file) const {
     if (isHDF5Name(output_file)) {
         hdf5_write(output_file);
         return;

@@ -116,7 +116,7 @@ int main(int argc,char *argv[]) {
 
                 free(filename);
                 printf("Writing %s\n", outfile);
-		A.write(outfile, config.output_mode);
+		A.write(outfile);
 		Xc-=dXc;
 		n++;
 	}

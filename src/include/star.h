@@ -91,7 +91,7 @@ class star2d {
         virtual int check_arg(char *arg, char *val, int *change_grid);
         virtual int read(const char *input_file, int dim = 2);
         int hdf5_read(const char *input_file, int dim);
-        virtual void write(const char *output_file, char output_mode='b') const;
+        virtual void write(const char *output_file) const;
         void hdf5_write(const char *filename) const;
         virtual void interp(remapper *red);
 
