@@ -22,7 +22,6 @@ configuration::configuration(int argc,char *argv[]) {
 	strcpy(output_file,"star.out");
 	*input_file=0;
 	*param_file=0;
-	output_mode='b';
 	minit=1;
 	maxit=200;
 	tol=1e-8;
@@ -90,16 +89,6 @@ int configuration::check_arg(const char *arg,const char *val) {
 	else if(!strcmp(arg,"p")||!strcmp(arg,"param_file")) {
 		if(val==NULL) return 2;
 		strcpy(param_file,val);
-	}
-	else if(!strcmp(arg,"ascii"))
-		output_mode='t';
-	else if(!strcmp(arg,"binary"))
-		output_mode='b';
-	else if(!strcmp(arg,"output_mode")) {
-		if(val==NULL) return 2;
-		if(val[0]!='b'&&val[0]!='t')
-			printf("Ignoring unknown output_mode %s\n",val);
-		else output_mode=val[0];
 	}
 	else if(!strcmp(arg,"plot_interval")) {
 		if(val==NULL) return 2;

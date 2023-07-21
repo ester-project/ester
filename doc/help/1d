@@ -10,10 +10,6 @@ VALID OPTIONS:
     -i [-input_file] FILE  : Use model in FILE as the starting point for 
                              the calculation  
     -o [-output_file] FILE : Save output in FILE
-    -output_mode ARG       : Type of the output file. Use b for binary
-                             and t for text output
-    -ascii                 : Same as -output_mode t
-    -binary                : Same as -output_mode b
     -verbose ARG [-vARG]   : Verbosity level from 0 (quiet) to 4 
     -maxit VALUE           : Maximum number of iterations
     -minit VALUE           : Minimum number of iterations

@@ -29,7 +29,6 @@ class star2d {
         virtual void copy(const star2d &);
         void init1d(const star1d &A, int npts_th, int npts_ex);
         virtual bool check_tag(const char *tag) const;
-        virtual void write_tag(OUTFILE *fp) const;
     public:
         mapping map;
         const int &nr, &nth, &nex, &ndomains;
@@ -91,8 +90,9 @@ class star2d {
         virtual int init(const char *input_file, const char *param_file, int argc, char *argv[]);
         virtual int check_arg(char *arg, char *val, int *change_grid);
         virtual int read(const char *input_file, int dim = 2);
-        virtual int read_old(const char *input_file);
-        virtual void write(const char *output_file, char output_mode='b') const;
+        int hdf5_read(const char *input_file, int dim);
+        virtual void write(const char *output_file) const;
+        void hdf5_write(const char *filename) const;
         virtual void interp(remapper *red);
 
         virtual void dump_info();
@@ -166,9 +166,6 @@ class star2d {
 
         virtual void check_jacobian(solver *op, const char *eqn);
 
-        void hdf5_write(const char *filename) const;
-        int hdf5_read(const char *input_file, int dim);
-
         matrix solve_phi(); // used to calculate initial solution for phi based on rho
 
         virtual void plot(const matrix_map&);
@@ -177,7 +174,6 @@ class star2d {
 class star1d : public star2d {
     protected:
         virtual bool check_tag(const char *tag) const;
-        virtual void write_tag(OUTFILE *fp) const;
     public:
         // star1d_class.cpp
         star1d();
@@ -186,7 +182,6 @@ class star1d : public star2d {
         star1d &operator=(const star1d &);
         virtual int init(const char *input_file, const char *param_file, int argc, char *argv[]);
         virtual int check_arg(char *arg, char *val, int *change_grid);
-        virtual int read_old(const char *input_file);
         virtual int read(const char *input_file, int dim = 1);
 
         virtual void dump_info();

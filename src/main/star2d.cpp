@@ -146,7 +146,7 @@ int main(int argc,char *argv[]) {
         printf("\n");
 	}
 
-	A.write(config.output_file,config.output_mode);
+	A.write(config.output_file);
 
 	// if(config.verbose) {
 	// 	delete fig;

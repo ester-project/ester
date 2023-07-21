@@ -12,7 +12,6 @@ public:
 	char input_file[256];
 	char param_file[256];
 	char output_file[256];
-	char output_mode;
 	configuration(int argc,char *argv[]);
 	~configuration(){};
 	void missing_argument(const char *arg);
