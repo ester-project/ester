@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.14)
 project(ester VERSION 1.2.0 LANGUAGES C CXX Fortran)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
@@ -8,11 +8,6 @@ endif()
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-if(CMAKE_VERSION VERSION_GREATER "3.12")
-    cmake_policy(VERSION 3.12)
-    cmake_policy(SET CMP0074 NEW)
-endif()
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/modules)
 
@@ -36,7 +31,7 @@ set(CMAKE_CXX_FLAGS "-g")
 find_package(BLAS REQUIRED)
 if(BLAS_LIBRARIES MATCHES "mkl")
     message(STATUS "Using mkl BLAS implementation")
-    add_definitions(-DUSE_MKL)
+    add_compile_definitions(USE_MKL)
 endif()
 find_package(LAPACK REQUIRED)
 find_package(PythonLibs REQUIRED)
@@ -45,21 +40,25 @@ find_package(PythonInterp REQUIRED)
 find_package(HDF5 COMPONENTS CXX)
 # find_package(VTK 6.3)
 
+if(NOT DEFINED CBLAS_LIBRARIES)
+    message(WARNING "CBLAS_LIBRARIES not specified in command line, trying to find it automatically (this may fail)")
+endif()
+
 if(HDF5_FOUND)
-    add_definitions(-DUSE_HDF5)
+    add_compile_definitions(USE_HDF5)
     include_directories(${HDF5_INCLUDE_DIRS})
-    set(LIBS "${HDF5_LIBRARIES}")
+    set(OPTIONAL_LIBS "${OPTIONAL_LIBS};${HDF5_LIBRARIES}")
     set(EXT "h5")
 else()
     set(EXT "bin")
 endif()
 
 if(VTK_FOUND)
-    add_definitions(-DUSE_VTK)
+    add_compile_definitions(USE_VTK)
     include(${VTK_USE_FILE})
-    set(LIBS "${LIBS};${VTK_LIBRARIES}")
+    set(OPTIONAL_LIBS "${OPTIONAL_LIBS};${VTK_LIBRARIES}")
 else()
-    add_definitions(-DENABLE_PLT)
+    add_compile_definitions(ENABLE_PLT)
 endif()
 
 
@@ -69,12 +68,17 @@ add_subdirectory(python)
 include_directories(src/include)
 include_directories(src/graphics)
 include_directories(${PYTHON_INCLUDE_DIRS})
-set(LIBS "${LIBS};${PYTHON_LIBRARIES}")
 
-add_definitions(-DWITH_CMAKE)
-add_definitions(-DVERSION="${PROJECT_VERSION}")
-add_definitions(-DESTER_DATADIR="${CMAKE_INSTALL_PREFIX}/share")
-add_definitions(-DPACKAGE_VERSION="${PROJECT_VERSION}")
+if(DEFINED PYTHON_NUMPY_INCLUDE_DIR)
+    include_directories(${PYTHON_NUMPY_INCLUDE_DIR})
+else()
+    message(WARNING "PYTHON_NUMPY_INCLUDE_DIR not set, this may fail if numpy has been installed locally, using pip for example")
+endif()
+
+add_compile_definitions(WITH_CMAKE)
+add_compile_definitions(VERSION="${PROJECT_VERSION}")
+add_compile_definitions(ESTER_DATADIR="${CMAKE_INSTALL_PREFIX}/share")
+add_compile_definitions(PACKAGE_VERSION="${PROJECT_VERSION}")
 
 add_library(ester SHARED
     src/global/global.cpp
@@ -133,7 +137,7 @@ add_library(ester SHARED
     src/physics/xztrin21.F
     src/physics/ZFS_interp_EOS5.F)
 target_link_libraries(ester cesam freeeos opint
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+    ${OPTIONAL_LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${CBLAS_LIBRARIES} ${PYTHON_LIBRARIES})
 
 add_custom_target(star_cfg ALL
     COMMAND sed -e 's,[@]extension[@],${EXT},g' < ${CMAKE_SOURCE_DIR}/config/star.cfg.in  > star.cfg
@@ -145,9 +149,8 @@ add_custom_target(ester_bin ALL
     's,[@]datadir[@],${CMAKE_INSTALL_PREFIX}/share/ester,g' <
     ${CMAKE_SOURCE_DIR}/src/main/ester.in > ester)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ester
-    DESTINATION bin
-    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE)
+install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/ester
+    DESTINATION bin)
 
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/star.cfg
@@ -156,48 +159,29 @@ install(FILES
     DESTINATION share/ester/)
 
 add_executable(polytrope1d src/main/polytrope1d.cpp)
-target_link_libraries(polytrope1d ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(polytrope1d ester)
 
 add_executable(star1d src/main/star1d.cpp)
-target_link_libraries(star1d ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(star1d ester)
 
 add_executable(star2d src/main/star2d.cpp)
-target_link_libraries(star2d ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(star2d ester)
 
 add_executable(star_evol src/main/star_evol.cpp)
-target_link_libraries(star_evol ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(star_evol ester)
 
 add_executable(version src/main/version.cpp)
-target_link_libraries(version ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(version ester)
 
 add_executable(gen_output src/main/gen_output.cpp)
-target_link_libraries(gen_output ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(gen_output ester)
 
 add_executable(ester_info src/main/ester-info.cpp)
-target_link_libraries(ester_info ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(ester_info ester)
 
 add_executable(ester_vtk src/main/vtk.cpp)
-target_link_libraries(ester_vtk ester
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(ester_vtk ester)
 
 install(TARGETS ester polytrope1d star1d star2d star_evol version gen_output ester_info ester_vtk
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib)
-
-# set(CPACK_GENERATOR "TBZ2")
-# set(CPACK_SOURCE_GENERATOR "TBZ2")
-# set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
-# set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
-# set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
-#
-# set(CPACK_SOURCE_IGNORE_FILES
-#   "/.git/;${CPACK_SOURCE_IGNORE_FILES}")
-#
-# include(CPack)
