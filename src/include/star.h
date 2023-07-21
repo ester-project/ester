@@ -29,7 +29,6 @@ class star2d {
         virtual void copy(const star2d &);
         void init1d(const star1d &A, int npts_th, int npts_ex);
         virtual bool check_tag(const char *tag) const;
-        virtual void write_tag(OUTFILE *fp) const;
     public:
         mapping map;
         const int &nr, &nth, &nex, &ndomains;
@@ -175,7 +174,6 @@ class star2d {
 class star1d : public star2d {
     protected:
         virtual bool check_tag(const char *tag) const;
-        virtual void write_tag(OUTFILE *fp) const;
     public:
         // star1d_class.cpp
         star1d();

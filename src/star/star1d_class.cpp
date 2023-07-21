@@ -24,12 +24,6 @@ star1d &star1d::operator=(const star1d &A) {
 
 }
 
-void star1d::write_tag(OUTFILE *fp) const {
-    char tag[7]="star1d";
-
-    fp->write("tag", tag, 7);
-}
-
 bool star1d::check_tag(const char *tag) const {
     if(strcmp(tag, "star1d")) return false;
     return true;

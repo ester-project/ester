@@ -483,12 +483,6 @@ int star2d::read(const char *input_file, int dim) {
     ester_err("The input file %s is not HDF5 format.", input_file);
 }
 
-void star2d::write_tag(OUTFILE *fp) const {
-    char tag[7]="star2d";
-
-    fp->write("tag",tag,7);
-}
-
 bool star2d::check_tag(const char *tag) const {
     if(strcmp(tag,"star2d")) return false;
     return true;
