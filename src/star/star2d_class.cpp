@@ -7,9 +7,7 @@
 
 #include <string.h>
 #include <cstdlib>
-#ifdef USE_HDF5
 #include <H5Cpp.h>
-#endif
 #include "matplotlib.h"
 
 matrix star2d::solve_phi() {
@@ -152,7 +150,6 @@ void star2d::copy(const star2d &A) {
 
 }
 
-#ifdef USE_HDF5
 template<typename T>
 void write_attr(H5::Group grp, const char *name, H5::DataType type,
         const T ptr, int n = 1) {
@@ -178,10 +175,8 @@ void write_field(H5::Group grp, const char *name, const matrix &field) {
             dataspace);
     dataset.write(field.data(), H5::PredType::IEEE_F64LE);
 }
-#endif
 
 void star2d::hdf5_write(const char *filename) const {
-#ifdef USE_HDF5
     H5::Exception::dontPrint();
 
     H5::H5File file(filename, H5F_ACC_TRUNC);
@@ -255,65 +250,16 @@ void star2d::hdf5_write(const char *filename) const {
     for (matrix_map::iterator it=fields.begin(); it!=fields.end(); ++it) {
         write_field(star, it->first.c_str(), it->second);
     }
-#endif
 }
 
-void star2d::write(const char *output_file, char mode) const {
-    OUTFILE fp;
-
+void star2d::write(const char *output_file) const {
     if (isHDF5Name(output_file)) {
         hdf5_write(output_file);
         return;
     }
-
-    fp.open(output_file,mode);
-    write_tag(&fp);
-
-    fp.write("ndomains",&ndomains);
-    fp.write("npts",map.gl.npts,ndomains);
-    fp.write("xif",map.gl.xif,ndomains+1);
-    fp.write("nth",&map.leg.npts,1);
-    fp.write("nex",map.ex.gl.npts,1);
-    fp.write("M",&M);
-    fp.write("R",&R);
-    fp.write("X0",&X0);
-    fp.write("Z0",&Z0);
-    fp.write("Xc",&Xc);
-    fp.write("conv",&conv);
-    fp.write("domain_type",&domain_type[0],ndomains);
-    fp.write("surff",&surff);
-    fp.write("Tc",&Tc);
-    fp.write("pc",&pc);
-    fp.write("opa.name",opa.name,strlen(opa.name)+1);
-    fp.write("eos.name",eos.name,strlen(eos.name)+1);
-    fp.write("nuc.name",nuc.name,strlen(nuc.name)+1);
-    fp.write("atm.name",atm.name,strlen(atm.name)+1);
-    fp.write("Omega",&Omega);
-    fp.write("Omega_bk",&Omega_bk);
-    fp.write("Ekman",&Ekman);
-    fp.write("core_convec",&core_convec);
-    fp.write("env_convec",&env_convec);
-    fp.write("min_core_size",&min_core_size);
-    fp.write("stratified_comp",&stratified_comp);
-    fp.write("version.major",&version.major);
-    fp.write("version.minor",&version.minor);
-    fp.write("version.rev",&version.rev);
-    fp.write("version.svn",&version.svn);
-
-    fp.write("phi",&phi);
-    fp.write("p",&p);
-    fp.write("T",&T);
-    fp.write("phiex",&phiex);
-    fp.write("map.R",&map.R);
-    fp.write("w",&w);
-    fp.write("G",&G);
-    fp.write("comp",(matrix_map *)&comp);
-
-    fp.close();
-
+    ester_err("The output file %s is not HDF5 format.", output_file);
 }
 
-#ifdef USE_HDF5
 template<typename T>
 int read_attr(H5::Group grp, const char *name, T mem) {
     try {
@@ -344,10 +290,8 @@ int read_field(H5::Group grp, const char *name, matrix &field) {
     }
     return 0;
 }
-#endif
 
 int star2d::hdf5_read(const char *input_file, int dim) {
-#ifdef USE_HDF5
     H5::Exception::dontPrint();
 
     H5::H5File file;
@@ -529,283 +473,20 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     fill(); //no longer needed, MR le 21/5/2021
 
     return 0;
-#else
-    ester_err("Could not read from hdf5 file: HDF5 is not enabled");
-#endif
 }
 
 int star2d::read(const char *input_file, int dim) {
-    char tag[32];
-    int ndom;
-    INFILE fp;
-
     // if input file ends with '.hdf5': read in hdf5 format
     if (isHDF5Name(input_file)) {
         return hdf5_read(input_file, dim);
     }
-
-    if(!fp.open(input_file,'b')) {
-        if(!fp.open(input_file,'t')) {
-            return read_old(input_file);
-        }
-    }
-
-    tag[0]='\0';
-    if(fp.len("tag")<=16) fp.read("tag",tag);
-
-    tag[16]='\0';
-    if(!check_tag(tag)) {
-        fp.close();
-        return 1;
-    }
-
-    if(fp.read("version.major",&version.major)) {
-        char ver[32];
-        if(fp.read("version",ver)) {
-            version.major=1;
-            version.minor=0;
-            version.rev=70;
-            if(!strcmp(ver,"1.0.0")) version.svn=0;
-            else version.svn=1;
-        } else {
-            version.major=0;
-            version.minor=0;
-            version.rev=0;
-            version.svn=1;
-        }
-    } else {
-        fp.read("version.minor",&version.minor);
-        fp.read("version.rev",&version.rev);
-        fp.read("version.svn",&version.svn);
-    }
-    char *buf = NULL;
-    if (version.svn) {
-        if (asprintf(&buf, "%d.%d rev %d",
-                    version.major,
-                    version.minor,
-                    version.rev) == -1) {
-            ester_err("out of memory");
-        }
-    }
-    else {
-        if (asprintf(&buf, "%d.%d.%d",
-                    version.major,
-                    version.minor,
-                    version.rev) == -1) {
-            ester_err("out of memory");
-        }
-    }
-    version.name = std::string(buf);
-    free(buf);
-    fp.read("ndomains",&ndom);
-    map.gl.set_ndomains(ndom);
-    fp.read("npts",map.gl.npts);
-    fp.read("xif",map.gl.xif);
-    if(fp.read("nth",&map.leg.npts)) map.leg.npts=1;
-    fp.read("nex",map.ex.gl.npts);
-    fp.read("M",&M);
-    fp.read("R",&R);
-    if(fp.read("X0",&X0)) fp.read("X",&X0);
-    if(fp.read("Z0",&Z0)) fp.read("Z",&Z0);
-    fp.read("Xc",&Xc);
-    fp.read("conv",&conv);
-    domain_type.resize(ndomains);
-    if(fp.read("domain_type",&domain_type[0])) {
-        for(int n=0;n<ndomains;n++) {
-            if(n<conv) domain_type[n]=CORE;
-            else domain_type[n]=RADIATIVE;
-        }
-    }
-    fp.read("surff",&surff);
-    fp.read("Tc",&Tc);
-    fp.read("pc",&pc);
-    fp.read("opa.name",opa.name);
-    fp.read("eos.name",eos.name);
-    fp.read("nuc.name",nuc.name);
-    if(fp.read("atm.name",atm.name)) strcpy(atm.name,"simple");
-    if(fp.read("Omega",&Omega)) Omega=0;
-    if(fp.read("Omega_bk",&Omega_bk)) Omega_bk=0;
-    if(fp.read("Ekman",&Ekman)) Ekman=0;
-    if(fp.read("core_convec",&core_convec)) core_convec=1;
-    if(fp.read("env_convec",&env_convec)) env_convec=0;
-    if(fp.read("min_core_size",&min_core_size)) min_core_size=0.03;
-    if(fp.read("stratified_comp",&stratified_comp)) stratified_comp = 0;
-
-    map.init();
-
-    fp.read("phi",&phi);
-    fp.read("p",&p);
-    fp.read("T",&T);
-    if(fp.read("phiex",&phiex)) phiex=zeros(nex,nth);
-    fp.read("map.R",&map.R);
-    if(map.R.nrows()<map.ndomains+1) {
-        map.R=zeros(1,nth).concatenate(map.R);
-    }
-    map.remap();
-    if(fp.read("w",&w)) {
-        w=zeros(nr,nth);
-        ester_warn("cannot read w,set to 0\n");
-    }
-    if(fp.read("G",&G)) G=zeros(nr,nth);
-    if(fp.read("comp",(matrix_map *)&comp)) init_comp();
-
-    fp.close();
-    fill();
-
-    return 0;
-}
-
-void star2d::write_tag(OUTFILE *fp) const {
-    char tag[7]="star2d";
-
-    fp->write("tag",tag,7);
-
+    ester_err("The input file %s is not HDF5 format.", input_file);
 }
 
 bool star2d::check_tag(const char *tag) const {
     if(strcmp(tag,"star2d")) return false;
     return true;
 
-}
-
-int star2d::read_old(const char *input_file){
-    FILE *fp;
-    char tag[7],mode,*c;
-    int ndom;
-
-    if(!(fp=fopen(input_file,"rb"))) {
-        return 0;
-    }
-    if (fread(tag,1,7,fp) != 7)
-        ester_warn("read failed");
-    tag[6]='\0';
-    if(strcmp(tag,"star2d")) {
-        return 0;
-    }
-    if (fread(&mode,1,1,fp) != 1)
-        ester_warn("read failed");
-    fclose(fp);
-
-    if(mode=='b')
-        fp=fopen(input_file,"rb");
-    else
-        fp=fopen(input_file,"rt");
-
-    if (fread(tag,1,7,fp) != 7)
-        ester_warn("read failed");
-    if (fread(&mode,1,1,fp) != 1)
-        ester_warn("read failed");
-
-    if(mode=='b') {
-        if (fread(&ndom,sizeof(int),1,fp) != 1) ester_warn("read failed");
-        map.gl.set_ndomains(ndom);
-        if (fread(map.gl.npts,sizeof(int),ndom,fp) != (size_t) ndom)
-            ester_warn("read failed");
-        if (fread(map.gl.xif,sizeof(double),ndom+1,fp) != (size_t) ndom+1)
-            ester_warn("read failed");
-        if (fread(map.ex.gl.npts,sizeof(int),1,fp) != 1)
-            ester_warn("read failed");
-        if (fread(&map.leg.npts,sizeof(int),1,fp) != 1)
-            ester_warn("read failed");
-        if (fread(&M,sizeof(double),1,fp) != 1)
-            ester_warn("read failed");
-        if (fread(&R,sizeof(double),1,fp) != 1)
-            ester_warn("read failed");
-        if (fread(&X0,sizeof(double),1,fp) != 1)
-            ester_warn("read failed");
-        if (fread(&Z0,sizeof(double),1,fp) != 1)
-            ester_warn("read failed");
-        if (fread(&Xc,sizeof(double),1,fp) != 1)
-            ester_warn("read failed");
-        if (fread(&conv,sizeof(int),1,fp) != 1)
-            ester_warn("read failed");
-        if (fread(&surff,sizeof(double),1,fp) != 1)
-            ester_warn("read failed");
-        if (fread(&Omega,sizeof(double),1,fp) != 1)
-            ester_warn("read failed");
-        if (fread(&Omega_bk,sizeof(double),1,fp) != 1)
-            ester_warn("read failed");
-        if (fread(&Tc,sizeof(double),1,fp) != 1)
-            ester_warn("read failed");
-        if (fread(&pc,sizeof(double),1,fp) != 1)
-            ester_warn("read failed");
-        c=opa.name;
-        *c=fgetc(fp);
-        while(*(c++)!='\0') *c=fgetc(fp);
-        c=eos.name;
-        *c=fgetc(fp);
-        while(*(c++)!='\0') *c=fgetc(fp);
-        c=nuc.name;
-        *c=fgetc(fp);
-        while(*(c++)!='\0') *c=fgetc(fp);
-        c=atm.name;
-        *c=fgetc(fp);
-        while(*(c++)!='\0') *c=fgetc(fp);
-    } else {
-        int i;
-        if (fscanf(fp,"\n%d ",&ndom) != 1)
-            ester_warn("read failed");
-        map.gl.set_ndomains(ndom);
-        for(i=0;i<ndom;i++)
-            if (fscanf(fp,"%d ",(map.gl.npts+i)) != 1)
-                ester_warn("read failed");
-        for(i=0;i<ndom+1;i++)
-            if (fscanf(fp,"%le ",(map.gl.xif+i)) != 1)
-                ester_warn("read failed");
-        if (fscanf(fp,"%d %d",map.ex.gl.npts,&map.leg.npts) != 2)
-            ester_warn("read failed");
-        if (fscanf(fp,"\n%le %le %le %le\n",&M,&R,&X0,&Z0) != 4)
-            ester_warn("read failed");
-        if (fscanf(fp,"%le %d %le\n",&Xc,&conv,&surff) != 3)
-            ester_warn("read failed");
-        if (fscanf(fp,"%le %le\n",&Omega,&Omega_bk) != 2)
-            ester_warn("read failed");
-        if (fscanf(fp,"%le %le\n",&Tc,&pc) != 2)
-            ester_warn("read failed");
-        if (fscanf(fp,"%s\n",opa.name) != 1)
-            ester_warn("read failed");
-        if (fscanf(fp,"%s\n",eos.name) != 1)
-            ester_warn("read failed");
-        if (fscanf(fp,"%s\n",nuc.name) != 1)
-            ester_warn("read failed");
-        if (fscanf(fp,"%s\n",atm.name) != 1)
-            ester_warn("read failed");
-    }
-    map.init();
-    map.R.read(ndomains,nth,fp,mode);
-    map.R=zeros(1,nth).concatenate(map.R);
-    map.remap();
-    phi.read(nr,nth,fp,mode);
-    phiex.read(nex,nth,fp,mode);
-    p.read(nr,nth,fp,mode);
-    T.read(nr,nth,fp,mode);
-    w.read(nr,nth,fp,mode);
-    G.read(nr,nth,fp,mode);
-    matrix psi;
-    psi.read(nr,nth,fp,mode);
-    if(mode=='b') {
-        if (fread(&Ekman,sizeof(double),1,fp) != 1)
-            ester_warn("read failed");
-    } else {
-        if (fscanf(fp,"%le\n",&Ekman) != 1)
-            ester_warn("read failed");
-    }
-    core_convec=1;
-    env_convec=1;
-    min_core_size=0.03;
-    version.major=0;
-    version.minor=0;
-    version.rev=0;
-    version.svn=1;
-    domain_type.resize(ndomains);
-    for(int n=0;n<ndomains;n++) {
-        if(n<conv) domain_type[n]=CORE;
-        else domain_type[n]=RADIATIVE;
-    }
-    init_comp();
-    fclose(fp);
-    fill();
-    return 0;
 }
 
 int star2d::init(const char *input_file,const char *param_file,int argc,char *argv[]) {
@@ -1100,10 +781,6 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
     }
     else if(!strcmp(arg,"dump_iter")) {
         config.dump_iter = 1;
-#ifndef USE_HDF5
-        ester_warn("ESTER is not built with HDF5 support:\n%s",
-                "the -dump_iter option will be inefective");
-#endif
     }
     else if (!strcmp(arg, "init_poly")) {
         config.init_poly = true;

@@ -15,4 +15,4 @@ def om_k(omc):
 	return sqrt(6*sin(khi/3)/omc-2)
 
 omc=0.88
-print 'omc=',omc,' omk=',om_k(omc)
+print('omc=',omc,' omk=',om_k(omc))
