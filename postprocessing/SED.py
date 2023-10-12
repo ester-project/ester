@@ -42,9 +42,10 @@ class Star:
     Rsun = 6.95508e10
     Lsun = 3.8396e33
 
-    def __init__(self, mod, incl):
+    def __init__(self, mod, incl, nth):
         self.incl = incl*pi/180
         self.mod  = star2d(mod)
+        self.nth  = nth
         self.init_grid()
         self.visgrid()
 
@@ -52,7 +53,6 @@ class Star:
         """Initiate physical and grid parameters"""
         self.M                  = self.mod.M / Star.Msun
         self.L                  = self.mod.L / Star.Lsun
-        self.nth                = 51
         self.nphi0              = 5
         self.dth                = pi / self.nth
         self.theta              = [self.dth/2. + j * self.dth for j in range(self.nth)]
@@ -104,12 +104,20 @@ class Star:
         Compute mu, cosine of the angle between the normal to the surface and the line of sight
         (depends on inclination angle, and necessary to compute the visible grid).
         """
+        self.mu       = [[(cos(self.phi[i][j])*sin(self.incl)*(self.r[i]*sin(self.theta[i])
+                          - self.rt[i]*cos(self.theta[i])) + cos(self.incl)
+                          * (self.r[i]*cos(self.theta[i]) + self.rt[i]*sin(self.theta[i])))
+                          / (self.r[i]*np.sqrt(1 + (self.rt[i]**2 / self.r[i]**2)))
+                          for j in range(int(self.nphi[i]))]
+                         for i in range(self.nth)]
+        """
         self.mu       = [[round((cos(self.phi[i][j])*sin(self.incl)*(self.r[i]*sin(self.theta[i])
                           - self.rt[i]*cos(self.theta[i])) + cos(self.incl)
                           * (self.r[i]*cos(self.theta[i]) + self.rt[i]*sin(self.theta[i])))
                           / (self.r[i]*np.sqrt(1 + (self.rt[i]**2 / self.r[i]**2))), 6)
                           for j in range(int(self.nphi[i]))]
                          for i in range(self.nth)]
+        """
         self.mu_flat  = np.array(list(itertools.chain(*self.mu)))
         self.vis_mask = np.where(self.mu_flat >= 0.)
         self.mu_vis = self.mu_flat[self.vis_mask]
@@ -135,6 +143,9 @@ class Star:
         return self.mod.apparent_luminosity(inc)
     def Teff_mean(self):
         return sum(self.Teff_vis*self.mu_vis*self.ds_vis)/sum(self.mu_vis*self.ds_vis)
+
+    def surf_proj(self):
+        return sum(self.mu_vis*self.ds_vis)
 
     def logg_mean(self):
         return sum(self.logg_vis*self.mu_vis*self.ds_vis)/sum(self.mu_vis*self.ds_vis)
