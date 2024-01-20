@@ -8,14 +8,7 @@
 #include "read_config.h"
 #include "matplotlib.h"
 
-configuration::configuration(int argc,char *argv[]) {
-
-	int i, k;
-	char *arg,*val;
-	char file[256];
-	cmdline_parser cmd;
-	file_parser fp;
-
+configuration::configuration(int argc, char *argv[]) {
 	verbose=1;
 	strcpy(plot_device,"/NULL");
 	plot_interval=10;
@@ -27,6 +20,17 @@ configuration::configuration(int argc,char *argv[]) {
 	tol=1e-8;
 	newton_dmax=0.5;
     noplot = false;
+
+	read_config(argc, argv);
+}
+
+
+void configuration::read_config(int argc, char *argv[]) {
+	int i, k;
+	char *arg,*val;
+	char file[256];
+	cmdline_parser cmd;
+	file_parser fp;
 
 	sprintf(file, "%s/ester/star.cfg", ESTER_DATADIR);
 	if(!fp.open(file))
