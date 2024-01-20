@@ -58,7 +58,6 @@ double star1dR::solve(solver *op) {
 
 void star1dR::fill() {
 
-	init_comp();
 	eq_state();
 	m=4*PI*(map.gl.I,rho*r*r)(0);
 	M=m*rhoc*R*R*R;
@@ -112,7 +111,6 @@ void star1dR::solve_definitions(solver *op) {
 	double dXc=1e-8;
 	
 	Xc+=dXc;
-	init_comp();
 	nuclear();
 	opacity();
 	eq_state();

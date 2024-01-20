@@ -7,8 +7,8 @@
 #include <string.h>
 #include <cmath>
 
-int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
-		const char *eos_name,const char *opa_name,atm_struct &atm) {
+int atm_onelayer(const composition_map &chemical_comp, const matrix &g, const matrix &Teff,
+		const char *eos_name, const char *opa_name, atm_struct &atm) {
 
 	int n=g.nrows();
 	int m=g.ncols();
@@ -43,8 +43,8 @@ int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 				}
 				double F,dF,dlogps;
 				p=pow(10,logps)*ones(1,1);
-				if(eos_calc(X(i,j)*ones(1,1),Z,T,p,rho,eos)) return 1;
-				if(opa_calc(X(i,j)*ones(1,1),Z,T,rho,opa)) return 1;
+				if(eos_calc(chemical_comp(i,j)*ones(1,1), T, p, rho, eos)) return 1;
+				if(opa_calc(chemical_comp.X()(i,j)*ones(1,1), chemical_comp.Z()(i,j), T, rho, opa)) return 1;
 				F=logps+log10(opa.k)(0)-logg-log10(2./3.);
 				dF=1.-(1+opa.dlnxi_lnrho(0))/eos.chi_rho(0);
 				dlogps=-F/dF;

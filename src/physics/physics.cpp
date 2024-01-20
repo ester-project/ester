@@ -26,19 +26,19 @@ int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	return error;
 }
 
-int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
-        matrix &rho,eos_struct &eos) {
+int eos_calc(const composition_map &chemical_comp, const matrix &T, const matrix &p,
+        matrix &rho, eos_struct &eos) {
 
     int error=0;
 
     if(!strcmp(eos.name,"ideal"))
-        error=eos_ideal(X,Z,T,p,rho,eos);
+        error = eos_ideal(chemical_comp, T, p, rho, eos);
     else if(!strcmp(eos.name,"ideal+rad"))
-        error=eos_idealrad(X,Z,T,p,rho,eos);
+        error = eos_idealrad(chemical_comp, T, p, rho, eos);
     else if(!strcmp(eos.name,"opal"))
-        error=eos_opal(X,Z,T,p,rho,eos);
+        error = eos_opal(chemical_comp, T, p, rho, eos);
     else if(!strcmp(eos.name,"freeeos"))
-        error = eos_freeeos(X, Z, T, p, rho, eos);
+        error = eos_freeeos(chemical_comp, T, p, rho, eos);
     else {
         ester_err("Unknown equation of state: %s",eos.name);
         return 1;
@@ -48,15 +48,15 @@ int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
 
 }
 
-int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
+int nuc_calc(const composition_map &comp, const matrix &T, const matrix &rho,
 		nuc_struct &nuc) {
 
 	int error=0;
 
 	if(!strcmp(nuc.name,"simple")) {
-		error=nuc_simple(X,T,rho,nuc);
+		error = nuc_simple(comp, T, rho, nuc);
 	} else if(!strcmp(nuc.name,"cesam")) {
-		error=nuc_cesam(X,T,rho,nuc);
+		error = nuc_cesam(comp, T, rho, nuc);
     } else {
         ester_err("Unknown nuc. reac. type: %s",nuc.name);
     	return 1;
@@ -66,13 +66,13 @@ int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
 
 }
 
-int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
-		const char *eos_name,const char *opa_name,atm_struct &atm) {
+int atm_calc(const composition_map &chemical_comp, const matrix &g, const matrix &Teff,
+        const char *eos_name, const char *opa_name, atm_struct &atm) {
 
 	int error=0;
 
 	if(!strcmp(atm.name,"onelayer")) {
-		error=atm_onelayer(X,Z,g,Teff,eos_name,opa_name,atm);
+		error = atm_onelayer(chemical_comp, g, Teff, eos_name, opa_name, atm);
     } else {
         ester_err("Unknown atmosphere type: %s", atm.name);
     	return 1;

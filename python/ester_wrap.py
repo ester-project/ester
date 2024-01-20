@@ -902,9 +902,6 @@ def atm_onelayer(X, Z, g, Teff, eos_name, opa_name, atm):
     return _ester_wrap.atm_onelayer(X, Z, g, Teff, eos_name, opa_name, atm)
 atm_onelayer = _ester_wrap.atm_onelayer
 
-def initial_composition(X, Z):
-    return _ester_wrap.initial_composition(X, Z)
-initial_composition = _ester_wrap.initial_composition
 MAP_BONAZZOLA = _ester_wrap.MAP_BONAZZOLA
 MAP_LINEAR = _ester_wrap.MAP_LINEAR
 class mapping(_object):

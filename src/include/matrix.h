@@ -289,7 +289,9 @@ public:
 	inline matrix &operator[](const std::string& key) {return std::map<std::string,matrix>::operator[](key);}
 	inline const matrix &operator[](const std::string& key) const {return find(key)->second;};
 	matrix_map_elem operator()(int nfil, int ncol);
+	matrix_map_elem operator()(int ielem);
 	const double_map operator()(int nfil, int ncol) const;
+	const double_map operator()(int ielem) const;
 	const matrix_map row(int irow) const;
 	const matrix_map col(int icol) const;
 	const matrix_map block(int irow1,int irow2,int icol1,int icol2) const;

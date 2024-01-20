@@ -4,16 +4,21 @@
 #include "star.h"
 #include <stdlib.h>
 #include <sys/time.h>
+#include <set>
 #include <string.h>
 #include "symbolic.h"
+#include "utils.h"
 
-/// \brief Initialize star's chemical composition, equation of state, opacity,
+// TODO: apply the following move (at the end of the work)
+// The code between [BEGIN MOVE] and [END MODE] should be placed in star2d_class.cpp
+// it hasn't anything to do with solving, but is required by reading, and ester info for exmaple
+// whereas ester info doesn't require any other methods from star2d_solvers.cpp
+// [BEGIN MOVE]
+
+/// \brief Initialize star's equation of state, opacity,
 /// nuclear reaction, mass definition, pi_c, Lambda, velocity, units, atmosphere,
 /// flatness, scaled keplerian angular velocity
 void star2d::fill() {
-	Y0=1.-X0-Z0;
-	init_comp();
-
 	eq_state();
 	opacity();
 	nuclear();
@@ -36,55 +41,96 @@ void star2d::fill() {
 
 }
 
-void star2d::init_comp() {
-// Update the object comp
 
-	comp=initial_composition(X0,Z0)*ones(nr,nth);
+void star2d::init_metal_mix() {
+	// a security to avoid initializing multiple time the metal mix
+	// it should be done only once, then m_metal_mix should be used
+	if(!m_metal_mix.empty()){
+		ester_err("init_metal_mix must be called only once");
+	}
+
+	file_parser fp;
+
+	// TODO: change this hardcoded path
+	char file[] = "metal-mix.cfg";
+
+	char* arg = NULL;
+	char* val = NULL;
+	std::set<std::string> metals = {"C12","C13","N14","N15","O16","O17","Ne20","Ne22","Na23",
+									"Mg24","Mg25","Mg26","Al27","Si28","P31","S32","Cl35","Cl37",
+									"A40","Ca40","Ti","Cr","Mn55","Fe","Ni"};
+	// Initialization of m_metal_mix
+	for(std::string metal: metals){
+		m_metal_mix[metal] = .0;
+	}
+	double metals_fraction = .0;
+
+	if(!fp.open(file)){
+		printf("Can't open configuration file %s\n", file);
+		perror("Error:");
+		exit(1);
+	} else {
+		int line;
+		while(line = fp.get(arg,val)) {
+			if(val == NULL){
+				printf("Syntax error in configuration file %s, line %d\n", file, line);
+				exit(1);
+			}
+			if(metals.find(arg) == metals.end()){
+				// the metal specified in the config file isn't supported
+				printf("%s is unknown, possible metals composition are: ", val);
+				for(std::string metal: metals){
+					printf("%s ", metal);
+				}
+				puts("\n");
+				exit(1);
+			}
+			metals_fraction += atof(val);
+			m_metal_mix[arg] = Z0 * atof(val);
+		}
+	}
+	fp.close();
+
+	// will be removed:
+	printf("A config file %s has been used to config metal composition\n", file);
+	printf("The sum of metals fractions (of Z sum of metal mass fraction) is %f, and should be as close to 1 as possible.\n", metals_fraction);
+}
+
+
+void star2d::init_comp() {
+	Y0 = 1. - (X0 + Z0);
+	m_He_isotopic_ratio = 3.15247417638132e-04;
+
+	init_metal_mix();
+
+	// make a copy of m_metal_mix
+	double_map temp_chemical_mix = double_map(m_metal_mix);
+	// Note: A global chemical_mix (analog to metal_mix) would make no sense
+	// because H and He quantities can be different in different star's layers
+	// that's not the case (at the time with a static version of ESTER) of the metal mixture
+
+	temp_chemical_mix["H"] = X0;
+	// TODO: should the following be hardcoded?
+	temp_chemical_mix["He3"] = m_He_isotopic_ratio * Y0;
+	temp_chemical_mix["He4"] = Y0 - temp_chemical_mix["He3"];
+	// Note that the previous way of setting He3 He4 enforce He3+He4 = Y
+
+	// Init the object comp
+	comp = temp_chemical_mix*ones(nr,nth);
 
 	if(!conv) return;
 
-// Count the number of point in the core:
-    int n = 0;
-    for (int i=0; i<conv; i++) {
-        n += map.gl.npts[i];
-    }
-// and put some fraction Xc of X_envelope in the core 
-    comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
-
-// Put a special composition in the last domain: Daniel's request
-/*	printf("WARNING : Daniel's superstar computed!\n");
-
-    n = 0; // Count the number of points to the before before last domain
-    for (int i=0; i<ndomains-1; i++) {
-        n += map.gl.npts[i];
-    }
-	printf(" in init_comp n=%d, nr=%d\n",n,nr);
-//	double x=0.70,z=0.02;
-	double x=X0*0.10,z=0.062;
-        comp.setblock(0,n-1,0,-1,initial_composition(x,z)*ones(n,nth));
-	comp.setblock(n,nr-1,0,-1,initial_composition(X0,Z0)*ones(nr-n,nth));
-	printf(" in init_comp comp.X=%e, \n",comp.X()(0,0));
-*/
-
-/* Delphine's attempt
-    if(stratified_comp == 0) {
-        comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
-    }
-    else {
-        comp.setblock(0, n-1, 0, -1,
-                initial_composition(Xc*X0, Z0)*ones(n, nth));
-        int m = 0;
-        int l = n;
-        double a = (1.-exp((1.-(nr/n))))/(X0*(1.-Xc));
-        for(int i=conv+1; i<ndomains; i++) {
-            m = map.gl.npts[i];
-            comp.setblock(l, l+m-1, 0, -1,
-                    initial_composition(((Xc*X0)+((1./a)*(1.-exp((1.-(l/n)))))),Z0)*ones(m,nth));
-            l += m;
-        }
-    }
-*/
+	// Count the number of point in the core:
+	int n = 0;
+	for (int i=0; i<conv; i++) {
+		n += map.gl.npts[i];
+	}
+	// and put some fraction Xc of X_envelope in the core
+	temp_chemical_mix["H"] = Xc * X0;
+	comp.setblock(0, n-1, 0, -1, (temp_chemical_mix*ones(n,nth)));
 }
+
+// [END MOVE]
 
 void star2d::calc_veloc() {
 // vr=rz*V^zeta+rt*V^theta,  vt=r*V^theta
@@ -97,6 +143,7 @@ void star2d::calc_veloc() {
 	vt.setrow(0,zeros(1,nth));
 	vt/=rho;
 }
+
 
 solver *star2d::init_solver(int nvar_add) {
 	int nvar;
@@ -112,6 +159,7 @@ solver *star2d::init_solver(int nvar_add) {
 
 	return op;
 }
+
 
 void star2d::register_variables(solver *op) {
 	int i,var_nr[ndomains+1];
@@ -158,10 +206,12 @@ void star2d::register_variables(solver *op) {
 
 }
 
+
 double star2d::solve(solver *op) {
     matrix_map error_map;
     return solve(op, error_map, 0);
 }
+
 
 /// \brief Performs one step of the Newton algorithm to compute the star's
 /// internal structure.
@@ -281,8 +331,10 @@ double star2d::solve(solver *op, matrix_map& error_map, int nit) {
 
 }
 
+
 // Special treatment for updating R_i because we need
 // a different relaxation parameter "h".
+
 
 void star2d::update_map(matrix dR) {
 	double h=1,dmax=config.newton_dmax;
@@ -298,6 +350,7 @@ void star2d::update_map(matrix dR) {
 	}
 
 }
+
 
 /// \brief insert the definitions depending on opacity and eos tables into the solver,
 /// and the definitions used by the mapping (eta,deta,Ri,dRi,...), and the entropy
@@ -919,7 +972,6 @@ void star2d::solve_temp(solver *op) {
 
 
 /// \brief Writes the equations for the dimensional quantities (T_c, rho_c, R, etc.)
-
 void star2d::solve_dim(solver *op) {
 	int n,j0,j1;
 	matrix q,rhs;
@@ -1109,8 +1161,6 @@ void star2d::solve_map(solver *op) {
 }
 
 
-
-
 /// \brief Equation setting the equatorial angular velocity
 void star2d::solve_Omega(solver *op) {
 	int n;
@@ -1133,7 +1183,6 @@ void star2d::solve_Omega(solver *op) {
 	op->set_rhs("Omega",rhs);
 
 }
-
 
 
 /// \brief Equation giving the effective surface gravity gsup
@@ -1172,6 +1221,7 @@ void star2d::solve_gsup(solver *op) {
 
 }
 
+
 /// \brief Equation setting the surface effective temperature
 /// Derived from sigma T_e^4 = -xi\vn\cdot\gradT
 void star2d::solve_Teff(solver *op) {
@@ -1208,6 +1258,7 @@ void star2d::solve_Teff(solver *op) {
 
 
 }
+
 
 /// \brief Equation setting the 'simple' atmosphere model equations
 /// 'simple' == the polytropic model for the atmosphere

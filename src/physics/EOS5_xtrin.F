@@ -121,7 +121,7 @@ c
 c..... read the data files
         call readcoeos
         z=zz(1)
-        if (ztab .ne. z) then
+        if (abs(ztab-z) .ge. 1e-7) then
         write (*,'("requested z=",f10.6," EOS5_data is for z=",
      x             f10.6)')
      x    ztab,z      

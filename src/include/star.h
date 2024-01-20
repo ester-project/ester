@@ -37,6 +37,9 @@ class star2d {
         matrix rho, phi, p, T;
         matrix phiex;
         matrix vr, vt, G, w;
+        // the m_ prefix is used to explicit that it's a class' member https://stackoverflow.com/a/13018190/22158934 :
+        double m_He_isotopic_ratio; // He3/He4 hardcoded in star*d::init_comp // TODO: change it to be configurable
+        double_map m_metal_mix;
         composition_map comp;
         double X0, Y0, Z0;
         double R, M;
@@ -97,6 +100,7 @@ class star2d {
 
         virtual void dump_info();
 
+        virtual void init_metal_mix();
         virtual void init_comp();
 
         virtual solver *init_solver(int nvar_add=0);
