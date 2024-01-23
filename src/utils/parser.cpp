@@ -60,10 +60,9 @@ void cmdline_parser::close(){}
 
 
 int file_parser::open(const char *file) {
-
 	iline=0;
-	if(!(fp=fopen(file,"rt"))) return 0;
-	return 1;
+	fp = fopen(file,"rt");
+	return (fp == NULL); // return 1 on error (fp == NULL), else 0
 }
 	
 int file_parser::get(char *&arg,char *&val){

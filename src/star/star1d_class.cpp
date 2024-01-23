@@ -50,7 +50,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
         }
         map0=map;
     } else {
-        if(!fp.open(default_params)) {
+        if(fp.open(default_params)) {
             printf("Can't open default parameters file %s\n", default_params);
             return 1;
         }
@@ -74,7 +74,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
     }
 
     if(*param_file) {
-        if(!fp.open(param_file)) {
+        if(fp.open(param_file)) {
             printf("Can't open parameters file %s\n", param_file);
             return 1;
         }

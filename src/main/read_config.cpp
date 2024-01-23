@@ -35,28 +35,30 @@ void configuration::read_config(int argc, char *argv[]) {
 
 void configuration::read_config_file() {
 	char *arg,*val;
-	int i, k;
+	int err_code, line;
 	char file[256];
 	file_parser fp;
 
 	// Write in file the path to the default config file
 	sprintf(file, "%s/ester/star.cfg", ESTER_DATADIR);
 
-	if(!fp.open(file))
-		printf("Can't open configuration file %s\n",file);
-	else {
-		while((k=fp.get(arg,val))) {
-			if((i=check_arg(arg,val))) {
-				printf("Syntax error in configuration file %s, line %d\n",file,k);
-				if(i==2) missing_argument(arg);
-				if(i==1) {
-					printf("Unknown parameter %s\n",arg);
-					exit(1);
-				}
-			}
-		}
-		fp.close();
+	// Try opening the file, get 1 on error
+	if(fp.open(file)){
+		printf("Can't open configuration file %s\n", file);
+		ester_err(strerror(errno));
 	}
+
+	// iterate over each line/arg of the config file
+	while((line = fp.get(arg, val))) {
+		if((err_code = check_arg(arg, val))) {
+			printf("Syntax error in configuration file %s, line %d\n", file, line);
+			if(err_code == 2)
+				missing_argument(arg);
+			if(err_code == 1)
+				unknown_parameter(arg);
+		}
+	}
+	fp.close();
 }
 
 void configuration::read_command_line(int argc, char *argv[]) {
@@ -148,5 +150,9 @@ int configuration::check_arg(const char *arg,const char *val) {
 }
 
 void configuration::missing_argument(const char *arg) {
-	ester_err("Error: Argument to '%s' missing", arg);
+	ester_err("Argument to '%s' missing", arg);
+}
+
+void configuration::unknown_parameter(const char *arg) {
+	ester_err("Unknown parameter '%s'", arg);
 }

@@ -19,6 +19,7 @@ public:
 	void read_config_file();
 	void read_command_line(int argc, char *argv[]);
 	void missing_argument(const char *arg);
+	void unknown_parameter(const char *arg);
 	int check_arg(const char *arg,const char *val);
     bool noplot;
 };

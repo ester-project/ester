@@ -526,7 +526,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         }
         map0=map;
     } else {
-        if(!fp.open(default_params)) {
+        if(fp.open(default_params)) {
             ester_err("Can't open default parameters file %s\n", default_params);
         }
         else {
@@ -549,7 +549,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     }
 
     if(*param_file) {
-        if(!fp.open(param_file)) {
+        if(fp.open(param_file)) {
             ester_err("Can't open parameters file %s\n",param_file);
             return 1;
         }
