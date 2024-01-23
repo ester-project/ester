@@ -12,9 +12,11 @@ public:
 	char input_file[256];
 	char param_file[256];
 	char output_file[256];
+
 	configuration(int argc, char *argv[]);
 	~configuration(){};
-	void read_config(int argc, char *argv[]);
+	void read_config_file();
+	void read_command_line(int argc, char *argv[]);
 	void missing_argument(const char *arg);
 	int check_arg(const char *arg,const char *val);
     bool noplot;

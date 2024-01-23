@@ -21,18 +21,20 @@ configuration::configuration(int argc, char *argv[]) {
 	newton_dmax=0.5;
     noplot = false;
 
-	read_config(argc, argv);
+	read_config_file();
+	read_command_line(argc, argv);
 }
 
 
-void configuration::read_config(int argc, char *argv[]) {
-	int i, k;
+void configuration::read_config_file() {
 	char *arg,*val;
+	int i, k;
 	char file[256];
-	cmdline_parser cmd;
 	file_parser fp;
 
+	// Write in file the path to the default config file
 	sprintf(file, "%s/ester/star.cfg", ESTER_DATADIR);
+
 	if(!fp.open(file))
 		printf("Can't open configuration file %s\n",file);
 	else {
@@ -48,6 +50,12 @@ void configuration::read_config(int argc, char *argv[]) {
 		}
 		fp.close();
 	}
+}
+
+void configuration::read_command_line(int argc, char *argv[]) {
+	char *arg,*val;
+	cmdline_parser cmd;
+
 
 	cmd.open(argc,argv);
 	while(int err_code=cmd.get(arg,val)) {

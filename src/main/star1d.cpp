@@ -36,8 +36,8 @@ int main(int argc,char *argv[]) {
     int nit,last_it;
     double err;
     tiempo t;
-    // double t_plot;
 
+    // Create config object
     configuration config(argc, argv);
 
     signal(SIGINT, sig_handler);
