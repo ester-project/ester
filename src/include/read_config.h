@@ -4,15 +4,15 @@
 
 class configuration {
 public:
-	int minit,maxit;
-	double tol,newton_dmax;
-	int verbose;
-	bool noplot;
-	char plot_device[64];
-	double plot_interval;
-	char input_file[256];
-	char param_file[256];
-	char output_file[256];
+    int minit,maxit;
+    double tol,newton_dmax;
+    int verbose;
+    bool noplot;
+    char plot_device[64];
+    double plot_interval;
+    char input_file[256];
+    char param_file[256];
+    char output_file[256];
 
     configuration();
     ~configuration(){};
@@ -23,7 +23,7 @@ public:
 
     int check_arg(const char *arg,const char *val);
 
-	void missing_argument(const char *arg);
-	void unknown_parameter(const char *arg);
+    void missing_argument(const char *arg);
+    void unknown_parameter(const char *arg);
 };
 
