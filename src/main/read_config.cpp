@@ -61,19 +61,24 @@ void configuration::read_config_file() {
 	fp.close();
 }
 
+
 void configuration::read_command_line(int argc, char *argv[]) {
-	char *arg,*val;
-	cmdline_parser cmd;
+    char *arg,*val;
+    int err_code;
+    cmdline_parser cmd;
 
+    cmd.open(argc, argv);
+    while(err_code = cmd.get(arg, val)) {
+        if(err_code == -1)
+            exit(1);
 
-	cmd.open(argc,argv);
-	while(int err_code=cmd.get(arg,val)) {
-		if(err_code==-1) exit(1);
-		err_code=check_arg(arg,val);
-		if(err_code==2) missing_argument(arg);
-		if(err_code==0) cmd.ack(arg,val);
-	}
-	cmd.close();
+        err_code = check_arg(arg,val);
+        if(err_code == 2)
+            missing_argument(arg);
+        if(err_code == 0)
+            cmd.ack(arg,val);
+    }
+    cmd.close();
 
     if (noplot == false)
         plt::init();
@@ -149,9 +154,11 @@ int configuration::check_arg(const char *arg,const char *val) {
 
 }
 
+
 void configuration::missing_argument(const char *arg) {
 	ester_err("Argument to '%s' missing", arg);
 }
+
 
 void configuration::unknown_parameter(const char *arg) {
 	ester_err("Unknown parameter '%s'", arg);
