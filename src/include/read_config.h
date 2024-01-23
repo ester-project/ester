@@ -13,8 +13,9 @@ public:
 	char param_file[256];
 	char output_file[256];
 
-	configuration(int argc, char *argv[]);
+    configuration();
 	~configuration(){};
+    void read_config(int argc, char *argv[]); // wrapper around the following 2 methods
 	void read_config_file();
 	void read_command_line(int argc, char *argv[]);
 	void missing_argument(const char *arg);

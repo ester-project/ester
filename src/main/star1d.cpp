@@ -38,7 +38,8 @@ int main(int argc,char *argv[]) {
     tiempo t;
 
     // Create config object
-    configuration config(argc, argv);
+    configuration config;
+    config.read_config(argc, argv);
 
     signal(SIGINT, sig_handler);
 

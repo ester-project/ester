@@ -20,10 +20,12 @@ int main(int argc,char *argv[]) {
 	int nit,last_it;
 	double err=1;
 	double t_plot;
-	configuration config(argc,argv);
 	tiempo t;
 	// figure *fig = NULL;
-	
+
+	configuration config;
+	config.read_config(argc, argv);
+
 	signal(SIGINT,sig_handler);
 
     plt::figure(1, 10, 4);

@@ -8,7 +8,8 @@
 #include "read_config.h"
 #include "matplotlib.h"
 
-configuration::configuration(int argc, char *argv[]) {
+configuration::configuration() {
+    // These are default values aimed to be replaced by config file values then command line ones
 	verbose=1;
 	strcpy(plot_device,"/NULL");
 	plot_interval=10;
@@ -20,9 +21,15 @@ configuration::configuration(int argc, char *argv[]) {
 	tol=1e-8;
 	newton_dmax=0.5;
     noplot = false;
+}
 
-	read_config_file();
-	read_command_line(argc, argv);
+
+void configuration::read_config(int argc, char *argv[]) {
+    // To ensure command line argument's precendence (complying with documentation)
+    // over the configuration file argument these methods must be called IN THIS ORDER
+
+    read_config_file();            // 1st --> default values
+    read_command_line(argc, argv); // 2nd --> can erase default config file values 
 }
 
 

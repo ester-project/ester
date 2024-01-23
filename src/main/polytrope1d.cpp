@@ -36,7 +36,8 @@ int main(int argc,char *argv[]) {
     int nit,last_it;
     tiempo t;
 
-    configuration config(argc, argv);
+    configuration config;
+    config.read_config(argc, argv);
 
     signal(SIGINT, sig_handler);
 

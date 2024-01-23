@@ -11,7 +11,9 @@
 
 int main(int argc,char *argv[]) {
 
-	configuration config(argc,argv);
+	configuration config;
+	config.read_config(argc, argv); // Should we called only read_config_file here ?
+
 	cmdline_parser cmd;
 	
 	double dXc=0.05,Xcmin=0.05;
