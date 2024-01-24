@@ -39,6 +39,7 @@ int main(int argc,char *argv[]) {
 
     // Create config object
     configuration config;
+    // Parse configuration file star.cfg and command line simulation parameters (not star ones)
     config.read_config(argc, argv);
 
     signal(SIGINT, sig_handler);
@@ -48,7 +49,8 @@ int main(int argc,char *argv[]) {
     star1d A;
     solver *op;
 
-    if(A.init(config.input_file,config.param_file,argc,argv)) {
+    // Parse configutation file 1d_default.par and command line star parameters
+    if(A.init(config.input_file, config.param_file, argc, argv)) {
         ester_err("Could not initialize star");
         return 1;
     }
