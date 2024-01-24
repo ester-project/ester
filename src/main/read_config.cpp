@@ -73,6 +73,7 @@ void configuration::read_command_line(int argc, char *argv[]) {
             ester_err("Invalid argument %s", arg);
 
         err_code = check_arg(arg,val);
+        // We ignore Error Code 1 (unknown parameter) on purpose: it might be interpreted by star1d::init later
         if(err_code == 2)
             missing_argument(arg);
         if(err_code == 0)
@@ -86,7 +87,12 @@ void configuration::read_command_line(int argc, char *argv[]) {
 
 
 int configuration::check_arg(const char *arg,const char *val) {
-
+    /*
+    Return codes:
+        0: No Error
+        1: Unknown paramter
+        2: Missing value
+    */
 	int err=0;
 
 	if(!strcmp(arg,"v0"))

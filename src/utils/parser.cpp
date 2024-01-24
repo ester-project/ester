@@ -8,17 +8,20 @@ extern "C" {
 }
 
 void cmdline_parser::open(int argc_in, char *argv_in[]) {
-
-	argc=argc_in;
-	argv=argv_in;
-	i=1;
-	
+    argc = argc_in;
+    argv = argv_in;
+    i = 1;
 }
 
 int cmdline_parser::get(char *&arg,char *&val) {
-
+    /*
+    Return codes:
+       -1: Invalid Parameter (missing '-' probably)
+        0: End Of List, no more parameters to get
+        1: No Error
+    */
 	if(i>=argc) return 0;
-	while(argv[i][0]=='\0') {
+	while(argv[i][0]=='\0') { // Ignore already parsed arguments
 		i++;
 		if(i==argc) break;
 	}
@@ -48,10 +51,10 @@ int cmdline_parser::get(char *&arg,char *&val) {
 }
 
 void cmdline_parser::ack(char *arg,char *val) {
-
-	*(arg-1)='\0';
-	if(val!=NULL) *val='\0';
-
+    // Acknoledge, argument parsed successfully
+    *(arg-1) = '\0';
+    if(val != NULL)
+        *val = '\0';
 }
 
 void cmdline_parser::close(){}
