@@ -97,8 +97,10 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
     }
 
     cmd.open(argc, argv);
-    while(int err_code=cmd.get(arg, val)) {
-        if(err_code==-1) exit(1);
+    while(int err_code = cmd.get(arg, val)) {
+        if(err_code == -1) // Normally this can't happen because an Invalid Argument would already have been found in read_command_line
+            ester_err("Invalid argument %s", arg);
+
         err_code=check_arg(arg, val, &change_grid);
         if(err_code==2) {
             fprintf(stderr, "Error: Argument to '%s' missing\n", arg);

@@ -20,8 +20,9 @@ int main(int argc,char *argv[]) {
 	
 	char *arg,*val;
 	cmd.open(argc,argv);
-	while(int err_code=cmd.get(arg,val)) {
-		if(err_code==-1) exit(1);
+	while(int err_code = cmd.get(arg,val)) {
+		if(err_code == -1)
+			ester_err("Invalid argument %s", arg);
 		err_code=0;
 		if(!strcmp(arg,"dXc")) {
 			if(val==NULL) err_code=2;

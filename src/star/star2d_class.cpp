@@ -574,7 +574,9 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 
     cmd.open(argc,argv);
     while(int err_code=cmd.get(arg,val)) {
-        if(err_code==-1) exit(1);
+        if(err_code == -1) // Normally this can't happen because an Invalid Argument would already have been found in read_command_line
+            ester_err("Invalid argument %s", arg);
+
         err_code=check_arg(arg,val,&change_grid);
         if(err_code==2) {
             ester_err("Error: Argument to '%s' missing\n",arg);

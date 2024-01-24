@@ -70,7 +70,7 @@ void configuration::read_command_line(int argc, char *argv[]) {
     cmd.open(argc, argv);
     while(err_code = cmd.get(arg, val)) {
         if(err_code == -1)
-            exit(1);
+            ester_err("Invalid argument %s", arg);
 
         err_code = check_arg(arg,val);
         if(err_code == 2)
@@ -83,6 +83,7 @@ void configuration::read_command_line(int argc, char *argv[]) {
     if (noplot == false)
         plt::init();
 }
+
 
 int configuration::check_arg(const char *arg,const char *val) {
 

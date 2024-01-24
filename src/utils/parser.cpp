@@ -24,10 +24,8 @@ int cmdline_parser::get(char *&arg,char *&val) {
 	}
 	if(i==argc) return 0;
 	if(argv[i][0]!='-') {
-		printf("Invalid argument %s\n",argv[i]);
-		arg=argv[i]+1;
+		arg=argv[i];
 		val=NULL;
-		i++;
 		return -1;
 	}
 	arg=argv[i]+1;
