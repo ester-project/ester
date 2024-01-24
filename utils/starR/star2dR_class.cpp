@@ -4,7 +4,7 @@
 
 star2dR::star2dR() {Teff_obj=-1;Re_obj=-1;}
 
-int star2dR::check_arg(char *arg,char *val,int *change_grid) {
+int star2dR::parse_arg(char *arg,char *val,int *change_grid) {
 
 	if(!strcmp(arg,"R")||!strcmp(arg,"Rp")) {
 		if(val==NULL) return 2;
@@ -31,7 +31,7 @@ int star2dR::check_arg(char *arg,char *val,int *change_grid) {
 		return 1;
 	}
 
-	return star2d::check_arg(arg,val,change_grid);
+	return star2d::parse_arg(arg,val,change_grid);
 }
 
 solver *star2dR::init_solver(int nvar_add) {

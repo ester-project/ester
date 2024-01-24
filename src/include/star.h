@@ -88,7 +88,7 @@ class star2d {
         virtual void atmosphere();
 
         virtual int init(const char *input_file, const char *param_file, int argc, char *argv[]);
-        virtual int check_arg(char *arg, char *val, int *change_grid);
+        virtual int parse_arg(char *arg, char *val, int *change_grid);
         virtual int read(const char *input_file, int dim = 2);
         int hdf5_read(const char *input_file, int dim);
         virtual void write(const char *output_file) const;
@@ -181,7 +181,7 @@ class star1d : public star2d {
         star1d(const star1d &);
         star1d &operator=(const star1d &);
         virtual int init(const char *input_file, const char *param_file, int argc, char *argv[]);
-        virtual int check_arg(char *arg, char *val, int *change_grid);
+        virtual int parse_arg(char *arg, char *val, int *change_grid);
         virtual int read(const char *input_file, int dim = 1);
 
         virtual void dump_info();

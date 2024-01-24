@@ -56,7 +56,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
         }
         else {
             while((k=fp.get(arg, val))) {
-                if((i=check_arg(arg, val, &change_grid))) {
+                if((i=parse_arg(arg, val, &change_grid))) {
                     printf("Syntax error in parameters file %s, line %d\n", param_file, k);
                     if(i==2) {
                         printf("Error: Argument to '%s' missing\n", arg);
@@ -80,7 +80,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
         }
         else {
             while((k=fp.get(arg, val))) {
-                if((i=check_arg(arg, val, &change_grid))) {
+                if((i=parse_arg(arg, val, &change_grid))) {
                     printf("Syntax error in parameters file %s, line %d\n", param_file, k);
                     if(i==2) {
                         printf("Error: Argument to '%s' missing\n", arg);
@@ -101,7 +101,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
         if(err_code == -1) // Normally this can't happen because an Invalid Argument would already have been found in read_command_line
             ester_err("Invalid argument %s", arg);
 
-        err_code=check_arg(arg, val, &change_grid);
+        err_code=parse_arg(arg, val, &change_grid);
         if(err_code==2) {
             fprintf(stderr, "Error: Argument to '%s' missing\n", arg);
             exit(EXIT_FAILURE);
@@ -165,7 +165,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
     return 0;
 }
 
-int star1d::check_arg(char *arg, char *val, int *change_grid) {
+int star1d::parse_arg(char *arg, char *val, int *change_grid) {
     if(!strcmp(arg, "nth")) {
         return 1;
     } else if(!strcmp(arg, "nex")) {
@@ -175,7 +175,7 @@ int star1d::check_arg(char *arg, char *val, int *change_grid) {
     } else if(!strcmp(arg, "Ekman")) {
         return 1;
     }
-    return star2d::check_arg(arg, val, change_grid);
+    return star2d::parse_arg(arg, val, change_grid);
 
 }
 

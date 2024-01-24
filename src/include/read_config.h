@@ -21,7 +21,7 @@ public:
     void read_config_file();
     void read_command_line(int argc, char *argv[]);
 
-    int check_arg(const char *arg,const char *val);
+    int parse_arg(const char *arg,const char *val);
 
     void missing_argument(const char *arg);
     void unknown_parameter(const char *arg);
