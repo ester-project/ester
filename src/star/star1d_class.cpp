@@ -48,23 +48,21 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
             printf("Error reading input file: %s\n", input_file);
             return 1;
         }
-        map0=map;
+        map0 = map;
     } else {
         if(fp.open(default_params)) {
             printf("Can't open default parameters file %s\n", default_params);
             return 1;
         }
         else {
-            while((k=fp.get(arg, val))) {
-                if((i=parse_arg(arg, val, &change_grid))) {
+            while((k = fp.get(arg, val))) {
+                if((i = parse_arg(arg, val, &change_grid))) {
                     printf("Syntax error in parameters file %s, line %d\n", param_file, k);
-                    if(i==2) {
-                        printf("Error: Argument to '%s' missing\n", arg);
-                        exit(EXIT_FAILURE);
+                    if(i == 2) {
+                        ester_err("%s: Argument to '%s' missing", default_params, arg);
                     }
-                    if(i==1) {
-                        printf("Unknown parameter %s\n", arg);
-                        exit(EXIT_FAILURE);
+                    if(i == 1) {
+                        ester_err("%s: Unknown parameter %s", default_params, arg);
                     }
                 }
             }
@@ -79,16 +77,14 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
             return 1;
         }
         else {
-            while((k=fp.get(arg, val))) {
-                if((i=parse_arg(arg, val, &change_grid))) {
+            while((k = fp.get(arg, val))) {
+                if((i = parse_arg(arg, val, &change_grid))) {
                     printf("Syntax error in parameters file %s, line %d\n", param_file, k);
-                    if(i==2) {
-                        printf("Error: Argument to '%s' missing\n", arg);
-                        exit(EXIT_FAILURE);
+                    if(i == 2) {
+                        ester_err("%s: Argument to '%s' missing", param_file, arg);
                     }
-                    if(i==1) {
-                        printf("Unknown parameter %s\n", arg);
-                        exit(EXIT_FAILURE);
+                    if(i == 1) {
+                        ester_err("%s: Unknown parameter %s", param_file, arg);
                     }
                 }
             }
@@ -102,13 +98,11 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
             ester_err("Invalid argument %s", arg);
 
         err_code=parse_arg(arg, val, &change_grid);
-        if(err_code==2) {
-            fprintf(stderr, "Error: Argument to '%s' missing\n", arg);
-            exit(EXIT_FAILURE);
+        if(err_code == 2) {
+            ester_err("Argument to '%s' missing", arg);
         }
-        if(err_code==1) {
-            fprintf(stderr, "Unknown parameter '%s'\n", arg);
-            exit(EXIT_FAILURE);
+        if(err_code == 1) {
+            ester_err("Unknown parameter %s", arg);
         }
         cmd.ack(arg, val);
     }
