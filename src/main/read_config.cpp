@@ -53,9 +53,9 @@ void configuration::read_config_file() {
 		if((err_code = parse_arg(arg, val))) {
 			printf("Syntax error in configuration file %s, line %d\n", file, line);
 			if(err_code == 2)
-				missing_argument(arg);
+				ester_err("%s: Argument to '%s' missing", file, arg);
 			if(err_code == 1)
-				unknown_parameter(arg);
+				ester_err("%s: Unknown parameter '%s'", file, arg);
 		}
 	}
 	fp.close();
@@ -75,7 +75,7 @@ void configuration::read_command_line(int argc, char *argv[]) {
         err_code = parse_arg(arg,val);
         // We ignore Error Code 1 (unknown parameter) on purpose: it might be interpreted by star1d::init later
         if(err_code == 2)
-            missing_argument(arg);
+            ester_err("Argument to '%s' missing", arg);
         if(err_code == 0)
             cmd.ack(arg,val);
     }
@@ -159,14 +159,4 @@ int configuration::parse_arg(const char *arg,const char *val) {
 
 	return err;
 
-}
-
-
-void configuration::missing_argument(const char *arg) {
-	ester_err("Argument to '%s' missing", arg);
-}
-
-
-void configuration::unknown_parameter(const char *arg) {
-	ester_err("Unknown parameter '%s'", arg);
 }

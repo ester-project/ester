@@ -22,8 +22,5 @@ public:
     void read_command_line(int argc, char *argv[]);
 
     int parse_arg(const char *arg,const char *val);
-
-    void missing_argument(const char *arg);
-    void unknown_parameter(const char *arg);
 };
 
