@@ -494,7 +494,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     file_parser fp;
     char *arg,*val,default_params[256];
     mapping map0;
-    int i,k,change_grid=0,nt=-1,next=-1;
+    int check_arg_err_code,k,change_grid=0,nt=-1,next=-1;
     star1d in1d;
     diff_leg leg_new;
     matrix Tr,m0;
@@ -521,26 +521,25 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
                 cmd.close();
                 init1d(in1d, nt, next);
             } else {
-                ester_err("Error reading input file: %s", input_file);
+                ester_err("(star2d::init) Error reading input file: %s", input_file);
+                return 1;
             }
         }
         map0=map;
     } else {
         if(!fp.open(default_params)) {
-            ester_err("Can't open default parameters file %s\n", default_params);
+            ester_err("(star2d::init) Can't open default parameters file %s", default_params);
+            return 1;
         }
         else {
             while((k=fp.get(arg,val))) {
-                if((i=check_arg(arg,val,&change_grid))) {
-                    ester_err("Syntax error in parameters file %s, line %d\n",default_params,k);
-                    if(i==2) {
-                        ester_err("Error: Argument to '%s' missing\n",arg);
-                        return 1;
-                    }
-                    if(i==1) {
-                        ester_err("Unknown parameter %s\n",arg);
-                        return 1;
-                    }
+                if((check_arg_err_code = check_arg(arg,val,&change_grid))) {
+                    ester_err("(star2d::init) Syntax error in parameters file %s, line %d", default_params, k);
+                    if(check_arg_err_code == 2)
+                        ester_err("(star2d::init) Argument to '%s' missing", arg);
+                    if(check_arg_err_code == 1)
+                        ester_err("(star2d::init) Unknown parameter %s", arg);
+                    return 1;
                 }
             }
             fp.close();
@@ -550,22 +549,18 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 
     if(*param_file) {
         if(!fp.open(param_file)) {
-            ester_err("Can't open parameters file %s\n",param_file);
+            ester_err("(star2d::init) Can't open parameters file %s\n",param_file);
             return 1;
         }
         else {
             while((k=fp.get(arg,val))) {
-                if((i=check_arg(arg,val,&change_grid))) {
-                    ester_err("Syntax error in parameters file %s, line %d\n",
-                            param_file, k);
-                    if(i==2) {
-                        ester_err("Error: Argument to '%s' missing\n",arg);
-                        return 1;
-                    }
-                    if(i==1) {
-                        ester_err("Unknown parameter %s\n",arg);
-                        return 1;
-                    }
+                if((check_arg_err_code = check_arg(arg,val,&change_grid))) {
+                    ester_err("(star2d::init) Syntax error in parameters file %s, line %d", param_file, k);
+                    if(check_arg_err_code == 2)
+                        ester_err("(star2d::init) Argument to '%s' missing", arg);
+                    if(check_arg_err_code == 1)
+                        ester_err("(star2d::init) Unknown parameter %s", arg);
+                    return 1;
                 }
             }
             fp.close();
@@ -573,24 +568,27 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     }
 
     cmd.open(argc,argv);
-    while(int err_code=cmd.get(arg,val)) {
-        if(err_code==-1) exit(1);
-        err_code=check_arg(arg,val,&change_grid);
-        if(err_code==2) {
-            ester_err("Error: Argument to '%s' missing\n",arg);
+    while(int err_code = cmd.get(arg,val)) {
+        if(err_code == -1)
+            ester_critical("(star2d::init) Error in command line parsing");
+
+        check_arg_err_code = check_arg(arg,val,&change_grid);
+        if(check_arg_err_code){
+            ester_err("(star2d::init) Syntax error in command line");
+            if(check_arg_err_code == 2)
+                ester_err("(star2d::init) Argument to '%s' missing", arg);
+            if(check_arg_err_code == 1)
+                ester_err("(star2d::init) Unknown parameter '%s'", arg);
             return 1;
         }
-        if(err_code==1) {
-            ester_err("Unknown parameter '%s'\n",arg);
-            return 1;
-        }
+
         cmd.ack(arg,val);
     }
     cmd.close();
 
     if((change_grid&1)&&!(change_grid&2)) {
-        ester_err("Must specify number of points per domain (npts)\n");
-        exit(1);
+        ester_err("(star2d::init) Must specify number of points per domain (npts)");
+        return 1;
     }
 
     if (*input_file) {
@@ -608,7 +606,8 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
             remap(ndomains-1,map.npts,map.nt,map.nex);
         }
     } else {
-        ester_err("2d models should use an input model");
+        ester_err("(star2d::init) 2d models should use an input model");
+        return 1;
     }
     init_comp();
     fill();
