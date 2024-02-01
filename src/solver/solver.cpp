@@ -1362,7 +1362,7 @@ void solver::unwrap(const matrix *x,matrix *y) {
 		}
 		for(j=0;j<nv;j++) j0[j]+=n[i][j];
 	}
-    if (nan) ester_err("NaN values found in unwrap");
+    if (nan) ester_critical("(solver::unwrap) NaN values found in unwrap");
 }
 
 
