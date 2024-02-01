@@ -220,9 +220,8 @@ matrix star2d::find_boundaries(const matrix &logTi) const {
                 for (int i=0; i<logTi.nrows(); i++) {
                     plt::axvline(zj(i));
                     plt::axhline(logTi(i));
-                    LOGE("ri%d zj=%e, dzj=%e\n", i, zj(i), dzj(i));
+                    ester_err("ri%d zj=%e, dzj=%e", i, zj(i), dzj(i));
                 }
-                LOGE("No convergence in find_boundaries");
                 plt::show(true);
                 ester_critical("(star2d::find_boundaries) No convergence");
             }

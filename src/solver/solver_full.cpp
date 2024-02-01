@@ -250,10 +250,10 @@ void solver_full::solve_block(int i,char trans,matrix &x) {
 	dgetrs_(&trans,&n,&nrhs,m[i].data(),&n,ipiv[i],x.data(),&n,&info);
 
     if (std::isnan(max(abs(x)))) {
-        LOGE("NaN in solve block %d\n", i);
+        ester_err("NaN in solve block %d", i);
         for (int ii=0; ii<xx.ncols()*xx.nrows(); ii++) {
             if (std::isnan(xx(ii)))
-                LOGE("rhs(%3d) = %e\n", ii, xx(ii));
+                ester_err("rhs(%3d) = %e", ii, xx(ii));
         }
         ester_critical("(solver_full::solve_block) NaN found in solve_block");
     }

@@ -1325,7 +1325,7 @@ void solver::unwrap(const matrix *x,matrix *y) {
 				q.redim(nth[i][j],nbot[i][j]);
 				y[j].setblock(j0[j],j0[j]+nbot[i][j]-1,0,nth[i][j]-1,q.transpose());
                 if (std::isnan(max(abs(q)))) {
-                    LOGE("var %8s (%2dx%2d), block %d (bc_bot): NaN\n", var[j],
+                    ester_err("var %8s (%2dx%2d), block %d (bc_bot): NaN", var[j],
                             nth[i][j], nbot[i][j], i);
                     nan = true;
                 }
@@ -1340,7 +1340,7 @@ void solver::unwrap(const matrix *x,matrix *y) {
 				q.redim(nth[i][j],nn);
 				y[j].setblock(j0[j]+nbot[i][j],j0[j]+nbot[i][j]+nn-1,0,nth[i][j]-1,q.transpose());
                 if (std::isnan(max(abs(q)))) {
-                    LOGE("var %8s (%2dx%2d), block %d (eq): NaN\n", var[j],
+                    ester_err("var %8s (%2dx%2d), block %d (eq): NaN", var[j],
                             nth[i][j], nn, i);
                     nan = true;
                 }
@@ -1354,7 +1354,7 @@ void solver::unwrap(const matrix *x,matrix *y) {
 				q.redim(nth[i][j],ntop[i][j]);
 				y[j].setblock(j0[j]+n[i][j]-ntop[i][j],j0[j]+n[i][j]-1,0,nth[i][j]-1,q.transpose());
                 if (std::isnan(max(abs(q)))) {
-                    LOGE("var %8s (%2dx%2d), block %d (bc_top): NaN\n", var[j],
+                    ester_err("var %8s (%2dx%2d), block %d (bc_top): NaN", var[j],
                             nth[i][j], ntop[i][j], i);
                     nan = true;
                 }
