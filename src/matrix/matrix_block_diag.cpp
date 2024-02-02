@@ -2,6 +2,7 @@
 #include "ester-config.h"
 #endif
 #include "matrix.h"
+#include "utils.h"
 
 extern "C" {
 #include <stdlib.h>

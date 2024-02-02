@@ -2,6 +2,7 @@
 #include "ester-config.h"
 #endif
 #include "solver.h"
+#include "utils.h"
 
 extern "C" {
 #include <string.h>
