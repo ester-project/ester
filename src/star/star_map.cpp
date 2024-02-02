@@ -401,7 +401,7 @@ int star2d::check_convec(double &p_cc,matrix &Rcc) {
 
     if(config.verbose) printf("Found convective core\n");
     if(ndomains==1) {
-        fprintf(stderr,"Warning: At least 2 domains are needed to deal with core convection\n");
+        ester_warn("At least 2 domains are needed to deal with core convection");
     }
 
     while(schw(i,-1)<0) i++; // look for change of sign of schw
