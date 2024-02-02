@@ -49,8 +49,7 @@ void SDIRK_solver::init(int nvar,const char *type) {
 	else if(!strcmp(type,"esdirk4"))
 		init_esdirk4();
 	else {
-		fprintf(stderr,"SDIRK_solver: Unknown RK method %s\n",type);
-		exit(1);
+		ester_critical("SDIRK_solver: Unknown RK method %s",type);
 	}
 	
 	check_method();
@@ -81,8 +80,7 @@ void SDIRK_solver::destroy() {
 
 void SDIRK_solver::check_init() {
 	if(!initd) {
-		fprintf(stderr,"SDIRK_solver not initialized\n");
-		exit(1);
+		ester_critical("SDIRK_solver not initialized");
 	}
 }
 
@@ -92,58 +90,48 @@ void SDIRK_solver::check_method() {
 	alpha=a(-1,-1);
 	
 	if(a.ncols()!=nstages) {
-		fprintf(stderr,"SDIRK_solver: Invalid method (a is not square)\n");
-		exit(1);
+		ester_critical("SDIRK_solver: Invalid method (a is not square)");
 	}
 	if(b.nrows()!=nstages) {
-		fprintf(stderr,"SDIRK_solver: Invalid method (Incorrect size of vector b)\n");
-		exit(1);
+		ester_critical("SDIRK_solver: Invalid method (Incorrect size of vector b)");
 	}
 	if(c.nrows()!=nstages) {
-		fprintf(stderr,"SDIRK_solver: Invalid method (Incorrect size of vector c)\n");
-		exit(1);
+		ester_critical("SDIRK_solver: Invalid method (Incorrect size of vector c)");
 	}
 	for(int i=0;i<nstages-1;i++) {
 		for(int j=i+1;j<nstages;j++) {
 			if(a(i,j)!=0) {
-				fprintf(stderr,"SDIRK_solver: Method is not diagonal implicit (a_ij!=0 for j>i)\n");
-				exit(1);
+				ester_critical("SDIRK_solver: Method is not diagonal implicit (a_ij!=0 for j>i)");
 			}
 		}
 	}
 	if(c(-1)!=1) {
-		fprintf(stderr,"SDIRK_solver: Invalid method (c_n!=1)\n");
-		exit(1);
+		ester_critical("SDIRK_solver: Invalid method (c_n!=1)");
 	}
 	if(exist(a.row(-1).transpose()!=b)) {
-		fprintf(stderr,"SDIRK_solver: Invalid method (a_ni!=b_i)\n");
-		exit(1);
+		ester_critical("SDIRK_solver: Invalid method (a_ni!=b_i)");
 	}
 	if(a(0,0)==0) {
 		first_explicit=true;
 		if(c(0)!=0) {
-			fprintf(stderr,"SDIRK_solver: Invalid method (c_1 should be 0 for an ESDIRK method)\n");
-			exit(1);
+			ester_critical("SDIRK_solver: Invalid method (c_1 should be 0 for an ESDIRK method)");
 		}
 	} else first_explicit=false;
 	
 	for(int i=0;i<nstages;i++) {
 		if(i==0&&first_explicit) continue;
 		if(a(i,i)!=alpha) {
-			fprintf(stderr,"SDIRK_solver: Invalid method (Diagonal terms in a are not equal)\n");
-			exit(1);
+			ester_critical("SDIRK_solver: Invalid method (Diagonal terms in a are not equal)");
 		}
 	}
 	
 	if(alpha==0) {
-		fprintf(stderr,"SDIRK_solver: Method is explicit\n");
-		exit(1);
+		ester_critical("SDIRK_solver: Method is explicit");
 	}
 	
 	double tol=1e-14;
 	if(std::abs(sum(b)-1)>tol) {
-		fprintf(stderr,"SDIRK_solver: Invalid method (sum(b_i)!=1)\n");
-		exit(1);
+		ester_critical("SDIRK_solver: Invalid method (sum(b_i)!=1)");
 	}
 	order=1;
 	matrix T=c*eye(nstages);
@@ -179,13 +167,11 @@ void SDIRK_solver::regvar(const char *var_name,const matrix &initial_value) {
 	j=0;
 	while (strlen(var[j])) {
 		if(!strcmp(var[j],var_name)) {
-			fprintf(stderr,"ERROR: Can't register variable (already registered)\n");
-			exit(1);
+			ester_critical("Can't register variable (already registered)");
 		}
 		j++;
 		if(j==nv) {
-			fprintf(stderr,"ERROR: Can't register variable (increase nvar)\n");
-			exit(1);
+			ester_critical("Can't register variable (increase nvar)");
 		}
 	}	
 
@@ -242,8 +228,7 @@ int SDIRK_solver::get_id(const char *varn) {
 	while(strcmp(varn,var[i])||!reg[i]) {
 		i++;
 		if(i==nv) {
-			fprintf(stderr,"ERROR: Unknown variable %s\n",varn);
-			exit(1);
+			ester_critical("Unknown variable %s", varn);
 		}
 	}
 	return i;

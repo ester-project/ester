@@ -16,12 +16,10 @@ extern "C" {
 matrix_block_diag::matrix_block_diag(int nblocks) {
 
 	if(nblocks<0) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks can't be negative\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Number of blocks can't be negative");
 	}
 	if(nblocks==0) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks can't be zero\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Number of blocks can't be zero");
 	}
 	nb=nblocks;
 	m=new matrix[nb];
@@ -61,12 +59,10 @@ matrix_block_diag &matrix_block_diag::operator=(const matrix_block_diag &a) {
 matrix_block_diag & matrix_block_diag::set_nblocks(int nblocks) {
 
 	if(nblocks<0) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks can't be negative\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Number of blocks can't be negative");
 	}
 	if(nblocks==0) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks can't be zero\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Number of blocks can't be zero");
 	}
 
 	if(nblocks!=nb) {
@@ -102,8 +98,7 @@ matrix &matrix_block_diag::block(int i){
 
 	if(i<0) i+=nb;
 	if(i<0||i>=nb) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Index exceeds number of blocks\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Index exceeds number of blocks");
 	}
 	return m[i];
 	
@@ -113,8 +108,7 @@ const matrix &matrix_block_diag::block(int i) const {
 
 	if(i<0) i+=nb;
 	if(i<0||i>=nb) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Index exceeds number of blocks\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Index exceeds number of blocks");
 	}
 	return m[i];
 	
@@ -153,8 +147,7 @@ matrix matrix_block_diag::operator,(const matrix &a) const {
 	int i,n=0,n2=0;
 
 	if(ncols()!=a.nf) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Dimensions must agree\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Dimensions must agree");
 	}
 	matrix res(nrows(),a.nc);
 
@@ -172,8 +165,7 @@ matrix_block_diag matrix_block_diag::operator,(const matrix_block_diag &a) const
 	matrix_block_diag res(nb);
 
 	if(nb!=a.nb) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks must agree\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Number of blocks must agree");
 	}
 
 	for(i=0;i<nb;i++) res.m[i]=(m[i],a.m[i]);
@@ -188,8 +180,7 @@ matrix operator,(const matrix &a,const matrix_block_diag &b) {
 	unsigned n=0,n2=0;
 
 	if(a.ncols()!=b.nrows()) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Dimensions must agree\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Dimensions must agree");
 	}
 	matrix res(a.nrows(),b.ncols());
 
@@ -209,8 +200,7 @@ matrix_block_diag matrix_block_diag::operator*(const matrix &z) const {
 	matrix zi;
 	
 	if((z.nc!=ncols()&&z.nc!=1)||(z.nf!=nrows()&&z.nf!=1)) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Dimensions must agree\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Dimensions must agree");
 	}
 	
 	i=0;j=0;
@@ -234,8 +224,7 @@ matrix_block_diag matrix_block_diag::operator/(const matrix &z) const {
 	matrix zi;
 	
 	if((z.nc!=ncols()&&z.nc!=1)||(z.nf!=nrows()&&z.nf!=1)) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Dimensions must agree\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Dimensions must agree");
 	}
 	
 	i=0;j=0;
@@ -283,8 +272,7 @@ matrix_block_diag matrix_block_diag::operator*(const matrix_block_diag &a) const
 	int i;
 
 	if(nb!=a.nb) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks must agree\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Number of blocks must agree");
 	}
 
 	for(i=0;i<nb;i++) 
@@ -301,8 +289,7 @@ matrix_block_diag matrix_block_diag::operator+(const matrix_block_diag &a) const
 	int i;
 
 	if(nb!=a.nb) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks must agree\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Number of blocks must agree");
 	}
 
 	for(i=0;i<nb;i++) 
@@ -319,8 +306,7 @@ matrix_block_diag matrix_block_diag::operator-(const matrix_block_diag &a) const
 	int i;
 
 	if(nb!=a.nb) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Number of blocks must agree\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Number of blocks must agree");
 	}
 
 	for(i=0;i<nb;i++) 
@@ -352,8 +338,7 @@ matrix matrix_block_diag::row(int n) const {
 	nf=nrows();
 	if(n<0) n+=nf;
 	if(n<0||n>=nf) {
-		fprintf(stderr,"ERROR: (matrix_block_diag.row) Index exceeds matrix dimensions\n");
-		exit(1);
+		ester_critical("(matrix_block_diag.row) Index exceeds matrix dimensions");
 	}
 	res=zeros(1,nf);
 	pres=res.p;
@@ -380,8 +365,7 @@ double matrix_block_diag::operator()(int nfil,int ncol) const {
 	if(nfil<0) nfil+=n;
 	if(ncol<0) ncol+=n;
 	if(nfil<0||nfil>=n||ncol<0||ncol>=n) {
-		fprintf(stderr,"ERROR: (matrix_block_diag) Index exceeds matrix dimensions\n");
-		exit(1);
+		ester_critical("(matrix_block_diag) Index exceeds matrix dimensions");
 	}
 	
 	int i=0,j=0;
