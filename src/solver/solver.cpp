@@ -1434,31 +1434,31 @@ void solver::add(const char *eqn, const char *varn,const char *block_type,char t
 	}
 
 	if(error) {
-		ester_err("ERROR (solver):\n\t%s\n\tin eq \"%s\", var \"%s\"",
-                err_msg,eqn,varn);
+		char type_name[4];
 		switch(type) {
 			case 'd':
-				ester_err(" (type: d)");
+				strncpy(type_name, "d", sizeof(type_name));
 				break;
 			case 'l':
-				ester_err(" (type: l)");
+				strncpy(type_name, "l", sizeof(type_name));
 				break;
 			case 'r':
-				ester_err(" (type: r)");
+				strncpy(type_name, "r", sizeof(type_name));
 				break;
 			case 'f':
-				ester_err(" (type: lr)");
+				strncpy(type_name, "lr", sizeof(type_name));
 				break;
 			case 'm':
-				ester_err(" (type: li)");
+				strncpy(type_name, "li", sizeof(type_name));
 				break;
 			case 's':
-				ester_err(" (type: ri)");
+				strncpy(type_name, "ri", sizeof(type_name));
 				break;
 			case 'g':
-				ester_err(" (type: lri)");
+				strncpy(type_name, "lri", sizeof(type_name));
 		}
-		exit(1);
+		ester_critical("(solver::add) '%s' in eq '%s', var: '%s' (type: %s)", err_msg, eqn, varn, type_name);
+		exit(1); // Useless because ester_critical already exit
 	}
 	delete dd;
 	if(type=='m'||type=='s'||type=='g') delete ii;
