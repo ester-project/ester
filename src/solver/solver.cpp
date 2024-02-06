@@ -1871,31 +1871,30 @@ int solver::check_struct_bc(int n,int i,int j,const char *bctype) {
 
 
 void solver::check_struct_error(const char *err_msg,int n,int i,int j,solver_elem *p) {
-
-	fprintf(stderr,"ERROR (solver):\n\t%s\n\tin block %d, eq \"%s\", var \"%s\"",err_msg,n,var[i],var[j]);
+	char type_name[4];
 	switch(p->type) {
 		case 'd':
-			fprintf(stderr," (type: d)\n");
+			strncpy(type_name, "d", sizeof(type_name));
 			break;
 		case 'l':
-			fprintf(stderr," (type: l)\n");
+			strncpy(type_name, "l", sizeof(type_name));
 			break;
 		case 'r':
-			fprintf(stderr," (type: r)\n");
+			strncpy(type_name, "r", sizeof(type_name));
 			break;
 		case 'f':
-			fprintf(stderr," (type: lr)\n");
+			strncpy(type_name, "lr", sizeof(type_name));
 			break;
 		case 'm':
-			fprintf(stderr," (type: li)\n");
+			strncpy(type_name, "li", sizeof(type_name));
 			break;
 		case 's':
-			fprintf(stderr," (type: ri)\n");
+			strncpy(type_name, "ri", sizeof(type_name));
 			break;
 		case 'g':
-			fprintf(stderr," (type: lri)\n");
+			strncpy(type_name, "lri", sizeof(type_name));
 	}
-
+	ester_err("(solver::check_struct_error) '%s' in block %d, eq: '%s', var: '%s' (type: %s)", err_msg, n, var[i], var[j], type_name);
 }
 
 /// \brief Substitutes dependent variables defined in the solver.
