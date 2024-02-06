@@ -25,7 +25,7 @@ ester_debug|info|warn|err|critical
 print to stderr in DEBUG
 none else
 
-`ester_debug`:
+`ester_info`:
 prefixed with green "Info"
 print to stdout in both modes
 
