@@ -44,8 +44,7 @@ solver_full::solver_full(int nblocks,int offcore) {
 	if(oc) {
 		sprintf(tempdir,"solver_full_oc_tmp_XXXXXX");
 		if (mkdtemp(tempdir) == NULL)
-            ester_err("could not create temporary directory `%s'",
-                    tempdir);
+            ester_critical("could not create temporary directory '%s'", tempdir);
 	}
 
 }
@@ -244,7 +243,7 @@ void solver_full::solve_block(int i,char trans,matrix &x) {
 	else x=x*r[i];
 
     if (std::isnan(max(abs(x)))) {
-        ester_err("NaN in RHS solve block %d\n", i);
+        ester_critical("NaN in RHS solve block %d", i);
     }
 	
 	n=m[i].nrows();nrhs=x.ncols();
@@ -256,7 +255,7 @@ void solver_full::solve_block(int i,char trans,matrix &x) {
             if (std::isnan(xx(ii)))
                 LOGE("rhs(%3d) = %e\n", ii, xx(ii));
         }
-        ester_err("NaN found in solve_block");
+        ester_critical("(solver_full::solve_block) NaN found in solve_block");
     }
 
 

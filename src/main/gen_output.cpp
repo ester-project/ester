@@ -25,7 +25,7 @@ int main(int argc,char *argv[]) {
 	if(!m1d.read(input_file, 1)) output2d(m1d);
 	else if (!m2d.read(input_file)) output2d(m2d);
 	else {
-		ester_err("Error reading input file: %s",input_file);
+		ester_critical("Error reading input file: %s",input_file);
 		return 1;
 	}
 	
@@ -589,8 +589,8 @@ void write(const star2d &A,char *var,char *fmt) {
 			fwrite(&d,sizeof(double),1,stdout);
 		}
 	} else {
-		ester_err("Unknown variable %s", var);
-		exit(1);
+		ester_critical("Unknown variable %s", var);
+		exit(1); // Useless because ester_critical already exit
 	}
 }
 

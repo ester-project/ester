@@ -98,7 +98,7 @@ std::vector<int> star2d::distribute_domains(int ndom,matrix &zif,bool check_only
     int nzones=zif.nrows();
 
     if(nzones>ndom) {
-        ester_err("Error: At least %d domains are needed for this model\n",nzones);
+        ester_critical("At least %d domains are needed for this model", nzones);
     }
 
     // Calculate Delta(log(T)) in each zone at theta=0
@@ -224,7 +224,7 @@ matrix star2d::find_boundaries(const matrix &logTi) const {
                 }
                 LOGE("No convergence in find_boundaries");
                 plt::show(true);
-                ester_err("No convergence in find_boundaries\n");
+                ester_critical("(star2d::find_boundaries) No convergence");
             }
         }
         zi.setcol(j,zj);
@@ -309,7 +309,7 @@ matrix star2d::find_boundaries_old(matrix pif) const {
             zj+=dzj;
             nit++;
             if(nit>100) {
-                ester_err("No convergence in find_boundaries\n");
+                ester_critical("(star2d::find_boundaries_old) No convergence");
             }
         }
 

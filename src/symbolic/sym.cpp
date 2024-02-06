@@ -254,12 +254,12 @@ sym diff(const sym &f,const sym &x) {
 		}
 	}
 
-	ester_err("Error (symbolic): Can derive only respect to independent symbols");
+	ester_critical("(symbolic) Can derive only respect to independent symbols");
 }
 sym jacobian(const sym &f,const sym &a) {
 
 	if(typeid(*a.expr)!=typeid(sym::symbol)&&typeid(*a.expr)!=typeid(sym::sym_deriv)) {
-		ester_err("Error (symbolic): Can calculate jacobian only with respect to a symbol or a derivative of a symbol");
+		ester_critical("(symbolic) Can calculate jacobian only with respect to a symbol or a derivative of a symbol");
 	}
 
 	sym snew;

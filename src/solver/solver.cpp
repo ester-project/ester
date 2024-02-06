@@ -281,13 +281,13 @@ void solver::regvar(const char *var_name,int dependent) {
 	j=0;
 	while (strlen(var[j])) {
 		if(!strcmp(var[j],var_name)) {
-			ester_err("ERROR: Can't register variable (already registered)");
-			exit(1);
+			ester_critical("(solver::regvar) Can't register variable (already registered)");
+			exit(1); // Useless because ester_critical already exit
 		}
 		j++;
 		if(j==nv) {
-			ester_err("ERROR: Can't register variable (increase nvar)");
-			exit(1);
+			ester_critical("(solver::regvar) Can't register variable (increase nvar)");
+			exit(1); // Useless because ester_critical already exit
 		}
 	}
 
@@ -317,8 +317,8 @@ int solver::get_id(const char *varn) {
 	while(strcmp(varn,var[i])||!reg(i)) {
 		i++;
 		if(i==nv) {
-			ester_err("ERROR: Unknown variable %s", varn);
-			exit(1);
+			ester_critical("(solver::get_id) Unknown variable %s", varn);
+			exit(1); // Useless because ester_critical already exit
 		}
 	}
 	return i;
@@ -349,10 +349,8 @@ void solver::set_rhs(const char *eqn,const matrix &b) {
 	int ieq;
 	ieq=get_id(eqn);
 	if(dep(ieq)) {
-		ester_err("ERROR (solver):\n\t");
-		ester_err("RHS not used in the definition of dependent variable \"%s\"",
-                eqn);
-        std::exit(EXIT_FAILURE);
+		ester_critical("(solver::set_rhs) RHS not used in the definition of dependent variable '%s'", eqn);
+        std::exit(EXIT_FAILURE); // Useless because ester_critical already exit
 	}
 
 	rhs[ieq]=b;
@@ -409,7 +407,7 @@ void solver::solve(int *info) {
     if(verbose)
         printf("Checking structure...\n");
     err=check_struct();
-    if(err&2) exit(1);
+    if(err&2) ester_critical("(solver::solve) check_struct returned an error");
     if(err) struct_changed=1;
     if(verbose)
         printf("Substitution of dependent variables...\n");
@@ -856,8 +854,8 @@ void solver::create() {
 	} else if(!strcmp(type,"iter")) {
 		op=new solver_iter();
 	} else {
-		ester_err("Unknown solver type \"%s\"", type);
-		exit(1);
+		ester_critical("Unknown solver type \"%s\"", type);
+		exit(1); // Useless because ester_critical already exit
 	}
 	op->verbose=verbose;
 
@@ -1384,7 +1382,7 @@ void solver::add(const char *eqn, const char *varn,const char *block_type,char t
 	else ii=NULL;
 	j0=0;
 	if(strcmp(block_type,"block")&&strcmp(block_type,"bc_eq")&&strcmp(block_type,"bc_pol")) {
-		ester_err("(solver::add): Invalid block_type %s", block_type);
+		ester_critical("(solver::add) Invalid block_type %s", block_type);
 	}
 
 	for(k=0;k<nb;k++) {

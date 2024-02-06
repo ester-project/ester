@@ -257,7 +257,7 @@ void star2d::write(const char *output_file) const {
         hdf5_write(output_file);
         return;
     }
-    ester_err("The output file %s is not HDF5 format.", output_file);
+    ester_critical("The output file %s is not HDF5 format.", output_file);
 }
 
 template<typename T>
@@ -300,19 +300,19 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         file = H5::H5File(input_file, H5F_ACC_RDONLY);
     }
     catch (H5::FileIException e) {
-        ester_err("Could not open file `%s'", input_file);
+        ester_critical("Could not open file `%s'", input_file);
     }
     H5::Group star;
     try {
         star = file.openGroup("/star");
     }
     catch (H5::Exception) {
-        ester_err("Could not open '/star' in `%s'", input_file);
+        ester_critical("Could not open '/star' in `%s'", input_file);
     }
 
     int ndoms;
     if (read_attr(star, "nth", &map.leg.npts)) {
-        ester_err("could not read 'nth' from file `%s'", input_file);
+        ester_critical("could not read 'nth' from file `%s'", input_file);
     }
     if ((map.leg.npts == 1 && dim == 2) || (map.leg.npts > 1 && dim == 1)) {
         return 1;
@@ -323,21 +323,21 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     version.name = buf;
     if (read_attr(star, "ndomains", &ndoms)) {
-        ester_err("Could not read 'ndomains' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
+        ester_critical("Could not read 'ndomains' from file `%s'", input_file);
+        exit(EXIT_FAILURE); // Useless because ester_critical already exit
     }
     map.gl.set_ndomains(ndoms);
     if (read_attr(star, "npts", map.gl.npts)) {
-        ester_err("Could not read 'npts' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
+        ester_critical("Could not read 'npts' from file `%s'", input_file);
+        exit(EXIT_FAILURE); // Useless because ester_critical already exit
     }
     if (read_attr(star, "xif", &map.gl.xif[0])) {
-        ester_err("Could not read 'xif' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
+        ester_critical("Could not read 'xif' from file `%s'", input_file);
+        exit(EXIT_FAILURE); // Useless because ester_critical already exit
     }
     if (read_attr(star, "nex", map.ex.gl.npts)) {
-        ester_err("Could not read 'nex' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
+        ester_critical("Could not read 'nex' from file `%s'", input_file);
+        exit(EXIT_FAILURE); // Useless because ester_critical already exit
     }
     if (read_attr(star, "M", &M)) {
         ester_warn("Could not read 'M' from file `%s'", input_file);
@@ -355,8 +355,8 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_warn("Could not read 'Xc' from file `%s'", input_file);
     }
     if (read_attr(star, "conv", &conv)) {
-        ester_err("Could not read 'conv' from file `%s'", input_file);
-        exit(EXIT_FAILURE);
+        ester_critical("Could not read 'conv' from file `%s'", input_file);
+        exit(EXIT_FAILURE); // Useless because ester_critical already exit
     }
 
     domain_type.resize(ndomains);
@@ -439,20 +439,20 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     map.init();
 
     if (read_field(star, "phi", phi)) {
-        ester_err("Could not read field 'phi' from file `%s'", input_file);
+        ester_critical("Could not read field 'phi' from file `%s'", input_file);
     }
     if (read_field(star, "p", p)) {
-        ester_err("Could not read field 'p' from file `%s'", input_file);
+        ester_critical("Could not read field 'p' from file `%s'", input_file);
     }
     if (read_field(star, "T", T)) {
-        ester_err("Could not read field 'T' from file `%s'", input_file);
+        ester_critical("Could not read field 'T' from file `%s'", input_file);
     }
     if (read_field(star, "phiex", phiex)) {
         ester_warn("Could not read field 'phiex' from file `%s'", input_file);
         phiex = zeros(nr, nth);
     }
     if (read_field(star, "R", map.R)) {
-        ester_err("Could not read field 'R' from file `%s'", input_file);
+        ester_critical("Could not read field 'R' from file `%s'", input_file);
     }
     if (map.R.nrows() < map.ndomains+1)
         map.R = zeros(1,nth).concatenate(map.R);
@@ -480,7 +480,7 @@ int star2d::read(const char *input_file, int dim) {
     if (isHDF5Name(input_file)) {
         return hdf5_read(input_file, dim);
     }
-    ester_err("The input file %s is not HDF5 format.", input_file);
+    ester_critical("The input file %s is not HDF5 format.", input_file);
 }
 
 bool star2d::check_tag(const char *tag) const {
@@ -674,8 +674,8 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
         map.gl.set_ndomains(atoi(val));
         *change_grid=*change_grid|1;
         if(*change_grid&2) {
-            ester_err("ndomains must be specified before npts\n");
-            exit(1);
+            ester_critical("(star2d::check_arg) ndomains must be specified before npts");
+            exit(1); // Useless because ester_critical already exit
         }
     }
     else if(!strcmp(arg,"npts")) {
@@ -721,7 +721,7 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
         Xc=atof(val);
     }
     else if(!strcmp(arg,"conv")) {
-        ester_err("Param. conv is no longer modifiable. Disable core convection with core_convec 0.\n");
+        ester_err("Param. conv is no longer modifiable. Disable core convection with core_convec 0.");
         return 1;
     }
     else if(!strcmp(arg,"surff")) {

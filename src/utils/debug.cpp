@@ -12,7 +12,7 @@
 
 
 void sigfpe_handler(int) {
-    ester_err("SIGFPE");
+    ester_critical("SIGFPE");
 }
 
 void enable_sigfpe() {

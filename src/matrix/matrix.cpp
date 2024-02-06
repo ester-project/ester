@@ -19,13 +19,13 @@ matrix::matrix(int nfil, int ncol) {
     unsigned tam;
 
     if(nfil<0||ncol<0) {
-        ester_err("Can't create matrix with negative size");
+        ester_critical("Can't create matrix with negative size");
     }
     if(nfil==0) {
-        ester_err("Number of rows can't be zero");
+        ester_critical("Number of rows can't be zero");
     }
     if(ncol==0) {
-        ester_err("Number of columns can't be zero");
+        ester_critical("Number of columns can't be zero");
     }
     nf=nfil;
     nc=ncol;
@@ -86,16 +86,16 @@ matrix &matrix::dim(int nfil, int ncol) {
     unsigned tam;
 
     if(nfil<0||ncol<0) {
-        ester_err("Can't create matrix with negative size");
-        exit(1);
+        ester_critical("Can't create matrix with negative size");
+        exit(1); // Useless because ester_critical already exit
     }
     if(nfil==0) {
-        ester_err("Number of rows can't be zero");
-        exit(1);
+        ester_critical("Number of rows can't be zero");
+        exit(1); // Useless because ester_critical already exit
     }
     if(ncol==0) {
-        ester_err("Number of columns can't be zero");
-        exit(1);
+        ester_critical("Number of columns can't be zero");
+        exit(1); // Useless because ester_critical already exit
     }
 
     if(nfil*ncol!=nf*nc) {
@@ -121,21 +121,21 @@ matrix &matrix::dim(int nfil, int ncol) {
 matrix &matrix::redim(int nfil, int ncol) {
 
     if(nfil<0||ncol<0) {
-        ester_err("Can't create matrix with negative size");
-        exit(1);
+        ester_critical("Can't create matrix with negative size");
+        exit(1); // Useless because ester_critical already exit
     }
     if(nfil==0) {
-        ester_err("Number of rows can't be zero");
-        exit(1);
+        ester_critical("Number of rows can't be zero");
+        exit(1); // Useless because ester_critical already exit
     }
     if(ncol==0) {
-        ester_err("Number of columns can't be zero");
-        exit(1);
+        ester_critical("Number of columns can't be zero");
+        exit(1); // Useless because ester_critical already exit
     }
 
     if(nfil*ncol!=nf*nc) {
-        ester_err("matrix.redim: Number of elements doesn't match");
-        exit(1);
+        ester_critical("matrix.redim: Number of elements doesn't match");
+        exit(1); // Useless because ester_critical already exit
     }
     nf=nfil;nc=ncol;
 
@@ -162,8 +162,8 @@ double &matrix::operator()(int ifil, int icol) {
     if(ifil<0) ifil+=nf;
     if(icol<0) icol+=nc;
     if(ifil>=nf||ifil<0||icol>=nc||icol<0) {
-        ester_err("Index exceeds matrix dimensions");
-        exit(1);
+        ester_critical("Index exceeds matrix dimensions");
+        exit(1); // Useless because ester_critical already exit
     }
     return *(p+icol*nf+ifil);
 
@@ -175,8 +175,8 @@ double &matrix::operator()(int ielem) {
 
     if(ielem<0) ielem+=nf*nc;
     if(ielem>=nf*nc||ielem<0) {
-        ester_err("Index exceeds matrix dimensions");
-        exit(1);
+        ester_critical("Index exceeds matrix dimensions");
+        exit(1); // Useless because ester_critical already exit
     }
     return *(p+ielem);
 
@@ -189,8 +189,8 @@ const double &matrix::operator()(int ifil, int icol) const {
     if(ifil<0) ifil+=nf;
     if(icol<0) icol+=nc;
     if(ifil>=nf||ifil<0||icol>=nc||icol<0) {
-        ester_err("Index exceeds matrix dimensions");
-        exit(1);
+        ester_critical("Index exceeds matrix dimensions");
+        exit(1); // Useless because ester_critical already exit
     }
     return *(p+icol*nf+ifil);
 
@@ -202,8 +202,8 @@ const double &matrix::operator()(int ielem) const {
 
     if(ielem<0) ielem+=nf*nc;
     if(ielem>=nf*nc||ielem<0) {
-        ester_err("Index exceeds matrix dimensions");
-        exit(1);
+        ester_critical("Index exceeds matrix dimensions");
+        exit(1); // Useless because ester_critical already exit
     }
     return *(p+ielem);
 
@@ -322,8 +322,8 @@ matrix matrix::operator+(const matrix &a) const {
     int i, j, resnf, resnc, N;
 
     if( (nf!=1 && a.nf!=1 && nf!=a.nf) || (nc!=1 && a.nc!=1 && nc!=a.nc) ) {
-        ester_err("(matrix.+) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.+) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     if(nf>a.nf) resnf=nf; // This cannot happen
@@ -374,8 +374,8 @@ matrix matrix::operator-(const matrix &a) const {
     int i, j, resnf, resnc, N;
 
     if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-        ester_err("(matrix.-) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.-) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     if(nf>a.nf) resnf=nf;
@@ -451,8 +451,8 @@ matrix matrix::operator*(const matrix &a) const {
     int i, j, resnf, resnc, N;
 
     if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-        ester_err("(matrix.*) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.*) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     if(nf>a.nf) resnf=nf;
@@ -504,8 +504,8 @@ matrix matrix::operator/(const matrix &a) const {
     int i, j, resnf, resnc, N;
 
     if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-        ester_err("(matrix./) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix./) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     if(nf>a.nf) resnf=nf;
@@ -568,8 +568,8 @@ matrix matrix::operator==(const matrix &a) const {
     int i, j, resnf, resnc, N;
 
     if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-        ester_err("(matrix.==) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.==) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     if(nf>a.nf) resnf=nf;
@@ -620,8 +620,8 @@ matrix matrix::operator!=(const matrix &a) const {
     int i, j, resnf, resnc, N;
 
     if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-        ester_err("(matrix.!=) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.!=) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     if(nf>a.nf) resnf=nf;
@@ -671,8 +671,8 @@ matrix matrix::operator>(const matrix &a) const{
     int i, j, resnf, resnc, N;
 
     if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-        ester_err("(matrix.>) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.>) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     if(nf>a.nf) resnf=nf;
@@ -736,8 +736,8 @@ matrix matrix::operator>=(const matrix &a) const {
     int i, j, resnf, resnc, N;
 
     if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-        ester_err("(matrix.>=) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.>=) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     if(nf>a.nf) resnf=nf;
@@ -801,8 +801,8 @@ matrix matrix::operator||(const matrix &a) const {
     int i, j, resnf, resnc, N;
 
     if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-        ester_err("(matrix.||) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.||) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     if(nf>a.nf) resnf=nf;
@@ -853,8 +853,8 @@ matrix matrix::operator&&(const matrix &a) const {
     int i, j, resnf, resnc, N;
 
     if( (nf!=1&&a.nf!=1&&nf!=a.nf) || (nc!=1&&a.nc!=1&&nc!=a.nc) ) {
-        ester_err("(matrix.&&) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.&&) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     if(nf>a.nf) resnf=nf;
@@ -1050,8 +1050,8 @@ const matrix matrix::row(int ifil) const {
 
     if(ifil<0) ifil+=nf;
     if(ifil<0||ifil>=nf) {
-        ester_err("(matrix.row) Index exceeds matrix dimensions");
-        exit(1);
+        ester_critical("(matrix.row) Index exceeds matrix dimensions");
+        exit(1); // Useless because ester_critical already exit
     }
 
     pi=p+ifil;
@@ -1069,12 +1069,12 @@ matrix &matrix::setrow(int ifil, const matrix &a) {
 
     if(ifil<0) ifil+=nf;
     if(ifil<0||ifil>=nf) {
-        ester_err("(matrix.setrow) Index exceeds matrix dimensions");
-        exit(1);
+        ester_critical("(matrix.setrow) Index exceeds matrix dimensions");
+        exit(1); // Useless because ester_critical already exit
     }
     if(a.nf>1||a.nc!=nc) {
-        ester_err("(matrix.setrow) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.setrow) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     pi=p+ifil;
@@ -1094,8 +1094,8 @@ const matrix matrix::col(int icol) const {
 
     if(icol<0) icol+=nc;
     if(icol<0||icol>=nc) {
-        ester_err("(matrix.col) Index exceeds matrix dimensions");
-        exit(1);
+        ester_critical("(matrix.col) Index exceeds matrix dimensions");
+        exit(1); // Useless because ester_critical already exit
     }
 
     pi=p+icol*nf;
@@ -1113,12 +1113,12 @@ matrix &matrix::setcol(int icol, const matrix &a) {
 
     if(icol<0) icol+=nc;
     if(icol<0||icol>=nc) {
-        ester_err("(matrix.setcol) Index exceeds matrix dimensions");
-        exit(1);
+        ester_critical("(matrix.setcol) Index exceeds matrix dimensions");
+        exit(1); // Useless because ester_critical already exit
     }
     if(a.nc>1||a.nf!=nf) {
-        ester_err("(matrix.setcol) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.setcol) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     pi=p+icol*nf;
@@ -1138,8 +1138,8 @@ const matrix matrix::block(int ifil1, int ifil2, int icol1, int icol2) const {
     if(icol2<0) icol2+=nc;
 
     if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
-        ester_err("(matrix.block) Index exceeds matrix dimensions");
-        exit(1);
+        ester_critical("(matrix.block) Index exceeds matrix dimensions");
+        exit(1); // Useless because ester_critical already exit
     }
 
     matrix res(ifil2-ifil1+1, icol2-icol1+1);
@@ -1166,8 +1166,8 @@ const matrix matrix::block_step(int ifil1, int ifil2, int dfil, int icol1, int i
     if(icol2<0) icol2+=nc;
 
     if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
-        ester_err("(matrix.block_step) Index exceeds matrix dimensions");
-        exit(1);
+        ester_critical("(matrix.block_step) Index exceeds matrix dimensions");
+        exit(1); // Useless because ester_critical already exit
     }
 
     matrix res((int) floor((ifil2-ifil1)/dfil)+1,
@@ -1194,12 +1194,12 @@ matrix &matrix::setblock(int ifil1, int ifil2, int icol1, int icol2, const matri
     if(icol2<0) icol2+=nc;
 
     if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
-        ester_err("(matrix.setblock) Index exceeds matrix dimensions");
-        exit(1);
+        ester_critical("(matrix.setblock) Index exceeds matrix dimensions");
+        exit(1); // Useless because ester_critical already exit
     }
     if(a.nf!=ifil2-ifil1+1||a.nc!=icol2-icol1+1) {
-        ester_err("(matrix.setblock) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.setblock) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     double *pi, *pa;
@@ -1226,12 +1226,12 @@ matrix &matrix::setblock_step(int ifil1, int ifil2, int dfil, int icol1, int ico
     if(icol2<0) icol2+=nc;
 
     if(ifil1<0||ifil1>=nf||ifil2<0||ifil2>=nf||icol1<0||icol1>=nc||icol2<0||icol2>=nc) {
-        ester_err("(matrix.setblock_step) Index exceeds matrix dimensions");
-        exit(1);
+        ester_critical("(matrix.setblock_step) Index exceeds matrix dimensions");
+        exit(1); // Useless because ester_critical already exit
     }
     if(a.nf!=floor((ifil2-ifil1)/dfil)+1||a.nc!=floor((icol2-icol1)/dcol)+1) {
-        ester_err("(matrix.setblock_step) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.setblock_step) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     double *pi, *pa;
@@ -1256,17 +1256,17 @@ matrix matrix::concatenate(const matrix &a, int dir) const {
 
     if(dir==0) {
         if(a.nc!=nc) {
-            ester_err("(matrix.concatenate) Dimensions must agree (%d != %d)",
+            ester_critical("(matrix.concatenate) Dimensions must agree (%d != %d)",
                     a.nc, nc);
-            exit(1);
+            exit(1); // Useless because ester_critical already exit
         }
         res.dim(nf+a.nf, nc);
         res.setblock(0, nf-1, 0, -1, *this);
         res.setblock(nf, a.nf+nf-1, 0, -1, a);
     } else {
         if(a.nf!=nf) {
-            ester_err("(matrix.concatenate) Dimensions must agree");
-            exit(1);
+            ester_critical("(matrix.concatenate) Dimensions must agree");
+            exit(1); // Useless because ester_critical already exit
         }
         res.dim(nf, nc+a.nc);
         res.setblock(0, -1, 0, nc-1, *this);
@@ -1467,8 +1467,8 @@ double mean(const matrix &a) {
 matrix max(const matrix &a, const matrix &b) {
 
     if( (b.nf!=a.nf) || (b.nc!=a.nc) ) {
-        ester_err("(matrix.max) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.max) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     matrix res(a.nf, a.nc);
@@ -1499,8 +1499,8 @@ matrix max(double n, const matrix &a) {
 matrix min(const matrix &a, const matrix &b) {
 
     if( (b.nf!=a.nf) || (b.nc!=a.nc) ) {
-        ester_err("(matrix.min) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.min) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     matrix res(a.nf, a.nc);
