@@ -871,6 +871,7 @@ void star2d::dump_info() {
     printf("\tPeriod (c) = %.5f days\n",2*PI/w(0,0)/units.Omega/3600./24.);
     printf("\tLz = %e erg·s\n",Lz());
     printf("\tj  = %e cm2/s (Lz/M)\n",Lz()/M);
+    printf("\tVol  = %e cm3 (Volume of the star)\n",Volume());
     printf("\tIz  = %e g.cm2 (Axial moment of inertia)\n",Iz());
     printf("\tIc  = %e g.cm2 (Central moment of inertia)\n",Ic());
     printf("\tJ2  = %e (First multipolar coef. of the grav.  field from inertia moments)\n",(1.5*Iz()-Ic())/M/R/R/re/re);
