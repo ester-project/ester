@@ -60,6 +60,12 @@ double star2d::Lz() const {
 
 }
 
+double star2d::Volume() const {
+// Volume of the star
+	return 2*PI*(map.gl.I,(r*r*map.rz,map.leg.I_00))(0)*
+		pow(units.r,3);
+}
+
 double star2d::Iz() const {
 // Axial moment of inertia
 	return 2*PI*(map.gl.I,(rho*r*r*sin(th)*sin(th)*r*r*map.rz,map.leg.I_00))(0)*units.rho*
