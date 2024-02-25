@@ -615,7 +615,8 @@ r^2r_\zeta\sin\theta \mathrm{d}\zeta \mathrm{d}\theta \mathrm{d}\varphi
 \begin{array}{rl}
 \displaystyle\nabla\cdot\vect v&
 \displaystyle ={V^i}_{;i}=
-\frac{\partial V^i}{\partial x^i}+\frac{\partial\log\sqrt{|g|}}{\partial x^k}V^k=\\
+\frac{\partial V^i}{\partial x^i}+\frac{\partial\log\sqrt{|g|}}{\partial
+x^k}V^k=\frac{1}{\sqrt{|g|}}\partial_k(\sqrt{|g|}V^k)\\
 \\
 &\displaystyle =\frac{\partial V^\zeta}{\partial\zeta}+\left(\frac{2r_\zeta}{r}
 +\frac{r_{\zeta\zeta}}{r_\zeta}
@@ -719,6 +720,33 @@ A^\theta\frac{\partial B^\varphi}{\partial\theta}+A^\varphi\frac{\partial B^\var
 where $\Gamma^i_{jk}=\Gamma^i_{kj}$ should be used for the remaining
 ones.
 \end{itemize}
+\subsection{The meridional streamfunction}
+
+In a steady state the velocity field verify $\na\cdot\rho\vv=0$. Setting
+$\vW=\rho\vv$ the field $\vW$ verifies
+
+\begin{equation}
+\partial_\zeta(\sqrt{|g|}W^\zeta) +
+\partial_\theta(\sqrt{|g|}W^\theta)=0
+\end{equation}
+from which we introduce the streamfunction $\psi$ such that
+
+\begin{equation}
+W^\zeta = \frac{1}{\sqrt{|g|}}\partial_\theta\psi \andet W^\theta =
+-\frac{1}{\sqrt{|g|}}\partial_\zeta \psi
+\end{equation}
+The lines $\psi=\cst$ are streamlines. In \ester the meridional velocity
+field is described with the function $G$ which is related to the stream
+function by
+
+\[ \psi = r\sth G\]
+hence we get
+
+\[ \rho v_r = \frac{1}{r\sth}\partial_\theta(\sth G) -
+\frac{r_\theta}{rr_\zeta}\partial_\zeta G\]
+and
+
+\[ \rho v_\theta = -\frac{1}{rr_\zeta}\partial_\zeta(rG)\]
 
 \subsection{Multidomain and continuity conditions}
 
