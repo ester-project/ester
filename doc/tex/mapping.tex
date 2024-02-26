@@ -720,33 +720,6 @@ A^\theta\frac{\partial B^\varphi}{\partial\theta}+A^\varphi\frac{\partial B^\var
 where $\Gamma^i_{jk}=\Gamma^i_{kj}$ should be used for the remaining
 ones.
 \end{itemize}
-\subsection{The meridional streamfunction}
-
-In a steady state the velocity field verify $\na\cdot\rho\vv=0$. Setting
-$\vW=\rho\vv$ the field $\vW$ verifies
-
-\begin{equation}
-\partial_\zeta(\sqrt{|g|}W^\zeta) +
-\partial_\theta(\sqrt{|g|}W^\theta)=0
-\end{equation}
-from which we introduce the streamfunction $\psi$ such that
-
-\begin{equation}
-W^\zeta = \frac{1}{\sqrt{|g|}}\partial_\theta\psi \andet W^\theta =
--\frac{1}{\sqrt{|g|}}\partial_\zeta \psi
-\end{equation}
-The lines $\psi=\cst$ are streamlines. In \ester the meridional velocity
-field is described with the function $G$ which is related to the stream
-function by
-
-\[ \psi = r\sth G\]
-hence we get
-
-\[ \rho v_r = \frac{1}{r\sth}\partial_\theta(\sth G) -
-\frac{r_\theta}{rr_\zeta}\partial_\zeta G\]
-and
-
-\[ \rho v_\theta = -\frac{1}{rr_\zeta}\partial_\zeta(rG)\]
 
 \subsection{Multidomain and continuity conditions}
 
@@ -844,7 +817,7 @@ are continuous and derivable scalar functions. For a physical boundary, it could
 some components of the vector
 field are continuous (or derivable) and others are not, then none of the above conditions is correct.
 
-\subsection{Meridional stream function}
+\subsection{The meridional stream function}
 
 We consider the meridional velocity field only. Since the star is
 assumed axisymmetric and that we consider a steady state, the meridional
@@ -902,7 +875,7 @@ or
 \[ \dr{\psi}dr + \dtheta{\psi}d\theta = 0 = d\psi\]
 so $\psi=\cst$ indeed describes the streamlines in a meridional plane.
 
-\subsubsection{Situation in the ESTER code (steady version)}
+\subsubsection{Situation in the \ester code (steady version)}
 
 In the code $G$ is called the stream function which is not. Actually, if
 we set
@@ -913,7 +886,7 @@ then we find
 \[ w_r = \frac{1}{r\sth}\dtheta{}(\sth G)
 -\frac{r_\theta}{rr_\zeta}\dzeta{G} \andet w_\theta =
 -\frac{1}{rr_\zeta}\dzeta{rG}\]
-which is what is coded in ESTER. $G$ is not a stream function since
+which is what is coded in \ester. $G$ is not a stream function since
 
 \[ d\psi= 0 \impl r\sth dG  +\sth Gdr + \cth Gd\theta =0\]
 so $dG\neq0$ on the streamlines.
@@ -937,7 +910,7 @@ which yields
 -\frac{1}{\sqrt{g}}\dzeta{\Psi}\]
 which is the same as \eq{stream} up to the sign.
 
-So the ESTER code is consistent with the paper since they agree on
+So the \ester code is consistent with the paper since they agree on
 
 \[ \psi = G =\frac{\Psi}{r\sth}\]
 but $r\sth G = \cst$ should be used to draw the meridional streamlines.
@@ -974,7 +947,7 @@ hence requiring a Legendre transform to get the $u^\ell$ function.
 
 \pagebreak
 
-\section{Coordinate mapping in ESTER}
+\section{Coordinate mapping in \ester}
 
 The class \verb|mapping| combines a \verb|diff_gl| object with a \verb|diff_leg| object to perform 
 calculations in 2D. The prototype of this class is defined in \verb|mapping.h|.
