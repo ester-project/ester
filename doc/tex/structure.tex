@@ -157,8 +157,9 @@ while angular momentum flux balance reads
 
 \begin{equation}
 \label{am_nd}
-\na\cdot{(\rho s^2\Omega\vu)}=E\na\cdot (\mu s^2\na\Omega)
+\vu\cdot\na(s^2\Omega)=\frac{1}{\rho}\na\cdot (\rho s^2\na\Omega)
 \end{equation}
+if we assume constant kinematic viscosity.
 Mass conservation remains the same
 
 \begin{equation} \Div(\rho\vu) =0\end{equation}
@@ -219,12 +220,19 @@ while $\vec{\hat\tau}$ is tangent to it. $\psi$ is the stream
 function of the meridional flow.
 
 \item {\bf The rotation speed} of the star must be specified. For this we
-impose the equatorial angular velocity as a fraction of the critical
+impose the equatorial angular velocity as a fraction $\omega_k$ of the critical
 angular velocity, namely:
 
 \[ \Omega(r=R_{\rm eq},\theta=\pi/2) =
-\omega_k\sqrt{\frac{GMR^2\rho_c}{P_cR_{\rm eq}^3}}\]
-where $\omega_k$ is chosen by the user. Another way of specifying the
+\omega_k\sqrt{\frac{GM}{R_{\rm eq}^3}}\]
+where $\omega_k$ is chosen by the user. We note that in non-dimensional
+quantities it reads:
+
+\[ \omega_{\rm eq} = \omega_k\sqrt{\frac{GM}{R_{\rm eq}^3\Omega_0^2}} =
+\omega_k\sqrt{\frac{\pi_cm(1-\eps)^3}{4\pi}}\]
+where we set $M=\rho_cR^3m$.
+
+Another way of specifying the
 angular velocity of the star is to impose its total angular momentum
 (see integral constraints).
 
@@ -458,9 +466,9 @@ following the definitions of \cite{RSI96} and using the thermodynamic
 triangular relation.
 
 \bigskip
-Opacity and nuclear heat production depend on $\rho$ and $T$. So for both of
-these quantities we have the formal relation $f=f(\rho,T)$. We note that
-radiative conductivity reads:
+Opacity, radiative conductivity and nuclear heat production depend
+on $\rho$ and $T$. So for these quantities we have the formal
+relation $f=f(\rho,T)$. We note that radiative conductivity reads:
 
 \[ \chi_r = \frac{16\sigma T^3}{3\rho\kappa}\]
 so that
