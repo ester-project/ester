@@ -163,7 +163,7 @@ updated during the calculation.
 calculation.
 \item {\tt opa}. Type of opacity law. Possible values are:
 \begin{itemize}
-\item {\tt opal}. OPAL opacities.
+\item {\tt opal}. OPAL opacities from \cite{GN93}.
 \item {\tt houdek}. Houdek's interpolation of OPAL opacities (smoother),
 see Houdek and Rogl (1996), "On the accuracy of opacity interpolation
 schemes", {\it Bull. Ast. Soc. India}, {\bf 24}, 317.
@@ -752,8 +752,8 @@ show()                  # Needed in non-interactive mode of matplotlib
 
 Other examples are availble, especially meridional cuts like the
 differential rotation (see \texttt{P\_rot.py}). Note that ``dotted
-variables'' like \verb|opa.k| are accessed via \verb|A.opa_k| under
-python.
+variables'' like \verb|opa.k| are accessed via \verb|A.opacity| under
+python (see python/ester.in for correspondances of variables).
 
 \subsection{Using HDF5}
 If you installed ESTER with
