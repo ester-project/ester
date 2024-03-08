@@ -38,8 +38,8 @@ int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 			while(fin<2) {
 				nit++;
 				if(nit>100) {
-					ester_err("Error (atm_onelayer): No convergence");
-					return 1;
+					ester_critical("(atm_onelayer) No convergence");
+					return 1; // Useless because ester_critical already exit
 				}
 				double F,dF,dlogps;
 				p=pow(10,logps)*ones(1,1);

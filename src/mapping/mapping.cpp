@@ -287,12 +287,12 @@ matrix mapping::stream(const matrix &Fz) const {
 matrix mapping::eval(const matrix &y,const matrix &ri, const matrix &thi,int parity) const {
 
 	if(ri.nrows()!=thi.nrows()||ri.ncols()!=thi.ncols()) {
-		ester_err("(mapping.eval) Matrix dimensions must agree");
-		exit(1);
+		ester_critical("(mapping.eval) Matrix dimensions must agree");
+		exit(1); // Useless because ester_critical already exit
 	}
 	if(y.nrows()!=gl.N||y.ncols()!=leg.npts) {
-		ester_err("(mapping.eval) Matrix dimensions must agree");
-		exit(1);
+		ester_critical("(mapping.eval) Matrix dimensions must agree");
+		exit(1); // Useless because ester_critical already exit
 	}
 
 	matrix yi(ri.nrows(),ri.ncols());
@@ -307,9 +307,9 @@ matrix mapping::eval(const matrix &y,const matrix &ri, const matrix &thi,int par
 		if(zi-1>-1e-10&&zi-1<1e-10) zi=1;
 		if(zi<1e-10&&zi>-1e-10) zi=0;
 		if(zi>1||zi<0) {
-			ester_err("(mapping.eval) Coordinates (r,theta)=(%f,%f) are out of bounds",
+			ester_critical("(mapping.eval) Coordinates (r,theta)=(%f,%f) are out of bounds",
 				ri(i),thi(i));
-			exit(1);
+			exit(1); // Useless because ester_critical already exit
 		}
 		int fin=0,nit=0;
 		if(zi==0||zi==1) fin=99;
@@ -319,8 +319,8 @@ matrix mapping::eval(const matrix &y,const matrix &ri, const matrix &thi,int par
 			if(fabs(dzi)<1e-10) fin++;
 			nit++;
 			if(nit>100) {
-				ester_err("(mapping.eval) Failed to converge");
-				exit(1);
+				ester_critical("(mapping.eval) Failed to converge");
+				exit(1); // Useless because ester_critical already exit
 			}
 			zi+=dzi;
 		}
@@ -336,8 +336,8 @@ matrix mapping::zeta_to_r(const matrix &z) const {
 	matrix rr(z.nrows(),z.ncols());
 
 	if(z.ncols()!=leg.npts) {
-		ester_err("(mapping.zeta_to_r) Matrix must have nth columns");
-		exit(1);
+		ester_critical("(mapping.zeta_to_r) Matrix must have nth columns");
+		exit(1); // Useless because ester_critical already exit
 	}
 
 	for(int j=0;j<leg.npts;j++) {

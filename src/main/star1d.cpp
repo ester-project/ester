@@ -48,7 +48,7 @@ int main(int argc,char *argv[]) {
     solver *op;
 
     if(A.init(config.input_file,config.param_file,argc,argv)) {
-        ester_err("Could not initialize star");
+        ester_critical("Could not initialize star");
         return 1;
     }
 
