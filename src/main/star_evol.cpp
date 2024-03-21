@@ -11,15 +11,18 @@
 
 int main(int argc,char *argv[]) {
 
-	configuration config(argc,argv);
+	configuration config;
+	config.read_config(argc, argv); // Should we called only read_config_file here ?
+
 	cmdline_parser cmd;
 	
 	double dXc=0.05,Xcmin=0.05;
 	
 	char *arg,*val;
 	cmd.open(argc,argv);
-	while(int err_code=cmd.get(arg,val)) {
-		if(err_code==-1) exit(1);
+	while(int err_code = cmd.get(arg,val)) {
+		if(err_code == -1)
+			ester_err("Invalid argument %s", arg);
 		err_code=0;
 		if(!strcmp(arg,"dXc")) {
 			if(val==NULL) err_code=2;

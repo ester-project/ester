@@ -7,7 +7,7 @@ class star1dR: public star1d {
 public:
 	star1dR();
 	double Teff_obj;
-	int check_arg(char *arg,char *val,int *change_grid);
+	int parse_arg(char *arg,char *val,int *change_grid);
 	solver *init_solver(int nvar_add=0);
 	void register_variables(solver *);
 	double solve(solver *);
@@ -22,7 +22,7 @@ class star2dR: public star2d {
 public:
 	star2dR();
 	double Teff_obj,Re_obj;
-	int check_arg(char *arg,char *val,int *change_grid);
+	int parse_arg(char *arg,char *val,int *change_grid);
 	solver *init_solver(int nvar_add=0);
 	void register_variables(solver *);
 	double solve(solver *);
