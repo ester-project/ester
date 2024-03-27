@@ -25,6 +25,12 @@ atm=simple
 Omega_bk=0
 
 Ekman=1
+reynolds_v=1e9
+reynolds_h=1e7         
+visc_v=1e7           # cm^2/s
+visc_h=1e7           # cm^2/s
+diffusion_v=1e4      # cm^2/s
+diffusion_h=1e4      # cm^2/s
 
 core_convec=1			# Deactivate core convection with core_convec=0
 min_core_size=0.03		# Minimum size of convective core (in fraction of polar radius)

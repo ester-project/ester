@@ -891,7 +891,7 @@ void star2d::dump_info() {
         double rcc_e=map.leg.eval_00(Rcore(),PI/2)(0);
         printf("\tRadius_core (e) = %.5f Rsun (%e cm)  (flat.=%.3f)\n",rcc_e/R_SUN,rcc_e,1.-rcc_p/rcc_e);
         printf("\tLz_core = %e erg·s\n",Lzcore());
-        printf("\tX_core/X_env = %.4f\n",Xc);
+        printf("\tX_core/X_env = %.10f\n",Xc);
         printf("\n");
     }
     printf("Central values:\n\n");
