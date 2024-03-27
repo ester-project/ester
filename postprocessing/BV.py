@@ -6,7 +6,7 @@ from ester import *
 from numpy import *
 import matplotlib.pyplot as plt
 
-a=star2d('../runs/Master/M3O7.h5')
+a=star2d('M3_O3.h5')
 
 # Isotherme à 50000K ----------------------------------------------
 temp=a.Tc*a.T

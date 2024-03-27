@@ -1,4 +1,5 @@
-\chapter{Mapping. Spheroidal coordinates}\label{chap:mapping}
+\chapter{Mapping. Axisymmetric spheroidal
+coordinates}\label{chap:mapping2D}
 
 We have seen at the end of the previous chapter that we can work with
 2D problems combining {\tt diff\_gl} and {\tt diff\_leg} objects. This
@@ -17,7 +18,8 @@ Note that the problems in which we are interested involves only
 axisymmetric quantities, thus essentially 2D. For that reason, we
 restrict the discussion to axisymmetric 2D problems in a spherical-like
 domain, but it can be generalized to a non-axisymmetric spheroidal
-geometry as shown in \cite{BGM98}.
+geometry as shown in \cite{BGM98}. This case is dealt with in the next
+chapter.
 
 \subsection{Coordinate mapping}
 \label{sect:mapping}
@@ -223,10 +225,10 @@ coordinates are non-orthogonal, which means that the surfaces of constant
 $\zeta$ are not perpendicular to those of constant $\theta$.
 
 Before we continue, we should clarify a point. We have set
-$\theta'=\theta$, so hereafter we will remove the tilde ($'$) to simplify
+$\theta'=\theta$, so hereafter we will remove the prime ($'$) to simplify
 the notation. But when working with spheroidal coordinates, the partial
 derivative $\frac{\partial}{\partial\theta}$ refers to the derivative
-with respect to $\theta$ with $\zeta$ constant, that is not the habitual
+with respect to $\theta$ with $\zeta$ constant, that is not the usual
 derivative in spherical coordinates that is done holding $r$ constant.
 
 $$\left.\frac{\partial}{\partial\theta}\right|_{\zeta,\varphi\,\mathrm{const.}}\ne
@@ -234,7 +236,8 @@ $$\left.\frac{\partial}{\partial\theta}\right|_{\zeta,\varphi\,\mathrm{const.}}\
 
 The same can be said for the azimuthal coordinate $\varphi$ but, in this case
 $\left.\frac{\partial}{\partial\varphi}\right|_{\zeta,\theta\,\mathrm{const.}}=
-\left.\frac{\partial}{\partial\varphi}\right|_{r,\theta\,\mathrm{const.}}$.
+\left.\frac{\partial}{\partial\varphi}\right|_{r,\theta\,\mathrm{const.}}$
+since $r$ does not depend on $\varphi$.
 
 \subsubsection{Natural basis}
 
@@ -247,7 +250,11 @@ We will start by defining the natural basis for the spheroidal coordinates, we h
 \vect E_\theta=r_\theta\rvec+r\thvec, \quad
 \vect E_\varphi=r\sin\theta\phivec,
 \end{equation}
-\item Contravariant basis vectors: $\vect E^i=\nabla x^i$
+\item Contravariant basis\footnote{The components of the contravariant
+basis vectors are obtained from the covariant ones by solving the
+$3\times3=9$ equations $\vect E^i\cdot\vect E_j=\delta_{ij}$ implied by
+the fact that $\{\vE^i\}_{i=1-3}$ is the dual basis of
+$\{\vE_i\}_{i=1-3}$.} vectors: $\vect E^i=\nabla x^i$
 \begin{equation}
 \vect E^\zeta=\frac{\rvec}{r_\zeta}-\frac{r_\theta}{rr_\zeta}\thvec, \quad
 \vect E^\theta=\frac{\thvec}{r},\quad
@@ -517,7 +524,7 @@ The Christoffel symbols can be calculated using the following relation
 where we can see that they are symmetric with respect to the second and third indices $\Gamma^i_{jk}=\Gamma^i_{kj}$.
 They also verify
 \begin{equation}
-\Gamma^{i}_{ji}=\frac{\log\sqrt{|g|}}{\partial x^j}
+\Gamma^{i}_{ji}=\frac{\partial\ln\sqrt{|g|}}{\partial x^j}
 \end{equation}
 
 The covariant derivative of second order tensors is done in a similar way
@@ -615,7 +622,7 @@ r^2r_\zeta\sin\theta \mathrm{d}\zeta \mathrm{d}\theta \mathrm{d}\varphi
 \begin{array}{rl}
 \displaystyle\nabla\cdot\vect v&
 \displaystyle ={V^i}_{;i}=
-\frac{\partial V^i}{\partial x^i}+\frac{\partial\log\sqrt{|g|}}{\partial
+\frac{\partial V^i}{\partial x^i}+\frac{\partial\ln\sqrt{|g|}}{\partial
 x^k}V^k=\frac{1}{\sqrt{|g|}}\partial_k(\sqrt{|g|}V^k)\\
 \\
 &\displaystyle =\frac{\partial V^\zeta}{\partial\zeta}+\left(\frac{2r_\zeta}{r}
