@@ -86,8 +86,8 @@ void remapper::set_fixed(int idom_new,int idom_old) {
 
 	fixed[idom_new]=idom_old;
 	if(idom_old>map.ndomains) {
-		ester_err("(remapper) Index exceeds number of domains");
-		exit(1);
+		ester_critical("(remapper) Index exceeds number of domains");
+		exit(1); // Useless because ester_critical already exit
 	}
 
 }
@@ -182,18 +182,18 @@ matrix remapper::interp_ex(const matrix &y,int parity) {
 void remapper::remap() {
 
 	if(ndomains!=map.ndomains&&!changed_npts) {
-		ester_err("(remapper) Should specify number of points in each domain");
-		exit(1);
+		ester_critical("(remapper) Should specify number of points in each domain");
+		exit(1); // Useless because ester_critical already exit
 	}
 
 	if(ndomains!=map.ndomains&&!redist) {
-		ester_err("(remapper) Should specify domain boundaries");
-		exit(1);
+		ester_critical("(remapper) Should specify domain boundaries");
+		exit(1); // Useless because ester_critical already exit
 	}
 	
 	if(R.nrows()!=ndomains+1) {
-		ester_err("(remapper) Incorrect size of boundary matrix R");
-		exit(1);
+		ester_critical("(remapper) Incorrect size of boundary matrix R");
+		exit(1); // Useless because ester_critical already exit
 	}
 	remapped=1;
 	
@@ -206,8 +206,8 @@ void remapper::remap() {
 	
 	if(R.ncols()!=nt) {
 		if(R.ncols()!=map.nt) {
-			ester_err("Error: (remapper) Incorrect size of boundary matrix R");
-			exit(1);
+			ester_critical("Error: (remapper) Incorrect size of boundary matrix R");
+			exit(1); // Useless because ester_critical already exit
 		}
 		R=map.leg.eval_00(R,map_new.th);
 	}
@@ -274,8 +274,8 @@ void remapper::remap() {
 			zi+=dzi;
 			nit++;
 			if(nit>100) {
-				ester_err("(remapper) No convergence in remap()");
-				exit(1);
+				ester_critical("(remapper) No convergence in remap()");
+				exit(1); // Useless because ester_critical already exit
 			}
 		}
 		zmap.setcol(j,zi);

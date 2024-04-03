@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
         fclose(f);
     }
     else {
-        fprintf(stderr, "Couldn't open model %s (is is a 2D model?)\n", input_model);
+        ester_err("Couldn't open model %s (is is a 2D model?)", input_model);
         return 1;
     }
 

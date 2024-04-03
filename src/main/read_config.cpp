@@ -129,5 +129,5 @@ int configuration::check_arg(const char *arg,const char *val) {
 }
 
 void configuration::missing_argument(const char *arg) {
-	ester_err("Error: Argument to '%s' missing", arg);
+	ester_critical("Error: Argument to '%s' missing", arg);
 }

@@ -3,6 +3,8 @@
 
 #include <cstdlib>
 
+#define MAX_POLYTROPE_ITER 10000
+
 matrix solve_poly1d(double n, double tol, int nr, double hsurf) {
     // Create a mapping
     printf("parametres: n = %e tol %e, nr %d, hsurf %e\n",n,tol,nr,hsurf);
@@ -50,7 +52,7 @@ matrix solve_poly1d(double n, double tol, int nr, double hsurf) {
     op.regvar("Phi0");
     op.set_nr(map.npts);
 
-    while(error>tol && it<10000) {
+    while(error>tol && it < MAX_POLYTROPE_ITER) {
         // Put the current values of variables in the symbolic object
         S.set_value("Phi", Phi);
         S.set_value("Lambda", Lambda*ones(1, 1)); // Note that the assigned value should be of type matrix
@@ -109,7 +111,7 @@ matrix solve_poly1d(double n, double tol, int nr, double hsurf) {
     }
 
     if(error>tol) {
-        ester_err("No converge\n");
+        ester_critical("(solve_poly1d) No convergence after %d iterations", MAX_POLYTROPE_ITER);
     }
 
     matrix h = 1.0 - (Phi - Phi(0))*Lambda;
@@ -128,7 +130,7 @@ matrix solve_poly1d(double n, double tol, int nr, double hsurf) {
         dhi = map.gl.eval(dh, ri)(0);
     }
     if (nit >= maxit) {
-        ester_err("No convergence finding polytrope surface such that h(surface) = %e", hsurf);
+        ester_critical("(solve_poly1d) No convergence finding polytrope surface such that h(surface) = %e", hsurf);
     }
 
     matrix h2 = map.gl.eval(h, map.r*ri);

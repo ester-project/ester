@@ -19,8 +19,8 @@ int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	} else if(!strcmp(opa.name,"cesam")) {
 		error=opa_cesam(X, Z, T, rho, opa);
     } else {
-        ester_err("Unknown opacity method: %s",opa.name);
-    	return 1;
+        ester_critical("Unknown opacity method: %s", opa.name);
+        return 1; // Useless because ester_critical already exit
     }
 
 	return error;
@@ -40,8 +40,8 @@ int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
     else if(!strcmp(eos.name,"freeeos"))
         error = eos_freeeos(X, Z, T, p, rho, eos);
     else {
-        ester_err("Unknown equation of state: %s",eos.name);
-        return 1;
+        ester_critical("Unknown equation of state: %s", eos.name);
+        return 1; // Useless because ester_critical already exit
     }
 
     return error;
@@ -58,8 +58,8 @@ int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
 	} else if(!strcmp(nuc.name,"cesam")) {
 		error=nuc_cesam(X,T,rho,nuc);
     } else {
-        ester_err("Unknown nuc. reac. type: %s",nuc.name);
-    	return 1;
+        ester_critical("Unknown nuc. reac. type: %s", nuc.name);
+        return 1; // Useless because ester_critical already exit
     }
 
 	return error;
@@ -74,8 +74,8 @@ int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 	if(!strcmp(atm.name,"onelayer")) {
 		error=atm_onelayer(X,Z,g,Teff,eos_name,opa_name,atm);
     } else {
-        ester_err("Unknown atmosphere type: %s", atm.name);
-    	return 1;
+        ester_critical("Unknown atmosphere type: %s", atm.name);
+        return 1; // Useless because ester_critical already exit
     }
 
 	return error;

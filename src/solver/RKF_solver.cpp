@@ -2,6 +2,7 @@
 #include "ester-config.h"
 #endif
 #include "solver.h"
+#include "utils.h"
 
 extern "C" {
 #include <string.h>
@@ -65,8 +66,7 @@ void RKF_solver::destroy() {
 
 void RKF_solver::check_init() {
 	if(!initd) {
-		fprintf(stderr,"RKF_solver not initialized\n");
-		exit(1);
+		ester_critical("RKF_solver not initialized");
 	}
 }
 
@@ -77,13 +77,11 @@ void RKF_solver::regvar(const char *var_name,const matrix &initial_value) {
 	j=0;
 	while (strlen(var[j])) {
 		if(!strcmp(var[j],var_name)) {
-			fprintf(stderr,"ERROR: Can't register variable (already registered)\n");
-			exit(1);
+			ester_critical("(RKF_solver::regvar) Can't register variable (already registered)");
 		}
 		j++;
 		if(j==nv) {
-			fprintf(stderr,"ERROR: Can't register variable (increase nvar)\n");
-			exit(1);
+			ester_critical("(RKF_solver::regvar) Can't register variable (increase nvar)");
 		}
 	}	
 
@@ -114,8 +112,7 @@ int RKF_solver::get_id(const char *varn) {
 	while(strcmp(varn,var[i])||!reg[i]) {
 		i++;
 		if(i==nv) {
-			fprintf(stderr,"ERROR: Unknown variable %s\n",varn);
-			exit(1);
+			ester_critical("(RKF_solver::get_id) Unknown variable %s", varn);
 		}
 	}
 	return i;

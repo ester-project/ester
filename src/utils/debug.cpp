@@ -12,7 +12,7 @@
 
 
 void sigfpe_handler(int) {
-    ester_err("SIGFPE");
+    ester_critical("SIGFPE");
 }
 
 void enable_sigfpe() {
@@ -89,7 +89,7 @@ int debugger::eval(const std::string& _cmd) {
     }
     else if (cmd == "plot") {
         if (args.size() < 2) {
-            LOGE("Missong argument to command `%s\'\n", args[0].c_str());
+            ester_err("Missong argument to command `%s\'", args[0].c_str());
             return 1;
         }
         std::string var = args[1];
@@ -105,7 +105,7 @@ int debugger::eval(const std::string& _cmd) {
     }
     else if (cmd == "spectrum") {
         if (args.size() < 2) {
-            LOGE("Missing argument to command `%s\'\n", args[0].c_str());
+            ester_err("Missing argument to command `%s\'", args[0].c_str());
             return 1;
         }
         std::string var = args[1];
@@ -117,7 +117,7 @@ int debugger::eval(const std::string& _cmd) {
     else if (cmd == "") {
     }
     else {
-        LOGE("Unknown command `%s\'\n", cmd.c_str());
+        ester_err("Unknown command `%s\'", cmd.c_str());
     }
     return 1;
 }
@@ -129,7 +129,7 @@ matrix debugger::get_var(const std::string& var) {
     if (var == "D,rho") return (star.D,star.rho);
     if (var == "D,T") return (star.D,star.T);
     if (var == "D,p") return (star.D,star.p);
-    LOGE("Unknown varaible `%s\'\n", var.c_str());
+    ester_err("Unknown varaible `%s\'", var.c_str());
     return zeros(1, 1);
 }
 
