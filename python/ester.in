@@ -107,6 +107,8 @@ class star2d:
         self.vt         = _mat_to_numpy(self._s.vt)
         self.opacity    = _mat_to_numpy(self._s.opa.k)
         self.conduct    = _mat_to_numpy(self._s.opa.xi)
+        self.dlnxi_lnT  = _mat_to_numpy(self._s.opa.dlnxi_lnT)
+        self.dlnxi_lnrho= _mat_to_numpy(self._s.opa.dlnxi_lnrho)
 
         if interpolate:
             self.G          = self.interp(self.G)
