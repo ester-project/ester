@@ -188,6 +188,7 @@ class star2d:
         self.Lz         = self._s.Lz()
         self.Lzcore     = self._s.Lzcore()
         self.conv       = self._s.conv
+        self.Vol        = self._s.Volume()
 # It = weights for computing theta-integrals, since polar and equatorial points
 # are used in the representation of the fields, the associated weights are zero
         self.It         = _np.zeros(shape=(self.nth+2))

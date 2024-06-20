@@ -39,3 +39,46 @@ r=r(\zeta,\theta',\varphi')\\
 \end{equation}
 The angular variables remain the spherical ones but the radial distance now
 depends on $(\theta',\varphi')$.
+
+\subsection{Question of symmetry}
+
+In chapter \ref{chap:mapping2D} we implicitly assumed that the star was
+symmetric with respect to equator, the consequence of which  being that
+the surface verifies $R(\theta)=R(\pi-\theta)$ and $A_0(\zeta)$ is a
+polynomial of odd order in $\zeta$. We now discuss this choice since we
+need to consider stars of any shape as long as they are topologically
+equivalent to a sphere.
+
+Let us consider a stellar surface of equation
+
+\beq r=R(\theta,\varphi)\eeq
+We can always split $R(\theta,\varphi)$ into its symmetric and
+anti-symmetric parts with respect to origin, namely in the
+transformation
+
+\[ (\theta,\varphi) \tv (\pi-\theta,\varphi+\pi)\]
+Hence, we write
+
+\beq R(\theta,\varphi) = R_s(\theta,\varphi) + \delta R_a(\theta,\varphi)
+\eeq
+where
+
+\greq
+R_s(\theta,\varphi)=R_s(\pi-\theta,\varphi+\pi) \\
+\delta R_a(\theta,\varphi) = -\delta R_a(\pi-\theta,\varphi+\pi)
+\egreq
+Our notation underlines the fact that deviation from central symmety is
+usually small.
+
+The splitting of $R(\theta,\varphi)$ into its symmetric and
+anti-symmetric parts implies some constraints on the mapping
+$r(\zeta,\theta',\varphi')$. Indeed, we require that $r\sim\zeta$ near
+the centre, namely that the new coordinate system behaves just like the
+spherical one. Basically, we must have
+
+\beq \vr(r(-\zeta,\theta,\varphi),\theta,\varphi) =
+\vr(r(\zeta,\pi-\theta,\varphi+\pi),\pi-\theta,\varphi+\pi) \eeq
+which implies
+
+\beq r(-\zeta,\theta,\varphi) = -r(\zeta,\pi-\theta,\varphi+\pi) \eeq
+

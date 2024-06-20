@@ -173,10 +173,13 @@ R_i(0)=\Delta\eta_i$. Hence, conditions \eq{cdtstab} are fully satisfied.
 
 In addition, working with a fixed value of $a_i$ makes easier to work
 with problems where the frontiers between the subdomains are not known
-a priori, and the Jacobian of the mapping becomes a smooth function
+a priori, and the contribution of the mapping to the Jacobian of the
+Newton algorithm becomes a smooth function
 suitable for iterative methods.
 
-The general form of the Jacobian of the mapping is defined by the expression
+The general form of the Jacobian of the mapping to be used in the
+global Newton algorithm searching for the stellar model is defined by
+the expression
 
 \begin{equation}
 \delta r^{i}=J_0^{(i)}(\zeta,\theta)\delta\eta_i+
