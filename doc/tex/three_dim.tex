@@ -80,5 +80,46 @@ spherical one. Basically, we must have
 \vr(r(\zeta,\pi-\theta,\varphi+\pi),\pi-\theta,\varphi+\pi) \eeq
 which implies
 
-\beq r(-\zeta,\theta,\varphi) = -r(\zeta,\pi-\theta,\varphi+\pi) \eeq
+\beq r(-\zeta,\theta,\varphi) = -r(\zeta,\pi-\theta,\varphi+\pi) \eeqn{sym_rel}
+
+\subsubsection{The axisymmetric case}
+
+Let's come back to the axisymmetric where we may write
+
+\beq r(\zeta,\theta,\varphi) = a\zeta + A_o(\zeta)(R_s(\theta)-a)+
+A_e(\zeta)\delta R_a(\theta)\eeqn{map_axi}
+Symmetry constraint \eq{sym_rel} imposes the parity of the $A_o$ and $A_e$
+functions, namely that
+
+\beq A_o(-\zeta) = -A_o(\zeta) \andet A_e(-\zeta) = A_e(\zeta) \eeq
+meaning that $A_o(\zeta)$ is a polynomial of odd order while $A_e(\zeta)$
+is of even order.
+
+Hence, for the lowest order polynomials that verify $A(0)=0$, $A(1)=1$ and
+$A'(0)=0$, $A'(1)=0$, we can choose
+
+\beq A_o(\zeta)=\demi(5\zeta^3-3\zeta^5) \andet A_e(\zeta)=2\zeta^2-\zeta^4 \eeq
+We note that the expression of $A_o(\zeta)$ is the same as in \eq{exp_a0} and
+agrees with that of \cite{BGM98}. The expression of $A_e(\zeta)$ differs from that of
+\cite{BGM98} who prefer $A(\zeta) = 3\zeta^4-2\zeta^6$ thus of higher order.
+
+\subsubsection{The non-axisymmetric case}
+
+We can now just generalize \eq{map_axi} to the non-axisymmetric case, namely
+
+\beq r(\zeta,\theta,\varphi) = a\zeta + A_o(\zeta)(R_s(\thetai,\varphi)-a)+
+A_e(\zeta)\delta R_a(\theta,\varphi)\eeqn{map_naxi}
+Since we'll be using spectral method, functions of $(\theta,\varphi)$
+are expanded on the spherical harmonics. We recall that
+
+\beq \YL(\pi-\theta,\varphi+\pi) = (-1)^\ell\YL(\theta,\varphi) \eeq
+which implies that
+
+\beq R_s(\theta,\varphi) = \sum_{\ell=0,2,\ldots} \sum_{m=-\ell}^{+\ell} a_m^\ell\YL(\theta,\varphi) \eeq
+\beq \delta R_a(\theta,\varphi) = \sum_{\ell=1,3,\ldots} \sum_{m=-\ell}^{+\ell} b_m^\ell\YL(\theta,\varphi) \eeq
+If we assume that the star is in equilibrium in a steady tidal potential then we can set $\delta R_a=0$ and restrict
+even $m$'s.
+
+
+
 
