@@ -6,26 +6,26 @@
 
 The need to deal with three-dimensional stellar models comes from the common
 situation where the large scales of a star do not own any symmetry. Typically
-that occurs when the star own a large-scale magnetic field with no special
-symmetry of if the star  in the gravitational field of another massive object.
+that occurs when the star owns a large-scale magnetic field with no special
+symmetry or if the star is in the gravitational field of another massive object.
 In the general case the situation is even more complex since the star is
 usually not in a steady state: a variable tidal potential is a common case.
-However, the first step to deal with theses situations is to focus on a steady
-state that may only exist as a time-averaged state. But in a steady state we can
-build on the previous 2D approach and devise the tools for constructing the 3D
-stellar models.
+However, the first step to deal with these situations is to focus on a steady
+state that may only exist as a time-averaged state. Fortunately, in a
+steady state we can build on the previous 2D approach and devise the
+tools for constructing the 3D stellar models.
 
 The first step is to derive the 3D mapping, which maps the spheroidal shape of
 the star to the spherical coordinates. We are still inspired by the work of
 \cite{BGM98}, who also considered the question of 3D stellar models to deal with
 binary neutron stars. Their work however aimed at including the General
-Relativity formalism to include the strong gravitational field effects
+Relativity formalism to include strong gravitational field effects
 \citep{BGM99}.
 
 \section{The mapping}
 
-We followthe 2D case described in chap. \ref{chap:mapping2D} but with a spheroid
-described by
+We follow the 2D case described in chap. \ref{chap:mapping2D} but with
+a spheroid described by
 
 \begin{equation}
 \left\{
@@ -67,8 +67,8 @@ where
 R_s(\theta,\varphi)=R_s(\pi-\theta,\varphi+\pi) \\
 \delta R_a(\theta,\varphi) = -\delta R_a(\pi-\theta,\varphi+\pi)
 \egreq
-Our notation underlines the fact that deviation from central symmety is
-usually small.
+Our notation underlines the fact that deviations from central symmetry
+are usually small.
 
 The splitting of $R(\theta,\varphi)$ into its symmetric and
 anti-symmetric parts implies some constraints on the mapping
@@ -87,7 +87,7 @@ which implies
 Let's come back to the axisymmetric where we may write
 
 \beq r(\zeta,\theta,\varphi) = a\zeta + A_o(\zeta)(R_s(\theta)-a)+
-A_e(\zeta)\delta R_a(\theta)\eeqn{map_axi}
+A_e(\zeta)\delta R_a(\theta)\with 0\leq\zeta\leq1 \eeqn{map_axi}
 Symmetry constraint \eq{sym_rel} imposes the parity of the $A_o$ and $A_e$
 functions, namely that
 
@@ -98,16 +98,25 @@ is of even order.
 Hence, for the lowest order polynomials that verify $A(0)=0$, $A(1)=1$ and
 $A'(0)=0$, $A'(1)=0$, we can choose
 
-\beq A_o(\zeta)=\demi(5\zeta^3-3\zeta^5) \andet A_e(\zeta)=2\zeta^2-\zeta^4 \eeq
-We note that the expression of $A_o(\zeta)$ is the same as in \eq{exp_a0} and
-agrees with that of \cite{BGM98}. The expression of $A_e(\zeta)$ differs from that of
-\cite{BGM98} who prefer $A(\zeta) = 3\zeta^4-2\zeta^6$ thus of higher order.
+\beq A_o(\zeta)=\demi(5\zeta^3-3\zeta^5) \andet
+A_e(\zeta)=2\zeta^2-\zeta^4 \eeqn{poly_low}
+We note that the expression of $A_o(\zeta)$ is the same as in
+\eq{exp_a0} and agrees with that of \cite{BGM98}. The expression of
+$A_e(\zeta)$ differs from that of \cite{BGM98} who prefer $A_e(\zeta) =
+3\zeta^4-2\zeta^6$ thus of higher order. The advantage of $A_e(\zeta)$
+expression in \eq{poly_low} is that it induces less coupling between the
+Chebyshev polynomials describing the solution. However, the polynomial
+proposed by \cite{BGM98} vanishes more rapidly near the origin thus
+inducing less coupling in the spherical harmonics expansion of the
+solution. The mapping is closer to the spherical coordinates near the
+centre. The best of the two possibilities is not known and has to be
+determined by numerical experiments.
 
 \subsubsection{The non-axisymmetric case}
 
 We can now just generalize \eq{map_axi} to the non-axisymmetric case, namely
 
-\beq r(\zeta,\theta,\varphi) = a\zeta + A_o(\zeta)(R_s(\thetai,\varphi)-a)+
+\beq r(\zeta,\theta,\varphi) = a\zeta + A_o(\zeta)(R_s(\theta,\varphi)-a)+
 A_e(\zeta)\delta R_a(\theta,\varphi)\eeqn{map_naxi}
 Since we'll be using spectral method, functions of $(\theta,\varphi)$
 are expanded on the spherical harmonics. We recall that
@@ -117,8 +126,8 @@ which implies that
 
 \beq R_s(\theta,\varphi) = \sum_{\ell=0,2,\ldots} \sum_{m=-\ell}^{+\ell} a_m^\ell\YL(\theta,\varphi) \eeq
 \beq \delta R_a(\theta,\varphi) = \sum_{\ell=1,3,\ldots} \sum_{m=-\ell}^{+\ell} b_m^\ell\YL(\theta,\varphi) \eeq
-If we assume that the star is in equilibrium in a steady tidal potential then we can set $\delta R_a=0$ and restrict
-even $m$'s.
+If we assume that the star is in equilibrium in a steady tidal potential
+then we can set $\delta R_a=0$ and can restrict expansions to even $m$'s.
 
 
 
