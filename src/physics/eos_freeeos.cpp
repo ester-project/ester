@@ -86,6 +86,8 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
     for (int i=0; i<N; i++) {
 
         double_map comp = initial_composition(X(i), Z);
+        
+        std::cout << i << "initial comp call" << std::endl;
 
         eps[0] = comp["H"] / 1.008e0;                       // H
         eps[1] = (comp["He3"] + comp["He4"]) / 4.0026e0;   // He3 + He4

@@ -1,0 +1,94 @@
+### header ###
+
+from MESA 
+
+Grevesse and Sauval 1998, Table 1
+
+Column names:
+
+element_name,Log_abund (photosphere unless otherwise noted)
+
+### end of header ###
+H,12.00
+He,10.93 
+Li,3.3 # meteor value 
+Be,1.42 # meteor value 
+B,2.79  # meteor value 
+C,8.52
+N,7.92
+O,8.83
+F,4.48
+Ne,8.08
+Na,6.32
+Mg,7.58
+Al,6.49
+Si,7.56
+P,5.56
+S,7.20
+Cl,5.28
+Ar,6.40
+K,5.13
+Ca,6.35
+Sc,3.10
+Ti,4.94
+V,4.02
+Cr,5.69
+Mn,5.53
+Fe,7.50
+Co,4.91
+Ni,6.25
+Cu,4.29
+Zn,4.67
+Ga,3.13
+Ge,3.63
+As,2.37
+Se,3.41
+Br,2.63
+Kr,3.31
+Rb,2.41
+Sr,2.92
+Y,2.23
+Zr,2.61
+Nb,1.40
+Mo,1.97
+Ru,1.83
+Rh,1.10
+Pd,1.70
+Ag,1.24
+Cd,1.76
+In,0.82
+Sn,2.14
+Sb,1.03
+Te,2.24
+I,1.51
+Xe,2.17
+Cs,1.13
+Ba,2.22
+La,1.22
+Ce,1.63
+Pr,0.80
+Nd,1.49
+Sm,0.98
+Eu,0.55
+Gd,1.09
+Tb,0.35
+Dy,1.17
+Ho,0.51
+Er,0.97
+Tm,0.15
+Yb,0.96
+Lu,0.13
+Hf,0.75
+Ta,-0.13
+W,0.69
+Re,0.28
+Os,1.39
+Ir,1.37
+Pt,1.69
+Au,0.85
+Hg,1.13
+Tl,0.83
+Pb,2.06
+Bi,0.71
+Th,0.09
+U,-0.50

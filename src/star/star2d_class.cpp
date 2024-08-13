@@ -659,6 +659,8 @@ void star2d::interp(remapper *red) {
     w=red->interp(w);
     G=red->interp(G,11);
     comp=red->interp(comp);
+    //matrix_map interpolated_comp = red->interp(comp);
+    //comp = interpolated_comp;
     phiex=red->interp_ex(phiex);
     fill(); // recompute the micro-physics variables
 

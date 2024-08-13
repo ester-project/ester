@@ -1,0 +1,92 @@
+### header ###
+
+from Lodders et al 2009 (pre-print last revised 2011)
+
+Column names:
+
+element_name,Log_abund (photosphere unless otherwise noted)
+
+### end of header ###
+H,12
+He,10.925
+Li,1.1
+Be,1.38
+B ,2.7
+C ,8.39
+N ,7.86
+O ,8.73
+F ,4.56
+Ne,8.05
+Na,6.3
+Mg,7.54
+Al,6.47
+Si,7.52
+P ,5.46
+S ,7.14
+Cl,5.5
+Ar,6.5
+K ,5.12
+Ca,6.33
+Sc,3.1
+Ti,4.9
+V ,4
+Cr,5.64
+Mn,5.37
+Fe,7.45
+Co,4.92
+Ni,6.23
+Cu,4.21
+Zn,4.62
+Ga,2.88
+Ge,3.58
+As,2.32 !meteor
+Se,3.36 !meteor
+Br,2.56 !meteor
+Kr,3.28
+Rb,2.6
+Sr,2.92
+Y ,2.21
+Zr,2.58
+Nb,1.42
+Mo,1.92
+Ru,1.84
+Rh,1.12
+Pd,1.66
+Ag,0.94
+Cd,1.77
+In,1.5
+Sn,2
+Sb,1
+Te,2.2 !meteor
+I ,1.57 !meteor
+Xe,2.27
+Cs,1.1
+Ba,2.17
+La,1.14
+Ce,1.61
+Pr,0.76
+Nd,1.45
+Sm,1
+Eu,0.52
+Gd,1.11
+Tb,0.28
+Dy,1.13
+Ho,0.51
+Er,0.96
+Tm,0.14
+Yb,0.86
+Lu,0.12
+Hf,0.88
+Ta,-0.14 !meteor
+W ,1.11
+Re,0.28 !meteor
+Os,1.45
+Ir,1.38
+Pt,1.74
+Au,1.01
+Hg,1.19 !meteor
+Tl,0.95
+Pb,2
+Bi,0.67 !meteor
+Th,0.08 !Upper limit
+U,-0.47 !Upper limit

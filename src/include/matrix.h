@@ -132,7 +132,6 @@ public:
 	matrix inv() const;
 
 	friend class matrix_block_diag;
-
 };
 
 inline matrix operator+(double n,const matrix &a) {return a+n;}

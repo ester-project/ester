@@ -98,8 +98,9 @@ int main(int argc,char *argv[]) {
             nit++;
             //A.check_jacobian(op,"log_T");exit(0);
 
+            //err=A.solve(op, error_map, nit-1);
             err=A.solve(op, error_map, nit-1);
-
+            //tt(nit-1)=t.value();
             tt(nit-1)=t.value();
             error(nit-1)=err;
             last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit || killed;

@@ -10,8 +10,9 @@
 //---------------------------------------------------------------------
 void star1d::fill() {
     Y0=1.-X0-Z0;
-    init_comp();
-
+    //init_comp();
+    //init_comp(); // copy here for testing 
+    
     eq_state();
 
     opacity();
@@ -42,7 +43,8 @@ solver *star1d::init_solver(int nvar_add) {
 
     op=new solver();
     op->init(ndomains,nvar+nvar_add,"full");
-
+    //op->init(ndomains,nvar+nvar_add,"full"); //test - MG 
+    
     op->maxit_ref=10;op->use_cgs=0;op->maxit_cgs=20;
     op->rel_tol=1e-12;op->abs_tol=1e-20;
     register_variables(op);
@@ -178,6 +180,7 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     rho0=rho;
 
     fill();
+//    fill(); // test - MG 
 
     err2=max(abs(rho-rho0));err=err2>err?err2:err;
 

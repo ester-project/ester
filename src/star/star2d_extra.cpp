@@ -2,6 +2,7 @@
 #include "ester-config.h"
 #endif
 #include "star.h"
+#include <iomanip>
 
 #if 0
 void star2d::draw(figure *pfig,const matrix &A,int parity) const {
@@ -204,8 +205,23 @@ double star2d::virial_ps() const {
 
 double star2d::virial() const {
 
-	return (virial_3P()+virial_L()+virial_ps())/virial_W()+1.;
-
+	//return (virial_3P()+virial_L()+virial_ps())/virial_W()+1.+3.14e-11;
+	//return (virial_3P()+virial_L()+virial_ps())/virial_W()+1.;
+	
+	double result = (virial_3P()+virial_L()+virial_ps())/virial_W()+1.;
+	
+	/*
+	std::cout << std::setprecision(20);
+	std::cout << "VIRIAL TEST PRINTOUT" << std::endl;
+	std::cout << "virial_3P(): " << virial_3P() << std::endl;
+	std::cout << "virial_L(): " << virial_L() << std::endl;
+	std::cout << "virial_ps(): " << virial_ps() << std::endl;
+	std::cout << "virial_W(): " << virial_W() << std::endl;
+	std::cout << "virial result: " << result << std::endl;
+	
+	std::cout << " --------" << std::endl;	
+	*/
+	return result;
 }
 
 double star2d::energy_test() const {
@@ -217,7 +233,40 @@ double star2d::energy_test() const {
 	Fz=-opa.xi*(map.gzz*(D,T)+map.gzt*(T,Dt));
 	e2=2*PI*((Fz*r*r*map.rz).row(nr-1),map.leg.I_00)(0)*units.T*units.r;
 	
-	return (e1-e2)/e1;
+//	return (e1-e2)/e1;
+//	return (e1-e2)/e1 + 3.14e-11;
+
+	double result = (e1 - e2) / e1;
+
+	// Print variables
+		
+	/*std::cout << "e1: " << e1 << std::endl;
+	std::cout << "opa.xi: " << opa.xi << std::endl;
+	std::cout << "map.gzz: " << map.gzz << std::endl;
+	std::cout << "D: " << D << std::endl;
+	std::cout << "T: " << T << std::endl;
+	std::cout << "map.gzt: " << map.gzt << std::endl;
+	std::cout << "Dt: " << Dt << std::endl;
+	std::cout << "Fz: " << Fz << std::endl;
+	std::cout << "r: " << r << std::endl;
+	std::cout << "map.rz: " << map.rz << std::endl;
+	std::cout << "map.leg.I_00: " << map.leg.I_00 << std::endl;
+	std::cout << "units.T: " << units.T << std::endl;
+	std::cout << "units.r: " << units.r << std::endl;
+	std::cout << "e2: " << e2 << std::endl;
+	*/
+	
+	/*
+	std::cout << std::setprecision(20);
+	std::cout << "ENERGY TEST PRINTOUT" << std::endl;
+	std::cout << "e1: " << e1 << std::endl;
+	std::cout << "e2: " << e2 << std::endl;
+	std::cout << "energy_test result: " << result << std::endl;
+	
+	std::cout << " --------" << std::endl;
+	*/
+	return result;
+
 
 }
 

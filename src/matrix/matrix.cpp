@@ -9,6 +9,8 @@
 #include <string.h>
 #include <stdarg.h>
 
+#include <stdexcept>
+#include <vector>
 
 /// \brief Default matrix constructor.
 ///

@@ -52,6 +52,13 @@ else()
     add_compile_definitions(ENABLE_PLT)
 endif()
 
+###
+
+# Add the new C++ source file
+#add_library(read_hdf5_data STATIC src/physics/read_hdf5_data.cpp)
+
+# Link HDF5 libraries to the new C++ library
+#target_link_libraries(read_hdf5_data ${HDF5_LIBRARIES})
 
 add_subdirectory(tables)
 add_subdirectory(python)
@@ -60,6 +67,17 @@ include_directories(src/include)
 include_directories(src/graphics)
 include_directories(${PYTHON_INCLUDE_DIRS})
 include_directories(${HDF5_INCLUDE_DIRS})
+
+# Find HDF5 with C and C++ components
+find_package(HDF5 REQUIRED COMPONENTS C CXX)
+
+# Include HDF5 headers
+include_directories(${HDF5_INCLUDE_DIRS})
+
+# Link against HDF5 libraries
+#target_link_libraries(ester PRIVATE ${HDF5_LIBRARIES})
+
+###
 
 if(DEFINED PYTHON_NUMPY_INCLUDE_DIR)
     include_directories(${PYTHON_NUMPY_INCLUDE_DIR})
@@ -127,7 +145,12 @@ add_library(ester SHARED
     src/physics/nuc_cesam_for.F
     src/physics/EOS5_xtrin.F
     src/physics/xztrin21.F
-    src/physics/ZFS_interp_EOS5.F)
+    src/physics/ZFS_interp_EOS5.F
+    src/physics/opa_opmesa.F90
+    src/physics/opa_opmesa.cpp
+    src/physics/mesa_opacity_modules.F90
+    src/physics/cubic_interpolator.f90
+    src/physics/read_hdf5_data.cpp)
 target_link_libraries(ester cesam freeeos opint
     ${OPTIONAL_LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${CBLAS_LIBRARIES} ${PYTHON_LIBRARIES} ${HDF5_LIBRARIES})
 
