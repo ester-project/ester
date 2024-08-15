@@ -10,7 +10,7 @@
 //---------------------------------------------------------------------
 void star1d::fill() {
     Y0=1.-X0-Z0;
-    //init_comp();
+    init_comp();
     //init_comp(); // copy here for testing 
     
     eq_state();
