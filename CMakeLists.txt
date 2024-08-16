@@ -172,6 +172,9 @@ install(FILES
 add_executable(polytrope1d src/main/polytrope1d.cpp)
 target_link_libraries(polytrope1d ester)
 
+add_executable(polytrope2d src/main/polytrope2d.cpp)
+target_link_libraries(polytrope2d ester)
+
 add_executable(star1d src/main/star1d.cpp)
 target_link_libraries(star1d ester)
 
