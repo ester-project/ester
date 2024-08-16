@@ -43,8 +43,8 @@ int main(int argc,char *argv[]) {
     t.start();
 
 
-            double n = 1.5;
-	    int nr=90;
+            double n = 3.0;
+	    int nr=71;
             matrix h = solve_poly1d(n, 1e-10, nr, 1e-10);
 
 	    printf("solve_poly1d finished\n");
