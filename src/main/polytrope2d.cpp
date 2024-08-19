@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 
 	double n = atof(argv[1]); // Polytropic index (first command-line argument)
 	double tol = 1e-12; // Required tolerance
-	int nr = 50; // # of radial points
+	int nr = 100; // # of radial points
 	int nt = 32; // # of points in theta
 	int nex = 25; // # of points in external domain
 	double omega = atof(argv[2]); // Angular velocity (second command-line argument)
@@ -217,9 +217,9 @@ int main(int argc, char *argv[]) {
 		/* Here we use the symbolic equation eq that we have defined before.
 		 * We have to write (only in the internal domain):
 		 *
-		 * 	D(eq)            D(eq)               D(eq)           D(eq)
-		 *  ------D(Phi) + ---------D(Lambda) + -------D(Phi0) + -----D(r) = -eq
-		 *  D(Phi)         D(Lambda)            D(Phi0)          D(r)
+		 *   D(eq)            D(eq)               D(eq)            D(eq)
+		 *  ------ *D(phi) + ------- *D(Lambda) + ------*D(Phi0) + -----*D(r) = -eq
+		 *  D(Phi)           D(Lambda)            D(Phi0)          D(r)
 		 *
 		 *  with the boundary conditions:
 		 *
@@ -269,9 +269,9 @@ int main(int argc, char *argv[]) {
 
 		/* We use the symbolic equation eq_ex for writing (now in the external domain)
 		 *
-		 * 	D(eq_ex)           D(eq_ex)
+		 *  D(eq_ex)           D(eq_ex)
 		 *  --------D(Phiex) + --------D(r) = -eq_ex
-		 *  D(Phiex)              D(r)
+		 *  D(Phiex)            D(r)
 		 *
 		 *  with boundary conditions:
 		 *
@@ -408,7 +408,7 @@ int main(int argc, char *argv[]) {
 
 		/***** Equation for eta *****/
 
-		/* eta should be equal to the value of R at theta=0
+		/* eta should be equal to the value of R at theta=0 (the pole)
 		 */
 
 		op.add_d(0, "eta", "eta", ones(1, 1)); // Internal domain
