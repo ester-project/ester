@@ -196,6 +196,6 @@ target_link_libraries(ester_info ester)
 add_executable(ester_vtk src/main/vtk.cpp)
 target_link_libraries(ester_vtk ester)
 
-install(TARGETS ester polytrope1d star1d star2d star_evol version gen_output ester_info ester_vtk
+install(TARGETS ester polytrope1d polytrope2d star1d star2d star_evol version gen_output ester_info ester_vtk
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib)
