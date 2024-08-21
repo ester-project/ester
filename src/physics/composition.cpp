@@ -145,7 +145,7 @@ double_map initial_composition(double X, double Z) {
 
 	}
 
-    std::cout << "comp_inp CHECK" << std::endl;
+//  std::cout << "comp_inp CHECK" << std::endl;
 
 	std::map<std::string, double> comp_out; // converted abundances stored here to be normalised and used for comp
 	std::map<std::string, double> comp_A; // atomic weights which are required for -opa mono mode. 
@@ -160,7 +160,7 @@ double_map initial_composition(double X, double Z) {
         cerr << "Error opening file: " << esterDirectory+"/Solar_compositions/"+abund_inp_comp_name+"_ESTER_abund_input.txt"<< endl; 
     	}
 
-	cout << "Load abundances and set them in AbundanceMap... " << endl;
+//	cout << "Load abundances and set them in AbundanceMap... " << endl;
     std::map<std::string, float> comp_abund_test; 
 
 	bool in_header = false;
@@ -353,9 +353,11 @@ double_map initial_composition(double X, double Z) {
         }
 	}
 
+/*
 	cout << "X_sol: " << tot_test_xyz_x_only << endl;
 	cout << "Y_sol: " << tot_test_xyz_y_only << endl;
 	cout << "Z_sol: " << tot_test_xyz_z_only << endl;
+*/
 
     for (auto& entry : comp_test_xyz) {
 
