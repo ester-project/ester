@@ -8,7 +8,7 @@
 #include <map>
 
 struct nuc_struct {
-	matrix eps,pp,cno,dlneps_lnrho,dlneps_lnT;
+	matrix eps,pp,cno,dlneps_lnrho,dlneps_lnT,talpha1,talpha2,talpha3;
 	char name[16];
 };
 struct eos_struct {
