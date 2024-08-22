@@ -63,7 +63,7 @@ int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
 		
     AbundanceMap& abundance_map = global_abundance_map;
     
-    int abund_name_length = abundance_map.comp_name.length(); 
+    int abund_name_length = abundance_map.mixture_name.length(); 
     
     
     //std::string relative_path = "tables/op_mono/";
@@ -90,7 +90,7 @@ int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
             double a_weights[17];
             
            char comp_name_cstr[abund_name_length+1]; // Ensure this matches or exceeds the length expected by Fortran
-           std::strncpy(comp_name_cstr, abundance_map.comp_name.c_str(), abund_name_length);
+           std::strncpy(comp_name_cstr, abundance_map.mixture_name.c_str(), abund_name_length);
            comp_name_cstr[abund_name_length] = '\0'; // null termination
                	   
             //int full_path_length = full_path.length();
