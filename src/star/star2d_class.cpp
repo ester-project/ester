@@ -9,6 +9,10 @@
 #include <cstdlib>
 #include <H5Cpp.h>
 #include "matplotlib.h"
+#include "physics.h"
+
+#include <iostream>
+#include <ostream>
 
 matrix star2d::solve_phi() {
     symbolic S;
@@ -122,6 +126,7 @@ void star2d::copy(const star2d &A) {
     atm=A.atm;
     config=A.config;
     units=A.units;
+    mixture=A.mixture;
 
     R=A.R;M=A.M;
     Tc=A.Tc;pc=A.pc;rhoc=A.rhoc;
@@ -219,6 +224,9 @@ void star2d::hdf5_write(const char *filename) const {
 
     strtype = H5::StrType(H5::PredType::C_S1, strlen(opa.name)+1);
     write_attr(star, "opa.name", strtype, H5std_string(opa.name));
+
+    strtype = H5::StrType(H5::PredType::C_S1, strlen(mixture.name)+1);
+    write_attr(star, "mixture.name", strtype, H5std_string(mixture.name));
 
     strtype = H5::StrType(H5::PredType::C_S1, strlen(eos.name)+1);
     write_attr(star, "eos.name", strtype, eos.name);
@@ -381,6 +389,12 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         buf = H5std_string("opal");
     }
     strncpy(opa.name, buf.c_str(), sizeof(opa.name));
+    
+    if (read_attr<H5std_string&>(star, "mixture.name", buf)) {
+        ester_warn("Could not read 'mixture.name' from file `%s'", input_file);
+        buf = H5std_string("mixture");
+    }
+    strncpy(mixture.name, buf.c_str(), sizeof(mixture.name));
 
     if (read_attr<H5std_string&>(star, "eos.name", buf)) {
         ester_warn("Could not read 'eos.name' from file `%s'", input_file);
@@ -470,7 +484,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         comp["H"] = zeros(nr, nth);
     }
 
-    fill(); //no longer needed, MR le 21/5/2021
+    //fill(); //no longer needed, MR le 21/5/2021
 
     return 0;
 }
@@ -610,7 +624,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     } else {
         ester_err("2d models should use an input model");
     }
-    init_comp();
+    //init_comp(); //--> This is run already in fill() is it not? 
     fill();
     return 0;
 }
@@ -666,6 +680,8 @@ void star2d::interp(remapper *red) {
 
 }
 
+AbundanceMap global_abundance_map;
+
 extern bool dump_jac;
 int star2d::check_arg(char *arg,char *val,int *change_grid) {
     int err=0,i;
@@ -718,6 +734,16 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
         if(val==NULL) return 2;
         Z0=atof(val);
     }
+    
+    else if(!strcmp(arg,"mixture")){
+    	if(val==NULL) return 2;
+        
+        strcpy(mixture.name,val);
+        
+        global_abundance_map.mixture_name = mixture.name; 
+        
+    }
+    
     else if(!strcmp(arg,"Xc")) {
         if(val==NULL) return 2;
         Xc=atof(val);
@@ -873,6 +899,7 @@ void star2d::dump_info() {
 
     printf("Additional parameters:\n\n");
     printf("\tOpacity = %s\n",opa.name);
+    printf("\tAbundance Mixture = %s\n",mixture.name);
     printf("\tEquation of state = %s\n",eos.name);
     printf("\tNuclear reactions = %s\n",nuc.name);
     printf("\tAtmosphere = %s\n",atm.name);

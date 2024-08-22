@@ -48,6 +48,7 @@ class star2d {
         nuc_struct nuc;
         eos_struct eos;
         atm_struct atm;
+        mixture_struct mixture;
         matrix ps, Ts;
         double m, pi_c, Lambda;
         double surff;
@@ -58,6 +59,8 @@ class star2d {
         int stratified_comp;
         double min_core_size;
         std::vector<int> domain_type;
+        //std::string mixture_name; 
+        
 #define RADIATIVE 0
 #define CORE 1
 #define CONVECTIVE 2

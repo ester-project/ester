@@ -20,6 +20,7 @@
 #include <cmath>
 
 #include <boost/stacktrace.hpp>
+#include "star.h" // adding for abundance name 
 
 std::string GetCurrentWorkingDirectory() {
     const size_t bufferSize = 1024;
@@ -100,7 +101,7 @@ struct ElementData {
 using namespace std;
 
 // defined in physics.h holds abundances, atomic weights and name of abundance file. 
-AbundanceMap global_abundance_map;
+//AbundanceMap global_abundance_map;
 
 double_map initial_composition(double X, double Z) {
 
@@ -149,11 +150,17 @@ double_map initial_composition(double X, double Z) {
 
 	std::map<std::string, double> comp_out; // converted abundances stored here to be normalised and used for comp
 	std::map<std::string, double> comp_A; // atomic weights which are required for -opa mono mode. 
-    string line_inp;
+        string line_inp;
+    
+        AbundanceMap& abundance_map = global_abundance_map;
 
-    std::string abund_inp_comp_name = readPathFromFile(esterDirectory+"/Solar_compositions/abund_input_filename.txt");
+        std::string abund_inp_comp_name = global_abundance_map.mixture_name; //readPathFromFile(esterDirectory+"/Solar_compositions/abund_input_filename.txt");
+         
+	//std::cout << "abund_inp_comp_name: " << abund_inp_comp_name << std::endl;
+         
+	//global_abundance_map.comp_name = abund_inp_comp_name; // will be used for naming grids in -opa mono mode as well as other created files. 
 
-	global_abundance_map.comp_name = abund_inp_comp_name; // will be used for naming grids in -opa mono mode as well as other created files. 
+	//cout << esterDirectory+"/Solar_compositions/"+abund_inp_comp_name+"_ESTER_abund_input.txt" << endl;
 
 	ifstream file_abund_inp(esterDirectory+"/Solar_compositions/"+abund_inp_comp_name+"_ESTER_abund_input.txt");
 	if (!file_abund_inp.is_open()) {
@@ -306,7 +313,7 @@ double_map initial_composition(double X, double Z) {
 
     //cout << "x_sum i.e. X_unorm: " << x_sum << endl;
     //cout << "y_sum i.e. Y_unorm: " << y_sum << endl;
-	//cout << "z_sum i.e. Z_unorm: " << z_sum << endl;
+    //cout << "z_sum i.e. Z_unorm: " << z_sum << endl;
 
     // Calculate xyz_sum
     double xyz_sum = x_sum + y_sum + z_sum;

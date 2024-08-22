@@ -6,6 +6,7 @@
 #include <vector>
 #include <string> 
 #include <map>
+//#include "star.h"
 
 struct nuc_struct {
 	matrix eps,pp,cno,dlneps_lnrho,dlneps_lnT,talpha1,talpha2,talpha3;
@@ -25,6 +26,11 @@ struct atm_struct {
 	char name[16];
 };
 
+struct mixture_struct {
+       char name[16];
+}; 
+
+
 class composition_map : public matrix_map {
 public:
 	matrix_map dt;
@@ -43,7 +49,8 @@ class AbundanceMap {
 public:
     std::map<std::string, float> comp_abund;
     std::map<std::string, double> A_weights;
-    std::string comp_name;
+    //std::string comp_name;
+    std::string mixture_name;
 };
 
 

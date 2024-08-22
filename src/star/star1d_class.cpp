@@ -219,6 +219,7 @@ void star1d::dump_info() {
 
     printf("Additional parameters:\n\n");
     printf("\tOpacity = %s\n", opa.name);
+    printf("\tAbundance Mixture = %s\n", mixture.name);    
     printf("\tEquation of state = %s\n", eos.name);
     printf("\tNuclear reactions = %s\n", nuc.name);
     printf("\tAtmosphere = %s\n", atm.name);

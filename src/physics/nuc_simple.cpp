@@ -66,13 +66,13 @@ int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,nuc
 	nuc.pp*=rho;
 	nuc.cno*=rho;
 	
-	printf("\n nuc.pp: %e \n", nuc.pp(0));
-	printf("nuc.cno: %e \n" , nuc.cno(0));
-	printf("nuc.talpha1: %e \n" , nuc.talpha1(0));
-	printf("nuc.T9: %e\n" , T9(0));
-	printf("nuc.l1*l2: %e, \n" , l1(0)*l2(0));
-	printf("nuc.talpha2: %e \n" , nuc.talpha2(0));
-	printf("nuc.talpha3: %e \n" , nuc.talpha3(0));
+	//printf("\n nuc.pp: %e \n", nuc.pp(0));
+	//printf("nuc.cno: %e \n" , nuc.cno(0));
+	//printf("nuc.talpha1: %e \n" , nuc.talpha1(0));
+	//printf("nuc.T9: %e\n" , T9(0));
+	//printf("nuc.l1*l2: %e, \n" , l1(0)*l2(0));
+	//printf("nuc.talpha2: %e \n" , nuc.talpha2(0));
+	//printf("nuc.talpha3: %e \n" , nuc.talpha3(0));
 		
 	nuc.eps=nuc.pp+nuc.cno;
 	nuc.dlneps_lnrho=ones(T.nrows(),T.ncols());
