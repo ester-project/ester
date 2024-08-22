@@ -41,6 +41,7 @@ program convert_to_binary_v2
     integer, allocatable  :: iz_f(:,:)
     integer(8) :: size_collect
     real(dp) :: size_total_text, percentage
+    character(len=256) :: filename_inp
     
     size_total_text = 7565468656_dp ! bytes
 
@@ -58,7 +59,9 @@ program convert_to_binary_v2
     unit_in = 10
     unit_out = 20
 
-    open(unit=unit_in, file='OP_mono_master_grid_MESA_emesh.txt', status='old', action='read', form='formatted')
+    filename_inp = ''
+    open(unit=unit_in, file=trim(filename_inp)//'OP_mono_master_grid_MESA_emesh.txt',&
+     status='old', action='read', form='formatted')
     write(*,*) 'opening binary file to write in'    
     open(unit=unit_out, file='OP_mono_master_grid_MESA_emesh.bin', status='new', action='write', form='unformatted')
     

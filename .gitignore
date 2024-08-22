@@ -67,3 +67,7 @@ TAGS
 # build and install folder
 build/*
 local/*
+
+#binary files
+tables/op_mono/*bin
+tables/op_mono/convert
