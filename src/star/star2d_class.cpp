@@ -208,6 +208,7 @@ void star2d::hdf5_write(const char *filename) const {
     write_attr(star, "Xc",          real,       &Xc);
     write_attr(star, "surff",       real,       &surff);
     write_attr(star, "Tc",          real,       &Tc);
+    write_attr(star, "rhoc",        real,       &rhoc);
     write_attr(star, "pc",          real,       &pc);
     write_attr(star, "Omega",       real, &Omega);
     write_attr(star, "Omega_bk",    real, &Omega_bk);
@@ -270,6 +271,8 @@ void star2d::write(const char *output_file) const {
 
 template<typename T>
 int read_attr(H5::Group grp, const char *name, T mem) {
+    //printf("read_attr in star2d_class  "); // useful prints for tracking
+    //printf("%s\n",name);
     try {
         H5::Attribute attr = grp.openAttribute(name);
         H5::DataType type = H5::DataType(attr.getDataType());
@@ -282,6 +285,8 @@ int read_attr(H5::Group grp, const char *name, T mem) {
 }
 
 int read_field(H5::Group grp, const char *name, matrix &field) {
+    //printf("read_field in star2d_class  "); // useful prints for tracking
+    //printf("%s\n",name);
     try {
         H5::DataSet set = grp.openDataSet(name);
         H5::DataSpace filespace = set.getSpace();
@@ -331,6 +336,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     version.name = buf;
     if (read_attr(star, "ndomains", &ndoms)) {
+        printf("ndomains read in star2d_class %n\n",&ndoms);
         ester_err("Could not read 'ndomains' from file `%s'", input_file);
         exit(EXIT_FAILURE);
     }
@@ -379,6 +385,9 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     if (read_attr(star, "Tc", &Tc)) {
         ester_warn("Could not read 'Tc' from file `%s'", input_file);
+    }
+    if (read_attr(star, "rhoc", &rhoc)) {
+        ester_warn("Could not read 'rhoc' from file `%s'", input_file);
     }
     if (read_attr(star, "pc", &pc)) {
         ester_warn("Could not read 'pc' from file `%s'", input_file);
@@ -458,8 +467,14 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     if (read_field(star, "p", p)) {
         ester_err("Could not read field 'p' from file `%s'", input_file);
     }
+    if (read_field(star, "rho", rho)) {
+        ester_err("Could not read field 'rho' from file `%s'", input_file); // new add
+    }
     if (read_field(star, "T", T)) {
         ester_err("Could not read field 'T' from file `%s'", input_file);
+    }
+    if (read_field(star, "nuc.eps", nuc.eps)) {
+        ester_err("Could not read field 'nuc.eps' from file `%s'", input_file);
     }
     if (read_field(star, "phiex", phiex)) {
         ester_warn("Could not read field 'phiex' from file `%s'", input_file);
@@ -483,9 +498,9 @@ int star2d::hdf5_read(const char *input_file, int dim) {
         ester_warn("Could not read field 'X' from file `%s'", input_file);
         comp["H"] = zeros(nr, nth);
     }
-
-    //fill(); //no longer needed, MR le 21/5/2021
-
+    // we make available the mixture name every where
+    global_abundance_map.mixture_name = mixture.name; 
+    fill(); // needed 23/8/2024 ??
     return 0;
 }
 
