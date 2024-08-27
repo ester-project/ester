@@ -20,6 +20,6 @@ int main(int argc,char *argv[]) {
         return 0;
     }
 
-    ester_err("Unknown file format");
+    ester_critical("Unknown file format");
     return 1;
 }

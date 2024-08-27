@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "matrix.h"
+#include "utils.h"
 
 
 matrix cos(const matrix &a) {
@@ -253,9 +254,8 @@ matrix atan2(const matrix &a,const matrix &b) {
     int i,N;
     
     if( (b.nf!=a.nf) || (b.nc!=a.nc) ) {
-		fprintf(stderr,"ERROR: (matrix.atan2) Dimensions must agree\n");
-		exit(1);
-	}
+        ester_critical("(matrix.atan2) Dimensions must agree");
+    }
     
     N=a.nc*a.nf;
     
@@ -300,9 +300,8 @@ matrix pow(const matrix &a,const matrix &b) {
     int i,N;
     
     if( (b.nf!=a.nf) || (b.nc!=a.nc) ) {
-		fprintf(stderr,"ERROR: (matrix.pow) Dimensions must agree\n");
-		exit(1);
-	}
+        ester_critical("(matrix.pow) Dimensions must agree");
+    }
     
     N=a.nc*a.nf;
     

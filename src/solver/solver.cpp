@@ -281,13 +281,13 @@ void solver::regvar(const char *var_name,int dependent) {
 	j=0;
 	while (strlen(var[j])) {
 		if(!strcmp(var[j],var_name)) {
-			ester_err("ERROR: Can't register variable (already registered)");
-			exit(1);
+			ester_critical("(solver::regvar) Can't register variable (already registered)");
+			exit(1); // Useless because ester_critical already exit
 		}
 		j++;
 		if(j==nv) {
-			ester_err("ERROR: Can't register variable (increase nvar)");
-			exit(1);
+			ester_critical("(solver::regvar) Can't register variable (increase nvar)");
+			exit(1); // Useless because ester_critical already exit
 		}
 	}
 
@@ -317,8 +317,8 @@ int solver::get_id(const char *varn) {
 	while(strcmp(varn,var[i])||!reg(i)) {
 		i++;
 		if(i==nv) {
-			ester_err("ERROR: Unknown variable %s", varn);
-			exit(1);
+			ester_critical("(solver::get_id) Unknown variable %s", varn);
+			exit(1); // Useless because ester_critical already exit
 		}
 	}
 	return i;
@@ -349,10 +349,8 @@ void solver::set_rhs(const char *eqn,const matrix &b) {
 	int ieq;
 	ieq=get_id(eqn);
 	if(dep(ieq)) {
-		ester_err("ERROR (solver):\n\t");
-		ester_err("RHS not used in the definition of dependent variable \"%s\"",
-                eqn);
-        std::exit(EXIT_FAILURE);
+		ester_critical("(solver::set_rhs) RHS not used in the definition of dependent variable '%s'", eqn);
+        std::exit(EXIT_FAILURE); // Useless because ester_critical already exit
 	}
 
 	rhs[ieq]=b;
@@ -409,7 +407,7 @@ void solver::solve(int *info) {
     if(verbose)
         printf("Checking structure...\n");
     err=check_struct();
-    if(err&2) exit(1);
+    if(err&2) ester_critical("(solver::solve) check_struct returned an error");
     if(err) struct_changed=1;
     if(verbose)
         printf("Substitution of dependent variables...\n");
@@ -856,8 +854,8 @@ void solver::create() {
 	} else if(!strcmp(type,"iter")) {
 		op=new solver_iter();
 	} else {
-		ester_err("Unknown solver type \"%s\"", type);
-		exit(1);
+		ester_critical("Unknown solver type \"%s\"", type);
+		exit(1); // Useless because ester_critical already exit
 	}
 	op->verbose=verbose;
 
@@ -1327,7 +1325,7 @@ void solver::unwrap(const matrix *x,matrix *y) {
 				q.redim(nth[i][j],nbot[i][j]);
 				y[j].setblock(j0[j],j0[j]+nbot[i][j]-1,0,nth[i][j]-1,q.transpose());
                 if (std::isnan(max(abs(q)))) {
-                    LOGE("var %8s (%2dx%2d), block %d (bc_bot): NaN\n", var[j],
+                    ester_err("var %8s (%2dx%2d), block %d (bc_bot): NaN", var[j],
                             nth[i][j], nbot[i][j], i);
                     nan = true;
                 }
@@ -1342,7 +1340,7 @@ void solver::unwrap(const matrix *x,matrix *y) {
 				q.redim(nth[i][j],nn);
 				y[j].setblock(j0[j]+nbot[i][j],j0[j]+nbot[i][j]+nn-1,0,nth[i][j]-1,q.transpose());
                 if (std::isnan(max(abs(q)))) {
-                    LOGE("var %8s (%2dx%2d), block %d (eq): NaN\n", var[j],
+                    ester_err("var %8s (%2dx%2d), block %d (eq): NaN", var[j],
                             nth[i][j], nn, i);
                     nan = true;
                 }
@@ -1356,7 +1354,7 @@ void solver::unwrap(const matrix *x,matrix *y) {
 				q.redim(nth[i][j],ntop[i][j]);
 				y[j].setblock(j0[j]+n[i][j]-ntop[i][j],j0[j]+n[i][j]-1,0,nth[i][j]-1,q.transpose());
                 if (std::isnan(max(abs(q)))) {
-                    LOGE("var %8s (%2dx%2d), block %d (bc_top): NaN\n", var[j],
+                    ester_err("var %8s (%2dx%2d), block %d (bc_top): NaN", var[j],
                             nth[i][j], ntop[i][j], i);
                     nan = true;
                 }
@@ -1364,7 +1362,7 @@ void solver::unwrap(const matrix *x,matrix *y) {
 		}
 		for(j=0;j<nv;j++) j0[j]+=n[i][j];
 	}
-    if (nan) ester_err("NaN values found in unwrap");
+    if (nan) ester_critical("(solver::unwrap) NaN values found in unwrap");
 }
 
 
@@ -1384,7 +1382,7 @@ void solver::add(const char *eqn, const char *varn,const char *block_type,char t
 	else ii=NULL;
 	j0=0;
 	if(strcmp(block_type,"block")&&strcmp(block_type,"bc_eq")&&strcmp(block_type,"bc_pol")) {
-		ester_err("(solver::add): Invalid block_type %s", block_type);
+		ester_critical("(solver::add) Invalid block_type %s", block_type);
 	}
 
 	for(k=0;k<nb;k++) {
@@ -1436,31 +1434,31 @@ void solver::add(const char *eqn, const char *varn,const char *block_type,char t
 	}
 
 	if(error) {
-		ester_err("ERROR (solver):\n\t%s\n\tin eq \"%s\", var \"%s\"",
-                err_msg,eqn,varn);
+		char type_name[4];
 		switch(type) {
 			case 'd':
-				ester_err(" (type: d)");
+				strncpy(type_name, "d", sizeof(type_name));
 				break;
 			case 'l':
-				ester_err(" (type: l)");
+				strncpy(type_name, "l", sizeof(type_name));
 				break;
 			case 'r':
-				ester_err(" (type: r)");
+				strncpy(type_name, "r", sizeof(type_name));
 				break;
 			case 'f':
-				ester_err(" (type: lr)");
+				strncpy(type_name, "lr", sizeof(type_name));
 				break;
 			case 'm':
-				ester_err(" (type: li)");
+				strncpy(type_name, "li", sizeof(type_name));
 				break;
 			case 's':
-				ester_err(" (type: ri)");
+				strncpy(type_name, "ri", sizeof(type_name));
 				break;
 			case 'g':
-				ester_err(" (type: lri)");
+				strncpy(type_name, "lri", sizeof(type_name));
 		}
-		exit(1);
+		ester_critical("(solver::add) '%s' in eq '%s', var: '%s' (type: %s)", err_msg, eqn, varn, type_name);
+		exit(1); // Useless because ester_critical already exit
 	}
 	delete dd;
 	if(type=='m'||type=='s'||type=='g') delete ii;
@@ -1476,28 +1474,20 @@ void solver::add(int iblock,const char *eqn, const char *varn,const char *block_
 	ivar=get_id(varn);
 
 	if(dep(ieq)&&type!='d') {
-		fprintf(stderr,"ERROR (solver):\n\t");
-		fprintf(stderr,"Only type D terms are allowed in the definition of dependent variables\n");
-		fprintf(stderr,"\tin block %d, eq \"%s\", var \"%s\"\n",iblock,eqn,varn);
-		exit(1);
+		ester_critical("(solver::add) Only type D terms are allowed in the definition of dependent variables"
+					   " in block %d, eq '%s', var '%s'", iblock, eqn, varn);
 	}
 	if(dep(ieq)&&strcmp(block_type,"block")) {
-		fprintf(stderr,"ERROR (solver):\n\t");
-		fprintf(stderr,"No boundary conditions are allowed in the definition of dependent variables\n");
-		fprintf(stderr,"\tin block %d, eq \"%s\", var \"%s\"\n",iblock,eqn,varn);
-		exit(1);
+		ester_critical("(solver::add) No boundary conditions are allowed in the definition of dependent variables"
+					   " in block %d, eq '%s', var '%s'", iblock, eqn, varn);
 	}
 	if(iblock==0&&!strcmp(block_type,"bc_bot1")) {
-		fprintf(stderr,"ERROR (solver):\n\t");
-		fprintf(stderr,"\"bc_bot1\" terms are not allowed in first domain\n");
-		fprintf(stderr,"\tin block %d, eq \"%s\", var \"%s\"\n",iblock,eqn,varn);
-		exit(1);
+		ester_critical("(solver::add) 'bc_bot1' terms are not allowed in first domain"
+					   " in block %d, eq '%s', var '%s'", iblock, eqn, varn);
 	}
 	if(iblock==nb-1&&!strcmp(block_type,"bc_top2")) {
-		fprintf(stderr,"ERROR (solver):\n\t");
-		fprintf(stderr,"\"bc_top2\" terms are not allowed in last domain\n");
-		fprintf(stderr,"\tin block %d, eq \"%s\", var \"%s\"\n",iblock,eqn,varn);
-		exit(1);
+		ester_critical("(solver::add) 'bc_top2' terms are not allowed in last domain"
+					   " in block %d, eq '%s', var '%s'", iblock, eqn, varn);
 	}
 
 	sync=0;
@@ -1516,8 +1506,7 @@ void solver::add(int iblock,const char *eqn, const char *varn,const char *block_
 	else if(!strcmp(block_type,"bc_top2"))
 		bb=bc_top2;
 	else {
-		fprintf(stderr,"ERROR (solver::add) : Unknown block_type %s\n",block_type);
-		exit(1);
+		ester_critical("(solver::add) : Unknown block_type %s", block_type);
 	}
 
 	matrix *ll,L;
@@ -1628,8 +1617,8 @@ int solver::check_struct() {
 				Nt=nth[n][i]>Nt?nth[n][i]:Nt;
 			}
 			if(rhs[i].nrows()!=Nr||rhs[i].ncols()!=Nt) {
-				fprintf(stderr,"ERROR (solver):\n\tRHS for var \"%s\" has not the correct size\n",var[i]);
-				fprintf(stderr,"\tIt is (%d,%d) and should be (%d,%d)\n",rhs[i].nrows(),rhs[i].ncols(),Nr,Nt);
+				ester_err("(solver) RHS for var '%s' has not the correct size\n"
+						  "\t It is (%d,%d) and should be (%d,%d)", var[i], rhs[i].nrows(), rhs[i].ncols(), Nr, Nt);
 				error=1;
 			}
 		}
@@ -1882,31 +1871,30 @@ int solver::check_struct_bc(int n,int i,int j,const char *bctype) {
 
 
 void solver::check_struct_error(const char *err_msg,int n,int i,int j,solver_elem *p) {
-
-	fprintf(stderr,"ERROR (solver):\n\t%s\n\tin block %d, eq \"%s\", var \"%s\"",err_msg,n,var[i],var[j]);
+	char type_name[4];
 	switch(p->type) {
 		case 'd':
-			fprintf(stderr," (type: d)\n");
+			strncpy(type_name, "d", sizeof(type_name));
 			break;
 		case 'l':
-			fprintf(stderr," (type: l)\n");
+			strncpy(type_name, "l", sizeof(type_name));
 			break;
 		case 'r':
-			fprintf(stderr," (type: r)\n");
+			strncpy(type_name, "r", sizeof(type_name));
 			break;
 		case 'f':
-			fprintf(stderr," (type: lr)\n");
+			strncpy(type_name, "lr", sizeof(type_name));
 			break;
 		case 'm':
-			fprintf(stderr," (type: li)\n");
+			strncpy(type_name, "li", sizeof(type_name));
 			break;
 		case 's':
-			fprintf(stderr," (type: ri)\n");
+			strncpy(type_name, "ri", sizeof(type_name));
 			break;
 		case 'g':
-			fprintf(stderr," (type: lri)\n");
+			strncpy(type_name, "lri", sizeof(type_name));
 	}
-
+	ester_err("(solver::check_struct_error) '%s' in block %d, eq: '%s', var: '%s' (type: %s)", err_msg, n, var[i], var[j], type_name);
 }
 
 /// \brief Substitutes dependent variables defined in the solver.
@@ -1924,8 +1912,7 @@ void solver::subst_dep() {
 			substd=0;
 			for(int i=0;i<nv;i++) {
 				if(dep(i)&&block[n].eq[i][i]!=NULL) {
-					fprintf(stderr,"ERROR (solver):\n\tFound loop in definition of dependent variable \"%s\"\n",var[i]);
-					exit(1);
+					ester_critical("(solver::subst_dep) Found loop in definition of dependent variable '%s'", var[i]);
 				}
 			}
 			for(int i=0;i<nv;i++) {
@@ -2113,10 +2100,7 @@ void solver::subst_dep_elem(int i,int k,solver_block *bb,solver_elem *p,const ma
             }
             break;
         default:
-            fprintf(stderr,
-                    "Error in solver::subst_dep_elem: unknown type (%c)\n",
-                    p->type);
-            exit(EXIT_FAILURE);
+            ester_critical("(solver::subst_dep_elem) unknown type (%c)", p->type);
     }
 
 	bb->add(i,k,type_new,&D,&L,&R,&I);

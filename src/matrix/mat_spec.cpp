@@ -23,8 +23,8 @@ extern "C" {
 matrix matrix::operator,(const matrix &a) const {
 
     if(nc!=a.nf) {
-        ester_err("(matrix.,) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.,) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
 
     matrix res(nf,a.nc);
@@ -41,19 +41,19 @@ matrix matrix::solve(matrix b) const {
     matrix lu(*this);
 
     if(nf!=b.nf) {
-        ester_err("(matrix.solve) Dimensions must agree");
-        exit(1);
+        ester_critical("(matrix.solve) Dimensions must agree");
+        exit(1); // Useless because ester_critical already exit
     }
     if(nf!=nc) {
-        ester_err("(matrix.solve) Matrix must be square");
-        exit(1);
+        ester_critical("(matrix.solve) Matrix must be square");
+        exit(1); // Useless because ester_critical already exit
     }
 
     enable_sigfpe();
     dgetrf_(&lu.nf,&lu.nc,lu.p,&lu.nf,ipiv,&info);
     if(info>0) {
         printf("Matrix is singular (%d)\n",info);
-        exit(1);
+        exit(1); // Useless because ester_critical already exit
     }
     dgetrs_(&trans,&lu.nf,&b.nc,lu.p,&lu.nf,ipiv,b.p,&b.nf,&info);
     disable_sigfpe();
@@ -69,14 +69,14 @@ matrix matrix::inv() const {
     double *work,w;
 
     if(nf!=nc) {
-        ester_err("(matrix.inv) Matrix must be square");
-        exit(1);
+        ester_critical("(matrix.inv) Matrix must be square");
+        exit(1); // Useless because ester_critical already exit
     }
 
     dgetrf_(&res.nf,&res.nc,res.p,&res.nf,ipiv,&info);
     if(info>0) {
         printf("Matrix is singular (%d)\n",info);
-        exit(1);
+        exit(1); // Useless because ester_critical already exit
     }
     dgetri_(&res.nf,res.p,&res.nf,ipiv,&w,&lwork,&info);
     lwork = (int) round(w);

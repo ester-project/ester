@@ -47,7 +47,7 @@ matrix star1d::Teff() const {
 	F=-opa.xi*(D,T);
     matrix teff = pow(F(-1)/SIG_SB*units.T/units.r,0.25)*ones(1,1);
     if (std::isnan(teff(0))) {
-        ester_err("Teff is NaN (D,T) = %e", (D,T)(-1));
+        ester_critical("Teff is NaN (D,T) = %e", (D,T)(-1));
     }
 	return teff;
 

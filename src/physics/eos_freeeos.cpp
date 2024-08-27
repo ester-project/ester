@@ -123,7 +123,7 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
                 &iteration_count);
         rho(i) = rhoi;
         if (iteration_count < 0) {
-            ester_err(
+            ester_critical(
                     "Values outside freeEOS eos table:\n"
                     "  X = %e\n"
                     "  Z = %e\n"
