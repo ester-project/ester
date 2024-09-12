@@ -54,6 +54,15 @@ double star2d::luminosity() const {
 	return 2*PI*((Fz*r*r*map.rz).row(nr-1),map.leg.I_00)(0)*units.T*units.r;
 }
 
+matrix star2d::luminosity_m() const {
+
+	matrix Fz=-opa.xi*(map.gzz*(D,T)+map.gzt*(T,Dt));
+	matrix lum;
+	lum = ((Fz*r*r*map.rz).row(nr-1),map.leg.I_00);
+	lum = 2*PI*lum*units.T*units.r;
+	return lum;
+}
+
 double star2d::Lz() const {
 
 	return 2*PI*(map.gl.I,(rho*w*r*r*sin(th)*sin(th)*r*r*map.rz,map.leg.I_00))(0)*units.rho*units.Omega*
@@ -167,10 +176,6 @@ matrix star2d::Dmix_v() const {
 matrix star2d::Dmix_h() const {
 
     double diff_coeff_conv = 1e13; // PARAMETER dimensional
-	matrix dOmega_dth;
-	matrix K;
-	double theta;
-	K = opa.xi/eos.cp;
     matrix diff_h = ones(nr, nth) * diffusion_h;
 
     return diff_h;
@@ -345,6 +350,98 @@ double star2d::apparent_luminosity(double i) const {
 	return L_ap;
 	
 }
+
+matrix star2d::csound() const {
+
+	matrix cs;
+	
+	cs=sqrt(eos.G1*(p*units.p)/(rho*units.rho));
+	
+	return cs;
+
+}
+
+double star2d::M_dot() const {
+
+	double M_dot, delta, kap_el;
+	matrix alpha1, alpha2, alpha, alpha_prime, flux, mdot, vth, Teff_;
+	Teff_ = Teff();
+	flux = pow(Teff_,4)*SIG_SB;
+	vth = pow(2*K_BOL*Teff_/(AMASS["Fe56"]*UMA), 0.5);
+	matrix geff = abs(gsup());
+	delta = 0.1;
+
+	double E_CHARGE = 4.803e-10; // statcoulombs
+	double M_ELEC = 9.109e-28; // grams
+
+	double Z_SUN = 0.016; //0.02;
+
+	alpha = ones(1,nth);
+	alpha1 = ones(1,nth);
+	alpha2 = ones(1,nth);
+	mdot = zeros(1,nth);
+
+	// Alpha(Teff) relation for Z/Zsun = 1.
+	for (int k=0; k < nth; k++){
+		if (Teff_(k) < 10000){
+			alpha1(k) = 0.45;
+		}
+		else if (Teff_(k) >= 10000 && Teff_(k) < 20000){
+			alpha1(k) = 1e-5*Teff_(k)+0.3;
+		}
+		else if (Teff_(k) >= 20000 && Teff_(k) < 40000){
+			alpha1(k) = 5e-6*Teff_(k)+0.5;
+		}
+		else {
+			alpha1(k) = 0.70;
+		}						 
+	}
+
+	// Alpha(Teff) relation for Z/Zsun = 0.1.
+	for (int k=0; k < nth; k++){
+		if (Teff_(k) < 10000){
+			alpha2(k) = 0.38;
+		}
+		else if (Teff_(k) >= 10000 && Teff_(k) < 20000){
+			alpha2(k) = 1.6e-5*Teff_(k)+0.22;
+		}
+		else if (Teff_(k) >= 20000 && Teff_(k) < 40000){
+			alpha2(k) = 5.5e-6*Teff_(k)+0.43;
+		}
+		else {
+			alpha2(k) = 0.65;
+		}						 
+	}
+	alpha = (alpha1 - alpha2) * log10(Z0/Z_SUN) + alpha1;
+
+	//k_prime = 1.16e-6*Teff_ + 0.08;
+
+
+	alpha_prime =  alpha - delta;
+
+	//kap_el = 1e11*(8*PI/3)*pow(E_CHARGE*E_CHARGE/(M_ELEC*C_LIGHT),2); //1e11 n_e electron density Gagnier et al. (2019b).
+
+	for (int k=0; k < nth; k++){
+		kap_el = 0.2*(1+comp.X()(-1,k)); // cm^2/g
+		mdot(k) = (4.0/9.0)*alpha(k)/(vth(k)*C_LIGHT)*pow((C_LIGHT/(kap_el*(1-alpha(k))))*(abs(geff(k)) - kap_el*flux(k)/C_LIGHT),(alpha_prime(k)-1)/alpha_prime(k)) * pow(flux(k), 1/alpha_prime(k))*(MYR/1e6);
+		//printf("k = %i, mdot = %e\n", k, mdot(k));
+	}
+
+	M_dot = 2*PI*((mdot*r*map.rz).row(nr-1),map.leg.I_00)(0)*units.r*units.r/M_SUN;
+	//double SUR = 4*PI*R*R;
+	printf("Uncalibrated Mdot = %e\n", M_dot);
+	double Gamma_edd;
+	Gamma_edd = (luminosity()*kap_el)/(4*PI*C_LIGHT*GRAV*M);
+	double M_dot_obs = pow(10, -5.19 + 2.69*log10(Gamma_edd) - 3.19 * log10(1-Gamma_edd)) * pow(Z0/(0.5*Z_SUN), 0.83); // Brands et al. (2022) for LMC stars (0.5*Z_SUN), metallicity dependence M \propto Z^0.83 from Mokiem et al. (2007)
+	printf("Mdot Brands et al. for Gamma_e = %e gives M_dot_obs = %e\n", Gamma_edd, M_dot_obs);
+	//double k_prime = pow(M_dot_obs/M_dot, alpha_prime(0));
+	//printf("k_prime = %e\n", k_prime);
+	printf("k_cal = %e\n", M_dot_obs/M_dot);
+
+	return M_dot;
+
+}
+
 /*
 matrix star2d::stream() const {
 

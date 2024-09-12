@@ -28,7 +28,7 @@ double opa_houdek_i(double X,double Z,double T,double rho,double &dlogkt,double 
 	return logk;
 }
 
-int opa_houdek(const matrix &X,double Z,const matrix &T,const matrix &rho,
+int opa_houdek(const matrix &X,const matrix &Z,const matrix &T,const matrix &rho,
 		opa_struct &opa) {
 
 	int i,N,error=0;
@@ -55,7 +55,7 @@ int opa_houdek(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	double dlogkt,dlogkr;
 	
 	for(i=0;i<N;i++) {
-		opa.k(i)=opa_houdek_i(X(i),Z,T(i),rho(i),dlogkt,dlogkr);
+		opa.k(i)=opa_houdek_i(X(i),Z(i),T(i),rho(i),dlogkt,dlogkr);
 		dlnkT(i)=dlogkt;
 		dlnkrho(i)=dlogkr;
 	}

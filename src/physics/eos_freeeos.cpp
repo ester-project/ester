@@ -21,7 +21,7 @@ extern "C" {
             double *entropy, int *iteration_count);
 }
 
-int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
+int eos_freeeos(const matrix &X, const matrix &Z, const matrix &T, const matrix &p,
         matrix &rho, eos_struct &eos) {
 
     double t;
@@ -84,7 +84,7 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
 
     for (int i=0; i<N; i++) {
 
-        double_map comp = initial_composition(X(i), Z);
+        double_map comp = initial_composition(X(i), Z(i));
 
         eps[0] = comp["H"] / 1.008e0;                       // H
         eps[1] = (comp["He3"] + comp["He4"]) / 4.0026e0;   // He3 + He4
@@ -127,7 +127,7 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
                     "  X = %e\n"
                     "  Z = %e\n"
                     "  T = %e\n"
-                    "  p = %e", X(i), Z, t, p(i));
+                    "  p = %e", X(i), Z(i), t, p(i));
         }
         eos.s(i) = entropy[0];
         eos.G1(i) = gamma1;

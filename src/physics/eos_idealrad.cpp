@@ -4,7 +4,7 @@
 #include "physics.h"
 #include "constants.h"
 
-int eos_idealrad(const matrix &X,double Z,const matrix &T,const matrix &p,
+int eos_idealrad(const matrix &X,const matrix &Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos) {
 
 	matrix mu,b;

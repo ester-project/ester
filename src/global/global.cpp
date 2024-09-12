@@ -16,6 +16,7 @@ extern const double A_RAD=7.565767e-15;
 extern const double GRAV=6.67384e-8;
 extern const double C_LIGHT=2.99792458e10;
 extern const double MYR=3.15576e13; // one Myear in seconds
+extern const double Rgas = 8.3145e7; // Gas constant cgs
 
 extern const double M_SUN=1.9891e33;
 extern const double R_SUN=6.95508e10;

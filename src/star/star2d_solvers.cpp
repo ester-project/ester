@@ -54,8 +54,10 @@ void star2d::init_comp() {
     }
 
     if(stratified_comp == 0) {
-		printf("Calling initial_composition with Xc = %e.", Xc*X0);
+		//printf("Calling initial_composition with Xc = %e.\n", Xc*X0);
+		//printf("C12 converted to N14 in core.\n");
         comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
+        //comp.setblock(0,n-1,0,-1,initial_composition_cno_cycle_core(Xc*X0,Z0)*ones(n,nth));
     }
 	else if (stratified_comp == 2)
 	{
@@ -84,7 +86,7 @@ solver *star2d::init_solver(int nvar_add) {
 	op=new solver;
 	op->init(ndomains+1,nvar+nvar_add,"full");
 
-	op->maxit_ref=10;op->use_cgs=1;op->maxit_cgs=20;op->debug=0;
+	op->maxit_ref=10;op->use_cgs=1;op->maxit_cgs=10;op->debug=0; //maxit_cgs=20
 	op->rel_tol=1e-12;op->abs_tol=1e-20;
 	register_variables(op);
 
@@ -139,10 +141,11 @@ void star2d::register_variables(solver *op) {
 
 }
 
-double star2d::solve(solver *op) {
+double star2d::solve(solver *op, int nit) {
     matrix_map error_map;
-    return solve(op, error_map, 0);
+    return solve(op, error_map, nit);
 }
+
 
 void star2d::write_eqs(solver *op) {
 
@@ -168,6 +171,7 @@ void star2d::write_eqs(solver *op) {
 	t[11] = std::thread(&star2d::solve_vangle, this, op);
 	for(int i=0; i< num_threads; i++)
 		t[i].join();
+		
 #else
 	solve_definitions(op);
 	solve_poisson(op);
@@ -291,7 +295,7 @@ double star2d::solve(solver *op, matrix_map& error_map, int nit) {
 	}
 // End  output verbose ----------------------
 
-	double h = 1.;
+	double h = 1.; //0.5
 	double err = update_solution(op, h, error_map, nit);
 
 	matrix rho0=rho;
@@ -568,12 +572,28 @@ void star2d::solve_poisson(solver *op) {
 void star2d::solve_cont(solver *op) {
 
 	static symbolic S;
-	static sym eq, flux;
+	static sym eq, flux, bc_cs, v_, cs_;
 	static bool sym_inited = false;
 	if (!sym_inited) {
 		sym rho = S.regvar("rho");
 		sym vr = S.regvar("vr");
 		sym vt = S.regvar("vt");
+		sym G1 = S.regvar("eos.G1");
+		sym cv = S.regvar("eos.cv");
+		sym p  = S.regvar("p");
+		sym ln_pc    = S.regvar("log_pc");
+		sym pc       = exp(ln_pc);
+		sym ln_rhoc  = S.regvar("log_rhoc");
+		sym rhoc     = exp(ln_rhoc);
+		sym ln_R     = S.regvar("log_R");
+		sym R        = exp(ln_R);
+		sym MYR     = S.regconst("MYR");
+		sym T     = S.regvar("T");
+		sym ln_Tc     = S.regvar("log_Tc");
+		sym Tc        = exp(ln_Tc);
+		sym K_BOL     = S.regconst("K_BOL");
+		sym mH        = S.regconst("mH");
+
 
 		sym_vec phivec(COVARIANT);
 		phivec(0) = 0*S.one; phivec(1) = 0*S.one; phivec(2) = S.r*sin(S.theta);
@@ -585,12 +605,30 @@ void star2d::solve_cont(solver *op) {
 		sym_vec V = vr*rvec + vt*thvec;
 		eq = div(rho*V);
 		flux = rho * (nvec, V);
+		//bc_cs = (nvec, V)*units.v - sqrt(cp/cv*p/rho*units.p/units.rho); // sound speed
+	    //bc_cs = vr*units.v - sqrt(G1*p/rho*units.p/units.rho); // sound speed in cm/s
+		cs_ = sqrt(K_BOL*T*Tc/(0.6*mH)); //sqrt(G1*p/rho*pc/rhoc);
+		v_ = vr*(R/MYR);
+		//bc_cs = rho*(vr - sqrt(G1*p/rho*pc/rhoc)/(R/MYR)); // sound speed
+		bc_cs = rho*(vr - 1e-7*sqrt(K_BOL*T*Tc/(0.6*mH))/(R/MYR)); // sound speed
 		sym_inited = true;
 	}
 
 	S.set_value("vr", vr);
 	S.set_value("vt", vt, 11);
 	S.set_value("rho", rho);
+	S.set_value("eos.G1", eos.G1);
+	S.set_value("eos.cv", eos.cv);
+	S.set_value("p", p);	
+    S.set_value("log_R", log(R)*ones(1,1));	
+    S.set_value("log_rhoc", log(rhoc)*ones(1,1));
+    S.set_value("log_pc", log(pc)*ones(1,1));
+    S.set_value("MYR", MYR*ones(1,1));	
+    S.set_value("K_BOL", K_BOL*ones(1,1));	
+    S.set_value("mH", HYDROGEN_MASS*ones(1,1));
+    S.set_value("log_Tc", log(Tc)*ones(1,1));
+    S.set_value("T", T);
+
 	S.set_map(map);
 
 	eq.add(op, "vr", "vr");
@@ -598,8 +636,12 @@ void star2d::solve_cont(solver *op) {
 	eq.add(op, "vr", "rho");
 	eq.add(op, "vr", "r");
 
+
 	matrix rhs = -eq.eval();
 	matrix flux_val = flux.eval();
+
+	// Print max/min values of vr and cs at the surface.
+	//printf("V = %e, c_s = %e, V = %e, c_s = %e, %e\n", max(v_.eval().row(-1)), max(cs_.eval().row(-1)), min(v_.eval().row(-1)), min(cs_.eval().row(-1)), units.v);
 
 	int j0 = 0;
 	for (int n = 0; n < ndomains; n++) {
@@ -622,11 +664,26 @@ void star2d::solve_cont(solver *op) {
 			rhs.setrow(j1, -flux_val.row(j1) + flux_val.row(j1+1));
 		}
 		else if (n == ndomains - 1) {
+			// Original no-mass-flux BCs.
 			flux.bc_top1_add(op, n, "vr", "vr");
 			flux.bc_top1_add(op, n, "vr", "vt");
 			flux.bc_top1_add(op, n, "vr", "rho");
 			flux.bc_top1_add(op, n, "vr", "r");
 			rhs.setrow(j1, -flux_val.row(j1));
+
+			// New BCs at Mach = 1
+			//bc_cs.bc_top1_add(op, n, "vr", "vr");
+			//bc_cs.bc_top1_add(op, n, "vr", "vt");
+			//bc_cs.bc_top1_add(op, n, "vr", "rho");
+			//bc_cs.bc_top1_add(op, n, "vr", "r");
+			//bc_cs.bc_top1_add(op, n, "vr", "p");
+			////bc_cs.bc_top1_add(op, n, "vr", "log_pc");
+			////bc_cs.bc_top1_add(op, n, "vr", "log_rhoc");
+			//bc_cs.bc_top1_add(op, n, "vr", "log_R");						
+			//bc_cs.bc_top1_add(op, n, "vr", "log_Tc");
+			//bc_cs.bc_top1_add(op, n, "vr", "T");
+			//rhs.setrow(j1, -bc_cs.eval().row(j1));
+
 		}
 		else {
 			op->bc_top1_add_d(n, "vr", "vr", ones(1, nth));
@@ -707,7 +764,7 @@ void star2d::solve_mov(solver *op) {
 		ic_w = S.Dz(w)/S.rz; // dOmega/dr
 
 		bc_t = ic_visc;  // associated boundary condition
-		bc_w = (nvec, grad(w)); // stress-free for Omega
+		bc_w = (nvec, grad(w))+2*w/S.r; // stress-free for Omega --> added stress to surface, assuming fluid element keeps its AM.
 	}
 
 	int j0;
@@ -721,7 +778,7 @@ void star2d::solve_mov(solver *op) {
 	S.set_value("reynolds_v", reynolds_v*ones(1,1));
 	S.set_value("reynolds_h", reynolds_h*ones(1,1));
     matrix log_Re = log(R*R/visc_h/MYR)*ones(nr, nth);
-	double log_Re_conv = log(R*R/1e8/MYR); // Set the viscosity in the convective core to 1e11 cm^2/s. We assume the vertical and horizontal viscosity are equal.
+	//double log_Re_conv = log(R*R/1e11/MYR); // Set the viscosity in the convective core to 1e11 cm^2/s. We assume the vertical and horizontal viscosity are equal.
     // Viscosity in the core which is enhanced!!
     //if (conv) {
     //	int nc = 0;

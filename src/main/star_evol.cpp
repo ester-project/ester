@@ -112,11 +112,12 @@ int main(int argc,char *argv[]) {
 		double err;
 
 		printf("Age = %f Myr (step = %e)\n", A.age, step);
+		printf("Mass = %f Msun\n", A.M/M_SUN);
 
 		printf("RK stage %d / %d:\n", ++stage, rk->number_of_stages());
 		while(!last_it) {
 			nit++;
-			err=A.solve(op);
+			err=A.solve(op, nit);
 			last_it=(err<config.tol&&nit>=config.minit)||nit>=config.maxit;
 			if(config.verbose) {
 				printf("\tit=%d err=%e\n",nit,err);

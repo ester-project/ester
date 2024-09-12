@@ -62,7 +62,7 @@ double star2dR::solve(solver *op) {
 
 void star2dR::fill() {
 
-	init_comp();
+	//init_comp();
 	eq_state();
 	m=2*PI*(map.gl.I,rho*r*r*map.rz,map.leg.I_00)(0);
 	M=m*rhoc*R*R*R;
@@ -121,7 +121,7 @@ void star2dR::solve_definitions(solver *op) {
 	double dXc=1e-8;
 	
 	Xc+=dXc;
-	init_comp();
+	//init_comp();
 	nuclear();
 	opacity();
 	eq_state();

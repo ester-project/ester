@@ -583,6 +583,12 @@ void write(const star2d &A,char *var,char *fmt) {
 		else {
 			fwrite(&d,sizeof(double),1,stdout);
 		}
+	} else if(!strcmp(var,"Mdot")) {
+		d=A.M_dot();
+		if(fmt) fprintf(stdout,fmt,d);
+		else {
+			fwrite(&d,sizeof(double),1,stdout);
+		}		
 	} else {
 		ester_err("Unknown variable %s", var);
 		exit(1);

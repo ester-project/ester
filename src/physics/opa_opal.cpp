@@ -29,7 +29,7 @@ double opa_opal_i(double X,double Z,double T,double rho,double &dlogkt,double &d
 	return e_.opact;
 }
 
-int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
+int opa_opal(const matrix &X,const matrix &Z,const matrix &T,const matrix &rho,
 		opa_struct &opa) {
 
 	int i,N,error=0;
@@ -43,14 +43,14 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 
 	for(i=0;i<N;i++) {
 		if(X(i) > 1) printf("  X   = %e, %i, %i, %e, %e\n,", X(i), i, N, min(X), max(X));
-		opa.k(i)=opa_opal_i(X(i),Z,T(i),rho(i),dlogkt,dlogkr);
+		opa.k(i)=opa_opal_i(X(i),Z(i),T(i),rho(i),dlogkt,dlogkr);
 		if(opa.k(i)==-99) error=1;
 		dlnkT(i)=dlogkt;
 		dlnkrho(i)=dlogkr;
         if (error) {
             printf("Values outside OPAL opacity table\n");
             printf("  X   = %e\n", X(i));
-            printf("  Z   = %e\n", Z);
+            printf("  Z   = %e\n", Z(i));
             printf("  T   = %e\n", T(i));
             printf("  rho = %e\n", rho(i));
             print_stack();
@@ -62,7 +62,9 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	opa.xi=16*SIG_SB*pow(T,3)/(3*opa.k*rho);
 	opa.dlnxi_lnrho=-1-dlnkrho;
     opa.dlnxi_lnT=3-dlnkT;
-
+    if (std::isnan(max(abs(opa.k)))) {
+        printf("NaN in opacity");
+       }
 	return error;
 
 }

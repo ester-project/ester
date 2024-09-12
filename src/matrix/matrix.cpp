@@ -134,11 +134,10 @@ matrix &matrix::redim(int nfil, int ncol) {
     }
 
     if(nfil*ncol!=nf*nc) {
-        ester_err("matrix.redim: Number of elements doesn't match");
+        ester_err("matrix.redim: Number of elements doesn't match %i %i %i %i", nfil, ncol, nf, nc);
         exit(1);
     }
     nf=nfil;nc=ncol;
-
     return *this;
 }
 

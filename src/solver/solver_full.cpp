@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <cmath>
 #include <time.h>
+#include <thread>
+#include <vector>
 
 extern "C" {
 #ifdef USE_MKL
@@ -144,7 +146,7 @@ void solver_full::lu_calc() {
         f = fopen(fname, "w");
     }
 
-	if(oc) read_block(0);
+	if(oc) read_block(0);	
 	for(i=0;i<nb;i++) {
 
         if (dump_jac) {
@@ -189,6 +191,7 @@ void solver_full::lu_calc() {
 
 		lu_block(i);
 	}
+
     if (dump_jac) {
         free(fname);
         fclose(f);

@@ -43,6 +43,14 @@ double star1d::luminosity() const {
 
 }
 
+matrix star1d::luminosity_m() const {
+
+	matrix Fz=-opa.xi*(map.gzz*(D,T)+map.gzt*(T,Dt));
+	matrix lum;
+	lum = ((Fz*r*r*map.rz).row(nr-1),map.leg.I_00);
+	lum = 2*PI*lum*units.T*units.r;
+	return lum;
+}
 
 matrix star1d::Teff() const {
 

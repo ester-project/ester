@@ -176,6 +176,9 @@ void star2d::hdf5_write(const char *filename) const {
     double ek = this->virial_L()/2;
     write_attr(star, "Ek",          real, &ek);
 
+    double Mdot = this->M_dot();
+    write_attr(star, "Mdot",          real, &Mdot);
+
     H5::StrType strtype;
     strtype = H5::StrType(H5::PredType::C_S1, strlen(version.name.c_str())+1);
     write_attr(star, "version", strtype, H5std_string(version.name));
@@ -219,7 +222,14 @@ void star2d::hdf5_write(const char *filename) const {
     fields["diff_h"] = Dmix_h();
     fields["N14"] = comp["N14"];
     fields["O16"] = comp["O16"]; 
-    fields["Ktherm"] = opa.xi/eos.cp; 
+    fields["C12"] = comp["C12"];
+    fields["N15"] = comp["N15"];
+    fields["O17"] = comp["O17"]; 
+    fields["C13"] = comp["C13"];     
+    fields["Ktherm"] = opa.xi/eos.cp;
+    fields["L"] = luminosity_m();
+    fields["Teff"] = Teff();
+    fields["csound"] = csound();
 
 
 
@@ -286,8 +296,8 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("w",&w);
     fp.write("vr",&vr);
     fp.write("vt", &vt);
-    //fp.write("diff_v", &diff_v); //JM
     fp.write("comp",(matrix_map *)&comp);
+
 
     write_vars(&fp);
 
@@ -562,9 +572,9 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     //	}
     //}
 
-    int nc = 0;
-    for (int n = 0; n < conv; n++) nc += map.npts[n];
-    comp.setblock(0, nc-1, 0, -1, initial_composition_cno_cycle_core(X0,Z0)*ones(nc,nth));
+    //int nc = 0;
+    //for (int n = 0; n < conv; n++) nc += map.npts[n];
+    //comp.setblock(0, nc-1, 0, -1, initial_composition_cno_cycle_core(X0,Z0)*ones(nc,nth));
 
     if (read_field(star, "X", comp["H"])) {
         ester_warn("Could not read field 'X' from file `%s'", input_file);
@@ -577,6 +587,11 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     if (read_field(star, "O16", comp["O16"])) {
     	ester_warn("Could not read field 'O16' from file `%s'", input_file);
     }
+
+    if (read_field(star, "C12", comp["C12"])) {
+    	ester_warn("Could not read field 'C12' from file `%s'", input_file);
+    }
+
     comp["He4"] = 1 - comp["H"] - comp["He3"] - Z;
 
     fill();

@@ -13,7 +13,7 @@ extern"C" {
             double *, double *, double *, double *, double *);
 }
 
-int opa_cesam(const matrix& X, double Z, const matrix& T, const matrix& rho,
+int opa_cesam(const matrix& X, const matrix& Z, const matrix& T, const matrix& rho,
 		opa_struct& opa) {
 
     int error = 0;
@@ -34,8 +34,8 @@ int opa_cesam(const matrix& X, double Z, const matrix& T, const matrix& rho,
             double t, ro, kap, dkapt, dkapro, dkapx;
 
             x[0] = X(i, j);
-            x[1] = 1.0 - X(i, j) - Z;
-            x[2] = Z;
+            x[1] = 1.0 - X(i, j) - Z(i,j);
+            x[2] = Z(i,j);
             // x[3] = 3.425E-03;
             // x[4] = 4.128E-05;
             // x[5] = 1.059E-03;

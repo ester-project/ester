@@ -120,7 +120,7 @@ class star2d {
 	virtual void init_comp();
 	
 	virtual solver *init_solver(int nvar_add=0);
-	virtual double solve(solver *);
+	virtual double solve(solver *, int);
 	virtual double solve(solver *, matrix_map& error, int);
 	virtual void register_variables(solver *op);
 	
@@ -142,11 +142,13 @@ class star2d {
 	
 	virtual matrix entropy() const;
 	virtual double luminosity() const;
+	virtual matrix luminosity_m() const;
 	virtual matrix Teff() const;
 	virtual matrix N2() const;
 	virtual matrix Dmix_v() const;
 	virtual matrix Dmix_h() const;
 	virtual matrix gsup() const;
+	virtual matrix csound() const;
 	virtual double virial_3P() const;
 	virtual double virial_L() const;
 	virtual double virial_W() const;
@@ -158,6 +160,7 @@ class star2d {
 	virtual double Lz() const;
 	virtual double Mcore() const;
 	virtual double Lzcore() const;
+	virtual double M_dot() const;
 	virtual matrix Rcore() const;
 	
 	virtual void fill();
@@ -233,6 +236,7 @@ class star1d : public star2d {
 	virtual matrix N2() const;
 
 	virtual double luminosity() const;
+	virtual matrix luminosity_m() const;
 	virtual matrix Teff() const;
 	virtual matrix gsup() const;
 	
@@ -248,7 +252,7 @@ class star1d : public star2d {
 
 class star_evol : public star2d {
 protected:
-	matrix Xprev, r0, rho0, T0, lnp0, w0, phi0, XNprev, N2_prev;
+	matrix Xprev, r0, rho0, T0, lnp0, w0, phi0, XNprev, XOprev, XCprev, N2_prev;
 	double lnR0, drhocdX, lnrhoc0, lnTc0, lnpc0;
 	double delta;
 	bool check_map_enable;
@@ -281,6 +285,8 @@ public:
     virtual void solve_Omega(solver *);
     virtual void solve_X(solver *);
     virtual void solve_XN(solver *);
+    virtual void solve_XO(solver *);
+    virtual void solve_XC(solver *);
     virtual void solve_cont(solver *);
     virtual void solve_temp(solver *);
     virtual void solve_mov(solver *);

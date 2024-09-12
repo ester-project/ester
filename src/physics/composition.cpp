@@ -2,6 +2,7 @@
 #include "ester-config.h"
 #endif
 #include "physics.h"
+#include "constants.h"
 
 double_map initial_composition(double X, double Z) {
 	double_map comp;
@@ -33,19 +34,23 @@ double_map initial_composition_cno_cycle_core(double X, double Z) {
 	comp["He3"]=3.15247417638132e-04*(1.-X-Z);
 	comp["He4"]=(1.-X-Z)-comp["He3"];
 	comp["C12"]=0; // Z*1.71243418737847e-01;
-	comp["C13"]=Z*2.06388003380057e-03;
-	comp["N14"]=Z*5.29501630871695e-02 + 14.003074*Z*(1.71243418737847e-01/12.011 + 1.95126448826986e-04/16.9991315); //Assumes Z = Zini throughout the evolution!
-	comp["N15"]=Z*2.08372414940812e-04;
+	comp["C13"]=0; //Z*2.06388003380057e-03;
+	//comp["N14"]=Z*5.29501630871695e-02 + 14.003074*Z*(1.71243418737847e-01/12.011 + 1.95126448826986e-04/16.9991315); //Assumes Z = Zini throughout the evolution!
+	comp["N14"]=Z*5.29501630871695e-02 + AMASS["N14"]*Z*(1.71243418737847e-01/AMASS["C12"] + 1.95126448826986e-04/AMASS["O17"] + 2.06388003380057e-03/AMASS["C13"] 
+				+ 2.08372414940812e-04/AMASS["N15"]); //Assumes Z = Zini throughout the evolution!
+	comp["N15"]=0; //Z*2.08372414940812e-04;
 	comp["O16"]=Z*4.82006487350336e-01;
 	comp["O17"]=0;  // Z*1.95126448826986e-04;
 	
 	double tot=comp.sum();
 	
 	comp["Ex"] =1-tot;
+
 	
 	return comp;
 
 }
+
 
 matrix composition_map::X() const {
 
@@ -56,12 +61,14 @@ matrix composition_map::X() const {
 matrix composition_map::Y() const {
 
 	return (*this)["He3"]+(*this)["He4"];
+	//return 1.-X()-Z();
 
 }
 
 matrix composition_map::Z() const {
 
-	return 1.-X()-Y();
+	//return 1.-X()-Y();
+	return (*this)["C12"]+(*this)["C13"]+(*this)["N14"]+(*this)["N15"]+(*this)["O16"]+(*this)["O17"]+(*this)["Ex"];
 
 }
 

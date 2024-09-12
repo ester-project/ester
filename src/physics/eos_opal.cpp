@@ -19,7 +19,7 @@ extern"C" {
 	} lreadco_;
 }
 
-int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
+int eos_opal(const matrix &X,const matrix &Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos) {
     
     matrix t6,p_mb;
@@ -30,11 +30,11 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     t6=T*1e-6;
     p_mb=p*1e-12;
 
-    if(Z!=Z_table) {
-    	lreadco_.itime=0;
-    	zfs_interp_eos5_(&Z);
-	    Z_table=Z;
-    }
+    //if(Z!=Z_table) {
+    //	lreadco_.itime=0;
+    //	zfs_interp_eos5_(&Z);
+	//    Z_table=Z;
+    //}
     
     if(error) {
     	printf("Can't initialize OPAL EOS table\n");
@@ -58,7 +58,16 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
 
 	double Xi,Zi,t6i,p_mbi,rhoi;
     for(i=0;i<N;i++) {
-    	Xi=X(i);Zi=Z;t6i=t6(i);p_mbi=p_mb(i);
+    	Xi=X(i);t6i=t6(i);p_mbi=p_mb(i);
+
+        Zi = round(Z(i) * pow(10, 4)) / pow(10, 4);
+        if(abs((Zi-Z_table)/Zi)>0.05) {
+            printf("New table Z = %e, Ztable = %e\n", Zi, Z_table);
+            lreadco_.itime=0;
+            zfs_interp_eos5_(&Zi);
+            Z_table=Zi;
+        }
+
     	eos5_xtrin_(&Xi,&Zi,&t6i,&p_mbi,&rhoi);
     	rho(i)=rhoi;
     	eos.s(i)=1e6*(*(eeos_.eos+2));
@@ -83,6 +92,10 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
         ester_err("Values outside OPAL eos table");
    		return 1;
     }
+
+    if (std::isnan(max(abs(rho)))) {
+        printf("NaN in rho");
+       }
 
     return 0;
 	

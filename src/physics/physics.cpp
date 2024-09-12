@@ -5,13 +5,13 @@
 #include "physics.h"
 #include <string.h>
 
-int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
+int opa_calc(const matrix &X,const matrix &Z,const matrix &T,const matrix &rho,
 		opa_struct &opa) {
 
 	int error=0;
 
 	if(!strcmp(opa.name,"opal")) {
-		error=opa_opal(X,Z,T,rho,opa);
+		error=opa_opal(X,Z,T,rho,opa);        
 	} else if(!strcmp(opa.name,"houdek")) {
     	error=opa_houdek(X,Z,T,rho,opa);
 	} else if(!strcmp(opa.name,"kramer")) {
@@ -26,7 +26,7 @@ int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	return error;
 }
 
-int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
+int eos_calc(const matrix &X,const matrix &Z,const matrix &T,const matrix &p,
         matrix &rho,eos_struct &eos) {
 
     int error=0;
