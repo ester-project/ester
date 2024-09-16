@@ -21,7 +21,33 @@ extern "C" {
             double *entropy, int *iteration_count);
 }
 
-int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
+void set_eps(double* eps, const double_map &local_chemical_mix) {
+        // TODO: maybe use atomic masses defined in src/global/global.cpp
+        // Only isotops that exists in non negligible quantities have been considered
+        // according to their wikipedia page on the 3rd of July 2023
+        eps[0] = local_chemical_mix["H"] / 1.008e0;                     // H
+        eps[1] = local_chemical_mix["He3"] / 3. + local_chemical_mix["He4"] / 4.;     // He3 + He4
+        eps[2] = local_chemical_mix["C12"] / 12. + local_chemical_mix["C13"] / 13.;   // C12 + C13
+        eps[3] = local_chemical_mix["N14"] / 14. + local_chemical_mix["N15"] / 15.;   // N14 + N15
+        eps[4] = local_chemical_mix["O16"] / 16. + local_chemical_mix["O17"] / 17.;   // O16 + O17
+        eps[5] = local_chemical_mix["Ne20"] / 20. + local_chemical_mix["Ne22"] / 22.; // Ne20 + Ne22
+        eps[6] = local_chemical_mix["Na23"] / 23.; // Na23
+        eps[7] = local_chemical_mix["Mg24"] / 24 + local_chemical_mix["Mg25"] / 25 + local_chemical_mix["Mg26"] / 26; // Mg24 + Mg25 + Mg26
+        eps[8] = local_chemical_mix["Al27"] / 27.0; // Al27
+        eps[9] = local_chemical_mix["Si28"] / 28.0; // Si28
+        eps[10] = local_chemical_mix["P31"] / 31.0; // P31
+        eps[11] = local_chemical_mix["S32"] / 32.0; // S32
+        eps[12] = local_chemical_mix["Cl35"] / 35.0 + local_chemical_mix["Cl37"] / 37.0; // Cl35 + Cl37
+        eps[13] = local_chemical_mix["A40"] / 40.0; // A40
+        eps[14] = local_chemical_mix["Ca40"] / 40.0; // Ca40
+        eps[15] = local_chemical_mix["Ti"] / 47.867; // Ti //there are too many isotops
+        eps[16] = local_chemical_mix["Cr"] / 52.0; // Cr //there are too many isotops
+        eps[17] = local_chemical_mix["Mn55"] / 55.0; // Mn
+        eps[18] = local_chemical_mix["Fe"] / 55.845; // Fe //there are too many isotops
+        eps[19] = local_chemical_mix["Ni"] / 58.693; // Ni //there are too many isotops
+}
+
+int eos_freeeos(const composition_map &chemical_comp, const matrix &T, const matrix &p,
         matrix &rho, eos_struct &eos) {
 
     double t;
@@ -84,29 +110,7 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
     eos.prad.dim(T.nrows(), T.ncols()); // added MR june 2023
 
     for (int i=0; i<N; i++) {
-
-        double_map comp = initial_composition(X(i), Z);
-
-        eps[0] = comp["H"] / 1.008e0;                       // H
-        eps[1] = (comp["He3"] + comp["He4"]) / 4.0026e0;   // He3 + He4
-        eps[2] = (comp["C12"] + comp["C13"]) / 12.0111e0; // C12 + C13
-        eps[3] = (comp["N14"] + comp["N15"]) / 14.0067e0; // N14 + N15
-        eps[4] = (comp["O16"] + comp["O17"]) / 15.9994e0; // O16 + O17
-        eps[5] = 0.0; // Ne
-        eps[6] = 0.0; // Na
-        eps[7] = 0.0; // Mg
-        eps[8] = 0.0; // AL
-        eps[9] = 0.0; // Si
-        eps[10] = .0; // P
-        eps[11] = .0; // S
-        eps[12] = .0; // Cl
-        eps[13] = .0; // A
-        eps[14] = .0; // Ca
-        eps[15] = .0; // Ti
-        eps[16] = .0; // Cr
-        eps[17] = .0; // Mn
-        eps[18] = .0; // Fe
-        eps[19] = .0; // Ni
+        set_eps(eps, chemical_comp(i));
 
         double pi = p(i);
         double match_variable = log(pi);
@@ -123,12 +127,13 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
                 &iteration_count);
         rho(i) = rhoi;
         if (iteration_count < 0) {
+            // TODO: this makes no sense freeEOS has no tables...
             ester_err(
                     "Values outside freeEOS eos table:\n"
                     "  X = %e\n"
                     "  Z = %e\n"
                     "  T = %e\n"
-                    "  p = %e", X(i), Z, t, p(i));
+                    "  p = %e", chemical_comp.X()(i), chemical_comp.Z()(i), t, p(i));
         }
         eos.s(i) = entropy[0];
         eos.G1(i) = gamma1;

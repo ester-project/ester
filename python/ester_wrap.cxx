@@ -14844,37 +14844,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_initial_composition(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  double arg1 ;
-  double arg2 ;
-  double val1 ;
-  int ecode1 = 0 ;
-  double val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  double_map result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:initial_composition",&obj0,&obj1)) SWIG_fail;
-  ecode1 = SWIG_AsVal_double(obj0, &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "initial_composition" "', argument " "1"" of type '" "double""'");
-  } 
-  arg1 = static_cast< double >(val1);
-  ecode2 = SWIG_AsVal_double(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "initial_composition" "', argument " "2"" of type '" "double""'");
-  } 
-  arg2 = static_cast< double >(val2);
-  result = initial_composition(arg1,arg2);
-  resultobj = SWIG_NewPointerObj((new double_map(static_cast< const double_map& >(result))), SWIGTYPE_p_double_map, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_mapping_gl_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   mapping *arg1 = (mapping *) 0 ;
@@ -31325,7 +31294,6 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"eos_idealrad", _wrap_eos_idealrad, METH_VARARGS, NULL},
 	 { (char *)"eos_opal", _wrap_eos_opal, METH_VARARGS, NULL},
 	 { (char *)"atm_onelayer", _wrap_atm_onelayer, METH_VARARGS, NULL},
-	 { (char *)"initial_composition", _wrap_initial_composition, METH_VARARGS, NULL},
 	 { (char *)"mapping_gl_set", _wrap_mapping_gl_set, METH_VARARGS, NULL},
 	 { (char *)"mapping_gl_get", _wrap_mapping_gl_get, METH_VARARGS, NULL},
 	 { (char *)"mapping_leg_set", _wrap_mapping_leg_set, METH_VARARGS, NULL},

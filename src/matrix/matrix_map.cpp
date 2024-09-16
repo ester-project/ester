@@ -51,12 +51,34 @@ matrix_map_elem matrix_map::operator()(int nfil, int ncol) {
 	return elem;
 }
 
+matrix_map_elem matrix_map::operator()(int ielem) {
+
+	matrix_map_elem elem;
+	matrix_map::iterator it;
+	for(it=begin();it!=end();it++) {
+		elem[it->first]=&(it->second)(ielem);
+	}
+
+	return elem;
+}
+
 const double_map matrix_map::operator()(int nfil, int ncol) const {
 	
 	double_map elem;
 	matrix_map::const_iterator it;
 	for(it=begin();it!=end();it++) {
 		elem[it->first]=(it->second)(nfil,ncol);
+	}
+
+	return elem;
+}
+
+const double_map matrix_map::operator()(int ielem) const {
+
+	double_map elem;
+	matrix_map::const_iterator it;
+	for(it=begin();it!=end();it++) {
+		elem[it->first]=(it->second)(ielem);
 	}
 
 	return elem;

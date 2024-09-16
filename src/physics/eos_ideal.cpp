@@ -5,12 +5,13 @@
 #include "physics.h"
 #include "constants.h"
 
-int eos_ideal(const matrix &X,double Z,const matrix &T,const matrix &p,
-		matrix &rho,eos_struct &eos) {
+int eos_ideal(const composition_map &chemical_comp, const matrix &T, const matrix &p,
+		matrix &rho, eos_struct &eos) {
 		
 	matrix mu,b;
-	
-	mu=4/(3+5*X-Z);
+
+	// TODO: this mix between X and Z implicitly assume a certain Z mixture
+	mu = 4/(3 + 5*chemical_comp.X() - chemical_comp.Z());
 	eos.prad=zeros(T.nrows(),T.ncols());
 	rho=p/T/K_BOL*mu*HYDROGEN_MASS;
 	b=ones(T.nrows(),T.ncols());
