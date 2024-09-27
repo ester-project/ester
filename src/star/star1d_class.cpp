@@ -48,23 +48,21 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
             printf("Error reading input file: %s\n", input_file);
             return 1;
         }
-        map0=map;
+        map0 = map;
     } else {
-        if(!fp.open(default_params)) {
+        if(fp.open(default_params)) {
             printf("Can't open default parameters file %s\n", default_params);
             return 1;
         }
         else {
-            while((k=fp.get(arg, val))) {
-                if((i=check_arg(arg, val, &change_grid))) {
+            while((k = fp.get(arg, val))) {
+                if((i = parse_arg(arg, val, &change_grid))) {
                     printf("Syntax error in parameters file %s, line %d\n", param_file, k);
-                    if(i==2) {
-                        printf("Error: Argument to '%s' missing\n", arg);
-                        exit(EXIT_FAILURE);
+                    if(i == 2) {
+                        ester_err("%s: Argument to '%s' missing", default_params, arg);
                     }
-                    if(i==1) {
-                        printf("Unknown parameter %s\n", arg);
-                        exit(EXIT_FAILURE);
+                    if(i == 1) {
+                        ester_err("%s: Unknown parameter %s", default_params, arg);
                     }
                 }
             }
@@ -74,21 +72,19 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
     }
 
     if(*param_file) {
-        if(!fp.open(param_file)) {
+        if(fp.open(param_file)) {
             printf("Can't open parameters file %s\n", param_file);
             return 1;
         }
         else {
-            while((k=fp.get(arg, val))) {
-                if((i=check_arg(arg, val, &change_grid))) {
+            while((k = fp.get(arg, val))) {
+                if((i = parse_arg(arg, val, &change_grid))) {
                     printf("Syntax error in parameters file %s, line %d\n", param_file, k);
-                    if(i==2) {
-                        printf("Error: Argument to '%s' missing\n", arg);
-                        exit(EXIT_FAILURE);
+                    if(i == 2) {
+                        ester_err("%s: Argument to '%s' missing", param_file, arg);
                     }
-                    if(i==1) {
-                        printf("Unknown parameter %s\n", arg);
-                        exit(EXIT_FAILURE);
+                    if(i == 1) {
+                        ester_err("%s: Unknown parameter %s", param_file, arg);
                     }
                 }
             }
@@ -97,16 +93,16 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
     }
 
     cmd.open(argc, argv);
-    while(int err_code=cmd.get(arg, val)) {
-        if(err_code==-1) exit(1);
-        err_code=check_arg(arg, val, &change_grid);
-        if(err_code==2) {
-            fprintf(stderr, "Error: Argument to '%s' missing\n", arg);
-            exit(EXIT_FAILURE);
+    while(int err_code = cmd.get(arg, val)) {
+        if(err_code == -1) // Normally this can't happen because an Invalid Argument would already have been found in read_command_line
+            ester_err("Invalid argument %s", arg);
+
+        err_code=parse_arg(arg, val, &change_grid);
+        if(err_code == 2) {
+            ester_err("Argument to '%s' missing", arg);
         }
-        if(err_code==1) {
-            fprintf(stderr, "Unknown parameter '%s'\n", arg);
-            exit(EXIT_FAILURE);
+        if(err_code == 1) {
+            ester_err("Unknown parameter %s", arg);
         }
         cmd.ack(arg, val);
     }
@@ -163,7 +159,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
     return 0;
 }
 
-int star1d::check_arg(char *arg, char *val, int *change_grid) {
+int star1d::parse_arg(char *arg, char *val, int *change_grid) {
     if(!strcmp(arg, "nth")) {
         return 1;
     } else if(!strcmp(arg, "nex")) {
@@ -173,7 +169,7 @@ int star1d::check_arg(char *arg, char *val, int *change_grid) {
     } else if(!strcmp(arg, "Ekman")) {
         return 1;
     }
-    return star2d::check_arg(arg, val, change_grid);
+    return star2d::parse_arg(arg, val, change_grid);
 
 }
 

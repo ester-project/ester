@@ -4,7 +4,7 @@
 
 star1dR::star1dR() {Teff_obj=-1;}
 
-int star1dR::check_arg(char *arg,char *val,int *change_grid) {
+int star1dR::parse_arg(char *arg,char *val,int *change_grid) {
 
 	if(!strcmp(arg,"R")) {
 		if(val==NULL) return 2;
@@ -23,7 +23,7 @@ int star1dR::check_arg(char *arg,char *val,int *change_grid) {
 		return 1;
 	}
 
-	return star1d::check_arg(arg,val,change_grid);
+	return star1d::parse_arg(arg,val,change_grid);
 }
 
 
