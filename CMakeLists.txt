@@ -69,10 +69,10 @@ include_directories(${PYTHON_INCLUDE_DIRS})
 include_directories(${HDF5_INCLUDE_DIRS})
 
 # Find HDF5 with C and C++ components
-find_package(HDF5 REQUIRED COMPONENTS C CXX)
+#find_package(HDF5 REQUIRED COMPONENTS C CXX)
 
 # Include HDF5 headers
-include_directories(${HDF5_INCLUDE_DIRS})
+#include_directories(${HDF5_INCLUDE_DIRS})
 
 # Link against HDF5 libraries
 #target_link_libraries(ester PRIVATE ${HDF5_LIBRARIES})
