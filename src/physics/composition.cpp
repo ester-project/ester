@@ -55,8 +55,9 @@ std::string cutOffPath(const std::string& path, const std::string& delimiter) {
     return path; // If the delimiter is not found, return the original path
 }
 
-//Directory is named ESTER upon download but some users rename to Ester
-//This account for both 
+//Directory is named 'ester' upon download but some users rename to Ester
+//This account for both : No longer needed, MR.
+/**
 std::string GetEsterDirectory() {
 	std::string currentPath = GetCurrentWorkingDirectory();
     std::string delimiter = "Ester";
@@ -69,6 +70,7 @@ std::string GetEsterDirectory() {
 	return result; 
 
 }
+**/
 
 std::string readPathFromFile(const std::string& filename) {
     std::ifstream file(filename);
@@ -113,7 +115,9 @@ double_map initial_composition(double X, double Z) {
 	// grab absolute path of where ESTER currently is
 	// will differ by machine
 
-    std::string esterDirectory = GetEsterDirectory();
+    //std::string esterDirectory = GetEsterDirectory();
+    std::string home=getenv("HOME");
+    std::string esterDirectory = home+"/ester";
 
 	// Read data from lodders03_w_mass_excess.txt and populate the map
 	// this can be done outside of the initial composition function I believe. 
@@ -126,7 +130,11 @@ double_map initial_composition(double X, double Z) {
 	ifstream file_mass_excess(esterDirectory+"/Solar_compositions/"+lodders03_comp_name);
 	if (!file_mass_excess.is_open()) {
 		// check that file exists
+        printf("-------------------- \n ");
+        printf("ESTER root directory is not $HOME/ester\n");
+        printf("please make a change in src/physics/composition.cpp l.120\n");
         cerr << "Error opening file: " << esterDirectory+"/Solar_compositions/"+lodders03_comp_name << endl; 
+        printf("-------------------- \n ");
     	}
 
 	std::map<std::string, std::vector<ElementData>> comp_inp;// this is the variable whcih is declared here will be filled up with isotope info

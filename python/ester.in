@@ -3,7 +3,11 @@
 import numpy as _np
 import matplotlib.pyplot as _plt
 from . import ester_wrap as _wrapper
-_wrapper.plt_init(True)
+
+import _ester_wrap          # line added
+from ester_wrap import plt  # line added
+plt().init(True)            # line added
+#_wrapper.plt_init(True)
 
 SIG_SB = 5.670400e-5;
 K_BOL = 1.3806503e-16;
@@ -19,7 +23,8 @@ L_SUN = 3.8396e33;
 def _mat_to_numpy(mat):
     nr = mat.nrows()
     nth = mat.ncols()
-    tmp = _wrapper.doubleArray_frompointer(mat.data())
+    #tmp = _wrapper.doubleArray_frompointer(mat.data())
+    tmp = _ester_wrap.doubleArray_frompointer(mat.data())
     field = _np.zeros(shape=(nr, nth))
     for ir in range(0, nr):
         for it in range(0, nth):
@@ -27,7 +32,8 @@ def _mat_to_numpy(mat):
     return field
 
 def _double_to_numpy(mat, nr, nth):
-    tmp = _wrapper.doubleArray_frompointer(mat)
+    #tmp = _wrapper.doubleArray_frompointer(mat)
+    tmp = _ester_wrap.doubleArray_frompointer(mat)
     field = _np.zeros(shape=(nr, nth))
     for ir in range(0, nr):
         for it in range(0, nth):
@@ -58,7 +64,8 @@ class star2d:
         self.nex = self._s.nex
         self.ndomains = self._s.ndomains
         self.npts    = []
-        tmp = _wrapper.intArray_frompointer(self._s.map.gl.npts)
+        #tmp = _wrapper.intArray_frompointer(self._s.map.gl.npts)
+        tmp = _ester_wrap.intArray_frompointer(self._s.map.gl.npts)
         for i in range(0, self.ndomains):
             self.npts.append(tmp[i])
 
