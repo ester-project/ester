@@ -1,12 +1,12 @@
 #!@PYTHON@
 
 import numpy as _np
-import matplotlib.pyplot as _plt
+#import matplotlib.pyplot as _plt
 from . import ester_wrap as _wrapper
 
-import _ester_wrap          # line added
-from ester_wrap import plt  # line added
-plt().init(True)            # line added
+import _ester_wrap                 # line added
+from ester_wrap import plt as pltw # line added
+pltw().init(True)                  # line added
 #_wrapper.plt_init(True)
 
 SIG_SB = 5.670400e-5;
