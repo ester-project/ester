@@ -218,12 +218,128 @@ double star_evol::update_solution(solver *op, double &h, matrix_map& error_map, 
 	comp["He4"] -= h*dX;
 	comp["H"] += h*dX;
 
+	if (comp.Z()(0,0)<2.5e-3){
+
+		//printf(", dXN_before_max = %e, -comp['N14']/h = %e , h = %e ",dXN(0,0),-comp["N14"](0,0)/h,h);
+		//dXN =max(dXN, -comp["N14"]/h); // this part doesn't seem to be anywhere else in the code. Now why is that. 
+		//printf(", dXN_after_max = %e ",dXN(0,0));		
+		printf(", nit = %i",nit);
+		
+		if(dXN(0,0) <0){ // dXN can't be negative, or can it because of mixing? 
+		dXN=dXN*0;
+		}
+		
+		if(nit >1&&dXN(0,0) >0) {
+		printf(" if statment condition called ");
+			dXN =dXN*0;
+		}
+	}
+
 	// The error of the solution is only based on the error from the hydrogen-mass fraction profile. 
 	// We assume all O16 that reacted is converted into N14, as the intermediate reactions are fast.
-	printf(", dXN = %e, N14 = %e", dXN(0,0), comp["O16"](0,0)*AMASS["N14"]/AMASS["O16"]);
-	dXN = min(dXN, comp["O16"]*AMASS["N14"]/AMASS["O16"]);
-	comp["O16"] -= h*dXN*AMASS["O16"]/AMASS["N14"];
-	comp["N14"] += h*dXN;	
+	
+	dXO = max(dXO, -comp["O16"]/h);
+	err2 = max(abs(dXO));
+	err=err2>err?err2:err;
+
+	dXC = max(dXC, -comp["C12"]/h); // Because the destruction of C12 happens on such a short time scale, prevent the solver from keeping on mixing C12 in the core.
+	if (nit > 1 && dXC(0,0) > 0) {
+		dXC = dXC*0;
+	} 
+	matrix dXN = -(dXO*AMASS["N14"]/AMASS["O16"]+dXC*AMASS["N14"]/AMASS["C12"]);
+	//printf("dXN = %e, dXC = %e, dXO = %e ", dXN(0,0), dXO(0,0), dXC(0,0));
+	//printf("sum CNO = %e \n", comp["N14"](0,0) + comp["O16"](0,0) + comp["C12"](0,0));
+	//dXN = min(dXN, comp["O16"]*AMASS["N14"]/AMASS["O16"]);
+	//printf("dXN = %e, N14 = %e, dXO = %e, O16 = %e, dXC = %e, C12 = %e \n", dXN(0,0), comp["N14"](0,0), dXO(0,0), comp["O16"](0,0), dXC(0,0), comp["C12"](0,0));
+
+	// comp["O16"] -= h*dXN*AMASS["O16"]/AMASS["N14"];
+	// comp["N14"] += h*dXN;
+
+
+	comp["N14"] += h*dXN;
+	comp["O16"] += h2*dXO;
+	comp["C12"] += h*dXC;
+
+	matrix dY = -(dX + dXN + (h2/h)*dXO + dXC);
+	comp["He4"] += h*dY;
+
+	printf("core: dX = %e, dY = %e, dXC = %e, dXN = %e, dXO = %e \n", h*dX(0,0), h*dY(0,0), h*dXC(0,0), h*dXN(0,0), h2*dXO(0,0));
+	printf("max:  dX = %e, dY = %e, dXC = %e, dXN = %e, dXO = %e \n", max(abs(h*dX)), max(abs(h*dY)), max(abs(h*dXC)), max(abs(h*dXN)), max(abs(h2*dXO)));
+	printf("       X = %e,  Y = %e,  XC = %e,  XN = %e,  XO = %e \n", comp["H"](0,0), comp["He4"](0,0), comp["C12"](0,0), comp["N14"](0,0), comp["O16"](0,0));
+
+	double deltaM; // Mass loss rate in Msun/yr.
+	//double lum, Teff; //luminosity.
+	//double secyear=MYR/1e6;
+	//double Z_SUN = 0.013; // Value used by Björklund et al. (2021) for fit to their models. (See below)
+	//matrix Fz=-opa.xi*(map.gzz*(D,T)+map.gzt*(T,Dt));
+	//lum=2*PI*((Fz*r*r*map.rz).row(nr-1),map.leg.I_00)(0)*units.T*units.r;
+	matrix F=-opa.xi/sqrt(map.gzz)*(map.gzz*(D,T)+map.gzt*(T,Dt))/units.r*units.T;
+	F=F.row(nr-1)/SIG_SB;
+	//Teff = pow(F,0.25)(0);
+	//Mdot = pow(10, -5.52 + 2.39*log10(lum/(1e6*L_SUN)) - 1.48*log10(M/(45*M_SUN)) + 2.12*log10(Teff/45e3) + (0.75-1.87*log10(Teff/45e3))*log10(Z0/Z_SUN));
+	//Mdot = pow(10, -5.55+0.79*log10(Z0/0.013)+(2.16-0.32*log10(Z0/0.013))*log10(lum/(1e6*L_SUN))); // Formula from eq. (20) of Björklund et al. (2021, Astronomy & Astrophysics, Volume 648, id.A36).
+	double M_dot, delta_CAK, kap_el;
+	matrix alpha1, alpha2, alpha, alpha_prime, flux, mdot, vth, Teff_;
+	Teff_ = pow(F,0.25); //Teff();
+	flux = pow(Teff_,4)*SIG_SB;
+	printf("F = %e\n", min(F));
+	vth = pow(2*K_BOL*Teff_/(AMASS["Fe56"]*UMA), 0.5);
+	matrix geff = abs(gsup());
+	delta_CAK = 0.1;
+
+	double E_CHARGE = 4.803e-10; // statcoulombs
+	double M_ELEC = 9.109e-28; // grams
+
+	double Z_SUN = 0.016; //0.02;
+
+	alpha = ones(1,nth);
+	alpha1 = ones(1,nth);
+	alpha2 = ones(1,nth);
+	mdot = zeros(1,nth);
+
+	// Alpha(Teff) relation for Z/Zsun = 1.
+	for (int k=0; k < nth; k++){
+		if (Teff_(k) < 10000){
+			alpha1(k) = 0.45;
+		}
+		else if (Teff_(k) >= 10000 && Teff_(k) < 20000){
+			alpha1(k) = 1e-5*Teff_(k)+0.3;
+		}
+		else if (Teff_(k) >= 20000 && Teff_(k) < 40000){
+			alpha1(k) = 5e-6*Teff_(k)+0.5;
+		}
+		else {
+			alpha1(k) = 0.70;
+		}						 
+	}
+
+	// Alpha(Teff) relation for Z/Zsun = 0.1.
+	for (int k=0; k < nth; k++){
+		if (Teff_(k) < 10000){
+			alpha2(k) = 0.38;
+		}
+		else if (Teff_(k) >= 10000 && Teff_(k) < 20000){
+			alpha2(k) = 1.6e-5*Teff_(k)+0.22;
+		}
+		else if (Teff_(k) >= 20000 && Teff_(k) < 40000){
+			alpha2(k) = 5.5e-6*Teff_(k)+0.43;
+		}
+		else {
+			alpha2(k) = 0.65;
+		}						 
+	}
+	alpha = (alpha1 - alpha2) * log10(Z0/Z_SUN) + alpha1;
+	alpha_prime =  alpha - delta_CAK;
+
+	for (int k=0; k < nth; k++){
+		kap_el = 0.2*(1+comp.X()(-1,k)); // cm^2/g
+		mdot(k) = (4.0/9.0)*alpha(k)/(vth(k)*C_LIGHT)*pow((C_LIGHT/(kap_el*(1-alpha(k))))*(geff(k) - kap_el*flux(k)/C_LIGHT),(alpha_prime(k)-1)/alpha_prime(k)) * pow(flux(k), 1/alpha_prime(k))*(MYR/1e6);
+	}
+
+	M_dot = 2*PI*((mdot*r*map.rz).row(nr-1),map.leg.I_00)(0)*units.r*units.r/M_SUN;
+	double k_cal = 1.277873e-03; //10Msun Z=0.016
+
+	deltaM =  k_cal*M_dot*M_SUN*delta*1e6;
 
 // Rem: the conservationn of total mass is insured by the mass conservation equation
 // as ang. Mom.
