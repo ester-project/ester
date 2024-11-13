@@ -1,5 +1,4 @@
 module mesa_opacity_module
-  use iso_c_binding
   use mod_kind
 
   logical :: initialized = .false.
@@ -9,114 +8,8 @@ module mesa_opacity_module
   real(dp), pointer :: f(:,:,:,:)
   integer :: ilinx(num_logzs), iliny(num_logzs)
 
-    interface
-        subroutine read_hdf5_data(filename, iz_f, ite, jne, epatom, amamu_f, eumesh, sig, ierr) bind(C, name="read_hdf5_data")
-        !subroutine read_hdf5_data(filename, iz_f_ptr, ite_ptr, jne_ptr, epatom_ptr, amamu_f_ptr, eumesh_ptr, sig_ptr, ierr) bind(C,name="read_hdf5_data")
-            use iso_c_binding
-            !type(c_ptr), intent(in) :: iz_f_ptr, ite_ptr, jne_ptr,epatom_ptr, amamu_f_ptr, eumesh_ptr, sig_ptr            
-            character(kind=C_CHAR), intent(in) :: filename(*)
-            integer(c_int), intent(out) :: iz_f(:,:), ite(:), jne(:)
-            real(c_double), intent(out) :: sig(:,:,:)
-            real(c_double), intent(out) :: epatom(:,:), amamu_f(:,:)
-            real(c_double), intent(out) :: eumesh(:,:,:)
-            integer(c_int), intent(out) :: ierr
-        end subroutine read_hdf5_data
-        
-
-        subroutine to_c_string(fortran_str, c_str, fortran_str_len) bind(C, name="to_c_string")
-            use iso_c_binding
-            character(kind=C_CHAR), intent(in) :: fortran_str(*)
-            character(kind=C_CHAR), intent(out) :: c_str(*)
-            integer(c_int), value :: fortran_str_len
-        end subroutine to_c_string
-    end interface
-
   contains
-  
-    subroutine load_op_master_h5(iz, ite, jne, epatom, amamu, sig, eumesh, ierr)
-          !!! Routine to load in the large table with all OP monochromatic data.
-          !! currently not working, having issues.
-    use iso_c_binding
-    use mod_kind
-    implicit none
-
-    integer(c_int), intent(inout) :: ierr
-    integer, pointer, intent(out) :: iz(:)
-    integer(c_int), pointer, intent(out) :: ite(:), jne(:)
-    real(c_double), pointer, intent(out) :: sig(:,:,:)
-    real(c_double), pointer, intent(out):: epatom(:,:), eumesh(:,:,:)
-    real(dp), pointer, intent(out) :: amamu(:)
-    integer(c_int), allocatable, target :: iz_f(:,:)
-    real(c_double), allocatable, target :: amamu_f(:,:)
-    integer :: nel, nptot, np_mesh
     
-    ! Declare and initialize the filename
-    character(len=255) :: fortran_filename
-    character(kind=c_char), dimension(255) :: c_filename
-    
-    type(c_ptr) :: sig_addr,eumesh_addr
-    integer(c_intptr_t) :: sig_addr_int, eumesh_addr_int
-    integer(c_size_t) :: address
-    	
-    parameter(nel = 17, nptot = 10000, np_mesh = 1648)
-
-    allocate(iz(nel), iz_f(nel, np_mesh), ite(np_mesh), jne(np_mesh), stat=ierr)
-    allocate(sig(nel, np_mesh, nptot), stat=ierr)
-    allocate(epatom(nel, np_mesh), amamu_f(nel, np_mesh), amamu(nel), eumesh(nel, np_mesh, nptot), stat=ierr)
-    print *, 'Address of sig after allocation in Fortran:', C_LOC(sig)
-    
-
-	address = transfer(c_loc(sig), address)
-	write(*, '(A, Z16)') 'Hexadecimal Address of sig: 0x', address
-
-    
-    ! Get the addresses of the arrays
-    sig_addr = c_loc(sig)
-    eumesh_addr = c_loc(eumesh)
-    
-    sig_addr_int = transfer(c_loc(sig), sig_addr_int)
-    eumesh_addr_int = transfer(c_loc(eumesh), eumesh_addr_int)
- 
-    ! Print the addresses
-    write(*, '(A, Z16)') 'Hexadecimal Address of sig: 0x', sig_addr_int
-    write(*, '(A, Z16)') 'Hexadecimal Address of eumesh: 0x', eumesh_addr_int
-    
-    write(*,'(A, Z16)') 'native fortran loc method of sig: ',LOC(sig)
-    write(*,'(A, Z16)') 'native fortran loc method of eumesh: ',LOC(eumesh)
-    
-    ! Print the addresses
-    print *, 'Address of sig in Fortran (before calling subroutine):', sig_addr
-    print *, 'Address of eumesh in Fortran (before calling subroutine):', eumesh_addr
-
-
-    write(*,*) 'Loading OP mono data from HDF5 file...'
-
-    !fortran_filename = '/home/mgent/Documents/Ester/tables/op_mono/OP_mono_master_grid_MESA_emesh.h5'
-    fortran_filename = '../../tables/op_mono/OP_mono_master_grid_MESA_emesh.h5'
-    
-    ! Convert Fortran string to C string
-    call to_c_string(fortran_filename, c_filename, len(fortran_filename))
-
-    ! Call the C++ function
-    !call read_hdf5_data(c_filename(1),c_loc(iz_f),c_loc(ite),c_loc(jne),c_loc(epatom),c_loc(amamu_f),c_loc(eumesh),c_loc(sig),ierr)
-    call read_hdf5_data(c_filename(1), iz_f, ite, jne, epatom, amamu_f, eumesh, sig, ierr)
-
-    if (ierr /= 0) then
-        write(*,*) 'Error reading HDF5 file.'
-        ierr = 1
-        return
-    end if
-
-    amamu = amamu_f(:, 1)
-    deallocate(amamu_f)
-    iz = iz_f(:, 1)
-    deallocate(iz_f)
-
-    write(*,*) 'OP mono data loaded from HDF5.'
-    ierr = 0
-    end subroutine load_op_master_h5
-
-  
     subroutine load_op_master_binary(iz, ite, jne, epatom, amamu, sig, eumesh, ierr)
     use mod_kind
     implicit none
