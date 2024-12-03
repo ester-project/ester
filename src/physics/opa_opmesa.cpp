@@ -45,18 +45,17 @@ std::string absolute_path(const std::string &relative_path) {
     }
 }
 
-
 extern"C" {
+
+    struct PathData {
+        char full_path_cstr[256];
+        int length;
+    };
+
     void opa_opmesa_(double *, double *,
-            double *, double *, double *, double *, double *, double *, double *, char *, size_t); 
+            double *, double *, double *, double *, double *, double *, double *, char *, size_t,PathData *path_data); 
 
 }
-
-
-/*extern "C" {
-void opa_opmesa_(double *, double *, double *, double *, double *, double *, double *, double *, double *, char *,
-                 size_t, char *);
-}*/
 
 int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
 		opa_struct& opa, const double Xsol, const double Ysol, const double Zsol) {
@@ -64,6 +63,12 @@ int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
     AbundanceMap& abundance_map = global_abundance_map;
     
     int abund_name_length = abundance_map.mixture_name.length(); 
+    
+    std:string full_path = abundance_map.ester_home;
+    
+    //std::cout << "abundance_map.ester_home: " << abundance_map.ester_home << std::endl;
+    
+    int full_path_cstr_length = full_path.length();
     
     
     //std::string relative_path = "tables/op_mono/";
@@ -92,13 +97,35 @@ int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
            char comp_name_cstr[abund_name_length+1]; // Ensure this matches or exceeds the length expected by Fortran
            std::strncpy(comp_name_cstr, abundance_map.mixture_name.c_str(), abund_name_length);
            comp_name_cstr[abund_name_length] = '\0'; // null termination
+              
+            
+           // same as above, just repeadted for full path
+           //char full_path_cstr[full_path_cstr_length+1];
+           //std::strncpy(full_path_cstr, abundance_map.ester_home.c_str(), full_path_cstr_length);
+           //full_path_cstr[full_path_cstr_length] = '\0'; // null termination    
+           
+           const size_t full_path_cstr_length = 256;  // Fixed length for the path
+	   char full_path_cstr[full_path_cstr_length+1];  // +1 for the null terminator
+	   std::strncpy(full_path_cstr, abundance_map.ester_home.c_str(), full_path_cstr_length);
+           full_path_cstr[full_path_cstr_length] = '\0'; // Null-terminate the string
+       
+           //std::cout << "C++ full path: " << full_path_cstr << " , Len: " << full_path_cstr_length << endl;          
+           
+           PathData path_data;
+           //path_data.full_path_cstr = full_path_cstr;
+           //path_data.length = strlen(path_data.full_path_cstr);	
+   	   std::strncpy(path_data.full_path_cstr, full_path_cstr, full_path_cstr_length);  // Copy string into structure
+           path_data.length = std::strlen(path_data.full_path_cstr);  // Set the length
+
+
+           //std::cout << "C++ path_data.full_path: " << path_data.full_path_cstr << " , path_data.len: " << path_data.length << endl;          
                	   
             //int full_path_length = full_path.length();
             //char full_path_cstr[full_path_length + 1];
             //std::strncpy(full_path_cstr, full_path.c_str(), full_path_length);
             //full_path_cstr[full_path_length] = '\0'; // Ensure null termination
 
-            //std::cout << "C++ full path: " << full_path_cstr << " , Len: " << full_path.length() << endl;
+
 
             x[0] = X(i, j);
             x[1] = 1.0 - X(i, j) - Z; 
@@ -151,7 +178,20 @@ int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
             
             
             //opa_opmesa_(x, &t, &ro, &kap, &dkapt, &dkapro, &dkapx, abund, a_weights, comp_name_cstr,abund_name_length,full_path_cstr,full_path_length);
-            opa_opmesa_(x, &t, &ro, &kap, &dkapt, &dkapro, &dkapx, abund, a_weights, comp_name_cstr,abund_name_length);
+            
+            
+            //opa_opmesa_(x, &t, &ro, &kap, &dkapt, &dkapro, &dkapx, abund, a_weights, comp_name_cstr,abund_name_length);
+                        
+                        //opa_opmesa_(x, &t, &ro, &kap, &dkapt, &dkapro, &dkapx, abund, a_weights, comp_name_cstr,abund_name_length,full_path_cstr,full_path_cstr_length);
+            
+            
+            opa_opmesa_(x, &t, &ro, &kap, &dkapt, &dkapro, &dkapx, abund, a_weights, comp_name_cstr, abund_name_length, &path_data);
+
+            
+            //opa_opmesa_(x, &t, &ro, &kap, &dkapt, &dkapro, &dkapx, abund, a_weights, comp_name_cstr,abund_name_length,full_path_cstr,full_path_cstr_length);            
+            
+            
+            
             //opa_opmesa_(x, &t, &ro, &kap, &dkapt, &dkapro, &dkapx, abund, a_weights, comp_name_cstr,abund_name_length,full_path_cstr);
             
             opa.k(i, j)=pow(10,kap);

@@ -57,20 +57,29 @@ std::string cutOffPath(const std::string& path, const std::string& delimiter) {
 
 //Directory is named 'ester' upon download but some users rename to Ester
 //This account for both : No longer needed, MR.
-/**
+
+
 std::string GetEsterDirectory() {
-	std::string currentPath = GetCurrentWorkingDirectory();
+    std::string currentPath = GetCurrentWorkingDirectory();
     std::string delimiter = "Ester";
     std::string result = cutOffPath(currentPath, delimiter);
-	if (result == currentPath){
+    
+    if (result == currentPath){
 		//try now ESTER 
-    std::string delimiter = "ESTER";
-    std::string result = cutOffPath(currentPath, delimiter);
+    	std::string delimiter = "ESTER";
+    	std::string result = cutOffPath(currentPath, delimiter);
 	}
-	return result; 
+
+    if (result == currentPath){
+		//try now ESTER 
+    	std::string delimiter = "ester";
+    	std::string result = cutOffPath(currentPath, delimiter);
+	}    
+    
+    return result; 
 
 }
-**/
+
 
 std::string readPathFromFile(const std::string& filename) {
     std::ifstream file(filename);
@@ -105,6 +114,8 @@ using namespace std;
 // defined in physics.h holds abundances, atomic weights and name of abundance file. 
 //AbundanceMap global_abundance_map;
 
+//FileMeta File_meta_data;
+
 double_map initial_composition(double X, double Z) {
 
 	//LOG_CALLER();
@@ -115,10 +126,14 @@ double_map initial_composition(double X, double Z) {
 	// grab absolute path of where ESTER currently is
 	// will differ by machine
 
-    //std::string esterDirectory = GetEsterDirectory();
-    std::string home=getenv("HOME");
-    std::string esterDirectory = home+"/ester";
-
+    std::string esterDirectory = GetEsterDirectory();
+    //std::cout << esterDirectory << std::endl; 
+    global_abundance_map.ester_home = esterDirectory;
+    
+    //std::string home=getenv("HOME");
+    //std::cout << "Home: " << home << std::endl; 
+    //std::string esterDirectory = home+"/Documents/Ester"; // re-using older path finding to remove "/Documents/ester" being hardcodded 
+            
 	// Read data from lodders03_w_mass_excess.txt and populate the map
 	// this can be done outside of the initial composition function I believe. 
 	// the initial composition should only be done once, however in the evolution branch comp will be updated
@@ -131,7 +146,7 @@ double_map initial_composition(double X, double Z) {
 	if (!file_mass_excess.is_open()) {
 		// check that file exists
         printf("-------------------- \n ");
-        printf("ESTER root directory is not $HOME/ester\n");
+        printf("ESTER root directory is not $HOME/Documents/Ester\n");
         printf("please make a change in src/physics/composition.cpp l.120\n");
         cerr << "Error opening file: " << esterDirectory+"/Solar_compositions/"+lodders03_comp_name << endl; 
         printf("-------------------- \n ");
@@ -160,9 +175,11 @@ double_map initial_composition(double X, double Z) {
 	std::map<std::string, double> comp_A; // atomic weights which are required for -opa mono mode. 
         string line_inp;
     
-        AbundanceMap& abundance_map = global_abundance_map;
-
-        std::string abund_inp_comp_name = global_abundance_map.mixture_name; //readPathFromFile(esterDirectory+"/Solar_compositions/abund_input_filename.txt");
+        //AbundanceMap& abundance_map = global_abundance_map;
+        std::string abund_inp_comp_name = global_abundance_map.mixture_name; 
+        
+        
+        //readPathFromFile(esterDirectory+"/Solar_compositions/abund_input_filename.txt");
          
 	//std::cout << "abund_inp_comp_name: " << abund_inp_comp_name << std::endl;
          

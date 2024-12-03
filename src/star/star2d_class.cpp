@@ -304,6 +304,46 @@ int read_field(H5::Group grp, const char *name, matrix &field) {
     return 0;
 }
 
+/**
+std::string cutOffPath(const std::string& path, const std::string& delimiter) {
+    size_t pos = path.rfind(delimiter); // Find the last occurrence of the delimiter
+    if (pos != std::string::npos) {
+        return path.substr(0, pos + delimiter.size());
+    }
+    return path; // If the delimiter is not found, return the original path
+}
+
+std::string GetCurrentWorkingDirectory() {
+    const size_t bufferSize = 1024;
+    char buffer[bufferSize];
+    if (getcwd(buffer, bufferSize) != nullptr) {
+        return std::string(buffer);
+    }
+    return std::string(""); 
+}
+
+
+std::string GetEsterDirectory() {
+    std::string currentPath = GetCurrentWorkingDirectory();
+    std::string delimiter = "Ester";
+    std::string result = cutOffPath(currentPath, delimiter);
+    
+    if (result == currentPath){
+		//try now ESTER 
+    	std::string delimiter = "ESTER";
+    	std::string result = cutOffPath(currentPath, delimiter);
+	}
+
+    if (result == currentPath){
+		//try now ESTER 
+    	std::string delimiter = "ester";
+    	std::string result = cutOffPath(currentPath, delimiter);
+	}    
+    
+    return result; 
+
+}
+**/
 int star2d::hdf5_read(const char *input_file, int dim) {
     H5::Exception::dontPrint();
 
@@ -502,6 +542,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     // we make available the mixture name every where
     global_abundance_map.mixture_name = mixture.name; 
+    
     fill(); // needed 23/8/2024 ??
     return 0;
 }
@@ -698,6 +739,7 @@ void star2d::interp(remapper *red) {
 }
 
 AbundanceMap global_abundance_map;
+//FileMeta File_meta_data;
 
 extern bool dump_jac;
 int star2d::check_arg(char *arg,char *val,int *change_grid) {

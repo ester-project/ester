@@ -38,7 +38,8 @@ class star2d {
         matrix phiex;
         matrix vr, vt, G, w;
         composition_map comp;
-        AbundanceMap abundance_map; // added 
+        AbundanceMap abundance_map; // added --> MG: needed? Block later for test
+        //FileMeta File_meta_data;
         double X0, Y0, Z0;
         double R, M;
         double rhoc, Tc, pc;

@@ -2,6 +2,15 @@
 #include "ester-config.h"
 #endif
 
+module path_module
+  use iso_c_binding
+  implicit none
+  type, bind(c) :: PathData
+    character(kind=c_char), dimension(256) :: full_path_cstr  ! C-compatible string as an array
+    integer(c_int) :: length                                   ! C-compatible integer
+  end type PathData
+end module path_module
+
       	  subroutine CheckFile(filename,file_exists)
 	    !!! checks the existence of a file, I think this is overcomplicating it, I really just need to use the INQUIRE line, at least for initial testing 
 	    implicit none
@@ -19,18 +28,42 @@
     	  !contains
 
           !subroutine opa_opmesa(xchim, t, ro, kap, dkapt, dkapro, dkapx,abund,a_weights,abund_name,abund_name_len,full_path_cstr,full_path_cstr_len)
-          subroutine opa_opmesa(xchim, t, ro, kap, dkapt, dkapro, dkapx,abund,a_weights,abund_name,abund_name_len)
-          !subroutine opa_opmesa(xchim, t, ro, kap, dkapt, dkapro, dkapx,abund,a_weights,abund_name,abund_name_len,full_path_cstr)
+          
+          !! original statement
+          !subroutine opa_opmesa(xchim, t, ro, kap, dkapt, dkapro, dkapx,abund,a_weights,abund_name,abund_name_len)
+          !! new statement including path 
+	  !subroutine opa_opmesa(xchim, t, ro, kap, dkapt, dkapro, dkapx,abund,a_weights,abund_name,abund_name_len,full_path_cstr,full_path_cstr_len)        
+          
+          !subroutine opa_opmesa(xchim, t, ro, kap, dkapt, dkapro, dkapx,abund,a_weights,abund_name,abund_name_len,full_path_cstr,full_path_cstr_length)
+          
+          subroutine opa_opmesa(xchim, t, ro, kap, dkapt, dkapro, dkapx, abund, a_weights, abund_name, abund_name_len, path_data)
             !!! Routine to call subroutines for computing Rossland mean opacity tables and interpolating in X. Input and output consistent with ESTER.
             use mesa_opacity_module
             use mod_kind
             use, intrinsic :: iso_c_binding
+            use path_module 
             
             implicit none
 
             
             integer, intent(in), value :: abund_name_len ! feels kind of dumb to pass the length of the name, but I'm trying to make the allocation flexible on the C++ end. 
             character(len=abund_name_len), intent(in) :: abund_name
+            
+            !integer :: full_path_cstr_len = 27
+            
+            !integer, intent(in), value :: full_path_cstr_length ! feels kind of dumb to pass the length of the name, but I'm trying to make the allocation flexible on the C++ end. 
+            !character(len=256), intent(in) :: full_path_cstr
+            
+            !character(len=*) :: full_path_cstr  ! Deferred-length string
+	    !integer :: full_path_cstr_length   ! Length passed from C++
+            
+            type(PathData), intent(inout) :: path_data  ! INTENT(INOUT) for modification
+	    character(len=256) :: received_path
+	    	
+            !character(len=256) :: valid_path
+
+
+            
             !integer, intent(in),value :: full_path_cstr_len
             !character(len=full_path_cstr_len)           
 	    !character(len=256), intent(in) :: full_path_cstr            
@@ -59,8 +92,8 @@
             real(dp), pointer :: logT_lowT1(:), logR_lowT1(:), logkap_lowT1(:,:)
             real(dp), pointer :: logT_lowT2(:), logR_lowT2(:), logkap_lowT2(:,:)
             !character(len=512) :: filename1, filename2
-            character(len=1024) :: filename1, filename2
-            character(len=256), allocatable :: filename1_test,filename1_test_part_1,filename1_test_part_2
+            character(len=1024) :: filename1, filename2,filename1_test,filename2_test
+            !character(len=256), allocatable :: filename1_test,filename1_test_part_1,filename1_test_part_2
             
             INTEGER :: start_time, end_time, count_rate
 	    REAL :: elapsed_time
@@ -88,7 +121,28 @@
 	    character(len=20) :: abund_path_str
 	    
 	    ierr = 0
-	   
+	    
+	! Allocate the full_path_cstr string based on the passed length
+    	!allocate(character(len=path_data%length) :: path_data%full_path_cstr)
+
+
+
+
+	! Convert the C-style string into a Fortran string
+	received_path = transfer(path_data%full_path_cstr, received_path)
+
+	!print *, 'Received Full Path: ', trim(adjustl(received_path))
+	!print *, 'Received Path Length (len_trim): ', len_trim(received_path)
+	!print *, 'Received Path Length: ', path_data%length
+	
+	! Use path_data%length to extract only the valid part of the path
+	received_path = adjustl(trim(received_path(1:path_data%length)))
+
+
+
+	! Print the trimmed path and its actual length
+	!print *, 'Valid Full Path: ', trim(adjustl(received_path))
+	!print *, 'Valid Path Length: ', len_trim(received_path)
 	    
 	! Initialize path_up_to_relative
 	!path_up_to_relative = ' '
@@ -148,11 +202,18 @@
 			
             !!! obtain absolute path to where grids are saved
 	    fixed_path = 'tables/op_mono'
-	    call absolute_path(fixed_path,abs_path)
-	    !print *, 'F90 Abs path is: ', abs_path    
-    	    !print *, 'C++ Abs path is: ',full_path_cstr
+	    !call absolute_path(fixed_path,abs_path) ! was blocked
+	    !print *, 'F90 Abs path is: ', abs_path  
+	    
+    	    !print *, 'C++ Abs path is: ',path_data%full_path_cstr // "/" // fixed_path
+    	    !print *, 'C++ Abs path_new is: ',TRIM(path_data%full_path_cstr(1:path_data%length)) // "/" // TRIM(fixed_path) 
+    	    
+    	    !abs_path = path_data%full_path_cstr // "/" // fixed_path
+    	    
 	    !abs_path = '/home/mgent/Documents/Ester/tables/op_mono'
-			
+	    !abs_path = '/home/mgent/Documents/Ester/'
+	    !print *, 'F90 Abs path is: ', abs_path    
+
 	    path_prefix = '/OP_lkap_'
 	    !path_prefix = '/home/mgent/Documents/Ester/tables/op_mono/OP_lkap_' ! need to make this flexible to the user... 
 	    suffix = '_X'
@@ -160,10 +221,29 @@
 
             write(abund_path_str,'(A)') abund_name
 
-	    filename1 = TRIM(abs_path) // TRIM(path_prefix) // TRIM(abund_path_str) //&
-	     TRIM(suffix) // TRIM(Xstr1_om) // TRIM(Zstr) // TRIM(ext)
-	    filename2 = TRIM(abs_path) // TRIM(path_prefix) // TRIM(abund_path_str) //&
-	     TRIM(suffix) // TRIM(Xstr2_om) // TRIM(Zstr) // TRIM(ext)
+	    !filename1 = TRIM(abs_path) // TRIM(path_prefix) // TRIM(abund_path_str) //&
+	    ! TRIM(suffix) // TRIM(Xstr1_om) // TRIM(Zstr) // TRIM(ext)
+	    !filename2 = TRIM(abs_path) // TRIM(path_prefix) // TRIM(abund_path_str) //&
+	    ! TRIM(suffix) // TRIM(Xstr2_om) // TRIM(Zstr) // TRIM(ext)
+	     
+	     
+	    ! Use received_path as part of the filename
+	    filename1_test = trim(received_path) // '/' // trim(fixed_path) //&
+	    trim(path_prefix) // trim(abund_path_str) // trim(suffix) //&
+	    trim(Xstr1_om) // trim(Zstr) // trim(ext)
+
+	    filename2_test = trim(received_path) // '/' // trim(fixed_path) //&
+	    trim(path_prefix) // trim(abund_path_str) // trim(suffix) //&
+	    trim(Xstr2_om) // trim(Zstr) // trim(ext)
+	    
+	    !print *, ''
+	    !print *, 'Filename1: ', trim(filename1)
+	    !print *, 'Generated Filename1: ', trim(filename1_test)
+	    !print *, 'Filename2: ', trim(filename2)
+	    !print *, 'Generated Filename2: ', trim(filename2_test)
+	    
+	    filename1 = filename1_test
+	    filename2 = filename2_test
 
 	    ! Print final filenames
 	    !write(*,*) 'Filename1:', TRIM(filename1)
@@ -375,43 +455,7 @@
 	    !write(*,*) 'end of subroutine'
 
         end subroutine opa_opmesa
-       
-       
-    subroutine construct_path(cwd, relative_path, full_path)
-        character(len=*), intent(in) :: cwd, relative_path
-        character(len=256),intent(out) :: full_path
-        character(len=256) :: temp_path
-        logical :: found
-
-        ! Initialize the full_path
-        full_path = ''
-
-        ! Check for "ester", "Ester", or "ESTER" in cwd --> variations have been made by several users
-        found = .false.
-        
-        !write(*,*) 'cwd: ', cwd
-
-        if (index(cwd, '/ester/') > 0) then
-            found = .true.
-            temp_path = trim(cwd) // '/' // relative_path
-        else if (index(cwd, '/Ester/') > 0) then
-            found = .true.
-            temp_path = trim(cwd) // '/' // relative_path
-        else if (index(cwd, '/ESTER/') > 0) then
-            found = .true.
-            temp_path = trim(cwd) // '/' // relative_path
-        endif
-
-        if (found) then
-            full_path = trim(temp_path)
-        else
-            print *, "Directory 'Ester' (case-insensitive) not found in the current working directory."
-            stop
-        endif
-    end subroutine construct_path
-    
-    
-    
+ 
     subroutine absolute_path(relative_path, full_path)
         character(len=*), intent(in) :: relative_path
         character(len=256),intent(out) :: full_path
@@ -487,18 +531,7 @@
         !    stop
         !endif
     end subroutine absolute_path
-    
-    subroutine clean_string(s)
-        character(len=*), intent(inout) :: s
-        character(len=len(s)) :: temp
-        integer :: i, j
 
-        j = 0
-        do i = 1, len(s)
-            if (ichar(s(i:i)) >= 32 .and. ichar(s(i:i)) <= 126) then
-                j = j + 1
-                temp(j:j) = s(i:i)
-            end if
-        end do
-        s = temp(1:j)
-    end subroutine clean_string
+
+     
+    

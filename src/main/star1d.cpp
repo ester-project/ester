@@ -12,6 +12,7 @@
 #include <iomanip>
 #include <signal.h>
 
+#include <physics.h> // should be in star.h? 
 int killed=0;
 
 void sig_handler(int sig) {

@@ -51,8 +51,8 @@ public:
     std::map<std::string, double> A_weights;
     //std::string comp_name;
     std::string mixture_name;
+    std::string ester_home;
 };
-
 
 extern AbundanceMap global_abundance_map;
 
