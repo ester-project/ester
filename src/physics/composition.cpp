@@ -61,19 +61,22 @@ std::string cutOffPath(const std::string& path, const std::string& delimiter) {
 
 std::string GetEsterDirectory() {
     std::string currentPath = GetCurrentWorkingDirectory();
+    
+    std::cout << "currentPath: " << currentPath << std::endl;
+    
     std::string delimiter = "Ester";
     std::string result = cutOffPath(currentPath, delimiter);
     
     if (result == currentPath){
 		//try now ESTER 
     	std::string delimiter = "ESTER";
-    	std::string result = cutOffPath(currentPath, delimiter);
+    	result = cutOffPath(currentPath, delimiter);
 	}
 
     if (result == currentPath){
 		//try now ESTER 
     	std::string delimiter = "ester";
-    	std::string result = cutOffPath(currentPath, delimiter);
+    	result = cutOffPath(currentPath, delimiter);
 	}    
     
     return result; 
@@ -141,6 +144,8 @@ double_map initial_composition(double X, double Z) {
 	// load lodders03_data_w_mass_excess file 
 
     std::string lodders03_comp_name = "lodders03_data_w_mass_excess.txt";
+    
+        std::cout << "esterDirectory: " <<  esterDirectory << std::endl; 
 
 	ifstream file_mass_excess(esterDirectory+"/Solar_compositions/"+lodders03_comp_name);
 	if (!file_mass_excess.is_open()) {
@@ -186,7 +191,7 @@ double_map initial_composition(double X, double Z) {
 	//global_abundance_map.comp_name = abund_inp_comp_name; // will be used for naming grids in -opa mono mode as well as other created files. 
 
 	//cout << esterDirectory+"/Solar_compositions/"+abund_inp_comp_name+"_ESTER_abund_input.txt" << endl;
-
+	
 	ifstream file_abund_inp(esterDirectory+"/Solar_compositions/"+abund_inp_comp_name+"_ESTER_abund_input.txt");
 	if (!file_abund_inp.is_open()) {
         cerr << "Error opening file: " << esterDirectory+"/Solar_compositions/"+abund_inp_comp_name+"_ESTER_abund_input.txt"<< endl; 
