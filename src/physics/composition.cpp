@@ -62,8 +62,6 @@ std::string cutOffPath(const std::string& path, const std::string& delimiter) {
 std::string GetEsterDirectory() {
     std::string currentPath = GetCurrentWorkingDirectory();
     
-    std::cout << "currentPath: " << currentPath << std::endl;
-    
     std::string delimiter = "Ester";
     std::string result = cutOffPath(currentPath, delimiter);
     
@@ -74,7 +72,7 @@ std::string GetEsterDirectory() {
 	}
 
     if (result == currentPath){
-		//try now ESTER 
+		//try now ester 
     	std::string delimiter = "ester";
     	result = cutOffPath(currentPath, delimiter);
 	}    
@@ -145,7 +143,7 @@ double_map initial_composition(double X, double Z) {
 
     std::string lodders03_comp_name = "lodders03_data_w_mass_excess.txt";
     
-        std::cout << "esterDirectory: " <<  esterDirectory << std::endl; 
+        //std::cout << "esterDirectory: " <<  esterDirectory << std::endl; 
 
 	ifstream file_mass_excess(esterDirectory+"/Solar_compositions/"+lodders03_comp_name);
 	if (!file_mass_excess.is_open()) {
