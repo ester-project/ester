@@ -55,7 +55,7 @@ std::string cutOffPath(const std::string& path, const std::string& delimiter) {
     return path; // If the delimiter is not found, return the original path
 }
 
-//Directory is named 'ester' upon download but some users rename to Ester
+//Directory is named 'ester' upon download but some users rename it to Ester
 //This account for both : No longer needed, MR.
 
 

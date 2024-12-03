@@ -13,7 +13,7 @@ surff=1
 Tc=3e7
 pc=3e16
 
-mixture=GS98
+mixture=GN93
 opa=opal
 eos=opal
 nuc=simple

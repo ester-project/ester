@@ -441,8 +441,8 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     
     if (read_attr<H5std_string&>(star, "mixture.name", buf)) {
         ester_warn("Could not read 'mixture.name' from file `%s'", input_file);
-        ester_warn("I use GS98 as I assume an old file");
-        buf = H5std_string("GS98");
+        ester_warn("I use GN93 as I assume an old file");
+        buf = H5std_string("GN93");
         //buf = H5std_string("mixture");
     }
     strncpy(mixture.name, buf.c_str(), sizeof(mixture.name));
