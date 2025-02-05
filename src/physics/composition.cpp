@@ -55,33 +55,6 @@ std::string cutOffPath(const std::string& path, const std::string& delimiter) {
     return path; // If the delimiter is not found, return the original path
 }
 
-//Directory is named 'ester' upon download but some users rename it to Ester
-//This account for both : No longer needed, MR.
-
-
-std::string GetEsterDirectory() {
-    std::string currentPath = GetCurrentWorkingDirectory();
-    
-    std::string delimiter = "Ester";
-    std::string result = cutOffPath(currentPath, delimiter);
-    
-    if (result == currentPath){
-		//try now ESTER 
-    	std::string delimiter = "ESTER";
-    	result = cutOffPath(currentPath, delimiter);
-	}
-
-    if (result == currentPath){
-		//try now ester 
-    	std::string delimiter = "ester";
-    	result = cutOffPath(currentPath, delimiter);
-	}    
-    
-    return result; 
-
-}
-
-
 std::string readPathFromFile(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -124,23 +97,20 @@ double_map initial_composition(double X, double Z) {
 
 	// initialisation 
 
-	// grab absolute path of where ESTER currently is
-	// will differ by machine
+// The environment variable ESTER should be set to the ESTER directory
+// in .bashrc or .cshrc
 
-    std::string esterDirectory = GetEsterDirectory();
-    //std::cout << esterDirectory << std::endl; 
+// we read the environment variable ESTER
+    std::string esterDirectory=getenv("ESTER");
     global_abundance_map.ester_home = esterDirectory;
     
-    //std::string home=getenv("HOME");
-    //std::cout << "Home: " << home << std::endl; 
-    //std::string esterDirectory = home+"/Documents/Ester"; // re-using older path finding to remove "/Documents/ester" being hardcodded 
-            
-	// Read data from lodders03_w_mass_excess.txt and populate the map
-	// this can be done outside of the initial composition function I believe. 
-	// the initial composition should only be done once, however in the evolution branch comp will be updated
+/** Read data from lodders03_w_mass_excess.txt and populate the map
+this can be done outside of the initial composition function I believe.
+the initial composition should only be done once, however in the evolution
+branch comp will be updated
+**/
 
-	// load lodders03_data_w_mass_excess file 
-
+// load lodders03_data_w_mass_excess file 
     std::string lodders03_comp_name = "lodders03_data_w_mass_excess.txt";
     
         //std::cout << "esterDirectory: " <<  esterDirectory << std::endl; 
@@ -149,8 +119,8 @@ double_map initial_composition(double X, double Z) {
 	if (!file_mass_excess.is_open()) {
 		// check that file exists
         printf("-------------------- \n ");
-        printf("ESTER root directory is not $HOME/Documents/Ester\n");
-        printf("please make a change in src/physics/composition.cpp l.120\n");
+        //printf("ESTER root directory is not $HOME/Documents/Ester\n");
+        //printf("please make a change in src/physics/composition.cpp l.120\n");
         cerr << "Error opening file: " << esterDirectory+"/Solar_compositions/"+lodders03_comp_name << endl; 
         printf("-------------------- \n ");
     	}
