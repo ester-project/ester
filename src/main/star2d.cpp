@@ -20,10 +20,14 @@ int main(int argc,char *argv[]) {
 	int nit,last_it;
 	double err=1;
 	double t_plot;
-	configuration config(argc,argv);
 	tiempo t;
 	// figure *fig = NULL;
-	
+
+    // Create config object
+    configuration config;
+    // Parse configuration file star.cfg and command line simulation parameters (not star ones)
+	config.read_config(argc, argv);
+
 	signal(SIGINT,sig_handler);
 
     plt::figure(1, 10, 4);
@@ -38,7 +42,7 @@ int main(int argc,char *argv[]) {
 	star2d A;
 	solver *op;
 	
-	if(A.init(config.input_file,config.param_file,argc,argv)) {
+	if(A.init(config.input_file, config.param_file, argc, argv)) {
         ester_err("Could not initialize star");
         return 1;
     }

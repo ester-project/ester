@@ -8,14 +8,8 @@
 #include "read_config.h"
 #include "matplotlib.h"
 
-configuration::configuration(int argc,char *argv[]) {
-
-	int i, k;
-	char *arg,*val;
-	char file[256];
-	cmdline_parser cmd;
-	file_parser fp;
-
+configuration::configuration() {
+    // These are default values aimed to be replaced by config file values then command line ones
 	verbose=1;
 	strcpy(plot_device,"/NULL");
 	plot_interval=10;
@@ -27,39 +21,78 @@ configuration::configuration(int argc,char *argv[]) {
 	tol=1e-8;
 	newton_dmax=0.5;
     noplot = false;
+}
 
+
+void configuration::read_config(int argc, char *argv[]) {
+    // To ensure command line argument's precendence (complying with documentation)
+    // over the configuration file argument these methods must be called IN THIS ORDER
+
+    read_config_file();            // 1st --> default values
+    read_command_line(argc, argv); // 2nd --> can erase default config file values 
+}
+
+
+void configuration::read_config_file() {
+	char *arg,*val;
+	int err_code, line;
+	char file[256];
+	file_parser fp;
+
+	// Write in file the path to the default config file
 	sprintf(file, "%s/ester/star.cfg", ESTER_DATADIR);
-	if(!fp.open(file))
-		printf("Can't open configuration file %s\n",file);
-	else {
-		while((k=fp.get(arg,val))) {
-			if((i=check_arg(arg,val))) {
-				printf("Syntax error in configuration file %s, line %d\n",file,k);
-				if(i==2) missing_argument(arg);
-				if(i==1) {
-					printf("Unknown parameter %s\n",arg);
-					exit(1);
-				}
-			}
-		}
-		fp.close();
+
+	// Try opening the file, get 1 on error
+	if(fp.open(file)){
+		printf("Can't open configuration file %s\n", file);
+		ester_err(strerror(errno));
 	}
 
-	cmd.open(argc,argv);
-	while(int err_code=cmd.get(arg,val)) {
-		if(err_code==-1) exit(1);
-		err_code=check_arg(arg,val);
-		if(err_code==2) missing_argument(arg);
-		if(err_code==0) cmd.ack(arg,val);
+	// iterate over each line/arg of the config file
+	while((line = fp.get(arg, val))) {
+		if((err_code = parse_arg(arg, val))) {
+			printf("Syntax error in configuration file %s, line %d\n", file, line);
+			if(err_code == 2)
+				ester_err("%s: Argument to '%s' missing", file, arg);
+			if(err_code == 1)
+				ester_err("%s: Unknown parameter '%s'", file, arg);
+		}
 	}
-	cmd.close();
+	fp.close();
+}
+
+
+void configuration::read_command_line(int argc, char *argv[]) {
+    char *arg,*val;
+    int err_code;
+    cmdline_parser cmd;
+
+    cmd.open(argc, argv);
+    while(err_code = cmd.get(arg, val)) {
+        if(err_code == -1)
+            ester_err("Invalid argument %s", arg);
+
+        err_code = parse_arg(arg,val);
+        // We ignore Error Code 1 (unknown parameter) on purpose: it might be interpreted by star1d::init later
+        if(err_code == 2)
+            ester_err("Argument to '%s' missing", arg);
+        if(err_code == 0)
+            cmd.ack(arg,val);
+    }
+    cmd.close();
 
     if (noplot == false)
         plt::init();
 }
 
-int configuration::check_arg(const char *arg,const char *val) {
 
+int configuration::parse_arg(const char *arg,const char *val) {
+    /*
+    Return codes:
+        0: No Error
+        1: Unknown paramter
+        2: Missing value
+    */
 	int err=0;
 
 	if(!strcmp(arg,"v0"))
@@ -126,8 +159,4 @@ int configuration::check_arg(const char *arg,const char *val) {
 
 	return err;
 
-}
-
-void configuration::missing_argument(const char *arg) {
-	ester_err("Error: Argument to '%s' missing", arg);
 }

@@ -598,12 +598,12 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         }
         map0=map;
     } else {
-        if(!fp.open(default_params)) {
+        if(fp.open(default_params)) {
             ester_err("Can't open default parameters file %s\n", default_params);
         }
         else {
             while((k=fp.get(arg,val))) {
-                if((i=check_arg(arg,val,&change_grid))) {
+                if((i=parse_arg(arg,val,&change_grid))) {
                     ester_err("Syntax error in parameters file %s, line %d\n",default_params,k);
                     if(i==2) {
                         ester_err("Error: Argument to '%s' missing\n",arg);
@@ -621,13 +621,13 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     }
 
     if(*param_file) {
-        if(!fp.open(param_file)) {
+        if(fp.open(param_file)) {
             ester_err("Can't open parameters file %s\n",param_file);
             return 1;
         }
         else {
             while((k=fp.get(arg,val))) {
-                if((i=check_arg(arg,val,&change_grid))) {
+                if((i=parse_arg(arg,val,&change_grid))) {
                     ester_err("Syntax error in parameters file %s, line %d\n",
                             param_file, k);
                     if(i==2) {
@@ -646,8 +646,10 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 
     cmd.open(argc,argv);
     while(int err_code=cmd.get(arg,val)) {
-        if(err_code==-1) exit(1);
-        err_code=check_arg(arg,val,&change_grid);
+        if(err_code == -1) // Normally this can't happen because an Invalid Argument would already have been found in read_command_line
+            ester_err("Invalid argument %s", arg);
+
+        err_code=parse_arg(arg,val,&change_grid);
         if(err_code==2) {
             ester_err("Error: Argument to '%s' missing\n",arg);
             return 1;
@@ -742,7 +744,7 @@ AbundanceMap global_abundance_map;
 //FileMeta File_meta_data;
 
 extern bool dump_jac;
-int star2d::check_arg(char *arg,char *val,int *change_grid) {
+int star2d::parse_arg(char *arg,char *val,int *change_grid) {
     int err=0,i;
     char *tok;
 
