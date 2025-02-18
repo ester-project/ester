@@ -56,7 +56,7 @@ int main(int argc,char *argv[]) {
     star1d A;
     solver *op;
     
-    std::cout << "initilisation starting" << std::endl;
+    std::cout << "initialisation starting" << std::endl;
 
     if(A.init(config.input_file,config.param_file,argc,argv)) {
         ester_err("Could not initialize star");

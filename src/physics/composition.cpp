@@ -10,7 +10,7 @@
 #include <vector> 
 #include <sstream>
 
-#include <filesystem> // For std::filesystem
+//#include <filesystem> // For std::filesystem
 #include <unistd.h> // For getcwd function on Unix-like systems
 #include <cstring>
 #include <dirent.h> // For directory traversal on Unix-like systems
@@ -261,7 +261,7 @@ branch comp will be updated
 		}
 	}
 
-    std::vector<std::string> opa_list = {"H","He","C", "N", "O", "Ne", "Na", "Mg", "Al", "Si", "S", "Ar", "Ca", "Cr", "Mn", "Fe", "Ni"};
+    std::vector<std::string> opa_list = {"H","He","C", "N", "O", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "Ca", "Ti", "Cr", "Mn", "Fe", "Ni"};
 	
 	global_abundance_map.comp_abund = comp_abund_test;
 
@@ -283,13 +283,21 @@ branch comp will be updated
                         combined_A[prefix] = 0.0;
                     }
                     combined_A[prefix] += value;
+
+                                     
                 }
             }
         }
     }
 
     global_abundance_map.A_weights = combined_A;
-
+    
+    //for (const auto& entry : combined_A) {
+    //    const std::string& key = entry.first;
+    //    double value = entry.second;                
+    //std::cout << "A_weight " << key << " = " << value << std::endl;
+    //	}
+	
     double z_sum = 0.0;
 	double y_sum = 0.0;
 	double x_sum = 0.0;
