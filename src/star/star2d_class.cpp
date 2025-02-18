@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <ostream>
+#include <iomanip>
 
 matrix star2d::solve_phi() {
     symbolic S;
@@ -304,46 +305,7 @@ int read_field(H5::Group grp, const char *name, matrix &field) {
     return 0;
 }
 
-/**
-std::string cutOffPath(const std::string& path, const std::string& delimiter) {
-    size_t pos = path.rfind(delimiter); // Find the last occurrence of the delimiter
-    if (pos != std::string::npos) {
-        return path.substr(0, pos + delimiter.size());
-    }
-    return path; // If the delimiter is not found, return the original path
-}
 
-std::string GetCurrentWorkingDirectory() {
-    const size_t bufferSize = 1024;
-    char buffer[bufferSize];
-    if (getcwd(buffer, bufferSize) != nullptr) {
-        return std::string(buffer);
-    }
-    return std::string(""); 
-}
-
-
-std::string GetEsterDirectory() {
-    std::string currentPath = GetCurrentWorkingDirectory();
-    std::string delimiter = "Ester";
-    std::string result = cutOffPath(currentPath, delimiter);
-    
-    if (result == currentPath){
-		//try now ESTER 
-    	std::string delimiter = "ESTER";
-    	std::string result = cutOffPath(currentPath, delimiter);
-	}
-
-    if (result == currentPath){
-		//try now ESTER 
-    	std::string delimiter = "ester";
-    	std::string result = cutOffPath(currentPath, delimiter);
-	}    
-    
-    return result; 
-
-}
-**/
 int star2d::hdf5_read(const char *input_file, int dim) {
     H5::Exception::dontPrint();
 
@@ -543,7 +505,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     // we make available the mixture name every where
     global_abundance_map.mixture_name = mixture.name; 
     
-    fill(); // needed 23/8/2024 ??
+    fill(); // MG: needed 23/8/2024 ??
     return 0;
 }
 
@@ -561,6 +523,17 @@ bool star2d::check_tag(const char *tag) const {
 
 }
 
+/*double roundToPrecision_2d(double value, int decimalPlaces) {
+    double factor = std::pow(10.0, decimalPlaces);
+    return std::round(value * factor) / factor;
+}*/
+
+double star2d::roundToPrecision(double value, int decimalPlaces) {
+    double factor = std::pow(10.0, decimalPlaces);
+    return std::round(value * factor) / factor;
+}
+
+
 int star2d::init(const char *input_file,const char *param_file,int argc,char *argv[]) {
     cmdline_parser cmd;
     file_parser fp;
@@ -576,9 +549,10 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     if(input_file != NULL) {
         if (read(input_file)) {
             if(!in1d.read(input_file)) {
-                if(*param_file) {
+                if(*param_file) { // what in the world is a param_file again? 
                     if(fp.open(param_file)) {
                         while((k=fp.get(arg,val))) {
+                            //printf("argument %s, val %s\n",arg,val);
                             if(!strcmp(arg,"nth")&&val) nt=atoi(val);
                             if(!strcmp(arg,"nex")&&val) next=atoi(val);
                         }
@@ -587,11 +561,13 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
                 }
                 cmd.open(argc,argv);
                 while(cmd.get(arg,val)) {
+                    //printf("argument %s, val %s\n",arg,val);
+                
                     if(!strcmp(arg,"nth")&&val) nt=atoi(val);
                     if(!strcmp(arg,"nex")&&val) next=atoi(val);
                 }
                 cmd.close();
-                init1d(in1d, nt, next);
+                init1d(in1d, nt, next); // is it reading the rest of the parameters from here? 
             } else {
                 ester_err("Error reading input file: %s", input_file);
             }
@@ -627,9 +603,11 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         }
         else {
             while((k=fp.get(arg,val))) {
+            
                 if((i=check_arg(arg,val,&change_grid))) {
                     ester_err("Syntax error in parameters file %s, line %d\n",
                             param_file, k);
+                    //std::cout << "arg from while loop: " << arg << " , " << val << std::endl;
                     if(i==2) {
                         ester_err("Error: Argument to '%s' missing\n",arg);
                         return 1;
@@ -646,8 +624,32 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 
     cmd.open(argc,argv);
     while(int err_code=cmd.get(arg,val)) {
+                //printf("argument %s, val %s\n",arg,val);
+             	if (strcmp(arg, "mixture") == 0){
+             		//if (strcmp(val, "GN93") == 0){
+             		//	printf("default mixture read in, continue as expected\n");
+             		//}
+             		//else{
+             		
+             		//printf("Z0 being overwritten with new mixture\n");
+             		
+             		strcpy(mixture.name,val);
+             		global_abundance_map.mixture_name = mixture.name; // needs to be updated so composition.cpp can use
+             		
+             		double_map comp_dummy = initial_composition(0.7,0.02);
+    			//std::cout << std::setprecision(15) << "Zmix (comp['Zsol']) after composition run: " << comp_dummy["Zsol"] << std::endl;  
+	    
+			Z0 = roundToPrecision(comp_dummy["Zsol"], 9);
+			
+			 // If command line picks up Z0, it'll be overwritten again, init_comp is run again within fill();
+			             		             		
+             		//}
+             	}
+
+    
         if(err_code==-1) exit(1);
         err_code=check_arg(arg,val,&change_grid);
+            	
         if(err_code==2) {
             ester_err("Error: Argument to '%s' missing\n",arg);
             return 1;
@@ -682,7 +684,7 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
     } else {
         ester_err("2d models should use an input model");
     }
-    //init_comp(); //--> This is run already in fill() is it not? 
+    //init_comp(); //--> This is run already in fill() is it not? MG
     fill();
     return 0;
 }
@@ -743,6 +745,9 @@ AbundanceMap global_abundance_map;
 
 extern bool dump_jac;
 int star2d::check_arg(char *arg,char *val,int *change_grid) {
+
+    //std::cout << "global_abundance_map.Zmix: " << global_abundance_map.Zmix << std::endl; 
+
     int err=0,i;
     char *tok;
 
@@ -781,18 +786,6 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
         map.ex.gl.set_npts(atoi(val));
         *change_grid=*change_grid|4;
     }
-    else if(!strcmp(arg,"M")) {
-        if(val==NULL) return 2;
-        M=atof(val)*M_SUN;
-    }
-    else if(!strcmp(arg,"X")) {
-        if(val==NULL) return 2;
-        X0=atof(val);
-    }
-    else if(!strcmp(arg,"Z")) {
-        if(val==NULL) return 2;
-        Z0=atof(val);
-    }
     
     else if(!strcmp(arg,"mixture")){
     	if(val==NULL) return 2;
@@ -802,7 +795,19 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
         global_abundance_map.mixture_name = mixture.name; 
         
     }
-    
+    else if(!strcmp(arg,"M")) {
+        if(val==NULL) return 2;
+        M=atof(val)*M_SUN;
+    }
+    else if(!strcmp(arg,"X")) {
+        if(val==NULL) return 2;
+        X0=atof(val);
+    }
+    else if(!strcmp(arg,"Z")) {
+        if(val==NULL) return 2; 
+        Z0=atof(val); 
+    }
+        
     else if(!strcmp(arg,"Xc")) {
         if(val==NULL) return 2;
         Xc=atof(val);

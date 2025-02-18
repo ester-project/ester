@@ -19,8 +19,10 @@
 #include <map>
 #include <cmath>
 
-#include <boost/stacktrace.hpp>
+//#include <boost/stacktrace.hpp>
 #include "star.h" // adding for abundance name 
+
+#include <iomanip>
 
 std::string GetCurrentWorkingDirectory() {
     const size_t bufferSize = 1024;
@@ -33,7 +35,7 @@ std::string GetCurrentWorkingDirectory() {
 
 //------
 // Define the logging function and macro in main.cpp
-inline void logCaller(const std::string& functionName, const std::string& fileName, int lineNumber) {
+/*inline void logCaller(const std::string& functionName, const std::string& fileName, int lineNumber) {
     std::cout << "Called from function: " << functionName 
               << " in file: " << fileName 
               << " at line: " << lineNumber << std::endl;
@@ -46,6 +48,7 @@ inline void logCaller(const std::string& functionName, const std::string& fileNa
 }
 
 #define LOG_CALLER() logCaller(__func__, __FILE__, __LINE__)
+*/
 
 std::string cutOffPath(const std::string& path, const std::string& delimiter) {
     size_t pos = path.rfind(delimiter); // Find the last occurrence of the delimiter
@@ -54,6 +57,7 @@ std::string cutOffPath(const std::string& path, const std::string& delimiter) {
     }
     return path; // If the delimiter is not found, return the original path
 }
+
 
 std::string readPathFromFile(const std::string& filename) {
     std::ifstream file(filename);
@@ -424,6 +428,11 @@ branch comp will be updated
 	comp["Xsol"] = tot_test_xyz_x_only;
 	comp["Ysol"] = tot_test_xyz_y_only;
 	comp["Zsol"] = tot_test_xyz_z_only;
+	
+	//std::cout << std::setprecision(15) << "comp['Zsol'] after composition run: " << comp["Zsol"] << " ,tot_test_xyz_z_only: " << tot_test_xyz_z_only <<  std::endl;    
+	
+	global_abundance_map.Zmix = tot_test_xyz_z_only;
+	//cout << "Zmix check: " << global_abundance_map.Zmix << endl; 
 		
 	return comp;
 

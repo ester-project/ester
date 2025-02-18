@@ -39,8 +39,8 @@ class star2d {
         matrix vr, vt, G, w;
         composition_map comp;
         AbundanceMap abundance_map; // added --> MG: needed? Block later for test
-        //FileMeta File_meta_data;
         double X0, Y0, Z0;
+        int Zinp; // MG: bool to check if Z has been given in argument input. 
         double R, M;
         double rhoc, Tc, pc;
         double Omega, Omega_bk, Omegac;
@@ -92,6 +92,7 @@ class star2d {
         virtual void eq_state();
         virtual void atmosphere();
 
+	virtual double roundToPrecision(double value, int decimalPlaces);
         virtual int init(const char *input_file, const char *param_file, int argc, char *argv[]);
         virtual int check_arg(char *arg, char *val, int *change_grid);
         virtual int read(const char *input_file, int dim = 2);
@@ -186,6 +187,7 @@ class star1d : public star2d {
         ~star1d();
         star1d(const star1d &);
         star1d &operator=(const star1d &);
+        virtual double roundToPrecision(double value, int decimalPlaces);
         virtual int init(const char *input_file, const char *param_file, int argc, char *argv[]);
         virtual int check_arg(char *arg, char *val, int *change_grid);
         virtual int read(const char *input_file, int dim = 1);

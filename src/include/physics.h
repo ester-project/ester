@@ -49,9 +49,9 @@ class AbundanceMap {
 public:
     std::map<std::string, float> comp_abund;
     std::map<std::string, double> A_weights;
-    //std::string comp_name;
     std::string mixture_name;
     std::string ester_home;
+    double Zmix; 
 };
 
 extern AbundanceMap global_abundance_map;
@@ -77,6 +77,8 @@ int opa_cesam(const matrix& X, double Z, const matrix& T, const matrix& rho,
 int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
 		opa_struct& opa, const double Xsol, const double Ysol, const double Zsol);
 
+//int opa_mesa_wrapper(const matrix& X, double Z, const matrix& T, const matrix& rho,
+//		opa_struct& opa);
 		
 int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);	

@@ -120,7 +120,13 @@ c
 c
 c..... read the data files
         call readcoeos
+        
+        !write(*,*) zz ! also test statement
         z=zz(1)
+        
+        ! write(*,'("requested z=",f24.18," EOS5_data is for z=",f24.18)') ztab, z ! printing here for a test, because I was having issues with printing the values and the precision. 
+	! write(*,*) loc(ztab), loc(z) ! memory address
+
         if (ztab .ne. z) then
         write (*,'("requested z=",f10.6," EOS5_data is for z=",
      x             f10.6)')
@@ -505,6 +511,9 @@ c       open(15, FILE=tabfilez)
       do 3 m=1,mx
       read (15,'(3x,f6.4,3x,f12.9,11x,f10.7,17x,f10.7)')
      x  xin(m),zz(m),moles(m),tmass(m)
+c      read (15,'(3x,f6.4,3x,f12.14,11x,f10.7,17x,f10.7)')
+c     x  xin(m),zz(m),moles(m),tmass(m)
+
       read (15,'(21x,e14.7,4x,e14.7,3x,e11.4,3x,e11.4,3x,e11.4,
      x 4x,e11.4)') (frac(m,i),i=1,6)
       read (15,'(a)') blank

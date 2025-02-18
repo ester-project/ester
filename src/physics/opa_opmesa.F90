@@ -413,10 +413,16 @@ end module path_module
                 dlnkap_rad_dlnRho_highT = (alpha*kap_highT1*dlnkap_rad_dlnRho_highT1 + &
                                           (1-alpha)*kap_highT2*dlnkap_rad_dlnRho_highT2)/kap_highT
                 logkap_highT = log10(kap_highT)
-
+                
+                ! end of kappa table 2 info here (I think?) - MG
+             
                 logkap_highT = logkap_highT1
                 dlnkap_rad_dlnT_highT = dlnkap_rad_dlnT_highT1
                 dlnkap_rad_dlnRho_highT = dlnkap_rad_dlnRho_highT1
+
+		! end of kappa table 1 info here (I think) - MG
+		
+		
 
               if (ierr == 1) then
                 logkap_highT = 1d99

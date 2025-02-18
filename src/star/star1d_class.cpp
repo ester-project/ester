@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <iomanip>
 
 star1d::star1d() {
 }
@@ -24,6 +25,16 @@ star1d &star1d::operator=(const star1d &A) {
 
 }
 
+/*double star1d::roundToPrecision(double value, int decimalPlaces) {
+    double factor = std::pow(10.0, decimalPlaces);
+    return std::round(value * factor) / factor;
+}*/
+
+double star1d::roundToPrecision(double value, int decimalPlaces){
+return star2d::roundToPrecision(value,decimalPlaces);
+}
+
+
 bool star1d::check_tag(const char *tag) const {
     if(strcmp(tag, "star1d")) return false;
     return true;
@@ -40,6 +51,9 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
     mapping map0;
     int i, k, change_grid=0;
     matrix Tr;
+    double Zmix;
+
+    
 
     sprintf(default_params, "%s/ester/1d_default.par", ESTER_DATADIR);
 
@@ -56,9 +70,23 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
         }
         else {
             while((k=fp.get(arg, val))) {
+             	
+             	//printf("argument %s, val %s\n",arg,val);
+             	if (strcmp(arg, "Z") == 0){
+             		//printf("Z default parameter has been found!\n");
+             		
+             		double_map comp_dummy = initial_composition(0.7,0.02); // input X and Z does not affect Zmix, this comes from the abundance input directly.
+    			//std::cout << std::setprecision(15) << "Zmix (comp['Zsol']) after composition run: " << comp_dummy["Zsol"] << std::endl;  
+	    
+			Zmix = roundToPrecision(comp_dummy["Zsol"], 9);
+			
+             		std::string strVal = std::to_string(Zmix); // converting to char* for check_arg()
+			val = strdup(strVal.c_str());             		
+             	}
+             	       
                 if((i=check_arg(arg, val, &change_grid))) {
                     printf("Syntax error in parameters file %s, line %d\n", param_file, k);
-                    if(i==2) {
+                    if(i==2) {                    	                    
                         printf("Error: Argument to '%s' missing\n", arg);
                         exit(EXIT_FAILURE);
                     }
@@ -80,6 +108,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
         }
         else {
             while((k=fp.get(arg, val))) {
+            
                 if((i=check_arg(arg, val, &change_grid))) {
                     printf("Syntax error in parameters file %s, line %d\n", param_file, k);
                     if(i==2) {
@@ -98,6 +127,28 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
 
     cmd.open(argc, argv);
     while(int err_code=cmd.get(arg, val)) {
+    
+             	
+             	if (strcmp(arg, "mixture") == 0){
+             	        //printf("argument %s, val %s\n",arg,val);
+             		//if (strcmp(val, "GN93") == 0){
+             		//	printf("default mixture (GN93) read in, continue as expected\n");
+             		//}
+             		//else{
+             		
+             		strcpy(mixture.name,val);
+             		global_abundance_map.mixture_name = mixture.name; // needs to be updated so composition.cpp can use
+             		
+             		double_map comp_dummy = initial_composition(0.7,0.02);
+    			//std::cout << std::setprecision(15) << "Zmix (comp['Zsol']) after composition run: " << comp_dummy["Zsol"] << std::endl;  
+	    
+			Zmix = roundToPrecision(comp_dummy["Zsol"], 9);
+			
+			Z0 = Zmix; // If command line picks up Z0, it'll be overwritten again, init_comp is run again within fill();
+			             		             		
+             		//}
+             	}
+
         if(err_code==-1) exit(1);
         err_code=check_arg(arg, val, &change_grid);
         if(err_code==2) {
@@ -116,6 +167,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
         fprintf(stderr, "Must specify number of points per domain (npts)\n");
         exit(1);
     }
+    
     if (*input_file) {
         if(change_grid) {
             mapping map_new;
@@ -155,7 +207,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
         phiex=zeros(map.nex, map.nt);
     }
 
-    init_comp();
+    init_comp(); // MG: does this need to be here? fill(); already has init_comp(); its blocked in star2d_class init 07/02/25
     fill();
 
     phi = solve_phi();

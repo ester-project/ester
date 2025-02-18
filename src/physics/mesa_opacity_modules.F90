@@ -161,6 +161,12 @@ module mesa_opacity_module
       CHARACTER(LEN=38) :: FMT
       integer :: np
       parameter(np=1648)
+      
+      if (associated(ite)) deallocate(ite)
+      if (associated(jne)) deallocate(jne)
+      if (associated(logT_pcg)) deallocate(logT_pcg)
+      if (associated(logRho_pcg)) deallocate(logRho_pcg)
+      if (associated(lkap_ross_pcg)) deallocate(lkap_ross_pcg)
 
       allocate(ite(np), jne(np), logT_pcg(np), logRho_pcg(np), lkap_ross_pcg(np),stat=ierr)
 

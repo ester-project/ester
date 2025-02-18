@@ -13,6 +13,11 @@
 #include <signal.h>
 
 #include <physics.h> // should be in star.h? 
+#include <mutex>
+
+//AbundanceMap global_abundance_map;
+
+
 int killed=0;
 
 void sig_handler(int sig) {
@@ -30,6 +35,9 @@ void sig_handler(int sig) {
         }
     }
     exit(sig);
+}double roundToPrecision(double value, int decimalPlaces) {
+    double factor = std::pow(10.0, decimalPlaces);
+    return std::round(value * factor) / factor;
 }
 
 int main(int argc,char *argv[]) {
@@ -47,12 +55,14 @@ int main(int argc,char *argv[]) {
 
     star1d A;
     solver *op;
+    
+    std::cout << "initilisation starting" << std::endl;
 
     if(A.init(config.input_file,config.param_file,argc,argv)) {
         ester_err("Could not initialize star");
         return 1;
     }
-
+    
     nit=0;
 
     matrix tt(config.maxit+1,1),error(config.maxit+1,1);

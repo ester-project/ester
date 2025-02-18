@@ -5,9 +5,10 @@ npts=30
 nth=12
 nex=30
 
+mixture=GN93
 M=5
 X=0.7
-Z=0.02
+Z=0
 
 Xc=1
 stratified_comp=1
@@ -16,7 +17,7 @@ surff=1
 Tc=3e7
 pc=5e16
 
-mixture=GN93
+
 opa=opal
 eos=opal
 nuc=simple

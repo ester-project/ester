@@ -11,6 +11,9 @@
 #include <string.h>
 #include <signal.h>
 
+//#include <physics.h>
+//AbundanceMap global_abundance_map;
+
 int killed=0;
 
 void sig_handler(int sig);
@@ -42,7 +45,13 @@ int main(int argc,char *argv[]) {
         ester_err("Could not initialize star");
         return 1;
     }
-	
+    
+        //std::cout << "global_abundance_map.Zmix: " << global_abundance_map.Zmix << std::endl; 
+        //std::cout << "Z0: " << A.Z0 << std::endl; 	
+        
+        //A.Z0 = global_abundance_map.Zmix; // overwriting it, what about X0 and Y0? 
+
+    	//std::cout << "Z0_new: " << A.Z0 << std::endl; 
 	nit=0;
 	
 	matrix tt(config.maxit+1,1),error(config.maxit+1,1);
