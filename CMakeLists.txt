@@ -74,10 +74,10 @@ include_directories(${HDF5_INCLUDE_DIRS})
 ### LIBMESAC INTEGRATION ###
 
 # Include and link directories for MESA
-include_directories($ENV{MESA_DIR}/include $ENV{MESASDK_ROOT}/include)
-link_directories($ENV{MESA_DIR}/lib $ENV{MESASDK_ROOT}/lib)
+#include_directories($ENV{MESA_DIR}/include $ENV{MESASDK_ROOT}/include)
+#link_directories($ENV{MESA_DIR}/lib $ENV{MESASDK_ROOT}/lib)
 
-include_directories($ENV{LIBMESAC_ROOT}/include)
+#include_directories($ENV{LIBMESAC_ROOT}/include)
 #link_directories($ENV{LIBMESAC_ROOT}/lib) # does this need to be added soemhow? 
 
 # Run the MESA shell commands and capture their output
@@ -94,18 +94,15 @@ execute_process(
 )
 
 # Additional MESA libraries
-#set(MESA_LIBS "-lkap -lchem -lmath -latm -lconst -lutils -leos -linterp_1d -linterp_2d -lnum -lionization -lmtx -lauto_diff -lcrmath -lhdf5io -lrates -lnet -lmvec -fopenmp -lm -lquadmath")
 
-#set(MESA_LIBS "-L/home/mgent/Documents/mesa-24.03.1/lib -lkap -lchem -lmath -latm -lconst -lutils -leos -linterp_1d -linterp_2d -lnum -lionization -lmtx -lauto_diff -lcrmath -lhdf5io -lrates -lnet -lmvec -fopenmp -lm -lquadmath")
-
-set(MESA_LIBS "-L$ENV{MESA_DIR}/lib -lkap -lchem -lmath -latm -lconst -lutils -leos -linterp_1d -linterp_2d -lnum -lionization -lmtx -lauto_diff -lcrmath -lhdf5io -lrates -lnet -lmvec -fopenmp -lm -lquadmath")
+#set(MESA_LIBS "-L$ENV{MESA_DIR}/lib -lkap -lchem -lmath -latm -lconst -lutils -leos -linterp_1d -linterp_2d -lnum -lionization -lmtx -lauto_diff -lcrmath -lhdf5io -lrates -lnet -lmvec -fopenmp -lm -lquadmath")
 
 # Combine the outputs into one variable for SDK libraries
-set(SDK_LIBS "${MESA_LIBS};${LAPACK95_LIB_FLAGS};${CRMATH_LIB_FLAGS}")
+#set(SDK_LIBS "${MESA_LIBS};${LAPACK95_LIB_FLAGS};${CRMATH_LIB_FLAGS}")
 
-message(LIBMESAC_ROOT="$ENV{LIBMESAC_ROOT}")
+#message(LIBMESAC_ROOT="$ENV{LIBMESAC_ROOT}")
 
-set(LIBMESAC_LIBS "$ENV{LIBMESAC_ROOT}/lib/libkapcmesa.a;$ENV{LIBMESAC_ROOT}/lib/libchemcmesa.a;$ENV{LIBMESAC_ROOT}/lib/libutilscmesa.a;${SDK_LIBS}")
+#set(LIBMESAC_LIBS "$ENV{LIBMESAC_ROOT}/lib/libkapcmesa.a;$ENV{LIBMESAC_ROOT}/lib/libchemcmesa.a;$ENV{LIBMESAC_ROOT}/lib/libutilscmesa.a;${SDK_LIBS}")
 
 ### -------------------- ### 
 
