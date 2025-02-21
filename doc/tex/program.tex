@@ -115,11 +115,33 @@ from scratch. 2D-models cannot be computed from scratch and need a first
 \subsection{Chemical composition}
 
 The default chemical composition is the solar mixture of
-\cite{GN93}. {However, with the option {\tt -mixture} added to the input parameters (see Section~\ref{ester1dinput}), the user can either choose from a list of input solar compositions or create a unique composition in the same format. These are located in directory \texttt{Solar\_compositions} with the keyword for the input argument in the filename. For example, \texttt{GS98\_ESTER\_abund\_input.txt} is used when -mixture {\tt GS98} is specified.}
+\cite{GN93}. {However, with the option {\tt -mixture} added to the
+input parameters (see Section~\ref{ester1dinput}), the user can
+either choose from a list of input solar compositions or create a
+unique composition in the same format. These are located in directory
+\texttt{Solar\_compositions} with the keyword for the input argument
+in the filename. For example, \texttt{GS98\_ESTER\_abund\_input.txt}
+is used when -mixture {\tt GS98} is specified.}
 
-The content structure of the file contains a header describing the basic contents of the composition with the paper reference, followed by two columns: {\tt element\_name}, {\tt Log\_abund} i.e. the element and log abundance in base 10, which is the typical format for solar compositions.
+The content structure of the file contains a header describing the basic
+contents of the composition with the paper reference, followed by two
+columns: {\tt element\_name}, {\tt Log\_abund} i.e. the element and log
+abundance in base 10, which is the typical format for solar compositions.
 
-In the programme a set of ratios is calculated in the file {\tt physics/composition.cpp}, to scale with the input {\tt X} and {\tt Z}. These ratios are derived by converting the input abundance composition from the {-mixture} argument and uses isotope atomic masses, percentage contributions from table 6 of Lodders et al. (2003) as well as mass excess from isotopes.data via MESA's chem module (version \texttt{mesa-24.03.1}). In Tab.~\ref{tab:exa_mf}, we give an example of what was derived within \texttt{composition.cpp} using \textit{GS98} for elements from Hydrogen to Oxygen. All solar compositions include elements up until Uranium, however the user can decide on any.
+Note that when a given mixture is used the metallicity $Z$ is automatically
+computed to that of the mixture, however the user can still impose its own $Z$,
+which then scales up or down the metallicity.
+
+In the programme a set of ratios is calculated in the file {\tt
+physics/composition.cpp}, to scale with the input {\tt X} and
+{\tt Z}. These ratios are derived by converting the input abundance
+composition from the {-mixture} argument and uses isotope atomic masses,
+percentage contributions from table 6 of Lodders et al. (2003) as
+well as mass excess from isotopes.data via MESA's chem module (version
+\texttt{mesa-24.03.1}). In Tab.~\ref{tab:exa_mf}, we give an example of
+what was derived within \texttt{composition.cpp} using \textit{GS98}
+for elements from Hydrogen to Oxygen. All solar compositions include
+elements up until Uranium, however the user can decide on any.
 
 
 \begin{table}[t]
@@ -141,14 +163,29 @@ In the programme a set of ratios is calculated in the file {\tt physics/composit
 	   &   \\
 \hline
 \end{tabular}
-    \caption{\bf Example of scaled mass fractions of metals for (approximately) to the chemical
+    \caption{Example of scaled mass fractions of metals for (approximately) to the chemical
 abundances of \cite{GS98}. Note that these ratios are presently used only with the option -nuc cesam.}
     \label{tab:exa_mf}
 \end{table}
 
 \subsection{Opacity tables} 
 
-The default opacity tables are Solar composition are given in tables GN93hz \citep{GN93}. \textbf{To} utilise other tables, they need to be added \textbf{and} the option {\tt -opa} \textit{mono} \textbf{must} be used. This option utilises large monochromatic opacity tables tabulated for \cite{Mombarg2022}. The Rossland mean opacity is derived from these tables, utilising monochromatic cross sections and corrections from the OP project \citep{Seaton2005}. To utilise these tables in ESTER, the option requires the following abundances defined: \textit{H, He, C, N, O, Ne, Na, Mg, Al, Si, S, Ar, Ca, Cr, Mn, Fe and Ni}. To reduce computation \textbf{costs}, a precomputed $\log\kappa_R(\log T,\log\rho)$ is created for a mixture in the core (given X and Z input). For a mixture, two tables are computed $\pm$0.05 mass fraction around the input X value and cubic spline interpolated to create a smaller sub-table used in the opacity calculations. The fractional abundances are scaled by the input Z relative to the initial Z value from the input abundance (e.g. for GS98, this would be Z = Z$_\odot$ = 0.0169).
+The default opacity tables are Solar composition are given in tables
+GN93hz \citep{GN93}. To utilise other tables, they need to be
+added and the option {\tt -opa} \textit{mono} must be
+used. This option utilises large monochromatic opacity tables tabulated
+for \cite{Mombarg2022}. The Rossland mean opacity is derived from these
+tables, utilising monochromatic cross sections and corrections from
+the OP project \citep{Seaton2005}. To utilise these tables in ESTER,
+the option requires the following abundances defined: \textit{H, He,
+C, N, O, Ne, Na, Mg, Al, Si, S, Ar, Ca, Cr, Mn, Fe and Ni}. To reduce
+computation costs, a precomputed $\log\kappa_R(\log T,\log\rho)$
+is created for a mixture in the core (given $X$ and $Z$ input). For a mixture,
+two tables are computed $\pm$0.05 mass fraction around the input $X$ value
+and cubic spline interpolated to create a smaller sub-table used in the
+opacity calculations. The fractional abundances are scaled by the input $Z$
+relative to the initial $Z$ value from the input abundance (e.g. for GS98,
+this would be $Z = Z_\odot$ = 0.0169).
 
 \section{{\tt ester 1d} input parameters}\label{ester1dinput}
 
@@ -208,6 +245,7 @@ schemes", {\it Bull. Ast. Soc. India}, {\bf 24}, 317.
 \item {\tt opal}. OPAL equation of state.
 \item {\tt ideal}. Ideal gas.
 \item {\tt ideal+rad}. Ideal gas with radiation.
+\item {\tt freeeos} Free-eos  {\tt https://freeeos.sourceforge.net/}
 \end{itemize}
 \item {\tt nuc}. Type of nuclear reactions. Possible values are:
 \begin{itemize}
