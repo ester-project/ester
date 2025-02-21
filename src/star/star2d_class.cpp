@@ -798,6 +798,8 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
     else if(!strcmp(arg,"M")) {
         if(val==NULL) return 2;
         M=atof(val)*M_SUN;
+        
+        global_abundance_map.M_init = atof(val);
     }
     else if(!strcmp(arg,"X")) {
         if(val==NULL) return 2;

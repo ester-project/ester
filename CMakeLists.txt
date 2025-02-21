@@ -73,31 +73,31 @@ include_directories(${HDF5_INCLUDE_DIRS})
 
 ### LIBMESAC INTEGRATION ###
 
-# Include and link directories for MESA
+## Include and link directories for MESA
 #include_directories($ENV{MESA_DIR}/include $ENV{MESASDK_ROOT}/include)
 #link_directories($ENV{MESA_DIR}/lib $ENV{MESASDK_ROOT}/lib)
 
 #include_directories($ENV{LIBMESAC_ROOT}/include)
 #link_directories($ENV{LIBMESAC_ROOT}/lib) # does this need to be added soemhow? 
 
-# Run the MESA shell commands and capture their output
-execute_process(
-    COMMAND mesasdk_lapack95_link
-    OUTPUT_VARIABLE LAPACK95_LIB_FLAGS
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+## Run the MESA shell commands and capture their output
+#execute_process(
+#    COMMAND mesasdk_lapack95_link
+#    OUTPUT_VARIABLE LAPACK95_LIB_FLAGS
+#    OUTPUT_STRIP_TRAILING_WHITESPACE
+#)
 
-execute_process(
-    COMMAND mesasdk_crmath_link
-    OUTPUT_VARIABLE CRMATH_LIB_FLAGS
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+#execute_process(
+#    COMMAND mesasdk_crmath_link
+#    OUTPUT_VARIABLE CRMATH_LIB_FLAGS
+#    OUTPUT_STRIP_TRAILING_WHITESPACE
+#)
 
-# Additional MESA libraries
+## Additional MESA libraries
 
 #set(MESA_LIBS "-L$ENV{MESA_DIR}/lib -lkap -lchem -lmath -latm -lconst -lutils -leos -linterp_1d -linterp_2d -lnum -lionization -lmtx -lauto_diff -lcrmath -lhdf5io -lrates -lnet -lmvec -fopenmp -lm -lquadmath")
 
-# Combine the outputs into one variable for SDK libraries
+## Combine the outputs into one variable for SDK libraries
 #set(SDK_LIBS "${MESA_LIBS};${LAPACK95_LIB_FLAGS};${CRMATH_LIB_FLAGS}")
 
 #message(LIBMESAC_ROOT="$ENV{LIBMESAC_ROOT}")
@@ -128,7 +128,8 @@ add_compile_definitions(VERSION="${PROJECT_VERSION}")
 add_compile_definitions(ESTER_DATADIR="${CMAKE_INSTALL_PREFIX}/share")
 add_compile_definitions(PACKAGE_VERSION="${PROJECT_VERSION}")
 
-add_library(ester SHARED
+#add_library(ester SHARED # was previous
+add_library(ester STATIC
     src/global/global.cpp
     src/graphics/matplotlib.cpp
     src/solver/RKF_solver.cpp
@@ -192,7 +193,7 @@ add_library(ester SHARED
     #src/physics/opa_mesa_wrapper.cpp) # blocked for fixing other issues 
     
 # Link libmesac libraries using --whole-archive to include all symbols
-#set(LIBMESAC_LIBS "-Wl,--whole-archive $ENV{LIBMESAC_ROOT}/lib/libkapcmesa.a $ENV{LIBMESAC_ROOT}/lib/libchemcmesa.a $ENV{LIBMESAC_ROOT}/lib/libutilscmesa.a -#Wl,--no-whole-archive ${SDK_LIBS}") # test lines 2 
+#set(LIBMESAC_LIBS "-Wl,--whole-archive $ENV{LIBMESAC_ROOT}/lib/libkapcmesa.a $ENV{LIBMESAC_ROOT}/lib/libchemcmesa.a $ENV{LIBMESAC_ROOT}/lib/libutilscmesa.a -#Wl,--no-whole-archive ${SDK_LIBS}") # test lines 2 --> needed?
 
    
 message(LIBMESAC_LIBS="${LIBMESAC_LIBS}")
@@ -203,7 +204,7 @@ target_link_libraries(ester cesam freeeos opint
 #set_target_properties(ester PROPERTIES
 #    LINK_SEARCH_START_STATIC ON
 #    LINK_SEARCH_END_STATIC OFF
-#) # test lines 3 
+#) # test lines 3 --> needed?
  
 
 add_custom_target(ester_bin ALL

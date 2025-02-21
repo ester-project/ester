@@ -52,6 +52,7 @@ public:
     std::string mixture_name;
     std::string ester_home;
     double Zmix; 
+    double M_init; 
 };
 
 extern AbundanceMap global_abundance_map;

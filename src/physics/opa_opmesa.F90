@@ -70,7 +70,8 @@ end module path_module
 	    !character(len=256) :: path_up_to_relative
 	    !integer :: pos,pos_i
     
-            real(kind=dp), intent(in), dimension(6) :: xchim
+            !real(kind=dp), intent(in), dimension(6) :: xchim
+            real(kind=dp), intent(in), dimension(7) :: xchim
             real(kind=dp), intent(in), dimension(17) :: abund
             real(kind=dp), intent(in), dimension(17) :: a_weights
 
@@ -97,7 +98,7 @@ end module path_module
             
             INTEGER :: start_time, end_time, count_rate
 	    REAL :: elapsed_time
-            character(len=5) :: Xstr1_om, Xstr2_om, Zstr
+            character(len=5) :: Xstr1_om, Xstr2_om, Zstr, Minit_str
             character(len=:), allocatable :: Xstr1, Xstr2
 
             integer :: ierr, i, ix
@@ -105,7 +106,7 @@ end module path_module
             real(dp) :: fk_test(17)
             real(dp) :: logkap_highT1, dlnkap_rad_dlnT_highT1, dlnkap_rad_dlnRho_highT1
             real(dp) :: logkap_highT2, dlnkap_rad_dlnT_highT2, dlnkap_rad_dlnRho_highT2
-            real(dp) :: Zsun, Z, X, X1, X2
+            real(dp) :: Zsun, Z, X, X1, X2, M_init
             real(dp) :: dlnkap_rad_dlnT, dlnkap_rad_dlnRho
             real(dp) ::  logR, lkap_ross_cell_lowT1, dlnkap_rad_dlnT_lowT1, dlnkap_rad_dlnR_lowT1
             real(dp) ::  alpha, lkap_ross_cell_lowT2, dlnkap_rad_dlnT_lowT2, dlnkap_rad_dlnR_lowT2
@@ -175,6 +176,8 @@ end module path_module
             !use_mono = .true. 
 
 	    Zsun = xchim(6)
+	    
+	    M_init = xchim(7)
             
             Zi   = (/1, 2, 6, 7, 8, 10, 11, 12, 13, 14, 16, 18, 20, &
                     24, 25, 26, 28/)
@@ -218,7 +221,9 @@ end module path_module
 	    !path_prefix = '/home/mgent/Documents/Ester/tables/op_mono/OP_lkap_' ! need to make this flexible to the user... 
 	    suffix = '_X'
 	    ext = '.txt'
-
+	    
+	    write(Minit_str,'(f5.3)')M_init
+	    
             write(abund_path_str,'(A)') abund_name
 
 	    !filename1 = TRIM(abs_path) // TRIM(path_prefix) // TRIM(abund_path_str) //&
@@ -230,11 +235,13 @@ end module path_module
 	    ! Use received_path as part of the filename
 	    filename1_test = trim(received_path) // '/' // trim(fixed_path) //&
 	    trim(path_prefix) // trim(abund_path_str) // trim(suffix) //&
-	    trim(Xstr1_om) // trim(Zstr) // trim(ext)
+	    trim(Xstr1_om) // '_Z' // trim(Zstr) // '_M' //&
+	    trim(Minit_str) // trim(ext)
 
 	    filename2_test = trim(received_path) // '/' // trim(fixed_path) //&
 	    trim(path_prefix) // trim(abund_path_str) // trim(suffix) //&
-	    trim(Xstr2_om) // trim(Zstr) // trim(ext)
+	    trim(Xstr2_om) // '_Z' // trim(Zstr) // '_M' //&
+	    trim(Minit_str) // trim(ext)
 	    
 	    !print *, ''
 	    !print *, 'Filename1: ', trim(filename1)

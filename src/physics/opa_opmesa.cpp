@@ -88,7 +88,8 @@ int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
     for (int i=0; i<X.nrows(); i++) {
         for (int j=0; j<X.ncols(); j++) {
 
-            double x[6];
+            //double x[6];
+            double x[7];
             double t, ro, kap, dkapt, dkapro, dkapx;
             double dlnkT;
             double abund[17]; 
@@ -133,6 +134,7 @@ int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
             x[3] = Xsol;
             x[4] = Ysol;
             x[5] = Zsol;
+            x[6] = abundance_map.M_init;
 
             
             t = T(i, j);
