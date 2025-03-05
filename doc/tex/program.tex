@@ -759,6 +759,10 @@ Pressure:
 
 \subsection{Using ESTER Native format}
 
+ESTER native format is basic binary format. This is a bit outdated since hdf5
+(see below) offers a more flexible storage. However, remarks below are valid
+also for hdf5 files.
+
 A basic interface python module for reading the models is included in
 the distribution. It is located in {\tt ester/python/}. The interface
 between the C/C++ and python variables is based on SWIG. The C++.variables
@@ -779,14 +783,14 @@ from ester import *      # Loads the module
 import matplotlib.pyplot as plt
 import numpy as np
 
-A=star1d('model_file')  # Loads a model 
-# or A=star2d('model_file') if you use a 2D-model
+A=star1d("model_file")  # Loads a model 
+# or A=star2d("model_file") if you use a 2D-model
 
-print A.p[0,0]          # Prints the central pressure
+print(A.p[0,0])         # Prints the central pressure
 
 plt.plot(A.r[:],np.log10(A.rho[:]))
 
-show()                  # Needed in non-interactive mode of matplotlib
+plt.show()              # Needed in non-interactive mode of matplotlib
 #---------------------------------------------------------------------
 \end{minted}
 
@@ -846,14 +850,35 @@ You need to have the \texttt{h5py} package installed.
 #---------------------------------------------------------------------
 import h5py
 
-f = h5py.File('star.hdf5', 'r')  # open the file 'star.hdf5' ('r' = read only)
-T = f['/star/T'][:]              # read the temperature field
-n = f['/star'].attrs['ndomains'] # read the number of domains
+f = h5py.File("star.hdf5", "r")  # open the file star.hdf5 ("r" = read only)
+T = f["/star/T"][:]              # read the temperature field
+n = f["/star"].attrs["ndomains"] # read the number of domains
 
-print "T (center): " + str(T[0][0])
-print "T (equator): " + str(T[0][-1])
+print("T (center): " + str(T[0][0]))
+print("T (equator): " + str(T[0][-1]))
 #---------------------------------------------------------------------
 \end{minted}
+
+However, a more efficient way of accessing the data is to use the ester module
+as when using ESTER native format, namely
+
+\begin{minted}{python}
+#---------------------------------------------------------------------
+from ester import *      # Loads the module
+import matplotlib.pyplot as plt
+
+A=star1d("model_file.h5")  # Loads a model stored in hdf5 format
+B=star2d("model_file.h5")  # if you use a 2D-model
+
+print(A.p[0,0])         # Prints the central pressure
+print(A.M)              # Prints the mass
+
+plt.plot(A.r[:],np.log10(A.rho[:])) # plot the radial profile of rho
+
+plt.show()              # Needed in non-interactive mode of matplotlib
+#---------------------------------------------------------------------
+\end{minted}
+
 
 \paragraph{Fortran:}
 You need to compile with the \texttt{h5fc} compiler wrapper. 
