@@ -8,9 +8,9 @@
 We consider a lonely rotating star in a steady state. The star is
 governed by the following equations for macroscopic quantities:
 
-\begin{equation} \Delta\phi = 4\pi G\rho\end{equation}
+\begin{equation} \Delta\phi = 4\pi G\rho\label{poiss}\end{equation}
 
-\begin{equation} \rho T \vv\cdot\nabla s = -\Div\vF + \rho\eps_*\end{equation}
+\begin{equation} \rho T \vv\cdot\nabla S = -\Div\vF + \rho\eps_*\end{equation}
 
 \begin{equation} \rho \vv\cdot\na\vv = -\na P -\rho\na\phi+\vF_v\end{equation}
 
@@ -27,8 +27,8 @@ and the expressions of the viscous force, which could be (for instance)
 \begin{equation} \vF_v = \mu(\Delta\vv + \frac{1}{3}\na\Div\vv)\end{equation}
 for a compressible, constant viscosity fluid, and of the heat flux
 
-\begin{equation} \vF = -\khi_r\na T -\frac{\khi_{\rm turb}T}{{\cal R}_M}\na s\end{equation}
-where $\khi_{\rm turb}$ is the turbulent diffusion of heat and $s$ the
+\begin{equation} \vF = -\khi_r\na T -\frac{\khi_{\rm turb}T}{{\cal R}_M}\na S\end{equation}
+where $\khi_{\rm turb}$ is the turbulent diffusion of heat and $S$ the
 entropy. $\khi_r$ is the radiative conductivity (usually dominating over
 the collision one).
 
@@ -50,10 +50,10 @@ core. Hence, the energy/entropy equation just reads:
 in a radiative zone and
 
 \begin{equation} \na s ={\vec 0}\label{nas}\end{equation}
-in the convective core. This equation gives the temperature gradient as a function
-of the pressure gradient thanks to the thermodynamics relation
+in the convective core. This equation gives the temperature gradient as
+a function of the pressure gradient thanks to the thermodynamics relation
 
-\[ ds = \frac{c_p}{T}dT - \frac{\alpha_t}{\rho T}dP\]
+\[ dS = \frac{c_p}{T}dT - \frac{\alpha_t}{\rho T}dP\]
 where 
 
 \beq \alpha_t = -\lp\frac{\partial \ln\rho}{\partial\ln
@@ -95,6 +95,36 @@ component of the momentum equation reads:
 where $\vu$ is the meridional circulation and $\mu$ the dynamical
 viscosity.
 
+\subsection{Brunt-V\"ais\"al\"a frequency}
+
+In a spherically symmetric model, thus in 1D, the \BVF\ reads
+
+\begin{equation}
+ N^2 = g\lp\frac{1}{\Gamma_1}\dnr{\ln P}-\dnr{\ln\rho}\rp
+\label{bv}
+\end{equation}
+Such an expression can be rewritten using the entropy gradient, namely
+
+\begin{equation}
+N^2 = -\frac{\delta}{c_p} \vg\cdot\na S
+\label{bvf}
+\end{equation}
+Eq. (\ref{bvf}) can be easily generalized to a 2D case. It is sufficient
+to replace gravity by the effective gravity, namely gravity plus the
+centrifugal acceleration. Hence, for the 2D case we have
+
+\begin{equation}
+N^2 = -\frac{\delta}{c_p} \vg_{\rm eff}\cdot\na S 
+\label{bvfe}
+\end{equation}
+where effective gravity $\vg_{\rm eff}$ is given by
+
+\begin{equation}
+\vg_{\rm eff} = -\nabla\phi+s\Omega^2\es\; .
+\label{geff}
+\end{equation}
+In (\ref{geff}) the gravitational potential $\phi$ is derived from the Poisson
+equation (\ref{poiss}).
 
 \subsection{Scaled equations}
 
