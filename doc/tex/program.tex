@@ -187,6 +187,31 @@ opacity calculations. The fractional abundances are scaled by the input $Z$
 relative to the initial $Z$ value from the input abundance (e.g. for GS98,
 this would be $Z = Z_\odot$ = 0.0169).
 
+\subsection{The equation of state}
+
+Section 2.2.3 Free Equation of State (EOS)
+
+The default EOS is the OPAL one but with the possible use of arbitrary chemical
+composition this equation of state is too restrictive. We therefore also
+implemented the FreeEOS library
+({\tt https://freeeos.sourceforge.net/documentation.html}). For each point
+in the stellar grid, ESTER builds a 20-element composition vector and
+calls the FreeEOS routine to obtain density, pressure, entropy, adiabatic
+gradients, and other derivatives required for the structure solver. The 20
+elements included are H, He, C, N, O, Ne, Na, Mg, Al, Si, P, S, Cl, Ar,
+Ca, Ti, Cr, Mn, Fe, and Ni, with their isotopic mixtures determined from
+the user-defined composition. This EOS option can be used in conjunction
+with either the default OPAL opacity tables or the monochromatic opacity
+tables (Section 2.2.2); when used with the latter, ESTER ensures that
+the EOS and opacity calculations remain compositionally consistent.
+This latter point is because the elements in OP monochromatic opacities
+are slightly less: they are H, He, C, N, O, Ne, Na, Mg, Al, Si, S, Ar,
+Ca, Cr, Mn, Fe and Ni, so 17 elements, while freeEOS includes 3 others,
+namely P, Cl and Ti. Thus, for consistency these latter three elements
+are not used either in eos and opacities.
+
+
+
 \section{{\tt ester 1d} input parameters}\label{ester1dinput}
 
 The input parameters for {\tt ester 1d} can be passed in the command line
