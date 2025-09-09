@@ -29,8 +29,7 @@ in
 
     cmakeFlags = [
       "-DPYTHON_SITE=lib/python" 
-      "-DCBLAS_LIBRARIES=cblas"
-      "-DCMAKE_INSTALL_PREFIX=${placeholder "out"}"
+      #"-DCBLAS_LIBRARIES=cblas"
     ];
     preConfigure = ''
       numpy_include=$(${pythonExecutable} -c "import numpy; print(numpy.get_include())")
