@@ -8,12 +8,14 @@ add_custom_target(__init__.py ALL
 add_custom_target(cesam.py ALL
     COMMAND sed -e 's,[@]PYTHON[@],${PYTHON_EXECUTABLE},g' ${CMAKE_SOURCE_DIR}/python/cesam.in > cesam.py)
 
-execute_process(
-    COMMAND "${PYTHON_EXECUTABLE}" -c "if True:
-    from distutils import sysconfig as sc
-    print(sc.get_python_lib(prefix='', plat_specific=True))"
-    OUTPUT_VARIABLE PYTHON_SITE
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
+if(NOT PYTHON_SITE)
+    execute_process(
+        COMMAND "${PYTHON_EXECUTABLE}" -c "if True:
+        from distutils import sysconfig as sc
+        print(sc.get_python_lib(prefix='', plat_specific=True))"
+        OUTPUT_VARIABLE PYTHON_SITE
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+endif()
 
 include(${SWIG_USE_FILE})
 
