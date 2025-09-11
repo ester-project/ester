@@ -94,32 +94,31 @@ using namespace std;
 
 //FileMeta File_meta_data;
 
+// Use this if you are not updating the composition on every step. Otherwise
+// Call save the results of parse_composition_data and call only update_initial_composition.
 double_map initial_composition(double X, double Z) {
+    CompositionData initial_comp = parse_composition_data();
+    return update_initial_composition(initial_comp, X, Z);
+}
 
-	//LOG_CALLER();
-	//cout << "Inside initial_composition" << endl;
+CompositionData parse_composition_data() {
 
-	// initialisation 
+	// The environment variable ESTER should be set to the ESTER directory
+    // in .bashrc or .cshrc
 
-// The environment variable ESTER should be set to the ESTER directory
-// in .bashrc or .cshrc
-
-// we read the environment variable ESTER
+    // we read the environment variable ESTER
     std::string esterDirectory=getenv("ESTER");
     global_abundance_map.ester_home = esterDirectory;
     
-/** Read data from lodders03_w_mass_excess.txt and populate the map
-this can be done outside of the initial composition function I believe.
-the initial composition should only be done once, however in the evolution
-branch comp will be updated
-**/
+    /** Read data from lodders03_w_mass_excess.txt and populate the map
+    this can be done outside of the initial composition function I believe.
+    the initial composition should only be done once, however in the evolution
+    branch comp will be updated
+    **/
 
-// load lodders03_data_w_mass_excess file 
+    // load lodders03_data_w_mass_excess file 
     std::string lodders03_comp_name = "lodders03_data_w_mass_excess.txt";
-    
-        //std::cout << "esterDirectory: " <<  esterDirectory << std::endl; 
-
-	ifstream file_mass_excess(esterDirectory+"/Solar_compositions/"+lodders03_comp_name);
+    ifstream file_mass_excess(esterDirectory+"/Solar_compositions/"+lodders03_comp_name);
 	if (!file_mass_excess.is_open()) {
 		// check that file exists
         printf("-------------------- \n ");
@@ -127,9 +126,9 @@ branch comp will be updated
         //printf("please make a change in src/physics/composition.cpp l.120\n");
         cerr << "Error opening file: " << esterDirectory+"/Solar_compositions/"+lodders03_comp_name << endl; 
         printf("-------------------- \n ");
-    	}
+    }
 
-	std::map<std::string, std::vector<ElementData>> comp_inp;// this is the variable whcih is declared here will be filled up with isotope info
+	std::map<std::string, std::vector<ElementData>> comp_inp;// this is the variable which is declared here will be filled up with isotope info
 	std::string line_mass_excess;
 	int count_mass_excess=0;
 	while (std::getline(file_mass_excess, line_mass_excess)) {
@@ -146,30 +145,18 @@ branch comp will be updated
 
 	}
 
-//  std::cout << "comp_inp CHECK" << std::endl;
-
-	std::map<std::string, double> comp_out; // converted abundances stored here to be normalised and used for comp
+    std::map<std::string, double> comp_out; // converted abundances stored here to be normalised and used for comp
 	std::map<std::string, double> comp_A; // atomic weights which are required for -opa mono mode. 
-        string line_inp;
-    
-        //AbundanceMap& abundance_map = global_abundance_map;
-        std::string abund_inp_comp_name = global_abundance_map.mixture_name; 
-        
-        
-        //readPathFromFile(esterDirectory+"/Solar_compositions/abund_input_filename.txt");
-         
-	//std::cout << "abund_inp_comp_name: " << abund_inp_comp_name << std::endl;
-         
-	//global_abundance_map.comp_name = abund_inp_comp_name; // will be used for naming grids in -opa mono mode as well as other created files. 
+    string line_inp;
 
-	//cout << esterDirectory+"/Solar_compositions/"+abund_inp_comp_name+"_ESTER_abund_input.txt" << endl;
-	
-	ifstream file_abund_inp(esterDirectory+"/Solar_compositions/"+abund_inp_comp_name+"_ESTER_abund_input.txt");
+    //AbundanceMap& abundance_map = global_abundance_map;
+    std::string abund_inp_comp_name = global_abundance_map.mixture_name; 
+    
+    ifstream file_abund_inp(esterDirectory+"/Solar_compositions/"+abund_inp_comp_name+"_ESTER_abund_input.txt");
 	if (!file_abund_inp.is_open()) {
         cerr << "Error opening file: " << esterDirectory+"/Solar_compositions/"+abund_inp_comp_name+"_ESTER_abund_input.txt"<< endl; 
     	}
 
-//	cout << "Load abundances and set them in AbundanceMap... " << endl;
     std::map<std::string, float> comp_abund_test; 
 
 	bool in_header = false;
@@ -224,8 +211,6 @@ branch comp will be updated
 
         comp_abund_test[element_to_search]=abundance;
 
-		//cout << "PRINT: " << element_to_search << " | " << abundance << endl;
-
 		if (comp_inp.find(element_to_search) != comp_inp.end()) {
 			//std::cout << "Data for element " << element_to_search << ":" << std::endl;
 			for (const auto& element_data : comp_inp[element_to_search]) {
@@ -237,8 +222,6 @@ branch comp will be updated
 				int Z = element_data.Z;  // Number of protons (for example, carbon)
 				int N = element_data.A-element_data.Z;  // Number of neutrons (for example, carbon)
 				float mass_excess_mev_per_c2 = element_data.mass_excess;  // Mass excess in MeV/c^2 (for example, carbon)
-
-				//cout << "element_data PRINT TEST " << element_data << endl;
 
 				// Constants
 				const float c = 2.998e10;  // Speed of light in vacuum in cm/s
@@ -283,21 +266,12 @@ branch comp will be updated
                         combined_A[prefix] = 0.0;
                     }
                     combined_A[prefix] += value;
-
                                      
                 }
             }
         }
     }
 
-    global_abundance_map.A_weights = combined_A;
-    
-    //for (const auto& entry : combined_A) {
-    //    const std::string& key = entry.first;
-    //    double value = entry.second;                
-    //std::cout << "A_weight " << key << " = " << value << std::endl;
-    //	}
-	
     double z_sum = 0.0;
 	double y_sum = 0.0;
 	double x_sum = 0.0;
@@ -320,16 +294,8 @@ branch comp will be updated
             z_sum += value;
         }
     }
-
-    //cout << "x_sum i.e. X_unorm: " << x_sum << endl;
-    //cout << "y_sum i.e. Y_unorm: " << y_sum << endl;
-    //cout << "z_sum i.e. Z_unorm: " << z_sum << endl;
-
-    // Calculate xyz_sum
     double xyz_sum = x_sum + y_sum + z_sum;
-
-	//cout << "xyz_sum i.e. X_... + Y_... + Z_unorm: " << xyz_sum << endl;
-
+    
     // Divide all values of comp_out_x by x_sum
     for (auto& entry : comp_out_x) {
         entry.second /= x_sum;
@@ -342,11 +308,12 @@ branch comp will be updated
     for (auto& entry : comp_out_z) {
         entry.second /= z_sum;
     }
+    
 
-    // Create a copy of comp_out called comp_test
+    global_abundance_map.A_weights = combined_A;
+
     std::map<std::string, double> comp_test_xyz = comp_out; // "" by xyz_sum 
-
-	double tot_test_xyz = 0.0;
+    double tot_test_xyz = 0.0;
 	double tot_test_xyz_x_only = 0.0;
 	double tot_test_xyz_y_only = 0.0;
 	double tot_test_xyz_z_only = 0.0;
@@ -370,12 +337,6 @@ branch comp will be updated
         }
 	}
 
-/*
-	cout << "X_sol: " << tot_test_xyz_x_only << endl;
-	cout << "Y_sol: " << tot_test_xyz_y_only << endl;
-	cout << "Z_sol: " << tot_test_xyz_z_only << endl;
-*/
-
     for (auto& entry : comp_test_xyz) {
 
 		const std::string& key = entry.first;
@@ -390,25 +351,21 @@ branch comp will be updated
         }
 
 	}
+    CompositionData data; 
+    data.normalized_abundances = std::move(comp_test_xyz);
+    data.Xsol = tot_test_xyz_x_only;
+    data.Ysol = tot_test_xyz_y_only;
+    data.Zsol = tot_test_xyz_z_only;
+    return data;    
+    
+}
 
-    //std::cout << "Updated values dividing by Xsol, Ysol, Zsol independently:" << std::endl;
-    //for (const auto& entry : comp_test_xyz) { // blocking for test 
-    //    std::cout << entry.first << ": " << entry.second << std::endl;
-    //}
-
-	// check 1-X-Z vs Y 
-
-	//cout << "1-X-Z: " << 1. - tot_test_xyz_x_only - tot_test_xyz_z_only << endl;
-
-	//cout << "X+Y+Z: " << tot_test_xyz_x_only + tot_test_xyz_y_only + tot_test_xyz_z_only << endl;
-
-
-	double_map comp; 
-
-	// loop through comp_test_xyz 
+double_map update_initial_composition(const CompositionData &data, double X, double Z) { 
+    
+    double_map comp; 
     double Hsum = 0.0;
 	
-	for (auto& entry : comp_test_xyz) {
+	for (auto& entry : data.normalized_abundances) {
 
 		const std::string& key = entry.first;
         double value = entry.second;
@@ -418,30 +375,19 @@ branch comp will be updated
 
         } else if (key.find("He3") != std::string::npos || key.find("He4") != std::string::npos) {
 			comp[key] = entry.second * (1-X-Z); // below they did alpha_He3 * (1-X-Z) and then (1-X-Y) - comp[He3]
-
-			//cout << "key: " << key << " = " << comp[key] << endl;
         } else {
 			comp[key] = entry.second * Z;
-			//cout << "key: " << key << " = " << comp[key] << endl;
 
         }
 
 	}
 	comp["H"] = Hsum;
-
 	double tot=comp.sum();
-	
-	comp["Ex"] =1-tot; 
-
-	comp["Xsol"] = tot_test_xyz_x_only;
-	comp["Ysol"] = tot_test_xyz_y_only;
-	comp["Zsol"] = tot_test_xyz_z_only;
-	
-	//std::cout << std::setprecision(15) << "comp['Zsol'] after composition run: " << comp["Zsol"] << " ,tot_test_xyz_z_only: " << tot_test_xyz_z_only <<  std::endl;    
-	
-	global_abundance_map.Zmix = tot_test_xyz_z_only;
-	//cout << "Zmix check: " << global_abundance_map.Zmix << endl; 
-		
+	comp["Ex"] = 1 - tot;
+	comp["Xsol"] = data.Xsol;
+	comp["Ysol"] = data.Ysol;
+	comp["Zsol"] = data.Zsol;
+	global_abundance_map.Zmix = data.Zsol;
 	return comp;
 
 }
