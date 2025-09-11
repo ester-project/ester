@@ -84,13 +84,16 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
     eos.prad.dim(T.nrows(), T.ncols()); // added MR june 2023
     
     AbundanceMap& abundance_map = global_abundance_map; // using atomic weight values
-
-    for (int i=0; i<N; i++) {
-
-        double_map comp = initial_composition(X(i), Z);
+    
+    // Loading initial composition from text files before the loop. 
+    // There is still room to improve as this is called on every iteration
+    // Most efficient would be to load this only once at the beginning of the run
+    CompositionData initial_comp = parse_composition_data();
+    for (int i=0; i<N; i++) { // N is 360 for star1d and up to 9360 for star2d
+    
+        double_map comp = update_initial_composition(initial_comp, X(i), Z);
         	
-	eps[0] = comp["H"]/abundance_map.A_weights["H"] ; // H1 + H2
-	
+        eps[0] = comp["H"]/abundance_map.A_weights["H"] ; // H1 + H2
         eps[1] = (comp["He3"] + comp["He4"]) / abundance_map.A_weights["He"];   // He3 + He4
         eps[2] = (comp["C12"] + comp["C13"]) / abundance_map.A_weights["C"]; // C12 + C13
         eps[3] = (comp["N14"] + comp["N15"]) / abundance_map.A_weights["N"]; // N14 + N15

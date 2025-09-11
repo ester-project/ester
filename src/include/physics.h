@@ -103,5 +103,15 @@ int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 
 double_map initial_composition(double X,double Z);  
 
+double_map initial_composition(double X, double Z);
+struct CompositionData {
+    std::map<std::string, double> normalized_abundances;
+    double Xsol = 0.0;
+    double Ysol = 0.0;
+    double Zsol = 0.0;
+}; 
+CompositionData parse_composition_data();  
+double_map update_initial_composition(const CompositionData& data, double X, double Z);
+
 #endif
 
