@@ -367,6 +367,7 @@ double_map update_initial_composition(const CompositionData &data, double X, dou
 	
 	for (auto& entry : data.normalized_abundances) {
 
+
 		const std::string& key = entry.first;
         double value = entry.second;
 
@@ -382,12 +383,17 @@ double_map update_initial_composition(const CompositionData &data, double X, dou
 
 	}
 	comp["H"] = Hsum;
+
 	double tot=comp.sum();
 	comp["Ex"] = 1 - tot;
 	comp["Xsol"] = data.Xsol;
 	comp["Ysol"] = data.Ysol;
 	comp["Zsol"] = data.Zsol;
 	global_abundance_map.Zmix = data.Zsol;
+
+	
+	global_abundance_map.comp_xa = comp; // save the entire mass fraction.
+		
 	return comp;
 
 }

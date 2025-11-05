@@ -33,7 +33,7 @@ const std::map<std::string, float>& AbundanceManager::getAbundances() const {
 //AbundanceMap global_abundance_map;  // Default initialization
 
 
-int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
+int opa_calc(const composition_map &comp,const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa,const double Xsol, const double Ysol, const double Zsol){//,
 //		const AbundanceMap& abundance_map) {
 		
@@ -57,6 +57,12 @@ int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 
 	int error=0;
 
+    int ipt = 0;
+    double Tval = T.data()[ipt];
+    double rhoval = rho.data()[ipt];
+    printf("opa_calc: DEBUG ipt=%d: T=%.4e rho=%.4e\n",
+           ipt, Tval, rhoval);
+
 	if(!strcmp(opa.name,"opal")) {
 		error=opa_opal(X,Z,T,rho,opa);
 	} else if(!strcmp(opa.name,"houdek")) {
@@ -69,6 +75,9 @@ int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
         //error=opa_opmesa(X, Z, T, rho, opa);
         //error=opa_opmesa(X, Z, T, rho, opa,Xsol,Ysol,Zsol,abundance_map);
         error=opa_opmesa(X, Z, T, rho, opa,Xsol,Ysol,Zsol);
+    } else if (!strcmp(opa.name,"mesa")) {
+        printf("calling opa_mesa_wrapper\n");
+    	error=opa_mesa_wrapper(comp,X, Z, T, rho, opa);   
     } else {
         ester_err("Unknown opacity method: %s",opa.name);
     	return 1;
@@ -121,14 +130,14 @@ int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
 //		const char *eos_name,const char *opa_name,atm_struct &atm,const double Xsol, const double Ysol, const double Zsol,
 //		const AbundanceMap& abundance_map) {
 
-int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
+int atm_calc(const composition_map &comp,const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm,const double Xsol, const double Ysol, const double Zsol) {
 
 	int error=0;
 
 	if(!strcmp(atm.name,"onelayer")) {
 		//error=atm_onelayer(X,Z,g,Teff,eos_name,opa_name,atm,Xsol,Ysol,Zsol,abundance_map);
-		error=atm_onelayer(X,Z,g,Teff,eos_name,opa_name,atm,Xsol,Ysol,Zsol);
+		error=atm_onelayer(comp,X,Z,g,Teff,eos_name,opa_name,atm,Xsol,Ysol,Zsol);
     } else {
         ester_err("Unknown atmosphere type: %s", atm.name);
     	return 1;

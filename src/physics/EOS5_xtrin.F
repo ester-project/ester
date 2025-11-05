@@ -16,6 +16,11 @@ c                  in esac.
       if (fixedTP .eq. 'yes' ) then
       r=rhoofp (x,ztab,t6,p,irad)  ! calculate density (r) for fixed P.
       endif
+      
+      if (r.eq.-9e99) then
+      print*,r
+      endif
+      
       if (r.eq.-9e99) then
       return
       endif
@@ -24,6 +29,8 @@ c                                            if fixedTP='yes'
 	  if (eos(1).eq.-9e99) then
 	  r=-9e99
 	  endif
+	  
+c      print*,ztab
       end
 
 c*************************************************************************
@@ -756,6 +763,8 @@ c--------------------------------------------------------------------
       pr=0.0
       if(irad .eq. 1) pr=4./3.*rat*t6**4   ! Mb 
       pnr=p-pr
+      
+c      print*,p,pr,pnr
 
       if (itime .ne. 12345678) then
       call esac (0.5,ztab,1.,0.001,1,0)
@@ -795,9 +804,28 @@ c--------------------------------------------------------------------
       pmin=xz(mlo,1,klo,1)*t6*rho(1)
       if((pnr .gt. 1.25*pmax) .or. (pnr .lt. pmin)) then
 c      write (*,'(" The requested pressure-temperature not in table")')
+      write (*,'(" The requested pressure not in table")')
 c     stop
-c      write (*,'("pnr, pmax,pmin=",3e14.4)') pnr,pmax,pmin
+      write (*,'("pnr, pmax,pmin=",3e14.4)') pnr,pmax,pmin
       endif
+
+ccc 
+
+	  t6min = minval(t6list(1,:))
+	  t6max = maxval(t6list(1,:))
+
+c	  print*,t6,t6min,t6max,klo,nr,nt
+
+c	  t6min_high_rho = minval(t6list(nr,:),MASK = t6list(nr,:) .GT.0)
+c      t6max_high_rho = maxval(t6list(nr,:),MASK = t6list(nr,:) .GT.0)
+c	  print*,t6min_high_rho,t6max_high_rho
+	  
+	  if ((t6 .gt. t6max) .or. (t6 .lt. t6min)) then
+			write (*,*) 'Error: Input temperature t6 is out of EOS range.'
+			write (*,*) 't6 =', t6, ' Valid range: ', t6min, ' to ', t6max
+	  endif
+	  
+ccc
       
       rhog1=rho(nra(klo))*pnr/pmax
       call esac (x,ztab,t6,rhog1,1,0)

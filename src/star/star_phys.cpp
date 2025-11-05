@@ -17,7 +17,10 @@ void star2d::opacity() {
 	//error=opa_calc(comp.X(),Z0,Tc*T,rhoc*rho,opa,comp.Xsol(),comp.Ysol(),comp.Zsol(),AbundanceMap()); // this is the cpp file I think, I don't think I can just do comp.Zsol() can I? try! 
 	//error=opa_calc(comp.X(),Z0,Tc*T,rhoc*rho,opa,comp.Xsol(),comp.Ysol(),comp.Zsol(),abundance_map); // this is the cpp file I think, I don't think
 
-	error=opa_calc(comp.X(),Z0,Tc*T,rhoc*rho,opa,comp.Xsol(),comp.Ysol(),comp.Zsol());
+	//error=opa_calc(comp.X(),Z0,Tc*T,rhoc*rho,opa,comp.Xsol(),comp.Ysol(),comp.Zsol());
+	printf("star_phys: before error = opa_calc\n");
+	error=opa_calc(comp,comp.X(),Z0,Tc*T,rhoc*rho,opa,comp.Xsol(),comp.Ysol(),comp.Zsol());
+
 	if(error) exit(1);
 
 }
@@ -65,7 +68,7 @@ void star2d::atmosphere() {
 
 	//error=atm_calc(comp.X(),Z0,gsup(),Teff(),eos.name,opa.name,atm,comp.Xsol(),comp.Ysol(),comp.Zsol(),AbundanceMap());
 	//error=atm_calc(comp.X(),Z0,gsup(),Teff(),eos.name,opa.name,atm,comp.Xsol(),comp.Ysol(),comp.Zsol(),abundance_map);
-	error=atm_calc(comp.X(),Z0,gsup(),Teff(),eos.name,opa.name,atm,comp.Xsol(),comp.Ysol(),comp.Zsol());
+	error=atm_calc(comp,comp.X(),Z0,gsup(),Teff(),eos.name,opa.name,atm,comp.Xsol(),comp.Ysol(),comp.Zsol());
 	
 	if(error) exit(1);
 

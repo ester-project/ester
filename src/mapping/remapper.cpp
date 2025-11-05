@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "mapping.h"
 #include <stdlib.h>
+#include <iostream>
 
 // Define the remapper class
 remapper::remapper(const mapping &map_in) {
@@ -114,6 +115,9 @@ mapping remapper::get_map() {
 // parity == equatorial symmetry  (00, 01, 10, 11)
 
 matrix_map remapper::interp(const matrix_map &y,int parity) {
+
+//std::cout << "remapper::interp(const matrix_map &y,int parity)" << std::endl;
+
 // for the class of matrix_map objects (only the chemical at the moment)
 
 	matrix_map::const_iterator it;
@@ -125,6 +129,9 @@ matrix_map remapper::interp(const matrix_map &y,int parity) {
 }
 
 matrix remapper::interp(const matrix &y,int parity) {
+
+//std::cout << "remapper::interp(const matrix &y,int parity)" << std::endl;
+
 // same as above but for matrices
 
 	if (!remapped) remap();

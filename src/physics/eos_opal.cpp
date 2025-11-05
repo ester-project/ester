@@ -73,10 +73,12 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
         if (fabs(rhoi - (-9e99)) < 1e-10) {
             ester_err(
                     "Values outside OPAL eos table:\n"
+                    "  i = %i\n"
                     "  X = %e\n"
                     "  Z = %e\n"
                     "  T = %e\n"
-                    "  p = %e", Xi, Zi, t6i, p_mbi);
+                    "  p = %e\n"
+                    "  rho = %e", i,Xi, Zi, t6i, p_mbi,rhoi);
         }
     }
     if(exist(rho==-9e99)) {

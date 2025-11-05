@@ -8,7 +8,7 @@ c    specific Z of interest.  The only input required is the value of
 c    Z.  The output file is named EOS5_data.  The EOS5_data file is
 c    read by the interpolation code EOS5_xtrin.f. A new EOS5_data file
 c    is needed everytime Z is changed.
-
+	  
       parameter (nr=170,ntt=200)
       parameter (nruse=169)
       real moles,molesz
@@ -32,6 +32,8 @@ c    is needed everytime Z is changed.
      x ,chitu(nr,ntt),gam1u(nr,ntt),gam2pu(nr,ntt),gam3pu(nr,ntt)
      x ,icycuseu(nr),enu(nr,ntt),toffu(nr),doffu(nr)
      x ,amu_Mu(nr,ntt),alogN_eu(nr,ntt)
+     
+      !print*,zz
 		
 	  rootdir=ESTER_DATADIR
       lenrootdir=len(rootdir)

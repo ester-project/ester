@@ -18,7 +18,7 @@
 #define LOG_PRES "log_T"
 //#define PRES p
 //#define LOG_PRES "log_p"
-#define T_CONSTANT_DOMAINS
+#define T_CONSTANT_DOMAINS // on when PRES p? 
 //#define PHOTOSPHERE 1
 //#define KINEMATIC_VISC
 
@@ -61,6 +61,9 @@ class star2d {
         double min_core_size;
         std::vector<int> domain_type;
         //std::string mixture_name; 
+        std::string keyword;
+        bool collect_data=false;
+        
         
 #define RADIATIVE 0
 #define CORE 1

@@ -3,6 +3,7 @@
 #endif
 #include "star.h"
 #include "matplotlib.h"
+#include <iostream>
 
 extern "C" {
 #include <stdlib.h>
@@ -15,6 +16,9 @@ extern "C" {
 // domain.
 
 void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
+
+	std::cout << "star2d::remap, " << ndom_in << npts_in << nth_in << nex_in << std::endl;
+
     remapper red(map);  // declaration object of class remapper
 
     red.set_ndomains(ndom_in);

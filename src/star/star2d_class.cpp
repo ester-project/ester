@@ -726,6 +726,8 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 
 void star2d::interp(remapper *red) {
 
+    //std::cout << "star2d::interp" << std::endl;
+
     p=red->interp(p);
 
     phi=red->interp(phi);
