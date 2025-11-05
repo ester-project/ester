@@ -7,15 +7,16 @@
 int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,nuc_struct &nuc) {
 
 	matrix T9;
-	double C,N,XCNO;
+	double O,C,N,XCNO;
 	double Z=comp.Z()(-1);
 	matrix X(comp.X());
 	
 	T9=T/1e9;
 	C=0.173285;
 	N=0.053152;
-	// O=0.482273;
-	XCNO=Z*(C+N);
+	O=0.482273;
+	XCNO=Z*(O+N);
+	//XCNO=Z*(C+N);
 
 // nuc.pp from the CESAM code (cited in Espinosa Lara Rieutord 2007)
 // Actually used in routine pp1.f of CESAM code citing GONG
