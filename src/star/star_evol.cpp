@@ -218,22 +218,6 @@ double star_evol::update_solution(solver *op, double &h, matrix_map& error_map, 
 	comp["He4"] -= h*dX;
 	comp["H"] += h*dX;
 
-	if (comp.Z()(0,0)<2.5e-3){
-
-		//printf(", dXN_before_max = %e, -comp['N14']/h = %e , h = %e ",dXN(0,0),-comp["N14"](0,0)/h,h);
-		//dXN =max(dXN, -comp["N14"]/h); // this part doesn't seem to be anywhere else in the code. Now why is that. 
-		//printf(", dXN_after_max = %e ",dXN(0,0));		
-		printf(", nit = %i",nit);
-		
-		if(dXN(0,0) <0){ // dXN can't be negative, or can it because of mixing? 
-		dXN=dXN*0;
-		}
-		
-		if(nit >1&&dXN(0,0) >0) {
-		printf(" if statment condition called ");
-			dXN =dXN*0;
-		}
-	}
 
 	// The error of the solution is only based on the error from the hydrogen-mass fraction profile. 
 	// We assume all O16 that reacted is converted into N14, as the intermediate reactions are fast.
@@ -255,6 +239,24 @@ double star_evol::update_solution(solver *op, double &h, matrix_map& error_map, 
 	// comp["O16"] -= h*dXN*AMASS["O16"]/AMASS["N14"];
 	// comp["N14"] += h*dXN;
 
+	if (comp.Z()(0,0)<2.5e-3){
+
+		//printf(", dXN_before_max = %e, -comp['N14']/h = %e , h = %e ",dXN(0,0),-comp["N14"](0,0)/h,h);
+		//dXN =max(dXN, -comp["N14"]/h); // this part doesn't seem to be anywhere else in the code. Now why is that. 
+		//printf(", dXN_after_max = %e ",dXN(0,0));		
+		printf(", nit = %i",nit);
+		
+		if(dXN(0,0) <0){ // dXN can't be negative, or can it because of mixing? 
+		dXN=dXN*0;
+		}
+		
+		if(nit >1&&dXN(0,0) >0) {
+		printf(" if statment condition called ");
+			dXN =dXN*0;
+		}
+	}
+	
+	printf(", dXN = %.6e, N14 = %.6e", dXN(0,0), comp["O16"](0,0)*AMASS["N14"]/AMASS["O16"]);
 
 	comp["N14"] += h*dXN;
 	comp["O16"] += h2*dXO;
