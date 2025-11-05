@@ -154,8 +154,7 @@ add_compile_definitions(ESTER_DATADIR="${CMAKE_INSTALL_PREFIX}/share")
 add_compile_definitions(PACKAGE_VERSION="${PROJECT_VERSION}")
 
 #add_library(ester SHARED # was previous
-#add_library(ester STATIC
-add_library(ester SHARED
+add_library(ester STATIC
     src/global/global.cpp
     src/graphics/matplotlib.cpp
     src/solver/RKF_solver.cpp
