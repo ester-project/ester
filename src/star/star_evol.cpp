@@ -203,7 +203,7 @@ void star_evol::write_eqs(solver *op) {
 #endif
 }
 
-double star_evol::update_solution(solver *op, double &h, matrix_map& error_map, int nit) {
+/*double star_evol::update_solution(solver *op, double &h, matrix_map& error_map, int nit) {
 	double dmax=config.newton_dmax;
 
 	matrix dX = op->get_var("X");
@@ -342,6 +342,55 @@ double star_evol::update_solution(solver *op, double &h, matrix_map& error_map, 
 	double k_cal = 1.277873e-03; //10Msun Z=0.016
 
 	deltaM =  k_cal*M_dot*M_SUN*delta*1e6;
+
+// Rem: the conservationn of total mass is insured by the mass conservation equation
+// as ang. Mom.
+	M *= exp(h*op->get_var("log_M")(0));
+
+	return err;
+}*/
+
+double star_evol::update_solution(solver *op, double &h, matrix_map& error_map, int nit) {
+	double dmax=config.newton_dmax;
+
+	matrix dX = op->get_var("X");
+	while(exist(abs(h*dX)>dmax)) h /= 2;
+	matrix dXN = op->get_var("XN");
+
+	double err = star2d::update_solution(op, h, error_map, nit); // call of star2d part
+
+	dX = max(dX, -comp["H"]/h);
+	double err2 = max(abs(dX));
+	err=err2>err?err2:err;
+	comp["He4"] -= h*dX;
+	comp["H"] += h*dX;
+
+	// The error of the solution is only based on the error from the hydrogen-mass fraction profile. 
+	// We assume all O16 that reacted is converted into N14, as the intermediate reactions are fast.
+	printf(", dXN = %e, N14 = %e", dXN(0,0), comp["O16"](0,0)*AMASS["N14"]/AMASS["O16"]);
+	dXN = min(dXN, comp["O16"]*AMASS["N14"]/AMASS["O16"]);
+	
+	if (comp.Z()(0,0)<2.5e-3){
+
+		//printf(", dXN_before_max = %e, -comp['N14']/h = %e , h = %e ",dXN(0,0),-comp["N14"](0,0)/h,h);
+		//dXN =max(dXN, -comp["N14"]/h); // this part doesn't seem to be anywhere else in the code. Now why is that. 
+		//printf(", dXN_after_max = %e ",dXN(0,0));		
+		printf(", nit = %i",nit);
+		
+		if(dXN(0,0) <0){ // dXN can't be negative, or can it because of mixing? 
+		dXN=dXN*0;
+		}
+		
+		if(nit >1&&dXN(0,0) >0) {
+		printf(" if statment condition called ");
+			dXN =dXN*0;
+		}
+	}
+	
+	printf(", dXN = %.6e, N14 = %.6e", dXN(0,0), comp["O16"](0,0)*AMASS["N14"]/AMASS["O16"]);
+	
+	comp["O16"] -= h*dXN*AMASS["O16"]/AMASS["N14"];
+	comp["N14"] += h*dXN;	
 
 // Rem: the conservationn of total mass is insured by the mass conservation equation
 // as ang. Mom.
