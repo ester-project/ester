@@ -10,7 +10,8 @@ bool isHDF5Name(const char *fileName) {
     }
 
     const char *ext;
-    if((ext = strstr(fileName, ".")) == NULL) {
+    //if((ext = strstr(fileName, ".")) == NULL) {
+    if((ext = strrchr(fileName, '.')) == NULL) {
         return false;
     }
     if (strcasecmp(ext, ".hdf5") == 0 || strcasecmp(ext, ".h5") == 0) {
