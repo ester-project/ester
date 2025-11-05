@@ -1,0 +1,98 @@
+### header ###
+
+from MESA 
+
+Asplund, Grevesse, Sauval, and Scott 2009 abundances
+Annu. Rev. Astron. Astrophys. 2009. 47:481–522
+
+Column names:
+
+element_name,Log_abund (photosphere unless otherwise noted)
+
+### end of header ###
+H,12
+He,10.99
+Li,-33
+Be,-33
+B ,-33
+C ,-33
+N ,-33
+O ,-33
+F ,-33
+Ne,-33
+Na,-33
+Mg,-33
+Al,-33
+Si,-33
+P ,-33
+S ,-33
+Cl,-33
+Ar,-33
+K ,-33
+Ca,-33
+Sc,-33
+Ti,-33
+V ,-33
+Cr,-33
+Mn,-33
+Fe,-33
+Co,-33
+Ni,-33
+Cu,-33
+Zn,-33
+Ga,-33
+Ge,-33
+As,-33
+Se,-33
+Br,-33
+Kr,-33
+Rb,-33
+Sr,-33
+Y ,-33
+Zr,-33
+Nb,-33
+Mo,-33
+Ru,-33
+Rh,-33
+Pd,-33
+Ag,-33
+Cd,-33
+In,-33
+Sn,-33
+Sb,-33
+Te,-33
+I ,-33
+Xe,-33
+Cs,-33
+Ba,-33
+La,-33
+Ce,-33
+Pr,-33
+Nd,-33
+Sm,-33
+Eu,-33
+Gd,-33
+Tb,-33
+Dy,-33
+Ho,-33
+Er,-33
+Tm,-33
+Yb,-33
+Lu,-33
+Hf,-33
+Ta,-33
+W ,-33
+Re,-33
+Os,-33
+Ir,-33
+Pt,-33
+Au,-33
+Hg,-33
+Tl,-33
+Pb,-33
+Bi,-33
+Th,-33
+U,-33
+
+
+

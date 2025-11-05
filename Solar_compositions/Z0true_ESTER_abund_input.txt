@@ -1,0 +1,93 @@
+### header ###
+
+from anders & grevesse 1989
+
+Column names:
+
+element_name,Log_abund (photosphere unless otherwise noted)
+
+### end of header ###
+H,12
+He,10.99
+Li,-99
+Be,-99
+B ,-99
+C ,-99
+N ,-99
+O ,-99
+F ,-99
+Ne,-99
+Na,-99
+Mg,-99
+Al,-99
+Si,-99
+P ,-99
+S ,-99
+Cl,-99
+Ar,-99
+K ,-99
+Ca,-99
+Sc,-99
+Ti,-99
+V ,-99
+Cr,-99
+Mn,-99
+Fe,-99
+Co,-99
+Ni,-99
+Cu,-99
+Zn,-99
+Ga,-99
+Ge,-99
+As,-99
+Se,-99
+Br,-99
+Kr,-99
+Rb,-99
+Sr,-99
+Y ,-99
+Zr,-99
+Nb,-99
+Mo,-99
+Ru,-99
+Rh,-99
+Pd,-99
+Ag,-99
+Cd,-99
+In,-99
+Sn,-99
+Sb,-99
+Te,-99
+I ,-99
+Xe,-99
+Cs,-99
+Ba,-99
+La,-99
+Ce,-99
+Pr,-99
+Nd,-99
+Sm,-99
+Eu,-99
+Gd,-99
+Tb,-99
+Dy,-99
+Ho,-99
+Er,-99
+Tm,-99
+Yb,-99
+Lu,-99
+Hf,-99
+Ta,-99
+W ,-99
+Re,-99
+Os,-99
+Ir,-99
+Pt,-99
+Au,-99
+Hg,-99
+Tl,-99
+Pb,-99
+Bi,-99
+Th,-99
+U,-99
+
