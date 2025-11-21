@@ -417,7 +417,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
 
     if (read_attr<H5std_string&>(star, "nuc.name", buf)) {
         ester_warn("Could not read 'nuc.name' from file `%s'", input_file);
-        buf = H5std_string("simple");
+        buf = H5std_string("simple_CN");
     }
     strncpy(nuc.name, buf.c_str(), sizeof(nuc.name));
 
