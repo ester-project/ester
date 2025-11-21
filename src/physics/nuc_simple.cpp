@@ -28,7 +28,7 @@ int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,nuc
                 XCNO = Z * (C + N);
         }
         else {
-          std::cout << nuc.name << " unknown. I take simple_CN" << std::endl;
+          //std::cout << nuc.name << " unknown. I take simple_CN" << std::endl;
           XCNO = Z * (C + N); 
         }
 

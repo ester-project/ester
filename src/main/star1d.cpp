@@ -132,6 +132,10 @@ int main(int argc,char *argv[]) {
     }
 
     if(config.verbose) {
+        printf("nuclear : %s\n",A.nuc.name);
+        if(!strcmp(A.nuc.name,"simple")) {
+        std::cout << A.nuc.name << " is replace by simple_CN" << std::endl;
+        }
         printf("Mass=%3.3f Msun  Radius=%3.3f Rsun  Luminosity=%3.3f Lsun  Teff=%1.1f K\n",
                 A.M/M_SUN,A.R/R_SUN,A.luminosity()/L_SUN,A.Teff()(0));
         printf("X=%3.3f (Xc/X=%3.3f) Z=%3.3f\n",A.X0,A.Xc,A.Z0);
