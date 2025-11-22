@@ -16,7 +16,7 @@ pc=3e16
 
 opa=opal
 eos=opal
-nuc=simple
+nuc=simple_CN
 atm=simple
 
 core_convec=1			# Deactivate core convection with core_convec=0

@@ -20,7 +20,7 @@ pc=5e16
 
 opa=opal
 eos=opal
-nuc=simple
+nuc=simple_CN
 atm=simple
 
 Omega_bk=0
