@@ -3,9 +3,10 @@
 ndomains=12
 npts=30
 
+mixture=GN93
 M=5
 X=0.7
-Z=0.02
+Z=0
 
 Xc=1
 surff=1
@@ -15,7 +16,7 @@ pc=3e16
 
 opa=opal
 eos=opal
-nuc=simple
+nuc=simple_CN
 atm=simple
 
 core_convec=1			# Deactivate core convection with core_convec=0

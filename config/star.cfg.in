@@ -2,7 +2,7 @@
 
 maxit=200           # Maximum number of iterations
 minit=1             # Minimum number of iterations
-tol=1e-8            # Relative tolerance
+tol=1e-8            # Relative tolerance, default 1e-8
 newton_dmax=0.5     # Maximum relative change per iteration allowed
 
 output_file=star.@extension@

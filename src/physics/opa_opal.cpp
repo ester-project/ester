@@ -42,7 +42,12 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	double dlogkt,dlogkr;
 
 	for(i=0;i<N;i++) {
-		if(X(i) > 1) printf("  X   = %e, %i, %i, %e, %e\n,", X(i), i, N, min(X), max(X));
+		if(X(i) > 1) {
+		
+			printf("  X   = %e, %i, %i, %e, %e\n,", X(i), i, N, min(X), max(X));
+			//printf("X > 1, setting to 1");
+			//X(i) = 1e0; --> change const matrix to work - MG 
+		}
 		opa.k(i)=opa_opal_i(X(i),Z,T(i),rho(i),dlogkt,dlogkr);
 		if(opa.k(i)==-99) error=1;
 		dlnkT(i)=dlogkt;

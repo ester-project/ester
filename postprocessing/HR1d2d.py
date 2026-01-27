@@ -43,9 +43,8 @@ for filename in lis:
 		E=E+L*(age[i]-age[i-1])*MYRS
 		#print 'Energy emitted (ergs) = %.3e'%E
 	Esun=E/C_LIGHT**2/M_SUN
-	print filename[lpath:],'Age = %.3f'%a.age,' Xc = %.2e'%a.X[0,0],' Tc = %.3e'%a.Tc,\
-         ' rho_c = %.2f'%a.rhoc,'Lum = %.2f'%lu #,'E emitted = %.3e'%Esun
-        i=i+1
+	print(filename[lpath:],'Age = %.3f'%a.age,' Xc = %.2e'%a.X[0,0],' Tc = %.3e'%a.Tc,' rho_c = %.2f'%a.rhoc,'Lum = %.2f'%lu) #,'E emitted = %.3e'%Esun)
+    i=i+1
 i1d=i
 print 'nombre de modeles 1D =',i1d
 

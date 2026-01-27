@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <iomanip>
 
 star1d::star1d() {
 }
@@ -32,6 +33,10 @@ void star1d::write_tag(OUTFILE *fp) const {
 
 std::string star1d::get_tag() const {
     return std::string("star1d");
+}
+
+double star1d::roundToPrecision(double value, int decimalPlaces){
+return star2d::roundToPrecision(value,decimalPlaces);
 }
 
 bool star1d::check_tag(const char *tag) const {
@@ -188,6 +193,14 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		}
 		else {
 			while((k=fp.get(arg,val))) {
+             	if (strcmp(arg, "Z") == 0){
+					    				
+					initial_composition(0.7,0.02); // just so Zmix is defined in the global map 
+					
+					std::string strVal = std::to_string(roundToPrecision(global_abundance_map.Zmix, 9)); // converting to char* for check_arg()
+					val = strdup(strVal.c_str());             		
+             	}
+
 				if((i=check_arg(arg,val,&change_grid))) {
 					printf("Syntax error in parameters file %s, line %d\n",param_file,k);
 					if(i==2) {
@@ -227,9 +240,41 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 			fp.close();
 		}
 	}
-	
+
 	cmd.open(argc,argv);
 	while(int err_code=cmd.get(arg,val)) {
+				
+             	if (strcmp(arg, "mixture") == 0 && age == 0){
+				
+				if (strcmp(mixture.name,val)==0) {
+    				printf("[INFO] Mixture '%s' matches input argument.\n", val);
+					
+				} else {
+				printf("mixture in cmd argument is different from default/input file\n");
+				user_specified_mix = true;
+				}
+
+             	}
+			 
+			 	if (strcmp(arg, "Z") == 0 && age == 0){
+
+					if (fabs(atof(val) - Z0) > (1e-12 + 1e-12 * Z0)) {
+						// if the user has kept the argument Z input same as before
+						// this avoids re-doing comp unnecessarily
+						user_specified_Z = true;
+					}
+					
+				}
+
+			 	if (strcmp(arg, "X") == 0 && age == 0){
+
+					if (fabs(atof(val) - X0) > (1e-12 + 1e-12 *X0)) {
+						// if the user has kept the argument X input same as before
+						// this avoids re-doing comp unnecessarily
+						user_specified_X = true;
+					}
+				}
+
 		if(err_code==-1) exit(1);
 		err_code=check_arg(arg,val,&change_grid);
 		if(err_code==2) {
@@ -243,6 +288,22 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		cmd.ack(arg,val);
 	}
 	cmd.close();
+
+	if (user_specified_mix && age == 0) { // i.e. mixture has changed
+		global_abundance_map.mixture_name = mixture.name; // update the global mixture name
+	}
+	if ((user_specified_X + user_specified_Z + user_specified_mix) > 0 && age == 0 && loaded_from_file==1) {
+
+		printf("X,Z, or mixture has changed to ZAMS file, updating comp...\n");
+
+		(void)parse_composition_data();  // updates global_abundance_map.comp_data
+    	init_comp();               // rebuild stratified + cno core composition
+
+	} else if ((user_specified_X + user_specified_Z + user_specified_mix) > 0 && age != 0 && loaded_from_file==1) {
+
+		printf("mixture, X, or Z were given in command line that is different from *evolved* input model\n");
+		printf("this option is not allowed, using input model's parameters\n");
+	}
 	
 	if((change_grid&1)&&!(change_grid&2)) {
 		fprintf(stderr,"Must specify number of points per domain (npts)\n");
@@ -271,7 +332,18 @@ int star1d::init(const char *input_file,const char *param_file,int argc,char *ar
 		phiex=zeros(map.nex,map.nt);
 	}
 	
-	init_comp();
+	//init_comp();
+	//fill();
+
+	if (!loaded_from_file) {
+		(void)parse_composition_data();  // updates/creates global_abundance_map.comp_data
+		if (!user_specified_Z && user_specified_mix){
+			printf("mixture is given but Z is not on cmd line!\n");
+		Z0 = roundToPrecision(global_abundance_map.Zmix, 9); 
+		}
+		init_comp();
+	}
+
 	fill();
 
 	return 0;
@@ -336,6 +408,7 @@ void star1d::dump_info() {
 	
 	printf("Additional parameters:\n\n");
 	printf("\tOpacity = %s\n",opa.name);
+    printf("\tAbundance Mixture = %s\n", mixture.name);    
 	printf("\tEquation of state = %s\n",eos.name);
 	printf("\tNuclear reactions = %s\n",nuc.name);
 	printf("\tAtmosphere = %s\n",atm.name);

@@ -119,10 +119,19 @@ int main(int argc,char *argv[]) {
     }
 
     if(config.verbose) {
+
+        printf("nuclear : %s\n",A.nuc.name);
+        if(!strcmp(A.nuc.name,"simple")) {
+        std::cout << A.nuc.name << " is replaced by simple_CN" << std::endl;
+        }
+
         printf("Mass=%3.3f Msun  Radius=%3.3f Rsun  Luminosity=%3.3f Lsun  Teff=%1.1f K\n",
                 A.M/M_SUN,A.R/R_SUN,A.luminosity()/L_SUN,A.Teff()(0));
-        printf("X=%3.3f (Xc/X=%3.3f) Z=%3.3f\n",A.X0,A.Xc,A.Z0);
+        printf("X=%3.3f (Xc/X=%3.3f) Z=%10.6f\n",A.X0,A.Xc,A.Z0);
         printf("rhoc=%e Tc=%e pc=%e\n",A.rhoc,A.Tc,A.pc);
+        //printf("(local) mixture=%s, Zmix=%e\n",A.mixture.name,A.comp["Zsol"](0));
+        //printf("(global) mixture=%s, Zmix=%e\n",global_abundance_map.mixture_name.c_str(),global_abundance_map.Zmix); // these should match - MG 
+        printf("mixture=%s, Zmix=%e\n",A.mixture.name,A.comp["Zsol"](0));
 	printf("Virial test: %e Energy test: %e\n",A.virial(),A.energy_test());
 
         if(A.conv) printf("r_cz=%3.3f Rsun\n",*(A.map.gl.xif+A.conv)*A.R/R_SUN);
@@ -131,7 +140,7 @@ int main(int argc,char *argv[]) {
     A.write(config.output_file,config.output_mode);
 
     // if(config.verbose) {
-    //     delete fig;
+    //     delete fig; 5
     // }
 
     t.stop();

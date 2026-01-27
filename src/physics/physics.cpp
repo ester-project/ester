@@ -53,7 +53,7 @@ int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
 
 	int error=0;
 
-	if(!strcmp(nuc.name,"simple")) {
+	if(!strcmp(nuc.name,"simple_ON") || !strcmp(nuc.name,"simple_CN") || !strcmp(nuc.name,"simple")) {
 		error=nuc_simple(X,T,rho,nuc);
 	} else if(!strcmp(nuc.name,"cesam")) {
 		error=nuc_cesam(X,T,rho,nuc);

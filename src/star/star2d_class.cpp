@@ -10,6 +10,10 @@
 #include <H5Cpp.h>
 #endif
 #include "matplotlib.h"
+#include "physics.h"
+#include <iostream>
+#include <ostream>
+#include <iomanip>
 
 star2d::star2d() : nr(map.gl.N), nth(map.leg.npts), nex(map.ex.gl.N),
     ndomains(map.gl.ndomains), r(map.r), z(map.z), th(map.th), Dt(map.Dt),
@@ -63,6 +67,7 @@ void star2d::copy(const star2d &A) {
     atm=A.atm;
     config=A.config;
     units=A.units;
+    mixture=A.mixture;
 
     R=A.R;M=A.M;
     Tc=A.Tc;pc=A.pc;rhoc=A.rhoc;
@@ -183,6 +188,9 @@ void star2d::hdf5_write(const char *filename) const {
     strtype = H5::StrType(H5::PredType::C_S1, strlen(opa.name)+1);
     write_attr(star, "opa.name", strtype, H5std_string(opa.name));
 
+    strtype = H5::StrType(H5::PredType::C_S1, strlen(mixture.name)+1);
+    write_attr(star, "mixture.name", strtype, H5std_string(mixture.name));
+
     strtype = H5::StrType(H5::PredType::C_S1, strlen(eos.name)+1);
     write_attr(star, "eos.name", strtype, eos.name);
 
@@ -259,6 +267,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("pc",&pc);
     fp.write("opa.name",opa.name,strlen(opa.name)+1);
     fp.write("eos.name",eos.name,strlen(eos.name)+1);
+    fp.write("mixture.name",mixture.name,strlen(mixture.name)+1);
     fp.write("nuc.name",nuc.name,strlen(nuc.name)+1);
     fp.write("atm.name",atm.name,strlen(atm.name)+1);
     fp.write("Omega",&Omega);
@@ -287,7 +296,7 @@ void star2d::write(const char *output_file, char mode) const {
     fp.write("vr",&vr);
     fp.write("vt", &vt);
     //fp.write("diff_v", &diff_v); //JM
-    fp.write("comp",(matrix_map *)&comp);
+    fp.write("comp",(matrix_map *)&comp); // the whole of comp is written? - MG
 
     write_vars(&fp);
 
@@ -329,7 +338,11 @@ int read_field(H5::Group grp, const char *name, matrix &field) {
 #endif
 
 int star2d::hdf5_read(const char *input_file, int dim) {
+
+    loaded_from_file = true; // This ensures init_comp() won’t overwrite an already-evolved composition when reading .h5 files.
+
 #ifdef USE_HDF5
+
     H5::Exception::dontPrint();
 
     H5::H5File file;
@@ -435,6 +448,14 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     }
     strncpy(opa.name, buf.c_str(), sizeof(opa.name));
 
+    if (read_attr<H5std_string&>(star, "mixture.name", buf)) {
+        ester_warn("Could not read 'mixture.name' from file `%s'", input_file);
+        ester_warn("I use GN93 as I assume an old file");
+        buf = H5std_string("GN93");
+        //buf = H5std_string("mixture");
+    }
+    strncpy(mixture.name, buf.c_str(), sizeof(mixture.name));
+
     if (read_attr<H5std_string&>(star, "eos.name", buf)) {
         ester_warn("Could not read 'eos.name' from file `%s'", input_file);
         buf = H5std_string("opal");
@@ -443,7 +464,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
 
     if (read_attr<H5std_string&>(star, "nuc.name", buf)) {
         ester_warn("Could not read 'nuc.name' from file `%s'", input_file);
-        buf = H5std_string("simple");
+        buf = H5std_string("simple_CN");
     }
     strncpy(nuc.name, buf.c_str(), sizeof(nuc.name));
 
@@ -542,8 +563,23 @@ int star2d::hdf5_read(const char *input_file, int dim) {
 //        ester_warn("Could not read field 'G' from file `%s'", input_file);
 //        G = zeros(nr, nth);
 //    }
+    // we make available the mixture name every where 
+    global_abundance_map.mixture_name = mixture.name; // set here first since in evo branch we call initial composition
 
-    comp=initial_composition(X0,Z0)*ones(nr,nth);
+    // Parse composition only once
+    //CompositionData initial_comp = parse_composition_data();
+
+    // Outer region: standard composition
+    //comp = update_initial_composition(initial_comp, X0, Z0) * ones(nr, nth);
+
+    // creating comp object, parsing and update is done internally
+    comp = initial_composition(X0, Z0) * ones(nr, nth);
+
+    // Compute core-modified composition
+    //double_map core_comp = initial_composition_cno_cycle_core(initial_comp, X0, Z0); // can't we edit the already existing comp?
+    double_map core_comp = initial_composition_cno_cycle_core(global_abundance_map.comp_data, X0, Z0); // running comp above filled up comp_data
+
+    //comp=initial_composition(X0,Z0)*ones(nr,nth);
 
     matrix X, Z;
     if (read_field(star, "X", X)) {
@@ -562,9 +598,14 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     //	}
     //}
 
+    //int nc = 0;
+    //for (int n = 0; n < conv; n++) nc += map.npts[n];
+    //comp.setblock(0, nc-1, 0, -1, initial_composition_cno_cycle_core(X0,Z0)*ones(nc,nth));
+
+    // Fill core region with the modified abundances
     int nc = 0;
     for (int n = 0; n < conv; n++) nc += map.npts[n];
-    comp.setblock(0, nc-1, 0, -1, initial_composition_cno_cycle_core(X0,Z0)*ones(nc,nth));
+    comp.setblock(0, nc-1, 0, -1, core_comp * ones(nc, nth));
 
     if (read_field(star, "X", comp["H"])) {
         ester_warn("Could not read field 'X' from file `%s'", input_file);
@@ -577,9 +618,39 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     if (read_field(star, "O16", comp["O16"])) {
     	ester_warn("Could not read field 'O16' from file `%s'", input_file);
     }
-    comp["He4"] = 1 - comp["H"] - comp["He3"] - Z;
+    
+    comp["He4"] = 1 - comp["H"] - comp["He3"] - Z; 
+    
+    // MG: composition.cpp now directly calculates He3 and He4 separately from abudnance file
+    // however He3 isn't tracked, thus for evolved files, wouldn't have changed
+    
+    /*printf("\n=== DEBUG: comp values BEFORE fill ===\n");
+    printf("\n=== DEBUG: comp values (surface vs core) ===\n");
+    for (auto const& kv : comp) {
+        const std::string& key = kv.first;
+        const matrix& m = kv.second;
 
-    fill();
+        printf("key: %-6s -> core: %.6e, surface: %.6e\n",
+            key.c_str(),
+            m(0, 0),                 // core
+            m(m.nrows() - 1, 0));    // surface
+    }
+    printf("=== END DEBUG ===\n\n");*/
+
+    fill(); // MG: needed 23/8/2024 ??
+
+    /*printf("\n=== DEBUG: comp values AFTER fill ===\n");
+    printf("\n=== DEBUG: comp values (surface vs core) ===\n");
+    for (auto const& kv : comp) {
+        const std::string& key = kv.first;
+        const matrix& m = kv.second;
+
+        printf("key: %-6s -> core: %.6e, surface: %.6e\n",
+            key.c_str(),
+            m(0, 0),                 // core
+            m(m.nrows() - 1, 0));    // surface
+    }
+    printf("=== END DEBUG ===\n\n");*/
 
     return 0;
 #else
@@ -594,6 +665,7 @@ int star2d::read(const char *input_file, int dim) {
 
     // if input file ends with '.hdf5': read in hdf5 format
     if (isHDF5Name(input_file)) {
+        loaded_from_file = true; // covers the corner case where read() is called with an HDF5 file but the wrapper goes through read() instead of hdf5_read() directly.
         return hdf5_read(input_file, dim);
     }
 
@@ -680,6 +752,7 @@ int star2d::read(const char *input_file, int dim) {
     fp.read("eos.name",eos.name);
     fp.read("nuc.name",nuc.name);
     if(fp.read("atm.name",atm.name)) strcpy(atm.name,"simple");
+    if (fp.read("mixture.name", mixture.name)) strcpy(mixture.name, "GN93");
     if(fp.read("Omega",&Omega)) Omega=0;
     if(fp.read("Omega_bk",&Omega_bk)) Omega_bk=0;
     if(fp.read("reynolds_v",&reynolds_v)) reynolds_v = 1e9;
@@ -711,8 +784,12 @@ int star2d::read(const char *input_file, int dim) {
     }
     if(fp.read("vr",&vr)) vr=zeros(nr,nth);
     if(fp.read("vt", &vt)) vt = zeros(nr, nth);
-    if(fp.read("comp",(matrix_map *)&comp)) init_comp();
-
+    //if(fp.read("comp",(matrix_map *)&comp)) init_comp();
+    if (fp.read("comp", (matrix_map *)&comp)) {
+        global_abundance_map.mixture_name = mixture.name;
+        (void)parse_composition_data();  // runs function, doesn't save return
+        init_comp();   // fills comp from global_abundance_map.comp_data
+    }
     read_vars(&fp);
     fp.close();
     fill();
@@ -739,6 +816,11 @@ bool star2d::check_tag(const char *tag) const {
     if(strcmp(tag,"star2d")) return false;
     return true;
 
+}
+
+double star2d::roundToPrecision(double value, int decimalPlaces) {
+    double factor = std::pow(10.0, decimalPlaces);
+    return std::round(value * factor) / factor;
 }
 /*
 int star2d::read_old(const char *input_file){
@@ -923,6 +1005,19 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         }
         else {
             while((k=fp.get(arg,val))) {
+
+             	if (strcmp(arg, "Z") == 0){
+					
+					//CompositionData data = parse_composition_data();             		
+             		//double_map comp_dummy = update_initial_composition(data,0.7,0.02); // input X and Z does not affect Zmix, this comes from the abundance input directly.
+    				//^ effectively the same as just calling initial_composition
+
+					initial_composition(0.7,0.02); // just so Zmix is defined in the global map 
+					
+					std::string strVal = std::to_string(roundToPrecision(global_abundance_map.Zmix, 9)); // converting to char* for check_arg()
+					val = strdup(strVal.c_str());             		
+             	}
+
                 if((i=check_arg(arg,val,&change_grid))) {
                     ester_err("Syntax error in parameters file %s, line %d\n",default_params,k);
                     if(i==2) {
@@ -939,6 +1034,10 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         }
         change_grid=0;
     }
+
+    //printf("mixture default parameter updated: mixture.name %s, mixture_name %s\n",mixture.name,global_abundance_map.mixture_name.c_str());
+
+    //printf("Z default parameter updated: %f, Zmix = %f\n",Z0,global_abundance_map.Zmix);
 
     if(*param_file) {
         if(!fp.open(param_file)) {
@@ -966,8 +1065,43 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
 
     cmd.open(argc,argv);
     while(int err_code=cmd.get(arg,val)) {
+             	if (strcmp(arg, "mixture") == 0){
+ 
+                if (strcmp(mixture.name,val)==0) {
+				} else {
+				printf("mixture in cmd argument is different from default/input file\n");
+				user_specified_mix = true;
+				}
+
+             	}
+
+			 	if (strcmp(arg, "Z") == 0 && age == 0){
+
+					if (fabs(atof(val) - Z0) > (1e-12 + 1e-12 * Z0)) {
+						// if the user has kept the argument Z input same as before
+						// this avoids re-doing comp unnecessarily
+						user_specified_Z = true;
+					}
+					
+				}
+
+			 	if (strcmp(arg, "X") == 0 && age == 0){
+
+					if (fabs(atof(val) - X0) > (1e-12 + 1e-12 *X0)) {
+						// if the user has kept the argument X input same as before
+						// this avoids re-doing comp unnecessarily
+						user_specified_X = true;
+					}
+				}
+
         if(err_code==-1) exit(1);
         err_code=check_arg(arg,val,&change_grid);
+		if (strcmp(arg, "Z") == 0){
+		printf("Z0 after check_arg Z0 = %f\n",Z0);
+		}
+		if (strcmp(arg, "mixture") == 0){
+		printf("mixture after check_arg mixture = %s\n",mixture.name);
+		}
         if(err_code==2) {
             ester_err("Error: Argument to '%s' missing\n",arg);
             return 1;
@@ -979,6 +1113,23 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         cmd.ack(arg,val);
     }
     cmd.close();
+
+	if (user_specified_mix && age == 0) { // i.e. mixture has changed
+		global_abundance_map.mixture_name = mixture.name; // update the global mixture name
+	}
+
+	if ((user_specified_X + user_specified_Z + user_specified_mix) > 0 && age == 0 && loaded_from_file==1) {
+
+		printf("X,Z, or mixture has changed to ZAMS file, updating comp...\n");
+
+		(void)parse_composition_data();  // updates global_abundance_map.comp_data
+    	init_comp();               // rebuild stratified + cno core composition
+
+	} else if ((user_specified_X + user_specified_Z + user_specified_mix) > 0 && age != 0 && loaded_from_file==1) {
+
+		printf("mixture, X, or Z were given in command line that is different from *evolved* input model\n");
+		printf("this option is not allowed, using input model's parameters\n");
+	}
 
     if((change_grid&1)&&!(change_grid&2)) {
         ester_err("Must specify number of points per domain (npts)\n");
@@ -1013,8 +1164,21 @@ int star2d::init(const char *input_file,const char *param_file,int argc,char *ar
         for(int n=0;n<ndomains;n++) domain_type[n]=RADIATIVE;
         domain_weight = init_domain_weight(domain_type);
     }
-    init_comp();
+    //init_comp();
+    //fill();
+
+	if (!loaded_from_file) {
+        // in star2d::init, there should always be a file loaded, this option isn't necessary but serves as a backup, like the default else block
+		(void)parse_composition_data();  // updates/creates global_abundance_map.comp_data
+		if (!user_specified_Z && user_specified_mix){
+			printf("mixture is given but Z is not on cmd line!\n");
+		Z0 = roundToPrecision(global_abundance_map.Zmix, 9); // Z0 if mixture is called 
+		}
+        init_comp();
+	}
+
     fill();
+    
     return 0;
 }
 
@@ -1034,6 +1198,7 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
     Omega=0;
 
     if(fp.open(default_params)) {
+
         while((k=fp.get(arg,val))) {
             if(!strcmp(arg,"nth")&&val&&npts_th==-1) npts_th=atoi(val);
             if(!strcmp(arg,"nex")&&val&&npts_ex==-1) npts_ex=atoi(val);
@@ -1057,6 +1222,13 @@ void star2d::init1d(const star1d &A,int npts_th,int npts_ex) {
 
     remap(ndomains,map.gl.npts,npts_th,npts_ex);
 
+    //fill(); // was just fill(); before, didn't have init_comp above it
+
+    if (!loaded_from_file) {
+
+        (void)parse_composition_data();  // updates/creates global_abundance_map.comp_data
+        init_comp();  // applies CNO-cycle core
+    }
     fill();
 
 }
@@ -1076,6 +1248,8 @@ void star2d::interp(remapper *red) {
 
 }
 
+//AbundanceMap global_abundance_map; 
+// original place, first defined, moving to composition.cpp 
 extern bool dump_jac;
 int star2d::check_arg(char *arg,char *val,int *change_grid) {
     int err=0,i;
@@ -1116,9 +1290,20 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
         map.ex.gl.set_npts(atoi(val));
         *change_grid=*change_grid|4;
     }
+
+    else if(!strcmp(arg,"mixture")){
+    	if(val==NULL) return 2;
+        
+        strcpy(mixture.name,val);
+        
+        global_abundance_map.mixture_name = mixture.name; 
+        
+    }
+
     else if(!strcmp(arg,"M")) {
         if(val==NULL) return 2;
         M=atof(val)*M_SUN;
+        global_abundance_map.M_init = atof(val);
     }
     else if(!strcmp(arg,"X")) {
         if(val==NULL) return 2;
@@ -1301,6 +1486,7 @@ void star2d::dump_info() {
 
     printf("Additional parameters:\n\n");
     printf("\tOpacity = %s\n",opa.name);
+    printf("\tAbundance Mixture = %s\n",mixture.name);
     printf("\tEquation of state = %s\n",eos.name);
     printf("\tNuclear reactions = %s\n",nuc.name);
     printf("\tAtmosphere = %s\n",atm.name);

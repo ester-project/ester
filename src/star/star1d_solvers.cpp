@@ -10,7 +10,9 @@
 
 void star1d::fill() {
     Y0=1.-X0-Z0;
-    init_comp();
+	if (!loaded_from_file) {
+		init_comp();
+	}
 
     eq_state();
 

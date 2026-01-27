@@ -47,7 +47,11 @@ class star2d {
 	virtual void read_vars(INFILE *fp);
 	virtual void write_vars(OUTFILE *fp) const;
   public:
-  	mapping map;
+    bool loaded_from_file = false;   // MG: NEW FLAG 07/11/2025
+  	bool user_specified_X = false; // MG: NEW FLAGs 12/11/2025
+  	bool user_specified_Z = false;
+  	bool user_specified_mix = false;
+	mapping map;
   	const int &nr,&nth,&nex,&ndomains;
 	const matrix &r,&z,&th,&Dt,&Dt2,&zex,&Dex,&rex;
 	const matrix_block_diag &D;
@@ -57,6 +61,7 @@ class star2d {
 	matrix vangle;
 	matrix N2_prev;
 	composition_map comp; 
+    AbundanceMap abundance_map; // added --> MG: needed? Block later for test
     double X0,Y0,Z0;
     double R,M;
     double rhoc,Tc,pc;
@@ -68,6 +73,7 @@ class star2d {
 	nuc_struct nuc;
 	eos_struct eos;
 	atm_struct atm;
+    mixture_struct mixture;
 	matrix ps,Ts;
 	double m,pi_c,Lambda;
 	double surff;
@@ -107,6 +113,8 @@ class star2d {
 	virtual void nuclear();
 	virtual void eq_state();
 	virtual void atmosphere();
+
+	virtual double roundToPrecision(double value, int decimalPlaces);
 
 	virtual int init(const char *input_file,const char *param_file,int argc,char *argv[]);
 	virtual int check_arg(char *arg,char *val,int *change_grid);
@@ -208,6 +216,7 @@ class star1d : public star2d {
 	~star1d();
 	star1d(const star1d &);
 	star1d &operator=(const star1d &);
+    virtual double roundToPrecision(double value, int decimalPlaces);
 	virtual int init(const char *input_file,const char *param_file,int argc,char *argv[]);
 	virtual int check_arg(char *arg,char *val,int *change_grid);
 	//virtual int read_old(const char *input_file);

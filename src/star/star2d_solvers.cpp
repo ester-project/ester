@@ -15,8 +15,13 @@
 /// flatness, scaled keplerian angular velocity
 void star2d::fill() {
 	Y0=1.-X0-Z0;
-	//init_comp();
-
+	//init_comp(); // MG: was previously blocked 06/11/25 --> blocked again 07/11/25
+	
+	if (!loaded_from_file) {
+		// technically redundant as in 2d we're always reading in a file, here just incase, like with the default param reading in star2d::init
+		init_comp();
+	}
+	
 	eq_state();
 	opacity();
 	nuclear();
@@ -41,9 +46,22 @@ void star2d::fill() {
 }
 
 void star2d::init_comp() {
+
 // Update the object comp
 
-	comp=initial_composition(X0,Z0)*ones(nr,nth);
+	//comp=initial_composition(X0,Z0)*ones(nr,nth);
+
+	// compostion has been changed, now parsed in two
+	//cno core cycle only is applied in hdf5_read, but not inital
+	// might be wrong, need to check
+
+	// call Parsed composition data product
+	//CompositionData initial_comp = parse_composition_data();
+	CompositionData initial_comp = global_abundance_map.comp_data; // already been made in initilisation
+	//printf("parse_composition_data called!\n");
+
+	// Outer region: standard composition
+	comp = update_initial_composition(initial_comp, X0, Z0) * ones(nr, nth);
 
 	if(!conv) return;
 
@@ -55,7 +73,7 @@ void star2d::init_comp() {
 
     if(stratified_comp == 0) {
 		printf("Calling initial_composition with Xc = %e.", Xc*X0);
-        comp.setblock(0,n-1,0,-1,initial_composition(Xc*X0,Z0)*ones(n,nth));
+        comp.setblock(0,n-1,0,-1,update_initial_composition(initial_comp,Xc*X0,Z0)*ones(n,nth));
     }
 	else if (stratified_comp == 2)
 	{
@@ -63,17 +81,30 @@ void star2d::init_comp() {
 	}
     else {
         comp.setblock(0, n-1, 0, -1,
-                initial_composition(Xc*X0, Z0)*ones(n, nth));
+                update_initial_composition(initial_comp,Xc*X0, Z0)*ones(n, nth));
         int m = 0;
         int l = n;
         double a = (1.-exp((1.-(nr/n))))/(X0*(1.-Xc));
         for(int i=conv+1; i<ndomains; i++) {
             m = map.gl.npts[i];
             comp.setblock(l, l+m-1, 0, -1,
-                    initial_composition(((Xc*X0)+((1./a)*(1.-exp((1.-(l/n)))))),Z0)*ones(m,nth));
+                    update_initial_composition(initial_comp,((Xc*X0)+((1./a)*(1.-exp((1.-(l/n)))))),Z0)*ones(m,nth));
             l += m;
         }
     }
+
+	// Compute core-modified composition
+
+	double_map core_comp = initial_composition_cno_cycle_core(initial_comp, X0, Z0);
+
+	// Fill convective core region with modified abundances
+	int nc = 0;
+	for (int n = 0; n < conv; n++) nc += map.npts[n];
+	comp.setblock(0, nc-1, 0, -1, core_comp * ones(nc, nth));
+
+	//printf("global_abundance_map.Zmix: %f \n",global_abundance_map.Zmix);
+	//printf("centre comp.X(): %f, comp.Y(): %f, comp.Z(): %f\n",comp.X()(0,0),comp.Y()(0,0),comp.Z()(0,0));
+
 }
 
 solver *star2d::init_solver(int nvar_add) {

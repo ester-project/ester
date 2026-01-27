@@ -3,6 +3,10 @@
 
 #include "matrix.h"
 
+#include <vector>
+#include <string> 
+#include <map>
+
 struct nuc_struct {
 	matrix eps,pp,cno,dlneps_lnrho,dlneps_lnT;
 	char name[16];
@@ -21,6 +25,10 @@ struct atm_struct {
 	char name[16];
 };
 
+struct mixture_struct {
+       char name[16];
+}; 
+
 class composition_map : public matrix_map {
 public:
 	matrix_map dt;
@@ -30,7 +38,33 @@ public:
 	matrix X() const;
 	matrix Y() const;
 	matrix Z() const;
+	double Xsol() const;
+	double Ysol() const;
+	double Zsol() const;
 };
+
+struct CompositionData {
+    std::map<std::string, double> normalized_abundances;
+    double Xsol = 0.0;
+    double Ysol = 0.0;
+    double Zsol = 0.0;
+}; 
+
+class AbundanceMap {
+public:
+    std::map<std::string, float> comp_abund;
+    std::map<std::string, double> A_weights;
+    double_map comp_xa;
+    std::string mixture_name;
+    std::string ester_home;
+    double Zmix; 
+    double M_init; 
+
+    // <-- NEW: global CompositionData cached here - MG 
+    CompositionData comp_data;
+};
+
+extern AbundanceMap global_abundance_map;
 
 int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa);
@@ -71,6 +105,10 @@ int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm);
 
 double_map initial_composition(double X,double Z);
-double_map initial_composition_cno_cycle_core(double X, double Z);
+
+CompositionData parse_composition_data();  
+double_map update_initial_composition(const CompositionData& data, double X, double Z);
+double_map initial_composition_cno_cycle_core(const CompositionData &data,double X, double Z);
+
 #endif
 

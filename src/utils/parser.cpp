@@ -16,38 +16,51 @@ void cmdline_parser::open(int argc_in, char *argv_in[]) {
 }
 
 int cmdline_parser::get(char *&arg,char *&val) {
+    
+    if(i>=argc) {
+         arg = nullptr;
+         val = nullptr;
+         return 0;
+     }
 
-	if(i>=argc) return 0;
-	while(argv[i][0]=='\0') {
-		i++;
-		if(i==argc) break;
-	}
-	if(i==argc) return 0;
-	if(argv[i][0]!='-') {
-		printf("Invalid argument %s\n",argv[i]);
-		arg=argv[i]+1;
-		val=NULL;
-		i++;
-		return -1;
-	}
-	arg=argv[i]+1;
-	val=NULL;
-	i++;
-	if(i<argc)
-		if(argv[i][0]!='\0') {
-			bool cond;
-			char c;
-			c=argv[i][0];
-			cond=(c!='-');
-			c=argv[i][1];
-			cond=cond||c=='0'||c=='1'||c=='2'||c=='3'||c=='4'||
-					c=='5'||c=='6'||c=='7'||c=='8'||c=='9'||c=='.'; 
-			if(cond)
-				val=argv[i++];
-		}
-	return 1;
 
+    while(argv[i][0]=='\0') {
+        i++;
+        if(i==argc) {
+            arg = nullptr;
+            val = nullptr;
+            return 0;
+        }
+    }    
+    
+    if(argv[i][0]!='-') {
+        arg=argv[i]+1;
+        val=NULL;
+        i++;
+        return -1;
+    }
+    arg=argv[i]+1;
+    val=NULL;
+        
+    i++;
+
+    if(i<argc)
+        if(argv[i][0]!='\0') {
+            bool cond;
+            char c;
+            c=argv[i][0];
+            cond=(c!='-');
+            c=argv[i][1];
+            cond=cond||c=='0'||c=='1'||c=='2'||c=='3'||c=='4'||
+                    c=='5'||c=='6'||c=='7'||c=='8'||c=='9'||c=='.'; 
+            if(cond) {
+                val=argv[i++];
+            }
+        }
+    return 1;
 }
+
+
 
 void cmdline_parser::ack(char *arg,char *val) {
 

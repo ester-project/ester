@@ -82,30 +82,39 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
     eos.chi_rho.dim(T.nrows(), T.ncols());
     eos.chi_T.dim(T.nrows(), T.ncols());
 
+    AbundanceMap& abundance_map = global_abundance_map; // using atomic weight values
+
+    // Loading initial composition from text files before the loop. 
+    // There is still room to improve as this is called on every iteration
+    // Most efficient would be to load this only once at the beginning of the run - PH --> has been done - MG 
+
+    //CompositionData initial_comp = parse_composition_data();
+	CompositionData initial_comp = global_abundance_map.comp_data; // already been made in initilisation
+
     for (int i=0; i<N; i++) {
 
-        double_map comp = initial_composition(X(i), Z);
+        double_map comp = update_initial_composition(initial_comp, X(i), Z);
 
-        eps[0] = comp["H"] / 1.008e0;                       // H
-        eps[1] = (comp["He3"] + comp["He4"]) / 4.0026e0;   // He3 + He4
-        eps[2] = (comp["C12"] + comp["C13"]) / 12.0111e0; // C12 + C13
-        eps[3] = (comp["N14"] + comp["N15"]) / 14.0067e0; // N14 + N15
-        eps[4] = (comp["O16"] + comp["O17"]) / 15.9994e0; // O16 + O17
-        eps[5] = 0.0; // Ne
-        eps[6] = 0.0; // Na
-        eps[7] = 0.0; // Mg
-        eps[8] = 0.0; // AL
-        eps[9] = 0.0; // Si
-        eps[10] = .0; // P
-        eps[11] = .0; // S
-        eps[12] = .0; // Cl
-        eps[13] = .0; // A
-        eps[14] = .0; // Ca
-        eps[15] = .0; // Ti
-        eps[16] = .0; // Cr
-        eps[17] = .0; // Mn
-        eps[18] = .0; // Fe
-        eps[19] = .0; // Ni
+        eps[0] = comp["H"]/abundance_map.A_weights["H"] ; // H1 + H2
+        eps[1] = (comp["He3"] + comp["He4"]) / abundance_map.A_weights["He"];   // He3 + He4
+        eps[2] = (comp["C12"] + comp["C13"]) / abundance_map.A_weights["C"]; // C12 + C13
+        eps[3] = (comp["N14"] + comp["N15"]) / abundance_map.A_weights["N"]; // N14 + N15
+        eps[4] = (comp["O16"] + comp["O17"] + comp["O18"]) / abundance_map.A_weights["O"]; // O16 + O17 + O18 
+        eps[5] = (comp["Ne20"] + comp["Ne21"] + comp["Ne22"]) / abundance_map.A_weights["Ne"]; // Ne
+        eps[6] = comp["Na23"] / abundance_map.A_weights["Na"]; // Na
+        eps[7] = (comp["Mg24"] + comp["Mg25"] + comp["Mg26"]) / abundance_map.A_weights["Mg"]; // Mg
+        eps[8] = comp["Al27"] / abundance_map.A_weights["Al"]; // AL
+        eps[9] = (comp["Si28"] + comp["Si29"] + comp["Si30"]) / abundance_map.A_weights["Si"]; // Si
+        eps[10] = comp["P31"]/abundance_map.A_weights["P"]; // P
+        eps[11] = (comp["S32"] + comp["S33"] + comp["S34"] + comp["S36"]) / abundance_map.A_weights["S"]; // S
+        eps[12] = (comp["Cl35"] + comp["Cl37"]) / abundance_map.A_weights["Cl"]; // Cl
+        eps[13] = (comp["Ar36"] + comp["Ar38"] + comp["Ar40"]) / abundance_map.A_weights["Ar"]; // Ar
+        eps[14] = (comp["Ca40"] + comp["Ca42"] + comp["Ca43"] + comp["Ca44"] + comp["Ca46"] + comp["Ca48"]) / abundance_map.A_weights["Ca"]; // Ca
+        eps[15] = (comp["Ti46"] + comp["Ti47"] + comp["Ti48"] + comp["Ti49"] + comp["Ti50"]) / abundance_map.A_weights["Ti"]; // Ti
+        eps[16] = (comp["Cr50"] + comp["Cr52"] + comp["Cr53"] + comp["Cr54"]) / abundance_map.A_weights["Cr"]; // Cr
+        eps[17] = comp["Mn55"] / abundance_map.A_weights["Mn"]; // Mn
+        eps[18] = (comp["Fe54"] + comp["Fe56"] + comp["Fe57"] + comp["Fe58"]) / abundance_map.A_weights["Fe"]; // Fe
+        eps[19] = (comp["Ni58"] + comp["Ni60"] + comp["Ni61"] + comp["Ni62"] + comp["Ni64"]) / abundance_map.A_weights["Ni"]; // Ni	
 
         double pi = p(i);
         double match_variable = log(pi);
