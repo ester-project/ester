@@ -514,7 +514,7 @@ void star_evol::solve_definitions(solver *op) {
 
     opa_struct opa2;
     strcpy(opa2.name, opa.name);
-    opa_calc(comp2.X(), Z0, T*Tc, rho*rhoc, opa2);
+    opa_calc(comp2.X(), Z0, T*Tc, rho*rhoc, opa2,comp2.Xsol(),comp2.Ysol(),comp2.Zsol());
     matrix dxidX = (opa2.xi - opa.xi) / 1e-4;
     op->add_d("opa.xi", "X", dxidX);
 

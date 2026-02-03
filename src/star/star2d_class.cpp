@@ -1304,6 +1304,9 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
         if(val==NULL) return 2;
         M=atof(val)*M_SUN;
         global_abundance_map.M_init = atof(val);
+    
+        //std::cout << "star2d_class, M: " << M << ", M_init: " << global_abundance_map.M_init << std::endl;
+
     }
     else if(!strcmp(arg,"X")) {
         if(val==NULL) return 2;

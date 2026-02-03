@@ -67,13 +67,13 @@ public:
 extern AbundanceMap global_abundance_map;
 
 int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
-		opa_struct &opa);
+		opa_struct &opa, const double Xsol, const double Ysol, const double Zsol);
 int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
 		matrix &rho,eos_struct &eos);
 int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);
 int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
-		const char *eos_name,const char *opa_name,atm_struct &atm);
+		const char *eos_name,const char *opa_name,atm_struct &atm, const double Xsol, const double Ysol, const double Zsol);
 
 int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		opa_struct &opa);
@@ -83,6 +83,8 @@ int opa_kramer(const matrix &T,const matrix &rho,
 		opa_struct &opa);
 int opa_cesam(const matrix& X, double Z, const matrix& T, const matrix& rho,
 		opa_struct& opa);
+int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
+		opa_struct& opa, const double Xsol, const double Ysol, const double Zsol);
 
 int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);	
@@ -102,7 +104,7 @@ int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
 		matrix &rho, eos_struct &eos);
 
 int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
-		const char *eos_name,const char *opa_name,atm_struct &atm);
+		const char *eos_name,const char *opa_name,atm_struct &atm, const double Xsol, const double Ysol, const double Zsol);
 
 double_map initial_composition(double X,double Z);
 

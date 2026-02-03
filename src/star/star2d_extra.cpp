@@ -3,6 +3,7 @@
 #endif
 #include "star.h"
 #include<stdlib.h> //JM
+#include <iomanip>
 
 #if 0
 void star2d::draw(figure *pfig,const matrix &A,int parity) const {

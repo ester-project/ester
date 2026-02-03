@@ -131,7 +131,11 @@ add_library(ester SHARED
     src/physics/nuc_cesam_for.F
     src/physics/EOS5_xtrin.F
     src/physics/xztrin21.F
-    src/physics/ZFS_interp_EOS5.F)
+    src/physics/ZFS_interp_EOS5.F
+    src/physics/opa_opmesa.F90
+    src/physics/opa_opmesa.cpp
+    src/physics/mesa_opacity_modules.F90
+    src/physics/cubic_interpolator.f90)
 target_link_libraries(ester cesam freeeos opint
     ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 
