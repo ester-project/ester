@@ -23,6 +23,8 @@
 #include "star.h" // adding for abundance name 
 
 #include <iomanip>
+#include <stdexcept>
+
 
 std::string GetCurrentWorkingDirectory() {
     const size_t bufferSize = 1024;
@@ -107,6 +109,9 @@ CompositionData parse_composition_data() {
     // in .bashrc or .cshrc
 
     // we read the environment variable ESTER
+    if (nullptr == getenv("ESTER"))
+           throw logic_error("Missing ESTER environment variable,"
+                           " please set it to ester directory (see doc).");
     std::string esterDirectory=getenv("ESTER");
     global_abundance_map.ester_home = esterDirectory;
     
