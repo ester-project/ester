@@ -6,7 +6,10 @@
 #include <string.h>
 #include "symbolic.h"
 
+#ifndef NOPLOT
 #include "matplotlib.h"
+#endif
+
 //---------------------------------------------------------------------
 void star1d::fill() {
     Y0=1.-X0-Z0;

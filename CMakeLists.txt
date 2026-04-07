@@ -14,6 +14,9 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/modules)
 
+option("NOPLOT" "Disable matplotlib C++ code at compiling time." OFF)
+
+
 if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
     string(CONCAT CMAKE_Fortran_FLAGS
         "-g -O3"
@@ -53,6 +56,10 @@ if(VTK_FOUND)
     set(OPTIONAL_LIBS "${OPTIONAL_LIBS};${VTK_LIBRARIES}")
 else()
     add_compile_definitions(ENABLE_PLT)
+endif()
+
+if(NOPLOT)
+	add_compile_definitions(NOPLOT)
 endif()
 
 ###
@@ -128,11 +135,9 @@ add_compile_definitions(VERSION="${PROJECT_VERSION}")
 add_compile_definitions(ESTER_DATADIR="${CMAKE_INSTALL_PREFIX}/share")
 add_compile_definitions(PACKAGE_VERSION="${PROJECT_VERSION}")
 
-#add_library(ester SHARED # was previous
-#add_library(ester STATIC
-add_library(ester SHARED
+
+set(ESTER_CPP_FILES
     src/global/global.cpp
-    src/graphics/matplotlib.cpp
     src/solver/RKF_solver.cpp
     src/main/read_config.cpp
     src/solver/SDIRK_solver.cpp
@@ -190,16 +195,31 @@ add_library(ester SHARED
     src/physics/opa_opmesa.cpp
     src/physics/mesa_opacity_modules.F90
     src/physics/cubic_interpolator.f90
-    src/physics/read_hdf5_data.cpp)
-    #src/physics/opa_mesa_wrapper.cpp) # blocked for fixing other issues 
-    
+    src/physics/read_hdf5_data.cpp
+    #src/physics/opa_mesa_wrapper.cpp # blocked for fixing other issues
+    )
+
+if(NOT NOPLOT)
+	list(PREPEND ESTER_CPP_FILES src/graphics/matplotlib.cpp)
+	# NOTE: only used for matplotlib
+	list(APPEND OPTIONAL_LIBS ${PYTHON_LIBRARIES})
+endif()
+
+#add_library(ester SHARED # was previous
+#add_library(ester STATIC
+add_library(ester SHARED
+	${ESTER_CPP_FILES}
+)
+
 # Link libmesac libraries using --whole-archive to include all symbols
 #set(LIBMESAC_LIBS "-Wl,--whole-archive $ENV{LIBMESAC_ROOT}/lib/libkapcmesa.a $ENV{LIBMESAC_ROOT}/lib/libchemcmesa.a $ENV{LIBMESAC_ROOT}/lib/libutilscmesa.a -#Wl,--no-whole-archive ${SDK_LIBS}") # test lines 2 --> needed?
 
    
 message(LIBMESAC_LIBS="${LIBMESAC_LIBS}")
 target_link_libraries(ester cesam freeeos opint
-    ${OPTIONAL_LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${CBLAS_LIBRARIES} ${PYTHON_LIBRARIES} ${HDF5_LIBRARIES} ${LIBMESAC_LIBS})
+    ${OPTIONAL_LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${CBLAS_LIBRARIES} ${HDF5_LIBRARIES} ${LIBMESAC_LIBS})
+
+
 
 # Set properties for ester
 #set_target_properties(ester PROPERTIES

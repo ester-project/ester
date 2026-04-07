@@ -2,7 +2,10 @@
 #include "ester-config.h"
 #endif
 #include "utils.h"
+#ifndef NOPLOT
 #include "matplotlib.h"
+#endif
+
 #include "star.h"
 #include "read_config.h"
 
@@ -92,12 +95,15 @@ int main(int argc,char *argv[]) {
 
     int last_plot_it = -100;
 
+
+#ifndef NOPLOT
     if (config.noplot == false) {
         plt::init();
         plt::figure(1, 10, 4);
         A.plot(error_map.block(0, nit-1, 0 ,0));
         plt::show();
     }
+#endif
 
     while(!last_it) {
 
@@ -156,7 +162,9 @@ int main(int argc,char *argv[]) {
     if(config.verbose)
         printf("%2.2f seconds\n",t.value());
 
+#ifndef NOPLOT
     plt::show(true);
+#endif
 
     return 0;
 }

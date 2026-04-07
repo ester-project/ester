@@ -3,7 +3,10 @@
 #endif
 #include "debug.h"
 #include "star.h"
+#ifndef NOPLOT
 #include "matplotlib.h"
+#endif
+
 
 #include <cfenv>
 #include <csignal>
@@ -39,7 +42,9 @@ void repl::print() {
 
 debugger::debugger(int argc, char * argv[], star1d& s)
     : repl("ESTER Debugger:"), star(s) {
-        plt::close();
+#ifndef NOPLOT
+	    plt::close();
+#endif
     }
 
 std::string repl::read() {
@@ -67,9 +72,9 @@ std::vector<std::string> repl::get_args(const std::string& cmd) {
 }
 
 void debugger::help() {
-    std::cout << "Commands availiable:\n";
+    std::cout << "Commands available:\n";
     std::cout << "  help     # prints this help\n";
-    std::cout << "  plot var # plots varaible `var'\n";
+    std::cout << "  plot var # plots variable `var'\n";
     std::cout << "  show     # shows plots\n";
     std::cout << "  save     # saves model to file \"debug.h5\"\n";
     std::cout << "  exit     # exits debugger\n";
@@ -79,23 +84,29 @@ int debugger::eval(const std::string& _cmd) {
     auto args = get_args(_cmd);
     std::string cmd = args[0];
     if (cmd == "clear") {
+#ifndef NOPLOT
         plt::clf();
+#endif
     }
     else if (cmd == "help") {
         help();
     }
     else if (cmd == "show") {
+#ifndef NOPLOT
         plt::show(true);
+#endif
     }
     else if (cmd == "plot") {
         if (args.size() < 2) {
-            LOGE("Missong argument to command `%s\'\n", args[0].c_str());
+            LOGE("Missing argument to command `%s\'\n", args[0].c_str());
             return 1;
         }
         std::string var = args[1];
         matrix m = get_var(var);
+#ifndef NOPLOT
         plt::plot(star.r, m, "$" + var + "$");
         plt::legend();
+#endif
     }
     else if (cmd == "exit" || cmd == "\0") {
         return 0;
@@ -111,8 +122,11 @@ int debugger::eval(const std::string& _cmd) {
         std::string var = args[1];
         matrix m = get_var(var);
 
+
+#ifndef NOPLOT
         plt::semilogy(star.spectrum(m), "spectrum " + var);
         plt::legend();
+#endif
     }
     else if (cmd == "") {
     }

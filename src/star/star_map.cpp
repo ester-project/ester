@@ -2,7 +2,10 @@
 #include "ester-config.h"
 #endif
 #include "star.h"
+#ifndef NOPLOT
 #include "matplotlib.h"
+#endif
+
 
 extern "C" {
 #include <stdlib.h>
@@ -215,15 +218,21 @@ matrix star2d::find_boundaries(const matrix &logTi) const {
             zj+=dzj;
             nit++;
             if(nit>100) {
+#ifndef NOPLOT
                 plt::clf();
                 plt::plot(r, log(T), "$T$");
+#endif
                 for (int i=0; i<logTi.nrows(); i++) {
+#ifndef NOPLOT
                     plt::axvline(zj(i));
                     plt::axhline(logTi(i));
+#endif
                     LOGE("ri%d zj=%e, dzj=%e\n", i, zj(i), dzj(i));
                 }
                 LOGE("No convergence in find_boundaries");
+#ifndef NOPLOT
                 plt::show(true);
+#endif
                 ester_err("No convergence in find_boundaries\n");
             }
         }

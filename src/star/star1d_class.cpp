@@ -3,7 +3,10 @@
 #endif
 #include "utils.h"
 #include "star.h"
+#ifndef NOPLOT
 #include "matplotlib.h"
+#endif
+
 
 #include <string.h>
 #include <stdlib.h>
@@ -303,6 +306,7 @@ matrix star1d::spectrum(const matrix& var) {
 
 void star1d::plot(const matrix_map& error) {
 
+#ifndef NOPLOT
     plt::clf();
 
     plt::subplot(231);
@@ -369,4 +373,7 @@ void star1d::plot(const matrix_map& error) {
 
     plt::draw();
     plt::pause();
+#else
+	ester_warn("matplotlib has been disabled at building time.");
+#endif
 }
