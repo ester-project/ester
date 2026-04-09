@@ -1,9 +1,20 @@
 add_definitions(-DWITH_CMAKE)
-add_definitions(-DENABLE_PLT)
+if(NOPLOT)
+	add_definitions(-DNOPLOT)
+else()
+	add_definitions(-DENABLE_PLT)
+endif()
 include_directories(${HDF5_INCLUDE_DIRS})
 
-add_custom_target(__init__.py ALL
-    COMMAND sed -e 's,[@]PYTHON[@],${PYTHON_EXECUTABLE},g' ${CMAKE_SOURCE_DIR}/python/ester.in > __init__.py)
+
+if(NOPLOT)
+	# same as below but removing also use of plt from ester_wrap in py code ini
+	add_custom_target(__init__.py ALL
+		COMMAND sed -e 's,[@]PYTHON[@],${PYTHON_EXECUTABLE},g\;s,.*pltw.*,,' ${CMAKE_SOURCE_DIR}/python/ester.in > __init__.py)
+else()
+	add_custom_target(__init__.py ALL
+		COMMAND sed -e 's,[@]PYTHON[@],${PYTHON_EXECUTABLE},g' ${CMAKE_SOURCE_DIR}/python/ester.in > __init__.py)
+endif()
 
 add_custom_target(cesam.py ALL
     COMMAND sed -e 's,[@]PYTHON[@],${PYTHON_EXECUTABLE},g' ${CMAKE_SOURCE_DIR}/python/cesam.in > cesam.py)
@@ -20,6 +31,9 @@ endif()
 include(${SWIG_USE_FILE})
 
 set(CMAKE_SWIG_FLAGS "-I${CMAKE_SOURCE_DIR}/src/include;-I${CMAKE_SOURCE_DIR}/src/graphics;")
+if(NOPLOT)
+	list(APPEND CMAKE_SWIG_FLAGS "-DNOPLOT")
+endif()
 include_directories(${PYTHON_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/src/include)
 include_directories(${CMAKE_SOURCE_DIR}/src/graphics)

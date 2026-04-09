@@ -30,7 +30,7 @@ configuration::configuration(int argc,char *argv[]) {
 	maxit=200;
 	tol=1e-8;
 	newton_dmax=0.5;
-    noplot = false;
+	noplot = false;
 
 	sprintf(file, "%s/ester/star.cfg", ESTER_DATADIR);
 	if(!fp.open(file))
@@ -62,6 +62,9 @@ configuration::configuration(int argc,char *argv[]) {
 #ifndef NOPLOT
     if (noplot == false)
 	    plt::init();
+#else
+    if (! noplot)
+	    ester_warn("matplotlib has been disabled at building time.");
 #endif
 }
 
@@ -107,11 +110,9 @@ int configuration::check_arg(const char *arg,const char *val) {
 	}
 	else if(!strcmp(arg,"noplot")) {
 		strcpy(plot_device,"/NULL");
-#ifndef NOPLOT
         noplot = true;
+#ifndef NOPLOT
         plt::init(true);
-#else
-	ester_warn("matplotlib has been disabled at building time.");
 #endif
 	}
 	else if(!strcmp(arg,"maxit")) {

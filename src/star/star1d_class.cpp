@@ -373,7 +373,5 @@ void star1d::plot(const matrix_map& error) {
 
     plt::draw();
     plt::pause();
-#else
-	ester_warn("matplotlib has been disabled at building time.");
 #endif
 }

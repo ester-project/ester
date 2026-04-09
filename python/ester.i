@@ -38,7 +38,9 @@
 #include "physics.h"
 #include "mapping.h"
 #include "numdiff.h"
+#ifndef NOPLOT
 #include "matplotlib.h"
+#endif
 %}
 
 %include "carrays.i"
@@ -50,4 +52,6 @@
 %include "mapping.h"
 %include "numdiff.h"
 %include "star.h"
+#ifndef NOPLOT
 %include "matplotlib.h"
+#endif
