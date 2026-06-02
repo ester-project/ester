@@ -20,7 +20,8 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
     string(CONCAT CMAKE_Fortran_FLAGS
         "-g -O3"
         " -fno-align-commons -fdefault-real-8 -fdefault-double-8"
-        " -ffixed-line-length-none -O -w -fd-lines-as-comments")
+        " -ffixed-line-length-none -O -w -fd-lines-as-comments"
+	" -fallow-argument-mismatch")
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
     string(CONCAT CMAKE_Fortran_FLAGS
         "-g -O3"
@@ -70,6 +71,12 @@ include_directories(src/include)
 include_directories(src/graphics)
 include_directories(${PYTHON_INCLUDE_DIRS})
 set(LIBS "${LIBS};${PYTHON_LIBRARIES}")
+
+if(DEFINED PYTHON_NUMPY_INCLUDE_DIR)
+	include_directories(${PYTHON_NUMPY_INCLUDE_DIR})
+else()
+	message(WARNING "PYTHON_NUMPY_INCLUDE_DIR not set, this may fail if numpy has been installed locally, using pip for example")
+endif()
 
 add_definitions(-DWITH_CMAKE)
 add_definitions(-DVERSION="${PROJECT_VERSION}")
