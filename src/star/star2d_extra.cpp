@@ -257,6 +257,21 @@ double star2d::virial_ps() const {
 
 double star2d::virial() const {
 
+	/*
+	printf("virial_3P: %e\n",virial_3P());
+	printf("virial_L: %e\n",virial_L());
+	printf("virial_ps: %e\n",virial_ps());
+	printf("virial_W: %e\n",virial_W());
+	*/
+
+
+	/*
+	std::cout << std::setprecision(15) << virial_3P() << std::endl;
+	std::cout << std::setprecision(15) << virial_L() << std::endl;
+	std::cout << std::setprecision(15) << virial_ps() << std::endl;
+	std::cout << std::setprecision(15) << virial_W() << std::endl;
+	*/ 
+
 	return (virial_3P()+virial_L()+virial_ps())/virial_W()+1.;
 
 }
@@ -268,7 +283,21 @@ double star2d::energy_test() const {
 	e1=luminosity();
 	e2=2*PI*(map.gl.I,(rho*nuc.eps*r*r*map.rz,map.leg.I_00))(0)*units.rho*units.r*units.r*units.r;
 
+    std::cout << "L_surface = " << e1 << std::endl;
+    std::cout << "L_nuclear = " << e2 << std::endl;
+    std::cout << "Rel diff  = " << fabs((e1-e2)/e1) << std::endl;
+
 	return fabs((e1-e2)/e1);
+
+}
+
+double star2d::energy_test_e2() const {
+
+	double e2;
+	
+	e2=2*PI*(map.gl.I,(rho*nuc.eps*r*r*map.rz,map.leg.I_00))(0)*units.rho*units.r*units.r*units.r;
+
+	return e2;
 
 }
 

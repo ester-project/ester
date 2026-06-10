@@ -234,6 +234,14 @@ double star2d::update_solution(solver *op, double &h, matrix_map& error_map, int
 
 	//printf("err(phi)=%e\n",err);
 	dp=op->get_var("p");
+
+	//printf("dp=%e\n",max(abs(dp)));
+	//printf(dp);
+	//printf("\n");
+	//printf("p=%e\n",max(abs(p)));
+	//printf(p);
+	//printf("\n");
+
 	err2=max(abs(dp/p));err=err2>err?err2:err;
     error_map["p"](nit) = err2;
 	while(exist(abs(h*dp/p)>dmax)) h/=2;
@@ -273,6 +281,9 @@ double star2d::update_solution(solver *op, double &h, matrix_map& error_map, int
     error_map["Ri"](nit) = max(abs(dRi));
 	update_map(h*dRi);
 	err2=max(abs(dRi));err=err2>err?err2:err;
+	//printf("err(Ri)=%e\n",err2); // added by MG 16/02/2026
+
+	//printf("final err =%e\n",err);
 
 	return err;
 }

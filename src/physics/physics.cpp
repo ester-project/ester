@@ -60,7 +60,11 @@ int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
 		error=nuc_simple(X,T,rho,nuc);
 	} else if(!strcmp(nuc.name,"cesam")) {
 		error=nuc_cesam(X,T,rho,nuc);
-    } else {
+    }
+      else if (!strcmp(nuc.name, "gridfire")) {
+        error = nuc_gridfire(X, T, rho, nuc);
+    }
+      else {
         ester_err("Unknown nuc. reac. type: %s",nuc.name);
     	return 1;
     }

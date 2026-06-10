@@ -566,6 +566,8 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     // we make available the mixture name every where 
     global_abundance_map.mixture_name = mixture.name; // set here first since in evo branch we call initial composition
 
+    global_abundance_map.M_init = M/M_SUN; // need to read in M_init from input file
+
     // Parse composition only once
     //CompositionData initial_comp = parse_composition_data();
 
@@ -1303,9 +1305,12 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
     else if(!strcmp(arg,"M")) {
         if(val==NULL) return 2;
         M=atof(val)*M_SUN;
+
+        std::cout << "\n star2d_class BEFORE, M: " << M << ", M_init: " << global_abundance_map.M_init << std::endl;
+
         global_abundance_map.M_init = atof(val);
     
-        //std::cout << "star2d_class, M: " << M << ", M_init: " << global_abundance_map.M_init << std::endl;
+        std::cout << "\n star2d_class AFTER, M: " << M << ", M_init: " << global_abundance_map.M_init << std::endl;
 
     }
     else if(!strcmp(arg,"X")) {

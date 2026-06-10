@@ -127,6 +127,8 @@ matrix_map remapper::interp(const matrix_map &y,int parity) {
 matrix remapper::interp(const matrix &y,int parity) {
 // same as above but for matrices
 
+    //printf("remapper.cpp: matrix remapper::interp() called!\n");
+    
 	if (!remapped) remap();
 
 	matrix a;
@@ -180,6 +182,8 @@ matrix remapper::interp_ex(const matrix &y,int parity) {
 
 // low level remapper used by star2d remap
 void remapper::remap() {
+
+    //printf("remapper.cpp: remapper::remap() called\n");
 
 	if(ndomains!=map.ndomains&&!changed_npts) {
 		ester_err("(remapper) Should specify number of points in each domain");

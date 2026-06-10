@@ -88,6 +88,10 @@ int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
 
 int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);	
+
+int nuc_gridfire(const composition_map &comp,const matrix &T,const matrix &rho,
+		nuc_struct &nuc);
+
 int nuc_cesam(const composition_map &comp,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);	
 		

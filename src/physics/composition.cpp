@@ -329,16 +329,40 @@ double_map update_initial_composition(const CompositionData &data, double X, dou
 
         if (key.find("H1") != std::string::npos || key.find("H2") != std::string::npos) {
             Hsum += entry.second * X; // effectively (alpha_H1 + alpha_H2)*X = alpha_H * X = X as alpha_H == 1 (this is idiot check)
+            comp[key] = entry.second *X; // adding H1 and H2 as keys as well. 
+            //std::cout << "comp[key]:" << key << "= " << comp[key] << ", " << entry.second << std::endl;
 
         } else if (key.find("He3") != std::string::npos || key.find("He4") != std::string::npos) {
 			comp[key] = entry.second * (1-X-Z); // below they did alpha_He3 * (1-X-Z) and then (1-X-Y) - comp[He3]
+            //std::cout << "comp[key]:" << key << "= " << comp[key] << ", " << entry.second << std::endl;
+
         } else {
 			comp[key] = entry.second * Z;
+
+            //std::cout << "comp[key]:" << key << "= " << comp[key] << ", " << entry.second << std::endl;
 
         }
 
 	}
+
+
 	comp["H"] = Hsum;
+
+    /*
+    static bool printed_hydrogen_debug = false;
+
+    if (!printed_hydrogen_debug) {
+        printed_hydrogen_debug = true;
+
+        std::cout << "\n=== HYDROGEN DEBUG ===\n";
+        std::cout << "H1 = " << comp["H1"] << "\n";
+        std::cout << "H2 = " << comp["H2"] << "\n";
+        std::cout << "H  = " << comp["H"]  << "\n";
+        std::cout << "H1+H2 = " << comp["H1"] + comp["H2"] << "\n";
+        std::cout << "======================\n";
+    }
+    */
+
 	double tot=comp.sum();
 	comp["Ex"] = 1 - tot;
 	comp["Xsol"] = data.Xsol;

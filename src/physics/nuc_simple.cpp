@@ -8,6 +8,17 @@
 
 int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,nuc_struct &nuc) {
 
+	static int nuc_simple_call_count = 0;
+	++nuc_simple_call_count;
+
+	std::cout << "[nuc_simple] call " << nuc_simple_call_count
+			<< "  nuc.name=" << nuc.name
+			<< "  T shape=(" << T.nrows() << "," << T.ncols() << ")"
+			<< "  rho shape=(" << rho.nrows() << "," << rho.ncols() << ")"
+			<< "  T(0,0)=" << T(0,0)
+			<< "  rho(0,0)=" << rho(0,0)
+			<< std::endl;
+			
 	matrix T9;
 	double O,C,N,XCNO;
 	double Z=comp.Z()(-1);

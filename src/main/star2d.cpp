@@ -140,6 +140,7 @@ int main(int argc,char *argv[]) {
         printf("mixture=%s, Zmix=%e\n",A.mixture.name,A.comp["Zsol"](0));
 		if(A.conv) printf("R. conv. core (p)=%3.3f Rsun\n",*(A.map.gl.xif+A.conv)*A.R/R_SUN);
 		printf("Virial test: %e Energy test: %e\n",A.virial(),A.energy_test());
+		printf("Energy test e1: %e Energy test e2: %e\n",A.luminosity(),A.energy_test_e2());
         printf("\n");
 	}
 

@@ -39,6 +39,10 @@ void star2d::remap(int ndom_in,int *npts_in,int nth_in,int nex_in) {
     red.set_nt(nth_in);
     red.set_nex(nex_in);
 
+    //printf("star_map: star2d::remap:\n");
+    //printf("ndom_in: %i\n",ndom_in);
+    //printf("ndomains: %i\n",ndomains);
+
     if(ndom_in!=ndomains) 
         remap_domains(ndom_in,red); // the new R_i are now known
 
@@ -95,6 +99,8 @@ bool star2d::remap_domains(int ndom, remapper &red) {
 	conv=0;
 	int n=0;
 	while(domain_type[n++]==CORE) conv++;
+
+    //printf("star_map: star2d::remap_domains called!\n");
 
 	return true;
 }

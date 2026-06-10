@@ -133,6 +133,7 @@ int main(int argc,char *argv[]) {
         //printf("(global) mixture=%s, Zmix=%e\n",global_abundance_map.mixture_name.c_str(),global_abundance_map.Zmix); // these should match - MG 
         printf("mixture=%s, Zmix=%e\n",A.mixture.name,A.comp["Zsol"](0));
 	printf("Virial test: %e Energy test: %e\n",A.virial(),A.energy_test());
+	printf("Energy test e1: %e Energy test e2: %e\n",A.luminosity(),A.energy_test_e2());
 
         if(A.conv) printf("r_cz=%3.3f Rsun\n",*(A.map.gl.xif+A.conv)*A.R/R_SUN);
     }

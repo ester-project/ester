@@ -5,7 +5,9 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
     message(FATAL_ERROR "In-source builds not allowed.")
 endif()
 
-set(CMAKE_CXX_STANDARD 11)
+#set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 23) # required for Gridfire, test 
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
@@ -44,6 +46,9 @@ find_package(SWIG REQUIRED)
 find_package(PythonInterp REQUIRED)
 find_package(HDF5 COMPONENTS CXX)
 # find_package(VTK 6.3)
+
+find_package(PkgConfig REQUIRED) # for GridFire
+pkg_check_modules(GRIDFIRE REQUIRED IMPORTED_TARGET gridfire)
 
 if(HDF5_FOUND)
     add_definitions(-DUSE_HDF5)
@@ -135,9 +140,16 @@ add_library(ester SHARED
     src/physics/opa_opmesa.F90
     src/physics/opa_opmesa.cpp
     src/physics/mesa_opacity_modules.F90
-    src/physics/cubic_interpolator.f90)
-target_link_libraries(ester cesam freeeos opint
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+    src/physics/cubic_interpolator.f90
+    src/physics/nuc_gridfire_v3.cpp)
+    #src/physics/nuc_gridfire_v3_prefix_with_composition.cpp)
+#target_link_libraries(ester cesam freeeos opint
+#    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+
+target_link_libraries(ester
+    cesam freeeos opint
+    PkgConfig::GRIDFIRE
+    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES}) # for gridfire
 
 add_custom_target(star_cfg ALL
     COMMAND sed -e 's,[@]extension[@],${EXT},g' < ${CMAKE_SOURCE_DIR}/config/star.cfg.in  > star.cfg

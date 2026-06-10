@@ -84,6 +84,8 @@ int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
     opa.dlnxi_lnrho.dim(T.nrows(), T.ncols());
     opa.dlnxi_lnT.dim(T.nrows(), T.ncols());
 
+
+    std::cout << "\n opa_opmesa.cpp, M_init: " << abundance_map.M_init << std::endl;
    
     for (int i=0; i<X.nrows(); i++) {
         for (int j=0; j<X.ncols(); j++) {

@@ -22,7 +22,7 @@ int main(int argc,char *argv[]) {
 	cmdline_parser cmd;
 
 	double step=1, age=0;
-	double maxStep = 10, minStep = 1e-4;
+	double maxStep = 100, minStep = 1e-4;
 	double min_max_err = 1e-2, max_max_err = 5e-2;
 	
 	char *arg,*val;
@@ -173,6 +173,8 @@ int main(int argc,char *argv[]) {
 				printf("Mcore/M: %e\n", A.Mcore()/A.M);
 				printf("Mean Rcore/R: %e (conv=%d)\n", (A.Rcore(), A.map.It)(0)/(A.r.row(-1), A.map.It)(0)/A.R, A.conv);
 				printf("Xcore: %e\n", A.comp["H"](0,0));
+				printf("Virial test: %e Energy test: %e\n",A.virial(),A.energy_test());
+				//printf("Energy test e1: %e Energy test e2: %e\n",A.luminosity(),A.energy_test_e2());
 
 				matrix theta = vector(0, M_PI/2., 64);
 				matrix r = A.map.leg.eval_00(A.r, theta);
