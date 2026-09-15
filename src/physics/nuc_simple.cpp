@@ -11,7 +11,9 @@ int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,nuc
 	static int nuc_simple_call_count = 0;
 	++nuc_simple_call_count;
 
-	std::cout << "[nuc_simple] call " << nuc_simple_call_count
+	//std::cout<<"quick print tests july 30th"<<std::endl;
+
+	std::cout << "[nuc_simple]" << nuc_simple_call_count
 			<< "  nuc.name=" << nuc.name
 			<< "  T shape=(" << T.nrows() << "," << T.ncols() << ")"
 			<< "  rho shape=(" << rho.nrows() << "," << rho.ncols() << ")"
@@ -65,5 +67,33 @@ int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,nuc
 		for(int j=0; j<nuc.eps.ncols(); j++)
 			if (X(i,j)==0) nuc.dlneps_lnT(i,j) = 0;
 
+
+	// ------------------------------------------------------------------
+	// TEST: fixed simple-network source cutoff.
+	// ------------------------------------------------------------------
+	
+	/*
+	constexpr int zero_tail_start = 150;
+
+	const int nr = T.nrows();
+	const int nth = T.ncols();
+
+	for (int i = zero_tail_start; i < nr; ++i) {
+		for (int j = 0; j < nth; ++j) {
+			nuc.pp(i,j) = 0.0;
+			nuc.cno(i,j) = 0.0;
+			nuc.eps(i,j) = 0.0;
+			nuc.dlneps_lnrho(i,j) = 0.0;
+			nuc.dlneps_lnT(i,j) = 0.0;
+		}
+	}
+
+	std::cerr
+		<< "[nuc_simple zero-tail test] zeroed indices "
+		<< zero_tail_start << ".." << nr - 1
+		<< "\n";
+	*/
+	
 	return 0;
+	
 }

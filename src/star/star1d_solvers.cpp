@@ -6,6 +6,10 @@
 #include <string.h>
 #include "symbolic.h"
 
+#include <fstream>
+#include <iomanip>
+#include <cmath>
+
 #include "matplotlib.h"
 
 void star1d::fill() {
@@ -180,6 +184,166 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     rho0=rho;
 
     fill();
+
+    
+
+    // ============================================================================
+    // MG ITERATION DIAGNOSTICS
+    //
+    // Newton corrections (dphi, dp, dT, dRi, dTc, dpc) describe the step
+    // which has just been applied.
+    //
+    // phi, p, T, rho, opa and nuc below are the UPDATED quantities after fill().
+    // Therefore nuc.eps and its derivatives are exactly the nuclear quantities
+    // associated with the new stellar state.
+    //
+    // Temporary diagnostic implementation. Can later be connected to
+    // config.dump_iter.
+    // ============================================================================
+    ///*
+    {
+        static bool diag_initialized = false;
+        static bool collect_data = true;
+        static std::string diag_keyword;
+
+        std::string collect_filename =
+            "../parameter_collect_test/tMax_1e7_output_parameters_Z"
+            + std::to_string(Z0)
+            + "_M_" + std::to_string(M/M_SUN)
+            + "_mix_" + mixture.name
+            + "_opa_" + opa.name
+            + "_eos_" + eos.name;
+
+        // Ask for a suffix once per ESTER process.
+        if (!diag_initialized) {
+
+            std::cout
+                << "Keyword to end of iteration-diagnostic filename: ";
+            std::getline(std::cin >> std::ws, diag_keyword);
+
+            const std::string full_filename =
+                collect_filename + diag_keyword + ".txt";
+
+            std::ifstream check_file(full_filename);
+
+            if (check_file.good()) {
+                char response;
+
+                std::cout
+                    << "Diagnostic file already exists. Continue appending? (y/n): ";
+
+                std::cin >> response;
+
+                if (response != 'y' && response != 'Y') {
+                    std::cerr
+                        << "Iteration diagnostics disabled. "
+                        << "Rename/delete the file or use a different keyword.\n";
+
+                    collect_data = false;
+                }
+            }
+
+            diag_initialized = true;
+        }
+
+
+        if (collect_data) {
+
+            const std::string full_filename =
+                collect_filename + diag_keyword + ".txt";
+
+            std::ofstream f(full_filename, std::ios::app);
+
+            if (!f) {
+                std::cerr
+                    << "Error opening iteration diagnostic file: "
+                    << full_filename << "\n";
+            }
+            else {
+
+                // --------------------------------------------------------------
+                // One header record per Newton iteration.
+                //
+                // Keep this at six quantities so your existing Python parser's
+                // header_labels remains compatible:
+                //
+                // ["h","q","err","Tc","pc","rhoc"]
+                // --------------------------------------------------------------
+
+                f << "---it=" << nit << "---\n";
+
+                f << std::setprecision(17)
+                << h << ","
+                << q << ","
+                << err << ","
+                << Tc << ","
+                << pc << ","
+                << rhoc
+                << "\n";
+
+
+                // --------------------------------------------------------------
+                // One record per radial collocation point.
+                //
+                // dRi, dTc and dpc only have meaningful entries associated
+                // with domain boundaries/global corrections. Elsewhere NaN is
+                // retained, matching your existing format.
+                // --------------------------------------------------------------
+
+                int domain_start = 0;
+
+                for (int domain = 0; domain < ndomains; ++domain) {
+
+                    const int domain_end =
+                        domain_start + map.gl.npts[domain] - 1;
+
+                    for (int i = domain_start; i <= domain_end; ++i) {
+
+                        const bool is_domain_end = (i == domain_end);
+
+                        const double logged_dRi =
+                            is_domain_end ? dRi(domain) : std::nan("");
+
+                        const double logged_dTc =
+                            is_domain_end ? dTc(0) : std::nan("");
+
+                        const double logged_dpc =
+                            is_domain_end ? dpc(0) : std::nan("");
+
+                        f << std::setprecision(17)
+                        << i << ","
+                        << dphi(i) << ","
+                        << phi(i) << ","
+                        << dp(i) << ","
+                        << p(i) << ","
+                        << dT(i) << ","
+                        << T(i) << ","
+                        << r(i) << ","
+                        << rho(i) << ","
+                        << opa.k(i) << ","
+                        << nuc.eps(i) << ","
+                        << nuc.dlneps_lnrho(i) << ","
+                        << nuc.dlneps_lnT(i) << ","
+                        << nuc.pp(i) << ","
+                        << nuc.cno(i) << ","
+                        //<< domain << ","
+                        //<< (is_domain_end ? 1 : 0) << ","
+                        << logged_dRi << ","
+                        << logged_dTc << ","
+                        << logged_dpc
+                        << "\n";
+                    }
+
+                    domain_start = domain_end + 1;
+                }
+
+                f.flush();
+            }
+        }
+    }//*/
+
+
+    // Existing convergence calculation follows.
 
     err2=max(abs(rho-rho0));err=err2>err?err2:err;
 

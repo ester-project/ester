@@ -24,6 +24,8 @@
 #include "fourdst/atomic/species.h"
 #include "fourdst/composition/composition.h"
 #include "fourdst/composition/utils.h"
+#include "gridfire/engine/scratchpads/engine_graph_scratchpad.h"
+#include "gridfire/engine/scratchpads/utils.h"
 
 namespace {
 
@@ -31,13 +33,34 @@ fourdst::composition::Composition build_test_composition(const composition_map& 
                                                          int i,
                                                          int j)
 {
+    //const std::vector<std::string> symbols = {
+    //    "H-1", "He-3", "He-4", "C-12", "N-14", "O-16", "Ne-20", "Mg-24"
+    //};
+
     const std::vector<std::string> symbols = {
-        "H-1", "He-3", "He-4", "C-12", "N-14", "O-16", "Ne-20", "Mg-24"
+        "H-1", "H-2", "H-3", "n-1",
+        "He-3", "He-4", "C-12", "N-14",
+        "O-16", "Ne-20", "Mg-24"
     };
 
+    //
+    //std::vector<double> X = {
+    //    comp["H1"](i,j), comp["He3"](i,j), comp["He4"](i,j), comp["C12"](i,j),
+    //    comp["N14"](i,j), comp["O16"](i,j), comp["Ne20"](i,j), comp["Mg24"](i,j)
+    //};
+
     std::vector<double> X = {
-        comp["H1"](i,j), comp["He3"](i,j), comp["He4"](i,j), comp["C12"](i,j),
-        comp["N14"](i,j), comp["O16"](i,j), comp["Ne20"](i,j), comp["Mg24"](i,j)
+        comp["H1"](i,j),
+        0.0,              // H-2 diagnostic zero
+        0.0,              // H-3 diagnostic zero
+        0.0,              // n-1 diagnostic zero
+        comp["He3"](i,j),
+        comp["He4"](i,j),
+        comp["C12"](i,j),
+        comp["N14"](i,j),
+        comp["O16"](i,j),
+        comp["Ne20"](i,j),
+        comp["Mg24"](i,j)
     };
 
     double sum_selected = 0.0;
@@ -218,62 +241,6 @@ struct GridfireRuntime {
     GridfireRuntime& operator=(const GridfireRuntime&) = delete;
 };
 
-/*struct GridfireRuntime {
-    std::unique_ptr<gridfire::engine::GraphEngine> engine;
-    std::unique_ptr<gridfire::engine::scratch::StateBlob> ctx_template;
-
-    std::unique_ptr<gridfire::solver::PointSolver> localSolver;
-    std::unique_ptr<gridfire::solver::GridSolverContext> solverCtx;
-    std::unique_ptr<gridfire::solver::GridSolver> gridSolver;
-
-    explicit GridfireRuntime(const fourdst::composition::Composition& seedComposition)
-        : engine(nullptr),
-          ctx_template(nullptr),
-          localSolver(nullptr),
-          solverCtx(nullptr),
-          gridSolver(nullptr)
-    {
-        std::cerr << "[GridFireRuntime GraphEngine] start\n" << std::flush;
-
-        engine = std::make_unique<gridfire::engine::GraphEngine>(
-            seedComposition,
-            3
-        );
-
-        ctx_template = engine->constructStateBlob(nullptr);
-        localSolver = std::make_unique<gridfire::solver::PointSolver>(*engine);
-
-        solverCtx = std::make_unique<gridfire::solver::GridSolverContext>(
-            *ctx_template
-        );
-
-        solverCtx->zone_completion_logging = false;
-        solverCtx->set_stdout_logging(false);
-        solverCtx->set_detailed_logging(false);
-
-        gridSolver = std::make_unique<gridfire::solver::GridSolver>(
-            *engine,
-            *localSolver
-        );
-
-        std::cerr << "[GridFireRuntime GraphEngine] done\n" << std::flush;
-    }
-
-    void reset_context()
-    {
-        solverCtx = std::make_unique<gridfire::solver::GridSolverContext>(
-            *ctx_template
-        );
-
-        solverCtx->zone_completion_logging = false;
-        solverCtx->set_stdout_logging(false);
-        solverCtx->set_detailed_logging(false);
-    }
-
-    GridfireRuntime(const GridfireRuntime&) = delete;
-    GridfireRuntime& operator=(const GridfireRuntime&) = delete;
-}; */ // trying something out with out MS policy 
-
 GridfireRuntime& gridfire_runtime(const composition_map& comp,
                                   const matrix& T,
                                   const matrix& rho,
@@ -285,93 +252,6 @@ GridfireRuntime& gridfire_runtime(const composition_map& comp,
         runtime = std::make_unique<GridfireRuntime>(seed.composition);
     }
     return *runtime;
-}
-
-double test_pointsolver_eps_inst(GridfireRuntime& runtime,
-                                 const gridfire::NetIn& netIn)
-{
-    double eps_inst = std::numeric_limits<double>::quiet_NaN();
-    int callback_count = 0;
-
-    auto& [constructed_engine, ctx_template] = *runtime.constructed;
-    gridfire::solver::PointSolverContext point_ctx(*ctx_template);
-
-    //gridfire::solver::PointSolverContext point_ctx(*runtime.ctx_template); // for without MS policy
-
-    point_ctx.set_stdout_logging(true);
-    point_ctx.set_detailed_logging(true);
-
-    /*point_ctx.callback =
-        [&eps_inst, &callback_count]
-        (const gridfire::solver::PointSolverTimestepContext& ctx)
-        {
-            callback_count++;
-
-            auto rhs_calc =
-                ctx.engine.getMostRecentRHSCalculation(ctx.state_ctx);
-
-            if (rhs_calc.has_value()) {
-                eps_inst = rhs_calc->nuclearEnergyGenerationRate;
-            }
-        };*/
-
-    /*point_ctx.callback =
-            [&callback_count]
-            (const gridfire::solver::PointSolverTimestepContext& ctx)
-            {
-                callback_count++;
-
-                if (callback_count <= 5) {
-                    std::cerr << "[PointSolver callback] count="
-                            << callback_count
-                            << " t=" << ctx.t
-                            << " num_steps=" << ctx.num_steps
-                            << " T9=" << ctx.T9
-                            << " rho=" << ctx.rho
-                            << "\n" << std::flush;
-                }
-            };*/
-
-
-    
-    point_ctx.callback =
-    [&eps_inst, &callback_count]
-    (const gridfire::solver::PointSolverTimestepContext& ctx)
-    {
-        callback_count++;
-
-        std::cerr << "[PointSolver callback] before RHS count="
-                  << callback_count
-                  << "\n" << std::flush;
-
-        auto rhs_calc =
-            ctx.engine.getMostRecentRHSCalculation(ctx.state_ctx);
-
-        std::cerr << "[PointSolver callback] after RHS count="
-                  << callback_count
-                  << " has_value="
-                  << rhs_calc.has_value()
-                  << "\n" << std::flush;
-
-        if (rhs_calc.has_value()) {
-            eps_inst = rhs_calc->nuclearEnergyGenerationRate;
-        }
-    };
-
-    const gridfire::NetOut out =
-        runtime.localSolver->evaluate(point_ctx, netIn);
-
-    std::cerr << "[PointSolver test] callbacks="
-              << callback_count
-              << " eps_inst="
-              << eps_inst
-              << " NetOut.energy="
-              << out.energy
-              << " num_steps="
-              << out.num_steps
-              << "\n" << std::flush;
-
-    return eps_inst;
 }
 
 std::vector<GridfireDiag> run_gridfire_profile(GridfireRuntime& runtime,
@@ -397,13 +277,6 @@ std::vector<GridfireDiag> run_gridfire_profile(GridfireRuntime& runtime,
         }
     }
 
-    //std::cerr << "[run_gridfire_profile] netIns built: "
-    //      << netIns.size() << "\n" << std::flush;
-
-    if (!netIns.empty()) {
-        test_pointsolver_eps_inst(runtime, netIns[0]);
-    }
-
     try {
 
         //runtime.reset_context();
@@ -416,57 +289,6 @@ std::vector<GridfireDiag> run_gridfire_profile(GridfireRuntime& runtime,
         //std::cerr << "[run_gridfire_profile] before evaluate\n" << std::flush;
         //const std::vector<gridfire::NetOut> netOuts =
         //    runtime.gridSolver->evaluate(*runtime.solverCtx, netIns); //replacing this with below
-
-        std::vector<double> eps_inst_cache(
-            netIns.size(),
-            std::numeric_limits<double>::quiet_NaN()
-        );
-
-        std::vector<int> callback_count(
-            netIns.size(),
-            0
-        );
-
-        runtime.solverCtx->timestep_callbacks.clear();
-        runtime.solverCtx->timestep_callbacks.resize(netIns.size());
-
-        for (size_t kk = 0; kk < netIns.size(); ++kk) {
-            runtime.solverCtx->set_callback(
-                [&eps_inst_cache, &callback_count, kk]
-                (const gridfire::solver::TimestepContextBase& base_ctx)
-                {
-                    callback_count[kk]++;
-
-                    const auto* ctx =
-                        dynamic_cast<
-                            const gridfire::solver::PointSolverTimestepContext*
-                        >(&base_ctx);
-
-                    if (!ctx) return;
-
-                    auto rhs_calc =
-                        ctx->engine.getMostRecentRHSCalculation(
-                            ctx->state_ctx
-                        );
-
-                    if (rhs_calc.has_value()) {
-                        eps_inst_cache[kk] =
-                            rhs_calc->nuclearEnergyGenerationRate;
-                    }
-
-                    if (kk == 0 && callback_count[kk] <= 5) {
-                        std::cerr
-                            << "[callback] kk=0 count="
-                            << callback_count[kk]
-                            << " rhs="
-                            << rhs_calc.has_value()
-                            << "\n"
-                            << std::flush;
-                    }
-                },
-                kk
-            );
-        }
 
         //std::cerr << "[run_gridfire_profile] before evaluate\n" << std::flush;
         const std::vector<gridfire::NetOut> netOuts =
@@ -527,14 +349,6 @@ std::vector<GridfireDiag> run_gridfire_profile(GridfireRuntime& runtime,
             }
         }*/
 
-        std::cerr
-            << "[callback summary] count[0]="
-            << callback_count[0]
-            << " count[last]="
-            << callback_count.back()
-            << "\n"
-            << std::flush;
-
         //std::cerr << "[run_gridfire_profile] after evaluate, netOuts.size()="
         //        << netOuts.size() << "\n" << std::flush;
 
@@ -547,9 +361,31 @@ std::vector<GridfireDiag> run_gridfire_profile(GridfireRuntime& runtime,
             const int i = k / nth;
             const int j = k % nth;
 
-            //std::cerr << "[post] k=" << k << "\n" << std::flush;
 
             GridfireDiag& diag = diags[k];
+
+            std::cerr << "[post] k=" << k << "\n" << std::flush;
+
+            auto* zone_ctx = dynamic_cast<gridfire::solver::PointSolverContext*>(
+                runtime.solverCtx->solver_workspaces[k].get()
+            );
+
+            if (zone_ctx && zone_ctx->engine_ctx) {
+
+                std::cout << "just before getMostRecentRHSCalculation" << std::endl;
+
+                auto rhs_calc =
+                    runtime.engine->getMostRecentRHSCalculation(*zone_ctx->engine_ctx);
+
+                std::cout << "just after getMostRecentRHSCalculation" << std::endl;
+
+
+                if (rhs_calc.has_value()) {
+                    diag.eps_inst = rhs_calc->nuclearEnergyGenerationRate;
+                }
+            }
+
+            //GridfireDiag& diag = diags[k];
             const auto& out = netOuts[k];
             diag.num_steps = out.num_steps;
             diag.deps_dT = out.dEps_dT;
@@ -582,7 +418,7 @@ std::vector<GridfireDiag> run_gridfire_profile(GridfireRuntime& runtime,
             }
 
             */
-            diag.eps_inst = eps_inst_cache[k];
+            //diag.eps_inst = eps_inst_cache[k];
 
 
 

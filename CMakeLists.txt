@@ -23,6 +23,12 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
         "-g -O3"
         " -fno-align-commons -fdefault-real-8 -fdefault-double-8"
         " -ffixed-line-length-none -O -w -fd-lines-as-comments")
+    #string(CONCAT CMAKE_Fortran_FLAGS
+    #"-g -O3"
+    #" -fno-align-commons -fdefault-real-8 -fdefault-double-8"
+    #" -ffixed-line-length-none -O -w -fd-lines-as-comments"
+    #" -fallow-argument-mismatch")
+
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
     string(CONCAT CMAKE_Fortran_FLAGS
         "-g -O3"
@@ -32,7 +38,8 @@ else()
     message(FATAL_ERROR "Unknown Fortran compiler: ${CMAKE_Fortran_COMPILER_ID}")
 endif()
 
-set(CMAKE_CXX_FLAGS "-g")
+#set(CMAKE_CXX_FLAGS "-g")
+string(APPEND CMAKE_CXX_FLAGS " -g")
 
 # Find libarries
 find_package(BLAS REQUIRED)
@@ -47,8 +54,34 @@ find_package(PythonInterp REQUIRED)
 find_package(HDF5 COMPONENTS CXX)
 # find_package(VTK 6.3)
 
-find_package(PkgConfig REQUIRED) # for GridFire
-pkg_check_modules(GRIDFIRE REQUIRED IMPORTED_TARGET gridfire)
+# GridFire is linked directly from the pip installation.
+# GridFire / FourDST installed from pip
+
+set(GRIDFIRE_ROOT
+    "$ENV{HOME}/.local/lib/python3.10/site-packages/gridfire"
+    CACHE PATH "Root of the pip-installed GridFire package")
+
+set(FOURDST_ROOT
+    "$ENV{HOME}/.local/lib/python3.10/site-packages/fourdst"
+    CACHE PATH "Root of the pip-installed FourDST package")
+
+find_path(GRIDFIRE_INCLUDE_DIR
+    NAMES gridfire/gridfire.h
+    PATHS "${GRIDFIRE_ROOT}/include"
+    NO_DEFAULT_PATH
+    REQUIRED)
+
+find_path(FOURDST_INCLUDE_DIR
+    NAMES fourdst/config/config.h
+    PATHS "${FOURDST_ROOT}/include"
+    NO_DEFAULT_PATH
+    REQUIRED)
+
+find_library(GRIDFIRE_LIBRARY
+    NAMES gridfire
+    PATHS "${GRIDFIRE_ROOT}/lib"
+    NO_DEFAULT_PATH
+    REQUIRED)
 
 if(HDF5_FOUND)
     add_definitions(-DUSE_HDF5)
@@ -141,15 +174,45 @@ add_library(ester SHARED
     src/physics/opa_opmesa.cpp
     src/physics/mesa_opacity_modules.F90
     src/physics/cubic_interpolator.f90
-    src/physics/nuc_gridfire_v3.cpp)
+    #src/physics/nuc_gridfire_v3.cpp)
     #src/physics/nuc_gridfire_v3_prefix_with_composition.cpp)
+#    src/physics/nuc_gridfire_v3_embedded_bucket_probe.cpp)
+#    src/physics/nuc_gridfire_v3_embedded_bucket_probe_raw_diagnostics.cpp)
+    src/physics/nuc_gridfire_v4_test.cpp)
+
 #target_link_libraries(ester cesam freeeos opint
 #    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 
+#target_link_libraries(ester
+#    cesam freeeos opint
+#    #PkgConfig::GRIDFIRE
+#    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES}) # for gridfire
+
+#target_include_directories(ester PRIVATE
+#    "${GRIDFIRE_INCLUDE_DIR}"
+#    "${GRIDFIRE_ROOT}/include/gridfire/vendor"
+#)
+
+target_include_directories(ester PRIVATE
+    "${FOURDST_INCLUDE_DIR}"
+    "${GRIDFIRE_INCLUDE_DIR}"
+    "${GRIDFIRE_ROOT}/include/gridfire/vendor"
+)
+
 target_link_libraries(ester
-    cesam freeeos opint
-    PkgConfig::GRIDFIRE
-    ${LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES}) # for gridfire
+    cesam
+    freeeos
+    opint
+    "${GRIDFIRE_LIBRARY}"
+    ${LIBS}
+    ${LAPACK_LIBRARIES}
+    ${BLAS_LIBRARIES}
+)
+
+set_target_properties(ester PROPERTIES
+    BUILD_RPATH "${GRIDFIRE_ROOT}/lib"
+    INSTALL_RPATH "${GRIDFIRE_ROOT}/lib;${CMAKE_INSTALL_PREFIX}/lib"
+)
 
 add_custom_target(star_cfg ALL
     COMMAND sed -e 's,[@]extension[@],${EXT},g' < ${CMAKE_SOURCE_DIR}/config/star.cfg.in  > star.cfg
