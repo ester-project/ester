@@ -178,11 +178,150 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
     } else {
         map.leg.npts=1;
         map.init();
-        T=1-0.5*r*r;
-        p=T;
+
+
+
+        //T=1-0.5*r*r;
+        //p=T;
+        //phi=-T;
+        
+        /* -------------------------------------------------------
+        Temporary low-mass polytrope initial-profile test
+        ------------------------------------------------------- */
+
+        const int nsrc = 51;
+
+        matrix r_source(nsrc,1);
+        matrix T_source(nsrc,1);
+        matrix p_source(nsrc,1);
+
+        FILE *fp = fopen(
+            "/home/mgent/Documents/Postdoc/ESTER_projects/low_mass/low_mass_polytrope_initial_profile_ester.dat",
+            "r"
+        );
+
+        if (!fp) {
+            ester_err("Could not open initial profile file\n");
+        }
+
+        for (int i=0; i<nsrc; i++) {
+
+            if (fscanf(
+                fp,
+                "%lf %lf %lf",
+                &r_source(i),
+                &T_source(i),
+                &p_source(i)
+            ) != 3) {
+                fclose(fp);
+                ester_err("Error reading initial profile file\n");
+            }
+        }
+
+        fclose(fp);
+
+        mapping source_map;
+
+        source_map.set_ndomains(1);
+        source_map.set_npts(nsrc);
+        source_map.gl.set_xif(0., 1.);
+        source_map.set_nt(1);
+        source_map.init();
+
+        for (int i=0; i<nsrc; i++) {
+            printf(
+                "source %3d  r_file=% .16e  r_GL=% .16e  diff=% .3e\n",
+                i,
+                r_source(i),
+                source_map.gl.x(i),
+                r_source(i)-source_map.gl.x(i)
+            );
+        }
+
+        T = source_map.gl.eval(T_source, this->map.r);
+        p = source_map.gl.eval(p_source, this->map.r);
+        
+        matrix T_old = 1-0.5*r*r;
+        matrix p_old = T_old;
+
+
+        for (int i=0; i<this->map.r.nrows(); i++) {
+            printf(
+                "ESTER_INIT %4d  "
+                "r=% .16e  "
+                "T_new=% .16e  T_old=% .16e  "
+                "p_new=% .16e  p_old=% .16e\n",
+                i,
+                this->map.r(i),
+                T(i),
+                T_old(i),
+                p(i),
+                p_old(i)
+            );
+        }
+
         phi=-T;
+
+
+        // ------------------------------------------------------------
+        // DEBUG: compare initialisation profiles
+        // ------------------------------------------------------------
+
+        printf("\n--- INITIALISATION DEBUG ---\n");
+        printf("config.init_poly = %d\n", (int)config.init_poly);
+
+        // Save the externally loaded profile before doing any comparison
+        matrix T_external = T;
+        matrix p_external = p;
+
+        // Original simple ESTER guess
+        matrix T_simple = 1.0 - 0.5*r*r;
+        matrix p_simple = T_simple;
+
+        // Existing ESTER polytropic initializer
+        double n_debug = 3.0;
+        matrix h_debug = solve_poly1d(n_debug, 1e-10, 40, 1e-1);
+
+        mapping map_debug;
+        map_debug.set_ndomains(1);
+        map_debug.set_npts(40);
+        map_debug.gl.set_xif(0., 1.);
+        map_debug.set_nt(1);
+        map_debug.init();
+
+        h_debug = map_debug.gl.eval(h_debug, this->map.r);
+
+        matrix T_poly3 = h_debug;
+        matrix p_poly3 = pow(h_debug, n_debug + 1.0);
+
+        printf(
+            "# i  r  T_simple  T_poly3  T_external  "
+            "p_simple  p_poly3  p_external\n"
+        );
+
+        for (int i=0; i<this->map.r.nrows(); i++) {
+            printf(
+                "INIT_COMPARE %4d "
+                "% .16e  "
+                "% .16e  % .16e  % .16e  "
+                "% .16e  % .16e  % .16e\n",
+                i,
+                this->map.r(i),
+                T_simple(i),
+                T_poly3(i),
+                T_external(i),
+                p_simple(i),
+                p_poly3(i),
+                p_external(i)
+            );
+        }
+
+        printf("--- END INITIALISATION DEBUG ---\n\n");
+
         if (config.init_poly) {
-            double n = 1.5;
+
+            printf("WARNING: config.init_poly is TRUE -- old polytropic initializer would overwrite loaded profile\n");
+            /*double n = 1.5;
             n = 3.;
             matrix h = solve_poly1d(n, 1e-10, 40, 1e-1);
 
@@ -197,7 +336,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
 
             p = pow(h, n+1);
             rho = pow(h, n);
-            T = p/rho;
+            T = p/rho;*/
         }
         G=0*T;
         w=0*T;

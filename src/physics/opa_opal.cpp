@@ -46,12 +46,63 @@ int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
 		if(opa.k(i)==-99) error=1;
 		dlnkT(i)=dlogkt;
 		dlnkrho(i)=dlogkr;
+
+        double T6_debug = T(i)*1e-6;
+        double R_opal   = rho(i)/(T6_debug*T6_debug*T6_debug);
+        double logT     = log10(T(i));
+        double logR     = log10(R_opal);
+
+        if (i >= 315 && i <= 325) {
+            printf(
+                "OPAL_DIAG "
+                "i=%4d  "
+                "T=% .16e  "
+                "rho=% .16e  "
+                "T6=% .16e  "
+                "R_OPAL=% .16e  "
+                "logT=% .16e  "
+                "logR=% .16e  "
+                "opact=% .16e\n",
+                i,
+                T(i),
+                rho(i),
+                T6_debug,
+                R_opal,
+                logT,
+                logR,
+                opa.k(i)
+            );
+        }
+
+        if (opa.k(i) == -99) {
+
+            printf("\nValues outside OPAL opacity table\n");
+            printf("  i        = %d\n", i);
+            printf("  X        = %.16e\n", X(i));
+            printf("  Z        = %.16e\n", Z);
+            printf("  T        = %.16e K\n", T(i));
+            printf("  rho      = %.16e g/cm^3\n", rho(i));
+            printf("  T6       = %.16e\n", T6_debug);
+            printf("  R_OPAL   = %.16e\n", R_opal);
+            printf("  logT     = %.16e\n", logT);
+            printf("  logR     = %.16e\n", logR);
+
+            print_stack();
+            exit(EXIT_FAILURE);
+        }
+
         if (error) {
+
+            double T6_debug = T(i)*1e-6;
+            double R_debug  = rho(i)/(T6_debug*T6_debug*T6_debug);
+
             printf("Values outside OPAL opacity table\n");
             printf("  X   = %e\n", X(i));
             printf("  Z   = %e\n", Z);
             printf("  T   = %e\n", T(i));
             printf("  rho = %e\n", rho(i));
+            printf(" i = %i\n",i);
+            printf("  R_OPAL   = %e\n", R_debug);
             print_stack();
             exit(EXIT_FAILURE);
         }

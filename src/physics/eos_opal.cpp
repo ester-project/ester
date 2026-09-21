@@ -61,6 +61,8 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
     	Xi=X(i);Zi=Z;t6i=t6(i);p_mbi=p_mb(i);
     	eos5_xtrin_(&Xi,&Zi,&t6i,&p_mbi,&rhoi);
     	rho(i)=rhoi;
+        printf("  i   = %i\n", i);
+        printf("  rho   = %e\n", rho(i));
     	eos.s(i)=1e6*(*(eeos_.eos+2));
 		eos.G1(i)=*(eeos_.eos+7);
 		eos.del_ad(i)=1/(*(eeos_.eos+8));
