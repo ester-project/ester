@@ -182,7 +182,7 @@ add_compile_definitions(PACKAGE_VERSION="${PROJECT_VERSION}")
 
 #add_library(ester SHARED # was previous
 #add_library(ester STATIC
-set(ESTER_SOURCES
+set(ESTER_CPP_FILES
     src/global/global.cpp
     src/solver/RKF_solver.cpp
     src/main/read_config.cpp
@@ -244,18 +244,18 @@ set(ESTER_SOURCES
     src/physics/read_hdf5_data.cpp)
 
 if(NOT NOPLOT)
-    list(PREPEND ESTER_SOURCES src/graphics/matplotlib.cpp)
+    list(PREPEND ESTER_CPP_FILES src/graphics/matplotlib.cpp)
     # NOTE: only used for matplotlib
     list(APPEND OPTIONAL_LIBS ${PYTHON_LIBRARIES})
 endif()
 
 if(ESTER_USE_LIBMESAC)
-    list(APPEND ESTER_SOURCES
+    list(APPEND ESTER_CPP_FILES
         src/physics/opa_mesa_wrapper.cpp
         src/physics/eos_mesa_wrapper.cpp)
 endif()
 
-add_library(ester SHARED ${ESTER_SOURCES})
+add_library(ester SHARED ${ESTER_CPP_FILES})
 
 # Explicitly add HDF5 Fortran libraries
 set(HDF5_FORTRAN_LIBS hdf5_fortran hdf5hl_fortran hdf5 hdf5_hl)
