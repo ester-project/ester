@@ -28,6 +28,8 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/modules)
 
+option("NOPLOT" "Disable matplotlib C++ code at compiling time." OFF)
+
 if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
     string(CONCAT CMAKE_Fortran_FLAGS
         "${CMAKE_Fortran_FLAGS} "
@@ -69,6 +71,10 @@ if(VTK_FOUND)
     set(OPTIONAL_LIBS "${OPTIONAL_LIBS};${VTK_LIBRARIES}")
 else()
     add_compile_definitions(ENABLE_PLT)
+endif()
+
+if(NOPLOT)
+    add_compile_definitions(NOPLOT)
 endif()
 
 ###
@@ -178,7 +184,6 @@ add_compile_definitions(PACKAGE_VERSION="${PROJECT_VERSION}")
 #add_library(ester STATIC
 set(ESTER_SOURCES
     src/global/global.cpp
-    src/graphics/matplotlib.cpp
     src/solver/RKF_solver.cpp
     src/main/read_config.cpp
     src/solver/SDIRK_solver.cpp
@@ -238,6 +243,11 @@ set(ESTER_SOURCES
     src/physics/cubic_interpolator.f90
     src/physics/read_hdf5_data.cpp)
 
+if(NOT NOPLOT)
+    list(PREPEND ESTER_SOURCES src/graphics/matplotlib.cpp)
+    # NOTE: only used for matplotlib
+    list(APPEND OPTIONAL_LIBS ${PYTHON_LIBRARIES})
+endif()
 
 if(ESTER_USE_LIBMESAC)
     list(APPEND ESTER_SOURCES
@@ -260,7 +270,6 @@ target_link_libraries(ester
         ${LAPACK_LIBRARIES}
         ${BLAS_LIBRARIES}
         ${CBLAS_LIBRARIES}
-        ${PYTHON_LIBRARIES}
         ${HDF5_LIBRARIES}       # C/C++ HDF5
 )
 

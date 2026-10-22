@@ -7,7 +7,9 @@
 #include "symbolic.h"
 #include <stdio.h>
 #include <iomanip>
+#ifndef NOPLOT
 #include "matplotlib.h"
+#endif
 #include <fstream> 
 #include <string>
 #include <cmath>  // For NaN
