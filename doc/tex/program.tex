@@ -272,7 +272,12 @@ schemes", {\it Bull. Ast. Soc. India}, {\bf 24}, 317.
 \end{itemize}
 \item {\tt nuc}. Type of nuclear reactions. Possible values are:
 \begin{itemize}
-\item {\tt simple}. Simplified formulation of pp and CNO cycles. 
+\item {\tt simple\_CN}. Simplified formulation of pp and CNO cycles.
+Here the abundance of X$_{\rm CNO}$ is given by $(C+N)*Z$.
+\item {\tt simple\_ON}. Simplified formulation of pp and CNO cycles. 
+Here the abundance of X$_{\rm CNO}$ is given by $(O+N)*Z$. Since Carbon
+and Oxygen abundance (relative to metallicity Z) differ, the energy
+production differs, and so the luminosity.
 \item {\tt cesam}. NACRE reaction rates as implemented in the ppcno9 chain of the CESAM code.
 \end{itemize}
 \item {\tt atm}. Type of atmosphere. At the moment, only {\tt simple} is implemented.

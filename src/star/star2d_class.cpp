@@ -8,7 +8,10 @@
 #include <string.h>
 #include <cstdlib>
 #include <H5Cpp.h>
+#ifndef NOPLOT
 #include "matplotlib.h"
+#endif
+
 #include "physics.h"
 
 #include <iostream>
@@ -424,7 +427,7 @@ int star2d::hdf5_read(const char *input_file, int dim) {
 
     if (read_attr<H5std_string&>(star, "nuc.name", buf)) {
         ester_warn("Could not read 'nuc.name' from file `%s'", input_file);
-        buf = H5std_string("simple");
+        buf = H5std_string("simple_CN");
     }
     strncpy(nuc.name, buf.c_str(), sizeof(nuc.name));
 
@@ -995,6 +998,7 @@ void star2d::dump_info() {
 }
 
 void star2d::plot(const matrix_map& error) {
+#ifndef NOPLOT
 
     matrix theta = vector(0, 2*M_PI, 64);
     matrix r = map.leg.eval_00(this->r, theta);
@@ -1057,4 +1061,6 @@ void star2d::plot(const matrix_map& error) {
 
     plt::draw();
     plt::pause();
+
+#endif
 }

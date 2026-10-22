@@ -2,7 +2,10 @@
 #include "ester-config.h"
 #endif
 #include "star.h"
+#ifndef NOPLOT
 #include "matplotlib.h"
+#endif
+
 
 extern "C" {
 #include <string.h>
