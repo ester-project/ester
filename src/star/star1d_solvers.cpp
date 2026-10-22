@@ -173,102 +173,163 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
 
     dRi=op->get_var("Ri");
     error_map["Ri"](nit) = max(abs(dRi));
-    update_map(h*dRi);
-    
-    //cout << "ndomains: " << ndomains << ", nr: " << nr << ", npts_1st: " << map.gl.npts[0] << ", npts_nth: " << map.gl.npts[ndomains-1] << endl;
-    
-    //opa_k=op->get_var("opa.k")
-    
-    err2=max(abs(dRi));err=err2>err?err2:err; //moved here, to incorperate storing error, why not in error map above? seems strange. 
 
-    
-    //std::cout << std::right << std::setw(10) << dphi(-1) << "," << dp(-1) << "," << dT(-1) << "," << dpc(-1) << "," << dTc(-1) << "," << dRi(-1) << "," << h << "," << q << "," << err << "," << err2 << std::endl;
-    
-    //std::cout << "rhoc: " << rhoc << Tc << std::endl;
-    //matrix drho = zeros(nr,1); // initlisation 
-    
-    //std::cout << "config.output_file: " << output_file << std::endl;
+    err2=max(abs(dRi));err=err2>err?err2:err; //moved here, to incorperate storing error, why not in error map above? seems strange.
     
     //cout << "surff: " << surff << ", core_convec: " << core_convec << endl;
     
-    fstream f;
-    //string collect_filename = "../parameter_collect_test/output_parameters_Z" + std::to_string(Z0)+ "_M_" + std::to_string(M/M_SUN) + "_mix_" + mixture.name + "_opa_" + opa.name + "_eos_" + eos.name + "_core_convec_" + std::to_string(core_convec) + "_surff_" + std::to_string(surff);
-    
-    string collect_filename = "../parameter_collect_test/output_parameters_Z" + std::to_string(Z0)+ "_M_" + std::to_string(M/M_SUN) + "_mix_" + mixture.name + "_opa_" + opa.name + "_eos_" + eos.name;
-    
-    // Flag to control data collection
-    //static bool collect_data = true;
-    
-	// If first iteration, check if the file exists
-	if (nit == 0) {
-	
-		//std::string keyword; // does this reset every time?? 
-	    cout << "Keyword to end of filename: ";
-	    std::getline(std::cin, keyword);
-		//cin >> keyword;
-	
-	    ifstream check_file(collect_filename + keyword + ".txt");
-	    
-	    if (check_file.good()) { // File exists
-		char response;
-		cout << "File exists: continue appending? (y/n): ";
-		cin >> response;
+    if (config.logger) {
 
-		if (response != 'y' && response != 'Y') {
-		    cerr << "File exists: change name, move or delete." << endl;
-		    collect_data = false; // Set flag to false, so no data collection 
-		}
-	    }
-	}
-	
-	collect_data = false; // setting it to false in star.h isn't working - MG 26/08/2025
-	
-	if (collect_data) {
-	
-		//cout << "collecting data!" << collect_data << endl;
-    
-		f.open(collect_filename + keyword + ".txt", ios::app);
-		if (!f)
-		    cout << "Error opening/making file!";
-		else {
-		
-		    f << "---it=" << nit << "---" << std::endl;
-			//f << h << "," << q << "," << err << "," << dTc(0) << dpc(0) << std::endl;
-		    f << h << "," << q << "," << err << "," << Tc << "," << pc << "," << rhoc  << std::endl;
-		            
-		    int npts_counter = map.gl.npts[0];
-		    int domain_counter = 0; 
-		    for (int i = 0; i < nr; i++) {
-		            //std::cout << "i: " << i << std::endl;
-		    	
-		    	if (i + 1 == map.gl.npts[0]){ // the first domain 
-		    	   f << std::right << std::setw(10) << i << "," << dphi(i) << "," << phi(i) << "," << dp(i) << "," << p(i) << "," << dT(i) << "," << T(i) << "," << rho(i) << "," << opa.k(i) << "," << dRi(0) << "," << dTc(0) << "," << dpc(0) << std::endl;
-		    	domain_counter += 1;        	   
-		    	}
-		    	
-		    	else if (i + 1 == npts_counter + map.gl.npts[domain_counter]){
-		    	   f << std::right << std::setw(10) << i << "," << dphi(i) << "," << phi(i) << "," << dp(i) << "," << p(i) << "," << dT(i) << "," << T(i) << "," << rho(i) << "," << opa.k(i) << "," << dRi(domain_counter) << "," << dTc(domain_counter) << "," << dpc(domain_counter) << std::endl;        	
-		    	domain_counter += 1;
-			    npts_counter += map.gl.npts[domain_counter];
-		    	}
-		    	else{
-				f << std::right << std::setw(10) << i << "," << dphi(i) << "," << phi(i) << "," << dp(i) << "," << p(i) << "," << dT(i) << "," << T(i) << "," << rho(i) << "," << opa.k(i) << "," << std::nan("") << "," << std::nan("") << "," << std::nan("") << std::endl;       	
-		    	}
-		    	        	
-		    	}
-		    
-		    f.close();
-		    }
-	}
-	
-	//cout << "opa.k(0): " << opa.k(0) << endl;
-	//cout << "opa.k(-1): " << opa.k(-1) << endl;
-	//cout << "opa.k(359): " << opa.k(359) << endl;
-	
-	//if (nit > 27){
-	//cout << "i = 346, before update: " << T(346)*Tc*1e-6 << "," << dT(346) << "," << p(346)*pc*1e-12 << "," << dp(346) << endl;
-	//cout << "i = 359, before update: " << T(359)*Tc*1e-6 << "," << dT(359) << "," << p(359)*pc*1e-12 << "," << dp(359) << endl;
-    //}
+        /* Split the -logger argument into directory and keyword.
+
+         Example:
+           -logger ../../parameter_collect_test/opa_eos_mesa_run_1
+
+         gives:
+           logger_dir     = "../../parameter_collect_test/"
+           logger_keyword = "opa_eos_mesa_run_1"
+
+        */
+
+        std::string logger_dir;
+        std::string logger_keyword;
+
+        const std::size_t slash =
+            config.logger_target.find_last_of("/\\");
+
+        if (slash == std::string::npos) {
+            logger_dir = "";
+            logger_keyword = config.logger_target;
+        } else {
+            logger_dir = config.logger_target.substr(0, slash + 1);
+            logger_keyword = config.logger_target.substr(slash + 1);
+        }
+
+        if (logger_keyword.empty()) {
+            fprintf(stderr,
+                    "Error: -logger requires a filename keyword\n");
+            exit(EXIT_FAILURE);
+        }
+
+        const std::string collect_filename =
+            logger_dir
+            + "output_parameters_Z" + std::to_string(Z0)
+            + "_X_" + std::to_string(X0)
+            + "_M_" + std::to_string(M/M_SUN)
+            + "_mix_" + mixture.name
+            + "_opa_" + opa.name
+            + "_eos_" + eos.name
+            + "_nuc_" + nuc.name
+            + "_" + logger_keyword
+            + ".txt";
+
+        // Do not silently mix two different runs in the same file.
+        if (nit == 0) {
+            std::ifstream check_file(collect_filename);
+
+            if (check_file.good()) {
+                fprintf(stderr,
+                        "Error: logger output file already exists:\n%s\n"
+                        "Choose a different -logger name or remove the existing file.\n",
+                        collect_filename.c_str());
+                exit(EXIT_FAILURE);
+            }
+
+            printf("ESTER solver logger: %s\n",
+                collect_filename.c_str());
+        }
+
+        std::ofstream f(collect_filename, std::ios::app);
+
+        if (!f) {
+            fprintf(stderr,
+                    "Error opening logger output file:\n%s\n",
+                    collect_filename.c_str());
+            exit(EXIT_FAILURE);
+        }
+
+        f << std::setprecision(16);
+
+        f << "---it=" << nit << "---" << std::endl;
+
+        f << h << ","
+        << q << ","
+        << err << ","
+        << Tc << ","
+        << pc << ","
+        << rhoc
+        << std::endl;
+
+        int npts_counter = map.gl.npts[0];
+        int domain_counter = 0;
+
+        for (int i = 0; i < nr; i++) {
+
+            if (i + 1 == map.gl.npts[0]) {
+
+                f << std::right << std::setw(10)
+                << i << ","
+                << dphi(i) << ","
+                << phi(i) << ","
+                << dp(i) << ","
+                << p(i) << ","
+                << dT(i) << ","
+                << T(i) << ","
+                << rho(i) << ","
+                << opa.k(i) << ","
+                << dRi(0) << ","
+                << dTc(0) << ","
+                << dpc(0)
+                << std::endl;
+
+                domain_counter += 1;
+            }
+
+            else if (domain_counter < ndomains &&
+                    i + 1 ==
+                    npts_counter + map.gl.npts[domain_counter]) {
+
+                f << std::right << std::setw(10)
+                << i << ","
+                << dphi(i) << ","
+                << phi(i) << ","
+                << dp(i) << ","
+                << p(i) << ","
+                << dT(i) << ","
+                << T(i) << ","
+                << rho(i) << ","
+                << opa.k(i) << ","
+                << dRi(domain_counter) << ","
+                << dTc(domain_counter) << ","
+                << dpc(domain_counter)
+                << std::endl;
+
+                npts_counter += map.gl.npts[domain_counter];
+                domain_counter += 1;
+            }
+
+            else {
+
+                f << std::right << std::setw(10)
+                << i << ","
+                << dphi(i) << ","
+                << phi(i) << ","
+                << dp(i) << ","
+                << p(i) << ","
+                << dT(i) << ","
+                << T(i) << ","
+                << rho(i) << ","
+                << opa.k(i) << ","
+                << std::nan("") << ","
+                << std::nan("") << ","
+                << std::nan("")
+                << std::endl;
+            }
+        }
+    }
+
+    update_map(h*dRi);
+
     phi+=h*dphi;
     p+=h*dp*p;
     T+=h*dT*T;
@@ -276,26 +337,18 @@ double star1d::solve(solver *op, matrix_map& error_map, int nit) {
     pc*=exp(h*dpc(0));
     Tc*=exp(h*dTc(0));
 
-	//if (nit > 27){
-	//cout << "i = 346, after update: " << T(346)*Tc*1e-6 << "," << dT(346) << "," << p(346)*pc*1e-12 << "," << dp(346) << endl;
-	//cout << "i = 359, after update: " << T(359)*Tc*1e-6 << "," << dT(359) << "," << p(359)*pc*1e-12 << "," << dp(359) << endl;
-    //}
-
-
-    //err2=max(abs(dRi));err=err2>err?err2:err; // being moved to before phi,p,T updates as they don't affect this condition
-
     rho0=rho;
-    //drho = rho-rho0;
 
     fill();
-//    fill(); // test - MG 
 
-    err2=max(abs(rho-rho0));err=err2>err?err2:err;
+    err2=max(abs(rho-rho0));
+
+    err=err2>err?err2:err;
 
     return err;
 
 }
-//---------------------------------------------------------------------
+
 void star1d::update_map(matrix dR) {
     if(ndomains==1) return;
 
@@ -418,6 +471,7 @@ void star1d::solve_poisson(solver *op) {
 void star1d::solve_pressure(solver *op) {
     int n,j0;
     matrix rhs_p,rhs_pi_c;
+
     char eqn[8];
 
     strcpy(eqn,"log_p");

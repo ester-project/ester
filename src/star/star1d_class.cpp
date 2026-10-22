@@ -208,6 +208,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
     }
 
     init_comp(); // MG: does this need to be here? fill(); already has init_comp(); its blocked in star2d_class init 07/02/25
+    opa.Zbase = Z0; // MG: adding for LIBMESAC 19/10/2026
     fill();
 
     phi = solve_phi();
@@ -224,6 +225,14 @@ int star1d::check_arg(char *arg, char *val, int *change_grid) {
         return 1;
     } else if(!strcmp(arg, "Ekman")) {
         return 1;
+    }
+      else if(!strcmp(arg,"logger")) {
+        if(val==NULL) return 2;
+
+        config.logger = true;
+        config.logger_target = val;
+
+        return 0;
     }
     return star2d::check_arg(arg, val, change_grid);
 

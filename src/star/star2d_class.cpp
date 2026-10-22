@@ -93,6 +93,11 @@ star2d::star2d() : nr(map.gl.N), nth(map.leg.npts), nex(map.ex.gl.N),
     version.svn=0;
     stratified_comp = 0;
     config.dump_iter = 0;
+    config.init_poly = false;
+
+    config.logger = false; //MG: adding logger in star1d_solvers.cpp to argument list 19/10/2026
+    config.logger_target.clear();
+
 }
 
 star2d::~star2d() {
@@ -367,6 +372,8 @@ int star2d::hdf5_read(const char *input_file, int dim) {
     if (read_attr(star, "Z0", &Z0)) {
         ester_warn("Could not read 'Z0' from file `%s'", input_file);
     }
+
+    opa.Zbase = Z0; // MG: required for LIBMESAC 19/10/2026
     if (read_attr(star, "Xc", &Xc)) {
         ester_warn("Could not read 'Xc' from file `%s'", input_file);
     }
@@ -878,8 +885,11 @@ int star2d::check_arg(char *arg,char *val,int *change_grid) {
     else if(!strcmp(arg,"dump_iter")) {
         config.dump_iter = 1;
     }
-    else if (!strcmp(arg, "init_poly")) {
-        config.init_poly = true;
+    else if (!strcmp(arg, "init_poly")) { // MG: default file says false, this changes it to default true, this now should listen to default file if init_poly isnt specified in cmd line
+        if (val == NULL)
+            config.init_poly = true;
+        else
+            config.init_poly = atoi(val) != 0;
     }
     else err=1;
 

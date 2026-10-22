@@ -18,8 +18,7 @@ void star2d::opacity() {
 	//error=opa_calc(comp.X(),Z0,Tc*T,rhoc*rho,opa,comp.Xsol(),comp.Ysol(),comp.Zsol(),abundance_map); // this is the cpp file I think, I don't think
 
 	//error=opa_calc(comp.X(),Z0,Tc*T,rhoc*rho,opa,comp.Xsol(),comp.Ysol(),comp.Zsol());
-	printf("star_phys: before error = opa_calc\n");
-	error=opa_calc(comp,comp.X(),Z0,Tc*T,rhoc*rho,opa,comp.Xsol(),comp.Ysol(),comp.Zsol());
+	error=opa_calc(comp,comp.X(),Z0,Tc*T,rhoc*rho,eos,opa,comp.Xsol(),comp.Ysol(),comp.Zsol());
 
 	if(error) exit(1);
 
@@ -37,20 +36,39 @@ void star2d::nuclear() {
 
 void star2d::eq_state() {
 
-	int error;
+    int error;
 
-	matrix rhoc_m(1,1);
-	eos_calc(comp.X()(0,0)*ones(1,1),Z0,ones(1,1)*Tc,ones(1,1)*pc,rhoc_m,eos);
-	rhoc=rhoc_m(0);
+    matrix rhoc_m(1,1);
 
-	error=eos_calc(comp.X(),Z0,T*Tc,p*pc,rho,eos);
+    error=eos_calc(
+        comp,
+        comp.X()(0,0)*ones(1,1),
+        Z0,
+        ones(1,1)*Tc,
+        ones(1,1)*pc,
+        rhoc_m,
+        eos
+    );
 
+    if(error)
+        exit(1);
 
-//	rhoc=rho(0);
-	rho=rho/rhoc;
+    rhoc=rhoc_m(0);
 
-	if(error) exit(1);
+    error=eos_calc(
+        comp,
+        comp.X(),
+        Z0,
+        T*Tc,
+        p*pc,
+        rho,
+        eos
+    );
 
+    if(error)
+        exit(1);
+
+    rho=rho/rhoc;
 }
 
 void star2d::atmosphere() {

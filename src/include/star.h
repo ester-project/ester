@@ -60,9 +60,6 @@ class star2d {
         int stratified_comp;
         double min_core_size;
         std::vector<int> domain_type;
-        //std::string mixture_name; 
-        std::string keyword;
-        bool collect_data=false;
         
         
 #define RADIATIVE 0
@@ -83,11 +80,15 @@ class star2d {
         virtual ~star2d();
         star2d(const star2d &);
         star2d &operator=(const star2d &);
+
         struct config_struct {
             double newton_dmax;
             int verbose;
             int dump_iter;
             bool init_poly;
+
+            bool logger;
+            std::string logger_target;
         } config;
 
         virtual void opacity();
