@@ -12,6 +12,116 @@ Ensure you are in the build directory and run:
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/local
 
+Optional MESA EOS and opacity support
+-------------------------------------
+
+ESTER can optionally use the MESA equation of state (EOS) and opacity
+(KAP) modules through LIBMESAC. This support is disabled by default and
+is enabled at compile time with ESTER_USE_LIBMESAC=ON.
+
+The current interface has been developed and tested with MESA r24.03.1
+and the eos-interface branch of LIBMESAC:
+
+MESA r24.03.1:
+https://docs.mesastar.org/en/24.03.1/
+
+LIBMESAC eos-interface:
+https://github.com/mg477/libmesac/tree/eos-interface
+
+
+1. Install MESA r24.03.1
+
+Install the MESA SDK and MESA r24.03.1 following the MESA installation
+instructions:
+
+https://docs.mesastar.org/en/24.03.1/installation.html
+
+Set MESA_DIR and MESASDK_ROOT according to the MESA installation
+instructions.
+
+MESA must be built with position-independent C objects because its static
+libraries are linked into the ESTER shared library. Before compiling
+MESA, add -fPIC to C_SPECIAL_FLAGS in
+
+    $MESA_DIR/utils/makefile_header
+
+for example:
+
+    C_SPECIAL_FLAGS += -fPIC
+
+Then compile MESA normally:
+
+    cd $MESA_DIR
+    ./install
+
+
+2. Install LIBMESAC
+
+Clone the eos-interface branch of LIBMESAC:
+
+    git clone --branch eos-interface \
+        https://github.com/mg477/libmesac.git
+
+    cd libmesac
+    ./mk
+
+The LIBMESAC build script creates the build directory and, after a
+successful build, runs the KAP and EOS tests. Set LIBMESAC_ROOT to this
+build directory:
+
+    export LIBMESAC_ROOT=/path/to/libmesac/build
+
+The required headers and static libraries are then located in
+
+    $LIBMESAC_ROOT/include
+    $LIBMESAC_ROOT/lib
+
+
+3. Build ESTER with MESA/LIBMESAC support
+
+Once MESA and LIBMESAC have been installed and MESA_DIR,
+MESASDK_ROOT and LIBMESAC_ROOT are defined, configure ESTER with:
+
+    cd /path/to/ester/build
+
+    cmake .. \
+        -DCMAKE_INSTALL_PREFIX=$HOME/local \
+        -DESTER_USE_LIBMESAC=ON
+
+    make
+    make install
+
+MESA/LIBMESAC support can also be combined with the compile-time NOPLOT
+option:
+
+    cmake .. \
+        -DCMAKE_INSTALL_PREFIX=$HOME/local \
+        -DESTER_USE_LIBMESAC=ON \
+        -DNOPLOT=ON
+
+
+4. Using the MESA microphysics
+
+When ESTER has been compiled with ESTER_USE_LIBMESAC=ON, the MESA
+equation of state and opacity can be selected independently at runtime:
+
+    ester 1d -eos mesa
+    ester 1d -opa mesa
+
+or together:
+
+    ester 1d -eos mesa -opa mesa
+
+For example:
+
+    ester 1d -noplot -M 5 -eos mesa -opa mesa -o M5_mesa.h5
+
+If ESTER is compiled without ESTER_USE_LIBMESAC=ON, requesting
+-eos mesa or -opa mesa will result in an error.
+
+The standard ESTER build does not require MESA or LIBMESAC.
+ESTER_USE_LIBMESAC is OFF by default.
+
 Old installation:
 
 ESTER is available under the GPL Version 3 license. It is hosted either on
