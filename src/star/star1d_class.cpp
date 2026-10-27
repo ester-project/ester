@@ -3,7 +3,10 @@
 #endif
 #include "utils.h"
 #include "star.h"
+#ifndef NOPLOT
 #include "matplotlib.h"
+#endif
+
 
 #include <string.h>
 #include <stdlib.h>
@@ -181,13 +184,13 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
 
 
 
-        //T=1-0.5*r*r;
-        //p=T;
-        //phi=-T;
+        T=1-0.5*r*r;
+        p=T;
+        phi=-T;
         
         /* -------------------------------------------------------
         Temporary low-mass polytrope initial-profile test
-        ------------------------------------------------------- */
+        ------------------------------------------------------- 
 
         const int nsrc = 51;
 
@@ -260,12 +263,14 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
             );
         }
 
-        phi=-T;
+        phi=-T;*/
 
 
         // ------------------------------------------------------------
         // DEBUG: compare initialisation profiles
         // ------------------------------------------------------------
+
+        /*
 
         printf("\n--- INITIALISATION DEBUG ---\n");
         printf("config.init_poly = %d\n", (int)config.init_poly);
@@ -316,7 +321,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
             );
         }
 
-        printf("--- END INITIALISATION DEBUG ---\n\n");
+        printf("--- END INITIALISATION DEBUG ---\n\n");*/
 
         if (config.init_poly) {
 
@@ -347,6 +352,7 @@ int star1d::init(const char *input_file, const char *param_file, int argc, char 
     }
 
     init_comp(); // MG: does this need to be here? fill(); already has init_comp(); its blocked in star2d_class init 07/02/25
+    opa.Zbase = Z0; // MG: adding for LIBMESAC 19/10/2026
     fill();
 
     phi = solve_phi();
@@ -363,6 +369,14 @@ int star1d::check_arg(char *arg, char *val, int *change_grid) {
         return 1;
     } else if(!strcmp(arg, "Ekman")) {
         return 1;
+    }
+      else if(!strcmp(arg,"logger")) {
+        if(val==NULL) return 2;
+
+        config.logger = true;
+        config.logger_target = val;
+
+        return 0;
     }
     return star2d::check_arg(arg, val, change_grid);
 
@@ -442,6 +456,7 @@ matrix star1d::spectrum(const matrix& var) {
 
 void star1d::plot(const matrix_map& error) {
 
+#ifndef NOPLOT
     plt::clf();
 
     plt::subplot(231);
@@ -508,4 +523,5 @@ void star1d::plot(const matrix_map& error) {
 
     plt::draw();
     plt::pause();
+#endif
 }

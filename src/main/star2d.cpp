@@ -4,7 +4,10 @@
 #include "utils.h"
 #include "star.h"
 #include "read_config.h"
+#ifndef NOPLOT
 #include "matplotlib.h"
+#endif
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -29,7 +32,9 @@ int main(int argc,char *argv[]) {
 	
 	signal(SIGINT,sig_handler);
 
-    plt::figure(1, 10, 4);
+#ifndef NOPLOT
+	plt::figure(1, 10, 4);
+#endif
 	
 	t.start();
 		
@@ -118,11 +123,13 @@ int main(int argc,char *argv[]) {
 				t_plot=tt(nit-1);
 #else
                 static bool plotOpen = false;
+#ifndef NOPLOT
                 if (plotOpen == false) {
                     plt::show();
                     plotOpen = true;
                 }
                 A.plot(error_map.block(0, nit-1, 0, 0));
+#endif // NOPLOT
 #endif
 			}
 
@@ -166,7 +173,9 @@ int main(int argc,char *argv[]) {
 	if(config.verbose) 
 		printf("%2.2f seconds\n",t.value());
 
-    plt::show(true);
+#ifndef NOPLOT
+	plt::show(true);
+#endif
 
 	return 0;
 }

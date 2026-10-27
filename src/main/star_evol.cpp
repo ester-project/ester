@@ -70,7 +70,7 @@ int main(int argc,char *argv[]) {
 	int n=0;
 	char outfile[268];
 	
-	while(Xc>=Xcmin&&Xc<=1) {
+	while(Xc>=Xcmin&&Xc<=1.01) {
 		printf("Xc=%f\n",Xc);
 		int last_it=0,nit=0;
 		double err;

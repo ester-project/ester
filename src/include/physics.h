@@ -14,11 +14,22 @@ struct nuc_struct {
 };
 struct eos_struct {
 	matrix G1,cp,del_ad,G3_1,cv,d,prad,chi_rho,chi_T,s;
+
+    // MESA EOS quantities required by MESA KAP.
+    matrix lnfree_e;
+    matrix d_lnfree_e_dlnRho;
+    matrix d_lnfree_e_dlnT;
+
+    matrix eta;
+    matrix d_eta_dlnRho;
+    matrix d_eta_dlnT;
+
 	char name[16];
 };
 struct opa_struct {
-	matrix k,xi,dlnxi_lnrho,dlnxi_lnT;
-	char name[16];
+    matrix k,xi,dlnxi_lnrho,dlnxi_lnT;
+    double Zbase = 0.0;
+    char name[16];
 };
 
 struct atm_struct {
@@ -49,6 +60,7 @@ class AbundanceMap {
 public:
     std::map<std::string, float> comp_abund;
     std::map<std::string, double> A_weights;
+    double_map comp_xa;
     std::string mixture_name;
     std::string ester_home;
     double Zmix; 
@@ -57,13 +69,15 @@ public:
 
 extern AbundanceMap global_abundance_map;
 
-int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
-		opa_struct &opa, const double Xsol, const double Ysol, const double Zsol);
-int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
-		matrix &rho,eos_struct &eos);
+int opa_calc(const composition_map &comp,const matrix &X,double Z,const matrix &T,const matrix &rho,
+        const eos_struct &eos,opa_struct &opa,
+        const double Xsol,const double Ysol,const double Zsol);
+int eos_calc(const composition_map &comp,const matrix &X,double Z,
+        const matrix &T,const matrix &p,
+        matrix &rho,eos_struct &eos);
 int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);
-int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
+int atm_calc(const composition_map &comp,const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm, const double Xsol, const double Ysol, const double Zsol);
 
 int opa_opal(const matrix &X,double Z,const matrix &T,const matrix &rho,
@@ -78,9 +92,25 @@ int opa_cesam(const matrix& X, double Z, const matrix& T, const matrix& rho,
 int opa_opmesa(const matrix& X, double Z, const matrix& T, const matrix& rho,
 		opa_struct& opa, const double Xsol, const double Ysol, const double Zsol);
 
-//int opa_mesa_wrapper(const matrix& X, double Z, const matrix& T, const matrix& rho,
-//		opa_struct& opa);
-		
+
+#ifdef ESTER_USE_LIBMESAC
+int opa_mesa_wrapper(const composition_map &comp,const matrix& X,double Z,const matrix& T,const matrix& rho,
+        const eos_struct &eos,opa_struct& opa);
+
+int eos_mesa_wrapper(
+    const composition_map &comp,
+    const matrix &X,
+    double Z,
+    const matrix &T,
+    const matrix &p,
+    matrix &rho,
+    eos_struct &eos);
+
+std::string mesa_nuclide_name(const std::string &ester_name); // to convert MESA nuclide id's
+
+#endif
+
+
 int nuc_simple(const composition_map &comp,const matrix &T,const matrix &rho,
 		nuc_struct &nuc);	
 int nuc_cesam(const composition_map &comp,const matrix &T,const matrix &rho,
@@ -98,10 +128,8 @@ int eos_opal(const matrix &X,double Z,const matrix &T,const matrix &p,
 int eos_freeeos(const matrix &X, double Z, const matrix &T, const matrix &p,
 		matrix &rho, eos_struct &eos);
 
-int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
+int atm_onelayer(const composition_map &comp,const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm, const double Xsol, const double Ysol, const double Zsol);
-
-double_map initial_composition(double X,double Z);  
 
 double_map initial_composition(double X, double Z);
 struct CompositionData {

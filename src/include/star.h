@@ -18,7 +18,7 @@
 #define LOG_PRES "log_T"
 //#define PRES p
 //#define LOG_PRES "log_p"
-#define T_CONSTANT_DOMAINS
+#define T_CONSTANT_DOMAINS // on when PRES p? 
 //#define PHOTOSPHERE 1
 //#define KINEMATIC_VISC
 
@@ -60,7 +60,7 @@ class star2d {
         int stratified_comp;
         double min_core_size;
         std::vector<int> domain_type;
-        //std::string mixture_name; 
+        
         
 #define RADIATIVE 0
 #define CORE 1
@@ -80,11 +80,15 @@ class star2d {
         virtual ~star2d();
         star2d(const star2d &);
         star2d &operator=(const star2d &);
+
         struct config_struct {
             double newton_dmax;
             int verbose;
             int dump_iter;
             bool init_poly;
+
+            bool logger;
+            std::string logger_target;
         } config;
 
         virtual void opacity();

@@ -94,6 +94,16 @@ stellar model to be calculated (see below).
 \item[] {\tt -binary}. Same as {\tt -output\_mode b}.
 \item[] {\tt -noplot}. disable runtime plotting %Same as {\tt -plot\_device /NULL}.
 \item[] {\tt -v}{\it n}. Same as {\tt -verbose} {\it n}.
+\item[] {\tt -logger} {\it path}. Write stellar structure and
+Newton--Raphson convergence diagnostics during the calculation to a text
+file. The output includes the global convergence error and damping factor,
+together with the radial profiles of $\phi$, $p$, $T$, $\rho$ and opacity,
+their corresponding Newton corrections, and the corrections to the domain
+interfaces, central temperature and central pressure. The parent directory
+of {\it path} must already exist. The final component of {\it path} is used
+as a keyword in the output filename.\footnote{For example, {\tt -logger \textasciitilde/Data/M5\_test}
+writes the logger output in {\tt \textasciitilde/Data}, using
+{\tt M5\_test} as the identifying keyword in the output filename.}
 \end{itemize}
 
 \section{Default values}
@@ -187,6 +197,16 @@ opacity calculations. The fractional abundances are scaled by the input $Z$
 relative to the initial $Z$ value from the input abundance (e.g. for GS98,
 this would be $Z = Z_\odot$ = 0.0169).
 
+MESA opacities are also available through the optional LIBMESAC interface
+(a wrapper developed as a C/C++ interface around MESA EOS and opacity modules)\footnote{\url{https://github.com/4D-STAR/libmesac}}.
+When ESTER is compiled with LIBMESAC support, the option {\tt -opa mesa}
+evaluates the opacity using the MESA KAP microphysics module. The current
+interface has been developed and tested with MESA version r24.03.1.
+\footnote{LIBMESAC provides C bindings to the MESA microphysics libraries.
+The ESTER implementation currently uses the \url{https://github.com/mg477/libmesac/tree/eos-interface} development
+fork; these changes are intended to be contributed back to the 4D-STAR
+LIBMESAC repository.}
+
 \subsection{The equation of state}
 
 The default EOS is the OPAL one but with the possible use of arbitrary chemical
@@ -208,7 +228,21 @@ Ca, Cr, Mn, Fe and Ni, so 17 elements, while freeEOS includes 3 others,
 namely P, Cl and Ti. Thus, for consistency these latter three elements
 are not used either in eos and opacities.
 
+An additional equation of state is available through the same LIBMESAC
+interface. The option {\tt -eos mesa} uses the MESA EOS module to determine
+the density and thermodynamic quantities required by ESTER from the local
+temperature, pressure and chemical composition. When MESA is selected for
+both the EOS and opacity, the electron-state quantities calculated by the
+EOS are also supplied to the MESA KAP calculation. Otherwise they are assumed null.
+\footnote{This distinction becomes important for sub-solar masses.}
 
+\textbf{The MESA EOS and opacity options are available only when ESTER is compiled
+with {\tt ESTER\_USE\_LIBMESAC=ON}; requesting either option in a build
+without LIBMESAC support results in an error.}
+
+Compilation with MESA EOS and opacity support requires MESA r24.03.1\footnote{later versions should work, but needs to be tested.}
+and LIBMESAC; see the {\tt INSTALL} file distributed with ESTER for
+installation instructions.
 
 \section{{\tt ester 1d} input parameters}\label{ester1dinput}
 
@@ -262,6 +296,8 @@ see Houdek and Rogl (1996), "On the accuracy of opacity interpolation
 schemes", {\it Bull. Ast. Soc. India}, {\bf 24}, 317.
 \item {\tt kramer}. Kramer's opacity.
 \item {\tt mono}. Rosseland mean opacities from monochromatic opacity tables \citep{Mombarg2022} interpolated to input {\tt X} and {\tt Z}. 
+\item {\tt mesa}. MESA KAP opacities through the optional LIBMESAC
+interface (MESA r24.03.1).
 \end{itemize}
 \item {\tt eos}. Type of equation of state. Possible values are:
 \begin{itemize}
@@ -269,10 +305,17 @@ schemes", {\it Bull. Ast. Soc. India}, {\bf 24}, 317.
 \item {\tt ideal}. Ideal gas.
 \item {\tt ideal+rad}. Ideal gas with radiation.
 \item {\tt freeeos} Free-eos  {\tt https://freeeos.sourceforge.net/}
+\item {\tt mesa}. MESA equation of state through the optional LIBMESAC
+interface (MESA r24.03.1).
 \end{itemize}
 \item {\tt nuc}. Type of nuclear reactions. Possible values are:
 \begin{itemize}
-\item {\tt simple}. Simplified formulation of pp and CNO cycles. 
+\item {\tt simple\_CN}. Simplified formulation of pp and CNO cycles.
+Here the abundance of X$_{\rm CNO}$ is given by $(C+N)*Z$.
+\item {\tt simple\_ON}. Simplified formulation of pp and CNO cycles. 
+Here the abundance of X$_{\rm CNO}$ is given by $(O+N)*Z$. Since Carbon
+and Oxygen abundance (relative to metallicity Z) differ, the energy
+production differs, and so the luminosity.
 \item {\tt cesam}. NACRE reaction rates as implemented in the ppcno9 chain of the CESAM code.
 \end{itemize}
 \item {\tt atm}. Type of atmosphere. At the moment, only {\tt simple} is implemented.

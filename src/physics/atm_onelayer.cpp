@@ -14,7 +14,7 @@
 //		const char *eos_name,const char *opa_name,atm_struct &atm, const double Xsol, const double Ysol, const double Zsol,
 //		const AbundanceMap& abundance_map) {
 
-int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
+int atm_onelayer(const composition_map &comp,const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm, const double Xsol, const double Ysol, const double Zsol) {
 
 	int n=g.nrows();
@@ -27,6 +27,9 @@ int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 	atm.Ts=Teff;
 	atm.dlnTs_lnTeff=ones(n,m);
 	atm.dlnTs_lng=zeros(n,m);
+
+	// MG: The atmosphere uses the surface composition? 21/10/2026
+	composition_map comp_surface(comp.row(-1));
 	
 	for(int i=0;i<n;i++) {
 		for(int j=0;j<m;j++) {
@@ -34,7 +37,10 @@ int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 			matrix p,T,rho;
 			eos_struct eos;
 			opa_struct opa;
-	
+
+			// Composition for this surface point only
+			composition_map comp_local(comp_surface.col(j));
+
 			logps=4.2; //Initial value
 			logg=log10(g(i,j));
 			T=Teff(i,j)*ones(1,1);
@@ -50,10 +56,15 @@ int atm_onelayer(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 				}
 				double F,dF,dlogps;
 				p=pow(10,logps)*ones(1,1);
-				if(eos_calc(X(i,j)*ones(1,1),Z,T,p,rho,eos)) return 1;
+				//if(eos_calc(comp,X(i,j)*ones(1,1),Z,T,p,rho,eos)) return 1;
+				if(eos_calc(comp_local,comp_local.X(),Z,T,p,rho,eos)) return 1; //MG: above uses whole comp object, 1 layer atm uses surface (I think)
+
 				//if(opa_calc(X(i,j)*ones(1,1),Z,T,rho,opa)) return 1;
 				//if(opa_calc(X(i,j)*ones(1,1),Z,T,rho,opa,Xsol,Ysol,Zsol,abundance_map)) return 1;
-				if(opa_calc(X(i,j)*ones(1,1),Z,T,rho,opa,Xsol,Ysol,Zsol)) return 1;
+				//if(opa_calc(comp,X(i,j)*ones(1,1),Z,T,rho,eos,opa,Xsol,Ysol,Zsol)) return 1;
+
+				if(opa_calc(comp_local,comp_local.X(),Z,T,rho,eos,opa,Xsol,Ysol,Zsol)) return 1; // same reasoning as above
+
 				F=logps+log10(opa.k)(0)-logg-log10(2./3.);
 				dF=1.-(1+opa.dlnxi_lnrho(0))/eos.chi_rho(0);
 				dlogps=-F/dF;

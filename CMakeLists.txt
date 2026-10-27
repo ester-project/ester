@@ -1,8 +1,22 @@
 cmake_minimum_required(VERSION 3.14)
 project(ester VERSION 1.2.0 LANGUAGES C CXX Fortran)
 
-set(CMAKE_POSITION_INDEPENDENT_CODE ON) # test line 1
+option(ESTER_USE_LIBMESAC
+    "Enable MESA EOS and opacity support through LIBMESAC"
+    OFF
+)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# -------------------------
+# Common compiler/debug flags
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+
+
+
+# -------------------------
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
     message(FATAL_ERROR "In-source builds not allowed.")
@@ -14,21 +28,25 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/modules)
 
+option("NOPLOT" "Disable matplotlib C++ code at compiling time." OFF)
+
 if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
     string(CONCAT CMAKE_Fortran_FLAGS
-        "-g -O3"
+        "${CMAKE_Fortran_FLAGS} "
+        "-g -O3" # adding gprof flag below,
+#        "-g -pg -O3"
         " -fno-align-commons -fdefault-real-8 -fdefault-double-8"
         " -ffixed-line-length-none -O -w -fd-lines-as-comments")
+        #" -fPIC")
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
     string(CONCAT CMAKE_Fortran_FLAGS
         "-g -O3"
         " -r8"
         " -nowarn -fpp -extend-source")
+        #" -fPIC")
 else()
     message(FATAL_ERROR "Unknown Fortran compiler: ${CMAKE_Fortran_COMPILER_ID}")
 endif()
-
-set(CMAKE_CXX_FLAGS "-g")
 
 # Find libarries
 find_package(BLAS REQUIRED)
@@ -55,6 +73,10 @@ else()
     add_compile_definitions(ENABLE_PLT)
 endif()
 
+if(NOPLOT)
+    add_compile_definitions(NOPLOT)
+endif()
+
 ###
 
 # Add the new C++ source file
@@ -71,40 +93,70 @@ include_directories(src/graphics)
 include_directories(${PYTHON_INCLUDE_DIRS})
 include_directories(${HDF5_INCLUDE_DIRS})
 
-### LIBMESAC INTEGRATION ###
+    ### LIBMESAC INTEGRATION ###
 
-## Include and link directories for MESA
-#include_directories($ENV{MESA_DIR}/include $ENV{MESASDK_ROOT}/include)
-#link_directories($ENV{MESA_DIR}/lib $ENV{MESASDK_ROOT}/lib)
 
-#include_directories($ENV{LIBMESAC_ROOT}/include)
-#link_directories($ENV{LIBMESAC_ROOT}/lib) # does this need to be added soemhow? 
+if(ESTER_USE_LIBMESAC)
 
-## Run the MESA shell commands and capture their output
-#execute_process(
-#    COMMAND mesasdk_lapack95_link
-#    OUTPUT_VARIABLE LAPACK95_LIB_FLAGS
-#    OUTPUT_STRIP_TRAILING_WHITESPACE
-#)
+    if(NOT DEFINED ENV{MESA_DIR})
+        message(FATAL_ERROR
+            "ESTER_USE_LIBMESAC=ON requires MESA_DIR")
+    endif()
 
-#execute_process(
-#    COMMAND mesasdk_crmath_link
-#    OUTPUT_VARIABLE CRMATH_LIB_FLAGS
-#    OUTPUT_STRIP_TRAILING_WHITESPACE
-#)
+    if(NOT DEFINED ENV{MESASDK_ROOT})
+        message(FATAL_ERROR
+            "ESTER_USE_LIBMESAC=ON requires MESASDK_ROOT")
+    endif()
 
-## Additional MESA libraries
+    if(NOT DEFINED ENV{LIBMESAC_ROOT})
+        message(FATAL_ERROR
+            "ESTER_USE_LIBMESAC=ON requires LIBMESAC_ROOT")
+    endif()
 
-#set(MESA_LIBS "-L$ENV{MESA_DIR}/lib -lkap -lchem -lmath -latm -lconst -lutils -leos -linterp_1d -linterp_2d -lnum -lionization -lmtx -lauto_diff -lcrmath -lhdf5io -lrates -lnet -lmvec -fopenmp -lm -lquadmath")
+    add_compile_definitions(ESTER_USE_LIBMESAC)
 
-## Combine the outputs into one variable for SDK libraries
-#set(SDK_LIBS "${MESA_LIBS};${LAPACK95_LIB_FLAGS};${CRMATH_LIB_FLAGS}")
+    ## Include and link directories for MESA
+    include_directories($ENV{MESA_DIR}/include $ENV{MESASDK_ROOT}/include)
+    link_directories($ENV{MESA_DIR}/lib $ENV{MESASDK_ROOT}/lib)
 
-#message(LIBMESAC_ROOT="$ENV{LIBMESAC_ROOT}")
+    include_directories($ENV{LIBMESAC_ROOT}/include)
 
-#set(LIBMESAC_LIBS "$ENV{LIBMESAC_ROOT}/lib/libkapcmesa.a;$ENV{LIBMESAC_ROOT}/lib/libchemcmesa.a;$ENV{LIBMESAC_ROOT}/lib/libutilscmesa.a;${SDK_LIBS}")
+    ## Run the MESA shell commands and capture their output
+    execute_process(
+        COMMAND mesasdk_lapack95_link
+        OUTPUT_VARIABLE LAPACK95_LIB_FLAGS
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
 
-### -------------------- ### 
+    execute_process(
+        COMMAND mesasdk_crmath_link
+        OUTPUT_VARIABLE CRMATH_LIB_FLAGS
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    ## Additional MESA libraries
+
+    set(MESA_LIBS "-L$ENV{MESA_DIR}/lib -lkap -lchem -lmath -latm -lconst -lutils -leos -linterp_1d -linterp_2d -lnum -lionization -lmtx -lauto_diff -lcrmath -lhdf5io -lrates -lnet -lmvec -fopenmp -lm -lquadmath")
+
+    ## Combine the outputs into one variable for SDK libraries
+    set(SDK_LIBS "${MESA_LIBS};${LAPACK95_LIB_FLAGS};${CRMATH_LIB_FLAGS}")
+
+    message(LIBMESAC_ROOT="$ENV{LIBMESAC_ROOT}")
+
+    set(LIBMESAC_LIBS "$ENV{LIBMESAC_ROOT}/lib/libkapcmesa.a;$ENV{LIBMESAC_ROOT}/lib/libeoscmesa.a;$ENV{LIBMESAC_ROOT}/lib/libchemcmesa.a;$ENV{LIBMESAC_ROOT}/lib/libutilscmesa.a;${SDK_LIBS}")
+
+    ### -------------------- ###
+
+    # Link libmesac libraries using --whole-archive to include all symbols
+    #=set(LIBMESAC_LIBS "-Wl,--whole-archive $ENV{LIBMESAC_ROOT}/lib/libkapcmesa.a $ENV{LIBMESAC_ROOT}/lib/libchemcmesa.a $ENV{LIBMESAC_ROOT}/lib/libutilscmesa.a -#Wl,--no-whole-archive ${SDK_LIBS}") # test lines 2 --> needed?
+
+
+    message(LIBMESAC_LIBS="${LIBMESAC_LIBS}")
+    #target_link_libraries(ester cesam freeeos opint
+    #    ${OPTIONAL_LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${CBLAS_LIBRARIES} $#{PYTHON_LIBRARIES} ${HDF5_LIBRARIES} ${LIBMESAC_LIBS})
+
+
+endif()
 
 # Find HDF5 with C and C++ components
 #find_package(HDF5 REQUIRED COMPONENTS C CXX)
@@ -113,7 +165,7 @@ include_directories(${HDF5_INCLUDE_DIRS})
 #include_directories(${HDF5_INCLUDE_DIRS})
 
 # Link against HDF5 libraries
-#target_link_libraries(ester PRIVATE ${HDF5_LIBRARIES})
+#target_link_libraries(ESTER PRIVATE ${HDF5_LIBRARIES})
 
 ###
 
@@ -130,9 +182,8 @@ add_compile_definitions(PACKAGE_VERSION="${PROJECT_VERSION}")
 
 #add_library(ester SHARED # was previous
 #add_library(ester STATIC
-add_library(ester SHARED
+set(ESTER_CPP_FILES
     src/global/global.cpp
-    src/graphics/matplotlib.cpp
     src/solver/RKF_solver.cpp
     src/main/read_config.cpp
     src/solver/SDIRK_solver.cpp
@@ -191,15 +242,44 @@ add_library(ester SHARED
     src/physics/mesa_opacity_modules.F90
     src/physics/cubic_interpolator.f90
     src/physics/read_hdf5_data.cpp)
-    #src/physics/opa_mesa_wrapper.cpp) # blocked for fixing other issues 
-    
-# Link libmesac libraries using --whole-archive to include all symbols
-#set(LIBMESAC_LIBS "-Wl,--whole-archive $ENV{LIBMESAC_ROOT}/lib/libkapcmesa.a $ENV{LIBMESAC_ROOT}/lib/libchemcmesa.a $ENV{LIBMESAC_ROOT}/lib/libutilscmesa.a -#Wl,--no-whole-archive ${SDK_LIBS}") # test lines 2 --> needed?
 
-   
-message(LIBMESAC_LIBS="${LIBMESAC_LIBS}")
-target_link_libraries(ester cesam freeeos opint
-    ${OPTIONAL_LIBS} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${CBLAS_LIBRARIES} ${PYTHON_LIBRARIES} ${HDF5_LIBRARIES} ${LIBMESAC_LIBS})
+if(NOT NOPLOT)
+    list(PREPEND ESTER_CPP_FILES src/graphics/matplotlib.cpp)
+    # NOTE: only used for matplotlib
+    list(APPEND OPTIONAL_LIBS ${PYTHON_LIBRARIES})
+endif()
+
+if(ESTER_USE_LIBMESAC)
+    list(APPEND ESTER_CPP_FILES
+        src/physics/opa_mesa_wrapper.cpp
+        src/physics/eos_mesa_wrapper.cpp)
+endif()
+
+add_library(ester SHARED ${ESTER_CPP_FILES})
+
+# Explicitly add HDF5 Fortran libraries
+set(HDF5_FORTRAN_LIBS hdf5_fortran hdf5hl_fortran hdf5 hdf5_hl)
+
+# Link ester library
+target_link_libraries(ester
+    PRIVATE
+        cesam
+        freeeos
+        opint
+        ${OPTIONAL_LIBS}
+        ${LAPACK_LIBRARIES}
+        ${BLAS_LIBRARIES}
+        ${CBLAS_LIBRARIES}
+        ${HDF5_LIBRARIES}       # C/C++ HDF5
+)
+
+if(ESTER_USE_LIBMESAC)
+    target_link_libraries(ester
+        PRIVATE
+        ${LIBMESAC_LIBS}        # MESA static libraries
+        ${HDF5_FORTRAN_LIBS}    # Fortran HDF5, must come last
+    )
+endif()
 
 # Set properties for ester
 #set_target_properties(ester PROPERTIES

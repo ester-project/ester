@@ -6,7 +6,11 @@
 #include "utils.h"
 #include "parser.h"
 #include "read_config.h"
+#ifndef NOPLOT
 #include "matplotlib.h"
+#endif
+
+
 
 configuration::configuration(int argc,char *argv[]) {
 
@@ -26,7 +30,7 @@ configuration::configuration(int argc,char *argv[]) {
 	maxit=200;
 	tol=1e-8;
 	newton_dmax=0.5;
-    noplot = false;
+	noplot = false;
 
 	sprintf(file, "%s/ester/star.cfg", ESTER_DATADIR);
 	if(!fp.open(file))
@@ -54,8 +58,14 @@ configuration::configuration(int argc,char *argv[]) {
 	}
 	cmd.close();
 
+
+#ifndef NOPLOT
     if (noplot == false)
-        plt::init();
+	    plt::init();
+#else
+    if (! noplot)
+	    ester_warn("matplotlib has been disabled at building time.");
+#endif
 }
 
 int configuration::check_arg(const char *arg,const char *val) {
@@ -101,7 +111,9 @@ int configuration::check_arg(const char *arg,const char *val) {
 	else if(!strcmp(arg,"noplot")) {
 		strcpy(plot_device,"/NULL");
         noplot = true;
+#ifndef NOPLOT
         plt::init(true);
+#endif
 	}
 	else if(!strcmp(arg,"maxit")) {
 		if(val==NULL) return 2;

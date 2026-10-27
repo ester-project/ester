@@ -8,6 +8,8 @@
 #include <ostream>
 #include <iostream>
 
+#include <algorithm>
+#include <cctype>
 
 /*
 // Singleton instance of abundance manager
@@ -33,7 +35,7 @@ const std::map<std::string, float>& AbundanceManager::getAbundances() const {
 //AbundanceMap global_abundance_map;  // Default initialization
 
 
-int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
+int opa_calc(const composition_map &comp,const matrix &X,double Z,const matrix &T,const matrix &rho,const eos_struct &eos,
 		opa_struct &opa,const double Xsol, const double Ysol, const double Zsol){//,
 //		const AbundanceMap& abundance_map) {
 		
@@ -69,6 +71,15 @@ int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
         //error=opa_opmesa(X, Z, T, rho, opa);
         //error=opa_opmesa(X, Z, T, rho, opa,Xsol,Ysol,Zsol,abundance_map);
         error=opa_opmesa(X, Z, T, rho, opa,Xsol,Ysol,Zsol);
+    } else if (!strcmp(opa.name, "mesa")) {
+    #ifdef ESTER_USE_LIBMESAC
+        error = opa_mesa_wrapper(comp, X, Z, T, rho, eos, opa);
+    #else
+        ester_err(
+            "MESA opacity requested, but ESTER was built without LIBMESAC support"
+        );
+        return 1;
+    #endif
     } else {
         ester_err("Unknown opacity method: %s",opa.name);
     	return 1;
@@ -77,7 +88,7 @@ int opa_calc(const matrix &X,double Z,const matrix &T,const matrix &rho,
 	return error;
 }
 
-int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
+int eos_calc(const composition_map &comp,const matrix &X,double Z,const matrix &T,const matrix &p,
         matrix &rho,eos_struct &eos) {
 
     int error=0;
@@ -90,8 +101,18 @@ int eos_calc(const matrix &X,double Z,const matrix &T,const matrix &p,
         error=eos_opal(X,Z,T,p,rho,eos);
     else if(!strcmp(eos.name,"freeeos"))
         error = eos_freeeos(X, Z, T, p, rho, eos);
+    else if (!strcmp(eos.name, "mesa")) {
+    #ifdef ESTER_USE_LIBMESAC
+        error = eos_mesa_wrapper(comp, X, Z, T, p, rho, eos);
+    #else
+        ester_err(
+            "MESA EOS requested, but ESTER was built without LIBMESAC support"
+        );
+        return 1;
+    #endif
+    }
     else {
-        ester_err("Unknown equation of state: %s",eos.name);
+        ester_err("Unknown equation of state: %s", eos.name);
         return 1;
     }
 
@@ -104,7 +125,7 @@ int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
 
 	int error=0;
 
-	if(!strcmp(nuc.name,"simple")) {
+	if(!strcmp(nuc.name,"simple_ON") || !strcmp(nuc.name,"simple_CN") || !strcmp(nuc.name,"simple")) {
 		error=nuc_simple(X,T,rho,nuc);
 	} else if(!strcmp(nuc.name,"cesam")) {
 		error=nuc_cesam(X,T,rho,nuc);
@@ -121,14 +142,14 @@ int nuc_calc(const matrix_map &X,const matrix &T,const matrix &rho,
 //		const char *eos_name,const char *opa_name,atm_struct &atm,const double Xsol, const double Ysol, const double Zsol,
 //		const AbundanceMap& abundance_map) {
 
-int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
+int atm_calc(const composition_map &comp,const matrix &X,double Z,const matrix &g,const matrix &Teff,
 		const char *eos_name,const char *opa_name,atm_struct &atm,const double Xsol, const double Ysol, const double Zsol) {
 
 	int error=0;
 
 	if(!strcmp(atm.name,"onelayer")) {
 		//error=atm_onelayer(X,Z,g,Teff,eos_name,opa_name,atm,Xsol,Ysol,Zsol,abundance_map);
-		error=atm_onelayer(X,Z,g,Teff,eos_name,opa_name,atm,Xsol,Ysol,Zsol);
+		error=atm_onelayer(comp,X,Z,g,Teff,eos_name,opa_name,atm,Xsol,Ysol,Zsol);
     } else {
         ester_err("Unknown atmosphere type: %s", atm.name);
     	return 1;
@@ -138,6 +159,25 @@ int atm_calc(const matrix &X,double Z,const matrix &g,const matrix &Teff,
 
 
 }
+
+
+#ifdef ESTER_USE_LIBMESAC
+std::string mesa_nuclide_name(const std::string &ester_name)
+{
+    std::string mesa_name = ester_name;
+
+    std::transform(
+        mesa_name.begin(),
+        mesa_name.end(),
+        mesa_name.begin(),
+        [](unsigned char c) {
+            return static_cast<char>(std::tolower(c));
+        }
+    );
+
+    return mesa_name;
+}
+#endif
 
 
 

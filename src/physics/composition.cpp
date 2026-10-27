@@ -23,6 +23,8 @@
 #include "star.h" // adding for abundance name 
 
 #include <iomanip>
+#include <stdexcept>
+
 
 std::string GetCurrentWorkingDirectory() {
     const size_t bufferSize = 1024;
@@ -92,13 +94,19 @@ using namespace std;
 // defined in physics.h holds abundances, atomic weights and name of abundance file. 
 //AbundanceMap global_abundance_map;
 
-//FileMeta File_meta_data;
-
 // Use this if you are not updating the composition on every step. Otherwise
 // Call save the results of parse_composition_data and call only update_initial_composition.
+
+
 double_map initial_composition(double X, double Z) {
-    CompositionData initial_comp = parse_composition_data();
-    return update_initial_composition(initial_comp, X, Z);
+
+    CompositionData initial_comp =
+        parse_composition_data();
+
+    double_map out =
+        update_initial_composition(initial_comp, X, Z);
+
+    return out;
 }
 
 CompositionData parse_composition_data() {
@@ -107,6 +115,9 @@ CompositionData parse_composition_data() {
     // in .bashrc or .cshrc
 
     // we read the environment variable ESTER
+    if (nullptr == getenv("ESTER"))
+           throw logic_error("Missing ESTER environment variable,"
+                           " please set it to ester directory (see doc).");
     std::string esterDirectory=getenv("ESTER");
     global_abundance_map.ester_home = esterDirectory;
     
@@ -367,27 +378,49 @@ double_map update_initial_composition(const CompositionData &data, double X, dou
 	
 	for (auto& entry : data.normalized_abundances) {
 
+
 		const std::string& key = entry.first;
         double value = entry.second;
 
-        if (key.find("H1") != std::string::npos || key.find("H2") != std::string::npos) {
-            Hsum += entry.second * X; // effectively (alpha_H1 + alpha_H2)*X = alpha_H * X = X as alpha_H == 1 (this is idiot check)
+        if (key.find("H1") != std::string::npos ||
+            key.find("H2") != std::string::npos) {
 
-        } else if (key.find("He3") != std::string::npos || key.find("He4") != std::string::npos) {
-			comp[key] = entry.second * (1-X-Z); // below they did alpha_He3 * (1-X-Z) and then (1-X-Y) - comp[He3]
+            Hsum += entry.second * X;
+
+            // Keep isotope-resolved hydrogen in comp as well as aggregate H.
+            comp[key] = entry.second * X;
+
+        } else if (key.find("He3") != std::string::npos ||
+                key.find("He4") != std::string::npos) {
+
+            comp[key] = entry.second * (1-X-Z);
+
         } else {
-			comp[key] = entry.second * Z;
 
+            comp[key] = entry.second * Z;
         }
 
 	}
+
+
+    // Compute the physical isotope sum before adding aggregate H,
+    // which duplicates H1 + H2 for ESTER bookkeeping.
+	double tot=comp.sum(); // this was below comp H, needs to be above, consider doing to other branhces MG
+
 	comp["H"] = Hsum;
-	double tot=comp.sum();
+
+	//double tot=comp.sum(); // this was below comp H, needs to be above, consider doing to other branhces MG
+
+
 	comp["Ex"] = 1 - tot;
 	comp["Xsol"] = data.Xsol;
 	comp["Ysol"] = data.Ysol;
 	comp["Zsol"] = data.Zsol;
 	global_abundance_map.Zmix = data.Zsol;
+
+	
+	global_abundance_map.comp_xa = comp; // save the entire mass fraction.
+		
 	return comp;
 
 }
